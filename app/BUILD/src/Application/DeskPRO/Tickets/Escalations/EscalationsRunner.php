@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,10 +31,11 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Escalations;
 
 use Application\DeskPRO\Monolog\NullLogger;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Monolog\Logger;
 
 class EscalationsRunner implements \Countable, \IteratorAggregate
@@ -113,17 +114,17 @@ class EscalationsRunner implements \Countable, \IteratorAggregate
                 $tickets = $this->matcher->getMatches($esc, $this->batch_size);
             } catch (\Exception $e) {
                 $this->logger->error('[EscalationsRunner] Error with escalation query: '.$e->getMessage());
-                $this->logger->debug(KernelErrorHandler::formatBacktrace($e->getTrace()));
-                KernelErrorHandler::logException($e, true, 'escalation_query_'.$esc->id);
-                $tickets = array();
+                $this->logger->debug(SystemErrorHandler::formatBacktrace($e->getTrace()));
+                SystemErrorHandler::logException($e, true, 'escalation_query_'.$esc->id);
+                $tickets = [];
             }
             foreach ($tickets as $t) {
                 try {
                     $this->executor->applyEscalation($esc, $t);
                 } catch (\Exception $e) {
                     $this->logger->error('[EscalationsRunner] Error applying escalation to ticket: '.$e->getMessage());
-                    $this->logger->debug(KernelErrorHandler::formatBacktrace($e->getTrace()));
-                    KernelErrorHandler::logException($e, true, 'escalation_apply_'.$esc->id);
+                    $this->logger->debug(SystemErrorHandler::formatBacktrace($e->getTrace()));
+                    SystemErrorHandler::logException($e, true, 'escalation_apply_'.$esc->id);
                 }
             }
         }

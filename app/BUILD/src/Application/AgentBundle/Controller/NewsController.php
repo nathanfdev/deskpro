@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,56 +26,68 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\NewsResults;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
+use Application\DeskPRO\Entity\NewsRevision;
+use Application\DeskPRO\Entity\PersonPref;
+use Application\DeskPRO\Entity\SearchLog;
+use Application\DeskPRO\Entity\SearchStickyResult;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Handles listing and editing of news.
  */
 class NewsController extends AbstractController
 {
-    ############################################################################
-    # view
-    ############################################################################
+    //###########################################################################
+    // view
+    //###########################################################################
 
     public function viewAction($news_id)
     {
-        $news = $this->em->find('DeskPRO:News', $news_id);
+        /** @var News $news */
+        $news = $this->em->find(News::class, $news_id);
 
         if (!$news) {
             throw $this->createNotFoundException();
         }
 
-        $news_comments = $this->em->getRepository('DeskPRO:NewsComment')->getComments($news);
+        $news_comments = $this->em->getRepository(NewsComment::class)->getComments($news);
 
         $related_finder  = new RelatedContentFinder($this->person, $news);
         $related_content = $related_finder->getRelatedEntities(true);
 
-        $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editnews', $this->person->id);
+        $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.editnews', $this->person->id);
 
-        $sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($news);
-        $rated_searches      = $this->em->getRepository('DeskPRO:SearchLog')->getRatedSearchesFor('news', $news['id'], 'counted');
+        $sticky_search_words = $this->em->getRepository(SearchStickyResult::class)->getWordsForObject($news);
+        $rated_searches      = $this->em->getRepository(SearchLog::class)->getRatedSearchesFor('news', $news['id'], 'counted');
 
-        $news_categories = $this->em->getRepository('DeskPRO:NewsCategory')->getInHierarchy();
+        if ($news->getCategory() && $news->getCategory()->getBrand()) {
+            $brandId = $news->getCategory()->getBrand()->getId();
+        } else {
+            $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+        }
+        $news_categories = $this->getFilteredCategory($brandId);
 
-        $perms = array(
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
+        $perms = [
             'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($news),
             'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($news),
-        );
+        ];
 
-        return $this->render('AgentBundle:News:view.html.twig', array(
+        return $this->render('AgentBundle:News:view.html.twig', [
             'news'                => $news,
             'news_comments'       => $news_comments,
             'news_categories'     => $news_categories,
@@ -84,28 +96,29 @@ class NewsController extends AbstractController
             'sticky_search_words' => $sticky_search_words,
             'rated_searches'      => $rated_searches,
             'perms'               => $perms,
-        ));
+            'brands'              => $brands,
+        ]);
     }
 
     public function viewRevisionsAction($news_id)
     {
-        $news = $this->em->find('DeskPRO:News', $news_id);
+        $news = $this->em->find(News::class, $news_id);
 
-        return $this->render('AgentBundle:News:view-revisions-tab.html.twig', array(
+        return $this->render('AgentBundle:News:view-revisions-tab.html.twig', [
             'news' => $news,
-        ));
+        ]);
     }
 
     public function ajaxSaveLabelsAction($news_id)
     {
         /** @var News $news */
-        $news = $this->em->find('DeskPRO:News', $news_id);
+        $news = $this->em->find(News::class, $news_id);
 
         if (!$news) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
         if (!$this->person->PermissionsManager->PublishChecker->canEdit($news)) {
-            return $this->createJsonResponse(array('success' => 0));
+            return $this->createJsonResponse(['success' => 0]);
         }
 
         $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
@@ -115,12 +128,12 @@ class NewsController extends AbstractController
         $this->em->persist($news);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => 1));
+        return $this->createJsonResponse(['success' => 1]);
     }
 
     public function ajaxSaveCommentAction($news_id)
     {
-        $news = $this->em->find('DeskPRO:News', $news_id);
+        $news = $this->em->find(News::class, $news_id);
 
         if (!$news || !$this->in->getString('content')) {
             throw $this->createNotFoundException();
@@ -140,33 +153,33 @@ class NewsController extends AbstractController
         $this->em->persist($comment);
         $this->em->flush();
 
-        return $this->render('AgentBundle:News:view-comment.html.twig', array(
+        return $this->render('AgentBundle:News:view-comment.html.twig', [
             'comment' => $comment,
-        ));
+        ]);
     }
 
     public function ajaxSaveAction($news_id)
     {
-        $news = $this->em->find('DeskPRO:News', $news_id);
+        $news = $this->em->find(News::class, $news_id);
         $rev  = null;
 
         if (!$news) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $action = $this->in->getString('action');
 
         if ($action == 'delete') {
             if (!$this->person->PermissionsManager->PublishChecker->canDelete($news)) {
-                return $this->createJsonResponse(array('success' => false));
+                return $this->createJsonResponse(['success' => false]);
             }
         } else {
             if (!$this->person->PermissionsManager->PublishChecker->canEdit($news)) {
-                return $this->createJsonResponse(array('success' => false));
+                return $this->createJsonResponse(['success' => false]);
             }
         }
 
-        $data = array('success' => 1);
+        $data = ['success' => 1];
 
         $this->em->beginTransaction();
 
@@ -174,7 +187,7 @@ class NewsController extends AbstractController
             case 'status':
                 $news['status_code'] = $this->in->getString('status');
                 if ($news['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
-                    $news['status_code'] = 'hidden.validating';
+                    $news['status_code'] = 'hidden.unpublished';
                 }
                 break;
 
@@ -207,15 +220,15 @@ class NewsController extends AbstractController
 
             case 'content':
 
-                $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editnews', $this->person->id);
+                $this->em->getRepository(PersonPref::class)->deletePrefForPersonId('agent.ui.state.editnews', $this->person->id);
 
                 $news['content'] = $this->person->hasPerm('agent_publish.can_insert_html')
-                    ? $this->in->getCleanValue('content', 'string', null, array('noclean' => true))
+                    ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
                     : $this->in->getCleanValue('content', 'html');
 
-                $data['content_html'] = $this->renderView('AgentBundle:News:view-content-tab.html.twig', array(
+                $data['content_html'] = $this->renderView('AgentBundle:News:view-content-tab.html.twig', [
                     'news' => $news,
-                ));
+                ]);
 
                 $rev            = ContentRevisionUtil::findOrCreate($news, 'content', $this->person);
                 $rev['content'] = $news['content'];
@@ -223,7 +236,7 @@ class NewsController extends AbstractController
                 break;
 
             case 'category':
-                $cat                 = $this->em->find('DeskPRO:NewsCategory', $this->in->getUint('category_id'));
+                $cat                 = $this->em->find(NewsCategory::class, $this->in->getUInt('category_id'));
                 $news['category']    = $cat;
                 $data['category_id'] = $cat['id'];
                 break;
@@ -237,7 +250,7 @@ class NewsController extends AbstractController
                 break;
 
             case 'auto-unpub':
-                $date   = date_create('@'.$this->in->getUint('end_timestamp'));
+                $date   = date_create('@'.$this->in->getUInt('end_timestamp'));
                 $action = $this->in->getString('end_action');
 
                 $news->date_end   = $date;
@@ -250,7 +263,7 @@ class NewsController extends AbstractController
                 break;
 
             case 'auto-pub':
-                $date = date_create('@'.$this->in->getUint('pub_timestamp'));
+                $date = date_create('@'.$this->in->getUInt('pub_timestamp'));
 
                 $news->date_published = $date;
                 break;
@@ -278,23 +291,39 @@ class NewsController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-    ############################################################################
-    # Compare revisions
-    ############################################################################
+    public function ajaxGetCategoriesByBrandAction($brand_id)
+    {
+        $categories = $this->getFilteredCategory($brand_id);
+
+        return $this->render('AgentBundle:Common:select-standard.html.twig', [
+            'name'             => 'newnews[category_id]',
+            'id'               => '_cat',
+            'add_classname'    => 'category_id',
+            'add_attr'         => '',
+            'with_blank'       => 0,
+            'blank_title'      => '',
+            'categories'       => $categories,
+            'allow_parent_sel' => true,
+        ]);
+    }
+
+    //###########################################################################
+    // Compare revisions
+    //###########################################################################
 
     public function compareRevisionsAction($rev_old_id, $rev_new_id)
     {
-        $diff_info = ContentRevisionUtil::compareRevisions('DeskPRO:NewsRevision', $rev_old_id, $rev_new_id);
+        $diff_info = ContentRevisionUtil::compareRevisions(NewsRevision::class, $rev_old_id, $rev_new_id);
 
-        return $this->render('AgentBundle:News:compare-revs.html.twig', array(
+        return $this->render('AgentBundle:News:compare-revs.html.twig', [
             'rendered_content_diff' => $diff_info['rendered_content_diff'],
             'rendered_title_diff'   => $diff_info['rendered_title_diff'],
-        ));
+        ]);
     }
 
-    ############################################################################
-    # list
-    ############################################################################
+    //###########################################################################
+    // list
+    //###########################################################################
 
     /**
      * View a list of feedback.
@@ -303,137 +332,166 @@ class NewsController extends AbstractController
     {
         $category = null;
         if ($category_id) {
-            $category = $this->em->find('DeskPRO:NewsCategory', $category_id);
+            /** @var NewsCategory $category */
+            $category = $this->em->find(NewsCategory::class, $category_id);
         }
 
-        $show_all = false;
+        $showAll = false;
         if (!$category) {
-            $show_all = $this->in->getBool('all');
+            $showAll = $this->in->getBool('all');
         }
 
-        $result_helper = NewsResults::newFromRequest($this, array(
+        $resultHelper = NewsResults::newFromRequest($this, [
             'category' => $category,
-            'show_all' => $show_all,
-        ));
+            'show_all' => $showAll,
+        ]);
 
-        $page = $this->in->getUint('p');
+        $page = $this->in->getUInt('p');
         if (!$page) {
             $page = 1;
         }
 
-        $results      = $result_helper->getNewsForPage($page);
-        $result_cache = $result_helper->getResultCache();
+        $results     = $resultHelper->getNewsForPage($page);
+        $resultCache = $resultHelper->getResultCache();
 
-        $total_results = count($result_helper->getNewsIds());
-        $num_pages     = ceil($total_results / 50);
-        $showing_to    = min(($page) * 50, $total_results);
+        $totalResults = count($resultHelper->getNewsIds());
+        $numPages     = ceil($totalResults / 50);
+        $showingTo    = min(($page) * 50, $totalResults);
 
-        $display_fields = $this->person->getPref('agent.ui.news-filter-display-fields.0');
-        if (!$display_fields) {
-            $display_fields = array('author', 'date_created');
+        $displayFields = $this->person->getPref('agent.ui.news-filter-display-fields.0');
+        if (!$displayFields) {
+            $displayFields = ['author', 'date_created'];
         }
 
         $tpl = 'AgentBundle:News:filter.html.twig';
-        if ($this->request->isPartialRequest()) {
+        if (@$_REQUEST['_partial']) {
             $tpl = 'AgentBundle:News:filter-page.html.twig';
         }
 
-        $comment_counts = array();
+        $brandId        = $category->getBrand()->getId();
+        $newsCategories = $this->getFilteredCategory($brandId);
+
+        $commentCounts = [];
         if ($results) {
-            $comment_counts = $this->db->fetchAllKeyValue('
+            $commentCounts = $this->db->fetchAllKeyValue('
                 SELECT article_id, COUNT(*)
                 FROM article_comments
                 WHERE article_id IN (?)
                 GROUP BY article_id
-            ', array(array_keys($results)), array(Connection::PARAM_INT_ARRAY));
+            ', [array_keys($results)], [Connection::PARAM_INT_ARRAY]);
         }
 
-        $cat_usergroups     = array();
-        $cat_structure_data = array();
+        $catUserGroups    = [];
+        $catStructureData = [];
         if ($category) {
-            $cat_usergroups = $this->db->fetchAllCol('
+            $catUserGroups = $this->db->fetchAllCol('
                 SELECT usergroup_id
                 FROM news_category2usergroup
                 WHERE category_id = ?
-            ', array($category->getId()));
+            ', [$category->getId()]);
 
-            $cat_structure_data = $this->em->getRepository('DeskPRO:NewsCategory')->getInHierarchy();
-            $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id', 'title', 'children'), true, true);
-            $cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
-            $cat_structure_data = Arrays::assocToNumericArray($cat_structure_data, 'children');
+            $catStructureData = $newsCategories;
+            $catStructureData = Arrays::removeButKey($catStructureData, ['id', 'title', 'children'], true, true);
+            $catStructureData = Arrays::multiRenameKey($catStructureData, 'title', 'label');
+            $catStructureData = Arrays::assocToNumericArray($catStructureData, 'children');
         }
 
-        return $this->render($tpl, array(
+        return $this->render($tpl, [
             'results'            => $results,
-            'result_id'          => $result_cache['id'],
-            'comment_counts'     => $comment_counts,
-            'display_fields'     => $display_fields,
+            'result_id'          => $resultCache['id'],
+            'comment_counts'     => $commentCounts,
+            'display_fields'     => $displayFields,
             'category'           => $category,
-            'cat_usergroups'     => $cat_usergroups,
-            'cat_structure_data' => $cat_structure_data,
-            'total_results'      => $total_results,
-            'num_pages'          => $num_pages,
+            'cat_usergroups'     => $catUserGroups,
+            'cat_structure_data' => $catStructureData,
+            'total_results'      => $totalResults,
+            'num_pages'          => $numPages,
             'cur_page'           => $page,
-            'showing_to'         => $showing_to,
-        ));
+            'showing_to'         => $showingTo,
+        ]);
     }
 
-    ############################################################################
-    # New news
-    ############################################################################
+    //###########################################################################
+    // New news
+    //###########################################################################
 
     public function newNewsAction()
     {
-        $news_categories = $this->em->getRepository('DeskPRO:NewsCategory')->getInHierarchy();
+        $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
 
-        $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newnews', $this->person->id);
+        $rootCategories = $this->getFilteredCategory($brandId);
 
-        return $this->render('AgentBundle:News:newnews.html.twig', array(
-            'news_categories' => $news_categories,
+        $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newnews', $this->person->id);
+
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
+        return $this->render('AgentBundle:News:newnews.html.twig', [
+            'news_categories' => $rootCategories,
             'state'           => $state,
-        ));
+            'brands'          => $brands,
+        ]);
     }
 
-    public function newNewsSaveAction()
+    public function newNewsSaveAction(Request $request)
     {
-        $newnews = new \Application\AgentBundle\Form\Model\NewNews($this->person);
+        $newNews = new \Application\AgentBundle\Form\Model\NewNews($this->person);
 
         $formType = new \Application\AgentBundle\Form\Type\NewNews();
-        $form     = $this->get('form.factory')->create($formType, $newnews);
+        $form     = $this->get('form.factory')->create($formType, $newNews);
 
-        $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newnews' AND person_id = ?", array($this->person->id));
+        $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newnews' AND person_id = ?", [$this->person->id]);
 
-        if ($this->get('request')->getMethod() == 'POST') {
-            $form->handleRequest($this->get('request'));
+        if ($request->getMethod() == 'POST') {
+            $form->handleRequest($request);
             $form->isValid();
 
             $validator = new \Application\AgentBundle\Validator\NewNewsValidator();
-            if (!$validator->isValid($newnews)) {
-                return $this->createJsonResponse(array(
+            if (!$validator->isValid($newNews)) {
+                return $this->createJsonResponse([
                     'error'       => true,
                     'error_codes' => $validator->getErrorGroups(),
-                ));
+                ]);
             }
-            $newnews->save();
+            $newNews->save();
 
-            $news = $newnews->getNews();
+            $news = $newNews->getNews();
 
-            $rev = ContentRevisionUtil::findOrCreate($news, array('title', 'content'), $this->person);
+            $rev = ContentRevisionUtil::findOrCreate($news, ['title', 'content'], $this->person);
             if ($rev) {
                 $this->em->persist($rev);
                 $this->em->flush();
             }
 
-            $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newnews', $this->person->id);
+            $this->em->getRepository(PersonPref::class)->deletePrefForPersonId('agent.ui.state.newnews', $this->person->id);
 
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'success' => true,
                 'news_id' => $news['id'],
-            ));
+            ]);
         } else {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'success' => false,
-            ));
+            ]);
         }
+    }
+
+    /**
+     * @param $brandId
+     *
+     * @return array
+     */
+    private function getFilteredCategory($brandId)
+    {
+        $unFilteredCategories = $this->em->getRepository(NewsCategory::class)->getInHierarchy();
+
+        $newsCategories = [];
+
+        foreach ($unFilteredCategories as $c) {
+            if ($brandId == $c['brand_id']) {
+                $newsCategories[] = $c;
+            }
+        }
+
+        return $newsCategories;
     }
 }

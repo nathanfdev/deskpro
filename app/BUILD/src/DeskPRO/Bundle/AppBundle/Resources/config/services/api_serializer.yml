@@ -1,0 +1,256 @@
+services:
+
+  # common
+  api_serializer.handler.entity:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\EntityHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.to_string:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\ToStringHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.collection:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\CollectionHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.map:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\MapHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.closure:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\DeferredHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  # entities
+  api_serializer.handler.custom_data:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomDataHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.custom_per_data:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomPerDataHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.contact_data:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ContactDataHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.person:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\PersonHandler
+    arguments:
+      - "@avatar_resolver"
+      - "@data.agent"
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.organization:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\OrganizationHandler
+    arguments:
+      - "@data.chat"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.feedback:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\FeedbackHandler
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.feedback_comment:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\FeedbackCommentHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.news:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\NewsHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.download:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\DownloadHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.article:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\ArticleHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.chat:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ChatConversationHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.department:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\DepartmentHandler
+    arguments:
+      - "@avatar_resolver"
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.task_project:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\TaskProjectHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.task_project_member:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\TaskProjectMemberHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.task_linked_article:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\LinkedItems\TaskLinkedArticleHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.task_linked_chat:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\LinkedItems\TaskLinkedChatHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.task_linked_ticket:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\LinkedItems\TaskLinkedTicketHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.task:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\TaskHandler
+    arguments:
+      - "@doctrine.dbal.default_connection"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.ticket_participant:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketParticipantHandler
+    arguments:
+      - "@data.chat"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.agent_team:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AgentTeamHandler
+    arguments:
+      - "@avatar_resolver"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.ticket:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketHandler
+    arguments:
+      - "@ticket_layout_factory"
+      - "@doctrine.orm.default_entity_manager"
+      - "@form.factory"
+      - "@form_error.form_errors_generator.api"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.agent_alert:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AgentAlertHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.legacy_ticket_filter:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\LegacyTicketFilterHandler
+    arguments:
+      - "@data.ticket_legacy_filter_sets"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.api_token:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ApiTokenHandler
+    arguments:
+      - "@discover_settings_resolver"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.blob:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\BlobHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.text_snippet:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets\TextSnippetHandler
+    arguments:
+      - "@twig_template_renderer"
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.text_snippet_category:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets\TextSnippetCategoryHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.theme_set_asset:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ThemeSetAssetHandler
+    arguments:
+      - "@router"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.usersource:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\UsersourceHandler
+    arguments:
+      - "@router"
+      - "@service_container"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  # listeners and subscribers
+  api_serializer.sideload_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.event_subscriber" }
+
+  api_serializer.deferred_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\DeferredPropertiesListener
+    tags:
+      - { name: "jms_serializer.event_subscriber" }
+
+  api_serializer.ids_only_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\IdsOnlyListener
+    arguments: ["@jms_serializer.metadata_factory"]
+    tags:
+      - { name: "jms_serializer.event_subscriber" }
+
+  api_serializer.agent_client_settings_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\AgentClientInfoSettingsListener
+    arguments:
+      - "@deskpro.app_env"
+      - "@assets.packages"
+    tags:
+      - { name: "jms_serializer.event_subscriber" }
+
+  api_serializer.layout_field_required_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\LayoutFieldRequiredListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_field_settings"
+    tags:
+      - { name: "jms_serializer.event_subscriber" }
+
+  # helpers
+  api_serializer.twig:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Twig\SerializerTwigExtension
+    tags:
+      - { name: twig.extension }
+
+  jms_serializer_cache_warmer:
+    class: DeskPRO\Bundle\AppBundle\CacheWarmer\JmsSerializerCacheWarmer
+    arguments: ["@jms_serializer.metadata_factory"]
+    tags:
+      - { name: 'kernel.cache_warmer' }
+
+parameters:
+  fos_rest.view_handler.default.class: "DeskPRO\Bundle\AppBundle\Serializer\ViewHandler"

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,14 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @property int           $id
@@ -99,24 +101,24 @@ class AppAsset extends DomainObject
      */
     public function getMetadata()
     {
-        return $this->metadata ? $this->metadata : array();
+        return $this->metadata ? $this->metadata : [];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
-        $data             = array();
+        $data             = [];
         $data['id']       = $this->id;
         $data['name']     = $this->name;
         $data['tag']      = $this->tag;
         $data['metadata'] = $this->metadata;
         $data['blob']     = $this->blob->toApiData(false, $deep);
 
-        if ($this->package->native_name && $this->tag && in_array($this->tag, array('js', 'css', 'html', 'res'))) {
-            $data['blob']['download_url'] = App::get('router')->generate('serve_blob_app_asset', array('app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name), true);
-            $data['blob']['relative_url'] = App::get('router')->generate('serve_blob_app_asset', array('app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name), true);
+        if ($this->package->native_name && $this->tag && in_array($this->tag, ['js', 'css', 'html', 'res'])) {
+            $data['blob']['download_url'] = App::get('router')->generate('serve_blob_app_asset', ['app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name], UrlGeneratorInterface::ABSOLUTE_URL);
+            $data['blob']['relative_url'] = App::get('router')->generate('serve_blob_app_asset', ['app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name], UrlGeneratorInterface::ABSOLUTE_PATH);
         } else {
             $data['blob']['download_url'] = $this->blob->getDownloadUrl(true, false);
             $data['blob']['relative_url'] = $this->blob->getDownloadUrl(false, false);
@@ -129,73 +131,77 @@ class AppAsset extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->inheritanceType      = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
         $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType        = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'app_assets',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'name',
             'fieldName'  => 'name',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'tag',
             'fieldName'  => 'tag',
             'type'       => 'string',
             'length'     => 50,
             'nullable'   => true,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'metadata',
             'fieldName'  => 'metadata',
             'type'       => 'json_array',
             'nullable'   => true,
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'package',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppPackage',
             'inversedBy'   => 'assets',
-            'joinColumns'  => array(array(
-                'name'                 => 'package_name',
-                'referencedColumnName' => 'name',
-                'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-                'fetch'                => 'EAGER',
-            )),
-        ));
+            'fetch'        => ClassMetadataInfo::FETCH_LAZY,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'package_name',
+                    'referencedColumnName' => 'name',
+                    'nullable'             => true,
+                    'onDelete'             => 'CASCADE',
+                ],
+            ],
+        ]);
 
-        $metadata->mapOneToOne(array(
+        $metadata->mapOneToOne([
             'fieldName'    => 'blob',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
-            'joinColumns'  => array(array(
-                'name'                 => 'blob_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-                'fetch'                => 'EAGER',
-            )),
-        ));
+            'fetch'        => ClassMetadataInfo::FETCH_EAGER,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'blob_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'CASCADE',
+                ],
+            ],
+        ]);
     }
 }

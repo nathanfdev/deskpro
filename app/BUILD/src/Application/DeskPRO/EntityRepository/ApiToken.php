@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -69,7 +70,7 @@ class ApiToken extends AbstractEntityRepository
             SELECT t
             FROM DeskPRO:ApiToken t
             WHERE t.person = ?0 AND t.scope = 'client'
-        ")->setParameters(array($person))->getOneOrNullResult();
+        ")->setParameters([$person])->setMaxResults(1)->getOneOrNullResult();
     }
 
     public function getRateLimitInfo(\Application\DeskPRO\Entity\ApiToken $api_token)
@@ -78,22 +79,22 @@ class ApiToken extends AbstractEntityRepository
             SELECT *
             FROM api_token_rate_limit
             WHERE api_token_id = ?
-        ', array($api_token->id));
+        ', [$api_token->id]);
 
         if ($rate_limit && $rate_limit['reset_stamp'] <= time()) {
-            App::getDb()->delete('api_token_rate_limit', array(
+            App::getDb()->delete('api_token_rate_limit', [
                 'api_token_id' => $api_token->id,
-            ));
+            ]);
         }
 
         $interval = (int) App::getSetting('core.api_rate_limit_interval');
         if (!$rate_limit || $rate_limit['reset_stamp'] <= time()) {
-            $rate_limit = array(
+            $rate_limit = [
                 'api_token_id'  => $api_token->id,
                 'hits'          => 0,
                 'created_stamp' => time(),
                 'reset_stamp'   => time() + $interval,
-            );
+            ];
         }
 
         return $rate_limit;
@@ -110,6 +111,6 @@ class ApiToken extends AbstractEntityRepository
             VALUES
                 (?, 1, ?, ?)
             ON DUPLICATE KEY UPDATE hits = hits + 1
-        ', array($api_token->id, $time, $time + $interval));
+        ', [$api_token->id, $time, $time + $interval]);
     }
 }

@@ -11,11 +11,11 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
 
 {% endblock pagemeta %}
 {% block pane_header %}
-	<h1><i class="icon-dp-chat"></i> {{ phrase('agent.userchat.list_title', {count: total}) }}</h1></h1>
+	<h1><i class="icon-dp-chat"></i> {{ phrase('agent.userchat.list_title', {count: convos|length}) }}</h1></h1>
 {% endblock %}
 {% block listing %}
 {% if convos|length %}
-<section class="search-reuslts page-set" data-page="{{ page }}">
+<section class="search-results page-set" data-page="{{ page }}">
 	{% for convo in convos %}
 		<article
 			class="row-item convo-{{ convo.id }} without-selection"

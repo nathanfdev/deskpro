@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Fetches mail from a pop3 server.
@@ -53,12 +54,12 @@ class Pop3 extends AbstractFetcher
     /**
      * @var array
      */
-    protected $message_list_ids = array();
+    protected $message_list_ids = [];
 
     /**
      * @var array
      */
-    protected $message_files = array();
+    protected $message_files = [];
 
     /**
      * The size in bytes a message must be before the "memory protection"
@@ -79,7 +80,7 @@ class Pop3 extends AbstractFetcher
      *
      * @var array
      */
-    protected $backup_file = array();
+    protected $backup_file = [];
 
     public function init()
     {
@@ -93,7 +94,7 @@ class Pop3 extends AbstractFetcher
      */
     protected function _initConnection()
     {
-        $options = array();
+        $options = [];
 
         $incoming_account = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
 
@@ -213,11 +214,11 @@ class Pop3 extends AbstractFetcher
                 $this->logger->log("Email account does not support unique but keep_read is enabled. Capabilities: $capas", 'debug');
 
                 $e                      = new \InvalidArgumentException('Email account does not support uniqueid');
-                $einfo                  = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+                $einfo                  = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
                 $einfo['no_send_error'] = true;
-                \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+                \DpSys\LowError\SystemErrorHandler::logErrorInfo($einfo);
 
-                $this->message_list = array();
+                $this->message_list = [];
 
                 return;
             }
@@ -228,12 +229,12 @@ class Pop3 extends AbstractFetcher
 
             if (count($id_to_num) > 2500) {
                 $this->logger->log('Server has >= 2500 messages, breaking', 'ERR');
-                $this->message_list = array();
+                $this->message_list = [];
 
                 $e                      = new \InvalidArgumentException("POP3 server has >= 2500 messages and 'keep read' setting is enbaled. Clean out old messages and try again.");
-                $einfo                  = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+                $einfo                  = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
                 $einfo['no_send_error'] = true;
-                \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+                \DpSys\LowError\SystemErrorHandler::logErrorInfo($einfo);
 
                 return;
             }
@@ -242,7 +243,7 @@ class Pop3 extends AbstractFetcher
                 SELECT id
                 FROM email_uids
                 WHERE email_account_id = ?
-            ', array($this->account->getId()));
+            ', [$this->account->getId()]);
 
             $this->logger->log('System has '.count($read_ids).' tracked IDs', 'debug');
 
@@ -257,10 +258,10 @@ class Pop3 extends AbstractFetcher
 
             $list = $this->getStorage()->getSize();
 
-            $this->message_list = array();
+            $this->message_list = [];
             foreach ($list as $num => $size) {
                 if (isset($this->message_list_ids[$num])) {
-                    $this->message_list[] = array('num' => $num, 'size' => $size, 'uid' => $this->message_list_ids[$num]);
+                    $this->message_list[] = ['num' => $num, 'size' => $size, 'uid' => $this->message_list_ids[$num]];
                 }
             }
 
@@ -268,9 +269,9 @@ class Pop3 extends AbstractFetcher
         } else {
             $list = $this->getStorage()->getSize();
 
-            $this->message_list = array();
+            $this->message_list = [];
             foreach ($list as $num => $size) {
-                $this->message_list[] = array('num' => $num, 'size' => $size, 'uid' => null);
+                $this->message_list[] = ['num' => $num, 'size' => $size, 'uid' => null];
             }
 
             $this->logger->log('Message list contains '.count($this->message_list).' messages', 'debug');
@@ -345,7 +346,7 @@ class Pop3 extends AbstractFetcher
                 } else {
                     $memory_protection = false;
                     $e                 = new \RuntimeException("Could not save email backup file to {$raw_message->content_file}");
-                    KernelErrorHandler::logException($e, false);
+                    SystemErrorHandler::logException($e, false);
                 }
 
                 $this->logger->logInfo('Message source saved to: '.$content_file);

@@ -51,6 +51,12 @@
 				<td class="{{field}}">
 					{{ticket.person.display_name}}
 				</td>
+			{% elseif field == 'brand' %}
+				<td class="{{field}}">
+					<span class="prop-val brand_id" data-prop-value="{{ticket.brand.id}}">
+						{{ticket.brand.name}}
+					</span>
+				</td>
 			{% elseif field == 'department' %}
 				<td class="{{field}}">
 					<span class="prop-val department_id" data-prop-value="{{ticket.department.id}}">

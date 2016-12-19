@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -46,7 +47,7 @@ class TicketFlagged extends AbstractEntityRepository
             SELECT color
             FROM tickets_flagged
             WHERE ticket_id = ? AND person_id = ?
-        ', array($ticket->id, $person->id));
+        ', [$ticket->id, $person->id]);
 
         return $color;
     }
@@ -56,24 +57,29 @@ class TicketFlagged extends AbstractEntityRepository
         $ids = Arrays::flattenToIndex($tickets, 'id');
 
         if (!$ids) {
-            return array();
+            return [];
         }
 
         return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
             SELECT ticket_id, color
             FROM tickets_flagged
             WHERE ticket_id IN(?) AND person_id = ?
-        ', array($ids, $person['id']), array(Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT));
+        ', [$ids, $person['id']], [Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT]);
     }
 
     public function getCountsForPerson(Entity\Person $person)
     {
+        $person->loadHelper('Agent');
+        $person->loadHelper('AgentTeam');
+        $person->loadHelper('AgentPermissions');
+        $person->loadHelper('PermissionsManager');
+
         $assigned_perm_part = "tickets.agent_id = {$person['id']}";
         if ($person->getAgentTeamIds()) {
             $assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (".implode(',', $person->getAgentTeamIds()).'))';
         }
 
-        $where_perm = array();
+        $where_perm = [];
 
         if ($person->getDisallowedDepartments()) {
             $where_perm[] = '(tickets.department_id NOT IN ('.implode(',', $person->getDisallowedDepartments()).") OR tickets.department_id IS NULL OR $assigned_perm_part)";
@@ -84,7 +90,7 @@ class TicketFlagged extends AbstractEntityRepository
         }
 
         if (!$person->hasPerm('agent_tickets.view_others')) {
-            $part   = array();
+            $part   = [];
             $part[] = "tickets.agent_id = {$person['id']}";
             if ($person->getAgentTeamIds()) {
                 $part[] = 'tickets.agent_team_id IN ('.implode(',', $person->getAgentTeamIds()).')';
@@ -108,6 +114,6 @@ class TicketFlagged extends AbstractEntityRepository
             LEFT JOIN tickets ON (tickets.id = tickets_flagged.ticket_id)
             WHERE tickets_flagged.person_id = ? AND tickets.status != 'hidden' AND $where_perm
             GROUP BY tickets_flagged.color
-        ", array($person['id']));
+        ", [$person['id']]);
     }
 }

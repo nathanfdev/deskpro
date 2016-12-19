@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -46,13 +47,13 @@ class PersonEmail extends AbstractEntityRepository
                 SELECT e
                 FROM DeskPRO:PersonEmail e
                 WHERE e.email = ?1
-            ')->setLockMode(LockMode::PESSIMISTIC_READ)->setParameters(array(1 => $email_address))->setMaxResults(1)->getOneOrNullResult();
+            ')->setLockMode(LockMode::PESSIMISTIC_READ)->setParameters([1 => $email_address])->setMaxResults(1)->getOneOrNullResult();
         } else {
             return $this->getEntityManager()->createQuery('
                 SELECT e
                 FROM DeskPRO:PersonEmail e
                 WHERE e.email = ?1
-            ')->setParameters(array(1 => $email_address))->setMaxResults(1)->getOneOrNullResult();
+            ')->setParameters([1 => $email_address])->setMaxResults(1)->getOneOrNullResult();
         }
     }
 
@@ -67,7 +68,7 @@ class PersonEmail extends AbstractEntityRepository
     {
         $single = false;
         if (!is_array($domains)) {
-            $domains = array($domains);
+            $domains = [$domains];
             $single  = true;
         }
 
@@ -87,7 +88,7 @@ class PersonEmail extends AbstractEntityRepository
             FROM email_domain
             WHERE email_domain IN (?)
             GROUP BY email_domain
-        ', array($domains), array(Connection::PARAM_STR_ARRAY)));
+        ', [$domains], [Connection::PARAM_STR_ARRAY]));
 
         if ($single) {
             return array_pop($results);
@@ -100,7 +101,8 @@ class PersonEmail extends AbstractEntityRepository
      * Count the number of email addresses at one or more emails where the user belongs to a company
      * that isnt this one.
      *
-     * @param array|string $domains
+     * @param array|string     $domains
+     * @param int|Organization $org
      *
      * @return array|int
      */
@@ -112,12 +114,12 @@ class PersonEmail extends AbstractEntityRepository
             if (!is_array($domains)) {
                 return 0;
             } else {
-                return array();
+                return [];
             }
         }
 
         if (!is_array($domains)) {
-            $domains = array($domains);
+            $domains = [$domains];
             $single  = true;
         }
 
@@ -131,7 +133,7 @@ class PersonEmail extends AbstractEntityRepository
             JOIN people ON (people.id = people_emails.person_id)
             WHERE people_emails.email_domain IN (?) AND people.organization_id != ? AND people.organization_id IS NOT NULL
             GROUP BY people_emails.email_domain
-        ', array($domains, $org), array(Connection::PARAM_STR_ARRAY, \PDO::PARAM_INT)));
+        ', [$domains, $org], [Connection::PARAM_STR_ARRAY, \PDO::PARAM_INT]));
 
         if ($single) {
             return array_pop($results);
@@ -154,13 +156,13 @@ class PersonEmail extends AbstractEntityRepository
             if (!is_array($domains)) {
                 return 0;
             } else {
-                return array();
+                return [];
             }
         }
 
         $single = false;
         if (!is_array($domains)) {
-            $domains = array($domains);
+            $domains = [$domains];
             $single  = true;
         }
 
@@ -168,7 +170,7 @@ class PersonEmail extends AbstractEntityRepository
         $results = array_combine($domains, array_fill(0, count($domains), 0));
 
         if (!$domains) {
-            if ($is_single) {
+            if ($single) {
                 return 0;
             } else {
                 return $results;
@@ -196,7 +198,55 @@ class PersonEmail extends AbstractEntityRepository
     {
         return $this->_em->getConnection()->fetchAll(
             sprintf('select id, email from %s where email like :email limit %d', $this->getTableName(), $limit),
-            array('email' => '%'.mb_strtolower($query).'%')
+            ['email' => '%'.mb_strtolower($query).'%']
         );
+    }
+
+    /**
+     * @param string $term
+     * @param int    $limit
+     *
+     * @return array
+     */
+    public function searchUserEmails($term, $limit = 10)
+    {
+        $qb = $this->createQueryBuilder('pe');
+        $qb
+            ->select('pe.email')
+            ->join('pe.person', 'p')
+            ->where('pe.email LIKE :term AND p.is_user = true AND p.is_agent = false')
+            ->setParameter('term', "$term%")
+            ->setMaxResults($limit);
+
+        $result = $qb->getQuery()->getResult();
+        foreach ($result as &$record) {
+            $record = $record['email'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $term
+     * @param int    $limit
+     *
+     * @return array
+     */
+    public function searchAgentEmails($term, $limit = 10)
+    {
+        $qb = $this->createQueryBuilder('pe');
+        $qb
+            ->select('pe.email')
+            ->join('pe.person', 'p')
+            ->where('pe.email LIKE :term AND p.is_agent = true')
+            ->setParameter('term', "$term%")
+            ->setMaxResults($limit);
+
+        $result = $qb->getQuery()->getResult();
+        foreach ($result as &$record) {
+            $record = $record['email'];
+        }
+
+        return $result;
     }
 }

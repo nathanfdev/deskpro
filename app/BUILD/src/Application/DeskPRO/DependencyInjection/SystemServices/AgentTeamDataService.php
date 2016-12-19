@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -42,12 +43,12 @@ class AgentTeamDataService
     /**
      * @var \Application\DeskPRO\Entity\AgentTeam[]
      */
-    public $agent_teams = array();
+    public $agent_teams = [];
 
     /**
      * @var int[]
      */
-    public $ids = array();
+    public $ids = [];
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -101,7 +102,7 @@ class AgentTeamDataService
      */
     public function getNames(array $for_ids = null)
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($this->getTeams() as $a) {
             if ($for_ids === null || in_array($a->getId(), $for_ids)) {
@@ -123,7 +124,9 @@ class AgentTeamDataService
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\Person
+     * @param int $id
+     *
+     * @return \Application\DeskPRO\Entity\AgentTeam
      */
     public function get($id)
     {
@@ -140,6 +143,6 @@ class AgentTeamDataService
     {
         $repos = $this->em->getRepository('DeskPRO:AgentTeam');
 
-        return call_user_func_array(array($repos, $name), $args);
+        return call_user_func_array([$repos, $name], $args);
     }
 }

@@ -1,0 +1,167 @@
+$border-color: #eaeaea;
+$pagination-major-color: #62ad8c;
+
+.dpw--pagination {
+  background: #fbfbfb;
+  color: #8c8c8c;
+  padding: 20px;
+  text-align: center;
+  font-size: 11px;
+
+  a { text-decoration: none; }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  // Main List
+  ul.pages-list {
+    display: inline-block;
+    max-height: 180px;
+
+    > li {
+      display: inline-block;
+      text-align: center;
+      margin: 0 3px;
+      height: 26px;
+      vertical-align: bottom;
+
+      > a {
+        display: block;
+        min-width: 26px;
+        padding-left: 4px;
+        padding-right: 4px;
+        height: 26px;
+        font-weight: bold;
+        color: inherit;
+        border: 1px solid $border-color;
+        border-radius: 2px;
+        padding-top: 5px;
+        background: #fff;
+      }
+
+      a.current-page {
+        border: 1px solid $pagination-major-color;
+        color: #62ad8c;
+        position: relative;
+
+        i {
+          margin-left: 3px;
+          margin-right: 3px;
+          top: 1px;
+          color: #8c8c8c;
+        }
+
+        &:hover i { color: #fff; }
+      }
+
+
+      // When the dropdown is active (expanded), keep the button green and add a pointy bit
+      a.current-page.active {
+        position: relative;
+        background: $pagination-major-color;
+        color: #fff;
+
+        i { color: #fff; }
+
+        &:after {
+          content: "";
+          display: block;
+          position: absolute;
+          bottom: -8px;
+          left: 40%;
+          width: 0;
+          height: 0;
+          border: 4px solid rgba(0, 0, 0, 0);
+          border-top: 4px solid $pagination-major-color;
+        }
+      }
+
+      // Add a top class if the dropdown does not fit the page (because it's too close to the bottom)
+      // Will need to also add .top to .pagination-dropdown
+      a.current-page.active.top {
+        &:after {
+          top: -8px;
+          border: 4px solid rgba(0, 0, 0, 0);
+          border-bottom: 4px solid $pagination-major-color;
+        }
+      }
+
+      > a:hover {
+        border: 1px solid $pagination-major-color;
+        background: $pagination-major-color;
+        color: #fff;
+      }
+
+      a i {
+        line-height: 11px;
+        position: relative;
+        top: 2px;
+      }
+    }
+
+    hr {
+      width: 1px;
+      height: 26px;
+      background: $border-color;
+      border: 0;
+      margin: 0;
+      padding: 0;
+      display: block;
+    }
+
+    .pagination-dots {
+      position: relative;
+      top: 4px;
+    }
+
+    a.grey { color: #c3c3c3; }
+    a.greyer { color: #e3e3e3; }
+    li.current-page { position: relative; }
+  }
+
+
+  // Page jump dropdown
+  div.pagination-dropdown {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    width: 36px;
+    max-height: 180px;
+    padding: 2px 5px;
+    overflow-y: scroll;
+    background: #fff;
+    border: 1px solid $border-color;
+    border-radius: 2px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+    text-align: left;
+
+    &.top {
+      top: initial;
+      bottom: 35px;
+    }
+
+    ul {
+      display: block;
+      background: #fff;
+    }
+
+    a {
+      font-weight: bold;
+      color: inherit;
+      display: block;
+      margin: 4px 0;
+    }
+
+    a:hover {
+      color: #333;
+    }
+
+    // Current page
+    a.active {
+      color: $pagination-major-color;
+    }
+  }
+}

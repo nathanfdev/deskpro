@@ -1,0 +1,108 @@
+%clearfix:after {
+  clear: both;
+  content: "";
+  display: table;
+}
+
+
+@mixin blank-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@mixin placeholder {
+  $placeholders: ":-webkit-input" ":-moz" "-moz" "-ms-input";
+  @each $placeholder in $placeholders {
+    &:#{$placeholder}-placeholder {
+      @content;
+    }
+  }
+}
+
+// Generate some pointy corners
+@mixin add-corner($border-size, $border-color, $position, $direction, $hover:"") {
+
+  &:before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: $border-size solid rgba(0, 0, 0, 0.0);
+    top: initial;
+    bottom: initial;
+
+    @if $direction == "left" {
+      border-right: $border-size solid $border-color;
+      left: $border-size * -2;
+
+      @if $position == "middle" {
+        top: 50%;
+        margin-top: $border-size * -1;
+      }
+      @else {
+        top: $position;
+      }
+    }
+
+    @if $direction == "right" {
+      border-left: $border-size solid $border-color;
+      right: $border-size * -2;
+
+      @if $position == "middle" {
+        top: 50%;
+        margin-top: $border-size * -1;
+      }
+      @else {
+        top: $position;
+      }
+    }
+
+    @if $direction == "top" {
+      border-bottom: $border-size solid $border-color;
+      top: $border-size * -2;
+
+      @if $position == "middle" {
+        left: 50%;
+        margin-left: $border-size * -1;
+      }
+      @else {
+        left: $position;
+      }
+    }
+
+    @if $direction == "bottom" {
+      border-top: $border-size solid $border-color;
+      bottom: $border-size * -2;
+
+      @if $position == "middle" {
+        left: 50%;
+        margin-left: $border-size * -1;
+      }
+      @else {
+        left: $position;
+      }
+    }
+  }
+
+  // Sometimes we need a mouse hover color
+  @if $hover == "" { }
+  @else {
+    &:hover {
+      &:before {
+        @if $direction == "top" { border-bottom-color: $hover; }
+        @else if $direction == "bottom" { border-top-color: $hover; }
+        @else if $direction == "left" { border-right-color: $hover; }
+        @else if $direction == "right" { border-left-color: $hover; }
+      }
+    }
+  }
+}
+
+$break-small: 1000px;
+@mixin respond-to($media) {
+  @if $media == mobile {
+    @media screen and (max-width: $break-small) { @content; }
+  }
+}

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Auth
  */
+
 namespace Orb\Auth\Adapter;
 
 use Orb\Auth\Identity;
@@ -41,16 +42,25 @@ use Orb\Util\Strings;
 
 class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInterface
 {
-    const OPT_HOST              = 'host';
-    const OPT_PORT              = 'port';
-    const OPT_TLS               = 'useStartTls';
-    const OPT_SSL               = 'useSsl';
-    const OPT_BASE_DN           = 'baseDn';
-    const OPT_DOMAIN_NAME       = 'accountDomainName';
+    const OPT_HOST = 'host';
+
+    const OPT_PORT = 'port';
+
+    const OPT_TLS = 'useStartTls';
+
+    const OPT_SSL = 'useSsl';
+
+    const OPT_BASE_DN = 'baseDn';
+
+    const OPT_DOMAIN_NAME = 'accountDomainName';
+
     const OPT_DOMAIN_NAME_SHORT = 'accountDomainNameShort';
-    const OPT_FILTER_FORMAT     = 'accountFilterFormat';
-    const OPT_LOOKUP_USERNAME   = 'username';
-    const OPT_LOOKUP_PASSWORD   = 'password';
+
+    const OPT_FILTER_FORMAT = 'accountFilterFormat';
+
+    const OPT_LOOKUP_USERNAME = 'username';
+
+    const OPT_LOOKUP_PASSWORD = 'password';
 
     /**
      * @var \Orb\Log\Logger
@@ -69,7 +79,7 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
     /**
      * @var array
      */
-    protected $options = array(
+    protected $options = [
         self::OPT_HOST              => 'localhost',
         self::OPT_PORT              => null, // null means default of 389 or 636 if ssl enabled
         self::OPT_TLS               => false,
@@ -80,7 +90,7 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
         self::OPT_FILTER_FORMAT     => false,
         self::OPT_LOOKUP_USERNAME   => null,
         self::OPT_LOOKUP_PASSWORD   => null,
-    );
+    ];
 
     public function __construct(array $options)
     {
@@ -103,19 +113,35 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
      */
     public function getZendAuthAdapter()
     {
-        $options = array();
-        foreach (array('host', 'port', 'useStartTls', 'useSsl', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountDomainName', 'accountDomainNameShort', 'accountCanonicalForm') as $k) {
+        $options = [];
+        foreach (
+            [
+                'host',
+                'port',
+                'useStartTls',
+                'useSsl',
+                'baseDn',
+                'username',
+                'password',
+                'accountFilterFormat',
+                'accountDomainName',
+                'accountDomainNameShort',
+                'accountCanonicalForm',
+            ] as $k) {
             if (isset($this->options[$k]) && $this->options[$k]) {
                 $options[$k] = $this->options[$k];
             }
         }
 
-        $auth = new \Zend\Authentication\Adapter\Ldap(array($options), $this->set_username, $this->set_password);
+        $auth = new \Zend\Authentication\Adapter\Ldap([$options], $this->set_username, $this->set_password);
 
         if (!empty($this->options['ldapClass'])) {
             $class = $this->options['ldapClass'];
             $ldap  = new $class();
             $auth->setLdap($ldap);
+
+            // setLdap resets options (why?!), so we need to reset it back
+            $auth->setOptions([$options]);
         }
 
         return $auth;
@@ -193,7 +219,7 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
                 $auth->authenticate();
             } catch (\Exception $e) {
             }
-            $raw_info = array();
+            $raw_info = [];
             /** @var $ldap \Zend\Ldap\Ldap */
             $ldap = $auth->getLdap();
             $dn   = $ldap->getCanonicalAccountName($provided_dn, \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
@@ -287,14 +313,14 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
                 $this->logger->logDebug('No username provided');
             }
 
-            return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));
+            return new Result(Result::FAILURE, null, ['error_code' => 'missing_input_username', 'error_message' => 'No username provided']);
         }
         if (!$this->set_password) {
             if ($this->logger) {
                 $this->logger->logDebug('No password provided');
             }
 
-            return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_password', 'error_message' => 'No password provided'));
+            return new Result(Result::FAILURE, null, ['error_code' => 'missing_input_password', 'error_message' => 'No password provided']);
         }
 
         $time_start = microtime(true);
@@ -314,7 +340,7 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
                 $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}", Logger::ERR);
             }
 
-            return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
+            return new Result(Result::FAILURE_EXCEPTION, null, ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]);
         }
 
         if ($this->logger) {
@@ -326,10 +352,10 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
         }
 
         if (!$result->isValid()) {
-            return new Result(Result::FAILURE_INVALID_CREDS, null, array('error_code' => 'invalid_credentials', 'error_message' => 'Invalid username or password'));
+            return new Result(Result::FAILURE_INVALID_CREDS, null, ['error_code' => 'invalid_credentials', 'error_message' => 'Invalid username or password']);
         }
 
-        $raw_info                      = array();
+        $raw_info                      = [];
         $raw_info['identity_friendly'] = $result->getIdentity();
 
         try {
@@ -341,7 +367,7 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
                 $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}", Logger::ERR);
             }
 
-            return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
+            return new Result(Result::FAILURE_EXCEPTION, null, ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]);
         }
     }
 

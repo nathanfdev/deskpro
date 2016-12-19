@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\Entity\Person;
@@ -66,15 +67,13 @@ class Purger implements PersonContextInterface
         $this->db     = $em->getConnection();
     }
 
-    /**
-     */
     public function purge()
     {
         $this->db->beginTransaction();
         try {
             $this->purgeTickets();
 
-            $this->db->delete('people', array('id' => $this->person->getId()));
+            $this->db->delete('people', ['id' => $this->person->getId()]);
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
@@ -87,9 +86,9 @@ class Purger implements PersonContextInterface
      */
     public function purgeTickets()
     {
-        #------------------------------
-        # Clean up their messages
-        #------------------------------
+        //------------------------------
+        // Clean up their messages
+        //------------------------------
 
         // This fixes ticket messages becoming written by a null author
         // when the original account is deleted but the ticket remains
@@ -102,27 +101,28 @@ class Purger implements PersonContextInterface
                 JOIN tickets ON (tickets.id = tickets_messages.ticket_id)
             SET tickets_messages.person_id = tickets.person_id, tickets_messages.message = CONCAT(?, tickets_messages.message)
             WHERE tickets.person_id != ? AND tickets_messages.person_id = ?
-        ', array($orig_author_line, $this->person->id, $this->person->id));
+        ', [$orig_author_line, $this->person->id, $this->person->id]);
 
-        #------------------------------
-        # Fetch ticket IDs
-        #------------------------------
+        //------------------------------
+        // Fetch ticket IDs
+        //------------------------------
 
         $ticket_ids = $this->db->fetchAllCol('
             SELECT id FROM tickets WHERE person_id = ?
-        ', array($this->person->getId()));
+        ', [$this->person->getId()]);
 
-        #------------------------------
-        # Attachments
-        #------------------------------
+        //------------------------------
+        // Attachments and links
+        //------------------------------
 
         foreach ($ticket_ids as $ticket_id) {
             TicketUtil::deleteTicketAttachments($ticket_id, $this->db);
+            $this->db->executeUpdate('delete from task_links where ticket_id = :ticket_id', ['ticket_id' => $ticket_id]);
         }
 
-        #------------------------------
-        # Insert delete logs
-        #------------------------------
+        //------------------------------
+        // Insert delete logs
+        //------------------------------
 
         $by_person_id = null;
         if ($this->person_context) {
@@ -132,21 +132,21 @@ class Purger implements PersonContextInterface
         $date_str   = date('Y-m-d H:i:s');
         $reason_str = 'User was deleted';
 
-        $inserts = array();
+        $inserts = [];
 
         foreach ($ticket_ids as $ticket_id) {
-            $inserts[] = array('ticket_id' => $ticket_id, 'by_person_id' => $by_person_id, 'new_ticket_id' => 0, 'date_created' => $date_str, 'reason' => $reason_str);
+            $inserts[] = ['ticket_id' => $ticket_id, 'by_person_id' => $by_person_id, 'new_ticket_id' => 0, 'date_created' => $date_str, 'reason' => $reason_str];
         }
 
         if ($inserts) {
             $this->db->batchInsert('tickets_deleted', $inserts, true);
         }
 
-        #------------------------------
-        # Clear out the search tables
-        #------------------------------
+        //------------------------------
+        // Clear out the search tables
+        //------------------------------
 
-        $this->db->delete('tickets_search_active', array('person_id' => $this->person->getId()));
+        $this->db->delete('tickets_search_active', ['person_id' => $this->person->getId()]);
     }
 
     /**

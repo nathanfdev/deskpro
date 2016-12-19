@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,17 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Twig;
 
 use Application\DeskPRO\Twig\Loader\HybridLoader;
-use DeskPRO\Kernel\KernelErrorHandler;
 
 class Environment extends \Twig_Environment
 {
-    /** @var bool  */
+    /** @var bool */
     protected $ext_dirty = false;
 
-    public function __construct(\Twig_LoaderInterface $loader = null, $options = array())
+    public function __construct(\Twig_LoaderInterface $loader = null, $options = [])
     {
         static $has_done = false;
 
@@ -52,7 +52,10 @@ class Environment extends \Twig_Environment
         }
 
         if (!$has_done) {
-            stream_wrapper_register('dptpl', 'Application\\DeskPRO\\Twig\\Loader\\DbStreamWrapper', 0);
+            if (!in_array('dptpl', stream_get_wrappers())) {
+                stream_wrapper_register('dptpl', 'Application\\DeskPRO\\Twig\\Loader\\DbStreamWrapper', 0);
+                $has_done = true;
+            }
             $has_done = true;
         }
 
@@ -79,8 +82,8 @@ class Environment extends \Twig_Environment
         if ($this->ext_dirty) {
             $this->ext_dirty = false;
 
-            $set_ext    = array();
-            $append_ext = array();
+            $set_ext    = [];
+            $append_ext = [];
 
             foreach ($this->extensions as $k => $ext) {
                 if ($ext instanceof \Application\DeskPRO\Twig\Extension\TemplatingExtension || $ext instanceof \Application\UserBundle\Twig\Extension\UserTemplatingExtension) {
@@ -108,9 +111,9 @@ class Environment extends \Twig_Environment
             try {
                 return $this->doLoadTemplate($name, $index);
             } catch (\Exception $e) {
-                $errinfo                  = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+                $errinfo                  = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
                 $errinfo['no_send_error'] = true;
-                \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($errinfo);
+                \DpSys\LowError\SystemErrorHandler::logErrorInfo($errinfo);
 
                 $this->markCustomTemplateAsCrashed($name_str);
 
@@ -122,7 +125,7 @@ class Environment extends \Twig_Environment
     private function doLoadTemplate($name, $index = null)
     {
         if (!isset($GLOBALS['DP_RENDERED_TEMPLATES'])) {
-            $GLOBALS['DP_RENDERED_TEMPLATES'] = array();
+            $GLOBALS['DP_RENDERED_TEMPLATES'] = [];
         }
 
         $GLOBALS['DP_RENDERED_TEMPLATES'][(string) $name] = true;
@@ -155,17 +158,6 @@ class Environment extends \Twig_Environment
                             if (!isset($GLOBALS['DP_NOLOG_TPL_CACHE_ERR']) || !$GLOBALS['DP_NOLOG_TPL_CACHE_ERR']) {
                                 // Fallback on just evalling the template so everything
                                 $prev = null;
-                                if ($e) {
-                                    $prev = $e;
-                                }
-
-                                $name_str = (string) $name;
-                                if (preg_match('#^(UserBundle|AgentBundle|DeskPRO|InstallBundle|ReportInterfaceBundle|CloudAdminBundle):#', $name_str)) {
-                                    if (defined('DP_BUILD_NUM') && !defined('DP_BUILDING')) {
-                                        $e = new \Exception("IMPORTANT: Could not write twig template file for template $name. You should re-download the DeskPRO source files. Contact support@deskpro.com for assistance.", 0, $prev);
-                                        KernelErrorHandler::logException($e, false, 'twig_write_failed');
-                                    }
-                                }
                             }
 
                             $source = $this->compileSource($this->loader->getSource($name), $name);
@@ -219,7 +211,9 @@ class Environment extends \Twig_Environment
     public function getCacheFilename($name)
     {
         if (!($this->loader instanceof HybridLoader) || !$this->loader->dbHasTemplate($name)) {
-            return parent::getCacheFilename($name);
+            $key = $this->cache->generateKey($name, $this->getTemplateClass($name));
+
+            return !$key ? false : $key;
         }
 
         return 'dptpl://load/'.$name;
@@ -242,14 +236,14 @@ class Environment extends \Twig_Environment
      *
      * @return null|string
      */
-    public function renderStringTemplate($template_code, array $vars = array())
+    public function renderStringTemplate($template_code, array $vars = [])
     {
         $old_loader = $this->getLoader();
         $old_cache  = $this->getCache();
 
-        $arr_loader = new \Twig_Loader_Array(array(
+        $arr_loader = new \Twig_Loader_Array([
             'template' => $template_code,
-        ));
+        ]);
 
         $this->setLoader($arr_loader);
         $this->setCache(false);

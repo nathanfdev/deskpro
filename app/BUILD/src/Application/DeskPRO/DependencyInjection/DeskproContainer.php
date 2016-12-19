@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,13 +31,17 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\App\AgentAppPermissions;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * This is an extension to the DI container that knows how to initialize
@@ -50,19 +54,19 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class DeskproContainer extends Container
 {
     /**
-     * @var \DeskPRO\Kernel\AbstractKernel
+     * @var \DpSys\Kernel\AbstractKernel
      */
     public $kernel;
 
     /**
      * @var array
      */
-    protected $system_services = array();
+    protected $system_services = [];
 
     /**
      * @var array
      */
-    protected $db_read_conns = array();
+    protected $db_read_conns = [];
 
     /**
      * @var AgentAppPermissions
@@ -70,7 +74,7 @@ class DeskproContainer extends Container
     protected $agent_app_perms;
 
     /**
-     * @return \DeskPRO\Kernel\AbstractKernel
+     * @return \DpSys\Kernel\AbstractKernel
      */
     public function getKernel()
     {
@@ -90,7 +94,9 @@ class DeskproContainer extends Container
      */
     public function isDebug()
     {
-        return $this->kernel ? $this->kernel->getEnvironment() == 'dev' : true;
+        //return $this->kernel ? $this->kernel->getEnvironment() == 'dev' : true;
+        // TODO: after we remove agent interface, use the commented line instead
+        return $this->kernel ? in_array($this->kernel->getEnvironment(), ['dev_old_agent', 'dev']) : true;
     }
 
     /**
@@ -99,22 +105,6 @@ class DeskproContainer extends Container
     public function getEnvironment()
     {
         return $this->kernel ? $this->kernel->getEnvironment() : 'dev';
-    }
-
-    /**
-     * Checks if a service has been initialized.
-     *
-     * has() checks if a service has been initialized OR if it has a definition to create it.
-     * This just checks if a service has been initialized. You use this when you want to see
-     * if a certain service has been created already, and you'd use has() to see if a service can be used.
-     *
-     * @param $id
-     *
-     * @return bool
-     */
-    public function isServiceInitialized($id)
-    {
-        return isset($this->services[$id]);
     }
 
     /**
@@ -142,7 +132,7 @@ class DeskproContainer extends Container
         if (!class_exists($classname)) {
             if ($ent = \Orb\Util\Strings::extractRegexMatch('#^(.*?)Data$#', $id, 1)) {
                 $classname = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\BaseRepositoryService';
-                $options   = array('entity' => 'DeskPRO:'.ucfirst($ent));
+                $options   = ['entity' => 'DeskPRO:'.ucfirst($ent)];
             } else {
                 throw new \InvalidArgumentException("Invalid service `$id`, tried class `$classname`");
             }
@@ -192,7 +182,7 @@ class DeskproContainer extends Container
      *
      * @return mixed
      */
-    public function getSystemObject($id, array $options = array())
+    public function getSystemObject($id, array $options = [])
     {
         $classname = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\'.$this->camelize($id).'Factory';
 
@@ -290,14 +280,6 @@ class DeskproContainer extends Container
      */
     public function getDbRead($type = 'default', array $context = null)
     {
-        $type_key_fn = dp_get_config('db_read_mapper');
-        if ($type_key_fn) {
-            $new_type = call_user_func($type_key_fn, $type, $context);
-            if ($new_type) {
-                $type = $new_type;
-            }
-        }
-
         // Already initialised
         if (isset($this->db_read_conns[$type])) {
             return $this->db_read_conns[$type];
@@ -306,7 +288,7 @@ class DeskproContainer extends Container
         // Get an appropriate connection
         $parts = explode('.', $type);
         do {
-            $config_key = 'db_read_'.implode('_', $parts);
+            $config_key = 'database_advanced.read_'.implode('_', $parts);
             $config_key = rtrim($config_key, '_');
 
             if (isset($this->db_read_conns[$config_key])) {
@@ -317,13 +299,13 @@ class DeskproContainer extends Container
             }
 
             // Init the connection
-            $read_configs = dp_get_config($config_key);
+            $read_configs = $this->get('deskpro.app_env')->getConfig($config_key);
             if ($read_configs) {
                 $read = null;
 
                 // Single config, cast to array
                 if (isset($read_configs['host']) || isset($read_configs['dbname'])) {
-                    $read_configs = array($read_configs);
+                    $read_configs = [$read_configs];
                 }
 
                 shuffle($read_configs);
@@ -334,18 +316,17 @@ class DeskproContainer extends Container
                 while ($read = array_pop($read_configs)) {
                     if ($read && !empty($read['host']) && !empty($read['dbname'])) {
                         try {
-                            $db = $this->get('doctrine.dbal.connection_factory')->createConnection(array(
-                                'driver'   => 'pdo_mysql',
-                                'host'     => $read['host'],
-                                'user'     => $read['user'],
-                                'password' => $read['password'],
-                                'dbname'   => $read['dbname'],
+                            $params = \DpRun\LowUtil::getMysqlInfoFromConfigArray($read);
 
-                                // We only want to do the normal retry attempt if there's only one
-                                // reader, because otherwise if there are multiple,
-                                // it'll be faster/more successful to just try the next
-                                'dp_do_retry' => !$has_multiple,
-                            ));
+                            $doctrine_params                 = $params['doctrine'];
+                            $doctrine_params['wrapperClass'] = 'Application\\DeskPRO\\DBAL\\Connection';
+
+                            // We only want to do the normal retry attempt if there's only one
+                            // reader, because otherwise if there are multiple,
+                            // it'll be faster/more successful to just try the next
+                            $doctrine_params['dp_connect_attempts'] = $has_multiple ? 1 : 2;
+
+                            $db = $this->get('doctrine.dbal.connection_factory')->createConnection($doctrine_params);
 
                             $db->connect();
 
@@ -356,7 +337,7 @@ class DeskproContainer extends Container
                         } catch (\Exception $e) {
                             // Error connecting, log but ignore and try another
                             $ex = new \RuntimeException("Failed to connect to read database: {$read['user']}@{$read['host']}/{$read['dbname']}", 0, $e);
-                            KernelErrorHandler::logException($ex);
+                            SystemErrorHandler::logException($ex);
                         }
                     }
                 }
@@ -371,7 +352,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * @deprecated Use getEm instead.
+     * @deprecated Use getEm instead
      */
     public function getOrm()
     {
@@ -473,7 +454,7 @@ class DeskproContainer extends Container
     /**
      * Get the router.
      *
-     * @return \Application\DeskPRO\Routing\Router
+     * @return RouterInterface
      */
     public function getRouter()
     {
@@ -574,21 +555,6 @@ class DeskproContainer extends Container
     public function getEmailAccountManager()
     {
         return $this->get('email.email_account_manager');
-    }
-
-    /**
-     * Get the queuer.
-     *
-     * @param string $name
-     *
-     * @return \Application\DeskPRO\Queue\Queue
-     */
-    public function getQueue($name)
-    {
-        $adapter = new \Application\DeskPRO\Queue\Adapter\QueueItemEntity(array('em' => $this->getEm(), 'name' => $name));
-        $queue   = new \Application\DeskPRO\Queue\Queue($adapter, array('name' => $name));
-
-        return $queue;
     }
 
     /**
@@ -744,6 +710,14 @@ class DeskproContainer extends Container
     }
 
     /**
+     * @return \Application\DeskPRO\CustomFields\ChatFieldManager
+     */
+    public function getChatFieldManager()
+    {
+        return $this->getSystemService('chat_fields_manager');
+    }
+
+    /**
      * Get the value of a setting.
      *
      * @param string $name    The name of the setting to get
@@ -753,15 +727,46 @@ class DeskproContainer extends Container
      */
     public function getSetting($name, $default = null)
     {
+        if (!App::$container) {
+            App::$container = $this;
+        }
+
         $settings = $this->get('deskpro.core.settings');
 
         return $settings->get($name, $default);
     }
 
     /**
+     * Get the BrandStack.
+     *
+     * @throws \Throwable
+     *
+     * @return BrandStack
+     */
+    public function getBrandStack()
+    {
+        return $this->get('brand_stack');
+    }
+
+    /**
+     * Get the value of a brand setting.
+     *
+     * @param string $name    The name of the setting to get
+     * @param mixed  $default
+     *
+     * @return string
+     */
+    public function getBrandSetting($name, $default = null)
+    {
+        return $this->get('brand_stack')->getActive()->getSetting($name, $default);
+    }
+
+    /**
      * Get the settings object.
      *
      * @return \Application\DeskPRO\Settings\Settings
+     *
+     * @deprecated use getSettingsResolver() and use its api instead
      */
     public function getSettingsHandler()
     {
@@ -771,34 +776,22 @@ class DeskproContainer extends Container
     }
 
     /**
-     * @return \Application\DeskPRO\Monolog\LoggerManager
-     */
-    public function getLoggerManager()
-    {
-        return $this->getSystemService('logger_manager');
-    }
-
-    /**
-     * Get a value from the main system configuration.
+     * Get the settings resolver system service.
      *
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
+     * @return \Application\DeskPRO\NewSettings\SettingsResolver
      */
-    public function getSysConfig($name, $default = null)
+    public function getSettingsResolver()
     {
-        if ($name == '*') {
-            return $GLOBALS['DP_CONFIG'];
-        }
+        $settings = $this->getSystemService('settings_resolver');
 
-        $value = dp_get_config($name, $default);
-
-        return $value;
+        return $settings;
     }
 
     /**
      * @return \Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService
+     *
+     * @deprecated Avoid using it as much as possible. It works really slow if we have many agents/usergroups/teams
+     * because it pre loads them ALL, even if we need something just for one agent
      */
     public function getAgentData()
     {
@@ -822,71 +815,33 @@ class DeskproContainer extends Container
     }
 
     /**
-     * @return \Orb\GeoIp\AbstractGeoIp
-     */
-    public function getGeoIp()
-    {
-        return $this->getSystemService('geo_ip');
-    }
-
-    /**
-     * Get the path to PHP executable used on the CLI.
+     * @deprecated
      *
-     * Returns false if the path could not be found and if 'php_path' in config is not set.
-     *
-     * @return string
-     */
-    public function getPhpBinaryPath()
-    {
-        return dp_get_php_path();
-    }
-
-    /**
-     * Get the path to mysqldump executable used on the CLI.
-     *
-     * Returns false if the path could not be found and if 'mysqldump_path' in config is not set.
-     *
-     * @return string
-     */
-    public function getMysqldumpBinaryPath()
-    {
-        return dp_get_mysqldump_path();
-    }
-
-    /**
-     * Gets the path to the 'mysql' binary.
-     *
-     * * Returns false if the path could not be found and if 'mysql_path' in config is not set.
-     *
-     * @return string
-     */
-    public function getMysqlBinaryPath()
-    {
-        return dp_get_mysql_path();
-    }
-
-    /**
      * @return string
      */
     public function getLogDir()
     {
-        return dp_get_log_dir();
+        return $this->get('deskpro.app_env')->getUserLogsDir();
     }
 
     /**
+     * @deprecated
+     *
      * @return string
      */
     public function getBlobDir()
     {
-        return dp_get_blob_dir();
+        return $this->get('deskpro.app_env')->getUserFilesDir();
     }
 
     /**
+     * * @deprecated
+     *
      * @return string
      */
     public function getBackupDir()
     {
-        return dp_get_backup_dir();
+        return $this->get('deskpro.app_env')->getUserBackupsDir();
     }
 
     /**
@@ -920,7 +875,7 @@ class DeskproContainer extends Container
      */
     public function getAppManager()
     {
-        return $this->getSystemService('app_manager');
+        return $this->get('deskpro.apps.manager');
     }
 
     /**
@@ -933,10 +888,6 @@ class DeskproContainer extends Container
         }
 
         return $this->agent_app_perms;
-    }
-
-    public function getAppManagerFiltered()
-    {
     }
 
     /**

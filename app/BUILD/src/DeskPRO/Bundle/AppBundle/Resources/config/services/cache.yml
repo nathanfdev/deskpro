@@ -1,0 +1,24 @@
+services:
+  cache.resolver:
+    class: DeskPRO\Bundle\AppBundle\Cache\Resolver\FileResolver
+    arguments:
+      - %kernel.cache_dir%
+      - "@settings_resolver"
+
+  etag_generator:
+    class: DeskPRO\Bundle\AppBundle\Cache\EtagGenerator
+    arguments:
+      - "@settings_resolver"
+
+  cache.version_service:
+    class: DeskPRO\Bundle\AppBundle\Cache\VersionService
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+
+  cache.write_listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\CacheWriteListener
+    arguments:
+      - "@cache.resolver"
+      - "@settings_resolver"
+    tags:
+      - {name: kernel.event_subscriber }

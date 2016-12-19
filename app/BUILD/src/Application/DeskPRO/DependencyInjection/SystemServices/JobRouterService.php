@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,13 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\ApiBundle\Controller\ResetDemoController;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\JobQueue\JobRouter;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
+use Application\DeskPRO\JobQueue\Processor\MassActions\PublishProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
@@ -44,6 +45,7 @@ use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
 use Application\DeskPRO\Sms\Detector\TicketDetector;
+use Application\LegacyApiBundle\Controller\ResetHelpdeskController;
 
 class JobRouterService
 {
@@ -64,7 +66,8 @@ class JobRouterService
                 $conn,
                 $queue,
                 $container->getSystemService('usersource_manager'),
-                $container->getSystemService('usersource_sync_manager')
+                $container->getSystemService('usersource_sync_manager'),
+                $container->get('dp_sys.alerts.event_logger')
             )
         );
 
@@ -101,10 +104,17 @@ class JobRouterService
             )
         );
 
+        /*************************************
+         * publish_mass
+         */
+        $router->addProcessor(
+            new PublishProcessor($conn, $container)
+        );
+
         /*
          * todo instantiate processors on demand
          */
-        foreach (ResetDemoController::$types as $type) {
+        foreach (ResetHelpdeskController::$types as $type) {
             $proc = 'Application\DeskPRO\JobQueue\Processor\Reset\\'.ucfirst($type).'Processor';
             if (class_exists($proc)) {
                 $router->addProcessor(new $proc($container));

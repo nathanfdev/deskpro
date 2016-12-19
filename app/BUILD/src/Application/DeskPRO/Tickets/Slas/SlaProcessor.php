@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\Slas;
 
 use Application\DeskPRO\Entity\Sla;
@@ -38,13 +39,13 @@ use Application\DeskPRO\ORM\StateChange\ChangeSimple;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\ORM\EntityManager;
+use DpSys\LowError\SystemErrorHandler;
 
 class SlaProcessor
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
@@ -73,9 +74,9 @@ class SlaProcessor
     {
         $state = $ticket->getStateChangeRecorder();
 
-        #------------------------------
-        # Get what we should be doing
-        #------------------------------
+        //------------------------------
+        // Get what we should be doing
+        //------------------------------
 
         $recalc = false;
 
@@ -95,9 +96,9 @@ class SlaProcessor
             return;
         }
 
-        #------------------------------
-        # Perform calcs
-        #------------------------------
+        //------------------------------
+        // Perform calcs
+        //------------------------------
 
         foreach ($ticket->ticket_slas as $ticket_sla) {
             // Dont touch ones that have been specifically set
@@ -128,8 +129,8 @@ class SlaProcessor
                     if ($calc->isTicketSlaFailed($ticket, $ticket_sla)) {
                         $ticket->getStateChangeRecorder()->recordChange(new ChangeSimple(
                             'ticket_sla_status',
-                            array('ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'status' => $ticket_sla->sla_status),
-                            array('ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'status' => 'fail')
+                            ['ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'status' => $ticket_sla->sla_status],
+                            ['ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'status' => 'fail']
                         ));
                         $context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- set failed', $ticket_sla->sla->id, $ticket_sla->sla->title));
                         $ticket_sla->sla_status = TicketSla::STATUS_FAIL;
@@ -139,8 +140,8 @@ class SlaProcessor
                     if ($calc->isTicketSlaWarning($ticket, $ticket_sla)) {
                         $ticket->getStateChangeRecorder()->recordChange(new ChangeSimple(
                             'ticket_sla_status',
-                            array('ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'status' => $ticket_sla->sla_status),
-                            array('ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'status' => 'warning')
+                            ['ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'status' => $ticket_sla->sla_status],
+                            ['ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'status' => 'warning']
                         ));
                         $context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- set warning', $ticket_sla->sla->id, $ticket_sla->sla->title));
                         $ticket_sla->sla_status = TicketSla::STATUS_WARNING;
@@ -163,8 +164,8 @@ class SlaProcessor
                 $context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- is_complete: %s', $ticket_sla->sla->id, $ticket_sla->sla->title, $ticket_sla->is_completed ? 'true' : 'false'));
                 $ticket->getStateChangeRecorder()->recordChange(new ChangeSimple(
                     'ticket_sla_complete',
-                    array('ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'complete' => $current_complete),
-                    array('ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'complete' => $ticket_sla->is_completed)
+                    ['ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'complete' => $current_complete],
+                    ['ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'complete' => $ticket_sla->is_completed]
                 ));
             }
             if ($current_status != $ticket_sla->sla_status) {
@@ -176,11 +177,11 @@ class SlaProcessor
             }
 
             if ($do_triggers) {
-                if ($current_status == TicketSla::STATUS_OK && in_array($ticket_sla->sla_status, array(TicketSla::STATUS_WARNING, TicketSla::STATUS_FAIL))) {
+                if ($current_status == TicketSla::STATUS_OK && in_array($ticket_sla->sla_status, [TicketSla::STATUS_WARNING, TicketSla::STATUS_FAIL])) {
                     $context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- Executing WARN actions', $ticket_sla->sla->id, $ticket_sla->sla->title));
                     $this->executeSlaActions($ticket, $ticket_sla->sla, TicketSla::STATUS_WARNING, $context);
                 }
-                if (in_array($current_status, array(TicketSla::STATUS_OK, TicketSla::STATUS_WARNING)) && $ticket_sla->sla_status == TicketSla::STATUS_FAIL) {
+                if (in_array($current_status, [TicketSla::STATUS_OK, TicketSla::STATUS_WARNING]) && $ticket_sla->sla_status == TicketSla::STATUS_FAIL) {
                     $context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- Executing FAIL actions', $ticket_sla->sla->id, $ticket_sla->sla->title));
                     $this->executeSlaActions($ticket, $ticket_sla->sla, TicketSla::STATUS_FAIL, $context);
                 }
@@ -204,7 +205,7 @@ class SlaProcessor
 
         $ticket_slas = $this->em->getRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('fail');
         foreach ($ticket_slas as $ticket_sla) {
-            /** @var TicketSla $ticket_sla */
+            /* @var TicketSla $ticket_sla */
 
             // Already complete or not proper status (must currently be ok/warning aka not failed)
             if ($ticket_sla->is_completed && ($ticket_sla->sla_status == 'ok' || $ticket_sla->sla_status == 'warning')) {
@@ -253,7 +254,7 @@ class SlaProcessor
 
         $ticket_slas = $this->em->getRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('warning');
         foreach ($ticket_slas as $ticket_sla) {
-            /** @var TicketSla $ticket_sla */
+            /* @var TicketSla $ticket_sla */
 
             // Already complete or not proper status
             if ($ticket_sla->is_completed && ($ticket_sla->sla_status == 'ok')) {
@@ -299,7 +300,7 @@ class SlaProcessor
         $ts = microtime(true);
 
         $state = $ticket->getStateChangeRecorder();
-        $state->setCurrentChangeMetadata(array('sla' => $sla, 'sla_status' => $status));
+        $state->setCurrentChangeMetadata(['sla' => $sla, 'sla_status' => $status]);
         $context->getLogger()->info(sprintf("[SlaProcessor] ----- BEGIN SLA.$status #%s :: %s >> Ticket %d -----", $sla->id, $sla->title, $ticket->id));
 
         try {
@@ -311,8 +312,8 @@ class SlaProcessor
 
             $this->action_applicator->apply($actions, $ticket, $context);
         } catch (\Exception $e) {
-            $context->getLogger()->error(sprintf('[SlaProcessor] Exception: [%s] %s', $e->getCode(), $e->getMessage()), array('exception' => $e));
-            KernelErrorHandler::logException($e);
+            $context->getLogger()->error(sprintf('[SlaProcessor] Exception: [%s] %s', $e->getCode(), $e->getMessage()), ['exception' => $e]);
+            SystemErrorHandler::logException($e);
         }
 
         $context->getLogger()->info(sprintf("[SlaProcessor] ----- FINISH SLA.$status #%s :: %.4fs -----", $sla->id, microtime(true) - $ts));

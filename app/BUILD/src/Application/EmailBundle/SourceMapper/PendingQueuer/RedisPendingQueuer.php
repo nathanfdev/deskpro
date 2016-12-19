@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\SourceMapper\PendingQueuer;
 
 use Predis;
@@ -48,7 +49,7 @@ class RedisPendingQueuer implements PendingQueuerInterface
     /**
      * @var array
      */
-    private $data_items = array();
+    private $data_items = [];
 
     /**
      * @param Predis\Client $client
@@ -75,7 +76,7 @@ class RedisPendingQueuer implements PendingQueuerInterface
     public function pushAll()
     {
         foreach ($this->data_items as $d) {
-            $this->client->rpush($this->key, array(json_encode($d)));
+            $this->client->rpush($this->key, [json_encode($d)]);
         }
     }
 
@@ -84,9 +85,9 @@ class RedisPendingQueuer implements PendingQueuerInterface
      */
     public function queueMessageSource(array $source)
     {
-        $data = array(
+        $data = [
             'id' => $source['id'],
-        );
+        ];
 
         if (defined('DPC_IS_CLOUD')) {
             $data['dpc_site_id'] = DPC_SITE_ID;

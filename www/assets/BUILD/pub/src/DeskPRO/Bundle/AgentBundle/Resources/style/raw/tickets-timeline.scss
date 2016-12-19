@@ -1,0 +1,73 @@
+// Created blank space between items over the vertical timeline via :before & :after
+@mixin timeline-cover {
+  &:before, &:after {
+    content: "";
+    display: block;
+    width: 10px;
+    height: 5px;
+    background: #fcfcfc;
+  }
+
+  &:before {
+    position: absolute;
+    top: -5px;
+  }
+
+  &:after {
+    position: absolute;
+    bottom: -5px;
+  }
+}
+
+// Vertical timeline left of ticket content
+// It's a full height vertical line that's resized with js
+
+.vertical-timeline {// The actual vetical line container
+  display: block;
+  position: absolute;
+  left: 50px;
+  top: 0px;
+  width: 1px;
+  height: 200px;
+  background: #dddfe1;
+  margin: 0px;
+  padding: 0px;
+}
+
+
+// Box to the left of each ticket with date and the disc icon on it
+.ticket-timeline {
+  position: absolute;
+  left: 0px;
+  top: -3px;
+  width: 40px;
+  margin-right: 15px;
+  text-align: right;
+  color: #c2c2c2;
+
+  .datestamp {// Date
+    font-size: 0.7em;
+    position: relative;
+    padding-right: 20px;
+    position: absolute;
+    left: -2px;
+  }
+
+  .datestamp-mark {// The circle mark
+    display: block;
+    width: 11px;
+    height: 11px;
+    background: #fff;
+    border: 2px solid #cecece;
+    border-radius: 199px;
+    position: absolute;
+    left: 35px;
+    top: 5px;
+
+    @include timeline-cover;
+    // .datestamp-mark has a 2px bored that's not calculated in the :before/:after position, so we add that to the original 5px
+    &:before { top: -7px;}
+    &:after { bottom: -7px; }
+  }
+
+}

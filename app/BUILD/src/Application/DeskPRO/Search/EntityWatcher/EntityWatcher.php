@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Search
  */
+
 namespace Application\DeskPRO\Search\EntityWatcher;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -39,7 +40,7 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 class EntityWatcher implements \Doctrine\Common\EventSubscriber
 {
     /** @var array */
-    public static $watched_entities = array(
+    public static $watched_entities = [
         'Application\\DeskPRO\\Entity\\Article'          => 1,
         'Application\\DeskPRO\\Entity\\LabelArticle'     => 1,
         'Application\\DeskPRO\\Entity\\Download'         => 1,
@@ -55,12 +56,12 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         'Application\\DeskPRO\\Entity\\Organization'     => 1,
         'Application\\DeskPRO\\Entity\\ChatConversation' => 1,
         'Application\\DeskPRO\\Entity\\ChatMessage'      => 1,
-    );
+    ];
 
     /**
      * @var \Orb\Filter\FilterInterface[]
      */
-    protected $entity_filters = array();
+    protected $entity_filters = [];
 
     /**
      * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
@@ -75,12 +76,12 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
     /**
      * @var array
      */
-    protected $updates = array('updates' => array(), 'deletes' => array());
+    protected $updates = ['updates' => [], 'deletes' => []];
 
     public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
-        \DpShutdown::add(array($this, 'flushUpdatesQuiet'));
+        \DpShutdown::add([$this, 'flushUpdatesQuiet']);
     }
 
     /**
@@ -104,16 +105,22 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         }
         $this->is_running = true;
 
-        $updates = array_map(function ($v) { return $v['ent']; }, $this->updates['updates']);
-        $deletes = array_map(function ($v) { return $v['ent']; }, $this->updates['deletes']);
+        $updates = array_map(function ($v) {
+            return $v['ent'];
+        }, $this->updates['updates']);
+        $deletes = array_map(function ($v) {
+            return $v['ent'];
+        }, $this->updates['deletes']);
 
-        $this->updates = array('updates' => array(), 'deletes' => array());
+        $this->updates = ['updates' => [], 'deletes' => []];
 
         $GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES'] = true;
 
-        /** @var \Application\DeskPRO\Search\SearchIndexer $indexer */
-        $indexer = $this->container->getSystemService('search_indexer');
-        $indexer->handle($updates, $deletes);
+        if ($this->container) {
+            /** @var \Application\DeskPRO\Search\SearchIndexer $indexer */
+            $indexer = $this->container->getSystemService('search_indexer');
+            $indexer->handle($updates, $deletes);
+        }
 
         $this->is_running = false;
     }
@@ -128,8 +135,8 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         }
         $this->is_running = true;
 
-        $update = array();
-        $delete = array();
+        $update = [];
+        $delete = [];
 
         $em  = $eventArgs->getEntityManager();
         $uow = $em->getUnitOfWork();
@@ -151,23 +158,29 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
                 $class = get_class($ent);
                 $class = substr($class, strrpos($class, '\\') + 1);
                 $ent   = $this->replaceEntity($ent);
-                if (0 === strpos($class, 'Label')) {
-                    $update[] = $ent;
-                } else {
-                    $delete[] = $ent;
+                if ($ent) {
+                    if (0 === strpos($class, 'Label')) {
+                        $update[] = $ent;
+                    } else {
+                        $delete[] = $ent;
+                    }
                 }
             }
         }
 
         foreach ($update as $ent) {
-            $name                                  = self::getEntityClassName($ent);
-            $id                                    = $ent->getId();
-            $this->updates['updates']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
+            if ($ent) {
+                $name                                  = self::getEntityClassName($ent);
+                $id                                    = $ent->getId();
+                $this->updates['updates']["$name-$id"] = ['entity' => $name, 'id' => $id, 'ent' => $ent];
+            }
         }
         foreach ($delete as $ent) {
-            $name                                  = self::getEntityClassName($ent);
-            $id                                    = $ent->getId();
-            $this->updates['deletes']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
+            if ($ent) {
+                $name                                  = self::getEntityClassName($ent);
+                $id                                    = $ent->getId();
+                $this->updates['deletes']["$name-$id"] = ['entity' => $name, 'id' => $id, 'ent' => $ent];
+            }
         }
 
         $this->is_running = false;
@@ -204,9 +217,9 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
      */
     public function getSubscribedEvents()
     {
-        return array(
+        return [
             \Doctrine\ORM\Events::onFlush,
-        );
+        ];
     }
 
     /**

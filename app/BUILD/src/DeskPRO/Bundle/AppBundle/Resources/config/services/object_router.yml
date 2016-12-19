@@ -1,0 +1,107 @@
+services:
+
+  # the only "public" service/entry-point into the ObjectRouter sub-system
+  object_router:
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter
+    arguments:
+      link_generators:
+        - "@object_router.link_generator.content.articles"
+        - "@object_router.link_generator.content.news"
+        - "@object_router.link_generator.content.downloads"
+        - "@object_router.link_generator.portal"
+        - "@object_router.link_generator.agent"
+        - "@object_router.link_generator.ticket"
+        - "@object_router.link_generator.downloads"
+        - "@object_router.link_generator.feedback"
+      isDebug: "@=service('deskpro.app_env').isDebug()"
+
+  object_router.twig_extension:
+    class: DeskPRO\Bundle\AppBundle\Twig\ObjectRouterExtension
+    public: false
+    arguments:
+      - "@object_router"
+    tags:
+      - { name: twig.extension }
+      - { name: email.templating.twig.extension }
+
+  object_router.annotation_config:
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkConfigAnnotationRepo
+    public: false
+    arguments:
+      - "@annotation_reader"
+      - "@object_router.config_cache"
+    tags:
+      - { name: kernel.cache_warmer }
+
+  object_router.config_cache:
+    class: Symfony\Component\Config\ConfigCache
+    public: false
+    arguments:
+      - %kernel.cache_dir%/objectRouter.php
+      - %kernel.debug%
+
+  # Link Generators
+  # make sure you inject these into object_router definition above, ORDER MATTERS (For supports())
+  object_router.link_generator.portal:
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\DefaultPortalLinkGenerator
+    public: false
+    arguments:
+      - "@object_router.annotation_config"
+      - "@router"
+      - "@property_accessor"
+
+  object_router.link_generator.agent:
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\DefaultAgentLinkGenerator
+    public: false
+    arguments:
+      - "@object_router.annotation_config"
+      - "@router"
+      - "@property_accessor"
+
+  object_router.link_generator.ticket:
+    public: false
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\TicketLinkGenerator
+    arguments:
+      - "@router"
+      - "@ticket.public_id_resolver"
+
+  object_router.link_generator.downloads:
+    public: false
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\DownloadsLinkGenerator
+    arguments:
+      - "@router"
+
+  object_router.link_generator.content.articles:
+    public: false
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\Content\ArticlesLinkGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@router"
+      - "@property_accessor"
+      - "@object_router.annotation_config"
+
+  object_router.link_generator.content.news:
+    public: false
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\Content\NewsLinkGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@router"
+      - "@property_accessor"
+      - "@object_router.annotation_config"
+
+  object_router.link_generator.content.downloads:
+    public: false
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\Content\DownloadsLinkGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@router"
+      - "@property_accessor"
+      - "@object_router.annotation_config"
+
+
+  object_router.link_generator.feedback:
+    public: false
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\FeedbackLinkGenerator
+    arguments:
+      - "@router"
+

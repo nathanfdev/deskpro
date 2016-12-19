@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,18 +29,23 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Languages\LangPackInfo;
 use Application\DeskPRO\Languages\PhraseData;
 use Application\DeskPRO\ResourceScanner\LanguagePhrases;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 
+/**
+ * @ApiModes("all")
+ */
 class LanguagesController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -55,9 +60,9 @@ class LanguagesController extends AbstractController implements ProtectedControl
         return $multi;
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction()
     {
@@ -67,7 +72,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
             ORDER BY l.title ASC
         ')->execute();
 
-        $installed_packs = array();
+        $installed_packs = [];
         foreach ($langs as $l) {
             $installed_packs[$l->getSysName()] = $l;
         }
@@ -77,9 +82,12 @@ class LanguagesController extends AbstractController implements ProtectedControl
         $pack_local_titles = $langpacks->getLangTitles(true);
 
         foreach ($pack_titles as $id => $title) {
+            if (strpos($id, 'dev_') === 0) {
+                continue;
+            }
             $lang = isset($installed_packs[$id]) ? $installed_packs[$id] : null;
             $info = $langpacks->getLangInfo($id);
-            $r    = array(
+            $r    = [
                 'id'                    => $id,
                 'title'                 => $title,
                 'show_title'            => $lang ? $lang->title : $pack_local_titles[$id],
@@ -91,7 +99,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
                 'has_user'              => $info['has_user'],
                 'has_agent'             => $info['has_agent'],
                 'has_admin'             => $info['has_admin'],
-            );
+            ];
 
             $all_packs[] = $r;
         }
@@ -104,9 +112,9 @@ class LanguagesController extends AbstractController implements ProtectedControl
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # set-default-lang
-    ####################################################################################################################
+    //###################################################################################################################
+    // set-default-lang
+    //###################################################################################################################
 
     public function setDefaultLangAction($id)
     {
@@ -142,9 +150,9 @@ class LanguagesController extends AbstractController implements ProtectedControl
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # get-lang
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-lang
+    //###################################################################################################################
 
     public function getLangAction($id)
     {
@@ -184,15 +192,15 @@ class LanguagesController extends AbstractController implements ProtectedControl
         $lang_info['flag']        = $flag;
         $lang_info['show_flag']   = $lang ? $lang->flag_image : $lang_info['flag'];
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'pack'     => $lang_info,
             'language' => $lang ? $lang->toApiData() : null,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # get-phrase
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-phrase
+    //###################################################################################################################
 
     public function getPhraseAction($phrase_id, $for_lang = -1)
     {
@@ -216,7 +224,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
                 ORDER BY l.title ASC
             ')->execute();
 
-            $data['lang_phrases'] = array();
+            $data['lang_phrases'] = [];
             foreach ($langs as $lang) {
                 $phrase = $this->em->getRepository('DeskPRO:Phrase')->getPhraseForLanguage($phrase_id, $lang);
 
@@ -229,9 +237,9 @@ class LanguagesController extends AbstractController implements ProtectedControl
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # install-lang
-    ####################################################################################################################
+    //###################################################################################################################
+    // install-lang
+    //###################################################################################################################
 
     public function installLangAction($id)
     {
@@ -272,15 +280,15 @@ class LanguagesController extends AbstractController implements ProtectedControl
             $this->db->rollback();
         }
 
-        return $this->createApiCreateResponse(array(
+        return $this->createApiCreateResponse([
             'pack_id'     => $id,
             'language_id' => $lang->id,
-        ), $this->generateUrl('api_langs_getinfo', array('id' => $lang->id)));
+        ], $this->generateUrl('api_langs_getinfo', ['id' => $lang->id]));
     }
 
-    ####################################################################################################################
-    # uninstall-lang
-    ####################################################################################################################
+    //###################################################################################################################
+    // uninstall-lang
+    //###################################################################################################################
 
     public function uninstallLangAction($id)
     {
@@ -323,15 +331,15 @@ class LanguagesController extends AbstractController implements ProtectedControl
         $this->em->remove($lang);
         $this->em->flush();
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'old_pack_id'     => $lang_info['id'],
             'old_language_id' => $old_lang_id,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save-lang
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-lang
+    //###################################################################################################################
 
     public function saveLangAction($id)
     {
@@ -378,9 +386,9 @@ class LanguagesController extends AbstractController implements ProtectedControl
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # save-phrase
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-phrase
+    //###################################################################################################################
 
     public function savePhraseAction($phrase_id)
     {
@@ -428,9 +436,9 @@ class LanguagesController extends AbstractController implements ProtectedControl
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # save-phrase-set
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-phrase-set
+    //###################################################################################################################
 
     public function savePhraseSetAction($id)
     {
@@ -460,8 +468,8 @@ class LanguagesController extends AbstractController implements ProtectedControl
             }
         }
 
-        $adds       = array();
-        $phrase_ids = array();
+        $adds       = [];
+        $phrase_ids = [];
 
         foreach ($this->in->getArrayValue('phrases') as $phrase_info) {
             if (empty($phrase_info['name']) || !preg_match('#^[a-zA-Z0-9\.\-_]+$#', $phrase_info['name'])) {
@@ -481,7 +489,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
                 $p->setName($phrase_id);
                 $p->phrase = $phrase;
 
-                $adds[] = array(
+                $adds[] = [
                     'language_id'     => $lang->id,
                     'name'            => $p->name,
                     'groupname'       => $p->groupname,
@@ -491,7 +499,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
                     'is_outdated'     => (int) $p->is_outdated,
                     'created_at'      => $p->created_at ? $p->created_at->format('Y-m-d H:i:s') : null,
                     'updated_at'      => $p->updated_at ? $p->updated_at->format('Y-m-d H:i:s') : null,
-                );
+                ];
             }
         }
 
@@ -506,79 +514,82 @@ class LanguagesController extends AbstractController implements ProtectedControl
         return $this->createSuccessResponse();
     }
 
-    ############################################################################
-    # get-phrase-groups
-    ############################################################################
+    //###########################################################################
+    // get-phrase-groups
+    //###########################################################################
 
     public function getPhraseGroupsAction()
     {
-        #------------------------------
-        # Special object groups
-        #------------------------------
+        //------------------------------
+        // Special object groups
+        //------------------------------
 
-        $object_groups   = array();
-        $object_groups[] = array('id' => 'ticket_departments',  'title' => 'Ticket Departments');
-        $object_groups[] = array('id' => 'chat_departments',    'title' => 'Chat Departments');
+        $object_groups   = [];
+        $object_groups[] = ['id' => 'ticket_departments',  'title' => 'Ticket Departments'];
+        $object_groups[] = ['id' => 'chat_departments',    'title' => 'Chat Departments'];
 
         if ($this->settings->get('core.use_product')) {
-            $object_groups[] = array('id' => 'products',            'title' => 'Products');
+            $object_groups[] = ['id' => 'products',            'title' => 'Products'];
         }
         if ($this->settings->get('core.use_ticket_category')) {
-            $object_groups[] = array('id' => 'ticket_categories',   'title' => 'Ticket Categories');
+            $object_groups[] = ['id' => 'ticket_categories',   'title' => 'Ticket Categories'];
         }
         if ($this->settings->get('core.use_ticket_priority')) {
-            $object_groups[] = array('id' => 'ticket_priorities',   'title' => 'Ticket Priorities');
+            $object_groups[] = ['id' => 'ticket_priorities',   'title' => 'Ticket Priorities'];
         }
         if ($this->settings->get('core.use_ticket_workflow')) {
-            $object_groups[] = array('id' => 'ticket_workflows',    'title' => 'Ticket Workflows');
+            $object_groups[] = ['id' => 'ticket_workflows',    'title' => 'Ticket Workflows'];
         }
 
-        $object_groups[] = array('id' => 'feedback_statuses',   'title' => 'Feedback Statuses');
-        $object_groups[] = array('id' => 'feedback_types',      'title' => 'Feedback Types');
-        $object_groups[] = array('id' => 'kb_categories',       'title' => 'Knowledgebase Categories');
+        $object_groups[] = ['id' => 'feedback_statuses',   'title' => 'Feedback Statuses'];
+        $object_groups[] = ['id' => 'feedback_types',      'title' => 'Feedback Types'];
+        $object_groups[] = ['id' => 'kb_categories',       'title' => 'Knowledgebase Categories'];
 
         if ($this->container->getSystemService('ticket_fields_manager')->count()) {
-            $object_groups[] = array('id' => 'ticket_fields',       'title' => 'Ticket Fields');
+            $object_groups[] = ['id' => 'ticket_fields',       'title' => 'Ticket Fields'];
         }
         if ($this->container->getSystemService('person_fields_manager')->count()) {
-            $object_groups[] = array('id' => 'person_fields',       'title' => 'Person Fields');
+            $object_groups[] = ['id' => 'person_fields',       'title' => 'Person Fields'];
         }
         if ($this->container->getSystemService('org_fields_manager')->count()) {
-            $object_groups[] = array('id' => 'org_fields',          'title' => 'Organization Fields');
+            $object_groups[] = ['id' => 'org_fields',          'title' => 'Organization Fields'];
+        }
+        if ($this->container->getSystemService('chat_fields_manager')->count()) {
+            $object_groups[] = ['id' => 'chat_fields',         'title' => 'Chat Fields'];
         }
 
-        #------------------------------
-        # Phrase groups
-        #------------------------------
+        //------------------------------
+        // Phrase groups
+        //------------------------------
 
         $groups_reader = new LanguagePhrases();
         $tr            = $this->container->getTranslator();
-        $phrase_groups = array();
+        $phrase_groups = [];
 
         foreach ($groups_reader->getGroups() as $type => $groups) {
-            $phrase_groups[$type] = array();
+            $phrase_groups[$type] = [];
 
             foreach ($groups as $group) {
                 $phrase_id = "admin.languages.phrasegroup_{$type}_{$group}";
                 $title     = $tr->hasPhrase($phrase_id) ? $tr->phrase($phrase_id) : ucfirst("$type $group");
 
-                $phrase_groups[$type][] = array('id' => "{$type}.{$group}", 'title' => $title);
+                $phrase_groups[$type][] = ['id' => "{$type}.{$group}", 'title' => $title];
             }
         }
 
-        return $this->createJsonResponse(array(
-            'phrase_groups' => array(
+        return $this->createJsonResponse([
+            'phrase_groups' => [
                 'object' => $object_groups,
-                'user'   => $phrase_groups['user'],
+                'user'   => $phrase_groups['portal'],
                 'agent'  => $phrase_groups['agent'],
                 'admin'  => $phrase_groups['admin'],
-            ),
-        ));
+            ],
+        ]);
     }
 
-    ############################################################################
-    # get-phrases
-    ############################################################################
+    //###########################################################################
+    // get-phrases
+    //###########################################################################
 
     public function getPhrasesAction($id, $group_id)
     {
@@ -670,6 +681,13 @@ class LanguagesController extends AbstractController implements ProtectedControl
                 );
                 break;
 
+            case 'chat_fields':
+                $phrases = $phrase_data->getFieldPhrases(
+                    $this->container->getSystemService('chat_fields_manager'),
+                    $lang
+                );
+                break;
+
             case 'feedback_statuses':
                 $phrases = $phrase_data->getFeedbackStatusPhrases($lang);
                 break;
@@ -693,14 +711,14 @@ class LanguagesController extends AbstractController implements ProtectedControl
                 break;
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'phrases' => $phrases,
-        ));
+        ]);
     }
 
-    ############################################################################
-    # mass-update-tickets
-    ############################################################################
+    //###########################################################################
+    // mass-update-tickets
+    //###########################################################################
 
     public function massUpdateTicketsAction()
     {
@@ -731,14 +749,14 @@ class LanguagesController extends AbstractController implements ProtectedControl
         }
         $this->db->executeUpdate($sql);
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'count' => $count,
-        ));
+        ]);
     }
 
-    ############################################################################
-    # mass-update-users
-    ############################################################################
+    //###########################################################################
+    // mass-update-users
+    //###########################################################################
 
     public function massUpdateUsersAction()
     {
@@ -763,8 +781,8 @@ class LanguagesController extends AbstractController implements ProtectedControl
         }
         $count = $this->db->executeUpdate($sql);
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'count' => $count,
-        ));
+        ]);
     }
 }

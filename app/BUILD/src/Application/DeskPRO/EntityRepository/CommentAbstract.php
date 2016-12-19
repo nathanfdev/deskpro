@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,11 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\Entity\Visitor as VisitorEntity;
 
 class CommentAbstract extends AbstractEntityRepository
 {
@@ -44,7 +44,7 @@ class CommentAbstract extends AbstractEntityRepository
     public function getByIds(array $ids, $keep_order = false)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         $ids = implode(',', $ids);
@@ -75,17 +75,17 @@ class CommentAbstract extends AbstractEntityRepository
         }
     }
 
-    public function getDisplayComments($object, PersonEntity $person_context = null, VisitorEntity $visitor_context = null)
+    public function getDisplayComments($object, PersonEntity $person_context = null, $visitor_id = 0)
     {
-        $params = array('obj_id' => $object->getId());
+        $params = ['obj_id' => $object->getId()];
         $dql    = "SELECT c FROM {$this->_entityName} c WHERE c.".static::FIELD." = :obj_id AND (c.status = 'visible'";
         if ($person_context && $person_context->getId()) {
             $dql .= ' OR c.person = :person_id';
             $params['person_id'] = $person_context->getId();
         }
-        if ($visitor_context) {
+        if ($visitor_id) {
             $dql .= ' OR c.visitor = :visitor_id';
-            $params['visitor_id'] = $visitor_context->getId();
+            $params['visitor_id'] = $visitor_id;
         }
         $dql .= ')';
 
@@ -99,7 +99,7 @@ class CommentAbstract extends AbstractEntityRepository
         return App::getDb()->fetchColumn("
             SELECT COUNT(*)
             FROM $table
-            WHERE status = 'validating' OR (status = 'visible' AND is_reviewed = 0)
+            WHERE is_reviewed = 0
         ");
     }
 
@@ -109,10 +109,9 @@ class CommentAbstract extends AbstractEntityRepository
             SELECT c
             FROM '.$this->_entityName.' c
             LEFT JOIN c.person p
-            WHERE c.status = ?1 OR c.is_reviewed = ?2
+            WHERE c.is_reviewed = ?1
             ORDER BY c.id DESC
-        ')->setParameter(1, 'validating')
-          ->setParameter(2, false)
+        ')->setParameter(1, false)
           ->execute();
     }
 

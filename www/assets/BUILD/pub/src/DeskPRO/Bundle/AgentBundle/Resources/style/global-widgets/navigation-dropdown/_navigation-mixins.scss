@@ -1,0 +1,59 @@
+@mixin deskpro-clearfix() {
+  &:after {
+    content:"";
+    display:table;
+    clear:both;
+  }
+}
+
+
+
+
+// Generate some pointy corners
+@mixin add-corner($border-size, $border-color, $position, $direction, $hover:"") {
+  &:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border: $border-size solid rgba(0, 0, 0, 0.0);
+    position: absolute;
+    margin-left: $border-size * -1;
+
+    @if $direction == "top" {
+      border-bottom: $border-size solid $border-color;
+      top: $border-size * -2;
+      left: $position;
+    }
+
+    @else if $direction == "bottom" {
+      border-top: $border-size solid $border-color;
+      bottom: $border-size * -2;
+      left: $position;
+    }
+
+    @else if $direction == "left" {
+      border-right: $border-size solid $border-color;
+      left: $border-size * -1;
+      top: $position;
+    }
+
+    @else if $direction == "right" {
+      border-left: $border-size solid $border-color;
+      right: $border-size * -2;
+      top: $position;
+    }
+  }
+
+
+  @if $hover == "hover" {
+    &:hover {
+      &:before {
+        @if $direction == "top" { border-bottom-color: #fff; }
+        @else if $direction == "bottom" { border-top-color: #fff; }
+        @else if $direction == "left" { border-right-color: #fff; }
+        @else if $direction == "right" { border-left-color: #fff; }
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Email\EmailAccount\Repository;
 
 use Doctrine\ORM\EntityManager;
@@ -74,9 +75,9 @@ class EmailAccountRepository
             return;
         }
 
-        $this->enabled_accounts  = array();
-        $this->disabled_accounts = array();
-        $this->accounts          = array();
+        $this->enabled_accounts  = [];
+        $this->disabled_accounts = [];
+        $this->accounts          = [];
 
         foreach ($this->em->getRepository('DeskPRO:EmailAccount')->findAll() as $acc) {
             $this->accounts[$acc->id] = $acc;

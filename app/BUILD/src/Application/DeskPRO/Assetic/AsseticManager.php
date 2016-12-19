@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Assetic;
 
 use Orb\Util\Strings;
@@ -101,7 +102,17 @@ class AsseticManager
      *
      * @var array
      */
-    protected $dep_map = array();
+    protected $dep_map = [];
+
+    /**
+     * @var string
+     */
+    protected $last_pack_name;
+
+    /**
+     * @var string
+     */
+    protected $last_file = '';
 
     public function __construct(array $asset_config, $static_path, $build_subdir, $debug = false)
     {
@@ -114,7 +125,7 @@ class AsseticManager
         $this->asset_manager  = new \Assetic\AssetManager();
         $this->filter_manager = new \Assetic\FilterManager();
 
-        $options = array();
+        $options = [];
         if (isset($asset_config['OPTIONS'])) {
             $options = $asset_config['OPTIONS'];
             unset($asset_config['OPTIONS']);
@@ -129,13 +140,29 @@ class AsseticManager
             if (isset($info['references'])) {
                 foreach ($info['references'] as $sub_name) {
                     if (!isset($this->dep_map[$sub_name])) {
-                        $this->dep_map[$sub_name] = array();
+                        $this->dep_map[$sub_name] = [];
                     }
 
                     $this->dep_map[$sub_name][] = $name;
                 }
             }
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastFile()
+    {
+        return $this->last_file;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastPackName()
+    {
+        return $this->last_pack_name;
     }
 
     /**
@@ -151,7 +178,7 @@ class AsseticManager
         $factory->setDebug($this->debug);
         $factory->setAssetManager($this->asset_manager);
 
-        $asset = $factory->createAsset(array('@'.$name));
+        $asset = $factory->createAsset(['@'.$name]);
 
         return $asset;
     }
@@ -193,8 +220,10 @@ class AsseticManager
             $new_file = dirname($file).'/'.$hash.'.'.$ext;
 
             file_put_contents($new_file, $content);
+            $this->last_file      = $new_file;
+            $this->last_pack_name = $name;
 
-            $filters = array();
+            $filters = [];
             foreach ($info['post_filters'] as $f) {
                 $filters[] = $this->getFilter($f);
             }
@@ -276,7 +305,7 @@ class AsseticManager
             throw new \InvalidArgumentException("Unknown bundle config `$name`");
         }
 
-        $urls = array();
+        $urls = [];
 
         if (isset($info['references'])) {
             foreach ($info['references'] as $r) {
@@ -317,7 +346,7 @@ class AsseticManager
         $build_time  = filemtime($build_file);
         $bundle_time = $asset->getLastModified();
 
-        return ($build_time < $bundle_time);
+        return $build_time < $bundle_time;
     }
 
     /**
@@ -349,14 +378,14 @@ class AsseticManager
         }
 
         $info    = $this->getBundleConfig($name);
-        $filters = array();
+        $filters = [];
         if (isset($info['filters'])) {
             foreach ($info['filters']  as $f) {
-                $filters[] = $this->getFilter($f, isset($info['filter_options'][$f]) ? $info['filter_options'][$f] : array());
+                $filters[] = $this->getFilter($f, isset($info['filter_options'][$f]) ? $info['filter_options'][$f] : []);
             }
         }
 
-        $coll = new \Assetic\Asset\AssetCollection(array(), $filters);
+        $coll = new \Assetic\Asset\AssetCollection([], $filters);
         if (isset($info['files'])) {
             foreach ($info['files'] as $f) {
                 $path = $this->static_path.'/'.$f;
@@ -384,7 +413,7 @@ class AsseticManager
      */
     public function getAllAssetBundles()
     {
-        $bundles = array();
+        $bundles = [];
         foreach ($this->asset_config as $name) {
             $bundles[$name] = $this->getAssetBundle($name);
         }
@@ -419,7 +448,7 @@ class AsseticManager
      *
      * @param string $name
      */
-    public function getFilter($name, array $options = array())
+    public function getFilter($name, array $options = [])
     {
         // Trim off ? which means not to use it in debug
         if ($name[0] == '?') {
@@ -446,13 +475,13 @@ class AsseticManager
                 $filter->setLineBreak(100);
                 break;
             case 'image_gradients':
-                $filter = new \Application\DeskPRO\Assetic\Filter\CssGradientImage(array(
+                $filter = new \Application\DeskPRO\Assetic\Filter\CssGradientImage([
 
-                ));
+                ]);
                 break;
             case 'css':
                 $filter = new \Assetic\Filter\CssMinFilter();
-                $filter->setFilters(array(
+                $filter->setFilters([
                     'ImportImports'                 => false,
                     'RemoveComments'                => true,
                     'RemoveEmptyRulesets'           => true,
@@ -461,8 +490,8 @@ class AsseticManager
                     'ConvertLevel3Properties'       => false,
                     'Variables'                     => false,
                     'RemoveLastDelarationSemiColon' => true,
-                ));
-                $filter->setPlugins(array(
+                ]);
+                $filter->setPlugins([
                     'Variables'                => false,
                     'ConvertFontWeight'        => false,
                     'ConvertHslColors'         => false,
@@ -471,13 +500,13 @@ class AsseticManager
                     'CompressColorValues'      => false,
                     'CompressUnitValues'       => true,
                     'CompressExpressionValues' => true,
-                ));
+                ]);
                 break;
             case 'css_path':
                 $filter = new \Assetic\Filter\CssRewriteFilter();
                 break;
             case 'null':
-                $filter = new \Orb\Assetic\Filter\Null();
+                $filter = new \Orb\Assetic\Filter\NullFilter();
                 break;
             case 'smartsprites':
                 $filter = new \Orb\Assetic\Filter\SmartSprites(

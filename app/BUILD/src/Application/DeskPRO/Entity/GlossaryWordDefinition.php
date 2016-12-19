@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,29 +31,51 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Glossary.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
+     * The unique id.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
+     * Word definition itself.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
+     * @Assert\NotBlank
      */
     protected $definition;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * An array of words belongs this definition.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("collection<to_string<Application\DeskPRO\Entity\GlossaryWord>>")
+     *
+     * @var ArrayCollection
      */
     protected $words;
 
@@ -65,19 +87,75 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * GlossaryWordDefinition constructor.
+     */
     public function __construct()
     {
-        $this->words = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->words = new ArrayCollection();
     }
 
-    public function addWord($word)
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->definition;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefinition()
+    {
+        return $this->definition;
+    }
+
+    /**
+     * @param string $definition
+     */
+    public function setDefinition($definition)
+    {
+        $this->setModelField('definition', $definition);
+    }
+
+    /**
+     * @param array|\ArrayAccess $words
+     */
+    public function setWords($words)
+    {
+        /** @var GlossaryWord[] $words */
+        if (is_array($words) || $words instanceof \ArrayAccess) {
+            foreach ($words as $word) {
+                $this->words->add($word);
+                $word->setDefinition($this);
+            }
+        }
+    }
+
+    /**
+     * @param GlossaryWord $word
+     */
+    public function addWord(GlossaryWord $word)
+    {
+        $this->words->add($word);
+        $word->setDefinition($this);
+    }
+
+    /**
+     * @param string $word
+     * @param Brand  $brand
+     *
+     * @return GlossaryWord|void
+     */
+    public function addNewWord($word, $brand)
     {
         $word = trim(strval($word));
         if ($word === '') {
             return;
         }
 
-        $existing = App::getEntityRepository('DeskPRO:GlossaryWord')->findByWord($word);
+        $existing = App::getEntityRepository(GlossaryWord::class)->findBy(['word' => $word, 'brand' => $brand]);
         if ($existing) {
             return;
         }
@@ -87,16 +165,21 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
             }
         }
 
-        $obj             = new GlossaryWord();
-        $obj->word       = $word;
-        $obj->definition = $this;
+        $obj = new GlossaryWord();
+        $obj->setWord($word);
+        $obj->setDefinition($this);
+        $obj->setBrand($brand);
 
         $this->words->add($obj);
 
         return $obj;
     }
 
-    public function updateWords(array $words)
+    /**
+     * @param array $words
+     * @param Brand $brand
+     */
+    public function updateWords(array $words, $brand)
     {
         if (!$words) {
             throw new \InvalidArgumentException('Must provide some words');
@@ -114,14 +197,14 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
         }
 
         foreach (array_keys($words_test) as $key) {
-            $this->addWord($words[$key]);
+            $this->addNewWord($words[$key], $brand);
         }
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data          = parent::toApiData($primary, $deep, $visited);
-        $data['words'] = array();
+        $data['words'] = [];
         foreach ($this->words as $word) {
             $data['words'][$word->id] = $word->word;
         }
@@ -129,19 +212,70 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * @return ArrayCollection
+     */
+    public function getWords()
+    {
+        return $this->words;
+    }
+
+    /**
+     * An array of words belongs this definition.
+     *
+     * @return array
+     */
+    public function getStringWords()
+    {
+        return array_map(function (GlossaryWord $word) {
+            return $word->getWord();
+        }, $this->getWords()->toArray());
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
-        $metadata->setPrimaryTable(array('name' => 'glossary_word_definitions'));
+        $metadata->setPrimaryTable(['name' => 'glossary_word_definitions']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'definition', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'definition'));
-        $metadata->mapOneToMany(array('fieldName' => 'words', 'targetEntity' => 'Application\\DeskPRO\\Entity\\GlossaryWord', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'definition', 'orphanRemoval' => true));
+        $metadata->mapField(
+            [
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'definition',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'definition',
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'words',
+                'targetEntity' => GlossaryWord::class,
+                'cascade'      => [
+                    0 => 'remove',
+                    1 => 'persist',
+                    3 => 'merge',
+                ],
+                'mappedBy'      => 'definition',
+                'orphanRemoval' => true,
+            ]
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

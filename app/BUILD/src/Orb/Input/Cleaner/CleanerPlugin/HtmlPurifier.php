@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Input
  */
+
 namespace Orb\Input\Cleaner\CleanerPlugin;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -49,7 +50,7 @@ class HtmlPurifier implements CleanerPlugin
 
     public function getCleanerTypes()
     {
-        return array(
+        return [
             'html',
             'simple_html',
             'html_core',
@@ -58,7 +59,7 @@ class HtmlPurifier implements CleanerPlugin
             'html_email_preclean',
             'html_email_postclean',
             'html_fix',
-        );
+        ];
     }
 
     public function cleanValue($value, $type, array $options, Cleaner $cleaner)
@@ -84,7 +85,7 @@ class HtmlPurifier implements CleanerPlugin
         // Using 'noclean' param because we dont want xss cleaner to operate on the text
         // we are already passing it through the HTMLPurifier whitelist, so the xss cleaner
         // will just remove/mangle stuff that we dont actually want touched.
-        $value = $cleaner->getCleaner('basic')->cleanValue($value, 'string', array('noclean' => true), $cleaner);
+        $value = $cleaner->getCleaner('basic')->cleanValue($value, 'string', ['noclean' => true], $cleaner);
 
         if ($type == 'html_email_postclean') {
             $value = Strings::postDomDocument($value);
@@ -97,12 +98,11 @@ class HtmlPurifier implements CleanerPlugin
             return $value;
         }
 
-        #------------------------------
-        # Basic email clean
-        #------------------------------
+        //------------------------------
+        // Basic email clean
+        //------------------------------
 
         if ($type == 'html_email_preclean') {
-
             // This bit normalises the HTML document. Some clients quote an original
             // HTML email message, but add their own HTML document as well. So you end up
             // with two <html>..</html> documents in one message. This screws up the cleaner.
@@ -154,7 +154,7 @@ class HtmlPurifier implements CleanerPlugin
             // Remove <a name="_MailEndCompose">. HTMLPurifier will clean up the </a> automatically
             $value = str_replace('<a name="_MailEndCompose">', '', $value);
 
-            $value = str_replace(array('<o:p>', '</o:p>'), array('', ''), $value);
+            $value = str_replace(['<o:p>', '</o:p>'], ['', ''], $value);
             $value = Strings::extractBodyTag($value);
             $value = Strings::decodeWhitespaceHtmlEntities($value);
 
@@ -166,7 +166,7 @@ class HtmlPurifier implements CleanerPlugin
             $value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">'."\n<html><head></head><body>".$value.'</body></html>';
 
             // Replace Wingdings characters with UTF-8 characters
-            $map = array(
+            $map = [
                 'J' => ':)',
                 'L' => ':(',
                 'K' => ':|',
@@ -175,7 +175,7 @@ class HtmlPurifier implements CleanerPlugin
                 'ó' => '<=>',
                 'è' => '=>',
                 'à' => '->',
-            );
+            ];
 
             $m = null;
             if (preg_match_all('#<span\s*style=(?:\'|")[^\'"]*font-family\s*:\s*Wingdings[^\'"]*(?:\'|")>([^<>]+)</span>#', $value, $m, \PREG_SET_ORDER)) {
@@ -203,9 +203,9 @@ class HtmlPurifier implements CleanerPlugin
             return $value;
         }
 
-        #------------------------------
-        # HTML Purifier cleaners
-        #------------------------------
+        //------------------------------
+        // HTML Purifier cleaners
+        //------------------------------
 
         require_once DP_ROOT.'/vendor-src/htmlpurifier/HTMLPurifier.standalone.php';
 
@@ -270,7 +270,7 @@ class HtmlPurifier implements CleanerPlugin
                 $config->set('AutoFormat.RemoveEmpty', false);
                 $config->set('Attr.EnableID', true);
                 $config->set('Attr.IDPrefix', 'dp-user-');
-                $config->set('Attr.AllowedFrameTargets', array('_blank'));
+                $config->set('Attr.AllowedFrameTargets', ['_blank']);
                 break;
 
             case 'html_core':
@@ -312,7 +312,7 @@ class HtmlPurifier implements CleanerPlugin
                 $config->set('Attr.AllowedClasses', 'MsoNormal');
                 $config->set('URI.DisableExternalResources', true);
                 $config->set('AutoFormat.RemoveEmpty', false);
-                $config->set('CSS.AllowedProperties', array('font', 'font-weight', 'font-style', 'font-size', 'color', 'background-color', 'background'));
+                $config->set('CSS.AllowedProperties', ['font', 'font-weight', 'font-style', 'font-size', 'color', 'background-color', 'background']);
                 $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
                 $config->set('HTML.TidyLevel', 'medium');
                 break;

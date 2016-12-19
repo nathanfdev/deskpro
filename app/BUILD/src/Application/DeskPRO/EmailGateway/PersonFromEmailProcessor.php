@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -138,11 +139,10 @@ class PersonFromEmailProcessor
      * is properly saved.
      *
      * @param $from
-     * @param bool $do_validated True to validate user, false to use whatever is default
      *
      * @return \Application\DeskPRO\Entity\Person
      */
-    public function createPerson(EmailAddress $from, $do_validated = false)
+    public function createPerson(EmailAddress $from)
     {
         $person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail(), true);
         if ($person) {
@@ -161,23 +161,21 @@ class PersonFromEmailProcessor
 
         $db->beginTransaction();
         try {
-            $tmp_person = Entity\Person::newContactPerson(array(
-                'creation_system'    => $this->creation_system,
-                'name'               => $from->getNameUtf8() ?: '',
-                'is_confirmed'       => 1,
-                'is_agent_confirmed' => App::getSetting('core.agent_validation') ? 0 : 1,
-            ));
+            $tmp_person = Entity\Person::newContactPerson([
+                'creation_system' => $this->creation_system,
+                'name'            => $from->getNameUtf8() ?: '',
+            ]);
 
             // Create new person record (no chance of conflicts here)
             $p_array                 = $tmp_person->toArray(Entity\Person::TOARRAY_ONLY_PRIMATIVES);
-            $p_array['date_created'] = date('Y-m-d H:i:s', time() - 5);// overwrting time because we'll set it for real below
+            $p_array['date_created'] = date('Y-m-d H:i:s', time() - 5); // overwrting time because we'll set it for real below
             $db->insert('people', Arrays::removeFalsey($p_array));
             $person_id = $db->lastInsertId();
 
             // Since we are 'manually' inserting the user here, Person->isNew will think
             // it already existed, so we need this hack to override it
             if (!isset($GLOBALS['DP_CREATED_PEOPLE_IDS'])) {
-                $GLOBALS['DP_CREATED_PEOPLE_IDS'] = array();
+                $GLOBALS['DP_CREATED_PEOPLE_IDS'] = [];
             }
             $GLOBALS['DP_CREATED_PEOPLE_IDS'][$person_id] = $person_id;
 
@@ -187,23 +185,20 @@ class PersonFromEmailProcessor
             $email_address        = strtolower($from->getEmail());
             list(, $email_domain) = explode('@', $email_address, 2);
 
-            $db->insert('people_emails', array(
-                'person_id'      => $person_id,
-                'email'          => $email_address,
-                'email_domain'   => $email_domain,
-                'is_validated'   => 1,
-                'date_created'   => date('Y-m-d H:i:s'),
-                'date_validated' => date('Y-m-d H:i:s'),
-            ));
+            $db->insert('people_emails', [
+                'person_id'    => $person_id,
+                'email'        => $email_address,
+                'email_domain' => $email_domain,
+                'date_created' => date('Y-m-d H:i:s'),
+            ]);
             $email_id = $db->lastInsertId();
 
-            $db->update('people', array(
+            $db->update('people', [
                 'primary_email_id' => $email_id,
-            ), array('id' => $person_id));
+            ], ['id' => $person_id]);
 
             $db->commit();
         } catch (\Exception $e) {
-
             // We expect/handle a duplicate key error here
             // and re-run ourselves which should fetch the (now available)
             // person record.

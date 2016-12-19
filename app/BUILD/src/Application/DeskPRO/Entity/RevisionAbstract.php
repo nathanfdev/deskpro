@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,10 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
+
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Base reivisons.
@@ -46,21 +49,33 @@ abstract class RevisionAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The unique ID.
      *
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Person
+     * Person who made the revision.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
      */
     protected $person = null;
 
     /**
+     * @JMS\Exclude()
+     *
      * @var string
      */
     protected $status = 'visible';
 
     /**
+     * DateTime the revision was created.
+     *
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_created;

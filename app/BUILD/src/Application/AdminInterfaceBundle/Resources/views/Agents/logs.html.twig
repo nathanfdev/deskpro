@@ -28,10 +28,8 @@
 						ng-model="LogsCtrl.page"
 						ui-select2
 						style="width: 130px;"
+						ng-options='page as ("Page " + page) for page in LogsCtrl.page_nums'
 						>
-					<option ng-repeat="page in LogsCtrl.page_nums" value="{{ ng_var('page') }}">
-						Page {{ ng_var('page') }}
-					</option>
 				</select>
 				<button class="btn" ng-show="LogsCtrl.page < LogsCtrl.num_pages"
 						ng-click="LogsCtrl.goNextPage()">
@@ -108,10 +106,8 @@
 						ng-model="LogsCtrl.page"
 						ui-select2
 						style="width: 130px;"
+						ng-options='page as ("Page " + page) for page in LogsCtrl.page_nums'
 						>
-					<option ng-repeat="page in LogsCtrl.page_nums" value="{{ ng_var('page') }}">
-						Page {{ ng_var('page') }}
-					</option>
 				</select>
 				<button class="btn" ng-show="LogsCtrl.page < LogsCtrl.num_pages"
 						ng-click="LogsCtrl.goNextPage()">

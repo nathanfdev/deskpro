@@ -1,0 +1,141 @@
+services:
+
+  form_saver:
+    class: DeskPRO\Bundle\PortalBundle\SavedForm\FormSaver
+    arguments:
+      - "@router"
+      - "@doctrine.orm.default_entity_manager"
+      - "@session"
+
+  listener.response.double_submit:
+    class: DeskPRO\Bundle\PortalBundle\Form\EventListener\DoubleSubmitJavascriptListener
+    tags:
+      - { name: kernel.event_subscriber }
+
+  listener.response.visitor_identifier_js:
+    class: DeskPRO\Bundle\PortalBundle\Visitor\EventListener\VisitorIdentifierJavascriptListener
+    tags:
+      - { name: kernel.event_subscriber }
+
+  listener.response.hit_track_js:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\EventListener\HitTrackJavascriptListener
+    tags:
+      - { name: kernel.event_subscriber }
+
+  form.form_extension:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\DeskproFormExtension
+    tags:
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType', order: 1000 }
+
+  form.checkbox_extension:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\DeskproCheckboxExtension
+    tags:
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\CheckboxType' }
+
+  form_extension.twig:
+    class: DeskPRO\Bundle\PortalBundle\Form\Twig\FormTwigExtension
+    tags:
+      - { name: twig.extension }
+
+  captcha_decider:
+    class: DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider
+    arguments: ["@brand_stack", "@security.authorization_checker", "@security.token_storage", "@request_stack", "@anti_abuse"]
+
+  form.api.chat.set_person_listener:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\SetPersonListener
+    arguments: ["@email.email_account_manager", "@doctrine.orm.default_entity_manager"]
+
+  #
+  # Types
+  #
+
+  form.csrf_double_submit_extension:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension
+    arguments: ["@request_stack", "%kernel.environment%"]
+    tags:
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType', order: 1000 }
+
+  form.ticket_reply:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketReplyType
+    arguments: ["@language_manager", "@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type }
+
+  form.person_registration:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonRegistrationType
+    arguments: ["@custom_field_manager", "@language_manager", "@captcha_decider"]
+    tags:
+      - { name: form.type }
+
+  form.person_profile:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType
+    arguments: ["@custom_field_manager", "@language_manager", "@blob.storage", "@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type }
+
+  form.comment:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CommentType
+    arguments:
+      - "@captcha_decider"
+      - "@language_manager"
+    tags:
+      - { name: form.type, alias: comment }
+
+  form.new_feedback:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewFeedbackType
+    arguments: ["@captcha_decider", "@language_manager", "@custom_field_manager", "@form_hierarchy_generator"]
+    tags:
+      - { name: form.type }
+
+  form.feedback_attachment:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackAttachmentType
+    arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
+    tags:
+      - { name: form.type }
+
+  form.request_password_reset:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PasswordResetRequestType
+    arguments:
+      - "@captcha_decider"
+      - "@language_manager"
+    tags:
+      - { name: form.type }
+
+  form.person_change_password:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType
+    arguments:
+      - "@captcha_decider"
+      - "@deskpro.core.translate"
+    tags:
+      - { name: form.type }
+
+  form.captcha:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType
+    arguments: ["@brand_stack", "@language_manager", "%gregwar_captcha.config%"]
+    tags:
+      - { name: form.type }
+
+  form.api.chat_create:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatCreateType
+    arguments:
+      - "@form.api.chat.set_person_listener"
+      - "@widget_settings_resolver"
+      - "@custom_field_manager"
+      - "@brand_stack"
+      - "@permissions_manager"
+    tags:
+      - { name: form.type }
+
+  form.api.chat_transcription_info:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptInfoType
+    arguments: ["@form.api.chat.set_person_listener", "@widget_settings_resolver"]
+    tags:
+      - { name: form.type }
+
+  form.share_article:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ShareArticleType
+    tags:
+      - { name: form.type, alias: share_article }
+    arguments:
+      - "@captcha_decider"
+      - "@language_manager"

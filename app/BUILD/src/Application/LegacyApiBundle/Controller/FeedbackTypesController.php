@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,16 +29,21 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\FeedbackTypes\FeedbackTypeEdit;
 use Application\DeskPRO\FeedbackTypes\Form\Type\FeedbackTypeType;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Arrays;
 
+/**
+ * @ApiModes("all")
+ */
 class FeedbackTypesController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -53,9 +58,9 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         return $multi;
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction()
     {
@@ -65,15 +70,15 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         $feedback_types = $this->container->getSystemService('feedback_types');
 
         return $this->createApiResponse(
-            array(
+            [
                  'types' => $this->getApiData(Arrays::flatten($feedback_types->getAll())),
-            )
-        );
+            ]
+    // get
+);
     }
 
-    ###################################################################################################################
-    # get
-    ####################################################################################################################
+//##################################################################################################################
+    //###################################################################################################################
 
     public function getAction($id)
     {
@@ -91,57 +96,55 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         $returnedData['usergroups'] = $feedback_types->getNonAgentUserGroups($feedback_type);
 
         return $this->createApiResponse(
-            array(
+            [
                  'feedback_type' => $returnedData,
-            )
+            ]
         );
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
     public function saveAction($id)
     {
         /*
          * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
-        $feedback_types = $this->container->getSystemService('feedback_types');
+        $feedbackTypes = $this->container->getSystemService('feedback_types');
 
         if ($id) {
-            $feedback_type = $feedback_types->getById($id);
+            $feedbackType = $feedbackTypes->getById($id);
 
-            if (!$feedback_type) {
+            if (!$feedbackType) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $feedback_type = $feedback_types->createNew();
+            $feedbackType = $feedbackTypes->createNew();
         }
 
         $postData = $this->in->getAll('post');
 
-        $feedback_type_edit = new FeedbackTypeEdit($feedback_type);
+        $feedback_type_edit = new FeedbackTypeEdit($feedbackType);
 
-        $form = $this->createForm(new FeedbackTypeType(), $feedback_type_edit, array('cascade_validation' => true));
+        $form = $this->createForm(FeedbackTypeType::class, $feedback_type_edit, ['cascade_validation' => true]);
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_type'), true);
 
         if ($form->isValid()) {
             $feedback_type_edit->save($this->em);
         } else {
-            return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($feedback_type));
+            return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($feedbackType));
         }
 
-        return $this->createApiResponse(
-            array(
-                 'success' => true,
-                 'id'      => $feedback_type->getId(),
-            )
-        );
+        return $this->createApiResponse([
+             'success' => true,
+             'id'      => $feedbackType->getId(),
+        ]);
     }
 
-    ####################################################################################################################
-    # remove
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove
+    //###################################################################################################################
 
     public function removeAction($id)
     {
@@ -179,7 +182,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         try {
             $this->db->executeUpdate(
                 'UPDATE feedback SET category_id = ? WHERE category_id = ?',
-                array($move_to, $old_id)
+                [$move_to, $old_id]
             );
 
             $this->em->remove($feedback_type);
@@ -191,12 +194,12 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
             throw $e;
         }
 
-        return $this->createSuccessResponse(array('old_id' => $old_id));
+        return $this->createSuccessResponse(['old_id' => $old_id]);
     }
 
-    ####################################################################################################################
-    # save-display-order
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-display-order
+    //###################################################################################################################
 
     public function saveDisplayOrderAction()
     {

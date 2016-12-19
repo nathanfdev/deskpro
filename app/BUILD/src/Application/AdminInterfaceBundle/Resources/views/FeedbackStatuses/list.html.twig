@@ -1,5 +1,13 @@
 {% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
 {% block listpane_content %}
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_settings') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Feedback Settings</h3>
+		</a>
+	</section>
+
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
@@ -45,6 +53,25 @@
 		</article>
 	</section>
 
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_types') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Feedback Types</h3>
+		</a>
+	</section>
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_categories') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Feedback Categories</h3>
+		</a>
+	</section>
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_labels') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Feedback Labels</h3>
+		</a>
+	</section>
+
 	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
 	<div dp-register-message="no_delete_last">{{ phrase('adm.feedback_statuses.no_delete_last') }}</div>
 {% endblock %}
@@ -63,7 +90,7 @@
 		<dl>
 			<dt><em>Q:</em>Where are the settings for the survey where users rate support after a ticket resolution or chat?</dt>
 			<dd><em>A:</em>
-				This survey is part of the <strong>Satisfaction</strong> feature, which is a separate system from <strong>Feedback</strong>. Go to <a href="/admin/#/tickets/satisfaction">Tickets > Satisfaction</a> to manage this feature.
+				This survey is part of the <strong>Satisfaction</strong> feature, which is a separate system from <strong>Feedback</strong>. Go to <a href="agent/#admin:tickets/satisfaction">Tickets > Satisfaction</a> to manage this feature.
 			</dd>
 		</dl>
 		</section>

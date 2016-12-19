@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,32 +31,62 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Basic hierarchicial category entity.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
-class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
+class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName, Hierarchical
 {
     /**
+     * The unique id of the category.
+     *
      * @var int
+     * @JMS\Expose()
+     * @JMS\Groups("list")
+     * @JMS\Type("integer")
      */
     protected $id = null;
 
     /**
+     * Category`s title.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("list")
+     *
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     protected $title;
 
     /**
+     * @var string
+     */
+    protected $slug;
+
+    /**
+     * Display order.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     * @JMS\Groups("product")
+     *
      * @var int
      */
     protected $display_order = 0;
@@ -65,7 +95,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     ///**
     // */
     //protected $parent;
-    //
+
     ///**
     // */
     //protected $children;
@@ -76,12 +106,10 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     // */
     //protected $usergroups;
 
-    /**
-     */
     protected $depth = 0;
 
     /**
-      */
+     *  */
     protected $root;
 
     /**
@@ -89,7 +117,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
      *
      * @var array()
      */
-    protected $_structure = array();
+    protected $_structure = [];
 
     /**
      * @var \Application\DeskPRO\Publish\Structure
@@ -160,12 +188,34 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this->title;
     }
 
-    /**
-     * @return string
-     */
     public function getRealTitle()
     {
         return $this->title;
+    }
+
+    public function updateSlug()
+    {
+        $this->slug = Strings::slugifyTitle($this->title);
+        $this->setModelField('slug', $this->slug);
+    }
+
+    /**
+     * @param $slug
+     *
+     * @return $this
+     */
+    public function setSlug($slug)
+    {
+        $this->setModelField('slug', $slug);
+
+        return $this;
+    }
+
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        $this->updateSlug();
     }
 
     /**
@@ -175,7 +225,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
      */
     public function getTitleParts()
     {
-        $titles = array();
+        $titles = [];
         foreach ($this->getTreeParents() as $p) {
             $titles[] = $p['title'];
         }
@@ -200,7 +250,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     /**
      * Gets all parents in the tree, in order (left to right, aka, top to bottom).
      *
-     * @return array
+     * @return CategoryAbstract[]
      */
     public function getTreeParents()
     {
@@ -208,7 +258,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
             return $this->_structure['all_parents'];
         }
 
-        $this->_structure['all_parents'] = array();
+        $this->_structure['all_parents'] = [];
         $cat                             = $this;
         while ($cat->getParent()) {
             $this->_structure['all_parents'][$cat->getParent()->id] = $cat->getParent();
@@ -230,12 +280,14 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     public function getTreeIds($including_this = true)
     {
         if (!isset($this->_structure['all_child_ids'])) {
-            $all_ids = array();
+            $all_ids = [];
             $r       = function (CategoryAbstract $cat) use (&$r, &$all_ids) {
-                foreach ($cat->getChildren() as $c) {
-                    $all_ids[] = $c->id;
-                    if ($c->getChildren()) {
-                        $r($c);
+                if ($children = $cat->getChildren()) {
+                    foreach ($cat->getChildren() as $c) {
+                        $all_ids[] = $c->id;
+                        if ($c->getChildren()) {
+                            $r($c);
+                        }
                     }
                 }
             };
@@ -261,7 +313,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
             //return $this->structure_helper->getCategoryHelperForCategory($this)->getChildren($this);
         }
 
-        return $this->children;
+        return $this->children ?: new ArrayCollection();
     }
 
     /**
@@ -278,6 +330,8 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 
     /**
      * @return string
+     *
+     * @deprecated use getSlug instead
      */
     public function getUrlSlug()
     {
@@ -285,13 +339,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -303,13 +353,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     }
 
     /**
-     * Get the default value phrase for the object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         if ($property == 'full') {
             return $this->getFullTitle();
@@ -338,15 +384,31 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this->getFullTitle();
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->isMappedSuperclass = true;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array('name' => 'CategoryAbstract'));
+        $metadata->setPrimaryTable(['name' => 'CategoryAbstract']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
     }
 }

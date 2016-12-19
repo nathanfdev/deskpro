@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
@@ -46,45 +47,45 @@ class ChatGroupingField extends GroupingField
     {
         switch ($this->field) {
             case self::DEPARTMENT:
-                return array('select'   => 'COALESCE(chat_conversations.department_id, 0) AS group_field',
+                return ['select'        => 'COALESCE(chat_conversations.department_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
                              'where'    => '',
-                );
+                ];
                 break;
 
             case self::AGENT:
-                return array('select'   => 'COALESCE(chat_conversations.agent_id, 0) AS group_field',
+                return ['select'        => 'COALESCE(chat_conversations.agent_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
                              'where'    => '',
-                );
+                ];
                 break;
 
             case self::ORGANIZATION:
-                return array(
+                return [
                     'select'   => 'COALESCE(organizations.id, 0) AS org_id',
                     'group_by' => 'org_id',
                     'join'     => 'LEFT JOIN people ON (chat_conversations.person_id = people.id) LEFT JOIN organizations ON (organizations.id = people.organization_id)',
                     'where'    => '',
-                );
+                ];
                 break;
 
             case self::USERGROUP:
-                return array(
+                return [
                     'select'   => 'COALESCE(person2usergroups.usergroup_id, 0) AS usergroup_id',
                     'group_by' => 'usergroup_id',
                     'join'     => 'LEFT JOIN person2usergroups ON (person2usergroups.person_id = chat_conversations.person_id)',
                     'where'    => '',
-                );
+                ];
                 break;
 
             case self::USER:
-                return array('select'   => 'COALESCE(chat_conversations.person_id, 0) AS person_id',
+                return ['select'        => 'COALESCE(chat_conversations.person_id, 0) AS person_id',
                              'group_by' => 'person_id',
                              'join'     => '',
                              'where'    => '',
-                );
+                ];
                 break;
 
             case self::USER_FIELD:
@@ -93,29 +94,29 @@ class ChatGroupingField extends GroupingField
                 if ($field_def->isChoiceType()) {
                     $children = App::getSystemService('person_fields_manager')->getFieldChildren($field_def);
                     if (!$children) {
-                        return array(
+                        return [
                             'select'   => '0 as group_field',
                             'group_by' => 'group_field',
                             'join'     => '',
                             'where'    => '',
-                        );
+                        ];
                     }
 
                     $ids = implode(',', array_keys($children));
 
-                    return array(
+                    return [
                         'select'   => 'COALESCE(custom_data_person.id, 0) AS group_field',
                         'group_by' => 'group_field',
                         'join'     => 'LEFT JOIN custom_data_person ON (custom_data_person.person_id = chat_conversations.person_id AND custom_data_person.field_id IN('.$ids.'))',
                         'where'    => '',
-                    );
+                    ];
                 } else {
-                    return array(
+                    return [
                         'select'   => 'COALESCE(custom_data_person.input, 0) AS group_field',
                         'group_by' => 'group_field',
                         'join'     => 'LEFT JOIN custom_data_person ON (custom_data_person.person_id = chat_conversations.person_id AND custom_data_person.field_id = '.$this->field_id.')',
                         'where'    => '',
-                    );
+                    ];
                 }
                 break;
 

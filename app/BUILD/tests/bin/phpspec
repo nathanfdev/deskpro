@@ -1,0 +1,9 @@
+#!/usr/bin/env php
+<?php
+
+define('PHPSPEC_VERSION', '2.1.1');
+
+require_once __DIR__.'/../bootstrap_minimal.php';
+
+$app = new PhpSpec\Console\Application(PHPSPEC_VERSION);
+$app->run();

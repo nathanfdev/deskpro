@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/semantic.css') }}" type="text/css" />
 {% if not in_body %}
 	<script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
 {% endif %}
@@ -17,8 +18,6 @@
 	{{ dp_asset_html('agent_pages') }}
 	{{ dp_asset_html('agent_pages_lists') }}
 	{{ dp_asset_html('agent_element_handlers') }}
-
-	{% if app.getBrowserSniffer().getBrowser() == 'Internet Explorer' %}{{ dp_asset_html('agent_interface_ie_css') }}{% endif %}
 
 	<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
 
@@ -59,6 +58,8 @@
 	// our dynamically added paths
 	window.DP_RJS_PATHS_IGNORE = ['AgentApp', 'AppPlatform', 'AppPlatformConfig'];
 </script>
+<script type="text/javascript" src="//media.twiliocdn.com/sdk/js/client/v1.3/twilio.min.js"></script>
+<script type="text/javascript" src="//media.twiliocdn.com/taskrouter/js/v1.7.1/taskrouter.min.js"></script>
 <script	type="text/javascript" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
 <script	type="text/javascript" src="{{ path('agent_requirejs_loader') }}?v={{ app.getBuildTime() }}"></script>
 <script	type="text/javascript">
@@ -70,3 +71,9 @@
 	});
 </script>
 <script	type="text/javascript" src="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}"></script>
+
+{# --- NEW AGENT --- #}
+{#<link type="text/css" rel="stylesheet" href="{{ asset('DeskPRO_AgentBundle.css', 'app_assets') }}" />#}
+{#<script type="text/javascript" src="{{ asset('DeskPRO_AgentBundle.js', 'app_assets') }}"></script>#}
+<link type="text/css" rel="stylesheet" href="{{ asset('DeskPRO_AgentLegacyBundle_style.css', 'app_assets') }}" />
+<script type="text/javascript" src="{{ asset('DeskPRO_AgentLegacyBundle.js', 'app_assets') }}"></script>

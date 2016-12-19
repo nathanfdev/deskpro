@@ -2,3 +2,5 @@
 
 *.sh  eol=lf
 *.bat eol=crlf
+
+composer.lock eol=lf

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,12 +32,15 @@ class LabelsProcessor extends Base
 {
     const JOB_TYPE = 'reset.labels';
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doProcess(array $data)
     {
-        $types = array(
+        $types = [
             'articles', 'blobs', 'chat_conversations', 'downloads', 'feedback', 'news', 'organizations',
             'people', 'tasks', 'tickets',
-        );
+        ];
 
         foreach ($types as $type) {
             $this->connection->executeUpdate("DELETE FROM labels_$type");

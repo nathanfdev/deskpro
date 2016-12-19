@@ -1,0 +1,56 @@
+<p>
+    This incident is shown because of {{ incident.getFailureEventsCount() }} PHP exception(s)
+    of type {{ incident.getFirstEvent().getClass() }} and {{ incident.getFirstEvent().getCode() }} code.
+    {% if incident.getFailureEventsCount() > 200 %}
+        <br />
+        Only the first 200 events are displayed to preserve performances
+    {% endif %}
+</p>
+
+<p>
+    First exception information:
+    <table class="table table-bordered">
+        <tr>
+            <td>Class</td><td>{{ incident.getFirstEvent().getClass() }}</td>
+        </tr>
+        <tr>
+            <td>Message</td><td>{{ incident.getFirstEvent().getMessage() }}</td>
+        </tr>
+        <tr>
+            <td>Code</td><td>{{ incident.getFirstEvent().getCode() }}</td>
+        </tr>
+        <tr>
+            <td>File</td><td>{{ incident.getFirstEvent().getFile() }}</td>
+        </tr>
+        <tr>
+            <td>Line</td><td>{{ incident.getFirstEvent().getLine() }}</td>
+        </tr>
+    </table>
+
+    Exceptions log:
+    <table class="table table-bordered">
+        <tr>
+            <td>Date</td>
+            <td>Message</td>
+            <td>Trace</td>
+        </tr>
+        {% set count = 0 %}
+        {% for exception in incident.getEvents() if count < 200 %}
+            {% set count = count + 1 %}
+            <tr>
+                <td>{{ exception.getDateCreated()|date }}</td>
+                <td>{{ exception.getMessage() }}</td>
+                <td>
+                    <a class="btn btn-primary" ng-href="#/server/incidents/event/{{ exception.getId() }}" href="#/server/incidents/event/{{ exception.getId() }}">
+                        View more
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</p>
+
+<p>
+    If exception description doesn't give you enough information to solve it or you think it's caused by DeskPRO code
+    issue, you can report this error to DeskPRO.
+</p>

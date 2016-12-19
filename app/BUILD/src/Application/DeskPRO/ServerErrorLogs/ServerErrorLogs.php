@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,29 +29,31 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerErrorLogs;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Log\ErrorLog\ErrorLogReader;
-use Doctrine\ORM\EntityManager;
-use Orb\Util\Util;
 
 class ServerErrorLogs
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var string
      */
-    protected $em;
+    private $auth;
 
     /**
      * @var string
      */
-    protected $config_hash;
+    private $logsPath;
 
-    public function __construct(EntityManager $em)
+    public function __construct()
     {
-        $this->em          = $em;
-        $this->config_hash = md5_file(DP_CONFIG_FILE);
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
+
+        $this->auth     = $DP_ENV->getDatManager()->readTxtFile('server_info_auth', '');
+        $this->logsPath = $DP_ENV->getUserLogsDir();
     }
 
     /**
@@ -59,15 +61,14 @@ class ServerErrorLogs
      */
     public function getAll()
     {
-        $log_reader = new ErrorLogReader(dp_get_log_dir().'/error.log');
+        $log_reader = new ErrorLogReader($this->logsPath.'/error.log');
         $log_reader->setDateTimezone(App::getSession()->getPerson()->getDateTimezone());
 
-        return array(
+        return [
             'logs'                  => array_values($log_reader->getAll()),
-            'deskpro_error_log_url' => $this->_generateUrl('_sys=errorlog'),
-            'web_error_log_url'     => $this->_generateUrl('_sys=errorlog&web'),
-            'cli_error_log_url'     => $this->_generateUrl('_sys=errorlog&cli'),
-        );
+            'deskpro_error_log_url' => $this->_generateUrl('logs/errors'),
+            'web_error_log_url'     => $this->_generateUrl('logs/php-errors'),
+        ];
     }
 
     /**
@@ -77,7 +78,7 @@ class ServerErrorLogs
      */
     public function getById($id)
     {
-        $log_reader = new ErrorLogReader(dp_get_log_dir().'/error.log');
+        $log_reader = new ErrorLogReader($this->logsPath.'/error.log');
         $log_reader->setDateTimezone(App::getSession()->getPerson()->getDateTimezone());
         $log_reader->enableRawLog();
         $log_reader->setIdFilter($id);
@@ -92,11 +93,11 @@ class ServerErrorLogs
      */
     public function clearAllErrors()
     {
-        if (!is_writable(dp_get_log_dir().'/error.log')) {
+        if (!is_writable($this->logsPath.'/error.log')) {
             return false;
         }
 
-        @file_put_contents(dp_get_log_dir().'/error.log', '');
+        @file_put_contents($this->logsPath.'/error.log', '');
 
         return true;
     }
@@ -106,10 +107,10 @@ class ServerErrorLogs
      *
      * @return string
      */
-    protected function _generateUrl($url)
+    private function _generateUrl($url)
     {
-        $result = App::getSetting('core.deskpro_url').'?'.$url;
-        $result .= '&_='.Util::generateStaticSecurityToken($this->config_hash.'errorlog', 86400);
+        $result = App::getContainer()->getBrandSetting('core.deskpro_url').'__serverinfo/'.$url;
+        $result .= '?auth='.$this->auth;
 
         return $result;
     }

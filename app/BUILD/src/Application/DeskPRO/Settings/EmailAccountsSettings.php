@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,45 +28,66 @@
 
 namespace Application\DeskPRO\Settings;
 
+/**
+ * Class EmailAccountsSettings.
+ */
 class EmailAccountsSettings
 {
     const PREFIX = 'core.emails';
+
+    const DEFAULT_RATE_COUNT     = 15;
+    const DEFAULT_RATE_TIME      = 600;
+    const DEFAULT_RATE_LOCK_TIME = 900;
 
     /**
      * @var Settings
      */
     protected $settings;
 
-    /** @var array  */
-    protected $values = array(
+    /**
+     * @var array
+     */
+    protected $values = [
         'attach_agent_maxsize'     => 26214400,
-        'attach_agent_must_exts'   => array(),
-        'attach_agent_not_exts'    => array(),
+        'attach_agent_must_exts'   => [],
+        'attach_agent_not_exts'    => [],
         'attach_user_maxsize'      => 26214400,
-        'attach_user_must_exts'    => array(),
-        'attach_user_not_exts'     => array(),
+        'attach_user_must_exts'    => [],
+        'attach_user_not_exts'     => [],
         'sendemail_attach_maxsize' => 7340032,
 
-        'rate_count'    => 15,
-        'rate_time'     => 600,
-        'rate_locktime' => 900,
-    );
+        'rate_count'    => self::DEFAULT_RATE_COUNT,
+        'rate_time'     => self::DEFAULT_RATE_TIME,
+        'rate_locktime' => self::DEFAULT_RATE_LOCK_TIME,
+    ];
 
-    protected $other_values = array(
+    /**
+     * @var array
+     */
+    protected $other_values = [
         'core_tickets.enable_dupe_checking'                 => true,
+        'core_tickets.enable_email_preview'                 => true,
         'core_tickets.gateway_enable_subject_match'         => true,
         'core_tickets.enable_same_account_subject_matching' => false,
         'core_tickets.enable_exact_subject_matching'        => false,
-    );
+    ];
 
+    /**
+     * Constructor.
+     *
+     * @param Settings $settings
+     */
     public function __construct(Settings $settings)
     {
         $this->settings = $settings;
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
-        $data = array();
+        $data = [];
         foreach ($this->values as $k => $v) {
             if ($k == 'sendemail_attach_maxsize') {
                 $storedValue = $this->settings->get('core.sendemail_attach_maxsize');
@@ -90,7 +111,12 @@ class EmailAccountsSettings
         return $data;
     }
 
-    public function fromArray(array $data = array())
+    /**
+     * @param array $data
+     *
+     * @throws \Exception
+     */
+    public function fromArray(array $data = [])
     {
         foreach ($data as $k => $v) {
             if (!array_key_exists($k, $this->values)) {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -41,6 +42,11 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class PersonTwitterUser extends \Application\DeskPRO\Domain\DomainObject
 {
+    /**
+     * @var int
+     */
+    protected $id;
+
     /**
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -70,32 +76,101 @@ class PersonTwitterUser extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $oauth_token_secret = null;
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonTwitterUser';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'              => 'people_twitter_users',
-            'uniqueConstraints' => array(
-                'unique_key_idx' => array('columns' => array('person_id', 'screen_name')),
-            ),
-            'indexes' => array(
-                'screen_name_idx'     => array('columns' => array('screen_name')),
-                'twitter_user_id_idx' => array('columns' => array('twitter_user_id')),
-            ),
-        ));
+            'uniqueConstraints' => [
+                'unique_key_idx' => [
+                    'columns' => [
+                        'person_id',
+                        'screen_name',
+                    ],
+                ],
+            ],
+            'indexes' => [
+                'screen_name_idx'     => ['columns' => ['screen_name']],
+                'twitter_user_id_idx' => ['columns' => ['twitter_user_id']],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'screen_name', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'screen_name'));
-        $metadata->mapField(array('fieldName' => 'is_verified', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_verified'));
-        $metadata->mapField(array('fieldName' => 'oauth_token', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'oauth_token', 'dpApi' => false, 'dpqlAccess' => false));
-        $metadata->mapField(array('fieldName' => 'oauth_token_secret', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'oauth_token_secret', 'dpApi' => false, 'dpqlAccess' => false));
-        $metadata->mapField(array('fieldName' => 'twitter_user_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'twitter_user_id'));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'screen_name',
+            'type'       => 'string',
+            'length'     => 50,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'screen_name',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_verified',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_verified',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'oauth_token',
+            'type'       => 'string',
+            'length'     => 4000,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'oauth_token',
+            'dpApi'      => false,
+            'dpqlAccess' => false,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'oauth_token_secret',
+            'type'       => 'string',
+            'length'     => 4000,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'oauth_token_secret',
+            'dpApi'      => false,
+            'dpqlAccess' => false,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'twitter_user_id',
+            'type'       => 'bigint',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'twitter_user_id',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne([
+            'fieldName'    => 'person',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => 'twitter_users',
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

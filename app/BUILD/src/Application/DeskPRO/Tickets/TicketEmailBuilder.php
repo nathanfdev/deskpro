@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\CustomFields\PersonFieldManager;
@@ -40,32 +41,113 @@ use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Settings\Settings;
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\TicketLayout\TicketLayoutManager;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
+use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
 use Swift_Mailer;
 
+/**
+ * Class TicketEmailBuilder.
+ */
 class TicketEmailBuilder
 {
     /**
-     * @var \Orb\Util\OptionsArray
+     * @var OptionsArray
      */
     private $options;
 
-    private function __construct()
-    {
-        $this->options = new OptionsArray();
-    }
+    /**
+     * @var EntityManager
+     */
+    private $em;
 
     /**
-     * @return TicketEmailBuilder
+     * @var Settings
      */
-    public static function create()
-    {
-        return new self();
+    private $settings;
+
+    /**
+     * @var Swift_Mailer
+     */
+    private $mailer;
+
+    /**
+     * @var Translate
+     */
+    private $translate;
+
+    /**
+     * @var EmailAccountManager
+     */
+    private $emailAccountManager;
+
+    /**
+     * @var TicketFieldManager
+     */
+    private $ticketFieldManager;
+
+    /**
+     * @var PersonFieldManager
+     */
+    private $personFieldManager;
+
+    /**
+     * @var TicketLayoutManager
+     */
+    private $ticketLayoutManager;
+
+    /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager       $em
+     * @param Settings            $settings
+     * @param Swift_Mailer        $mailer
+     * @param Translate           $translate
+     * @param EmailAccountManager $emailAccountManager
+     * @param TicketFieldManager  $ticketFieldManager
+     * @param PersonFieldManager  $personFieldManager
+     * @param TicketLayoutManager $ticketLayoutManager
+     * @param BrandStack          $brandStack
+     */
+    private function __construct(
+        EntityManager       $em,
+        Settings            $settings,
+        Swift_Mailer        $mailer,
+        Translate           $translate,
+        EmailAccountManager $emailAccountManager,
+        TicketFieldManager  $ticketFieldManager,
+        PersonFieldManager  $personFieldManager,
+        TicketLayoutManager $ticketLayoutManager,
+        BrandStack          $brandStack
+    ) {
+        $this->em                  = $em;
+        $this->settings            = $settings;
+        $this->mailer              = $mailer;
+        $this->translate           = $translate;
+        $this->emailAccountManager = $emailAccountManager;
+        $this->ticketFieldManager  = $ticketFieldManager;
+        $this->personFieldManager  = $personFieldManager;
+        $this->ticketLayoutManager = $ticketLayoutManager;
+        $this->brandStack          = $brandStack;
+        $this->options             = new OptionsArray();
+
+        $this->options->set('mailer', $mailer);
+        $this->options->set('email_accounts', $emailAccountManager);
+        $this->options->set('translate', $translate);
+        $this->options->set('brand_stack', $brandStack);
     }
 
     /**
@@ -75,17 +157,19 @@ class TicketEmailBuilder
      */
     public static function createFromContainer(DeskproContainer $container)
     {
-        $build = new self();
-        $build->setEm($container->getEm())
-            ->setSettings($container->getSettingsHandler())
-            ->setMailer($container->getMailer())
-            ->setEmailAccountManager($container->getEmailAccountManager())
-            ->setTranslate($container->getTranslator())
-            ->setTicketFieldManager($container->getTicketFieldManager())
-            ->setUserFieldManager($container->getPersonFieldManager())
-            ->setTicketLayoutManager($container->getTicketLayoutManager());
+        $builder = new self(
+            $container->getEm(),
+            $container->getSettingsHandler(),
+            $container->getMailer(),
+            $container->getTranslator(),
+            $container->getEmailAccountManager(),
+            $container->getTicketFieldManager(),
+            $container->getPersonFieldManager(),
+            $container->getTicketLayoutManager(),
+            $container->getBrandStack()
+        );
 
-        return $build;
+        return $builder;
     }
 
     /**
@@ -94,102 +178,6 @@ class TicketEmailBuilder
     public function buildTicketEmail()
     {
         return new TicketEmail($this->options->all());
-    }
-
-    /**
-     * @param Settings $settings
-     *
-     * @return $this
-     */
-    public function setSettings(Settings $settings)
-    {
-        $this->options->set('settings', $settings);
-
-        return $this;
-    }
-
-    /**
-     * @param Swift_Mailer $mailer
-     *
-     * @return TicketEmailBuilder
-     */
-    public function setMailer(Swift_Mailer $mailer)
-    {
-        $this->options->set('mailer', $mailer);
-
-        return $this;
-    }
-
-    /**
-     * @param EmailAccountManager $email_accounts
-     *
-     * @return $this
-     */
-    public function setEmailAccountManager(EmailAccountManager $email_accounts)
-    {
-        $this->options->set('email_accounts', $email_accounts);
-
-        return $this;
-    }
-
-    /**
-     * @param Translate $tr
-     *
-     * @return TicketEmailBuilder
-     */
-    public function setTranslate(Translate $tr)
-    {
-        $this->options->set('translate', $tr);
-
-        return $this;
-    }
-
-    /**
-     * @param EntityManager $em
-     *
-     * @return TicketEmailBuilder
-     */
-    public function setEm(EntityManager $em)
-    {
-        $this->options->set('em', $em);
-
-        return $this;
-    }
-
-    /**
-     * @param TicketFieldManager $field_manager
-     *
-     * @return TicketEmailBuilder
-     */
-    public function setTicketFieldManager(TicketFieldManager $field_manager)
-    {
-        $this->options->set('ticket_field_manager', $field_manager);
-
-        return $this;
-    }
-
-    /**
-     * @param PersonFieldManager $field_manager
-     *
-     * @return TicketEmailBuilder
-     */
-    public function setUserFieldManager(PersonFieldManager $field_manager)
-    {
-        $this->options->set('user_field_manager', $field_manager);
-
-        return $this;
-    }
-
-    /**
-     * @param TicketLayoutManager $ticket_layout_manager
-     *
-     * @return TicketEmailBuilder
-     */
-    public function setTicketLayoutManager(TicketLayoutManager $ticket_layout_manager)
-    {
-        $this->options->set('ticket_layout_manager', $ticket_layout_manager);
-
-        return $this;
     }
 
     /**
@@ -212,6 +200,18 @@ class TicketEmailBuilder
     public function setToPerson(Person $person)
     {
         $this->options->set('to_person', $person);
+
+        return $this;
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return $this
+     */
+    public function setToPersonEmail($email)
+    {
+        $this->options->set('to_person_email', $email);
 
         return $this;
     }
@@ -367,7 +367,7 @@ class TicketEmailBuilder
      *
      * @return TicketEmailBuilder
      */
-    public function setHeaders($headers = array())
+    public function setHeaders($headers = [])
     {
         $this->options->set('headers', $headers);
 
@@ -380,5 +380,133 @@ class TicketEmailBuilder
     public function getOptions()
     {
         return $this->options->all();
+    }
+
+    /**
+     * @param bool $forAgent
+     *
+     * @return array
+     */
+    public function getCommonVars($forAgent)
+    {
+        /** @var Ticket $ticket */
+        $ticket        = $this->options->get('ticket');
+        $userMode      = $this->options->get('user_mode');
+        $isAuto        = $this->options->get('is_auto');
+        $logger        = $this->options->get('logger');
+        $maxAttachSize = $this->options->get('max_attach_size', 0);
+
+        if ($ticket->getBrand()) {
+            $this->brandStack->push($ticket->getBrand());
+        }
+
+        /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
+        $messageRepo = $this->em->getRepository(TicketMessage::class);
+        $messages    = $messageRepo->getTicketMessages(
+            $ticket,
+            [
+                'with_notes'       => $forAgent,
+                'with_attachments' => true,
+                'limit'            => 15,
+                'order'            => 'DESC',
+            ]
+        );
+
+        $vars = [
+            'ticket'   => $ticket,
+            'is_auto'  => $isAuto,
+            'messages' => $messages,
+        ];
+
+        // If we have a speciifc 'new message', then we need to trim
+        // messages array down (which is ALL the latest messages, may be too many if we are re-sending)
+        if (isset($vars['new_message'])) {
+            $got    = false;
+            $newArr = [];
+
+            foreach (array_reverse($vars['messages']) as $m) {
+                $newArr[] = $m;
+                if ($vars['new_message'] === $m) {
+                    $got = true;
+                    break;
+                }
+            }
+
+            if ($got) {
+                $vars['messages'] = array_reverse($newArr);
+            }
+        }
+
+        $department = $ticket->getDepartment();
+        $layoutId   = $department ? $department->getId() : null;
+
+        if ($userMode == TicketEmail::MODE_AGENT) {
+            $layout = $this->ticketLayoutManager->getAgentLayouts()->getLayout($layoutId);
+            $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
+        } else {
+            $layout = $this->ticketLayoutManager->getUserLayouts()->getLayout($layoutId);
+            $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
+        }
+
+        if ($this->ticketFieldManager) {
+            $customFields = $this->ticketFieldManager->getDisplayArrayForObject($ticket);
+        } else {
+            $customFields = [];
+        }
+
+        if ($this->personFieldManager) {
+            $customUserFields = $this->personFieldManager->getDisplayArrayForObject($ticket->getPerson());
+        } else {
+            $customUserFields = [];
+        }
+
+        $vars['ticket_layout']      = $layout;
+        $vars['custom_fields']      = $customFields;
+        $vars['custom_user_fields'] = $customUserFields;
+
+        $state = $ticket->getStateChangeRecorder();
+
+        /** @var TicketAttachment[] $lastMessageAttachments */
+        $lastMessageAttachments = [];
+        if ($state->hasNewReply() && !$isAuto) {
+            /** @var TicketMessage $lastMessage */
+            $lastMessage = Arrays::getFirstItem($vars['messages']);
+
+            // This check is because theoretically, the entire thread
+            // could be agent notes (e.g., first message was turned into a note).
+            // So if this is an email to a user, messages array will be empty
+            // and this check will prevent warnings about trying to use a null $last_message.
+
+            if ($lastMessage) {
+                $logger->info(sprintf('[TicketEmail] New reply on #%d checking for attachments <= %d', $lastMessage->getId(), $maxAttachSize));
+
+                $attachments = $lastMessage->getAttachments();
+                if (count($attachments)) {
+                    $logger->info(sprintf('[TicketEmail] Message has %d attachments', count($attachments)));
+                    foreach ($attachments as $attachment) {
+                        $blob = $attachment->getBlob();
+
+                        if ($blob->getFilesize() <= $maxAttachSize) {
+                            $logger->info(sprintf('[TicketEmail] Adding attachment %s', $blob->getFilename()));
+                            $lastMessageAttachments[$attachment->getId()] = $attachment;
+                        } else {
+                            $logger->info(sprintf('[TicketEmail] Skipping attachment %s', $blob->getFilename()));
+                        }
+                    }
+                } else {
+                    $logger->info(sprintf('[TicketEmail] Message has no attachments'));
+                }
+            }
+
+            if ($this->settings->get('core_tickets.enable_feedback') && $userMode == 'user' && $lastMessage && $lastMessage->getPerson()->isAgent() && !$lastMessage->isAgentNote()) {
+                $vars['show_rating_link'] = true;
+            }
+        }
+
+        if ($lastMessageAttachments) {
+            $vars['attached_blobs'] = $lastMessageAttachments;
+        }
+
+        return $vars;
     }
 }

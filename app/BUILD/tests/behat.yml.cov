@@ -1,0 +1,39 @@
+imports:
+    - behat.yml
+
+default:
+    extensions:
+        VIPSoft\CodeCoverageExtension\Extension:
+            drivers:
+                - local
+            report:
+                format: php
+            filter:
+                whitelist:
+                    addUncoveredFilesFromWhitelist: true
+                    include:
+                        directories:
+                            '../src/DeskPRO/Bundle/AppBundle':
+                                suffix: .php
+                            '../src/DeskPRO/Bundle/PortalBundle':
+                                suffix: .php
+                            '../src/DeskPRO/Bundle/ApiBundle':
+                                suffix: .php
+                    exclude:
+                        directories:
+                            '../vendor': ~
+                            '../vendor-src': ~
+
+api:
+    extensions:
+        VIPSoft\CodeCoverageExtension\Extension:
+            report:
+                options:
+                    target: coverage/cov/behat-api.cov
+
+portal:
+    extensions:
+        VIPSoft\CodeCoverageExtension\Extension:
+            report:
+                options:
+                    target: coverage/cov/behat-portal.cov

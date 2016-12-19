@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,9 @@ use Predis\Client;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class RedisReader.
+ */
 class RedisReader implements ReaderInterface
 {
     /**
@@ -87,31 +90,29 @@ class RedisReader implements ReaderInterface
      */
     private function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'redis_client'  => null,
-            'redis_params'  => null, // see https://github.com/nrk/predis/wiki/Connection-Parameters
-            'redis_factory' => null,
-        ));
-
-        $resolver->setRequired(array(
-            'logger',
-            'redis_key',
-            'task_factory',
-        ));
-        $resolver->setOptional(array(
-            'logger',
-            'redis_client',
-            'redis_params',
-            'redis_factory',
-        ));
-
-        $resolver->setAllowedTypes(array(
-            'redis_client' => array('Predis\Client', 'null'),
-            'logger'       => 'Monolog\Logger',
-            'task_factory' => 'DeskPRO\Component\TaskRunner\Task\TaskFactoryInterface',
-            'redis_params' => array('array', 'null'),
-            'redis_key'    => array('string', 'null'),
-        ));
+        $resolver
+            ->setDefaults([
+                'redis_client'  => null,
+                'redis_params'  => null, // see https://github.com/nrk/predis/wiki/Connection-Parameters
+                'redis_factory' => null,
+            ])
+            ->setRequired([
+                'logger',
+                'redis_key',
+                'task_factory',
+            ])
+            ->setDefined([
+                'logger',
+                'redis_client',
+                'redis_params',
+                'redis_factory',
+            ])
+            ->setAllowedTypes('redis_client', ['Predis\Client', 'null'])
+            ->setAllowedTypes('logger', 'Monolog\Logger')
+            ->setAllowedTypes('task_factory', 'DeskPRO\Component\TaskRunner\Task\TaskFactoryInterface')
+            ->setAllowedTypes('redis_params', ['array', 'null'])
+            ->setAllowedTypes('redis_key', ['string', 'null'])
+        ;
     }
 
     /**
@@ -178,7 +179,7 @@ class RedisReader implements ReaderInterface
                     return;
                 }
             } catch (\Exception $e) {
-                $this->logger->warning(sprintf('[Redis] getNext failure (attempt %s): %s', $i, $e->getMessage()), array('exception' => $e));
+                $this->logger->warning(sprintf('[Redis] getNext failure (attempt %s): %s', $i, $e->getMessage()), ['exception' => $e]);
                 $last_e = $e;
             }
 
@@ -188,7 +189,7 @@ class RedisReader implements ReaderInterface
 
                     return $task;
                 } catch (\Exception $e) {
-                    $this->logger->warning(sprintf('[Redis] Invalid task data: %s', $next), array('task_data' => $next));
+                    $this->logger->warning(sprintf('[Redis] Invalid task data: %s', $next), ['task_data' => $next]);
                 }
             }
         }

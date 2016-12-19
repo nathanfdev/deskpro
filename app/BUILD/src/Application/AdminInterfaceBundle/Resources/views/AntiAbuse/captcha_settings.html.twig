@@ -1,0 +1,126 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+    <section class="dp-paneblock dp-listpane">
+        <header>
+            <h3>{{ phrase('admin.settings.captcha_header') }}</h3>
+        </header>
+
+        <article class="form-horizontal dp-form">
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="panel panel-innertable">
+                        <div class="inner-group">
+                            <label>
+                                <input type="radio" ng-model="settings.use_recaptcha2" value="0">
+                                <h4>{{ phrase('admin.settings.use_built_in_captcha') }}</h4>
+                            </label>
+                            <span class="help-block">
+                                {{ phrase('admin.settings.use_built_in_captcha_help') }}
+                            </span>
+                        </div>
+                        <div class="inner-group">
+                            <label>
+                                <input type="radio" ng-model="settings.use_recaptcha2" value="1">
+                                <h4>{{ phrase('admin.settings.use_re_captcha') }}</h4>
+                            </label>
+                            <div ng-show="settings.use_recaptcha2 == 1">
+                                <span class="help-block">
+                                    {{ phrase('admin.settings.use_re_captcha_help') }}
+                                </span>
+                                <span class="help-block">
+                                    {{ phrase('admin.settings.use_re_captcha_register', {'url': 'https://www.google.com/recaptcha/admin'}) }}
+                                </span>
+                                <span class="help-block">
+                                    {{ phrase('admin.settings.re_captcha_site_key') }}: <input type="text" ng-model="settings.recaptcha2_site_key" />
+                                    &nbsp;&nbsp;&nbsp;
+                                    {{ phrase('admin.settings.re_captcha_secret_key') }}: <input type="text" ng-model="settings.recaptcha2_secret_key" /><br/>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="dp-paneblock dp-listpane">
+        <header>
+            <h3>{{ phrase('admin.settings.captcha_settings') }}</h3>
+        </header>
+
+        <article class="form-horizontal dp-form">
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="panel panel-innertable">
+                        <div class="inner-group">
+                            <span class="help-block">
+                                {{ phrase('admin.settings.captcha_settings_help1', {'url': ng_href('setup.email_rate_limiting')}) }}
+                            </span>
+                            <span class="help-block">
+                                {{ phrase('admin.settings.captcha_settings_help2') }}
+                            </span>
+                        </div>
+                        <div class="inner-group">
+                            {{ phrase('admin.settings.enable_new_tickets_captcha') }}
+                            <select ng-model="settings.tickets">
+                                <option value="">{{ phrase('admin.settings.captcha_based_on_rate_limits') }}</option>
+                                <option value="guests">{{ phrase('admin.settings.captcha_for_guests') }}</option>
+                                <option value="everyone">{{ phrase('admin.settings.captcha_for_everyone') }}</option>
+                            </select>
+                        </div>
+                        <div class="inner-group">
+                            {{ phrase('admin.settings.enable_new_comments_captcha') }}
+                            <select ng-model="settings.comments">
+                                <option value="">{{ phrase('admin.settings.captcha_based_on_rate_limits') }}</option>
+                                <option value="guests">{{ phrase('admin.settings.captcha_for_guests') }}</option>
+                                <option value="everyone">{{ phrase('admin.settings.captcha_for_everyone') }}</option>
+                            </select>
+                        </div>
+                        <div class="inner-group">
+                            {{ phrase('admin.settings.enable_new_feedback_captcha') }}
+                            <select ng-model="settings.feedback">
+                                <option value="">{{ phrase('admin.settings.captcha_based_on_rate_limits') }}</option>
+                                <option value="guests">{{ phrase('admin.settings.captcha_for_guests') }}</option>
+                                <option value="everyone">{{ phrase('admin.settings.captcha_for_everyone') }}</option>
+                            </select>
+                        </div>
+                        <div class="inner-group">
+                            {{ phrase('admin.settings.enable_registration_captcha') }}
+                            <select ng-model="settings.register">
+                                <option value="">{{ phrase('admin.settings.captcha_based_on_rate_limits') }}</option>
+                                <option value="everyone">{{ phrase('admin.settings.captcha_always') }}</option>
+                            </select>
+                        </div>
+                        <div class="inner-group">
+                            {{ phrase('admin.settings.enable_sharing_content_captcha') }}
+                            <select ng-model="settings.sharing">
+                                <option value="">{{ phrase('admin.settings.captcha_based_on_rate_limits') }}</option>
+                                <option value="guests">{{ phrase('admin.settings.captcha_for_guests') }}</option>
+                                <option value="everyone">{{ phrase('admin.settings.captcha_for_everyone') }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="dp-paneblock dp-listpane">
+        <footer>
+            <div class="dp-content">
+                <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                    <div dp-hide-spinning="saving_settings">
+                        <button class="btn btn-primary"  ng-click="CaptchaSettings.save()">{{ phrase('agent.general.save') }}</button>
+                    </div>
+                    <div dp-show-spinning="saving_settings">
+                        <i class="spinner-flat"></i>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </section>
+
+    <div dp-register-message="saved_settings">{{ phrase('admin.general.save_settings_success') }}</div>
+{% endblock %}

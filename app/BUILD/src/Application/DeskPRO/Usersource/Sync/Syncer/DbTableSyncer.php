@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Usersource\Sync\Syncer;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Sync\SyncCursor;
 use Application\DeskPRO\Usersource\Sync\SyncException;
@@ -50,34 +50,37 @@ class DbTableSyncer extends AbstractSyncer
         /** @var \Application\DeskPRO\Usersource\Adapter\DbTablePhpPasswordCheck $adapter */
         $adapter = $this->getAdapter($usersource);
         /* @var \Orb\Auth\Identity[] $identities */
-        $offset     = $cursor->getLocation() - 1; // location starts at 1, but offset starts at 0
-        $identities = $adapter->findAllIdentities($offset);
+        $offset = $cursor->getLocation() - 1; // location starts at 1, but offset starts at 0
+        $limit  = 1000;
 
-        $auth_adapter = $adapter->getAuthAdapter();
-        foreach ($identities as $identity) {
-            // FILTER CHECK
-            $raw_info = $identity->getRawData();
-            if (!$auth_adapter->doesRawInfoPassFilter($raw_info)) {
-                $this->helper->log(
-                    Logger::INFO,
-                    sprintf('user does not meet filter criteria'),
-                    array($raw_info)
-                )
-                ;
+        /** @var $authAdapter \Orb\Auth\Adapter\DbTable.php */
+        $authAdapter = $adapter->getAuthAdapter();
+        while ($infos = $authAdapter->getAllUserInfo($offset, $limit)) {
+            foreach ($infos as $info) {
                 $cursor->incrementLocation();
+                if (!$authAdapter->doesRawInfoPassFilter($info)) {
+                    $this->helper->log(
+                        Logger::INFO,
+                        sprintf('user does not meet filter criteria'),
+                        [$info]
+                    );
+                    $cursor->incrementLocation();
+                    if ($pause_check($cursor)) {
+                        return;
+                    }
+
+                    continue;
+                }
+                $identity = $authAdapter->getIdentityFromUserInfo($info);
+                $this->syncIdentityWithUsersource($usersource, $identity, $identity->getIdentity());
+
+                $cursor->incrementCounter();
                 if ($pause_check($cursor)) {
                     return;
                 }
-
-                continue;
             }
-            $this->syncIdentityWithUsersource($usersource, $identity, $identity->getIdentity());
 
-            $cursor->incrementLocation();
-            $cursor->incrementCounter();
-            if ($pause_check($cursor)) {
-                return;
-            }
+            $offset += $limit;
         }
 
         $cursor->markCompleted();
@@ -116,7 +119,7 @@ class DbTableSyncer extends AbstractSyncer
             $this->helper->log(
                 Logger::INFO,
                 sprintf('user does not meet filter criteria'),
-                array($raw_info)
+                [$raw_info]
             )
             ;
 
@@ -130,11 +133,11 @@ class DbTableSyncer extends AbstractSyncer
 
     public function supportsUsersourceAdapter($adapter_class)
     {
-        return in_array($adapter_class, array(
+        return in_array($adapter_class, [
             'Application\DeskPRO\Usersource\Adapter\DbTablePhpPasswordCheck',
             'Application\DeskPRO\Usersource\Adapter\Dp3CustomMysql',
             'Application\DeskPRO\Usersource\Adapter\EzPublish',
-        ));
+        ]);
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,16 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\RefGenerator;
 
-use Application\DeskPRO\App;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
 class RandomRef implements RefGeneratorInterface
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 
@@ -53,9 +53,9 @@ class RandomRef implements RefGeneratorInterface
         $this->db = $em->getConnection();
     }
 
-    public function generateReference($entity_name)
+    public function generateReference($class)
     {
-        $table = $this->em->getClassMetadata(App::getEntityClass($entity_name))->getTableName();
+        $table = $this->em->getClassMetadata($class)->getTableName();
         $field = 'ref';
 
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM `$table` WHERE `$field` = ? LIMIT 1");
@@ -63,7 +63,7 @@ class RandomRef implements RefGeneratorInterface
         do {
             $ref = DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.DpStrings::random(4, Strings::CHARS_NUM).'-'.DpStrings::random(4, Strings::CHARS_ALPHA_IU);
 
-            $stmt->execute(array($ref));
+            $stmt->execute([$ref]);
             $count = $stmt->fetchColumn();
         } while ($count > 0);
 
@@ -102,6 +102,6 @@ class RandomRef implements RefGeneratorInterface
             return $m[2];
         }
 
-        return array();
+        return [];
     }
 }

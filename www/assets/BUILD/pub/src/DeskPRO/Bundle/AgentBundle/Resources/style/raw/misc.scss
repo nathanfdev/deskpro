@@ -1,0 +1,89 @@
+@mixin corner-top {
+  &:before {
+    content: "";
+    display: block;
+    width: 0px;
+    height: 0px;
+    border: 5px solid rgba(0, 0, 0, 0.0);
+    border-bottom: 5px solid #454545;
+    position: absolute;
+    left: 20px;
+    top: -12px;
+  }
+}
+
+
+
+
+
+
+.pagination {
+  display: block;
+  margin: 0px;
+  padding: 0px;
+  list-style: none;
+  margin-top: 10px;
+
+  li {
+    display: inline-block;
+
+    a {
+      display: inline-block;
+      padding: 8px;
+      line-height: 1em;
+      border: 1px solid #dcddde;
+      border-radius: 2px;
+      background: #fff;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 0.75em;
+      color: #cecece;
+      font-weight: 600;
+
+      &:hover, &.active {
+        color: #333;
+      }
+    }
+  }
+}
+
+
+
+
+
+
+.shortcut {
+  color: #686969;
+  margin-bottom: 5px;
+
+  .key {
+    display: inline-block;
+    background: #e8e9ea;
+    border-bottom: 3px solid #d0d0d0;
+    height: 21px;
+    min-width: 22px;
+    border-radius: 2px;
+    text-align: center;
+    font-weight: 600;
+    color: #686969;
+    margin: 0px 2px;
+    vertical-align: middle;
+
+    i {
+      top: 3px;
+    }
+
+    > span {
+      display: inline-block;
+      width: 100%;
+      height: 21px;
+      padding: 0px 5px;
+      border-radius: 2px;
+      border: 1px solid #d0d0d0;
+    }
+  }
+
+  .key:last-child {
+    margin-right: 5px;
+  }
+}

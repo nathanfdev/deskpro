@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,164 +31,350 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 // This class_exists check is needed because when doing a schema check,
 // doctrine will try to load this source file. But the Language class
 // is compiled in to bootstrap.php so we'd end up with a dupe error
 if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
 
-/**
- * A language groups phrases and defines a locale code.
- */
-class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
-{
     /**
-     * The unique ID.
+     * A language groups phrases and defines a locale code.
      *
-     * @var int
+     * @JMS\ExclusionPolicy("all")
      */
-    protected $id = null;
-
-    /**
-     * The unique sys name assigned to the language.
-     *
-     * @var string
-     */
-    protected $sys_name;
-
-    /**
-     * The three-letter ISO 639-2 code.
-     *
-     * @var string
-     */
-    protected $lang_code;
-
-    /**
-     * Title of the language.
-     *
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * The base filepath for default phrases for this lang.
-     *
-     * @var string
-     */
-    protected $base_filepath;
-
-    /**
-     * The locale code.
-     *
-     * @var string
-     */
-    protected $locale = 'en_US';
-
-    /**
-     * @var string
-     */
-    protected $flag_image = '';
-
-    /**
-     * True if this is a right-to-left language.
-     *
-     * @var bool
-     */
-    protected $is_rtl = false;
-
-    /**
-     * @var bool
-     */
-    protected $has_user = true;
-
-    /**
-     * @var bool
-     */
-    protected $has_agent = true;
-
-    /**
-     * @var bool
-     */
-    protected $has_admin = true;
-
-    /**
-     * @return int
-     */
-    public function getId()
+    class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
     {
-        return $this->id;
-    }
+        /**
+         * The unique ID.
+         *
+         * @JMS\Expose()
+         * @JMS\Type("integer")
+         *
+         * @var int
+         */
+        protected $id = null;
 
-    public function _invalidateLanguageCache()
-    {
-        $orm = App::getOrm();
+        /**
+         * The unique sys name assigned to the language.
+         *
+         * @JMS\Expose()
+         * @JMS\Type("string")
+         *
+         * @var string
+         */
+        protected $sys_name = '';
 
-        if (method_exists($orm, 'delayedUpdate')) {
-            $orm->delayedUpdate(function ($em) {
-                // defer this until after the flush to avoid a race condition and make sure it's updated after insert
-                $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-                $cache->invalidateLanguageCache();
-            });
+        /**
+         * The three-letter ISO 639-2 code.
+         *
+         * @JMS\Expose()
+         * @JMS\Type("string")
+         *
+         * @var string
+         */
+        protected $lang_code = '';
+
+        /**
+         * Title of the language.
+         *
+         * @JMS\Expose()
+         * @JMS\Type("string")
+         *
+         * @var string
+         */
+        protected $title = '';
+
+        /**
+         * The base filepath for default phrases for this lang.
+         *
+         * @var string
+         */
+        protected $base_filepath;
+
+        /**
+         * The locale code.
+         *
+         * @JMS\Expose()
+         * @JMS\Type("string")
+         *
+         * @var string
+         */
+        protected $locale = 'en_US';
+
+        /**
+         * String path to image.
+         *
+         * @JMS\Expose()
+         * @JMS\Type("string")
+         *
+         * @var string
+         */
+        protected $flag_image = '';
+
+        /**
+         * True if this is a right-to-left language.
+         *
+         * @var bool
+         */
+        protected $is_rtl = false;
+
+        /**
+         * True if has user.
+         *
+         * @JMS\Expose()
+         * @JMS\Type("boolean")
+         *
+         * @var bool
+         */
+        protected $has_user = true;
+
+        /**
+         * True if has agent.
+         *
+         * @JMS\Expose()
+         * @JMS\Type("boolean")
+         *
+         * @var bool
+         */
+        protected $has_agent = true;
+
+        /**
+         * True if has admin.
+         *
+         * @JMS\Expose()
+         * @JMS\Type("boolean")
+         *
+         * @var bool
+         */
+        protected $has_admin = true;
+
+        /**
+         * @return int
+         */
+        public function getId()
+        {
+            return $this->id;
+        }
+
+        public function getUrlCode()
+        {
+            // special handling for 'default' to be just 'en'
+            if ($this->sys_name === 'default') {
+                return 'en';
+            } else {
+                return $this->locale;
+            }
+        }
+
+        /**
+         * @return string
+         */
+        public function getLangCode()
+        {
+            return $this->lang_code;
+        }
+
+        /**
+         * @return string
+         */
+        public function getTitle()
+        {
+            return $this->title;
+        }
+
+        /**
+         * @return string
+         */
+        public function getLocale()
+        {
+            return $this->locale;
+        }
+
+        /**
+         * @param string $sys_name
+         *
+         * @return $this
+         */
+        public function setSysName($sys_name)
+        {
+            $this->setModelField('sys_name', $sys_name);
+
+            return $this;
+        }
+
+        /**
+         * @return string
+         */
+        public function getSystemName()
+        {
+            return $this->sys_name;
+        }
+
+        /**
+         * @return bool
+         */
+        public function isIsRtl()
+        {
+            return $this->is_rtl;
+        }
+
+        /**
+         * @return string "RTL" for right-to-left or "LTR" for left-to-right
+         */
+        public function getDirection()
+        {
+            return $this->is_rtl ? 'RTL' : 'LTR';
+        }
+
+        /**
+         * {@inheritdoc}
+         */
+        public function getPhraseName($property, Translate $translate)
+        {
+            return 'user.lang.lang_title_'.$this->sys_name;
+        }
+
+        /**
+         * {@inheritdoc}
+         */
+        public function getPhraseDefault($property, Translate $translate)
+        {
+            return $this->title;
+        }
+
+        //###########################################################################
+        // Doctrine Metadata
+        //###########################################################################
+
+        public static function loadMetadata(ClassMetadata $metadata)
+        {
+            $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+            $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Language';
+            $metadata->setPrimaryTable(['name' => 'languages']);
+            $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'id',
+                    'type'       => 'integer',
+                    'precision'  => 0,
+                    'scale'      => 0,
+                    'nullable'   => false,
+                    'columnName' => 'id',
+                    'id'         => true,
+                ]
+            );
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'sys_name',
+                    'type'       => 'string',
+                    'length'     => 100,
+                    'precision'  => 0,
+                    'scale'      => 0,
+                    'nullable'   => false,
+                    'columnName' => 'sys_name',
+                ]
+            );
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'lang_code',
+                    'type'       => 'string',
+                    'length'     => 3,
+                    'precision'  => 0,
+                    'scale'      => 0,
+                    'nullable'   => false,
+                    'columnName' => 'lang_code',
+                ]
+            );
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'title',
+                    'type'       => 'string',
+                    'length'     => 255,
+                    'precision'  => 0,
+                    'scale'      => 0,
+                    'nullable'   => false,
+                    'columnName' => 'title',
+                ]
+            );
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'base_filepath',
+                    'type'       => 'string',
+                    'length'     => 255,
+                    'precision'  => 0,
+                    'scale'      => 0,
+                    'nullable'   => true,
+                    'columnName' => 'base_filepath',
+                ]
+            );
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'locale',
+                    'type'       => 'string',
+                    'length'     => 8,
+                    'precision'  => 0,
+                    'scale'      => 0,
+                    'nullable'   => false,
+                    'columnName' => 'locale',
+                ]
+            );
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'flag_image',
+                    'type'       => 'string',
+                    'length'     => 50,
+                    'precision'  => 0,
+                    'scale'      => 0,
+                    'nullable'   => false,
+                    'columnName' => 'flag_image',
+                ]
+            );
+
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'is_rtl',
+                    'type'       => 'boolean',
+                    'nullable'   => false,
+                    'columnName' => 'is_rtl',
+                ]
+            );
+
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'has_user',
+                    'type'       => 'boolean',
+                    'nullable'   => false,
+                    'columnName' => 'has_user',
+                ]
+            );
+
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'has_agent',
+                    'type'       => 'boolean',
+                    'nullable'   => false,
+                    'columnName' => 'has_agent',
+                ]
+            );
+
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'has_admin',
+                    'type'       => 'boolean',
+                    'nullable'   => false,
+                    'columnName' => 'has_admin',
+                ]
+            );
+
+            $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         }
     }
-
-    /**
-     * Return a unique ID that we can use to look up translations for this object.
-     *
-     * @param string    $property  If supplied, the property on the object we want to translate.
-     * @param Translate $translate The translate object requesting
-     *
-     * @return string
-     */
-    public function getPhraseName($property = null, Translate $translate)
-    {
-        return 'user.lang.lang_title_'.$this->sys_name;
-    }
-
-    /**
-     * Get the default value phrase for the object.
-     *
-     * @param string    $property  If supplied, the property on the object we want to translate.
-     * @param Translate $translate The translate object requesting
-     *
-     * @return string
-     */
-    public function getPhraseDefault($property = null, Translate $translate)
-    {
-        return $this->title;
-    }
-
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
-
-    public static function loadMetadata(ClassMetadata $metadata)
-    {
-        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Language';
-        $metadata->setPrimaryTable(array('name' => 'languages'));
-        $metadata->addLifecycleCallback('_invalidateLanguageCache', 'preFlush');
-        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sys_name'));
-        $metadata->mapField(array('fieldName' => 'lang_code', 'type' => 'string', 'length' => 3, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'lang_code'));
-        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
-        $metadata->mapField(array('fieldName' => 'base_filepath', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'base_filepath'));
-        $metadata->mapField(array('fieldName' => 'locale', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'locale'));
-        $metadata->mapField(array('fieldName' => 'flag_image', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'flag_image'));
-        $metadata->mapField(array('fieldName' => 'is_rtl', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_rtl'));
-        $metadata->mapField(array('fieldName' => 'has_user', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_user'));
-        $metadata->mapField(array('fieldName' => 'has_agent', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_agent'));
-        $metadata->mapField(array('fieldName' => 'has_admin', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_admin'));
-        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-    }
 }
-} // end class_exists
-

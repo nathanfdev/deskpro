@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,27 +36,20 @@ use Elastica\Util as ElasticaUtil;
  */
 class OrganizationRepository extends AbstractRepository implements WithLabelsInterface
 {
-    /**
-     * Fields to be highlighted.
-     *
-     * @var array
-     */
-    protected $highlightFields = array(
-        'name' => array('fragment_size' => 100),
-    );
+    protected $highlightFields = [
+        'name' => ['fragment_size' => 100],
+    ];
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     protected function getQueryFields()
     {
-        return array('_all', 'name', 'email_domains');
+        return ['_all', 'name', 'email_domains'];
     }
 
     /**
-     * @param $q
-     *
-     * @return Query\MultiMatch
+     * {@inheritdoc}
      */
     protected function getQueryString($q)
     {

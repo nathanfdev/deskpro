@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,7 +34,7 @@ namespace DeskPRO\Component\Util\Buffer;
 class LineBuffer
 {
     /**
-     * @var
+     * @var string
      */
     private $buf = '';
 
@@ -44,7 +44,7 @@ class LineBuffer
     private $fn;
 
     /**
-     * @param callable $fn Called after each line is recieved
+     * @param callable $fn Called after each line is received
      */
     public function __construct($fn)
     {
@@ -53,6 +53,9 @@ class LineBuffer
 
     public function append($str)
     {
+        // Normalise lf
+        $str = str_replace("\r\n", "\n", $str);
+
         $this->buf .= $str;
         do {
             $pos = strpos($this->buf, "\n");
@@ -69,7 +72,7 @@ class LineBuffer
      */
     public function flush()
     {
-        if ($this->buf) {
+        if ($this->buf !== '') {
             call_user_func($this->fn, $this->buf);
             $this->buf = '';
         }

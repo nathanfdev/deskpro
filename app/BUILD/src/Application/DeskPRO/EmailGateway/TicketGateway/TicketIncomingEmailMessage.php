@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category EmailGateway
  */
+
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
@@ -177,7 +178,7 @@ class TicketIncomingEmailMessage
         $has_cut       = false;
 
         $cutters_require_from = Arrays::flatten(array_map(function ($e) {
-            return array($e->address, $e->other_addresses);
+            return [$e->address, $e->other_addresses];
         }, $this->email_accounts->getAllAccounts()));
 
         $precut_do_plaintext = false;
@@ -214,7 +215,7 @@ class TicketIncomingEmailMessage
 
             // If the document is too complex then htmlpurifier can crash.
             // We'll try to find a cut-mark now and trim the document down to see if we can still use it
-            // (We dont alway cut first because we want an in-tact 'full body' if possible)
+            // (We dont always cut first because we want an in-tact 'full body' if possible)
             if (substr_count($this->body, '>') > 15000) {
                 if ($do_cut) {
                     $this->logMessage('[TicketIncomingEmailMessage] Document too complex, pre-cut');
@@ -494,7 +495,7 @@ class TicketIncomingEmailMessage
         $pos_as_note  = false;
         $pos_as_reply = false;
 
-        foreach (array($ticket_email->email_body_html, $ticket_email->email_body_text, $body_raw) as $haystack) {
+        foreach ([$ticket_email->email_body_html, $ticket_email->email_body_text, $body_raw] as $haystack) {
             $pos_as_note  = strpos($haystack, 'DP_NEWMSG_AS_NOTE');
             $pos_as_reply = strpos($haystack, 'DP_NEWMSG_AS_REPLY');
 

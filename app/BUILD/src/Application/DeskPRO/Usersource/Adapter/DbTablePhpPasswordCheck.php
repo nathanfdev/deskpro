@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\Usersource\UsersourceInfo;
@@ -45,13 +46,13 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
     {
         $info = $identity->getRawData();
 
-        return array(
+        return [
             'name'            => isset($info['name']) ? $info['name'] : '',
             'first_name'      => isset($info['first_name']) ? $info['first_name'] : '',
             'last_name'       => isset($info['last_name']) ? $info['last_name'] : '',
             'email'           => isset($info['email_address']) ? $info['email_address'] : '',
             'email_confirmed' => true,
-        );
+        ];
     }
 
     /**
@@ -77,7 +78,7 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
                 $this->usersource->getOption('db_password')
             );
 
-            $this->db = \Doctrine\DBAL\DriverManager::getConnection(array('pdo' => $pdo));
+            $this->db = \Doctrine\DBAL\DriverManager::getConnection(['pdo' => $pdo]);
         }
 
         return $this->db;
@@ -93,29 +94,6 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
         return function () use ($me) {
             return $me->getDb();
         };
-    }
-
-    /**
-     * @param int $offset skip x users and return the rest
-     *
-     * @return array
-     */
-    public function findAllIdentities($offset = 0)
-    {
-        /** @var $adapter \Orb\Auth\Adapter\DbTable.php */
-        $adapter = $this->getAuthAdapter();
-
-        $user_infos = $adapter->getAllUserInfo($offset);
-
-        $identities = array();
-        foreach ($user_infos as $info) {
-            // CHECK FILTER
-            if ($adapter->doesRawInfoPassFilter($info)) {
-                $identities[] = $adapter->getIdentityFromUserInfo($info);
-            }
-        }
-
-        return $identities;
     }
 
     /**
@@ -171,11 +149,11 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
      */
     public function getCapabilities()
     {
-        return array(
+        return [
             UsersourceInfo::CAPABILITY_FORM_LOGIN,
             UsersourceInfo::CAPABILITY_GET_USER_INFO,
             UsersourceInfo::CAPABILITY_FIND_IDENTITY,
-        );
+        ];
     }
 
     /**

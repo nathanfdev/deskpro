@@ -1,0 +1,19 @@
+services:
+
+  # the PortalRouter replaces the router by decorating it (see "decorates:")
+  language_router:
+    public: false
+    class: DeskPRO\Bundle\PortalBundle\Routing\PortalRouter
+    decorates: router
+    arguments:
+      - "@language_router.inner"
+      - "@language_manager"
+      - "@portal_mode_storage"
+      - "@portal_mode_factory"
+
+  router.cache_warmer:
+    public: false
+    class: Symfony\Bundle\FrameworkBundle\CacheWarmer\RouterCacheWarmer
+    arguments: ["@language_router"]
+    tags:
+      - { name: kernel.cache_warmer }

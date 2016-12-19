@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Departments;
 
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\DepartmentPermission;
-use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\People\PermissionMatrix;
+use Doctrine\ORM\EntityManager;
 
 class DepartmentPermissionMatrix extends PermissionMatrix
 {
@@ -47,7 +48,7 @@ class DepartmentPermissionMatrix extends PermissionMatrix
      */
     public function getPermRecords(Department $department)
     {
-        $recs = array();
+        $recs = [];
         foreach ($this->getPermsArray() as $row) {
             $rec             = new DepartmentPermission();
             $rec->department = $department;
@@ -91,26 +92,32 @@ class DepartmentPermissionMatrix extends PermissionMatrix
      */
     public function getDiff(Department $department, EntityManager $em)
     {
-        $recs = array();
+        $recs = [];
         foreach ($this->getPermRecords($department) as $rec) {
             $recs[$rec->getPermissionSysId()] = $rec;
         }
 
         if ($department->is_tickets_enabled) {
-            $existing = $em->getRepository('DeskPRO:DepartmentPermission')->getRecordsForDepartment(
+            $ticketsExisting = $em->getRepository('DeskPRO:DepartmentPermission')->getRecordsForDepartment(
                 $department,
                 'tickets'
             );
+        } else {
+            $ticketsExisting = [];
         }
 
         if ($department->is_chat_enabled) {
-            $existing = $em->getRepository('DeskPRO:DepartmentPermission')->getRecordsForDepartment(
+            $chatsExisting = $em->getRepository('DeskPRO:DepartmentPermission')->getRecordsForDepartment(
                 $department,
                 'chat'
             );
+        } else {
+            $chatsExisting = [];
         }
 
-        $remove = array();
+        $existing = array_merge($ticketsExisting, $chatsExisting);
+
+        $remove = [];
 
         foreach ($existing as $rec) {
             // Already exists, so dont re-insert
@@ -125,10 +132,10 @@ class DepartmentPermissionMatrix extends PermissionMatrix
 
         $add = array_values($recs);
 
-        return array(
+        return [
             'create' => $add,
             'remove' => $remove,
-        );
+        ];
     }
 
     /**

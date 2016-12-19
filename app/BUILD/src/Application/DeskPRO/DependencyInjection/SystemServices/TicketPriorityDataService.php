@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -79,7 +80,7 @@ class TicketPriorityDataService extends BaseRepositoryService
     public static function create(DeskproContainer $container, array $options = null)
     {
         if (!$options) {
-            $options = array();
+            $options = [];
         }
         $options['entity']     = 'Application\\DeskPRO\\Entity\\TicketPriority';
         $options['translator'] = $container->getTranslator();
@@ -139,10 +140,9 @@ class TicketPriorityDataService extends BaseRepositoryService
             FROM DeskPRO:TicketPriority p INDEX BY p.id
             ORDER BY p.priority ASC
         ')->execute();
-        $this->em->getUnitOfWork()->markAsPreloaded('DeskPRO:TicketPriority');
 
-        $this->pri_ids = array();
-        $this->pri_map = array();
+        $this->pri_ids = [];
+        $this->pri_map = [];
 
         // force hydration
         foreach ($this->pris as $p) {
@@ -161,7 +161,7 @@ class TicketPriorityDataService extends BaseRepositoryService
     {
         $this->preload();
 
-        $ret = array();
+        $ret = [];
 
         if ($for_ids) {
             foreach ($for_ids as $pid) {
@@ -196,7 +196,7 @@ class TicketPriorityDataService extends BaseRepositoryService
     public function getByIds(array $ids)
     {
         $this->preload();
-        $ret = array();
+        $ret = [];
 
         foreach ($ids as $id) {
             if (isset($this->pris[$id])) {
@@ -215,7 +215,7 @@ class TicketPriorityDataService extends BaseRepositoryService
      *
      * @return mixed
      */
-    public function __call($method, array $args = array())
+    public function __call($method, array $args = [])
     {
         $this->preload();
 

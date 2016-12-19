@@ -1,0 +1,3 @@
+#!/bin/bash
+DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
+rm -rf $DIR_ROOT/var/kernel_cache/*/

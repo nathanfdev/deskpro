@@ -1,0 +1,276 @@
+div.dpdesignportal-chat-header .dpdesignportal-agent-state-info {
+  background: #ededed;
+  border-radius: 2px;
+  border: 1px solid #e7e7e7;
+  padding: 10px;
+  margin-top: 8px;
+
+  position: relative;
+  @include add-corner(4px, #e7e7e7, middle, top, "");
+
+  h1 {
+    margin: 0 0 5px;
+    color: #4b4b4b;
+  }
+
+  p { font-size: 12px; padding-top: 4px; }
+  a { color: #4681b2; }
+
+  .search-dots {
+    margin-top: 5px;
+
+    .dot-1 { animation: search-dot-animation-1 2s infinite; }
+    .dot-2 { animation: search-dot-animation-2 2s infinite; }
+    .dot-3 { animation: search-dot-animation-3 2s infinite; }
+    .dot-4 { animation: search-dot-animation-4 2s infinite; }
+    .dot-5 { animation: search-dot-animation-5 2s infinite; }
+
+    @keyframes search-dot-animation-1 {
+      0% { opacity: 1; }
+      10% { opacity: 0; }
+      80% { opacity: 1; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes search-dot-animation-2 {
+      0% { opacity: 1; }
+      20% { opacity: 0; }
+      80% { opacity: 1; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes search-dot-animation-3 {
+      0% { opacity: 1; }
+      30% { opacity: 0; }
+      80% { opacity: 1; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes search-dot-animation-4 {
+      0% { opacity: 1; }
+      40% { opacity: 0; }
+      80% { opacity: 1; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes search-dot-animation-5 {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      80% { opacity: 1; }
+      100% { opacity: 1; }
+    }
+  }
+
+  .search-dots div {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 19px;
+    background: #cecece;
+    margin: 0 4px;
+  }
+}
+
+.dpdesignportal-widget-body {
+  position: absolute;
+  width: 340px;
+  top: 55px;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.dpdesignportal-chat-header-wrapper {
+  background-color: #fff;
+  width: 100%;
+}
+
+// Avatars and titles
+div.dpdesignportal-chat-header {
+  text-align: center;
+  position: relative;
+  padding-bottom: 20px;
+  margin: 10px 5px 0;
+
+  h1 {
+    margin-bottom: 3px;
+    margin-top: 8px;
+    color: #a5a5a5;
+    font-size: 14px;
+
+    .name {
+      color: #575757;
+      font-weight: bold;
+    }
+  }
+
+  h2 {
+    font-size: 12px;
+    color: #ababab;
+  }
+
+  .dpdesignportal-chat-header-avatar-container {
+    background: #fff;
+    padding-left: 20px;
+    padding-right: 20px;
+    position: relative;
+    display: inline-block;
+    z-index: 299;
+  }
+
+  .dpdesignportal-chat-header-avatar-container.multiple ul li {
+    display: inline-block;
+    margin-left: -12px;
+    margin-right: -12px;
+  }
+
+  .dpdesignportal-chat-header-avatar {
+    overflow: hidden;
+    width: 45px;
+    height: 45px;
+    background-color: #eceaea;
+    background-size: cover;
+    border-radius: 199px;
+    border: 1px solid rgba(0, 0, 0, 0.0);
+    color: #cdcdcd;
+    font-size: 16px;
+    margin: 0 auto;
+    position: relative;
+    display: inline-block;
+    z-index: 199;
+    transition: all 0.5s ease;
+
+    &:hover {
+      z-index: 299;
+      border: 1px solid #4681b2;
+    }
+
+    i { top: 12px; }
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    &.avatar-transparent {
+      &:before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        width: 47px;
+        height: 47px;
+        background: rgba(255, 255, 255, 0.5);
+      }
+    }
+
+
+    .dpdesignportal-chat-header-avatar-disconnected {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+      width: 26px;
+      height: 26px;
+      background: #bd3232;
+      border: 2px solid #fff;
+      color: #fff;
+      border-radius: 29px;
+      text-align: center;
+      opacity: 1;
+
+      i {
+        top: 5px;
+        left: 1px;
+        font-size: 9px;
+      }
+    }
+  }
+
+  hr {
+    position: absolute;
+    top: 22px;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 1px;
+    background: #ededed;
+    z-index: 298;
+  }
+}
+
+
+// Buttons for chat
+.dpdesignportal-chat-header-controls {
+  font-size: 11px;
+  margin-bottom: 10px;
+
+  ul {
+    @extend %clearfix;
+    border-top: 1px solid #e7e7e7;
+    border-bottom: 1px solid #e7e7e7;
+  }
+
+  li {
+    float: left;
+    height: 30px;
+    display: block;
+
+    border-right: 1px solid #e7e7e7;
+    &:last-child {
+      border-right: 0;
+      float: right;
+    }
+  }
+
+  .dpdesignportal-chat-header-control-item {
+    text-decoration: none;
+    color: #a5a5a5;
+    height: 30px;
+    display: block;
+    vertical-align: top;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 8px;
+
+    &:not(.disabled) {
+      &:hover { color: #333; }
+    }
+
+    > i { margin-right: 4px; }
+
+    i.fa-power-off, i.fa-exclamation-circle, i.fa-commenting-o {
+      margin-right: 0;
+      margin-left: 4px;
+    }
+
+    i.fa-exclamation-circle { color: #d1d2ba; }
+
+    &.dpdesignportal-chat-header-control-mute {
+      outline: 0;
+      i {
+        display: inline-block;
+        width: 10px;
+      }
+    }
+
+    &.disabled {
+      opacity: 0.5;
+      cursor: default;
+
+      .dpdesignportal-checkbox-container {
+        cursor: default;
+      }
+    }
+  }
+
+  &.ended {
+    .dpdesignportal-chat-header-control-item {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+  }
+}

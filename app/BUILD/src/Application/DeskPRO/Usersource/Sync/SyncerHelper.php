@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Usersource\Sync;
 
 use Application\DeskPRO\App;
@@ -74,7 +75,7 @@ class SyncerHelper
         return $this->logger;
     }
 
-    public function log($orb_logger_priority, $message, array $info = array())
+    public function log($orb_logger_priority, $message, array $info = [])
     {
         if ($this->logger) {
             $this->logger->log('SYNC HELPER: '.$message, $orb_logger_priority, $info);
@@ -88,14 +89,14 @@ class SyncerHelper
             $user_info['email'] = $user_info['email_address'];
         }
         $user_info = array_merge(
-            array(
+            [
                 'name'            => null,
                 'first_name'      => null,
                 'last_name'       => null,
                 'email'           => null,
                 'email_confirmed' => null,
                 'phone'           => null,
-            ),
+            ],
             $user_info
         );
 
@@ -112,7 +113,7 @@ class SyncerHelper
             if (!$person = $this->getPersonFromEmail($user_info['email'])) {
                 $this->log(Logger::DEBUG, 'could not find a person with the email "'.$user_info['email'].'"');
                 $this->log(Logger::INFO, 'creating a new person with email "'.$user_info['email'].'"', $user_info);
-                $person = Person::newContactPerson(array('email' => $user_info['email']));
+                $person = Person::newContactPerson(['email' => $user_info['email']]);
                 $this->em->persist($person);
             }
         }
@@ -139,8 +140,11 @@ class SyncerHelper
         }
 
         if (!empty($user_info['phone'])) {
-            if ($number = PhoneNumber::createEntity($user_info['phone'])) {
-                $person->setPrimaryPhoneNumber($number);
+            $newNumber = PhoneNumber::createEntity($user_info['phone']);
+            $oldNumber = $person->getPrimaryPhoneNumber();
+
+            if ($newNumber && (!$oldNumber || $oldNumber->getFullFormatted() !== $newNumber->getFullFormatted())) {
+                $person->setPrimaryPhoneNumber($newNumber);
             }
         }
 
@@ -150,7 +154,7 @@ class SyncerHelper
             // tries the auto-agent routine, if agent usersource (just like on login from a usersource)
             LoginProcessor::tryAutoAgent($usersource, $person);
         }
-        LoginProcessor::tryUsergroupPromotion($usersource, $person);
+        LoginProcessor::tryUsergroupPromotion($usersource, $person, $user_info);
 
         // Update custom field data
         App::getSystemService('person_fields_manager')->copyUsersourceData(

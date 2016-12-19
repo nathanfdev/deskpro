@@ -47,15 +47,12 @@
 		<div id="{{baseId}}_properties_body">
 			{{ dp_app_loc(baseId, 'properties.body.before') }}
 
-			{% if custom_fields|length or custom_fields_definitions|length %}
-				<dl class="table-list" id="{{baseId}}_custom_fields_rendered">
-					{% include 'AgentBundle:Organization:view-customfields-rendered-rows.html.twig' %}
-				</dl>
-				<dl class="table-list" id="{{baseId}}_custom_fields_editable" style="display: none">
-					{% include 'AgentBundle:Organization:view-customfields-edit-rows.html.twig' %}
-				</dl>
-				<br class="clear" />
-			{% endif %}
+			<dl class="table-list" id="{{baseId}}_custom_fields_rendered">
+				{% include 'AgentBundle:Organization:view-customfields-rendered-rows.html.twig' %}
+			</dl>
+			<dl class="table-list" id="{{baseId}}_custom_fields_editable" style="display: none">
+				{% include 'AgentBundle:Organization:view-customfields-edit-rows.html.twig' %}
+			</dl>
 
 			<div>
 				<dl class="table-list">
@@ -83,7 +80,7 @@
 {{ dp_app_loc(baseId, 'email_assoc.after') }}
 
 {# Usergroup Box #}
-{% if app.usergroups.getUsergroupNames() %}
+{% if app.usergroups.getUserUsergroups() %}
 	{{ dp_app_loc(baseId, 'usergroups.before') }}
 	<div class="profile-box-container summary {% if org.getUsergroups()|length < 1 %}no-section{% endif %}" id="{{baseId}}_ug_box">
 		<header>
@@ -105,16 +102,31 @@
 			<div id="{{baseId}}_usergroups_body" {% if org.getUsergroups()|length < 1 %}style="display:none"{% endif %}>
 				<div id="{{baseId}}_ug_display_box" class="contact-list">
 					<ul>
-						{% for id,name in app.usergroups.getUsergroupNames() %}
-							<li class="ug-row ug-row-{{ id }}" {% if not org.usergroups[id] %}style="display: none"{% endif %}>{{ name }}</li>
+						{% for id,usergroup in app.usergroups.getUserUsergroups()
+                            if usergroup.sys_name != 'registered' and usergroup.sys_name != 'everyone' %}
+							<li
+                                class="ug-row ug-row-{{ id }}"
+                                {% if not org.usergroups[id] %}style="display: none"{% endif %}>
+                                {{ usergroup.title }}
+                            </li>
 						{% endfor %}
 					</ul>
 				</div>
 				<div id="{{baseId}}_ug_edit_box" class="contact-list" style="display: none;">
 					<ul>
-						{% for id,name in app.usergroups.getUsergroupNames() %}
+						{% for id,usergroup in app.usergroups.getUserUsergroups()
+                            if usergroup.sys_name != 'registered' and usergroup.sys_name != 'everyone' %}
 							<div>
-								<label><input type="checkbox" value="{{ id }}" name="usergroup_ids[]" class="ug-check ug-check-{{ id }}" {% if org.usergroups[id] %}checked="checked"{% endif %} /> {{ name }}</label>
+								<label>
+                                    <input
+                                        type="checkbox"
+                                        value="{{ id }}"
+                                        name="usergroup_ids[]"
+                                        class="ug-check ug-check-{{ id }}"
+                                        {% if org.usergroups[id] %}checked="checked"{% endif %}
+                                    />
+                                    {{ usergroup.title }}
+                                </label>
 							</div>
 						{% endfor %}
 					</ul>

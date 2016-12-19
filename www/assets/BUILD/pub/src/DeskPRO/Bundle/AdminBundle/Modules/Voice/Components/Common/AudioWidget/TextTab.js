@@ -1,0 +1,68 @@
+import React, { PropTypes } from 'react';
+import { Field, Textarea, Select } from 'DeskPRO/Component/Semantic/ReactForm';
+import { TextPlayButton } from './PlayButton';
+
+const languageChoices = [
+  { value: 'da-DK', label: 'Danish, Denmark' },
+  { value: 'de-DE', label: 'German, Germany' },
+  { value: 'en-AU', label: 'English, Australia' },
+  { value: 'en-CA', label: 'English, Canada' },
+  { value: 'en-GB', label: 'English, UK' },
+  { value: 'en-IN', label: 'English, India' },
+  { value: 'en-US', label: 'English, United States' },
+  { value: 'ca-ES', label: 'Catalan, Spain' },
+  { value: 'es-ES', label: 'Spanish, Spain' },
+  { value: 'es-MX', label: 'Spanish, Mexico' },
+  { value: 'fi-FI', label: 'Finnish, Finland' },
+  { value: 'fr-CA', label: 'French, Canada' },
+  { value: 'fr-FR', label: 'French, France' },
+  { value: 'it-IT', label: 'Italian, Italy' },
+  { value: 'ja-JP', label: 'Japanese, Japan' },
+  { value: 'ko-KR', label: 'Korean, Korea' },
+  { value: 'nb-NO', label: 'Norwegian, Norway' },
+  { value: 'nl-NL', label: 'Dutch, Netherlands' },
+  { value: 'pl-PL', label: 'Polish-Poland' },
+  { value: 'pt-BR', label: 'Portuguese, Brazil' },
+  { value: 'pt-PT', label: 'Portuguese, Portugal' },
+  { value: 'ru-RU', label: 'Russian, Russia' },
+  { value: 'sv-SE', label: 'Swedish, Sweden' },
+  { value: 'zh-CN', label: 'Chinese (Mandarin)' },
+  { value: 'zh-HK', label: 'Chinese (Cantonese)' },
+  { value: 'zh-TW', label: 'Chinese (Taiwanese Mandarin)' }
+];
+
+class TextTab extends React.Component {
+
+  static propTypes = {
+    value: PropTypes.object
+  };
+
+  stopPlaying() {
+    this.playButton.stopPlaying();
+  }
+
+  render() {
+    const { value } = this.props;
+
+    return (
+      <div className="text-tab">
+        <Field select="text" label="Type the text you’d like to be read out.">
+          <Textarea />
+        </Field>
+        <div className="language-wrapper">
+          <Field select="language" className="language-field">
+            <Select choices={languageChoices} clearable={false} />
+          </Field>
+
+          <TextPlayButton
+            ref={(c) => { this.playButton = c; }}
+            text={value.text}
+            language={value.language}
+          />
+        </div>
+      </div>
+    );
+  }
+}
+
+export default TextTab;

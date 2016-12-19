@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,16 +28,43 @@
 
 namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
+use Application\DeskPRO\DBAL\Connection;
+
 class AgentsProcessor extends UsersProcessor
 {
     const JOB_TYPE = 'reset.agents';
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getPersons(array $data)
     {
         $limit  = (int) @$data['limit'];
         $offset = (int) @$data['offset'];
         $rep    = $this->em->getRepository('DeskPRO:Person');
 
-        return $rep->findBy(array('is_agent' => true), null, $limit, $offset);
+        return $rep->findBy(['is_agent' => true], null, $limit, $offset);
+    }
+
+    public function doProcess(array $data)
+    {
+        $allIds = [];
+        foreach ($this->getPersons($data) as $person) {
+            if (@$data['context_person_id'] === $person['id']) {
+                continue;
+            }
+            $allIds[] = $person['id'];
+        }
+
+        $qb = $this->em->getConnection()->createQueryBuilder();
+        $qb
+            ->update('task_attachments')
+            ->set('person_id', ':person')
+            ->where('person_id IN (:ids)')
+            ->setParameter('ids', $allIds, Connection::PARAM_INT_ARRAY)
+            ->setParameter('person', null)
+            ->execute();
+
+        return parent::doProcess($data);
     }
 }

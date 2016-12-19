@@ -5,7 +5,7 @@
 {{ dp_app_loc(baseId, 'agent.before') }}
 <div class="profile-box-container highlighted">
 	<header>
-		{% if app.user.can_admin %}<a class="edit-gear" href="{{ app.request.getBaseUrl() }}/admin/#/agents/agents/{{ person.id }}" target="_blank"></a>{% endif %}
+		{% if app.user.can_admin %}<a class="edit-gear" href="{{ app.request.getBaseUrl() }}/agent/#admin:/agents/agents/{{ person.id }}" target="_blank"></a>{% endif %}
 		{% set agentTabs = dp_widgets_raw('profile', 'agent', 'tab') %}
 		{% if agentTabs is empty %}
 			<h4 class="agent-icon">{{ phrase('agent.general.agent') }}</h4>
@@ -56,25 +56,6 @@
 	</section>
 </div>
 <div id="{{baseId}}_contact_outside"></div>
-{% if validating_emails %}
-	<div class="profile-box-container summary">
-		<header>
-			<h4>{{ phrase('agent.people.email_awaiting_validation') }}</h4>
-		</header>
-		<section>
-			<div class="table-content contact-list contact-list-wrapper">
-				<ul class="contact-data-list" id="{{ baseId }}_validating_emails">
-					{% for vemail in validating_emails %}
-						<li class="email">
-							{{ vemail.email }}
-							<span class="set-primary validate-trigger" data-token="{{ security_token('validate_email') }}" data-email-id="{{ vemail.id }}">{{ phrase('agent.general.validate') }}</span>
-						</li>
-					{% endfor %}
-				</ul>
-			</div>
-		</section>
-	</div>
-{% endif %}
 {{ dp_app_loc(baseId, 'contact.after') }}
 {# /Box Contact #}
 
@@ -198,7 +179,14 @@
 			<div id="{{baseId}}_ug_edit_box" class="contact-list" style="display: none;">
 				<ul>
 					<div>
-						<label><input type="checkbox" checked="checked" onclick="this.checked=true;" /> {{ reg_group.title }}</label>
+						<label>
+							<input
+								type="checkbox"
+								checked="checked"
+								disabled="disabled"
+								onclick="this.checked=true;" />
+							{{ reg_group.title }}
+						</label>
 					</div>
 					{% for id,name in app.usergroups.getUsergroupNames() if id != 2 and id != 1 %}
 						<div>

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,48 +31,24 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
-use Orb\Util\Arrays;
 
+/**
+ * Class TicketFilterChangeDetectorService.
+ */
 class TicketFilterChangeDetectorService
 {
+    /**
+     * @param DeskproContainer $container
+     *
+     * @return FilterChangeDetector
+     */
     public static function create(DeskproContainer $container)
     {
-        $agent_data = $container->getAgentData();
-        $agents     = $agent_data->getAgents();
-
-        foreach ($agents as $a) {
-            $a->loadHelper('AgentPermissions');
-            $a->loadHelper('PermissionsManager');
-            $a->loadHelper('Agent');
-        }
-
-        $filters = $container->getEm()->getRepository('DeskPRO:TicketFilter')->getFilters();
-
-        $x = new FilterChangeDetector(
-            $container->getEm()->getRepository('DeskPRO:TicketFilter')->getFilters(),
-            $container->getAgentData()->getAgents()
-        );
-
-        $change_subs = $container->getEm()->getRepository('DeskPRO:TicketFilterSubscription')->getSimplePropertyChangeSubscriptions();
-
-        if ($change_subs) {
-            $filters = Arrays::keyFromData($filters, 'id');
-            foreach ($change_subs as $sub) {
-                if (!isset($filters[$sub['filter_id']]) || !$agent_data->has($sub['person_id'])) {
-                    continue;
-                }
-
-                $x->addExplicitFilterScope(
-                    $filters[$sub['filter_id']],
-                    $agent_data->get($sub['person_id'])
-                );
-            }
-        }
-
-        return $x;
+        return new FilterChangeDetector($container->getEm());
     }
 }

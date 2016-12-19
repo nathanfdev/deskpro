@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,18 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Facebook;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\FacebookApp;
 use Application\DeskPRO\Entity\FacebookPage;
-use Guzzle\Http\Client;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class FacebookApi
 {
     /**
-     * @var Client
+     * @var HttpClient
      */
     protected $facebook;
 
@@ -81,15 +82,15 @@ class FacebookApi
             return $this->facebook;
         }
 
-        $this->facebook = new Client('https://graph.facebook.com');
+        $this->facebook = new HttpClient(['base_uri' => 'https://graph.facebook.com']);
 
         if (!$this->app_token) {
             $output = $this->sendGetRequest(
-                '/oauth/access_token', array(
+                '/oauth/access_token', [
                     'client_id'     => $this->app_id,
                     'client_secret' => $this->app_secret,
                     'grant_type'    => 'client_credentials',
-                )
+                ]
             );
 
             $this->app_token = $output['access_token'];
@@ -110,12 +111,12 @@ class FacebookApi
     public function extendUserToken(FacebookPage $page, $extend_page_token = true)
     {
         $output = $this->sendGetRequest(
-            '/oauth/access_token', array(
+            '/oauth/access_token', [
                 'grant_type'        => 'fb_exchange_token',
                 'client_id'         => $this->app_id,
                 'client_secret'     => $this->app_secret,
                 'fb_exchange_token' => $page->user_token,
-            )
+            ]
         );
 
         if ($output) {
@@ -144,9 +145,9 @@ class FacebookApi
         }
 
         $output = $this->sendGetRequest(
-            '/me/accounts', array(
+            '/me/accounts', [
                 'access_token' => $page->user_token,
-            )
+            ]
         );
 
         if ($output) {
@@ -165,11 +166,11 @@ class FacebookApi
     {
         $output = $this->sendPostRequest(
             sprintf('/%s/comments', $graph_id),
-            array(
+            [
                 'app_id'       => $this->app_id,
                 'access_token' => $token,
                 'message'      => $message,
-            )
+            ]
         );
 
         return true;
@@ -179,22 +180,22 @@ class FacebookApi
     {
         $output = $this->sendPostRequest(
             sprintf('/%s/tabs', $page->graph_id),
-            array(
+            [
                 'app_id'       => $page->app->app_id,
                 'access_token' => $page->page_token,
-            )
+            ]
         );
 
         if ($output['success']) {
-            $params = array(
+            $params = [
                 'object'       => 'page',
                 'fields'       => 'feed',
                 'callback_url' => App::getRouter()->generate(
-                        'api_channel_facebook_incoming', array(), UrlGeneratorInterface::ABSOLUTE_URL
+                        'api_channel_facebook_incoming', [], UrlGeneratorInterface::ABSOLUTE_URL
                     ),
                 'verify_token' => $page->verify_token,
                 'access_token' => $this->app_token,
-            );
+            ];
             $output = $this->sendPostRequest(
                 sprintf('/%s/subscriptions', $page->app->app_id),
                 $params
@@ -216,7 +217,7 @@ class FacebookApi
 
         $res = $request->send();
 
-        $output = array();
+        $output = [];
         if ('text/javascript; charset=UTF-8' == $res->getContentType()) {
             $output = $res->json();
         } else {
@@ -231,11 +232,11 @@ class FacebookApi
     {
         // TODO: wrap in try/catch ?
         $fb      = $this->getClient();
-        $request = $fb->post($uri, array(), $params);
+        $request = $fb->post($uri, [], $params);
 
         $res = $request->send();
 
-        $output = array();
+        $output = [];
         if ('text/javascript; charset=UTF-8' == $res->getContentType()) {
             $output = $res->json();
         } else {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
@@ -79,15 +80,14 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
 
             $eml        = new EmailAddress();
             $eml->email = $user_email;
-            $person     = $person_processor->createPerson($eml, true);
+            $person     = $person_processor->createPerson($eml);
         }
 
         $orig_person = $ticket->person;
 
         if ($person) {
-            $ticket->person                  = $person;
-            $ticket->person_email            = null;
-            $ticket->person_email_validating = null;
+            $ticket->person       = $person;
+            $ticket->person_email = null;
 
             if ($this->getActionOption('add_cc')) {
                 if (!$ticket->hasParticipantPerson($orig_person)) {
@@ -125,10 +125,10 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
                     return;
                 }
 
-                return array('assign_self');
+                return ['assign_self'];
             }
 
-            return array('assign_agent');
+            return ['assign_agent'];
         }
 
         return;

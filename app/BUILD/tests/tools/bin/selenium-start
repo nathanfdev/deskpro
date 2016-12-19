@@ -1,0 +1,15 @@
+#!/bin/bash
+
+DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../"
+cd $DIR_ROOT/app/tests/tools
+
+if [ -f logs/selenium.pid ]; then
+  if ps -p `cat logs/selenium.pid` > /dev/null; then
+    echo "Already started"
+    exit
+  fi
+fi
+
+export PATH=`pwd`/node_modules/phantomjs/bin:$PATH
+
+./node_modules/forever/bin/forever start --uid "selenium" --append -m 1 --minUptime 1000 --spinSleepTime 1000 --killSignal SIGTERM --pidFile `pwd`/logs/selenium.pid -l `pwd`/logs/proc-selenium.log -o `pwd`/logs/selenium.log -e `pwd`/logs/selenium.err `pwd`/node_modules/selenium-server/bin/selenium -port 4444 -role hub

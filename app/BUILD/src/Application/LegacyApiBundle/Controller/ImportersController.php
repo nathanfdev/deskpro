@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,20 +29,23 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
-use Application\DeskPRO\HttpFoundation\Request;
-use Application\ImportBundle\Generator;
+use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ImportersController.
+ *
+ * @ApiModes("all")
  */
 class ImportersController extends AbstractController implements ProtectedControllerInterface
 {
@@ -66,22 +69,22 @@ class ImportersController extends AbstractController implements ProtectedControl
         $is = $this->get('deskpro.import');
 
         if (count($importers) !== count($is::$allowed)) {
-            $importers = array();
+            $importers = [];
             foreach ($is::$allowed as $type) {
                 $importers[] = $is->getImporter($type);
             }
         }
 
-        $ret = array();
+        $ret = [];
 
         foreach ($importers as $importer) {
-            $ret[] = array(
+            $ret[] = [
                 'id'          => str_replace('importers.', '', $importer['name']),
                 'title'       => $importer->getData('title'),
                 'description' => $importer->getData('description'),
                 'status'      => $importer->getData('status'),
                 'icon'        => $this->getIcon($importer),
-            );
+            ];
         }
 
         return $this->createJsonResponse($ret);
@@ -169,9 +172,9 @@ class ImportersController extends AbstractController implements ProtectedControl
             $config = $is->createGeneratorConfig($importer);
             $reader = Generator\GeneratorFactory::createReader($this->getContainer(), $config);
 
-            $res = $this->createJsonResponse(array('result' => $reader->checkConfig()));
+            $res = $this->createJsonResponse(['result' => $reader->checkConfig()]);
         } catch (\Exception $e) {
-            $res = $this->createJsonResponse(array('error_message' => $e->getMessage()));
+            $res = $this->createJsonResponse(['error_message' => $e->getMessage()]);
         }
 
         $is->cleanup($importer);
@@ -202,6 +205,6 @@ class ImportersController extends AbstractController implements ProtectedControl
             return '//'.DPC_SITE_DOMAIN.'/web/images/admin/icons/icon-'.$importer->getData('id').'.png';
         }
 
-        return (dp_get_config('static_path') ?: '/web').'/images/admin/icons/icon-'.$importer->getData('id').'.png';
+        return '/web/images/admin/icons/icon-'.$importer->getData('id').'.png';
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -38,7 +39,7 @@ use Application\DeskPRO\App;
 class BanIp extends AbstractEntityRepository
 {
     /** @var array */
-    protected $counts = array();
+    protected $counts = [];
 
     /**
      * Get a list of IPs suitable for display.
@@ -51,21 +52,14 @@ class BanIp extends AbstractEntityRepository
      */
     public function getList($from = 0, $limit = 20, $search_phrase = '')
     {
-        $where  = '';
-        $params = array();
-
-        if (!empty($search_phrase)) {
-            $where            = ' WHERE banned_ip LIKE :search';
-            $params['search'] = '%'.$search_phrase.'%';
+        $qb = $this->createQueryBuilder('bi');
+        $qb
+            ->setFirstResult($from)
+            ->setMaxResults($limit);
+        if ($search_phrase) {
+            $qb->where($qb->expr()->like('bi.banned_ip', $qb->expr()->literal(sprintf('%%%s%%', $search_phrase))));
         }
-
-        $list = App::getDb()->fetchAllCol(sprintf('
-            SELECT banned_ip
-            FROM ban_ips
-            %s
-            ORDER BY ip_start ASC
-            LIMIT %d, %d
-        ', $where, $from, $limit), $params);
+        $list                         = $qb->getQuery()->getArrayResult();
         $this->counts[$search_phrase] = count($list);
 
         return $list;
@@ -89,7 +83,7 @@ class BanIp extends AbstractEntityRepository
         }
 
         $where  = '';
-        $params = array();
+        $params = [];
 
         if (!empty($search_phrase)) {
             $where            = 'banned_ip LIKE :search';
@@ -108,14 +102,15 @@ class BanIp extends AbstractEntityRepository
      */
     public function isIpBanned($ip)
     {
-        $ip_long = sprintf('%u', ip2long($ip));
-
-        $banned = App::getDb()->fetchColumn('
+        $banned = App::getDb()->fetchColumn(
+            '
             SELECT banned_ip
             FROM ban_ips
-            WHERE banned_ip = ? OR (ip_start >= ? AND ip_end <= ?)
+            WHERE banned_ip = ?
             LIMIT 1
-        ', array($ip, $ip_long, $ip_long));
+        ',
+            [$ip]
+        );
 
         return $banned ? true : false;
     }

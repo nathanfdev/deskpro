@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Publish\Structure;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use Orb\Util\Arrays;
+use Orb\Util\Util;
 
 /**
  * Sends article and category notifications to users with subscriptions.
@@ -42,224 +48,302 @@ class KbSubscriptions extends AbstractJob
 {
     const DEFAULT_INTERVAL = 7200;
 
+    /**
+     * @var Article[]
+     */
+    private $published;
+
+    /**
+     * @var Article[]
+     */
+    private $updated;
+
     public function run()
     {
-        $last_time = App::getSetting('user.kb_subscriptions_last');
+        $lastTime = $this->getContainer()->getSetting('user.kb_subscriptions_last');
 
-        App::getDb()->replace('settings', array(
+        $this->getContainer()->getDb()->replace('settings', [
             'name'  => 'user.kb_subscriptions_last',
             'value' => time(),
-        ));
+        ]);
 
-        if (!App::getSetting('user.kb_subscriptions')) {
+        if (!$lastTime) {
             return;
         }
 
-        if (!$last_time) {
-            return;
-        }
+        $lastDate = new \DateTime("@$lastTime");
 
-        $last_date = new \DateTime("@$last_time");
+        /** @var Brand[] $brands */
+        $brands = $this->getContainer()->getEm()->getRepository(Brand::class)->findAll();
 
-        #------------------------------
-        # Find articles
-        #------------------------------
+        $brandStack = $this->getContainer()->getBrandStack();
 
-        $published = App::getOrm()->createQuery("
-            SELECT a
-            FROM DeskPRO:Article a INDEX BY a.id
-            LEFT JOIN a.categories cat
-            WHERE a.status = 'published' AND a.date_published > :date
-            ORDER BY a.date_published DESC
-        ")->setMaxResults(250)->execute(array('date' => $last_date));
+        /** @var BrandAwareSettingsResolver $brandSettingsResolver */
+        $brandSettingsResolver = $this->getContainer()->get('brand_aware_settings_resolver');
 
-        $updated = App::getOrm()->createQuery("
-            SELECT a
-            FROM DeskPRO:Article a INDEX BY a.id
-            LEFT JOIN a.categories cat
-            WHERE a.status = 'published' AND (a.date_updated > :date OR a.date_last_comment > :date)
-            ORDER BY a.date_updated DESC
-        ")->setMaxResults(250)->execute(array('date' => $last_date));
+        foreach ($brands as $brand) {
+            $brandStack->push($brand);
 
-        if (!$published && !$updated) {
-            return;
-        }
-
-        #------------------------------
-        # Get subscriptions
-        #------------------------------
-
-        $structure = App::getContainer()->getSystemService('publish_structure');
-        $helper    = $structure->getArticleCategoryHelper();
-
-        $category_ids = array();
-        $article_ids  = array();
-
-        foreach ($published as $a) {
-            foreach ($a->categories as $c) {
-                $category_ids[] = $c->getId();
+            if (!$brandSettingsResolver->getSetting('user.kb_subscriptions')) {
+                $brandStack->pop();
+                continue;
             }
-        }
-        foreach ($updated as $a) {
-            $article_ids[] = $a->getId();
-        }
 
-        $category_ids = array_unique($category_ids);
-        $article_ids  = array_unique($article_ids);
+            $this->findArticles($lastDate, $brand);
 
-        $cat_subs     = array();
-        $article_subs = array();
+            if (!$this->published && !$this->updated) {
+                $this->logStatus('No new articles for '.$brand.' brand');
+                $brandStack->pop();
+                continue;
+            }
+            //------------------------------
+            // Get subscriptions
+            //------------------------------
 
-        if ($category_ids) {
+            /** @var Structure $structure */
+            $structure = $this->getContainer()->getSystemService('publish_structure');
+            $helper    = $structure->getArticleCategoryHelper();
 
-            // Users can be subscribed to a category higher-up,
-            // so for each article need to include subs for the whole path
-            $add_ids = array();
-            foreach ($category_ids as $cid) {
-                $parents = $helper->getPath(array('id' => $cid));
-                foreach ($parents as $c) {
-                    $add_ids[] = $c['id'];
+            $categoryIds = [];
+            $articleIds  = [];
+
+            foreach ($this->published as $a) {
+                foreach ($a->getCategories() as $c) {
+                    $categoryIds[] = $c->getId();
+                }
+            }
+            foreach ($this->updated as $a) {
+                $articleIds[] = $a->getId();
+            }
+
+            $categoryIds = array_unique($categoryIds);
+            $articleIds  = array_unique($articleIds);
+
+            $catSubs     = [];
+            $rootSubs    = [];
+            $articleSubs = [];
+
+            if ($categoryIds) {
+                // Users can be subscribed to a category higher-up,
+                // so for each article need to include subs for the whole path
+                $add_ids = [];
+                foreach ($categoryIds as $cid) {
+                    $parents = $helper->getPath(['id' => $cid]);
+                    foreach ($parents as $c) {
+                        $add_ids[] = $c['id'];
+                    }
+                }
+
+                $categoryIds = array_merge($categoryIds, $add_ids);
+                $categoryIds = array_unique($categoryIds);
+
+                $catSubs = $this->getContainer()->getDb()->fetchAllGrouped('
+                    SELECT person_id, category_id
+                    FROM kb_subscriptions
+                    WHERE category_id IN (?)
+                ', [$categoryIds], 'person_id', null, 'category_id', [Connection::PARAM_INT_ARRAY]);
+
+                $rootSubs = $this->getContainer()->getDb()->fetchAllGrouped('
+                    SELECT person_id, root_category
+                    FROM kb_subscriptions
+                    WHERE root_category = 1
+                ', [], 'person_id', null, 'root_category', [Connection::PARAM_INT_ARRAY]);
+            }
+
+            if ($articleIds) {
+                $articleSubs = $this->getContainer()->getDb()->fetchAllGrouped('
+                    SELECT person_id, article_id
+                    FROM kb_subscriptions
+                    WHERE article_id IN (?)
+                ', [$articleIds], 'person_id', null, 'article_id', [Connection::PARAM_INT_ARRAY]);
+            }
+
+            //------------------------------
+            // Sort subscriptions into users
+            //------------------------------
+
+            $userToArticles = $this->sortSubscriptions($rootSubs, $catSubs, $articleSubs, $helper);
+
+            if (!$userToArticles) {
+                $brandStack->pop();
+                continue;
+            }
+
+            //------------------------------
+            // Verify permissions
+            //------------------------------
+
+            $userGroupMembers = $this->getContainer()->getDb()->fetchAllGrouped('
+                SELECT person_id, usergroup_id
+                FROM person2usergroups
+                WHERE person_id IN (?)
+            ', [array_keys($userToArticles)], 'person_id', null, 'usergroup_id', [Connection::PARAM_INT_ARRAY]);
+
+            $catGroups = $this->getContainer()->getDb()->fetchAllGrouped('
+                SELECT category_id, usergroup_id
+                FROM article_category2usergroup
+            ', [], 'category_id', null, 'usergroup_id');
+
+            $allUserToArticles = $userToArticles;
+            $userToArticles    = [];
+
+            foreach ($allUserToArticles as $personId => $articles) {
+                $personUgs   = isset($userGroupMembers[$personId]) ? $userGroupMembers[$personId] : [];
+                $personUgs[] = 1; // Everyone
+
+                /** @var Article $article */
+                foreach ($articles as $article) {
+                    $add = false;
+                    foreach ($article->getCategories() as $cat) {
+                        $catUgs = isset($catGroups[$cat->getId()]) ? $catGroups[$cat->getId()] : [];
+                        if (Arrays::isIn($personUgs, $catUgs)) {
+                            $add = true;
+                            break;
+                        }
+                    }
+
+                    if ($add) {
+                        if (!isset($userToArticles[$personId])) {
+                            $userToArticles[$personId] = [];
+                        }
+                        $userToArticles[$personId][$article->getId()] = $article;
+                    }
                 }
             }
 
-            $category_ids = array_merge($category_ids, $add_ids);
-            $category_ids = array_unique($category_ids);
+            unset($allUserToArticles);
 
-            $cat_subs = App::getDb()->fetchAllGrouped('
-                SELECT person_id, category_id
-                FROM kb_subscriptions
-                WHERE category_id IN (?)
-            ', array($category_ids), 'person_id', null, 'category_id', array(Connection::PARAM_INT_ARRAY));
+            $this->sendEmails($userToArticles, $lastDate, $brand);
+
+            $brandStack->pop();
+        }
+    }
+
+    /**
+     * @param \DateTime $lastDate
+     * @param Brand     $brand
+     */
+    private function findArticles($lastDate, $brand)
+    {
+        $this->published = $this->getContainer()->getEm()->createQuery("
+                SELECT a
+                FROM DeskPRO:Article a INDEX BY a.id
+                INNER JOIN a.categories cat
+                WHERE a.status = 'published'
+                  AND a.date_published > :date
+                  AND cat.brand = :brand
+                ORDER BY a.date_published DESC
+            ")->setMaxResults(250)->execute(['date' => $lastDate, 'brand' => $brand]);
+
+        $this->updated = $this->getContainer()->getEm()->createQuery("
+                SELECT a
+                FROM DeskPRO:Article a INDEX BY a.id
+                INNER JOIN a.categories cat
+                WHERE a.status = 'published'
+                  AND (a.date_updated > :date OR a.date_last_comment > :date)
+                  AND cat.brand = :brand
+                ORDER BY a.date_updated DESC
+            ")->setMaxResults(250)->execute(['date' => $lastDate, 'brand' => $brand]);
+    }
+
+    /**
+     * @param array                        $rootSubs
+     * @param array                        $catSubs
+     * @param array                        $articleSubs
+     * @param \Orb\Util\HierarchyStructure $helper
+     *
+     * @return array
+     */
+    private function sortSubscriptions($rootSubs, $catSubs, $articleSubs, $helper)
+    {
+        $userToArticles = [];
+
+        foreach ($rootSubs as $personId => $root) {
+            foreach ($this->published as $article) {
+                $userToArticles[$personId][$article->getId()] = $article;
+            }
         }
 
-        if ($article_ids) {
-            $article_subs = App::getDb()->fetchAllGrouped('
-                SELECT person_id, article_id
-                FROM kb_subscriptions
-                WHERE article_id IN (?)
-            ', array($article_ids), 'person_id', null, 'article_id', array(Connection::PARAM_INT_ARRAY));
-        }
-
-        #------------------------------
-        # Sort subscriptions into users
-        #------------------------------
-
-        $user_to_articles = array();
-
-        foreach ($cat_subs as $person_id => $cids) {
-            foreach ($published as $article) {
-                foreach ($article->categories as $cat) {
+        foreach ($catSubs as $personId => $cids) {
+            foreach ($this->published as $article) {
+                foreach ($article->getCategories() as $cat) {
                     $path   = $helper->getPathIds($cat);
                     $path[] = $cat->getId();
 
                     if (Arrays::isIn($path, $cids)) {
-                        if (!isset($user_to_articles[$person_id])) {
-                            $user_to_articles[$person_id] = array();
+                        if (!isset($userToArticles[$personId])) {
+                            $userToArticles[$personId] = [];
                         }
-                        $user_to_articles[$person_id][$article->getId()] = $article;
+                        $userToArticles[$personId][$article->getId()] = $article;
                     }
                 }
             }
         }
 
-        foreach ($article_subs as $person_id => $aids) {
+        foreach ($articleSubs as $personId => $aids) {
             foreach ($aids as $aid) {
-                if (!isset($updated[$aid])) {
+                if (!isset($this->updated[$aid])) {
                     continue;
                 }
 
-                if (!isset($user_to_articles[$person_id])) {
-                    $user_to_articles[$person_id] = array();
+                if (!isset($userToArticles[$personId])) {
+                    $userToArticles[$personId] = [];
                 }
-                $user_to_articles[$person_id][$aid] = $updated[$aid];
+                $userToArticles[$personId][$aid] = $this->updated[$aid];
             }
         }
 
-        if (!$user_to_articles) {
-            return;
-        }
+        return $userToArticles;
+    }
 
-        #------------------------------
-        # Verify permissions
-        #------------------------------
+    /**
+     * @param Article[][] $userToArticles
+     * @param \DateTime   $lastDate
+     * @param Brand       $brand
+     */
+    private function sendEmails($userToArticles, $lastDate, $brand)
+    {
+        //------------------------------
+        // Now send the emails (they are queued)
+        //------------------------------
 
-        $user_groupmembers = App::getDb()->fetchAllGrouped('
-            SELECT person_id, usergroup_id
-            FROM person2usergroups
-            WHERE person_id IN (?)
-        ', array(array_keys($user_to_articles)), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
-
-        $cat_groups = App::getDb()->fetchAllGrouped('
-            SELECT category_id, usergroup_id
-            FROM article_category2usergroup
-        ', array(), 'category_id', null, 'usergroup_id');
-
-        $all_user_to_articles = $user_to_articles;
-        $user_to_articles     = array();
-
-        foreach ($all_user_to_articles as $person_id => $articles) {
-            $person_ugs   = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
-            $person_ugs[] = 1; // Everyone
-
-            foreach ($articles as $article) {
-                $add = false;
-                foreach ($article->categories as $cat) {
-                    $cat_ugs = isset($cat_groups[$cat->getId()]) ? $cat_groups[$cat->getId()] : array();
-                    if (Arrays::isIn($person_ugs, $cat_ugs)) {
-                        $add = true;
-                        break;
-                    }
-                }
-
-                if ($add) {
-                    if (!isset($user_to_articles[$person_id])) {
-                        $user_to_articles[$person_id] = array();
-                    }
-                    $user_to_articles[$person_id][$article->getId()] = $article;
-                }
-            }
-        }
-
-        unset($all_user_to_articles);
-
-        #------------------------------
-        # Now send the emails (they are queued)
-        #------------------------------
-
-        foreach ($user_to_articles as $person_id => $articles) {
-            $person = App::getOrm()->find('DeskPRO:Person', $person_id);
+        foreach ($userToArticles as $personId => $articles) {
+            /** @var Person $person */
+            $person = $this->getContainer()->getEm()->find(Person::class, $personId);
             if (!$person) {
                 continue;
             }
 
-            $new_articles     = array();
-            $updated_articles = array();
+            $newArticles     = [];
+            $updatedArticles = [];
 
             foreach ($articles as $article) {
-                if ($article->date_published > $last_date) {
-                    $new_articles[] = $article;
+                if ($article->getDatePublished() > $lastDate) {
+                    $newArticles[] = $article;
                 } else {
-                    $updated_articles[] = $article;
+                    $updatedArticles[] = $article;
                 }
             }
 
-            $message = App::getMailer()->createMessage();
+            $message = $this->getContainer()->getMailer()->createMessage();
             $message->setToPerson($person);
-            $message->setTemplate('DeskPRO:emails_user:kb-subscription.html.twig', array(
+            $message->setTemplate('DeskPRO:emails_user:kb-subscription.html.twig', [
                 'person'           => $person,
-                'new_articles'     => $new_articles,
-                'updated_articles' => $updated_articles,
-                'unsub_auth'       => \Orb\Util\Util::generateStaticSecurityToken(App::getSetting('core.app_secret').$person->getId().$person->secret_string),
-            ));
+                'new_articles'     => $newArticles,
+                'updated_articles' => $updatedArticles,
+                'unsub_auth'       => Util::generateStaticSecurityToken(
+                    $this->getContainer()->getSetting('core.app_secret').$person->getId().$person->secret_string
+                ),
+            ]);
 
-            App::getMailer()->send($message);
+            $this->getContainer()->getMailer()->send($message);
 
             // Saves mem
-            App::getOrm()->detach($person);
+            $this->getContainer()->getEm()->detach($person);
         }
 
-        if ($user_to_articles) {
-            $this->logStatus('Send '.count($user_to_articles).' notifications');
+        if ($userToArticles) {
+            $this->logStatus('Sent '.count($userToArticles).' notifications for '.$brand.' brand');
         }
     }
 }

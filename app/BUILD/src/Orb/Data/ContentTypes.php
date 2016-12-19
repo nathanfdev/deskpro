@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,14 +29,15 @@
 /**
  * Orb.
  */
+
 namespace Orb\Data;
 
 use Orb\Util\Strings;
 
 class ContentTypes
 {
-    /** @var array  */
-    protected static $ext_to_contenttype = array(
+    /** @var array */
+    protected static $ext_to_contenttype = [
         'acx'      => 'application/internet-property-stream',
         'ai'       => 'application/postscript',
         'aif'      => 'audio/x-aiff',
@@ -96,15 +97,15 @@ class ContentTypes
         'htm'      => 'text/html',
         'html'     => 'text/html',
         'htt'      => 'text/webviewhtml',
-        'ico'      => 'image/x-icon',
+        'ico'      => 'image/vnd.microsoft.icon',
         'ief'      => 'image/ief',
         'iii'      => 'application/x-iphone',
         'ins'      => 'application/x-internet-signup',
         'isp'      => 'application/x-internet-signup',
         'jfif'     => 'image/pipeg',
+        'jpg'      => 'image/jpeg',
         'jpe'      => 'image/jpeg',
         'jpeg'     => 'image/jpeg',
-        'jpg'      => 'image/jpeg',
         'js'       => 'text/javascript',
         'json'     => 'application/json',
         'latex'    => 'application/x-latex',
@@ -238,7 +239,7 @@ class ContentTypes
         'z'        => 'application/x-compress',
         'zip'      => 'application/zip',
         '323'      => 'text/h323',
-    );
+    ];
 
     /**
      * Get an array of file extensions.
@@ -309,7 +310,7 @@ class ContentTypes
      * of all suitable extensions are returned.
      *
      * @param string $content_type The content-type to look up
-     * @param bool   $find_all     When true, an array of extensions will be returned.
+     * @param bool   $find_all     When true, an array of extensions will be returned
      *
      * @return string
      */
@@ -327,7 +328,7 @@ class ContentTypes
 
     protected static function _arraySearchAll($array, $search, $strict = false)
     {
-        $found_keys = array();
+        $found_keys = [];
 
         if ($strict) {
             foreach ($array as $k => $v) {
@@ -353,13 +354,13 @@ class ContentTypes
      */
     public static function getImageContentTypes()
     {
-        return array(
+        return [
             'image/png',
             'image/gif',
             'image/jpg',
             'image/jpeg',
             'image/bmp',
-        );
+        ];
     }
 
     /**
@@ -438,7 +439,7 @@ class ContentTypes
      */
     public static function showFileInline($filename)
     {
-        static $inline_ext = array('png', 'gif', 'jpeg', 'jpg', 'bmp', 'ico', 'txt');
+        static $inline_ext = ['png', 'gif', 'jpeg', 'jpg', 'bmp', 'ico', 'txt'];
 
         $dot_pos = strrpos($filename, '.');
         if (!$dot_pos) {

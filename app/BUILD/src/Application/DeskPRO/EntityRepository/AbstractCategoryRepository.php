@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
@@ -61,6 +62,9 @@ class AbstractCategoryRepository extends AbstractEntityRepository
         return $this->_cat_helper;
     }
 
+    /**
+     * @return string
+     */
     public function getPermissionTableName()
     {
         return;
@@ -80,7 +84,7 @@ class AbstractCategoryRepository extends AbstractEntityRepository
             SELECT id, parent_id
             FROM `'.$this->getTableName().'`
             ORDER BY display_order ASC, id ASC
-        ', array(), 'id');
+        ', [], 'id');
 
         $flat = Arrays::intoHierarchy($cats);
         $flat = Arrays::flattenHierarchy($flat);
@@ -132,6 +136,6 @@ class AbstractCategoryRepository extends AbstractEntityRepository
      */
     public function __call($method, $args)
     {
-        return call_user_func_array(array($this->getCategoryHelper(), $method), $args);
+        return call_user_func_array([$this->getCategoryHelper(), $method], $args);
     }
 }

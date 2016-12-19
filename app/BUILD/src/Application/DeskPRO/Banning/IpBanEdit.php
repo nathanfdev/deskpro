@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Banning;
 
 use Application\DeskPRO\App;
@@ -67,27 +68,10 @@ class IpBanEdit
      */
     public function save(EntityManager $em)
     {
-        $new_ip = $this->ip_ban->banned_ip;
-
         $this->db->beginTransaction();
-
         try {
-            $this->db->executeUpdate(
-                'DELETE FROM ban_ips WHERE banned_ip = ?',
-                array($this->old_ip)
-            );
-
-            $this->db->executeUpdate(
-                'DELETE FROM ban_ips WHERE banned_ip = ?',
-                array($new_ip)
-            );
-
-            $ip_ban            = new BanIp();
-            $ip_ban->banned_ip = $new_ip;
-
-            $em->persist($ip_ban);
-            $em->flush();
-
+            $em->persist($this->ip_ban);
+            $em->flush($this->ip_ban);
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();

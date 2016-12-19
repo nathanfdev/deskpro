@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\Dpql;
@@ -46,37 +47,39 @@ abstract class AbstractFunc
      *
      * @var array
      */
-    protected static $_functionMap = array(
-        'ALIAS'             => 'Alias',
-        'COUNT'             => 'Count',
-        'COUNT_DISTINCT'    => 'CountDistinct',
-        'CURDATE'           => 'CurDate',
-        'CURTIME'           => 'CurTime',
-        'DATE_OFFSET_GROUP' => 'DateOffsetGroup',
-        'DATE'              => 'Date',
-        'DAYNAME'           => 'DayName',
-        'DAYOFMONTH'        => 'DayOfMonth',
-        'DAYOFWEEK'         => 'DayOfWeek',
-        'FORMAT'            => 'Format',
-        'HOUR'              => 'Hour',
-        'LINK'              => 'Link',
-        'MATRIX'            => 'Matrix',
-        'MINUTE'            => 'Minute',
-        'MONTH'             => 'Month',
-        'MONTHNAME'         => 'MonthName',
-        'NOW'               => 'Now',
-        'OBJ_LANG'          => 'ObjLang',
-        'PERCENT'           => 'Percent',
-        'PRINT'             => 'Printable',
-        'TIME_LENGTH'       => 'TimeLength',
-        'STACK_GROUP'       => 'StackGroup',
-        'TO_UTC'            => 'ToUtc',
-        'TOTAL'             => 'Total',
-        'UTC'               => 'Utc',
-        'X'                 => 'X',
-        'Y'                 => 'Y',
-        'YEAR'              => 'Year',
-    );
+    protected static $_functionMap = [
+        'ALIAS'                   => 'Alias',
+        'COUNT'                   => 'Count',
+        'COUNT_DISTINCT'          => 'CountDistinct',
+        'CURDATE'                 => 'CurDate',
+        'CURTIME'                 => 'CurTime',
+        'DATE_OFFSET_GROUP'       => 'DateOffsetGroup',
+        'DATE'                    => 'Date',
+        'DAYNAME'                 => 'DayName',
+        'DAYOFMONTH'              => 'DayOfMonth',
+        'DAYOFWEEK'               => 'DayOfWeek',
+        'FORMAT'                  => 'Format',
+        'HIERARCHY'               => 'Hierarchy',
+        'HIERARCHY_DESCENDS_FROM' => 'HierarchyDescendsFrom',
+        'HOUR'                    => 'Hour',
+        'LINK'                    => 'Link',
+        'MATRIX'                  => 'Matrix',
+        'MINUTE'                  => 'Minute',
+        'MONTH'                   => 'Month',
+        'MONTHNAME'               => 'MonthName',
+        'NOW'                     => 'Now',
+        'OBJ_LANG'                => 'ObjLang',
+        'PERCENT'                 => 'Percent',
+        'PRINT'                   => 'Printable',
+        'TIME_LENGTH'             => 'TimeLength',
+        'STACK_GROUP'             => 'StackGroup',
+        'TO_UTC'                  => 'ToUtc',
+        'TOTAL'                   => 'Total',
+        'UTC'                     => 'Utc',
+        'X'                       => 'X',
+        'Y'                       => 'Y',
+        'YEAR'                    => 'Year',
+    ];
 
     /**
      * Name of the function (in user-provided case).
@@ -115,7 +118,7 @@ abstract class AbstractFunc
      * @param string $name
      * @param array  $arguments
      */
-    protected function __construct($name, array $arguments = array())
+    protected function __construct($name, array $arguments = [])
     {
         $this->_name      = $name;
         $this->_arguments = $arguments;
@@ -129,7 +132,7 @@ abstract class AbstractFunc
      *
      * @return \Application\DeskPRO\Dpql\Func\AbstractFunc
      */
-    public static function create($name, array $arguments = array())
+    public static function create($name, array $arguments = [])
     {
         $name = strtoupper($name);
         if (isset(self::$_functionMap[$name])) {
@@ -152,7 +155,7 @@ abstract class AbstractFunc
      */
     protected function _toLiteral(\Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part)
     {
-        if ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\String) {
+        if ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\StringPart) {
             return $part->string;
         } elseif ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\Number) {
             return $part->number;

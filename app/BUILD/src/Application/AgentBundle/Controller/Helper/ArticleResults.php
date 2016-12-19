@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
@@ -47,7 +48,7 @@ class ArticleResults
     /**
      * @var array
      */
-    protected $article_ids = array();
+    protected $article_ids = [];
 
     /**
      * @var array
@@ -65,12 +66,12 @@ class ArticleResults
      * - specific_terms: Always added to the search
      * - default_order_by: The default order by for a page you havent submitted.
      *
-     * @param  $controller
+     * @param       $controller
      * @param array $options
      *
      * @return \Application\AgentBundle\Controller\Helper\ArticleResults
      */
-    public static function newFromRequest($controller, array $options = array())
+    public static function newFromRequest($controller, array $options = [])
     {
         $result_cache = false;
         if ($controller->in->getUint('cache_id')) {
@@ -80,9 +81,9 @@ class ArticleResults
             }
         }
 
-        #------------------------------
-        # If there's no result set, we're running it for the first time
-        #------------------------------
+        //------------------------------
+        // If there's no result set, we're running it for the first time
+        //------------------------------
 
         if (!$result_cache) {
             $term_rules = RuleBuilder::newTermsBuilder();
@@ -90,25 +91,26 @@ class ArticleResults
             // A category with this action is a shortcut for searching on the category,
             // and published
             if (isset($options['category'])) {
-                $terms = array(
-                    array('type' => 'category_specific', 'op' => 'is', 'options' => array('category' => $options['category']['id'])),
-                    array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
-                );
+                $terms = [
+                    ['type' => 'category_specific', 'op' => 'is', 'options' => ['category' => $options['category']['id']]],
+                    ['type' => 'agent_list', 'op' => 'is', 'options' => 1],
+                ];
             } elseif (isset($options['pending_translate'])) {
-                $terms = array(
-                    array('type'      => 'status', 'op' => 'is', 'options' => array('status' => 'published')),
-                    array('type'      => 'pending_translate', 'op' => 'id', 'options' => array(
+                $terms = [
+                    ['type' => 'status', 'op' => 'is', 'options' => ['status' => 'published']],
+                    ['type' => 'pending_translate', 'op' => 'id', 'options' => [
                         'language_id' => isset($options['pending_translate_lang']) ? $options['pending_translate_lang'] : 0,
-                    )),
-                );
+                    ]],
+                    ['type' => 'brand', 'op' => 'is', 'options' => ['brand' => $options['brand_id']]],
+                ];
 
-            // "all" is published but no category term
+                // "all" is published but no category term
             } elseif (isset($options['show_all'])) {
-                $terms = array(
-                    array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
-                );
+                $terms = [
+                    ['type' => 'agent_list', 'op' => 'is', 'options' => 1],
+                ];
 
-            // Otherwise its a user filter with custom terms
+                // Otherwise its a user filter with custom terms
             } else {
                 $form_terms = $controller->in->getCleanValueArray('terms', 'raw', 'string');
                 $form_terms = Arrays::removeFalsey($form_terms);
@@ -135,8 +137,8 @@ class ArticleResults
 
             $result_cache                = new ResultCache();
             $result_cache['person']      = $controller->person;
-            $result_cache['criteria']    = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
-            $result_cache['extra']       = array('summary' => $searcher->getSummary());
+            $result_cache['criteria']    = ['terms' => $searcher->getTerms(), 'order_by' => $order_by];
+            $result_cache['extra']       = ['summary' => $searcher->getSummary()];
             $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
 
@@ -213,7 +215,7 @@ class ArticleResults
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.
         // - So we'll re-create the array here according to the order they're supposed to be in.
-        $articles = array();
+        $articles = [];
         foreach ($article_ids as $tid) {
             if (isset($articles_raw[$tid])) {
                 $articles[$tid] = $articles_raw[$tid];

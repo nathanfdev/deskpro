@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Input
  */
+
 namespace Orb\Input\Cleaner\CleanerPlugin;
 
 use Orb\Input\Cleaner\Cleaner;
@@ -63,11 +64,11 @@ class BasicXss implements CleanerPlugin
     public function getCleanerTypes()
     {
         // These override the basic ones
-        return array(
+        return [
             'str',
             'string',
             'str_notrim',
-        );
+        ];
     }
 
     public function cleanValue($value, $type, array $options, Cleaner $cleaner)
@@ -103,7 +104,7 @@ class __DP_CI_Security
 {
     protected $_xss_hash = '';
 
-    protected $_never_allowed_str = array(
+    protected $_never_allowed_str = [
         'document.cookie' => 'document,cookie',
         'document.write'  => 'document,write',
         '.parentNode'     => ',parentNode',
@@ -113,9 +114,9 @@ class __DP_CI_Security
         '-->'             => '--&gt;',
         '<![CDATA['       => '&lt;![CDATA[',
         '<comment>'       => '&lt;comment&gt;',
-    );
+    ];
 
-    protected $_never_allowed_regex = array(
+    protected $_never_allowed_regex = [
         'javascript\s*:',
         '(document|(document\.)?window)\.(location|on\w*)',
         'expression\s*(\(|&\#40;)', // CSS and IE
@@ -125,7 +126,7 @@ class __DP_CI_Security
         'vbs\s*:', // IE
         'Redirect\s+30\d:',
         "([\"'])?data\s*:[^\\1]*?base64[^\\1]*?,[^\\1]*?\\1?",
-    );
+    ];
 
     public function xss_clean($str, $is_image = false)
     {
@@ -143,8 +144,8 @@ class __DP_CI_Security
             $str = rawurldecode($str);
         } while (preg_match('/%[0-9a-f]{2,}/i', $str));
 
-        $str = preg_replace_callback("/[^a-z0-9>]+[a-z0-9]+=([\'\"]).*?\\1/si", array($this, '_convert_attribute'), $str);
-        $str = preg_replace_callback('/<\w+.*/si', array($this, '_decode_entity'), $str);
+        $str = preg_replace_callback("/[^a-z0-9>]+[a-z0-9]+=([\'\"]).*?\\1/si", [$this, '_convert_attribute'], $str);
+        $str = preg_replace_callback('/<\w+.*/si', [$this, '_decode_entity'], $str);
 
         $str = Strings::removeInvisibleCharacters($str);
 
@@ -157,29 +158,29 @@ class __DP_CI_Security
         if ($is_image === true) {
             $str = preg_replace('/<\?(php)/i', '&lt;?\\1', $str);
         } else {
-            $str = str_replace(array('<?', '?'.'>'), array('&lt;?', '?&gt;'), $str);
+            $str = str_replace(['<?', '?'.'>'], ['&lt;?', '?&gt;'], $str);
         }
 
-        $words = array(
+        $words = [
             'javascript', 'expression', 'vbscript', 'jscript', 'wscript',
             'vbs', 'script', 'base64', 'applet', 'alert', 'document',
             'write', 'cookie', 'window', 'confirm', 'prompt',
-        );
+        ];
 
         foreach ($words as $word) {
             $word = implode('\s*', str_split($word)).'\s*';
-            $str  = preg_replace_callback('#('.substr($word, 0, -3).')(\W)#is', array($this, '_compact_exploded_words'), $str);
+            $str  = preg_replace_callback('#('.substr($word, 0, -3).')(\W)#is', [$this, '_compact_exploded_words'], $str);
         }
 
         do {
             $original = $str;
 
             if (preg_match('/<a/i', $str)) {
-                $str = preg_replace_callback('#<a[^a-z0-9>]+([^>]*?)(?:>|$)#si', array($this, '_js_link_removal'), $str);
+                $str = preg_replace_callback('#<a[^a-z0-9>]+([^>]*?)(?:>|$)#si', [$this, '_js_link_removal'], $str);
             }
 
             if (preg_match('/<img/i', $str)) {
-                $str = preg_replace_callback('#<img[^a-z0-9]+([^>]*?)(?:\s?/?>|$)#si', array($this, '_js_img_removal'), $str);
+                $str = preg_replace_callback('#<img[^a-z0-9]+([^>]*?)(?:\s?/?>|$)#si', [$this, '_js_img_removal'], $str);
             }
 
             if (preg_match('/script|xss/i', $str)) {
@@ -192,7 +193,7 @@ class __DP_CI_Security
         $str = $this->_remove_evil_attributes($str, $is_image);
 
         $naughty = 'alert|prompt|confirm|applet|audio|basefont|base|behavior|bgsound|blink|body|embed|expression|form|frameset|frame|head|html|ilayer|iframe|input|button|select|isindex|layer|link|meta|keygen|object|plaintext|style|script|textarea|title|math|video|svg|xml|xss';
-        $str     = preg_replace_callback('#<(/*\s*)('.$naughty.')([^><]*)([><]*)#is', array($this, '_sanitize_naughty_html'), $str);
+        $str     = preg_replace_callback('#<(/*\s*)('.$naughty.')([^><]*)([><]*)#is', [$this, '_sanitize_naughty_html'], $str);
 
         $str = preg_replace(
             '#(alert|prompt|confirm|cmd|passthru|eval|exec|expression|system|fopen|fsockopen|file|file_get_contents|readfile|unlink)(\s*)\((.*?)\)#si',
@@ -203,7 +204,7 @@ class __DP_CI_Security
         $str = $this->_do_never_allowed($str);
 
         if ($is_image === true) {
-            return ($str === $converted_string);
+            return $str === $converted_string;
         }
 
         return $str;
@@ -252,7 +253,7 @@ class __DP_CI_Security
                     }
                 }
 
-                $replace = array();
+                $replace = [];
                 $matches = array_values(array_unique(array_map('strtolower', $matches[0])));
                 $c       = count($matches);
                 for ($i = 0; $i < $c; ++$i) {
@@ -283,7 +284,7 @@ class __DP_CI_Security
     protected function _remove_evil_attributes($str, $is_image)
     {
         // All javascript event handlers (e.g. onload, onclick, onmouseover), style, and xmlns
-        $evil_attributes = array('on\w*', 'style', 'xmlns', 'formaction', 'form', 'xlink:href');
+        $evil_attributes = ['on\w*', 'style', 'xmlns', 'formaction', 'form', 'xlink:href'];
 
         if ($is_image === true) {
             /*
@@ -297,7 +298,7 @@ class __DP_CI_Security
             $str = $m[1];
             do {
                 $count = 0;
-                $attribs = array();
+                $attribs = [];
 
                 // find occurrences of illegal attribute strings with quotes (042 and 047 are octal quotes)
                 preg_match_all('/(?<!\w)('.implode('|', $evil_attributes).')\s*=\s*(\042|\047)([^\\2]*?)(\\2)/is', $str, $matches, PREG_SET_ORDER);
@@ -340,7 +341,7 @@ class __DP_CI_Security
     {
         return '&lt;'.$matches[1].$matches[2].$matches[3] // encode opening brace
         // encode captured opening or closing brace to prevent recursive vectors:
-.str_replace(array('>', '<'), array('&gt;', '&lt;'), $matches[4]);
+.str_replace(['>', '<'], ['&gt;', '&lt;'], $matches[4]);
     }
 
     protected function _js_link_removal($match)
@@ -350,7 +351,7 @@ class __DP_CI_Security
             preg_replace(
                 '#href=.*?(?:(?:alert|prompt|confirm)(?:\(|&\#40;)|javascript:|livescript:|mocha:|charset=|window\.|document\.|\.cookie|<script|<xss|data\s*:)#si',
                 '',
-                $this->_filter_attributes(str_replace(array('<', '>'), '', $match[1]))
+                $this->_filter_attributes(str_replace(['<', '>'], '', $match[1]))
             ),
             $match[0]
         );
@@ -363,7 +364,7 @@ class __DP_CI_Security
             preg_replace(
                 '#src=.*?(?:(?:alert|prompt|confirm)(?:\(|&\#40;)|javascript:|livescript:|mocha:|charset=|window\.|document\.|\.cookie|<script|<xss|base64\s*,)#si',
                 '',
-                $this->_filter_attributes(str_replace(array('<', '>'), '', $match[1]))
+                $this->_filter_attributes(str_replace(['<', '>'], '', $match[1]))
             ),
             $match[0]
         );
@@ -371,7 +372,7 @@ class __DP_CI_Security
 
     protected function _convert_attribute($match)
     {
-        return str_replace(array('>', '<', '\\'), array('&gt;', '&lt;', '\\\\'), $match[0]);
+        return str_replace(['>', '<', '\\'], ['&gt;', '&lt;', '\\\\'], $match[0]);
     }
 
     protected function _filter_attributes($str)

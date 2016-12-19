@@ -8,11 +8,11 @@
 
 <br /><br />
 
-<dp:ticket-history />
+<dp:ticket-messages />
 
 {% if app.isPortalEnabled() %}
 	<br /><br />
 
 	{{ phrase('user.emails.ticket_access_ticket_online') }}
-	<a href="{{ ticket.link }}">{{ ticket.link }}</a>
+	<a href="{{ portal_url(ticket) }}">{{ portal_url(ticket) }}</a>
 {% endif %}

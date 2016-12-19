@@ -1,5 +1,41 @@
 {% extends 'AgentBundle:Login:layout.html.twig' %}
 {% set authManager = app.authenticationManager %}
+{% if captcha %}
+	{% form_theme captcha _self %}
+{% endif %}
+
+{# CAPTCHA #}
+{% block deskpro_captcha_widget %}
+	{% if form.captcha is defined %}
+		{{ form_row(form.captcha) }}
+	{% endif %}
+{% endblock deskpro_captcha_widget %}
+
+{% block deskpro_recaptcha_widget %}
+	{% spaceless %}
+		<script src="//www.google.com/recaptcha/api.js"></script>
+		<div class="g-recaptcha" data-sitekey="{{ site_key }}"{% if secure_token %} data-stoken="{{ secure_token }}"{% endif %}></div>
+	{% endspaceless %}
+{% endblock deskpro_recaptcha_widget %}
+
+{% block captcha_widget %}
+	{% spaceless %}
+		<div class="captcha-field">
+			<img id="{{ image_id }}" src="{{ no_cache_url(captcha_code) }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
+			{% if reload %}
+				<script type="text/javascript">
+					function reload_{{ image_id }}() {
+						var img = document.getElementById('{{ image_id }}');
+						img.src = '{{ captcha_code }}?n=' + (new Date()).getTime();
+					}
+				</script>
+				<a class="captcha_reload" href="javascript:reload_{{ image_id }}();"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+			{% endif %}
+			{{ form_widget(form, { attr: { class: 'shorter' } } ) }}
+		</div>
+	{% endspaceless %}
+{% endblock %}
+
 {% block head %}
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -70,7 +106,7 @@
 
 {% block pre_content %}
 
-	{% if app.request.get('admin.wrong_scheme') %}
+	{% if is_to_admin and url_corrections.https %}
 
 		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
 			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: Insecure Login Form</h2>
@@ -93,7 +129,7 @@
 			<p>If you need to change the URL or disable HTTPS, log in and go to Settings > Setup.</p>
 		</div>
 
-	{% elseif app.request.get('admin.wrong_host') %}
+	{% elseif is_to_admin and url_corrections.host %}
 
 		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
 			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: You are using the helpdesk through an invalid URL</h2>
@@ -108,7 +144,7 @@
 
 	{% endif %}
 
-	{% if app.request.get('agent.wrong_scheme') %}
+	{% if not is_to_admin and url_corrections.https %}
 
 		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
 			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: Insecure URL</h2>
@@ -126,7 +162,7 @@
 			</small>
 		</div>
 
-	{% elseif app.request.get('agent.wrong_host') %}
+	{% elseif not is_to_admin and url_corrections.host %}
 
 		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
 			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: You are using the helpdesk through an invalid URL</h2>
@@ -154,7 +190,7 @@
 {# LOGIN FORM #}
 {##############################################################################################################}
 
-<div id="normal_view">
+<div id="normal_view"{% if render_forgot_pw %} style="display: none;"{% endif %}>
 	<div class="title">
 		{{ phrase('agent.general.log_in') }}
 	</div>
@@ -167,16 +203,17 @@
 					{% if not is_helpdesk_path(return) %}{% set return = '' %}{% endif %}
 					{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
 					{% if timeout %}<div class="error" style="display: block">{{ phrase('agent.login.session_timeout') }}</div>{% endif %}
-					{% if failed_login_name %}<div class="error">{{ phrase('agent.login.login_failed') }}</div>{% endif %}
-					{% if app.session.hasFlash('failed_login_rate') %}
-						{% set timeago = app.session.getFlash('failed_login_rate').value %}
+					{% if failed_to_login %}<div class="error">{{ phrase('agent.login.login_failed') }}</div>{% endif %}
+					{% if didReset %}<div class="success">{{ phrase('portal.account.reset-password-success') }}</div>{% endif %}
+					{% if lockout %}
+						{% set timeago = lockout %}
 						<div class="error">
 							{{ phrase('agent.login.account_locked_message', {
 								timeago: '<time class="timeago" data-timeago-no-ago="1" data-no-update="1" datetime="' ~ ('- ' ~ timeago ~ ' seconds')|date('c', 'UTC') ~ '"></time>'
 							}, true) }}
 						</div>
 					{% endif %}
-					{% if has_done_reset %}<div class="successa>{{ phrase('agent.login.password_was_reset') }}</div>{% endif %}
+					{% if has_done_reset %}<div class="success">{{ phrase('agent.login.password_was_reset') }}</div>{% endif %}
 					{% if has_logged_out %}
 					  <div class="success">{{ phrase('agent.login.has_logged_out') }}</div>
 					  {% include 'DeskPRO:Common:notify-logout-script.html.twig' with { show:true } %}
@@ -200,13 +237,33 @@
 								<div class="dp-control-label">
 									<label>{{ phrase('user.general.label_captcha') }} *</label>
 								</div>
-								<div class="dp-controls dp-fill">
-									{{ captcha.getHtml()|raw }}
+
+									{{ form_widget(captcha) }}
 									{% if captcha_error %}
 										<div class="dp-help-inline dp-error-explain" style="color: red;">
 											{{ phrase('user.tickets.form_error_captcha_invalid') }}
 										</div>
 									{% endif %}
+
+							</div>
+						{% endif %}
+						{% set token_error = app.session.getFlash('request_token_expired') %}
+						{% if token_error %}
+							<div class="dp-control-group {% if captcha_error %}dp-error dp-error-static{% endif %}" style="position: relative;margin-left:-9px;">
+								<div class="dp-controls dp-fill">
+									<div class="dp-help-inline dp-error-explain" style="color: red;">
+										{{ phrase('user.general.request_token_expired') }}
+									</div>
+								</div>
+							</div>
+						{% endif %}
+						{% set banned = app.session.getFlash('email_banned') %}
+						{% if banned %}
+							<div class="dp-control-group {% if captcha_error %}dp-error dp-error-static{% endif %}" style="position: relative;margin-left:-9px;">
+								<div class="dp-controls dp-fill">
+									<div class="dp-help-inline dp-error-explain" style="color: red;">
+										{{ phrase('portal.account.login-disabled') }}
+									</div>
 								</div>
 							</div>
 						{% endif %}
@@ -287,7 +344,7 @@
 	{# LOST PASSWORD #}
 	{##############################################################################################################}
 
-	<div id="lost_fields" style="display: none">
+	<div id="lost_fields" {% if not render_forgot_pw %} style="display: none"{% endif %}>
 		<div class="title">
 			{{ phrase('agent.general.lost_password') }}
 		</div>
@@ -298,7 +355,7 @@
 					<p id="lost_form">
 						<i class="icon-envelope-alt"></i>
 						{{ form_token('user_login') }}
-						<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="lost_email" size="40" placeholder="{{ phrase('agent.general.email') }}" tabindex="1" />
+						<input type="text" class="text" value="{{ render_forgot_pw ?: failed_login_name }}" name="email" id="lost_email" size="40" placeholder="{{ phrase('agent.general.email') }}" tabindex="1" />
 					</p>
 				</fieldset>
 				<div id="lost_fields_submit">
@@ -312,6 +369,13 @@
 				</div>
 			</form>
 		</div>
+
+		{% if app.getSetting('core.install_source') == 'win_installer' %}
+			<div style="padding: 0 25px 15px 25px; line-height: 14pt; font-size: 11px;">
+				You may also reset your password using the DeskPRO Windows application. Using the computer
+				that DeskPRO was installed on, click the DeskPRO icon in your system tray and select "Reset Password".
+			</div>
+		{% endif %}
 	</div>
 
 	{##############################################################################################################}

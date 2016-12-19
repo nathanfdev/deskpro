@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\ResultCache;
-use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Orb\Util\Arrays;
 
@@ -50,7 +51,7 @@ class TicketResults
     /**
      * @var array
      */
-    protected $ticket_ids = array();
+    protected $ticket_ids = [];
 
     /**
      * @var array
@@ -79,11 +80,11 @@ class TicketResults
 
     /**
      * @param $controller
-     * @param TicketFilter $filter
+     * @param LegacyTicketFilter $filter
      *
      * @return TicketResults
      */
-    public static function newFromFilter($controller, TicketFilter $filter)
+    public static function newFromFilter($controller, LegacyTicketFilter $filter)
     {
         $helper = new self($controller);
         $helper->setTicketIds($filter->getResults($controller->getPerson()));
@@ -169,6 +170,8 @@ class TicketResults
     /**
      * Get ticket IDs that match the current group.
      *
+     * @param $field_id
+     *
      * @return array
      */
     public function getGroupTicketIds($field_id)
@@ -177,7 +180,7 @@ class TicketResults
             return $this->grouped_ticket_ids;
         }
         if ($this->group_field === null) {
-            return array();
+            return [];
         }
 
         $searcher = new TicketSearch();
@@ -259,7 +262,7 @@ class TicketResults
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.
         // - So we'll re-create the array here according to the order they're supposed to be in.
-        $tickets = array();
+        $tickets = [];
         foreach ($ticket_ids as $tid) {
             if (isset($tickets_raw[$tid])) {
                 $tickets[$tid] = $tickets_raw[$tid];
@@ -284,7 +287,7 @@ class TicketResults
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.
         // - So we'll re-create the array here according to the order they're supposed to be in.
-        $tickets = array();
+        $tickets = [];
         foreach ($ticket_ids as $tid) {
             if (isset($tickets_raw[$tid])) {
                 $tickets[$tid] = $tickets_raw[$tid];

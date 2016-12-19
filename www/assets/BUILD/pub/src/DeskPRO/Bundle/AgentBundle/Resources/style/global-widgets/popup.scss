@@ -1,0 +1,583 @@
+.dpw--popup-main { // Main popup
+  background: #eef1f3;
+  color: #333;
+  padding: 0;
+  font-size: 1em;
+  border: 1px solid #4681b2;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  min-width: 460px;
+  max-width: 1000px;
+  margin: auto;
+
+  .dpw--popup-header {
+    background: #fff;
+    color: #424242;
+    border-bottom: 1px solid #d6d8da;
+    padding: 10px 10px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    text-align: left;
+
+    .fa {
+      position: relative;
+      color: #cbc6c6;
+      margin-right: 5px;
+      top: 0;
+    }
+  }
+}
+
+.dpw--popup-main.m-100 {
+  margin: 100px auto;
+}
+
+.one-column .dpw--popup-main {
+  min-width: 200px;
+}
+
+.dpw--popup-main.dpw--popup-main-pointer {// Create pointy bits when popping up
+  position: relative;
+
+  &:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border: 8px solid rgba(0, 0, 0, 0);
+    position: absolute;
+  }
+
+  &.dpw--popup-main-pointer-left:before {
+    top: 10px;
+    left: -16px;
+    border-right: 8px solid #4681b2;
+  }
+
+  &.dpw--popup-main-pointer-right:before {
+    top: 10px;
+    right: -16px;
+    border-left: 8px solid #4681b2;
+  }
+
+  &.dpw--popup-main-pointer-top:before {
+    top: -16px;
+    right: 20px;
+    border-bottom: 8px solid #4681b2;
+  }
+
+  &.dpw--popup-main-pointer-top-left:before {
+    top: -16px;
+    left: 20px;
+    border-bottom: 8px solid #4681b2;
+  }
+
+  &.dpw--popup-main-pointer-bottom:before {
+    bottom: -16px;
+    right: 20px;
+    border-top: 8px solid #4681b2;
+  }
+}
+
+.dpw--popup-content {// Popup Structure
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a.dpw--popup-button, button.dpw--popup-button {
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: bold;
+    background: #62ad8c;
+    line-height: 1em;
+    padding: 10px;
+    color: #fff;
+    border-radius: 2px;
+    border: none;
+    margin-right: 10px;
+    text-align: center;
+  }
+
+  .dpw--popup-content-line {
+    margin-bottom: 3px;
+    &:last-child { margin-bottom: 0; }
+    &:after { // Clearfix
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    ul {
+      &.error {
+        margin: 5px 0 0 0;
+        padding: 0;
+        list-style-type: none;
+
+        li {
+          font-size: 0.85em;
+          opacity: 0.5;
+          color: #ff0000;
+        }
+      }
+    }
+  }
+
+  // .dmw--popup-content-left & .dmw--popup-content-right are used for uneven content (for example the filter form and the checkboxes) and will require js to set their widths
+  // add .even to the class (for example class='dpw--popup-content-right even') to have them stick at 50%
+  .dpw--popup-content-left, .dpw--popup-content-right, .dpw--popup-content-full {
+    padding: 5px 7px;
+    position: relative;
+  }
+
+  .dpw--popup-content-left.even, .dpw--popup-content-right.even { width: 50%; }
+  .dpw--popup-content-left { float: left; }
+  .dpw--popup-content-right { float: right; }
+  .dpw--popup-content-of-three {// Three columns, same width
+    padding: 5px 2px 0 2px;
+    width: 33.333333333333333333%;
+    display: inline-block;
+    &:first-child { padding-left: 7px; }
+    &:last-child { padding-right: 7px; }
+  }
+
+  .dpw--assignment-scrollable-container {
+    li {
+      padding: 5px;
+    }
+  }
+
+  .dpw--popup-content-item {// An item in a content-*, inline
+    display: inline-block;
+    font-size: 11px;
+    margin-right: 10px;
+    &:last-child { margin-right: 0px; }
+    a.checkbox-link > i, a.checkbox-link > span {
+      line-height: 17px;
+      vertical-align: middle;
+    }
+  }
+}
+
+.dpw--popup-item-collection-title {// Small title for collections *assign to agent/team/department)
+  font-size: 12px;
+  display: block;
+  font-weight: normal;
+  line-height: 1em;
+  color: #9a9a9a;
+  margin: 0 0 7px;
+  padding: 0 10px 0 4px;
+  text-align: left;
+
+  .dpw--popup-item-collection-options {
+    float: right;
+
+    a {
+      color: #3c6e98;
+      text-decoration: underline;
+      margin-left: 5px;
+    }
+  }
+
+}
+
+.dpw--popup-item-section-title { // Title
+  font-size: 11px;
+  display: block;
+  font-weight: bolder;
+  text-transform: uppercase;
+  line-height: 1em;
+  padding: 0 0 0 4px;
+  color: #9a9a9a;
+  margin: 0 0 8px;
+
+  &.extra-tall {
+    margin-top: 10px;
+  }
+}
+
+.dpw--popup-item-collection {// Collection of items, scrollable with avatar and sometimes checkbox
+  display: block;
+  overflow: auto;
+  width: 100%;
+  height: 200px;
+  margin-top: 0;
+  padding: 3px  6px;
+  background: #ffffff;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  font-size: 12px;
+  position: relative;
+  text-align: left;
+
+  a {
+    color: #333;
+    text-decoration: none;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: block;
+      width: 100%;
+      margin-bottom: 4px;
+      margin-top: 4px;
+      border-radius: 2px;
+      cursor: pointer;
+
+      ul {
+        margin-left: 20px;
+      }
+
+      span {
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .dpw--popup-item-person:hover, .dpw--popup-item-person.active, .dpw--popup-item-box:hover, .dpw--popup-item-language:hover  {
+        background: #62ad8c;
+        color: #fff;
+      }
+    }
+  }
+
+  .dpw--avatar-face {// Resize the basic .dpw--avatar-face
+    width: 17px;
+    height: 17px;
+    margin-right: 2px;
+  }
+
+  .checkbox-button {
+    .name {
+      width: 110px;
+    }
+  }
+}
+
+.one-column .dpw--popup-item-collection {
+  height: auto;
+  min-height: 100px;
+  max-height: 200px;
+}
+
+.dpw--flag-color {
+  display: inline-block;
+  background: #d5d5d5;
+  border-radius: 2px;
+  margin-right: 3px;
+  width: 17px;
+  height: 17px;
+
+  .no-flag-mark {
+    display: block;
+    width: 2px;
+    height: 11px;
+    background: #000;
+    margin: 0 auto;
+    opacity: 0.2;
+    transform: rotate(45deg);
+    position: relative;
+    top: 3px;
+  }
+}
+
+.dpw--popup-item-flag {
+
+
+  &.no-flag {
+    font-weight: bold;
+
+    .no-flag-mark {
+      display: block;
+      width: 2px;
+      height: 11px;
+      background: #000;
+      margin: 0 auto;
+      opacity: 0.2;
+      transform: rotate(45deg);
+      position: relative;
+      top: 3px;
+    }
+  }
+
+
+}
+
+
+
+
+
+.dpw--popup-item-person, .dpw--popup-item-box {
+  width: 100%;
+  display: inline-block;
+  border-radius: 2px;
+  padding: 1px;
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dpw--popup-item-person {
+  padding-right: 18px;
+}
+
+.dpw--popup-item-person.selected, .dpw--popup-item-box.selected, .dpw--popup-item-language.selected {// When someone is selected and we need a sticky green bg
+  background: #62ad8c;
+  color: #fff;
+}
+
+.dpw-popup-item-collection-name {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.dpw-quick-filter {
+  .dpw-quick-filter-container {
+    border: 1px solid #dcddde;
+    background: #fff;
+    border-radius: 2px;
+    position: relative;
+    padding-left: 20px;
+  }
+
+  .dpw-quick-filter-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    text-align: center;
+
+    i {
+      position: relative;
+      top: 6px;
+      font-size: 10px;
+      color: #8c8c8c;
+    }
+  }
+
+  .dpw-quick-filter-clear-link {
+    position: absolute;
+    top: 6px;
+    right: 5px;
+    cursor: pointer;
+
+    i {
+      color: #c7c7c7;
+      font-size: 10px;
+    }
+
+    &:hover i { color: #333; }
+  }
+
+  [type="text"] {
+    border: 0;
+    border-left: 1px solid #dcddde;
+    line-height: 1em;
+    font-size: 11px;
+    display: block;
+    width: 100%;
+    padding: 6px 20px 6px 6px;
+  }
+}
+
+.dpw-popup-content-item-unassign-all {
+  color: #bec1c2;
+
+  .unassign-all-icon {
+    vertical-align: middle;
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    background: #d5d5d5;
+    border-radius: 2px;
+    margin-left: 3px;
+
+    > span {
+      display: block;
+      width: 2px;
+      height: 11px;
+      background: #000;
+      margin: 0 auto;
+      opacity: 0.2;
+      transform: rotate(45deg);
+      position: relative;
+      top: 3px;
+    }
+  }
+  a:hover { color: #707070; }
+}
+
+.dpw-popup-content-item-show-only-selected {
+  color: #bec1c2;
+  padding-top: 3px;
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: #707070; }
+  .dpw--checkbox-boxy {  margin-left: 3px; }
+}
+
+// Some forms (not all)
+.dpw--popup-form-container {
+  [type="text"], textarea {
+    display: block;
+    width: 100%;
+    border: 1px solid #ececec;
+    background: #fff;
+    border-radius: 2px;
+    font-size: 13px;
+    line-height: 1em;
+    padding: 9px;
+    margin-bottom: 4px;
+  }
+
+  .dpw--popup-form-dropdown {
+    position: relative;
+    display: block;
+    width: 100%;
+    border: 1px solid #ececec;
+    border-bottom: 2px solid #e6e0e0;
+    background: #fff;
+    border-radius: 2px;
+    font-size: 13px;
+    line-height: 1em;
+    margin-bottom: 4px;
+    padding: 9px 30px 9px 9px;
+    cursor: pointer;
+
+    i {
+      float: right;
+      margin-right: -15px
+    }
+  }
+
+  .dpw--popup-form-textarea {
+    textarea { height: 100px; }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.dpw--project-list {
+  display: block;
+  width: 100%;
+  margin-top: 0px;
+  background: #ffffff;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  font-size: 12px;
+
+  .dpw--project-list-controls {
+    padding: 10px;
+
+    a {
+      color: #a3a3a3;
+
+      i {
+        margin-right: 3px;
+        position: relative;
+        top: 1px;
+      }
+
+      span {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .dpw--project-list-content {
+    padding: 3px  15px 1px 6px;
+    overflow: scroll;
+    max-height: 135px;
+
+    > ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .dpw--project-list-item {
+      position: relative;
+      display: block;
+      padding: 5px;
+      color: #4f4f4f;
+      a { color: inherit; }
+
+      .dpw--project-list-item-move {
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 1em;
+        color: #c7c7c7;
+        margin-right: 4px;
+        position: relative;
+        top: -1px;
+        cursor: pointer;
+        &:hover { color: #333; }
+      }
+
+      .dpw--project-list-item-delete {
+        position: absolute;
+        right: 5px;
+        top: 11px;
+        font-size: 10px;
+        color: #c7c7c7;
+        cursor: pointer;
+        &:hover { color: #333; }
+      }
+
+      .dpw--project-list-item-delete:hover ~ .dpw--project-list-item-title {
+        color: #333;
+        text-decoration: underline;
+      }
+
+      .dpw--project-list-item-title {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 2px;
+      }
+
+      .dpw-project-list-item-task-count {
+        display: inline-block;
+        vertical-align: middle;
+        background: #d6d8da;
+        color: #848484;
+        font-size: 8px;
+        font-weight: bold;
+        text-transform: uppercase;
+        padding: 2px 5px;
+        border-radius: 2px;
+        position: relative;
+        top: 1px;
+        margin-left: 3px;
+      }
+
+    }
+
+
+  }
+}
+
+.task-assign-form {
+  min-width: 800px;
+}
+

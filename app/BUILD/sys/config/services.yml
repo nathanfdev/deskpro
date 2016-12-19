@@ -1,0 +1,121 @@
+services:
+
+  deskpro.low_dp_env:
+    class: DpRun\DpEnv
+    factory: [DeskPRO\Bundle\AppBundle\AppEnv\LowDpEnvGetter, getDpEnv]
+
+  deskpro.feature_flags:
+    class: DpSys\Features
+    factory: [DeskPRO\Bundle\AppBundle\AppEnv\FeatureFlagsFactory, create]
+
+  deskpro.app_env:
+    class: DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface
+    factory: [DeskPRO\Bundle\AppBundle\AppEnv\AppEnvFactory, create]
+
+  deskpro.db_config_reader:
+    class: DeskPRO\Bundle\AppBundle\DBAL\DbConfigReader
+    arguments: ["@deskpro.app_env"]
+
+  deskpro.mongo_config_reader:
+    class: DeskPRO\Bundle\AppBundle\MongoDB\MongoConfigReader
+    arguments: ["@deskpro.app_env"]
+
+  ######################################################################################################################
+  # Misc
+  ######################################################################################################################
+
+  deskpro.interface_info:
+    class: DeskPRO\Bundle\AppBundle\Request\InterfaceInfo
+    factory: [DeskPRO\Bundle\AppBundle\Request\InterfaceInfo, create]
+
+  # This is a copy of the normal doctrine cache warmer, except we've set a high
+  # priority so its done first. See also LazyWamersPass
+  doctrine.orm.proxy_cache_warmer:
+    class: "%doctrine.orm.proxy_cache_warmer.class%"
+    arguments: ["@doctrine"]
+    public: false
+    tags:
+      - { name: kernel.cache_warmer, priority: 100 }
+
+  deskpro.zippy:
+    class: "Alchemy\\Zippy\\Zippy"
+    factory: ["DeskPRO\\Bundle\\AppBundle\\Zippy\\ZippyFactory", "getZippy"]
+    arguments: ["@service_container"]
+
+  deskpro.logging.line_formatter:
+    class: DeskPRO\Bundle\AppBundle\Logging\Formatter\CleanLineFormatter
+
+  ######################################################################################################################
+  # Apps
+  ######################################################################################################################
+
+  deskpro.apps.manager:
+    class: Application\DeskPRO\App\AppManager
+    factory: ["Application\\DeskPRO\\DependencyInjection\\SystemServices\\AppManagerService", "createAppManager"]
+    arguments: ["@service_container"]
+
+  ######################################################################################################################
+  # Brands
+  ######################################################################################################################
+
+  brand_stack:
+    class: DeskPRO\Bundle\PortalBundle\Brand\BrandStack
+    arguments:
+      - "@brand_container_factory"
+      - "@default_brand"
+    lazy: true
+
+  brand_container_factory:
+    class: DeskPRO\Bundle\PortalBundle\Brand\BrandContainerFactory
+    arguments:
+      - "@settings_resolver"
+      - "@doctrine.orm.default_entity_manager"
+      - "@deskpro.blob_storage"
+
+  default_brand_finder:
+    class: DeskPRO\Bundle\PortalBundle\Brand\DefaultBrandFinder
+    arguments: ["@settings_resolver", "@brand_repository"]
+
+  default_brand:
+    class: Application\DeskPRO\Entity\Brand
+    factory: ["@default_brand_finder", getDefaultBrand]
+
+  person_factory:
+    class: DeskPRO\Bundle\PortalBundle\Person\PersonFactory
+    arguments: ["@doctrine.orm.default_entity_manager", "@event_dispatcher", "@brand_stack", "@language_stack", "@user_rule_processor"]
+
+
+  ######################################################################################################################
+  # Hit Record
+  ######################################################################################################################
+
+  hitrecord.record_factory:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\Recorder\HitRecordFactory
+
+  hitrecord.record_storage:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\Recorder\HitDbStorage
+    arguments: ["@doctrine.dbal.default_connection"]
+
+  hitrecord.viewcounts.updater:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\ViewCount\ViewCountUpdater
+    arguments: ["@doctrine.dbal.default_connection"]
+
+  hitrecord.viewcounts.counter:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\ViewCount\ViewDbCounter
+    arguments: ["@doctrine.dbal.default_connection", "@settings_resolver"]
+
+  hitrecord.cleaner:
+    class: DeskPRO\Bundle\AppBundle\HitTrack\Cleaner\HitDbCleaner
+    arguments: ["@doctrine.dbal.default_connection"]
+
+  ######################################################################################################################
+  # Hit Record
+  ######################################################################################################################
+
+  portal_email_sender:
+    class: DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender
+    arguments: ["@service_container"]
+
+  portal_validation:
+    class: DeskPRO\Bundle\PortalBundle\Helper\PortalValidation
+    arguments: ["@portal_email_sender", "@brand_stack", "@router", "@data.person"]

@@ -1,0 +1,250 @@
+// Overwrite the ticket-detail icon sizes for the table (mostly repositioning icons)
+.ticket-list {
+  .tabular-ticket-details {
+    > span {
+      width: 16px;
+      height: 16px;
+    }
+
+    .ticket-status {
+      span { top: 1px; }
+      i { top: 4px; }
+    }
+  }
+}
+
+
+// Table view - most inherit for the main view with changes
+
+// Table actions (header)
+.tickets-tabular-masthead {
+  background: #eeeeee;
+  text-transform: uppercase;
+  border-bottom: 1px solid #e1e1e1;
+  height: 40px;
+  padding-top: 8px;
+  padding-left: 5px;
+
+  // Remove set height from large buttons and set everything on a single line
+  a { height: auto; }
+
+  .tickets-controls {
+    float: right;
+    padding-right: 110px;
+
+    a { padding: 3px 8px; }
+
+    // Main parts of a large button
+    .context, .selected, .sorting {
+      display: inline-block;
+      padding: 0px;
+      position: relative;
+      top: -1px;
+    }
+    // has an absolute positioned icon when large that we need to reset
+    .active-sorting { padding-right: 5px; }
+    // What we're sorting with
+    .sorting {
+      position: relative;
+      height: auto;
+      padding: 0px 6px;
+      width: auto;
+      top: 0px;
+      margin-left: 4px;
+
+      i {
+        font-size: 10px;
+        top: 0px;
+      }
+    }
+  }
+}
+
+
+// The list of tickets in a table
+
+.tickets-tabular {
+  position: relative;
+
+  // Basic table stuff
+  table {
+    font-size: 1em;
+    width: 100%;
+    background: #fbfbfb;
+  }
+
+  td {
+    border-right: 1px solid #e1e1e1;
+    padding: 2px 5px;
+  }
+
+  // Checkbox for bulk editing
+  .bulk-edit-col {
+    width: 10px;
+    text-align: center;
+    border-right: 0px;
+
+    a {
+      outline: 0;
+    }
+  }
+
+  // Ticket id
+  .id-col {
+    width: 40px;
+    border-right: 0px;
+
+    .ticket-id {
+      float: none;
+      color: #989898;
+    }
+  }
+
+  // Slas and times
+  .slas-col {
+    width: 80px;
+    text-align: right;
+  }
+
+  // Agent column (just avatar)
+  .agent-col {
+    width: 30px;
+    text-align: center;
+  }
+
+  // User
+  .user-col {
+    width: 120px;
+  }
+
+  // Ticket status icon bunch
+  .extras-col {
+    text-align: right;
+    border-right: 0px;
+    position: relative;
+    padding-left: 0px;
+    padding-right: 0px;
+    width: 103px;
+
+    // Needs to be adjusted based on the width of the tables below it
+    .ticket-details-masthead {
+      top: auto;
+      bottom: 1px;
+      padding-right: 0px;
+      background: #fbfbfb;
+      border-left: 1px solid #e1e1e1;
+      height: 69px; // thead height + .tickets-tabular-masthead height -1px (so it won't cover the bottom border)
+      font-weight: 800;
+      z-index: 299;
+
+      > span { width: 18px; }
+
+      span {
+        position: relative;
+        top: 20px;
+      }
+    }
+  }
+
+  .ticket-tabular {
+    @extend .ticket;
+    // remove some stuff inherited from .ticket
+    border-bottom: 1px solid #e1e1e1;
+    background: none;
+    padding-right: 0px;
+
+    .ticket-title {
+      a {
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .ticket-id { background: #efefef; }
+
+    .agent {
+      padding-top: 0px;
+
+      span {
+        vertical-align: middle;
+      }
+
+      .chat-avatar {
+        top: 0px;
+      }
+    }
+
+    .user {
+      padding-top: 0px;
+      @extend .agent;
+    }
+  }
+
+  .ticket-title {
+    display: block;
+    max-width: 200px;
+  }
+
+  .ticket-timer { margin: 0; }
+
+  thead {
+    font-size: 0.9em;
+    font-weight: bold;
+    border-bottom: 1px solid #e1e1e1;
+    height: 30px;
+
+    tr {
+      td {
+        padding-top: 7px;
+        padding-bottom: 7px;
+        color: #939393;
+        border-right: 0px;
+      }
+
+      td.id-col { color: #cecece; }
+    }
+  }
+}
+
+.bulk-edit-table-tickets {
+  display: inline-block;
+  font-size: 0.75em;
+  font-weight: bold;
+  color: #ababab;
+  padding-top: 3px;
+
+  label { margin-right: 10px; display: inline-block; }
+
+  input[type="checkbox"] {
+    margin-right: 3px;
+  }
+
+
+  .bulk-edit-buttons {
+    position: absolute;
+    top: 0px;
+    left: 90px;
+    width: 0px;
+    overflow: hidden;
+    z-index: 199;
+    height: 38px;
+    background: #eeeeee;
+    padding-top: 10px;
+    white-space: nowrap;
+    transition: all 0.5s ease;
+  }
+
+  // Bulk action buttons
+  .edit-action {
+    background: #d6d6d6;
+    display: inline-block;
+    line-height: 1em;
+    padding: 4px 6px;
+    border-radius: 2px;
+    text-decoration: none;
+    color: #b9b9b9;
+  }
+}

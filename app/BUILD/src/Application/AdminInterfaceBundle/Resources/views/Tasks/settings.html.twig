@@ -52,7 +52,7 @@
                             <label style="width: 200px;margin-top: 20px;">
                                 <h4>{{ phrase('adm.tasks.task_reminder_time') }}</h4>
                             </label>
-                            <select ng-model="settings.task_reminder_time" ui-select2>
+                            <select ng-model="settings.task_reminder_time">
                                 {% for i in range(0,23) %}
                                     {% if i < 10 %}{% set i = '0' ~ i %}{% endif %}
                                     {% set time1 = i ~ ':00' %}

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerTaskQueue;
 
 use Doctrine\ORM\EntityManager;
@@ -36,7 +37,7 @@ use Doctrine\ORM\EntityManager;
 class ServerTaskQueue
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 
@@ -53,9 +54,9 @@ class ServerTaskQueue
         $tasks            = $this->em->getRepository('DeskPRO:TaskQueue')->getPendingTasks(0);
         $show_task_status = count($tasks) > 0;
 
-        return array(
+        return [
             'show_task_status' => $show_task_status,
             'tasks'            => $this->em->getRepository('DeskPRO:TaskQueue')->getAllTasks(),
-        );
+        ];
     }
 }

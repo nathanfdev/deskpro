@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Protocol;
 
 use Orb\Log\Loggable;
@@ -72,17 +73,27 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
      * @param string $host
      * @param null   $port
      * @param bool   $ssl
+     * @param bool   $verifyCertificate
      *
      * @throws \Zend\Mail\Protocol\Exception\RuntimeException
      *
      * @return string
      */
-    public function connect($host, $port = null, $ssl = false)
+    public function connect($host, $port = null, $ssl = false, $verifyCertificate = true)
     {
         $ssl = $ssl ? strtoupper($ssl) : $ssl;
 
-        if ($ssl == 'SSL') {
-            $host = 'ssl://'.$host;
+        switch ($ssl) {
+            case 'SSL':
+                $host    = 'ssl://'.$host;
+                $wrapper = 'ssl';
+                break;
+            case 'TLS':
+                $host    = 'tls://'.$host;
+                $wrapper = 'ssl';
+                break;
+            default:
+                $wrapper = 'tcp';
         }
 
         if ($port === null) {
@@ -91,11 +102,22 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
 
         $errno        = 0;
         $errstr       = '';
-        $this->socket = @fsockopen($host, $port, $errno, $errstr, $this->connect_timeout);
+        $this->socket = @stream_socket_client(
+            $host.':'.$port,
+            $errno,
+            $errstr,
+            $this->stream_timeout,
+            \STREAM_CLIENT_CONNECT,
+            stream_context_create([
+                $wrapper => [
+                    'verify_peer'      => $verifyCertificate,
+                    'verify_peer_name' => $verifyCertificate,
+                ],
+            ])
+        );
         if (!$this->socket) {
             throw new Exception\RuntimeException('cannot connect to host; error = '.$errstr.' (errno = '.$errno.' )');
         }
-        stream_set_timeout($this->socket, $this->stream_timeout);
 
         $welcome = $this->readResponse();
 

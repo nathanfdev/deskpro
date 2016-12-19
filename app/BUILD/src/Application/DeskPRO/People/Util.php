@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
@@ -52,7 +53,7 @@ class Util
     public static function guessNameParts($full_name = null, $email_address = null)
     {
         if (!$full_name && !$email_address) {
-            return array('', '');
+            return ['', ''];
         }
 
         $first_name = null;
@@ -79,10 +80,10 @@ class Util
             }
         }
 
-        return array(
+        return [
             $first_name,
             $last_name,
-        );
+        ];
     }
 
     /**
@@ -107,18 +108,17 @@ class Util
      */
     public static function resolveOverridePermissions(array $ug_perm_matrix, array $usergroups, array $all_ug_perms)
     {
-        $grouped_perms = array(
+        $grouped_perms = [
              'agent_tickets.modify_own'        => '#^agent_tickets.modify_(.*?)_own$#',
              'agent_tickets.modify_followed'   => '#^agent_tickets.modify_(.*?)_followed$#',
              'agent_tickets.modify_unassigned' => '#^agent_tickets.modify_(.*?)_unassigned$#',
              'agent_tickets.modify_others'     => '#^agent_tickets.modify_(.*?)_others$#',
-        );
+        ];
 
-        $overrides = array();
+        $overrides = [];
         foreach ($ug_perm_matrix as $group => $ug_perms) {
-            foreach (array(0, 1) as $run_num) {
+            foreach ([0, 1] as $run_num) {
                 foreach ($ug_perms as $ug_id => $perms) {
-
                     // Not one we enabled so we dont care
                     if ($ug_id != 'override' && !isset($usergroups[$ug_id])) {
                         continue;
@@ -186,7 +186,7 @@ class Util
         $db = App::getDb();
         $em = App::getOrm();
 
-        $ug_ids = $db->fetchAllCol('SELECT usergroup_id FROM person2usergroups WHERE person_id = ?', array($agent->id));
+        $ug_ids = $db->fetchAllCol('SELECT usergroup_id FROM person2usergroups WHERE person_id = ?', [$agent->id]);
 
         if ($ug_ids) {
             $usergroups   = $em->getRepository('DeskPRO:Usergroup')->getByIds($ug_ids);
@@ -195,37 +195,37 @@ class Util
                 FROM permissions
                 WHERE usergroup_id IN (?)
                 ORDER BY value DESC
-            ', array($ug_ids), array(Connection::PARAM_INT_ARRAY));
+            ', [$ug_ids], [Connection::PARAM_INT_ARRAY]);
 
             $ug_perms = $db->fetchAllGrouped('
                 SELECT usergroup_id, name, value
                 FROM permissions
                 LEFT JOIN usergroups ON (usergroups.id = permissions.id)
                 WHERE usergroup_id IN (?)
-            ', array($ug_ids), 'usergroup_id', 'name', 'value', array(Connection::PARAM_INT_ARRAY));
+            ', [$ug_ids], 'usergroup_id', 'name', 'value', [Connection::PARAM_INT_ARRAY]);
         } else {
-            $all_ug_perms = array();
-            $usergroups   = array();
-            $ug_perms     = array();
+            $all_ug_perms = [];
+            $usergroups   = [];
+            $ug_perms     = [];
         }
 
         $override_perms = $db->fetchAllKeyValue('
             SELECT name, value
             FROM permissions
             WHERE person_id = ?
-        ', array($agent['id']));
+        ', [$agent['id']]);
 
-        $ug_perm_matrix = array();
+        $ug_perm_matrix = [];
 
         foreach ($ug_perms as $ug_id => $perms) {
             foreach ($perms as $perm_name => $perm_val) {
                 list($perm_group, $perm_endname) = explode('.', $perm_name, 2);
 
                 if (!isset($ug_perm_matrix[$perm_group])) {
-                    $ug_perm_matrix[$perm_group] = array();
+                    $ug_perm_matrix[$perm_group] = [];
                 }
                 if (!isset($ug_perm_matrix[$perm_group][$ug_id])) {
-                    $ug_perm_matrix[$perm_group][$ug_id] = array();
+                    $ug_perm_matrix[$perm_group][$ug_id] = [];
                 }
                 $ug_perm_matrix[$perm_group][$ug_id][$perm_endname] = $perm_val;
             }
@@ -236,10 +236,10 @@ class Util
             list($perm_group, $perm_endname) = explode('.', $perm_name, 2);
 
             if (!isset($ug_perm_matrix[$perm_group])) {
-                $ug_perm_matrix[$perm_group] = array();
+                $ug_perm_matrix[$perm_group] = [];
             }
             if (!isset($ug_perm_matrix[$perm_group][$ug_id])) {
-                $ug_perm_matrix[$perm_group][$ug_id] = array();
+                $ug_perm_matrix[$perm_group][$ug_id] = [];
             }
             $ug_perm_matrix[$perm_group][$ug_id][$perm_endname] = $perm_val;
         }

@@ -1,0 +1,43 @@
+import React, { PropTypes } from 'react';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import StatusFormContainer from './StatusForm/StatusFormContainer';
+
+class UserProfile extends React.Component {
+
+  static propTypes = {
+    onClickPreferences: PropTypes.func,
+    onClickHelp:        PropTypes.func,
+    onClickLogout:      PropTypes.func
+  };
+
+  render() {
+    const { onClickPreferences, onClickHelp, onClickLogout } = this.props;
+
+    return (
+      <div className="voice-profile">
+        <div className="voice-header">
+          {agentPhrases.get('agent.general.your_profile')}
+        </div>
+        <div>
+          {window.DP_HAS_VOICE && <StatusFormContainer />}
+          <div className="voice-profile-menu">
+            <div className="voice-profile-menu-item" onClick={onClickPreferences}>
+              <i className="fa fa-gear" />
+              {agentPhrases.get('agent.chrome.link_preferences')}
+            </div>
+            <div className="voice-profile-menu-item" onClick={onClickHelp}>
+              <i className="fa fa-question-circle" />
+              {agentPhrases.get('agent.chrome.link_help')}
+            </div>
+            <div className="voice-profile-menu-item" onClick={onClickLogout}>
+              <i className="fa fa-reply" />
+              {agentPhrases.get('agent.chrome.link_logout')}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default UserProfile;

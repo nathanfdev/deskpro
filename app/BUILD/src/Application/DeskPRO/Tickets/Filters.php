@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\TicketFilter;
+use Application\DeskPRO\EntityRepository\TicketFilter;
+use Application\DeskPRO\Searcher\TicketSearch;
 
 class Filters
 {
@@ -42,23 +45,24 @@ class Filters
      *
      * @param mixed $person Person or person ID
      *
-     * @return array Collection of TicketFilter entities
+     * @return LegacyTicketFilter[]
      */
     public function getFiltersForPerson($person)
     {
-        return App::getOrm()
-            ->getRepository('DeskPRO:TicketFilter')
-            ->getFiltersForPerson($person);
+        /** @var TicketFilter $repository */
+        $repository = App::getOrm()->getRepository('DeskPRO:LegacyTicketFilter');
+
+        return $repository->getFiltersForPerson($person);
     }
 
     public function getGroupedFiltersForPerson($person)
     {
-        $all_filters = App::getApi('tickets.filters')->getFiltersForPerson($person);
+        $all_filters = $this->getFiltersForPerson($person);
 
         $order = $person->getPref('agent.ui.ticket-filters-order');
         if ($order) {
             $filters_unordered = $all_filters;
-            $all_filters       = array();
+            $all_filters       = [];
 
             foreach ($order as $id) {
                 if (isset($filters_unordered[$id])) {
@@ -75,12 +79,12 @@ class Filters
         }
 
         // Order them into sys/other
-        $sys_filters      = array();
-        $sys_filters_hold = array();
-        $custom_filters   = array();
-        $archive_filters  = array();
+        $sys_filters      = [];
+        $sys_filters_hold = [];
+        $custom_filters   = [];
+        $archive_filters  = [];
 
-        $unset_ids = array();
+        $unset_ids = [];
 
         foreach ($all_filters as $id => $filter) {
             if ($filter['sys_name']) {
@@ -105,8 +109,8 @@ class Filters
 
         // Force order of sys
         $sys_filters_unordered = $sys_filters;
-        $sys_filters           = array();
-        foreach (array('agent', 'participant', 'agent_team', 'unassigned', 'all') as $id) {
+        $sys_filters           = [];
+        foreach (['agent', 'participant', 'agent_team', 'unassigned', 'all'] as $id) {
             if (isset($sys_filters_unordered[$id])) {
                 $sys_filters[$id] = $sys_filters_unordered[$id];
                 unset($sys_filters_unordered[$id]);
@@ -114,8 +118,8 @@ class Filters
         }
 
         $sys_filters_unordered = $sys_filters_hold;
-        $sys_filters_hold      = array();
-        foreach (array('agent', 'participant', 'agent_team', 'unassigned', 'all') as $id) {
+        $sys_filters_hold      = [];
+        foreach (['agent', 'participant', 'agent_team', 'unassigned', 'all'] as $id) {
             $id .= '_w_hold';
             if (isset($sys_filters_unordered[$id])) {
                 $sys_filters_hold[$id] = $sys_filters_unordered[$id];
@@ -146,13 +150,13 @@ class Filters
             return $o1 < $o2 ? -1 : 1;
         });
 
-        return array(
+        return [
             'all_filters'      => $all_filters,
             'sys_filters'      => $sys_filters,
             'sys_filters_hold' => $sys_filters_hold,
             'archive_filters'  => $archive_filters,
             'custom_filters'   => $custom_filters,
-        );
+        ];
     }
 
     /**
@@ -160,25 +164,25 @@ class Filters
      *
      * @param int $ticket_filter_id
      *
-     * @return TicketFilter
+     * @return LegacyTicketFilter
      */
     public function getFilterFromId($ticket_filter_id)
     {
         return App::getOrm()
-            ->getRepository('DeskPRO:TicketFilter')
+            ->getRepository('DeskPRO:LegacyTicketFilter')
             ->find($ticket_filter_id);
     }
 
     /**
      * Get the number of results in a filter.
      *
-     * @param TicketFilter $ticket_filter
+     * @param LegacyTicketFilter $ticket_filter
      *
      * @return int
      */
     public function getCountForFilter($ticket_filter)
     {
-        $ticket_filter = App::getOrm()->getRepository('DeskPRO:TicketFilter')->getTicketFilterFromVar($ticket_filter);
+        $ticket_filter = App::getOrm()->getRepository('DeskPRO:LegacyTicketFilter')->getTicketFilterFromVar($ticket_filter);
 
         return $ticket_filter->getResultsCount();
     }
@@ -193,7 +197,7 @@ class Filters
     public function getAllCountsSystemFilters($person)
     {
         $coll = App::getOrm()
-            ->getRepository('DeskPRO:TicketFilter')
+            ->getRepository('DeskPRO:LegacyTicketFilter')
             ->getSystemFilters($person);
 
         return $this->getAllCountsForFiltersCollection($coll, $person);
@@ -209,7 +213,7 @@ class Filters
     public function getAllCountsCustomFilters($person)
     {
         $coll = App::getOrm()
-            ->getRepository('DeskPRO:TicketFilter')
+            ->getRepository('DeskPRO:LegacyTicketFilter')
             ->getCustomFiltersForPerson($person);
 
         return $this->getAllCountsForFiltersCollection($coll);
@@ -224,16 +228,18 @@ class Filters
      */
     public function getAllCountsForFiltersCollection($ticket_filters, Person $person_context = null)
     {
-        $counts = array();
+        $counts = [];
 
-        $prefs = array();
+        $prefs = [];
         if ($person_context) {
             $prefs = App::getDb()->fetchAllKeyValue("
                 SELECT name, value_str
                 FROM people_prefs
                 WHERE name LIKE 'ticket_counts.' AND person_id = ?
-            ", array($person_context->id));
+            ", [$person_context->id]);
         }
+
+        $total_tickets = App::getSetting('core_tablecounts.tickets.tickets');
 
         foreach ($ticket_filters as $ticket_filter) {
             $count = 0;
@@ -241,6 +247,14 @@ class Filters
             switch ($ticket_filter['sys_name']) {
                 case 'archive_archived':
                     $count = isset($prefs['ticket_counts.archive_archived']) ? $prefs['ticket_counts.archive_archived'] : App::getSetting('core_tablecounts.tickets.archive_archived');
+                    break;
+
+                case 'archive_awaiting_user':
+                    $count = isset($prefs['ticket_counts.archive_archived']) ? $prefs['ticket_counts.archive_awaiting_user'] : App::getSetting('core_tablecounts.tickets.awaiting_user');
+                    break;
+
+                case 'archive_resolved':
+                    $count = isset($prefs['ticket_counts.archive_archived']) ? $prefs['ticket_counts.archive_resolved'] : App::getSetting('core_tablecounts.tickets.resolved');
                     break;
 
                 case 'archive_validating':
@@ -256,13 +270,15 @@ class Filters
                     break;
             }
 
-            if (!$count || $count < 10000) {
+            if ((!$count || $count < 10000) && $total_tickets < 1000000) {
+                /** @var TicketSearch $searcher */
                 $searcher = $ticket_filter->getSearcher();
                 $searcher->setPerson($person_context ?: App::getCurrentPerson());
+                $searcher->setOrderBy('ticket.date_created');
                 $count = $searcher->getCount(null);
             }
 
-            $counts[$ticket_filter['id']] = $count;
+            $counts[$ticket_filter['id']] = $count ?: 0;
         }
 
         return $counts;
@@ -271,20 +287,21 @@ class Filters
     /**
      * Get an array of IDs for each filter in a collection.
      *
-     * @param $ticket_filters
+     * @param LegacyTicketFilter[] $ticket_filters
+     * @param Person               $person_context
      *
      * @return array
      */
     public function getAllIdsForFiltersCollection($ticket_filters, Person $person_context = null)
     {
-        $all_ids = array();
+        $all_ids = [];
 
         foreach ($ticket_filters as $ticket_filter) {
             if ($ticket_filter->isArchiveTableFilter()) {
                 continue;
             }
 
-            $all_ids[$ticket_filter['id']] = $ticket_filter->getResults($person_context);
+            $all_ids[$ticket_filter->getId()] = $ticket_filter->getResults($person_context);
         }
 
         return $all_ids;
@@ -293,17 +310,17 @@ class Filters
     /**
      * Get an array of IDs for each filter in a collection.
      *
-     * @param $ticket_filters
+     * @param LegacyTicketFilter[] $ticket_filters
      *
      * @return array
      */
     public function getAllHoldIdsForFiltersCollection($ticket_filters)
     {
-        $all_ids = array();
+        $all_ids = [];
 
         foreach ($ticket_filters as $ticket_filter) {
-            $searcher                      = $ticket_filter->getSearcher(array('type' => 'is_hold', 'op' => 'is', 'options' => array('is_hold' => 1)));
-            $all_ids[$ticket_filter['id']] = $searcher->getResults();
+            $searcher                         = $ticket_filter->getSearcher(['type' => 'is_hold', 'op' => 'is', 'options' => ['is_hold' => 1]]);
+            $all_ids[$ticket_filter->getId()] = $searcher->getResults();
         }
 
         return $all_ids;
@@ -316,7 +333,7 @@ class Filters
      */
     public function getIdsFromFilter($ticket_filter)
     {
-        $ticket_filter = App::getOrm()->getRepository('DeskPRO:TicketFilter')->getTicketFilterFromVar($ticket_filter);
+        $ticket_filter = App::getOrm()->getRepository('DeskPRO:LegacyTicketFilter')->getTicketFilterFromVar($ticket_filter);
 
         $result_ids = $ticket_filter->getResults();
 
@@ -326,29 +343,29 @@ class Filters
     /**
      * Get ticket results from a filter.
      *
-     * @param TicketFilter $ticket_filter
-     * @param int          $page
-     * @param int          $per_page
+     * @param LegacyTicketFilter $ticket_filter
+     * @param int                $page
+     * @param int                $per_page
      *
      * @return array
      */
     public function getTicketsFromFilter($ticket_filter, $page = 1, $per_page = 25)
     {
-        $ticket_filter = App::getOrm()->getRepository('DeskPRO:TicketFilter')->getTicketFilterFromVar($ticket_filter);
+        $ticket_filter = App::getOrm()->getRepository('DeskPRO:LegacyTicketFilter')->getTicketFilterFromVar($ticket_filter);
 
         $result_ids = $ticket_filter->getResults();
 
         if ($per_page) {
             $result_ids = array_chunk($result_ids, $per_page);
         } else {
-            $result_ids = array($result_ids);
+            $result_ids = [$result_ids];
         }
 
         // index is 0-based
         --$page;
 
         if (!isset($result_ids[$page])) {
-            return array();
+            return [];
         }
 
         $page_ids = $result_ids[$page];
@@ -374,19 +391,19 @@ class Filters
             SELECT ticket_id
             FROM tickets_flagged
             WHERE person_id = ? AND color = ?
-        ', array($person['id'], $flag));
+        ', [$person['id'], $flag]);
 
         if ($per_page) {
             $result_ids = array_chunk($result_ids, $per_page);
         } else {
-            $result_ids = array($result_ids);
+            $result_ids = [$result_ids];
         }
 
         // index is 0-based
         $page = min(0, --$page);
 
         if (!isset($result_ids[$page])) {
-            return array();
+            return [];
         }
 
         $page_ids = $result_ids[$page];
@@ -410,7 +427,7 @@ class Filters
             FROM tickets_flagged
             WHERE person_id = ?
             GROUP BY color
-        ', array($person['id']));
+        ', [$person['id']]);
 
         return $counts;
     }

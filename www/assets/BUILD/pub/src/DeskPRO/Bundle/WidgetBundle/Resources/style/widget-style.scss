@@ -1,0 +1,199 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic);
+
+$border-color: #e7e7e7;
+
+$pub-path: "../../../../../../../pub";
+$portal-res-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources";
+$portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
+
+$modules-path: "../../../../../../../pub/node_modules";
+$fa-font-path: "#{$modules-path}/font-awesome/fonts";
+
+@import "misc/mixins";
+@import "./normalize.css";
+@import "../../../../../../node_modules/bourbon/app/assets/stylesheets/bourbon";
+@import "../../../../../../node_modules/font-awesome/scss/font-awesome";
+@import "../../../../../../node_modules/medium-editor/src/sass/medium-editor";
+
+.dpdesignportal-chat-assets, .dpdesignportal, .dpdesignportal-popover {// Consider these as the root since we don't know where they'll be imported in
+  @import "./normalize.css";// Reset
+  h1, h2, h3 { font-weight: normal; font-size: 14px; padding: 0; margin: 0; }
+  .fa { position: relative; }
+  p { padding: 0; margin: 0; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  li { display: block; }
+  @import "forms/forms";
+  @import "header/panel-header";
+  @import "chat/chat-header";
+  @import "chat/chat-messages";
+  @import "chat/chat-reply";
+  @import "chat/chat-events";
+  @import "chat/chat-emotions";
+  @import "chat/ratings";
+  @import "misc/checkbox";
+  @import "misc/radio";
+  @import "misc/powered-by";
+  @import "misc/search";
+}
+
+@import "misc/popovers";// .dpdesignportal-popover
+@import "chat/chat-assets";// .dpdesignportal-chat-assets
+@import "panel";
+@import "preemptive-chat/preemptive-chat";
+@import "chat/collect-user-info";
+
+@import "dpx";
+@import "datetime";
+@import "tickets/ticket";
+@import "tickets/ticket-list";
+
+html, body {
+  border: none;
+  margin: 0;
+  padding: 0;
+  font-family: 'Open Sans', "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+
+.widget-container {
+  overflow: auto;
+
+  &.rtl-language {
+    .textarea, input, textarea {
+      text-align: right;
+    }
+
+    .textarea {
+      &:after {
+        right: 0;
+      }
+    }
+
+    .dpdesignportal-form {
+      text-align: right;
+
+      .medium-editor-toolbar-actions {
+        li {
+          float: right;
+        }
+      }
+    }
+
+    .dpdesignportal-message-content {
+      text-align: right;
+    }
+  }
+}
+
+body.widget_trigger_iframe_body {
+  overflow: hidden;
+}
+
+#react_frame_container {
+  position: absolute;
+}
+
+.dpdesignportal-button, .dpdesignportal a.dpdesignportal-button, .dpdesignportal .dpdesignportal-button, .dpdesignportal-open-new-ticket button {// Base buttons
+  text-decoration: none;
+  display: inline-block;
+  line-height: 1.3em;
+  background: #4681b2;
+  color: #e0e5ec;
+  padding: 5px 10px;
+  border: 1px solid #4681b2;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+
+  &:hover {
+    background: #3b75a4;
+    color: #fff;
+  }
+
+  &.dpdesignportal-button-wide { width: 100%; }
+
+  &.white {
+    background: #ffffff;
+    border: 1px solid #d8d8d8;
+    color: #959595;
+    &:hover {
+      background: #f7f7f7;
+      color: #333;
+    }
+  }
+
+  &.grey {
+    background: #eaeaea;
+    border: 1px solid #eaeaea;
+    color: #959595;
+    &:hover {
+      background: #e0dddd;
+      border: 1px solid #e0dddd;
+    }
+  }
+
+  &[type="reset"] {
+    margin-left: 5px;
+  }
+}
+
+.dpdesignportal-button + .dpdesignportal-button { margin-left: 5px; }
+
+// Leftovers?
+
+// Originally for feedback but havent done anything with it, probably redo
+.dpdesignportal ul.dpdesignportal-content-list {
+  padding: 10px 30px 10px 10px;
+  li > ul { margin-left: 10px; }// Add margins to lists in lists
+
+  // Main icon style
+  .dpdesignportal-list-icon {
+    display: inline-block;
+    width: 16px;
+    margin-right: 5px;
+    i { color: inherit; font-size: 11px; }
+  }
+
+  // Main level folders only
+  .dpdesignportal-content-list-folder {
+    color: #299969;
+    .dpdesignportal-list-icon i { font-size: 15px; }
+    .dpdesignportal-list-title { font-size: 15px; }
+  }
+
+  // Second level folders
+  .dpdesignportal-content-list-folder.dpdesignportal-content-list-folder-secondary {
+    .dpdesignportal-list-icon i { font-size: 11px; }
+  }
+
+  a {
+    color: #4c4c4c;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    line-height: 1em;
+    padding: 6px 0;
+    font-size: 12.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:hover {
+      color: #299969;
+      text-decoration: underline;
+      i { color: inherit;}
+    }
+  }
+}
+
+// Temporary dev styles
+.chat-triggers {
+  color: #fff;
+  border: 1px solid #000;
+  width: 200px;
+  height: 200px;
+  padding: 10px;
+  background: #fff;
+
+  a {
+    color: #000;
+  }
+}

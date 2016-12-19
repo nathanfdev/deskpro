@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Command;
 
 use Application\EmailBundle\Mail\RawMessage\RawMessageUtil;
@@ -122,19 +123,19 @@ class QueueRawEmailCommand extends ContainerAwareCommand
         } else {
             $id = $mailer->insertMessage($message);
 
-            $this->getContainer()->getDb()->update('sendmail_sources', array(
+            $this->getContainer()->getDb()->update('sendmail_sources', [
                 'status' => 'aborted',
-            ), array('id' => $id));
+            ], ['id' => $id]);
 
             $output->writeln("<info>Inserted email source: $id</info>\n");
             $output->writeln("The email was inserted with the 'aborted' state and will not be sent automatically.");
             $output->writeln('You may with to manually send this email using the following command:');
-            $output->writeln("\tphp cmd.php dp:email:sendsource $id\n");
+            $output->writeln("\tbin/console dp:email:sendsource $id\n");
         }
 
         if ($use_blob_id) {
-            $old_blob_id = $this->getContainer()->getDb()->fetchColumn('SELECT blob_id FROM sendmail_sources WHERE id = ?', array($id));
-            $this->getContainer()->getDb()->update('sendmail_sources', array('blob_id' => $use_blob_id), array('id' => $id));
+            $old_blob_id = $this->getContainer()->getDb()->fetchColumn('SELECT blob_id FROM sendmail_sources WHERE id = ?', [$id]);
+            $this->getContainer()->getDb()->update('sendmail_sources', ['blob_id' => $use_blob_id], ['id' => $id]);
             $this->getContainer()->getBlobStorage()->deleteBlobRowId($old_blob_id);
         }
 

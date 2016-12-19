@@ -1,0 +1,49 @@
+// Agent ims
+.agent-ims {
+  margin-right: 10px;
+  position: relative;
+  padding-right: 10px;
+
+  &:after {
+    content: "";
+    position: absolute;
+    top: -4px;
+    right: 0;
+    display: block;
+    width: 1px;
+    height: 44px;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 199;
+  }
+
+  .show-more {
+    @extend %top-bar-container;
+    vertical-align: middle;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    > span {
+      display: inline-block;
+      margin-top: $text-top-margin;
+    }
+
+    i { margin-left: 5px; }
+  }
+
+  .chat-avatar, .chat-avatar-loading {
+    // We can't use a border here (antialias & overflows makes it look weird)
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-left: 3px;
+    box-shadow: none;
+
+  }
+
+  .chat-avatar-loading {
+    .recent-spinner {
+      position: relative;
+      top: 5px;
+    }
+  }
+}

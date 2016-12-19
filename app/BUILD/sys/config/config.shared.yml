@@ -1,0 +1,58 @@
+
+parameters:
+  # we override default symfony so warmer services are lazy-loaded
+  # see LazyWarmersPass
+  cache_warmer.class: DeskPRO\Bundle\AppBundle\HttpKernel\CacheWarmer\CacheWarmerServiceAggregate
+  doctrine.dbal.connection_factory.class: DeskPRO\Bundle\AppBundle\Doctrine\ConnectionFactory
+  templating.cache_warmer.template_paths.class: DeskPRO\Bundle\AppBundle\CacheWarmer\TemplatePathsCacheWarmer
+  portal.session.name: sess_data
+
+services:
+  dp.url_request_context_factory:
+    public: false
+    class: DeskPRO\Bundle\AppBundle\Routing\UrlRequestContextFactory
+    arguments:
+      - "@service_container"
+
+  dp.dynamic_context_router:
+    class: DeskPRO\Bundle\AppBundle\Routing\RouterWithDynamicContext
+    decorates: "router"
+    arguments:
+      - "@dp.dynamic_context_router.inner"
+      - "@dp.url_request_context_factory"
+
+monolog:
+  channels: # you MUST also update portal_config.yml if you change these
+    - "dp.tickets.filters.tengine.dbal.engine"
+    - "dp.tickets.filters.tengine.dbal.compiler"
+    - "dp.tickets.filters.tengine.php.engine"
+    - "dp.tickets.filters.tengine.php.compiler"
+  handlers:
+    main:
+      type:     service
+      id:       monolog.handler.deskpro_fingers_crossed
+    term_engine:
+      type: service
+      id: term_engine.log_handler
+      channels:
+        - "dp.tickets.filters.tengine.dbal.engine"
+        - "dp.tickets.filters.tengine.dbal.compiler"
+        - "dp.tickets.filters.tengine.php.engine"
+        - "dp.tickets.filters.tengine.php.compiler"
+
+doctrine_mongodb:
+    connections:
+      default:
+        server: "see MongoConnectionPass"
+        options: {}
+    default_database: dp_audit
+    default_document_manager: default
+    default_connection: default
+    document_managers:
+      default:
+        mappings:
+          AuditBundle:
+            type: 'annotation'
+            is_bundle: false
+            dir: '%kernel.root_dir%/../src/DeskPRO/Bundle/AuditBundle/Document'
+            prefix: 'DeskPRO\Bundle\AuditBundle\Document'

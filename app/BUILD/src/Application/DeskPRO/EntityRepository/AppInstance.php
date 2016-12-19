@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Doctrine\ORM\EntityRepository;
@@ -57,13 +58,13 @@ class AppInstance extends EntityRepository
      */
     public function getPermissionsForInstance(\Application\DeskPRO\Entity\AppInstance $app)
     {
-        $ret = array('usergroup_ids' => array(), 'person_ids' => array());
+        $ret = ['usergroup_ids' => [], 'person_ids' => []];
 
         if ($app->perm_type != 'set') {
             return $ret;
         }
 
-        $perms = $this->_em->getConnection()->fetchAll('SELECT * FROM app_instance_permissions WHERE app_instance_id = ?', array($app->id));
+        $perms = $this->_em->getConnection()->fetchAll('SELECT * FROM app_instance_permissions WHERE app_instance_id = ?', [$app->id]);
 
         foreach ($perms as $p) {
             if ($p['usergroup_id']) {

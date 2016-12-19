@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,10 +31,12 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Doctrine\ORM\QueryBuilder;
 use Orb\Util\Strings;
 
 class Article extends AbstractEntityRepository
@@ -47,23 +49,6 @@ class Article extends AbstractEntityRepository
         }
 
         return $this->find($id);
-    }
-
-    /**
-     * Get articles waiting for validating.
-     *
-     * @return array
-     */
-    public function getValidatingArticle()
-    {
-        $articles = $this->getEntityManager()->createQuery('
-            SELECT a
-            FROM DeskPRO:Article a
-            WHERE a.hidden_status = ?1
-            ORDER BY a.id DESC
-        ')->setParameter(1, 'validating')->execute();
-
-        return $articles;
     }
 
     /**
@@ -108,13 +93,13 @@ class Article extends AbstractEntityRepository
                 SELECT COUNT(*)
                 FROM articles
                 WHERE hidden_status = ? AND person_id = ?
-            ', array('draft', $person['id']));
+            ', ['draft', $person['id']]);
         } else {
             return App::getDb()->fetchColumn('
                 SELECT COUNT(*)
                 FROM articles
                 WHERE hidden_status = ?
-            ', array('draft'));
+            ', ['draft']);
         }
     }
 
@@ -127,13 +112,13 @@ class Article extends AbstractEntityRepository
     public function getByIdsWithContext(array $ids, PersonEntity $person_context = null)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         if ($person_context) {
             $cat_ids = $person_context->getPermissionsManager()->ArticleCategories->getAllowedCategories();
             if (!$cat_ids) {
-                return array();
+                return [];
             }
 
             $articles = $this->getEntityManager()->createQuery("
@@ -142,7 +127,7 @@ class Article extends AbstractEntityRepository
                 LEFT JOIN a.categories cat
                 WHERE a.id IN (?0) AND cat.id IN (?1) AND a.status = 'published'
                 ORDER BY a.id DESC
-            ")->execute(array($ids, $cat_ids));
+            ")->execute([$ids, $cat_ids]);
         } else {
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
@@ -150,7 +135,7 @@ class Article extends AbstractEntityRepository
                 LEFT JOIN a.categories cat
                 WHERE a.id IN (?0) AND a.status = 'published'
                 ORDER BY a.id DESC
-            ")->execute(array($ids));
+            ")->execute([$ids]);
         }
 
         return $articles;
@@ -159,7 +144,7 @@ class Article extends AbstractEntityRepository
     public function getByResultIds(array $ids)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         $unsorted_articles = $this->getEntityManager()->createQuery('
@@ -168,9 +153,9 @@ class Article extends AbstractEntityRepository
             WHERE a.id IN (?0)
             ORDER BY a.id DESC
         ')->setFetchMode('DeskPRO:ArticleCategory', 'categories', 'EAGER')
-          ->execute(array($ids));
+          ->execute([$ids]);
 
-        $articles = array();
+        $articles = [];
 
         foreach ($ids as $id) {
             if (isset($unsorted_articles[$id])) {
@@ -197,16 +182,16 @@ class Article extends AbstractEntityRepository
         // multiple categories as well. So this is the cleanest way i think,
         // even though its inefficient. But who cares it should be cached.
 
-        $all_articles = array();
+        $all_articles = [];
 
         // Articles can be in multiple categories, but we should only be showing them once
         // So we need to not in() them using ID's we fetched in earlier iterations
-        $done_articles = array(0);
+        $done_articles = [0];
 
         foreach ($nodes as $node) {
             $cat_ids = $node->getTreeIds(true);
 
-            $params            = array();
+            $params            = [];
             $params['cat_ids'] = array_values($cat_ids);
 
             $perm_where = '';
@@ -249,7 +234,7 @@ class Article extends AbstractEntityRepository
                 LEFT JOIN a.categories cat
                 WHERE a.status = 'published' AND cat.id IN (?0)
                 ORDER BY a.id DESC
-            ")->setMaxResults($num)->execute(array($cat_ids));
+            ")->setMaxResults($num)->execute([$cat_ids]);
         } else {
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
@@ -272,7 +257,7 @@ class Article extends AbstractEntityRepository
                 LEFT JOIN a.categories cat
                 WHERE a.status = 'published' AND cat.id IN (?0)
                 ORDER BY a.total_rating DESC
-            ")->setMaxResults($num)->execute(array($cat_ids));
+            ")->setMaxResults($num)->execute([$cat_ids]);
         } else {
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
@@ -298,7 +283,7 @@ class Article extends AbstractEntityRepository
 
     public function getSectionCounts(PersonEntity $person_context = null)
     {
-        $counts = array();
+        $counts = [];
 
         $searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
         if ($person_context) {
@@ -319,17 +304,88 @@ class Article extends AbstractEntityRepository
         return $counts;
     }
 
+    public function countNotClosedNotHidden()
+    {
+        return $this->getEntityManager()->createQuery(
+            "
+                        SELECT COUNT(n) as cc
+                        FROM DeskPRO:Article n
+                        WHERE n.status != 'closed' AND n.status != 'hidden'
+                    "
+        )->getSingleScalarResult();
+    }
+
     public function getReportAssociations()
     {
-        return array(
-            'views' => array(
+        return [
+            'views' => [
                 'conditions'   => '%1$s.object_type = 1 AND %1$s.object_id = %2$s.id',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog',
-            ),
-            'ratings' => array(
+            ],
+            'ratings' => [
                 'conditions'   => '%1$s.object_type = \'article\' AND %1$s.object_id = %2$s.id',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Rating',
-            ),
+            ],
+        ];
+    }
+
+    public function getDataForTagOptions(array $options)
+    {
+        $options['category'] = is_object($options['category']) ? $options['category'] : $this->getEntityManager()->getRepository('DeskPRO:ArticleCAtegory')->find($options['category']);
+
+        // get the articles
+
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('a, cs')->from('DeskPRO:Article', 'a');
+
+        // do our filtering logic
+        $this->filterArticles($qb, $options);
+
+        // count
+        if ($options['count']) {
+            $qb->setMaxResults($options['count']);
+        }
+
+        // sorting
+        $qb->orderBy(
+            sprintf('a.%s', $options['sort_by']),
+            $options['sort_direction']
         );
+
+        // count articles with this criteria
+
+        $qb_count = $this->getEntityManager()->createQueryBuilder();
+        $qb_count->select('COUNT(a)')->from('DeskPRO:Article', 'a');
+        $this->filterArticles($qb_count, $options);
+
+        return [
+            'articles'    => $qb->getQuery()->execute(),
+            'cat'         => $options['category'],
+            'total_count' => $qb_count->getQuery()->getSingleScalarResult(),
+        ];
+    }
+
+    protected function filterArticles(QueryBuilder $qb, array $options)
+    {
+        $qb->join('a.categories', 'cs');
+        // TODO: allow sub categories
+//		just one cat or the cat + all sub cats
+//		if ($options['include_subcategories']) {
+//			$qb->andWhere('EXISTS (SELECT c FROM DeskPRO:ArticleCategory c WHERE c.root = :cat AND a MEMBER OF c.articles)');
+//		} else {
+            $qb->andWhere(':cat MEMBER OF a.categories');
+//		}
+        $qb->setParameter('cat', $options['category']);
+
+        // label
+        if ($options['labelled']) {
+            $labelled = is_array($options['labelled']) ? $options['labelled'] : explode(',', $options['labelled']);
+            if (count($labelled)) {
+                $qb->andWhere(
+                    'EXISTS (SELECT l FROM DeskPRO:LabelArticle l WHERE l.article = a AND l.label IN (:label_list))'
+                );
+                $qb->setParameter('label_list', $labelled);
+            }
+        }
     }
 }

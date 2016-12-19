@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,16 +32,20 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Email\EmailSource\Finder as EmailSourceFinder;
 use Application\DeskPRO\Email\EmailSource\FinderFilter as EmailSourceFinderFilter;
 use Application\DeskPRO\Email\SendmailSource\Finder as SendmailSourceFinder;
 use Application\DeskPRO\Email\SendmailSource\FinderFilter as SendmailSourceFinderFilter;
 use Application\DeskPRO\EmailGateway\Runner;
+use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use deskpro_sendgrid\InstallerHandler;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Strings;
 
+/**
+ * @ApiModes("all")
+ */
 class EmailStatusController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -52,53 +56,85 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         return new UserTypePermission(UserTypePermission::ADMIN);
     }
 
-    ####################################################################################################################
-    # get-email-sources
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-email-sources
+    //###################################################################################################################
 
     public function listSourcesAction()
     {
-        #------------------------------
-        # Filter options
-        #------------------------------
+        //------------------------------
+        // Filter options
+        //------------------------------
 
         $filter       = new EmailSourceFinderFilter();
         $filter_input = $this->in->getArrayValue('filter');
         $form         = $this->createFormBuilder($filter)
-            ->add('page', 'text')
-            ->add('statuses', 'choice', array(
-                'choices'  => array_combine($filter->getValidStatuses(), $filter->getValidStatuses()),
-                'required' => false,
-                'multiple' => true,
-            ))
-            ->add('date_start', 'date', array(
-                'view_timezone' => $this->person->getTimezone(),
-                'widget'        => 'single_text',
-                'input'         => 'datetime',
-                'required'      => false,
-            ))
-            ->add('date_end', 'date', array(
-                'view_timezone' => $this->person->getTimezone(),
-                'widget'        => 'single_text',
-                'input'         => 'datetime',
-                'required'      => false,
-            ))
-            ->add('subject', 'text', array(
-                'required' => false,
-            ))
-            ->add('account', 'text', array(
-                'required' => false,
-            ))
-            ->add('to', 'text', array(
-                'required' => false,
-            ))
-            ->add('from', 'text', array(
-                'required' => false,
-            ))
-            ->add('error_code', 'text', array(
-                'required' => false,
-            ))
-            ->getForm();
+                     ->add('page', 'text')
+                     ->add(
+                         'statuses',
+                         'choice',
+                         [
+                             'choices'  => array_combine($filter->getValidStatuses(), $filter->getValidStatuses()),
+                             'required' => false,
+                             'multiple' => true,
+                         ]
+                     )
+                     ->add(
+                         'date_start',
+                         'date',
+                         [
+                             'view_timezone' => $this->person->getTimezone(),
+                             'widget'        => 'single_text',
+                             'input'         => 'datetime',
+                             'required'      => false,
+                         ]
+                     )
+                     ->add(
+                         'date_end',
+                         'date',
+                         [
+                             'view_timezone' => $this->person->getTimezone(),
+                             'widget'        => 'single_text',
+                             'input'         => 'datetime',
+                             'required'      => false,
+                         ]
+                     )
+                     ->add(
+                         'subject',
+                         'text',
+                         [
+                             'required' => false,
+                         ]
+                     )
+                     ->add(
+                         'account',
+                         'text',
+                         [
+                             'required' => false,
+                         ]
+                     )
+                     ->add(
+                         'to',
+                         'text',
+                         [
+                             'required' => false,
+                         ]
+                     )
+                     ->add(
+                         'from',
+                         'text',
+                         [
+                             'required' => false,
+                         ]
+                     )
+                     ->add(
+                         'error_code',
+                         'text',
+                         [
+                             'required' => false,
+                         ]
+                     )
+                     ->getForm();
 
         $form->submit($filter_input);
 
@@ -107,73 +143,107 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         $info    = $finder->getPageInfo();
         $results = $finder->getResults();
 
-        return $this->createApiResponse(array(
-            'page'          => $filter->getPage(),
-            'num_pages'     => $info['num_pages'],
-            'count'         => $info['count'],
-            'email_sources' => $this->getApiData($results),
-        ));
+        return $this->createApiResponse(
+            [
+                'page'          => $filter->getPage(),
+                'num_pages'     => $info['num_pages'],
+                'count'         => $info['count'],
+                'email_sources' => $this->getApiData($results),
+            ]
+        );
     }
 
-    ####################################################################################################################
-    # get-email-sources-stats
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-email-sources-stats
+    //###################################################################################################################
 
     public function sourcesStatsAction()
     {
         $status_counts  = $this->db->fetchAllKeyValue('SELECT status, COUNT(*) FROM email_sources GROUP BY status');
-        $account_counts = $this->db->fetchAllKeyValue('SELECT email_account_id, COUNT(*) FROM email_sources GROUP BY email_account_id');
+        $account_counts = $this->db->fetchAllKeyValue(
+            'SELECT email_account_id, COUNT(*) FROM email_sources GROUP BY email_account_id'
+        );
 
-        return $this->createJsonResponse(array(
-            'by_status'  => $status_counts,
-            'by_account' => $account_counts,
-        ));
+        return $this->createJsonResponse(
+            [
+                'by_status'  => $status_counts,
+                'by_account' => $account_counts,
+            ]
+        );
     }
 
-    ####################################################################################################################
-    # list-sendmail
-    ####################################################################################################################
+    //###################################################################################################################
+    // list-sendmail
+    //###################################################################################################################
 
     public function listSendmailAction()
     {
-        #------------------------------
-        # Filter options
-        #------------------------------
+        //------------------------------
+        // Filter options
+        //------------------------------
 
         $filter       = new SendmailSourceFinderFilter();
         $filter_input = $this->in->getArrayValue('filter');
         $form         = $this->createFormBuilder($filter)
-            ->add('page', 'text')
-            ->add('statuses', 'choice', array(
-                'choices'  => array_combine($filter->getValidStatuses(), $filter->getValidStatuses()),
-                'required' => false,
-                'multiple' => true,
-            ))
-            ->add('date_start', 'date', array(
-                'view_timezone' => $this->person->getTimezone(),
-                'widget'        => 'single_text',
-                'input'         => 'datetime',
-                'required'      => false,
-            ))
-            ->add('date_end', 'date', array(
-                'view_timezone' => $this->person->getTimezone(),
-                'widget'        => 'single_text',
-                'input'         => 'datetime',
-                'required'      => false,
-            ))
-            ->add('subject', 'text', array(
-                'required' => false,
-            ))
-            ->add('to', 'text', array(
-                'required' => false,
-            ))
-            ->add('from', 'text', array(
-                'required' => false,
-            ))
-            ->add('error_code', 'text', array(
-                'required' => false,
-            ))
-            ->getForm();
+                     ->add('page', 'text')
+                     ->add(
+                         'statuses',
+                         'choice',
+                         [
+                             'choices'  => array_combine($filter->getValidStatuses(), $filter->getValidStatuses()),
+                             'required' => false,
+                             'multiple' => true,
+                         ]
+                     )
+                     ->add(
+                         'date_start',
+                         'date',
+                         [
+                             'view_timezone' => $this->person->getTimezone(),
+                             'widget'        => 'single_text',
+                             'input'         => 'datetime',
+                             'required'      => false,
+                         ]
+                     )
+                     ->add(
+                         'date_end',
+                         'date',
+                         [
+                             'view_timezone' => $this->person->getTimezone(),
+                             'widget'        => 'single_text',
+                             'input'         => 'datetime',
+                             'required'      => false,
+                         ]
+                     )
+                     ->add(
+                         'subject',
+                         'text',
+                         [
+                             'required' => false,
+                         ]
+                     )
+                     ->add(
+                         'to',
+                         'text',
+                         [
+                             'required' => false,
+                         ]
+                     )
+                     ->add(
+                         'from',
+                         'text',
+                         [
+                             'required' => false,
+                         ]
+                     )
+                     ->add(
+                         'error_code',
+                         'text',
+                         [
+                             'required' => false,
+                         ]
+                     )
+                     ->getForm();
 
         $form->submit($filter_input);
 
@@ -182,23 +252,25 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         $info    = $finder->getPageInfo();
         $results = $finder->getResults();
 
-        $data = array();
+        $data = [];
         foreach ($results as $r) {
             $data[] = $r->toArray();
         }
 
-        return $this->createApiResponse(array(
-            'page'             => $filter->getPage(),
-            'num_pages'        => $info['num_pages'],
-            'count'            => $info['count'],
-            'sendmail_queue'   => $data,
-            'tracking_enabled' => (bool) $this->container->getSetting(InstallerHandler::NAME.'.enabled'),
-        ));
+        return $this->createApiResponse(
+            [
+                'page'             => $filter->getPage(),
+                'num_pages'        => $info['num_pages'],
+                'count'            => $info['count'],
+                'sendmail_queue'   => $data,
+                'tracking_enabled' => (bool) $this->container->getSetting(InstallerHandler::NAME.'.enabled'),
+            ]
+        );
     }
 
-    ####################################################################################################################
-    # get-source-info
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-source-info
+    //###################################################################################################################
 
     public function getSourceInfoAction($id)
     {
@@ -207,7 +279,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        $info = array();
+        $info = [];
 
         $info['source']     = $this->getApiData($source);
         $info['source_log'] = null;
@@ -249,9 +321,9 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         return $this->createApiResponse($info);
     }
 
-    ####################################################################################################################
-    # get-source-summary
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-source-summary
+    //###################################################################################################################
 
     public function getSourceSummaryAction($id)
     {
@@ -290,12 +362,12 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         }
         unset($t);
 
-        return $this->createApiResponse(array('summary' => trim($info)));
+        return $this->createApiResponse(['summary' => trim($info)]);
     }
 
-    ####################################################################################################################
-    # get-source-rendered
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-source-rendered
+    //###################################################################################################################
 
     public function getSourceRenderedAction($id)
     {
@@ -326,15 +398,17 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         }
         unset($t);
 
-        return $this->createApiResponse(array(
-            'text' => $text,
-            'html' => $html,
-        ));
+        return $this->createApiResponse(
+            [
+                'text' => $text,
+                'html' => $html,
+            ]
+        );
     }
 
-    ####################################################################################################################
-    # delete-email-source
-    ####################################################################################################################
+    //###################################################################################################################
+    // delete-email-source
+    //###################################################################################################################
 
     public function deleteEmailSourceAction($id)
     {
@@ -363,9 +437,9 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         return $this->createApiDeleteResponse();
     }
 
-    ####################################################################################################################
-    # reprocess-email
-    ####################################################################################################################
+    //###################################################################################################################
+    // reprocess-email
+    //###################################################################################################################
 
     public function reprocessEmailSourceAction($id)
     {
@@ -380,14 +454,16 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         $runner = new Runner();
         $runner->executeSource($source);
 
-        return $this->createApiResponse(array(
-            'status' => $source->status,
-        ));
+        return $this->createApiResponse(
+            [
+                'status' => $source->status,
+            ]
+        );
     }
 
-    ####################################################################################################################
-    # get-sendmail-info
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-sendmail-info
+    //###################################################################################################################
 
     public function getSendmailInfoAction($id)
     {
@@ -399,7 +475,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         $bs = $this->container->getBlobStorage();
 
-        $info = array();
+        $info = [];
 
         $info['sendmail'] = $sendmail->toArray();
 
@@ -424,9 +500,9 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         return $this->createApiResponse($info);
     }
 
-    ####################################################################################################################
-    # get-sendmail-summary
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-sendmail-summary
+    //###################################################################################################################
 
     public function getSendmailSummaryAction($id)
     {
@@ -465,12 +541,12 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         }
         unset($t);
 
-        return $this->createApiResponse(array('summary' => trim($info)));
+        return $this->createApiResponse(['summary' => trim($info)]);
     }
 
-    ####################################################################################################################
-    # get-sendmail-rendered
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-sendmail-rendered
+    //###################################################################################################################
 
     public function getSendmailRenderedAction($id)
     {
@@ -501,15 +577,17 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         }
         unset($t);
 
-        return $this->createApiResponse(array(
-            'text' => $text,
-            'html' => $html,
-        ));
+        return $this->createApiResponse(
+            [
+                'text' => $text,
+                'html' => $html,
+            ]
+        );
     }
 
-    ####################################################################################################################
-    # delete-sendmail-source
-    ####################################################################################################################
+    //###################################################################################################################
+    // delete-sendmail-source
+    //###################################################################################################################
 
     public function deleteSendmailAction($id)
     {
@@ -531,17 +609,20 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         return $this->createApiDeleteResponse();
     }
 
-    ####################################################################################################################
-    # resed-sendmail
-    ####################################################################################################################
+    //###################################################################################################################
+    // resed-sendmail
+    //###################################################################################################################
 
     public function resendSendmailAction($id)
     {
-        $sendmail = $this->db->fetchAssoc('
+        $sendmail = $this->db->fetchAssoc(
+            '
             SELECT *
             FROM sendmail_sources
             WHERE id = ?
-        ', array($id));
+        ',
+            [$id]
+        );
         if (!$sendmail) {
             throw $this->createNotFoundException();
         }
@@ -549,16 +630,21 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         /** @var \Application\EmailBundle\SourceMapper\SourceMapperInterface $source_mapper */
         $source_mapper = $this->get('email.source_mapper');
 
-        $r = $source_mapper->markSourceRetry($sendmail, sprintf('[%s] Manually marked for retry by %s', date('Y-m-d H:i:s'), $this->person->getDisplayContact()));
+        $r = $source_mapper->markSourceRetry(
+            $sendmail,
+            sprintf('[%s] Manually marked for retry by %s', date('Y-m-d H:i:s'), $this->person->getDisplayContact())
+        );
 
-        return $this->createApiResponse(array(
-            'date_next_attempt' => $r['date_next_attempt'],
-        ));
+        return $this->createApiResponse(
+            [
+                'date_next_attempt' => $r['date_next_attempt'],
+            ]
+        );
     }
 
-    ####################################################################################################################
-    # sendmail-mass-actions
-    ####################################################################################################################
+    //###################################################################################################################
+    // sendmail-mass-actions
+    //###################################################################################################################
 
     public function sendmailMassActionsAction($action)
     {
@@ -572,14 +658,25 @@ class EmailStatusController extends AbstractController implements ProtectedContr
                 /** @var \Application\EmailBundle\SourceMapper\SourceMapperInterface $source_mapper */
                 $source_mapper = $this->get('email.source_mapper');
 
-                $recs = $this->db->fetchAll('
+                $recs = $this->db->fetchAll(
+                    '
                     SELECT *
                     FROM sendmail_sources
                     WHERE id IN (?)
-                ', array($ids), array(Connection::PARAM_INT_ARRAY));
+                ',
+                    [$ids],
+                    [Connection::PARAM_INT_ARRAY]
+                );
 
                 foreach ($recs as $r) {
-                    $source_mapper->markSourceRetry($r, sprintf('[%s] Manually marked for retry by %s', date('Y-m-d H:i:s'), $this->person->getDisplayContact()));
+                    $source_mapper->markSourceRetry(
+                        $r,
+                        sprintf(
+                            '[%s] Manually marked for retry by %s',
+                            date('Y-m-d H:i:s'),
+                            $this->person->getDisplayContact()
+                        )
+                    );
                 }
                 break;
 
@@ -587,28 +684,37 @@ class EmailStatusController extends AbstractController implements ProtectedContr
                 /** @var \Application\EmailBundle\SourceMapper\SourceMapperInterface $source_mapper */
                 $source_mapper = $this->get('email.source_mapper');
 
-                $recs = $this->db->fetchAll("
+                $recs = $this->db->fetchAll(
+                    "
                     SELECT *
                     FROM sendmail_sources
                     WHERE id IN (?) AND status IN ('pending', 'inserted', 'retry')
-                ", array($ids), array(Connection::PARAM_INT_ARRAY));
+                ",
+                    [$ids],
+                    [Connection::PARAM_INT_ARRAY]
+                );
 
                 foreach ($recs as $r) {
-                    $source_mapper->markSourceAborted($r, sprintf('[%s] Manually aborted by %s', date('Y-m-d H:i:s'), $this->person->getDisplayContact()));
+                    $source_mapper->markSourceAborted(
+                        $r,
+                        sprintf('[%s] Manually aborted by %s', date('Y-m-d H:i:s'), $this->person->getDisplayContact())
+                    );
                 }
                 break;
 
             case 'delete':
                 $bs   = $this->container->getBlobStorage();
-                $recs = $this->db->fetchAll('
+                $recs = $this->db->fetchAll(
+                    '
                     SELECT sendmail_sources.id AS sendmail_sources_id, blobs.*
                     FROM sendmail_sources
                     LEFT JOIN blobs ON blobs.id = sendmail_sources.blob_id
                     WHERE sendmail_sources.id IN ('.implode(',', $ids).')
-                ');
+                '
+                );
 
                 foreach ($recs as $r) {
-                    $this->db->delete('sendmail_sources', array('id' => $r['sendmail_sources_id']));
+                    $this->db->delete('sendmail_sources', ['id' => $r['sendmail_sources_id']]);
                     if ($r['id']) {
                         $bs->deleteBlobRow($r);
                     }
@@ -622,9 +728,9 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         return $this->createApiSuccessResponse();
     }
 
-    ####################################################################################################################
-    # sources-mass-actions
-    ####################################################################################################################
+    //###################################################################################################################
+    // sources-mass-actions
+    //###################################################################################################################
 
     public function emailSourceMassActionsAction($action)
     {
@@ -635,21 +741,27 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         switch ($action) {
             case 'reprocess':
-                $this->db->updateIn('email_sources', array(
-                    'status'      => 'retry',
-                    'date_status' => date('Y-m-d H:i:s'),
-                    'error_code'  => null,
-                ), $ids);
+                $this->db->updateIn(
+                    'email_sources',
+                    [
+                        'status'      => 'retry',
+                        'date_status' => date('Y-m-d H:i:s'),
+                        'error_code'  => null,
+                    ],
+                    $ids
+                );
                 break;
 
             case 'delete':
                 $bs   = $this->container->getBlobStorage();
-                $recs = $this->db->fetchAll('
+                $recs = $this->db->fetchAll(
+                    '
                     SELECT email_sources.id AS email_sources_id, email_sources.log_blob_id AS email_sources_log_blob_id, blobs.*
                     FROM email_sources
                     LEFT JOIN blobs ON blobs.id = email_sources.blob_id
                     WHERE email_sources.id IN ('.implode(',', $ids).')
-                ');
+                '
+                );
 
                 foreach ($recs as $r) {
                     if ($r['id']) {
@@ -657,13 +769,16 @@ class EmailStatusController extends AbstractController implements ProtectedContr
                     }
 
                     if ($r['email_sources_log_blob_id']) {
-                        $log_blob_row = $this->db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', array($r['email_sources_log_blob_id']));
+                        $log_blob_row = $this->db->fetchAssoc(
+                            'SELECT * FROM blobs WHERE id = ?',
+                            [$r['email_sources_log_blob_id']]
+                        );
                         if ($log_blob_row) {
                             $bs->deleteBlobRow($log_blob_row);
                         }
                     }
 
-                    $this->db->delete('email_sources', array('id' => $r['email_sources_id']));
+                    $this->db->delete('email_sources', ['id' => $r['email_sources_id']]);
                 }
                 break;
 

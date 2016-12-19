@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Log;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -88,13 +89,13 @@ class ViewLog
             $person_id = $this->session->getEntity()->person->getId();
         }
 
-        $this->db->insert('page_view_log', array(
+        $this->db->insert('page_view_log', [
             'object_type'  => $type,
             'object_id'    => $object->getId(),
             'view_action'  => $action,
             'person_id'    => $person_id,
             'date_created' => date('Y-m-d H:i:s'),
-        ));
+        ]);
 
         return $this->db->lastInsertId();
     }

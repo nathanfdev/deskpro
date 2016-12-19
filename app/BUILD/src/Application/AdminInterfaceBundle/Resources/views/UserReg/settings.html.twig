@@ -23,7 +23,7 @@
 							<input type="radio" ng-model="settings.reg_enabled" ng-value="false" />
 							<h4>Disable Registration</h4>
 							<span class="help-block" ng-show="!settings.reg_enabled">
-								With registration <strong>disabled</strong>, no new users will be unable to create new accounts. This means
+								With registration <strong>disabled</strong>, no new users will be able to create new accounts. This means
 								to submit content to the helpdesk (such as tickets or comments), users must already exist or be manually created by an agent.
 							</span>
 						</label>
@@ -138,38 +138,6 @@
 	</section>
 
 	{##################################################################################################}
-
-	<section class="dp-paneblock dp-listpane">
-		<header>
-			<h3>{{ phrase('adm.settings.rate_limit_title') }}</h3>
-		</header>
-		<article class="form-horizontal dp-form">
-			<div class="panel panel-innertable">
-				<div class="form-group">
-					<div class="col-lg-12">
-						<div class="inner-group">
-							<label>
-								<input type="checkbox" ng-model="rate_limit_settings.enabled" />
-								<h4>{{ phrase('adm.settings.rate_limit_enabled_title') }}</h4>
-							</label>
-                            <span class="help-block">
-                                {{ phrase('adm.settings.rate_limit_help') }}
-                            </span>
-							<div ng-show="rate_limit_settings.enabled">
-								After
-								<input type="number" min="1" ng-model="rate_limit_settings.attempts" class="form-control" style="width: 50px;" />
-								failed login attempts within
-								<dp-time-with-unit ng-model="rate_limit_settings.attempts_time"></dp-time-with-unit>
-								, lock the account for
-								<dp-time-with-unit ng-model="rate_limit_settings.lock_time"></dp-time-with-unit>
-							</div>
-						</div>
-
-					</div>
-				</div>
-			</div>
-		</article>
-	</section>
 
 	<section class="dp-paneblock dp-listpane">
 		<footer>

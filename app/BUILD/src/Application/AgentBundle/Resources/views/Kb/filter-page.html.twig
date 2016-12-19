@@ -1,4 +1,4 @@
-<section class="search-reuslts page-set" data-page="{{ page }}">
+<section class="search-results page-set" data-page="{{ page }}">
 	{% for article in results %}
 		<article
 			class="row-item article article-{{article.id}} articles-{{article.id}} related-is-linkable"
@@ -20,7 +20,7 @@
 				</div>
 				<div class="top-row-right visible-content-link-control">
 					<div class="bound-fade"></div>
-					<span class="tipped insert-content-link" title="Insert a link to this article" data-link="{{ article.getLink() }}" data-link-title="{{ article.real_title }}"></span>
+					<span class="tipped insert-content-link" title="Insert a link to this article" data-link="{{ portal_url(article) }}" data-link-title="{{ article.real_title }}"></span>
 				</div>
 				<div class="top-row-right visible-ticket-controls">
 					<div class="bound-fade"></div>

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,15 +29,23 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Person;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
-use Application\DeskPRO\Entity\AgentTeam;
-use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Arrays;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * Class AgentTeamsController.
+ *
+ * @ApiModes("all")
+ */
 class AgentTeamsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -52,13 +60,13 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         return $multi;
     }
 
-    ####################################################################################################################
-    # list-teams
-    ####################################################################################################################
+    //###################################################################################################################
+    // list-teams
+    //###################################################################################################################
 
     public function listTeamsAction()
     {
-        $data = array('agent_teams' => array());
+        $data = ['agent_teams' => []];
 
         foreach ($this->container->getDataService('AgentTeam')->getTeams() as $agent_team) {
             $data['agent_teams'][] = $agent_team->toApiData();
@@ -67,9 +75,9 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # get-team
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-team
+    //###################################################################################################################
 
     public function getTeamAction($id)
     {
@@ -80,18 +88,18 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         }
 
         $data            = $team->toApiData();
-        $data['members'] = array();
+        $data['members'] = [];
 
         foreach ($team->members as $agent) {
             $data['members'][] = $agent->toBasicApiData();
         }
 
-        return $this->createApiResponse(array('team' => $data));
+        return $this->createApiResponse(['team' => $data]);
     }
 
-    ####################################################################################################################
-    # delete-team
-    ####################################################################################################################
+    //###################################################################################################################
+    // delete-team
+    //###################################################################################################################
 
     public function deleteTeamAction($id)
     {
@@ -105,14 +113,16 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         $this->em->remove($team);
         $this->em->flush();
 
-        return $this->createApiDeleteResponse(array(
-            'old_team_id' => $old_id,
-        ));
+        return $this->createApiDeleteResponse(
+            [
+                'old_team_id' => $old_id,
+            ]
+        );
     }
 
-    ####################################################################################################################
-    # save-team
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-team
+    //###################################################################################################################
 
     public function saveTeamAction($id)
     {
@@ -148,9 +158,9 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
             return $this->createApiValidationErrorResponse($errors);
         }
 
-        #------------------------------
-        # Save members
-        #------------------------------
+        //------------------------------
+        // Save members
+        //------------------------------
 
         $new_members = $this->in->getArrayOfUInts('team.person_ids');
         $new_members = array_unique($new_members);
@@ -158,12 +168,15 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 
         if ($new_members) {
             $agent_data  = $this->container->getAgentData();
-            $new_members = array_filter($new_members, function ($a) use ($agent_data) {
-                return $agent_data->get($a) ? true : false;
-            });
+            $new_members = array_filter(
+                $new_members,
+                function ($a) use ($agent_data) {
+                    return $agent_data->get($a) ? true : false;
+                }
+            );
         }
 
-        $members = $this->em->getRepository('DeskPRO:Person')->findBy(array('id' => $new_members));
+        $members = $this->em->getRepository('DeskPRO:Person')->findBy(['id' => $new_members]);
         $team->members->clear();
         foreach ($members as $person) {
             /* @var $person Person */
@@ -175,11 +188,11 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 
         if ($is_new) {
             return $this->createApiCreateResponse(
-                array('team_id' => $team->id),
-                $this->generateUrl('api_agent_teams_get', array('id' => $team->id), true)
+                ['team_id' => $team->id],
+                $this->generateUrl('api_agent_teams_get', ['id' => $team->id], UrlGeneratorInterface::ABSOLUTE_URL)
             );
         } else {
-            return $this->createApiSuccessResponse(array('team_id' => $team->id));
+            return $this->createApiSuccessResponse(['team_id' => $team->id]);
         }
     }
 }

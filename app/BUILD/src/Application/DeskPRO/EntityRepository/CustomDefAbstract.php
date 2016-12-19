@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,11 +38,39 @@ use Application\DeskPRO\DBAL\Connection;
 
 class CustomDefAbstract extends AbstractEntityRepository
 {
+    private $didLoadHierarchy = false;
+
     public static function getCacheId($id)
     {
         $str = 'customdef'.md5(get_called_class()).'_'.$id;
 
         return $str;
+    }
+
+    /**
+     * After loading a full collection using one of the getters below, we
+     * do a separate query to select just the hierarchy. This prevents query in a loop whenever ->children is called.
+     *
+     * You could also add a LEFT JOIN f.children to any of the getters below,
+     * but doing that results in duplicate data for the
+     * parent in each child row, which could potentially be a lot of actual data (titles+options+descriptions etc)
+     * Here we're just getting partials, so a very small result set, even if there are dupe rows.
+     *
+     * So the idea is this is a bit defensive and that two small queries is better than 1 query with potentially
+     * a very large result set.
+     */
+    private function preloadHierarchy()
+    {
+        if ($this->didLoadHierarchy) {
+            return;
+        }
+        $this->didLoadHierarchy = true;
+        $this->_em->createQuery("
+            SELECT f, ch
+            FROM {$this->_entityName} f INDEX BY f.id
+            JOIN f.children ch
+            ORDER BY f.display_order ASC, f.title
+        ")->execute();
     }
 
     /**
@@ -56,7 +84,12 @@ class CustomDefAbstract extends AbstractEntityRepository
             ORDER BY f.display_order ASC, f.title
         ");
 
-        return $q->execute();
+        $res = $q->execute();
+        if (count($res)) {
+            $this->preloadHierarchy();
+        }
+
+        return $res;
     }
 
     public function getEnabledFields()
@@ -68,7 +101,12 @@ class CustomDefAbstract extends AbstractEntityRepository
             ORDER BY f.display_order ASC, f.title
         ");
 
-        return $q->execute();
+        $res = $q->execute();
+        if (count($res)) {
+            $this->preloadHierarchy();
+        }
+
+        return $res;
     }
 
     public function getEnabledUserFields()
@@ -80,7 +118,12 @@ class CustomDefAbstract extends AbstractEntityRepository
             ORDER BY f.display_order ASC, f.title
         ");
 
-        return $q->execute();
+        $res = $q->execute();
+        if (count($res)) {
+            $this->preloadHierarchy();
+        }
+
+        return $res;
     }
 
     /**
@@ -95,9 +138,17 @@ class CustomDefAbstract extends AbstractEntityRepository
             ORDER BY f.display_order ASC, f.title
         ");
 
-        return $q->execute();
+        $res = $q->execute();
+        if (count($res)) {
+            $this->preloadHierarchy();
+        }
+
+        return $res;
     }
 
+    /**
+     * @return \Application\DeskPRO\Entity\CustomDefAbstract[]
+     */
     public function getEnabledTopFields()
     {
         $q = $this->_em->createQuery("
@@ -107,7 +158,10 @@ class CustomDefAbstract extends AbstractEntityRepository
             ORDER BY f.display_order ASC, f.title
         ");
 
-        return $q->execute();
+        $res = $q->execute();
+        $this->preloadHierarchy();
+
+        return $res;
     }
 
     /**
@@ -123,7 +177,7 @@ class CustomDefAbstract extends AbstractEntityRepository
         $x = 0;
         foreach ($display_orders as $tr_id) {
             $x += 10;
-            $db->update($this->getTableName(), array('display_order' => $x), array('id' => $tr_id));
+            $db->update($this->getTableName(), ['display_order' => $x], ['id' => $tr_id]);
         }
 
         $db->commit();
@@ -142,7 +196,7 @@ class CustomDefAbstract extends AbstractEntityRepository
         $table  = $this->_em->getRepository($entity)->getTableName();
         $con    = $this->_em->getConnection();
         $q      = sprintf('select count(*) from %s where field_id in (:ids)', $table);
-        $res    = $con->executeQuery($q, array('ids' => $ids), array('ids' => Connection::PARAM_INT_ARRAY))->fetchColumn();
+        $res    = $con->executeQuery($q, ['ids' => $ids], ['ids' => Connection::PARAM_INT_ARRAY])->fetchColumn();
 
         return (bool) $res;
     }
@@ -180,8 +234,8 @@ class CustomDefAbstract extends AbstractEntityRepository
         $q     = sprintf('update %s set field_id = :to where field_id in (:ids)', $table);
         $con->executeQuery(
             $q,
-            array('ids' => $fromIds, 'to' => $toId),
-            array('ids' => Connection::PARAM_INT_ARRAY, 'to' => \PDO::PARAM_INT)
+            ['ids' => $fromIds, 'to' => $toId],
+            ['ids' => Connection::PARAM_INT_ARRAY, 'to' => \PDO::PARAM_INT]
         );
     }
 }

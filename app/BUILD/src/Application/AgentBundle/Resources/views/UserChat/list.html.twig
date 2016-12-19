@@ -1,7 +1,5 @@
 {% extends 'AgentBundle::list-pane-layout.html.twig' %}
-{% block dp_declare %}
-	{{ set_tplvar('baseId', el_uid()) }}
-{% endblock %}
+{% set tplvars = { baseId: el_uid() } %}
 
 {######################################################################################################################}
 {# METADATA #}
@@ -24,7 +22,7 @@
 {######################################################################################################################}
 
 {% block pane_header %}
-	<h1><i class="icon-dp-chat"></i> {{ phrase('agent.userchat.list_title', {count: total}) }}</h1>
+	<h1><i class="icon-dp-chat"></i> {{ phrase('agent.userchat.list_title', {count: chat_ids|length}) }}</h1>
 {% endblock pane_header %}
 
 {######################################################################################################################}

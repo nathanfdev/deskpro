@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
@@ -37,17 +38,17 @@ use Doctrine\ORM\EntityManager;
 class AgentActivity
 {
     /** @var array */
-    private static $ticket_log_types = array(
+    private static $ticket_log_types = [
         'changed_agent', 'participant_added', 'participant_removed',
         'ticket_created', 'ticket_split', 'merged', 'changed_category',
-        'changed_department', 'changed_organization', 'changed_person',
+        'changed_brand', 'changed_department', 'changed_organization', 'changed_person',
         'message_created', 'message_removed', 'changed_priority',
         'changed_workflow', 'changed_urgency', 'changed_product',
         'changed_status', 'changed_custom_field',
-    );
+    ];
 
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 
@@ -92,9 +93,9 @@ class AgentActivity
             $date = $dt->format('Y-m-d');
         }
 
-        $vars = array(
+        $vars = [
             'hide_unknown' => 1,
-        );
+        ];
         $date       = $this->createDateFromParamString($date);
         $all_agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
@@ -105,7 +106,7 @@ class AgentActivity
             $agent_list = $this->em->getRepository('DeskPRO:AgentTeam')->getMembers($match[1]);
         } elseif ($agent_or_team_id && ctype_digit($agent_or_team_id)) {
             $agent_id   = $agent_or_team_id;
-            $agent_list = array($this->em->getRepository('DeskPRO:Person')->find($agent_or_team_id));
+            $agent_list = [$this->em->getRepository('DeskPRO:Person')->find($agent_or_team_id)];
         } else {
             $agent_list = false;
         }
@@ -115,11 +116,11 @@ class AgentActivity
             $agent_list       = $all_agents;
         }
 
-        $activity = array();
-        $agents   = array();
+        $activity = [];
+        $agents   = [];
 
         foreach ($agent_list as $agent) {
-            $logs  = array();
+            $logs  = [];
             $chats = $this->getChatLogForAgent($agent, $date);
 
             if (!empty($chats)) {
@@ -140,7 +141,7 @@ class AgentActivity
 
             if (!empty($logs)) {
                 foreach ($logs as $hour => $by_minute) {
-                    $minutely = array();
+                    $minutely = [];
 
                     foreach ($by_minute as $minute => $item) {
                         $minutely[trim($minute, '_')] = $item;
@@ -178,7 +179,7 @@ class AgentActivity
 
     /**
      * @param string $agent
-     * @param $date
+     * @param        $date
      *
      * @return array
      */
@@ -194,10 +195,10 @@ class AgentActivity
             INNER JOIN chat_conversations AS cc
             ON cc.id = conversation_id
             WHERE agent_id = ? AND cm.date_created BETWEEN ? AND ?',
-            array($agent['id'], $date_range['start'], $date_range['end'])
+            [$agent['id'], $date_range['start'], $date_range['end']]
         );
 
-        $counts_hourly = array();
+        $counts_hourly = [];
 
         foreach ($messages as $message) {
             $date   = $this->mysqlDateToPhpDate($message['date_created']);
@@ -205,11 +206,11 @@ class AgentActivity
             $minute = (int) $date->format('i');
 
             if (!isset($counts_hourly[$hour])) {
-                $counts_hourly[$hour] = array();
+                $counts_hourly[$hour] = [];
             }
 
             if (!isset($counts_hourly[$hour][$message['conversation_id']])) {
-                $counts_hourly[$hour][$message['conversation_id']] = array('count' => 1, 'last' => $minute);
+                $counts_hourly[$hour][$message['conversation_id']] = ['count' => 1, 'last' => $minute];
             } else {
                 ++$counts_hourly[$hour][$message['conversation_id']]['count'];
 
@@ -219,25 +220,25 @@ class AgentActivity
             }
         }
 
-        $counts = array();
+        $counts = [];
 
         foreach ($counts_hourly as $hour => $stats) {
             $hour          = '_'.$hour;
-            $counts[$hour] = array();
+            $counts[$hour] = [];
 
             foreach ($stats as $convo_id => $stat) {
                 $convo  = $this->em->getRepository('DeskPRO:ChatConversation')->find($convo_id);
                 $minute = '_'.$stat['last'];
 
                 if (!isset($counts[$hour][$minute])) {
-                    $counts[$hour][$minute] = array();
+                    $counts[$hour][$minute] = [];
                 }
 
-                $counts[$hour][$minute][] = array(
+                $counts[$hour][$minute][] = [
                     'type'         => 'chat',
                     'count'        => $stat['count'],
                     'conversation' => $convo,
-                );
+                ];
             }
         }
 
@@ -246,16 +247,16 @@ class AgentActivity
 
     /**
      * @param string $agent
-     * @param $date
+     * @param        $date
      *
      * @return array
      */
     private function getTicketLogForAgent($agent, $date)
     {
-        $counts_hourly = array();
+        $counts_hourly = [];
         $logs          = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForAgent(
             $agent,
-            array('date_range' => $this->createMysqlDateRangeForUser($date), 'types' => self::$ticket_log_types)
+            ['date_range' => $this->createMysqlDateRangeForUser($date), 'types' => self::$ticket_log_types]
         );
 
         foreach ($logs as $log) {
@@ -264,14 +265,14 @@ class AgentActivity
             $minute = (int) $date->format('i');
 
             if (!isset($counts_hourly['_'.$hour])) {
-                $counts_hourly['_'.$hour] = array();
+                $counts_hourly['_'.$hour] = [];
             }
 
             if (!isset($counts_hourly['_'.$hour]['_'.$minute])) {
-                $counts_hourly['_'.$hour]['_'.$minute] = array();
+                $counts_hourly['_'.$hour]['_'.$minute] = [];
             }
 
-            $counts_hourly['_'.$hour]['_'.$minute][] = array('type' => 'ticket', 'data' => $log);
+            $counts_hourly['_'.$hour]['_'.$minute][] = ['type' => 'ticket', 'data' => $log];
         }
 
         return $counts_hourly;
@@ -279,21 +280,21 @@ class AgentActivity
 
     /**
      * @param string $agent
-     * @param $date
+     * @param        $date
      *
      * @return array
      */
     private function getRevisionsForAgent($agent, $date)
     {
-        $items         = array('News', 'Article', 'Download', 'Feedback');
-        $counts_hourly = array();
+        $items         = ['News', 'Article', 'Download', 'Feedback'];
+        $counts_hourly = [];
 
         foreach ($items as $item) {
             $item_lc = strtolower($item);
 
             $revisions = $this->em->getRepository('DeskPRO:'.$item.'Revision')->getRevisionsForAgent(
                 $agent,
-                array('date_range' => $this->createMysqlDateRangeForUser($date))
+                ['date_range' => $this->createMysqlDateRangeForUser($date)]
             );
 
             foreach ($revisions as $revision) {
@@ -302,14 +303,14 @@ class AgentActivity
                 $minute       = (int) $date_created->format('i');
 
                 if (!isset($counts_hourly[$item_lc])) {
-                    $counts_hourly[$item_lc] = array();
+                    $counts_hourly[$item_lc] = [];
                 }
 
                 if (!isset($counts_hourly['_'.$hour]['_'.$minute])) {
-                    $counts_hourly['_'.$hour]['_'.$minute] = array();
+                    $counts_hourly['_'.$hour]['_'.$minute] = [];
                 }
 
-                $counts_hourly['_'.$hour]['_'.$minute][] = array('type' => $item_lc, 'data' => $revision);
+                $counts_hourly['_'.$hour]['_'.$minute][] = ['type' => $item_lc, 'data' => $revision];
             }
         }
 
@@ -356,6 +357,7 @@ class AgentActivity
 
     /***
      * @param  \DateTime $date
+     *
      * @return array
      */
     private function createMysqlDateRangeForUser($date)
@@ -375,10 +377,10 @@ class AgentActivity
         $end_date->sub(new \DateInterval('PT1S'));
 
         // Package using MySQL date format.
-        $date_range = array(
+        $date_range = [
             'start' => $start_date->format('Y-m-d H:i:s'),
             'end'   => $end_date->format('Y-m-d H:i:s'),
-        );
+        ];
 
         return $date_range;
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Orb\Util\Arrays;
@@ -65,32 +66,24 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
     public function getByIds(array $ids, $keep_order = false)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         $class = $this->getName();
 
         $ids = array_values($ids);
 
-        if ($this->getEntityManager()->getUnitOfWork()->isAddedPreloadedEntity($this->getName())) {
-            $this->getEntityManager()->getUnitOfWork()->preloadEntitySet($this->getName());
-            $recs = $this->getIdentityHelper()->findByIds($ids, $keep_order);
-            $recs = Arrays::keyFromData($recs, 'id');
-
-            return $recs;
-        } else {
-            $q_res = $this->getEntityManager()->createQuery("
+        $q_res = $this->getEntityManager()->createQuery("
                 SELECT o
                 FROM {$class} o INDEX BY o.id
                 WHERE o.id IN(?0)
-            ")->execute(array($ids));
+            ")->execute([$ids]);
 
-            if ($keep_order) {
-                $q_res = Arrays::orderIdArray($ids, $q_res);
-            }
-
-            return $q_res;
+        if ($keep_order) {
+            $q_res = Arrays::orderIdArray($ids, $q_res);
         }
+
+        return $q_res;
     }
 
     /**
@@ -146,7 +139,7 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 
     public function getReportAssociations()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -155,5 +148,10 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
     public function getName()
     {
         return $this->getClassMetadata()->getName();
+    }
+
+    public function createSearchQueryBuilder($entityAlias)
+    {
+        return $this->createQueryBuilder($entityAlias);
     }
 }

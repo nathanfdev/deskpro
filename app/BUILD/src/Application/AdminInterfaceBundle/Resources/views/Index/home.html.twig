@@ -87,68 +87,62 @@
 {% endblock %}
 {% block fillpage_content %}
 
-	<div ng-if="Home.last_login" class="alert alert-info" style="border-radius: 0; margin-bottom: 0;">
+	<div ng-if="Home.last_login" class="alert alert-info">
 		Welcome back, {{ app.user.display_name }}.
 		You last logged in <span title="{{ ng_var('Home.last_login.date_created') }}" am-time-ago="Home.last_login.date_created_d"></span>
 		from {{ ng_var('Home.last_login.ip_address') }}<span ng-if="Home.last_login.hostname != Home.last_login.ip_address"> ({{ ng_var('Home.last_login.hostname') }})</span>.
 		<a href="{{ ng_href('agents.login_log') }}">View login logs &rarr;</a>
 	</div>
 
-	{% if app.getSetting('core.admin_upgrade_notice') < 1400608123 %}
-		<div style="margin: 15px 15px 0 15px" id="admin_upgrade_notice" ng-if="!hide_admin_upgrade_notice">
-			<div class="alert alert-danger" style="margin-bottom: 0; position: relative;">
-				<div style="position: absolute; top: 5px; right: 11px;">
-					<a href="#" ng-click="Home.dismissUpgradeNotice({{ app.getBuildTime()|default(0) }})" title="Dismiss this message" style="color: #b94a48; font-size: 20px;"><i class="fa fa-times-circle"></i></a>
-				</div>
-				<div style="float:left">
-					<i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
-				</div>
-				<div style="margin-left: 50px;">
-					<h3 style="margin-top: 8px;">Upgrading Your Helpdesk</h3>
-					<p>
-						You have just successfully upgraded to a major new version of DeskPRO.
-					</p>
-					<p>
-						Along with new features and improvements, there have been some backwards-incompatible changes that
-						you may need address.
-					</p>
-					<p>
-						It is very important you read and understand these changes. <strong>You may need to manually reconfigure some aspects of your helpdesk.</strong>
-					</p>
-					<div style="margin-top: 15px;">
-						<a href="https://support.deskpro.com/kb/articles/190" class="btn btn-primary btn-lg" target="_blank">Click here to read more about what has changed &rarr;</a>
-					</div>
-				</div>
+	<div style="margin: 15px 15px 0 15px" ng-if="readable_config">
+		<div class="alert alert-danger" style="margin-bottom: 0; position: relative; border-width: 10px; border-color: #f00;">
+			<div style="float:left">
+				<i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
+			</div>
+			<div style="margin-left: 50px;">
+				<h3 style="margin-top: 8px;">
+				  <span style="display: inline-block; border-bottom: 2px dotted #f00;">
+					DANGER: Your web root contains DeskPRO source files
+				  </span>
+				</h3>
+				<p>
+				  Your web server is not configured properly. We have detected source files that are world-readable.
+				</p>
+				<p>
+				  This is a CRITICAL vulnerability in the way your web server is configured. This could result in leaking of very important details such as your database host and password, log files and other sensitive information like emails or attachments.
+				</p>
+				<p>
+				  Do not ignore this notice. This requires IMMEDIATE attention from an administrator.
+				</p>
 			</div>
 		</div>
-	{% endif %}
+	</div>
 
-  <div style="margin: 15px 15px 0 15px" ng-if="readable_config">
-    <div class="alert alert-danger" style="margin-bottom: 0; position: relative; border-width: 10px; border-color: #f00;">
-      <div style="float:left">
-        <i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
-      </div>
-      <div style="margin-left: 50px;">
-        <h3 style="margin-top: 8px;">
-          <span style="display: inline-block; border-bottom: 2px dotted #f00;">
-            CRITICAL: Your config.php file is publicly readable
-          </span>
-        </h3>
-        <p>
-          Your DeskPRO config.php file is publicly readable at the following URL:<br/>
-          <a ng-href="{{ ng_var('config_php_url') }}" target="_blank">{{ ng_var('config_php_url') }}</a>
-        </p>
-        <p>
-          This is a CRITICAL vulnerability in the way your web server is configured. Your config.php file contains sensitive information such as your MySQL database details (including your password).
-        </p>
-        <p>
-          Do not ignore this notice. This requires IMMEDIATE attention from an administrator.
-        </p>
-      </div>
-    </div>
-  </div>
+	<div style="margin: 15px 15px 0 15px" ng-if="missconfigured_web_root">
+		<div class="alert alert-danger" style="margin-bottom: 0; position: relative; border-width: 10px; border-color: #f00;">
+			<div style="float:left">
+				<i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
+			</div>
+			<div style="margin-left: 50px;">
+				<h3 style="margin-top: 8px;">
+				  <span style="display: inline-block; border-bottom: 2px dotted #f00;">
+					DANGER: You have missconfigured web root
+				  </span>
+				</h3>
+				<p>
+					Your web server is not configured properly. We have detected that you our test url is not handled by helpdesk system.
+				</p>
+				<p>
+					This is a CRITICAL vulnerability in the way your web server is configured. This could result in leaking of very important details such as your database host and password, log files and other sensitive information like emails or attachments.
+				</p>
+				<p>
+					Do not ignore this notice. This requires IMMEDIATE attention from an administrator.
+				</p>
+			</div>
+		</div>
+	</div>
 
-	<div style="margin: 15px 15px 0 15px" ng-if="http_method_errors">
+	<div style="margin: 15px" ng-if="http_method_errors">
 		<div class="alert alert-danger" style="margin-bottom: 0; position: relative;">
 			<div style="float:left">
 				<i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
@@ -178,54 +172,6 @@
 		</div>
 	</div>
 
-	<div class="dp-interface-buttons">
-		<table cellspacing="35" width="100%">
-			<tbody>
-				<tr>
-					<td class="dp-item" width="25%">
-						<article><a href="/{{ path('user')|ltrim('/') }}agent/" dp-click-href="#/go_to_agent" onmouseover="$('body').addClass('agent-interface-hover');" onmouseout="$('body').removeClass('agent-interface-hover');" onclick="$('body').removeClass('agent-interface-hover');">
-							<div class="title-wrap"><h3>Agent Interface</h3></div>
-							<div class="img-wrap"><img src="{{ asset('images/admin/agent-screen.png') }}" /></div>
-							<strong>
-								Reply to tickets and manage helpdesk content.
-							</strong>
-						</a></article>
-					</td>
-					<td class="dp-item" width="25%">
-						<article><a href="{{ path('user') }}" dp-click-href="#/go_to_user" onmouseover="$('body').addClass('user-interface-hover');" onmouseout="$('body').removeClass('user-interface-hover');" onclick="$('body').removeClass('user-interface-hover');">
-								<div class="title-wrap"><h3>User Portal</h3></div>
-								<div class="img-wrap"><img src="{{ asset('images/admin/portal-screen.png') }}" /></div>
-								<strong>
-									The helpdesk portal that end-users see.
-								</strong>
-							</a></article>
-					</td>
-					<td class="dp-item" width="25%">
-						<article onmouseover="$('body').addClass('reports-interface-hover');" onmouseout="$('body').removeClass('reports-interface-hover');" onclick="$('body').removeClass('reports-interface-hover');"><a href="/{{ path('user')|ltrim('/') }}reports/" dp-click-href="#/go_to_reports">
-							<div class="title-wrap"><h3>Reports Interface</h3></div>
-							<div class="img-wrap"><img src="{{ asset('images/admin/reports-screen.png') }}" /></div>
-							<strong>
-								View and create reports.
-							</strong>
-						</a></article>
-					</td>
-					{% if not app.getSetting('disable_admin_billing') %}
-						<td class="dp-item" width="25%">
-							<article onmouseover="$('body').addClass('lic-interface-hover');" onmouseout="$('body').removeClass('lic-interface-hover');" onclick="$('body').removeClass('lic-interface-hover');"><a href="{{ ng_href('license') }}">
-								<div class="title-wrap"><h3>Billing &amp; Licensing</h3></div>
-								<div class="img-wrap"><img src="{{ asset('images/admin/billing-screen.png') }}" /></div>
-								<strong>
-									Manage your DeskPRO license.
-								</strong>
-							</a></article>
-						</td>
-					{% endif %}
-				</tr>
-			</tbody>
-		</table>
-	</div>
-
-
 	<div class="dp-dashboard">
 		<table cellspacing="15" width="100%">
 			<tr>
@@ -237,19 +183,19 @@
                         </header>
                         <article style="padding: 10px;">
                             <p>
-                                You are currently using DeskPRO version <strong>#{{ ng_var('Home.version_info.build_name') }}</strong>.
+                                You are currently using DeskPRO version <strong>{{ ng_var('Home.version_info.build_name') }}</strong>.
                             </p>
                             <div class="status-content" ng-if="Home.latest_version_status == 'okay' && Home.latest_version.count_behind > 0">
                                 <header>
                                     <div class="icon bad"><i class="fa fa-warning"></i></div>
                                     <strong>
-                                        The latest version is #{{ ng_var('Home.latest_version.build_num_base') }}.
-                                        You are behind by <a href="http://support.deskpro.com/news/1" target="_blank">{{ ng_var('Home.latest_version.count_behind') }} version(s)</a>.<br/>
+                                        The latest version is {{ ng_var('Home.latest_version.build_name') }}.
+                                        Your version is <a href="http://support.deskpro.com/news/1" target="_blank">{{ ng_var('Home.latest_version.days_old') }} day(s) old</a>.<br/>
                                     </strong>
                                 </header>
                                 <article>
                                     <p>
-                                        <a class="btn btn-primary" href="{{ path('admin_upgrade_index') }}">Update DeskPRO Now &rarr;</a>
+                                        <a class="btn btn-primary" href="{{ ng_href('setup.updater') }}">Update DeskPRO Now &rarr;</a>
                                     </p>
                                 </article>
                             </div>

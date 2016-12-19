@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,16 @@
  *
  * @category TaskQueueJob
  */
+
 namespace Application\DeskPRO\TaskQueueJob;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TaskQueue;
 use Application\DeskPRO\Log\Logger;
 
+/**
+ * Class AbstractJob.
+ */
 abstract class AbstractJob
 {
     const TASK_COMPLETED  = 1;
@@ -44,43 +49,70 @@ abstract class AbstractJob
     /**
      * @var array
      */
-    protected $_data;
+    protected $data;
 
     /**
-     * @var \Application\DeskPRO\Entity\TaskQueue
+     * @var TaskQueue
      */
-    protected $_task;
+    protected $taskId;
 
     /**
-     * @var \Application\DeskPRO\Log\Logger|null
+     * @var Logger|null
      */
-    protected $_logger;
+    protected $logger;
 
-    public function __construct(array $data = array(), TaskQueue $task, Logger $logger = null)
+    /**
+     * Constructor.
+     *
+     * @param array       $data
+     * @param int         $taskId
+     * @param Logger|null $logger
+     */
+    public function __construct(array $data, $taskId, Logger $logger = null)
     {
-        $this->_data   = array_merge($this->_getDefaultData(), $data);
-        $this->_task   = $task;
-        $this->_logger = $logger;
+        $this->data   = array_merge($this->getDefaultData(), $data);
+        $this->taskId = $taskId;
+        $this->logger = $logger;
     }
 
+    /**
+     * @return array
+     */
     public function getData()
     {
-        return $this->_data;
+        return $this->data;
     }
 
+    /**
+     * @return Logger|null
+     */
     public function getLogger()
     {
-        return $this->_logger;
+        return $this->logger;
     }
 
+    /**
+     * @return TaskQueue
+     */
     public function getTask()
     {
-        return $this->_task;
+        return App::getOrm()->find(TaskQueue::class, $this->taskId);
     }
 
-    abstract protected function _getDefaultData();
+    /**
+     * @return mixed
+     */
+    abstract protected function getDefaultData();
 
+    /**
+     * @param $max_time
+     *
+     * @return int
+     */
     abstract public function run($max_time);
 
+    /**
+     * @return string
+     */
     abstract public function getTitle();
 }

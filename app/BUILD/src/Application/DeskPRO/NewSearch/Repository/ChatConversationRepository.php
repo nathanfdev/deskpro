@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,20 +34,10 @@ namespace Application\DeskPRO\NewSearch\Repository;
 class ChatConversationRepository extends AbstractRepository implements WithLabelsInterface
 {
     /**
-     * @return array
+     * {@inheritdoc}
      */
-    protected function getQueryFields()
+    protected function getFilters(array $options = [])
     {
-        return array('_all');
-    }
-
-    /**
-     * Constructs the filters array to handle agent permission.
-     *
-     * @return array
-     */
-    protected function getFilters()
-    {
-        return array('term' => array('is_agent' => false));
+        return ['term' => ['is_agent' => false]];
     }
 }

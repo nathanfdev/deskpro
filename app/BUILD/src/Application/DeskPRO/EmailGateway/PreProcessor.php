@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -46,9 +47,9 @@ class PreProcessor extends AbstractGatewayProcessor
 
     public function run()
     {
-        #------------------------------
-        # Empty From
-        #------------------------------
+        //------------------------------
+        // Empty From
+        //------------------------------
 
         $from = $this->reader->getFromAddress()->getEmail();
         if (!$from) {
@@ -57,9 +58,9 @@ class PreProcessor extends AbstractGatewayProcessor
             return;
         }
 
-        #------------------------------
-        # Dupe Detection
-        #------------------------------
+        //------------------------------
+        // Dupe Detection
+        //------------------------------
 
         // TODO: Put this behind an option
         // It's possible IDs are non-unique (e.g. by some automated systems)
@@ -75,24 +76,24 @@ class PreProcessor extends AbstractGatewayProcessor
         }
         */
 
-        #------------------------------
-        # Invalid From
-        #------------------------------
+        //------------------------------
+        // Invalid From
+        //------------------------------
 
-        $validator = new \Orb\Validator\StringEmail(array('reject_example' => true));
+        $validator = new \Orb\Validator\StringEmail(['reject_example' => true]);
 
         if (!$validator->isValid($from)) {
             $this->error         = EmailSource::ERR_FROM_INVALID;
-            $this->source_info   = array();
+            $this->source_info   = [];
             $this->source_info[] = 'Read from address: '.$from;
             $this->source_info[] = "Errors:\n\n".$validator->getErrorsDebug();
 
             return;
         }
 
-        #------------------------------
-        # From is a know gateway address
-        #------------------------------
+        //------------------------------
+        // From is a know gateway address
+        //------------------------------
 
         $account_manager = App::$container->getEmailAccountManager();
         if ($found_account = $account_manager->findAccountForEmailAddress($from)) {
@@ -104,9 +105,9 @@ class PreProcessor extends AbstractGatewayProcessor
             return;
         }
 
-        #------------------------------
-        # From is a banned address
-        #------------------------------
+        //------------------------------
+        // From is a banned address
+        //------------------------------
 
         $match = null;
         if (App::getOrm()->getRepository('DeskPRO:BanEmail')->isEmailBanned($from, $match)) {
@@ -117,9 +118,9 @@ class PreProcessor extends AbstractGatewayProcessor
             return;
         }
 
-        #------------------------------
-        # Check for empty message
-        #------------------------------
+        //------------------------------
+        // Check for empty message
+        //------------------------------
 
         $subj     = trim($this->reader->getSubject()->getSubject());
         $message  = trim($this->reader->getBodyHtml()->getBody());
@@ -132,10 +133,10 @@ class PreProcessor extends AbstractGatewayProcessor
             return;
         }
 
-        #------------------------------
-        # Check if date is older than start_date_limit
-        # on the account
-        #------------------------------
+        //------------------------------
+        // Check if date is older than start_date_limit
+        // on the account
+        //------------------------------
 
         if ($this->account->date_read_start && $email_date = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
             if ($email_date < $this->account->date_read_start) {
@@ -177,7 +178,7 @@ class PreProcessor extends AbstractGatewayProcessor
         }
 
         if (!is_array($this->source_info)) {
-            $this->source_info = array($this->source_info);
+            $this->source_info = [$this->source_info];
         }
 
         return $this->source_info;

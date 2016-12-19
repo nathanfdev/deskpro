@@ -1,0 +1,142 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
+
+use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\Usergroup;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+
+class CategoriesFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 20;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function load(ObjectManager $manager)
+    {
+        $translate = $this->container->get('deskpro.core.translate');
+
+        //------------------------------
+        // General KB cat : article_category_general
+        //------------------------------
+
+        $cat = new ArticleCategory();
+        $cat->setTitle($translate->phrase('user.defaults.article_category_general'));
+        $cat->setBrand($this->getReference('brand'));
+
+        $this->setReference('article_category_general', $cat);
+        $manager->persist($cat);
+
+        //------------------------------
+        // General News cat : news_category_general
+        //------------------------------
+
+        $cat = new NewsCategory();
+        $cat->setTitle($translate->phrase('user.defaults.news_category_general'));
+        $cat->setBrand($this->getReference('brand'));
+        $manager->persist($cat);
+
+        $this->setReference('news_category_general', $cat);
+        $manager->persist($cat);
+
+        //------------------------------
+        // General Downloads cat : downloads_category_general
+        //------------------------------
+
+        $cat = new DownloadCategory();
+        $cat->setTitle($translate->phrase('user.defaults.downloads_category_general'));
+        $cat->setBrand($this->getReference('brand'));
+
+        $this->setReference('downloads_category_general', $cat);
+        $manager->persist($cat);
+
+        //------------------------------
+        // Initial feedback cats :
+        // feedback_category_suggestion, feedback_category_feature_request, feedback_category_bug_report
+        //------------------------------
+
+        foreach (['Suggestion', 'Feature Request', 'Bug Report'] as $title) {
+            $cat = new FeedbackCategory();
+            $cat->setTitle($title);
+            $manager->persist($cat);
+
+            $id = str_replace(' ', '_', strtolower($title));
+            $this->setReference('feedback_category_'.$id, $cat);
+        }
+
+        $manager->flush();
+
+        //------------------------------
+        // Enable publish perms on everyone/registered
+        //------------------------------
+
+        if ($this->hasReference('usergroup.everyone')) {
+            $this->enableCatPerms($this->getReference('usergroup.everyone'));
+        }
+        if ($this->hasReference('usergroup.registered')) {
+            $this->enableCatPerms($this->getReference('usergroup.registered'));
+        }
+    }
+
+    /**
+     * Inserts permissions for $g for known default categories.
+     *
+     * @param Usergroup $g
+     */
+    private function enableCatPerms(Usergroup $g)
+    {
+        $db = $this->container->get('database_connection');
+
+        $ref_perms = [
+            ['id' => 'article_category_general', 'table' => 'article_category2usergroup'],
+            ['id' => 'news_category_general', 'table' => 'news_category2usergroup'],
+            ['id' => 'downloads_category_general', 'table' => 'download_category2usergroup'],
+            ['id' => 'feedback_category_suggestion', 'table' => 'feedback_category2usergroup'],
+            ['id' => 'feedback_category_feature_request', 'table' => 'feedback_category2usergroup'],
+            ['id' => 'feedback_category_bug_report', 'table' => 'feedback_category2usergroup'],
+        ];
+
+        foreach ($ref_perms as $perm) {
+            $rec = $this->getReference($perm['id']);
+            $db->insert($perm['table'], ['category_id' => $rec->getId(), 'usergroup_id' => $g->getId()]);
+        }
+    }
+}

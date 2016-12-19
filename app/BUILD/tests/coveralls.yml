@@ -1,0 +1,6 @@
+service_name: travis-pro
+repo_token: csalmmB0NCw41vSRBeWy6NoEWNs5iMquh
+src_dir: app/src
+coverage_clover:
+  - app/tests/coverage/combined-clover.xml
+json_path: app/tests/coverage/coveralls-upload.json

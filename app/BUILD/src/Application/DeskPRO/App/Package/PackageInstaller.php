@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\App\Package;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -70,7 +71,7 @@ class PackageInstaller
      * Install or update a package.
      *
      * @param Package    $package The package to installl
-     * @param AppPackage $def     Existing package record. It will be updated. Otherwise, a new AppPackage is created instead.
+     * @param AppPackage $def     Existing package record. It will be updated. Otherwise, a new AppPackage is created instead
      *
      * @return AppPackage
      */
@@ -80,14 +81,14 @@ class PackageInstaller
 
         $this->em->persist($def);
         $this->em->flush();
-        $old_blobs = array();
+        $old_blobs = [];
 
-        #------------------------------
-        # Get app icons
-        #------------------------------
+        //------------------------------
+        // Get app icons
+        //------------------------------
 
-        $sizes      = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
-        $have_sizes = array();
+        $sizes      = [16, 24, 32, 48, 64, 96, 128, 192, 256, 512];
+        $have_sizes = [];
         $largest    = null;
 
         $has_icon_filechange = false;
@@ -116,7 +117,7 @@ class PackageInstaller
                 $blob  = $asset->blob;
             }
 
-            $largest           = array($path, $size, $blob);
+            $largest           = [$path, $size, $blob];
             $have_sizes[$size] = $blob;
         }
 
@@ -143,7 +144,7 @@ class PackageInstaller
                 $blob  = $asset->blob;
             }
 
-            $largest           = array($path, $size, $blob);
+            $largest           = [$path, $size, $blob];
             $have_sizes[$size] = $blob;
         }
 
@@ -186,9 +187,9 @@ class PackageInstaller
             $have_sizes[$size] = $blob;
         }
 
-        #------------------------------
-        # README file
-        #------------------------------
+        //------------------------------
+        // README file
+        //------------------------------
 
         $path = $package->getReadmeFilePath();
         if ($path) {
@@ -216,9 +217,9 @@ class PackageInstaller
             }
         }
 
-        #------------------------------
-        # Main app.js
-        #------------------------------
+        //------------------------------
+        // Main app.js
+        //------------------------------
 
         $appjs_path = $package->getAppJsFilePath();
         if ($appjs_path && $this->isAssetBlobChanged($def, 'app.js', $appjs_path)) {
@@ -232,9 +233,9 @@ class PackageInstaller
             $this->em->persist($asset);
         }
 
-        #------------------------------
-        # Main module.js
-        #------------------------------
+        //------------------------------
+        // Main module.js
+        //------------------------------
 
         $modulejs_path = $package->getModuleJsFilePath();
         if ($modulejs_path && $this->isAssetBlobChanged($def, 'module.js', $modulejs_path)) {
@@ -248,9 +249,9 @@ class PackageInstaller
             $this->em->persist($asset);
         }
 
-        #------------------------------
-        # Save assets
-        #------------------------------
+        //------------------------------
+        // Save assets
+        //------------------------------
 
         foreach ($package->getJsAssets() as $asset_info) {
             if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
@@ -259,7 +260,8 @@ class PackageInstaller
             }
         }
         foreach ($package->getHtmlAssets() as $asset_info) {
-            if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
+            $asset_info['asset_content'] = $this->compileHtmlTemplate($package, $asset_info);
+            if ($this->isAssetBlobChanged($def, $asset_info['path'], md5($asset_info['asset_content']), true)) {
                 $asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'html', $old_blobs);
                 $this->em->persist($asset);
             }
@@ -279,9 +281,9 @@ class PackageInstaller
 
         $this->em->flush();
 
-        #------------------------------
-        # Remove old assets and blobs
-        #------------------------------
+        //------------------------------
+        // Remove old assets and blobs
+        //------------------------------
 
         // Need to delete old blobs at the end after AppAsset.blob has been overwritten
         // because AppAsset.blob has a delete cascade relation.
@@ -324,6 +326,31 @@ class PackageInstaller
     }
 
     /**
+     * @param Package $package
+     * @param array   $asset_info
+     *
+     * @return string
+     */
+    private function compileHtmlTemplate(Package $package, array $asset_info)
+    {
+        $content = file_get_contents($asset_info['real_path']);
+        $content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function ($m) use ($package) {
+            $path = @realpath($package->getPath().'/html/'.$m[1]);
+            $path_std = str_replace('\\', '/', $path);
+
+            if (!$path || !is_file($path) || strpos($path_std, str_replace('\\', '/', $package->getPath())) !== 0) {
+                return '<!-- Invalid include file: '.$m[1].' -->';
+            }
+
+            $inc_content = @SafeFile::fileGetContents($path, dirname($path));
+
+            return $inc_content;
+        }, $content);
+
+        return $content;
+    }
+
+    /**
      * @param Package    $package
      * @param AppPackage $def
      * @param array      $asset_info
@@ -336,23 +363,9 @@ class PackageInstaller
     {
         $mimetype = ContentTypes::getContentTypeFromFilename($asset_info['name']);
 
-        if ($tag == 'html') {
-            $content = file_get_contents($asset_info['real_path']);
-            $content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function ($m) use ($package) {
-                $path = @realpath($package->getPath().'/html/'.$m[1]);
-                $path_std = str_replace('\\', '/', $path);
-
-                if (!$path || !is_file($path) || strpos($path_std, str_replace('\\', '/', $package->getPath())) !== 0) {
-                    return '<!-- Invalid include file: '.$m[1].' -->';
-                }
-
-                $inc_content = @SafeFile::fileGetContents($path, dirname($path));
-
-                return $inc_content;
-            }, $content);
-
+        if (isset($asset_info['asset_content'])) {
             $blob = $this->blob_storage->createBlobRecordFromString(
-                $content,
+                $asset_info['asset_content'],
                 $asset_info['name'],
                 $mimetype
             );
@@ -378,7 +391,7 @@ class PackageInstaller
      *
      * @return \Application\DeskPRO\Entity\AppAsset|null
      */
-    private function _addAssetBlob(AppPackage $def, Blob $blob, $tag = null, $filename = null, array &$old_blobs)
+    private function _addAssetBlob(AppPackage $def, Blob $blob, $tag, $filename, array &$old_blobs)
     {
         if (!$filename) {
             $filename = $blob->filename;
@@ -403,5 +416,40 @@ class PackageInstaller
         $asset->tag  = $tag;
 
         return $asset;
+    }
+
+    public function dumpPackage(AppPackage $package, $path)
+    {
+        file_put_contents($path.'/manifest.json', json_encode($package->getManifest()));
+
+        foreach ($package->assets as $asset) {
+            $parts = explode('.', $asset->tag);
+            $tag   = $parts[0];
+
+            switch ($tag) {
+                case 'icons':
+                    $filename = $path.'/res/icons/'.$asset->name;
+                    break;
+                case 'readme':
+                case 'app_js':
+                case 'module_js':
+                    $filename = $path.'/'.$asset->name;
+                    break;
+                case 'js':
+                case 'css':
+                case 'html':
+                case 'res':
+                    $filename = $path.'/'.$tag.'/'.$asset->name;
+                    break;
+                default:
+                    $filename = $path.'/'.$asset->name;
+            }
+
+            $dir = pathinfo($filename, PATHINFO_DIRNAME);
+            if (!file_exists($dir)) {
+                mkdir($dir, 0777, true);
+            }
+            $this->blob_storage->copyBlobRecordToFile($filename, $asset->blob);
+        }
     }
 }

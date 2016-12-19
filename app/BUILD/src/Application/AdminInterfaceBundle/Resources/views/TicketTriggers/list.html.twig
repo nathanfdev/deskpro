@@ -14,12 +14,12 @@
 			</p>
 			<ul class="dp-item-list" ui-sortable="List.sortedListOptions" ng-if="List.triggers.length" dp-move-list-to-pos dp-max-height>
 
-				{#######################}
+				{# ######################}
 				{# Department Triggers #}
-				{#######################}
+				{###################### #}
 
 				<li class="with-drag-handle" data-id="departmentGroup" dp-li-group-section ng-if="List.depList.length" data-trigger-id="departments" data-move-to-pos="{{ ng_var('dep_order') }}">
-					<a href="{{ ng_href('tickets.triggers', '{type: List.eventType}') }}" class="toggle">
+					<span class="toggle link">
 						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right toggle-wrapper">
 							<button dp-toggle-switch ng-model="List.depTriggersEnabled" ng-change="List.updateDepTriggersEnabledState();"></button>
@@ -32,7 +32,7 @@
 							<i class="fa fa-caret-down as-closed"></i>
 							<i class="fa fa-caret-up as-open"></i>
 						</h4>
-					</a>
+					</span>
 					<div class="group-section-wrapper">
 						<div class="group-section-shadow"></div>
 						<div class="group-section-content">
@@ -90,12 +90,12 @@
 					</div>
 				</li>
 
-				{#######################}
+				{# ######################}
 				{# Email Acc Triggers  #}
-				{#######################}
+				{###################### #}
 
 				<li class="with-drag-handle" data-id="emailGroup" dp-li-group-section ng-if="List.accounts.length" data-move-to-pos="{{ ng_var('emailaccount_order') }}" data-trigger-id="emailaccounts">
-					<a href="{{ ng_href('tickets.triggers', '{type: List.eventType}') }}" class="toggle">
+					<span class="toggle link">
 						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right toggle-wrapper">
 							<button dp-toggle-switch ng-model="List.emailTriggersEnabled" ng-change="List.updateEmailTriggersEnabledState();"></button>
@@ -108,7 +108,7 @@
 							<i class="fa fa-caret-down as-closed"></i>
 							<i class="fa fa-caret-up as-open"></i>
 						</h4>
-					</a>
+					</span>
 					<div class="group-section-wrapper">
 						<div class="group-section-shadow"></div>
 						<div class="group-section-content">
@@ -130,9 +130,9 @@
 					</div>
 				</li>
 
-				{#########################}
+				{# ########################}
 				{# Satisfaction Triggers #}
-				{#########################}
+				{######################## #}
 
 				<li class="with-drag-handle" data-id="satisfactionGroup" dp-li-group-section ng-if="List.satisfactions.length" data-move-to-pos="{{ ng_var('satisfaction_order') }}" data-trigger-id="satisfaction">
 					<a href="{{ ng_href('tickets.triggers', '{type: List.eventType}') }}" class="toggle">
@@ -181,9 +181,9 @@
 					</div>
 				</li>
 
-				{#######################}
+				{# ######################}
 				{# Custom Triggers     #}
-				{#######################}
+				{###################### #}
 
 				<li class="with-drag-handle" ng-repeat="trigger in List.triggers" dp-state-mark="id:tickets.triggers.edit.{{ ng_var('trigger.id') }}" data-trigger-id="{{ ng_var('trigger.id') }}" data-run-order="{{ ng_var('trigger.run_order') }}">
 					<a href="{{ ng_href('tickets.triggers.edit', '{type: List.eventType, id: trigger.id}') }}">
@@ -313,7 +313,7 @@
 			<li><i class="fa fa-book"></i> <a href="https://manuals.deskpro.com/html/admin/automating-the-helpdesk/actions.html" target="_blank">Actions guide</a>
 			<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/192" target="_blank">Send an email to the user when their ticket is assigned</a></li>
 			<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/193" target="_blank">Sending different auto-responses based on email address</a></li>
-			<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/194"target="_blank">Automatically assign agents to tickets they reply to by email</a></li>
+			<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/194" target="_blank">Automatically assign agents to tickets they reply to by email</a></li>
 		</ul>
 	</section>
 </article>

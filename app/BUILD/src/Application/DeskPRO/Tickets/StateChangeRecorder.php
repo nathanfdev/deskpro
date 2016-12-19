@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -41,7 +42,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     /**
      * @var array
      */
-    private static $trivial_fields = array(
+    private static $trivial_fields = [
         'access_codes'            => true,
         'ticket_hash'             => true,
         'date_feedback_rating'    => true,
@@ -62,7 +63,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         'has_attachments'         => true,
         'count_agent_replies'     => true,
         'count_user_replies'      => true,
-    );
+    ];
 
     /**
      * @var \Application\DeskPRO\Entity\Ticket
@@ -187,10 +188,10 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     private function getNewMessagesOfType($type = 'any')
     {
         if (!$this->hasChangedField('message')) {
-            return array();
+            return [];
         }
 
-        $messages = array();
+        $messages = [];
 
         foreach (array_reverse($this->getChangesForField('message')) as $change) {
             $message = $change->getNew();
@@ -222,6 +223,14 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         }
 
         return $messages;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return $this->hasChangedField('status') && $this->ticket->isDeleted();
     }
 
     /**

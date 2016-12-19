@@ -1,0 +1,100 @@
+.dpw-macro-info-list {
+  font-size: 12px;
+  padding-left: 5px;
+
+  ul {
+    display: block;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: block;
+    color: #6b6b6b;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .mark {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 4px;
+    position: relative;
+    top: -1px;
+
+    .fa-circle {
+      font-size: 6px;
+    }
+  }
+
+  .dpw-macro-info-snippet {
+    margin-top: 5px;
+    background: #fff;
+    color: #868686;
+    font-style: italic;
+    border: 1px solid #dcddde;
+    border-radius: 2px;
+    padding: 7px;
+    font-size: 11px;
+  }
+}
+
+.dpw-macros-to-be-applied {
+  background: #fff;
+  color: #6b6b6b;
+  padding-left: 5px;
+
+  h1 {
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: block;
+    width: 100%;
+    font-size: 11px;
+
+    li {
+      display: block;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      padding-right: 15px;
+      line-height: 1em;
+
+      .macro-remove-mark {
+        position: absolute;
+        right: 5px;
+        font-size: 10px;
+        padding-top: 2px;
+      }
+
+      .macro-status-mark {
+        font-size: 10px;
+        margin-right: 4px;
+      }
+    }
+
+    a {
+      color: #62ad8c;
+      display: block;
+      padding: 4px 0;
+      font-weight: 600;
+
+      &:hover {
+        color: #333;
+        .macro-remove-mark {
+          color: #333;
+        }
+      }
+    }
+  }
+}

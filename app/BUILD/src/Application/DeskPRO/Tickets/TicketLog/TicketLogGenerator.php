@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Tickets\TicketLog;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Problem;
+use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\ORM\StateChange\ChangeCollection;
@@ -80,29 +82,41 @@ class TicketLogGenerator
         $group->ticket      = $this->ticket;
         $group->person      = $this->context->getPersonContext();
         $group->action_type = 'action_starter';
-        $group->details     = array(
+
+        $details = [
             'event'           => $this->context->getEventType(),
             'event_method'    => $this->context->getEventMethod(),
             'event_performer' => $this->context->getEventPerformer(),
             'person_id'       => $this->context->getPersonContext() ? $this->context->getPersonContext()->id : null,
             'person_name'     => $this->context->getPersonContext() ? $this->context->getPersonContext()->getDisplayName() : null,
             'person_email'    => $this->context->getPersonContext() ? $this->context->getPersonContext()->getPrimaryEmailAddress() : null,
-        );
+        ];
 
-        $logs   = array();
+        $apiKey = $this->context->getVars()->get('via_api_key');
+        if ($apiKey) {
+            $details['via_api_key'] = $apiKey;
+        }
+
+        $group->setDetails($details);
+
+        $logs   = [];
         $logs[] = $group;
 
         if ($this->state->isNewTicket() || $this->context->getEventType() == 'newticket') {
-            $data = array(
+            $data = [
                 'action_type'     => 'ticket_created',
                 'id_after'        => $this->ticket->id,
                 'ticket_id'       => $this->ticket->id,
                 'event_performer' => $this->context->getEventPerformer(),
                 'event_method'    => $this->context->getEventMethod(),
-            );
+            ];
             if ($this->context->getEventMethod() == 'email' && $this->context->getEmailContext() && $this->context->getEmailContext()->getDeliveredAddresses()) {
-                $data['email_to'] = array_map(function ($a) { return $a->email; }, $this->context->getEmailContext()->getReceivedAddresses());
-                $data['email_from'] = Util::flatMap($this->context->getEmailContext()->getRealFromAddress(), function ($v) { return $v->email; });
+                $data['email_to'] = array_map(function ($a) {
+                    return $a->email;
+                }, $this->context->getEmailContext()->getReceivedAddresses());
+                $data['email_from'] = Util::flatMap($this->context->getEmailContext()->getRealFromAddress(), function ($v) {
+                    return $v->email;
+                });
             }
             $log         = $this->getLogFromData($data);
             $log->parent = $group;
@@ -119,7 +133,7 @@ class TicketLogGenerator
             if (isset($log_data[0]) && is_array($log_data[0])) {
                 $log_data_set = $log_data;
             } else {
-                $log_data_set = array($log_data);
+                $log_data_set = [$log_data];
             }
 
             $log_metadata = $this->state->getMetaDataForChange($change);
@@ -159,7 +173,7 @@ class TicketLogGenerator
         }
 
         if (count($logs) < 2) {
-            return array();
+            return [];
         }
 
         return $logs;
@@ -183,7 +197,7 @@ class TicketLogGenerator
             return;
         }
 
-        foreach (array('id_object', 'id_before', 'id_after') as $prop) {
+        foreach (['id_object', 'id_before', 'id_after'] as $prop) {
             if (!empty($log_data[$prop])) {
                 $log->$prop = $log_data[$prop];
                 unset($log_data[$prop]);
@@ -212,7 +226,7 @@ class TicketLogGenerator
 
         switch ($change->getField()) {
             case 'agent':
-                return array(
+                return [
                     'action_type' => 'changed_agent',
                     'id_before'   => $old ? $old->id : null,
                     'id_after'    => $new ? $new->id : null,
@@ -223,11 +237,11 @@ class TicketLogGenerator
                     'new_agent_id'    => $new ? $new->id : null,
                     'new_agent_name'  => $new ? $new->display_name : null,
                     'new_agent_email' => $new ? $new->primary_email_address : null,
-                );
+                ];
                 break;
 
             case 'agent_team':
-                return array(
+                return [
                     'action_type' => 'changed_agent_team',
                     'id_before'   => $old ? $old->id : null,
                     'id_after'    => $new ? $new->id : null,
@@ -236,11 +250,11 @@ class TicketLogGenerator
                     'old_agent_team_name' => $old ? $old->name : null,
                     'new_agent_team_id'   => $new ? $new->id : null,
                     'new_agent_team_name' => $new ? $new->name : null,
-                );
+                ];
                 break;
 
             case 'category':
-                return array(
+                return [
                     'action_type' => 'changed_category',
                     'id_before'   => $old ? $old->id : null,
                     'id_after'    => $new ? $new->id : null,
@@ -249,36 +263,49 @@ class TicketLogGenerator
                     'old_category_title' => $old ? $old->title : null,
                     'new_category_id'    => $new ? $new->id : null,
                     'new_category_title' => $new ? $new->title : null,
-                );
+                ];
                 break;
 
             case 'created':
-                return array(
+                return [
                     'action_type' => 'ticket_created',
                     'id_after'    => $this->ticket->id,
 
                     'ticket_id' => $this->ticket->id,
-                );
+                ];
                 break;
 
             case 'custom_field':
             case 'custom_data':
                 if (empty($old['value']) && empty($new['value'])) {
-                    return array();
+                    return [];
                 }
 
-                return array(
+                return [
                     'action_type'  => 'changed_custom_field',
                     'value_before' => !empty($old['value']) ? $old['value'] : null,
                     'value_after'  => !empty($new['value']) ? $new['value'] : null,
 
                     'field_id'   => !empty($old['field_def']) ? $old['field_def']->id : null,
                     'field_name' => !empty($old['field_def']) ? $old['field_def']->title : null,
-                );
+                ];
+                break;
+
+            case 'brand':
+                return [
+                    'action_type' => 'changed_brand',
+                    'id_before'   => $old ? $old->id : null,
+                    'id_after'    => $new ? $new->id : null,
+
+                    'old_brand_id'   => $old ? $old->id : null,
+                    'old_brand_name' => $old ? $old->getName() : null,
+                    'new_brand_id'   => $new ? $new->id : null,
+                    'new_brand_name' => $new ? $new->getName() : null,
+                ];
                 break;
 
             case 'department':
-                return array(
+                return [
                     'action_type' => 'changed_department',
                     'id_before'   => $old ? $old->id : null,
                     'id_after'    => $new ? $new->id : null,
@@ -287,7 +314,7 @@ class TicketLogGenerator
                     'old_department_title' => $old ? $old->getFullTitle() : null,
                     'new_department_id'    => $new ? $new->id : null,
                     'new_department_title' => $new ? $new->getFullTitle() : null,
-                );
+                ];
                 break;
 
             case 'free':
@@ -295,43 +322,47 @@ class TicketLogGenerator
                     $data                = $change->getData();
                     $data['action_type'] = 'free';
                 } else {
-                    $data = array(
+                    $data = [
                         'action_type' => 'free',
-                    );
+                    ];
                 }
 
                 return $data;
                 break;
 
             case 'hidden_status':
-                return array(
+                return [
                     'action_type' => 'changed_hidden_status',
                     'old_status'  => $old ? $old : null,
                     'new_status'  => $new ? $new : null,
-                );
+                ];
                 break;
 
             case 'is_hold':
-                return array(
+                return [
                     'action_type' => 'changed_hold',
                     'id_before'   => $old ? 1 : 0,
                     'id_after'    => $new ? 0 : 1,
 
                     'was_hold' => (bool) $old,
                     'is_hold'  => (bool) $new,
-                );
+                ];
                 break;
 
             case 'labels':
-                return array(
+                return [
                     'action_type' => 'changed_labels',
-                    'added'       => array_map(function ($l) { return $l->label; }, $added),
-                    'removed' => array_map(function ($l) { return $l->label; }, $removed),
-                );
+                    'added'       => array_map(function ($l) {
+                        return $l->label;
+                    }, $added),
+                    'removed' => array_map(function ($l) {
+                        return $l->label;
+                    }, $removed),
+                ];
                 break;
 
             case 'language':
-                return array(
+                return [
                     'action_type' => 'changed_language',
                     'id_before'   => $old ? $old->id : null,
                     'id_after'    => $new ? $new->id : null,
@@ -340,7 +371,7 @@ class TicketLogGenerator
                     'old_language_title' => $old ? $old->title : null,
                     'new_language_id'    => $new ? $new->id : null,
                     'new_language_title' => $new ? $new->title : null,
-                );
+                ];
                 break;
 
             case 'merge':
@@ -348,11 +379,11 @@ class TicketLogGenerator
                 break;
 
             case 'message':
-                $log_set = array();
+                $log_set = [];
 
                 if ($new) {
                     $m                            = $new;
-                    $log_data                     = array();
+                    $log_data                     = [];
                     $log_data['action_type']      = 'message_created';
                     $log_data['id_after']         = $m->id;
                     $log_data['message_id']       = $m->id;
@@ -366,7 +397,7 @@ class TicketLogGenerator
 
                 if ($old) {
                     $m                            = $old;
-                    $log_data                     = array();
+                    $log_data                     = [];
                     $log_data['action_type']      = 'message_removed';
                     $log_data['id_before']        = $m->id;
                     $log_data['message_id']       = $m->id;
@@ -382,7 +413,7 @@ class TicketLogGenerator
                 break;
 
             case 'organization':
-                return array(
+                return [
                     'action_type' => 'changed_organization',
                     'id_before'   => $old ? $old->id : null,
                     'id_after'    => $new ? $new->id : null,
@@ -391,42 +422,58 @@ class TicketLogGenerator
                     'old_organization_name' => $old ? $old->name : null,
                     'new_organization_id'   => $new ? $new->id : null,
                     'new_organization_name' => $new ? $new->name : null,
-                );
+                ];
                 break;
 
             case 'participants':
-                $added_users = array_filter($added, function ($part) { return !$part->person->is_agent; });
-                $added_agents = array_filter($added, function ($part) { return $part->person->is_agent; });
+                $added_users = array_filter($added, function ($part) {
+                    return !$part->person->is_agent;
+                });
+                $added_agents = array_filter($added, function ($part) {
+                    return $part->person->is_agent;
+                });
 
-                $removed_users = array_filter($removed, function ($part) { return !$part->person->is_agent; });
-                $removed_agents = array_filter($removed, function ($part) { return $part->person->is_agent; });
+                $removed_users = array_filter($removed, function ($part) {
+                    return !$part->person->is_agent;
+                });
+                $removed_agents = array_filter($removed, function ($part) {
+                    return $part->person->is_agent;
+                });
 
                 if ($added_users || $removed_users) {
-                    return array(
+                    return [
                         'action_type' => 'changed_user_participants',
-                        'added'       => array_map(function ($part) { $p = $part->person;
+                        'added'       => array_map(function ($part) {
+                            $p = $part->person;
 
-return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_users),
-                        'removed' => array_map(function ($part) { $p = $part->person;
+                            return ['id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address];
+                        }, $added_users),
+                        'removed' => array_map(function ($part) {
+                            $p = $part->person;
 
-return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_users),
-                    );
+                            return ['id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address];
+                        }, $removed_users),
+                    ];
                 }
                 if ($added_agents || $removed_agents) {
-                    return array(
+                    return [
                         'action_type' => 'changed_agent_participants',
-                        'added'       => array_map(function ($part) { $p = $part->person;
+                        'added'       => array_map(function ($part) {
+                            $p = $part->person;
 
-return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_agents),
-                        'removed' => array_map(function ($part) { $p = $part->person;
+                            return ['id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address];
+                        }, $added_agents),
+                        'removed' => array_map(function ($part) {
+                            $p = $part->person;
 
-return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_agents),
-                    );
+                            return ['id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address];
+                        }, $removed_agents),
+                    ];
                 }
                 break;
 
             case 'person':
-                return array(
+                return [
                     'action_type' => 'changed_person',
                     'id_before'   => $old ? $old->id : null,
                     'id_after'    => $new ? $new->id : null,
@@ -437,11 +484,11 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                     'new_person_id'    => $new ? $new->id : null,
                     'new_person_name'  => $new ? $new->display_name : null,
                     'new_person_email' => $new ? $new->primary_email_address : null,
-                );
+                ];
                 break;
 
             case 'priority':
-                return array(
+                return [
                     'action_type' => 'changed_priority',
                     'id_before'   => $old ? $old->id : null,
                     'id_after'    => $new ? $new->id : null,
@@ -452,11 +499,11 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                     'new_priority_id'    => $new ? $new->id : null,
                     'new_priority_title' => $new ? $new->title : null,
                     'new_priority_pri'   => $new ? $new->priority : null,
-                );
+                ];
                 break;
 
             case 'product':
-                return array(
+                return [
                     'action_type' => 'changed_product',
                     'id_before'   => $old ? $old->id : null,
                     'id_after'    => $new ? $new->id : null,
@@ -465,7 +512,7 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                     'old_product_title' => $old ? $old->title : null,
                     'new_product_id'    => $new ? $new->id : null,
                     'new_product_title' => $new ? $new->title : null,
-                );
+                ];
                 break;
 
             case 'split':
@@ -473,58 +520,62 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                 break;
 
             case 'status':
-                return array(
+                return [
                     'action_type' => 'changed_status',
                     'id_before'   => Ticket::getStatusInt($old) ?: null,
                     'id_after'    => Ticket::getStatusInt($new) ?: null,
 
                     'old_status' => $old,
                     'new_status' => $new,
-                );
+                ];
                 break;
 
             case 'subject':
-                return array(
+                return [
                     'action_type' => 'changed_subject',
                     'old_subject' => $old,
                     'new_subject' => $new,
-                );
+                ];
                 break;
 
             case 'ticket_slas':
-                return array(
+                return [
                     'action_type' => 'changed_slas',
-                    'added'       => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $added),
-                    'removed' => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $removed),
-                );
+                    'added'       => array_map(function ($ts) {
+                        return ['id' => $ts->sla->id, 'title' => $ts->sla->title];
+                    }, $added),
+                    'removed' => array_map(function ($ts) {
+                        return ['id' => $ts->sla->id, 'title' => $ts->sla->title];
+                    }, $removed),
+                ];
                 break;
 
             case 'ticket_slas_status':
                 if (!empty($new['sla'])) {
-                    return array(
+                    return [
                         'action_type' => 'changed_sla_status',
                         'sla_id'      => $new['sla']->id,
                         'sla_title'   => $new['sla']->title,
                         'old_status'  => $new['old_status'],
                         'new_status'  => $new['new_status'],
-                    );
+                    ];
                 }
 
                 return;
 
             case 'urgency':
-                return array(
+                return [
                     'action_type' => 'changed_urgency',
                     'id_before'   => $old ?: null,
                     'id_after'    => $new ?: null,
 
                     'old_urgency' => $old ?: 0,
                     'new_urgency' => $new ?: 0,
-                );
+                ];
                 break;
 
             case 'workflow':
-                return array(
+                return [
                     'action_type' => 'changed_workflow',
                     'id_before'   => $old ? $old->id : null,
                     'id_after'    => $new ? $new->id : null,
@@ -533,21 +584,21 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                     'old_workflow_title' => $old ? $old->title : null,
                     'new_workflow_id'    => $new ? $new->id : null,
                     'new_workflow_title' => $new ? $new->title : null,
-                );
+                ];
                 break;
 
             case 'trigger':
-                return array(
+                return [
                     'action_type' => 'trigger',
                     'id_after'    => $new['trigger_id'],
 
                     'trigger_id'    => $new['trigger_id'],
                     'trigger_title' => $new['trigger_title'],
-                );
+                ];
                 break;
 
             case 'ticket_email':
-                return array(
+                return [
                     'action_type' => 'ticket_email',
 
                     'user_mode'  => $new['user_mode'],
@@ -560,47 +611,47 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
 
                     'sendmail_source_id' => $new['sendmail_source_id'],
                     'id_after'           => $new['sendmail_source_id'],
-                );
+                ];
 
             case 'split_to':
-                return array(
+                return [
                     'action_type' => 'split_to',
                     'id_after'    => $new['new_ticket_id'],
 
                     'message_ids' => $new['message_ids'],
-                );
+                ];
 
             case 'split_from':
-                return array(
+                return [
                     'action_type' => 'split_from',
                     'id_before'   => $new['old_ticket_id'],
 
                     'message_ids' => $new['message_ids'],
-                );
+                ];
 
             case 'merged_from':
-                return array(
+                return [
                     'action_type' => 'merged_from',
                     'id_before'   => $new['old_ticket_id'],
                     'lost_data'   => $new['lost_data'],
-                );
+                ];
 
             case 'app_message':
-                return array(
+                return [
                     'action_type'   => 'app_message',
                     'app_id'        => $new['app_id'],
                     'app_title'     => $new['app_title'],
                     'package_name'  => $new['package_name'],
                     'package_title' => $new['package_title'],
                     'message'       => $new['message'],
-                );
+                ];
 
             case 'attachments':
-                $log_set = array();
+                $log_set = [];
 
                 if ($new && isset($new->blob) && !$new->is_inline) {
                     $blob                     = $new->blob;
-                    $log_data                 = array();
+                    $log_data                 = [];
                     $log_data['action_type']  = 'attach_added';
                     $log_data['id_after']     = $new->id;
                     $log_data['attach_id']    = $new->id;
@@ -613,7 +664,7 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
 
                 if ($old && isset($old->blob) && !$old->is_inline) {
                     $blob                     = $old->blob;
-                    $log_data                 = array();
+                    $log_data                 = [];
                     $log_data['action_type']  = 'attach_removed';
                     $log_data['id_before']    = $old->id;
                     $log_data['attach_id']    = $old->id;
@@ -627,21 +678,27 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                 return $log_set;
 
             case 'feedback_rating':
-                $log_data                = array();
+                $log_data                = [];
                 $log_data['action_type'] = 'feedback_rating';
                 $log_data['id_before']   = $old;
                 $log_data['id_after']    = $new;
 
                 switch ($new) {
-                    case -1: $log_data['rating'] = 'negative'; break;
-                    case 0:  $log_data['rating'] = 'neutral';  break;
-                    case 1:  $log_data['rating'] = 'positive'; break;
+                    case -1:
+                        $log_data['rating'] = 'negative';
+                        break;
+                    case 0:
+                        $log_data['rating'] = 'neutral';
+                        break;
+                    case 1:
+                        $log_data['rating'] = 'positive';
+                        break;
                 }
 
                 return $log_data;
 
             case 'person_email':
-                $log_data                = array();
+                $log_data                = [];
                 $log_data['action_type'] = 'person_email_changed';
                 $log_data['id_before']   = $old ? $old->id : null;
                 $log_data['id_after']    = $new ? $new->id : null;
@@ -656,7 +713,7 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                 return $log_data;
 
             case 'ticket_sla_status':
-                $log_data                = array();
+                $log_data                = [];
                 $log_data['action_type'] = 'ticket_sla_status';
                 $log_data['sla_id']      = $old['sla']->id;
                 $log_data['sla_title']   = $old['sla']->title;
@@ -666,7 +723,7 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                 return $log_data;
 
             case 'message_note_status':
-                $log_data                   = array();
+                $log_data                   = [];
                 $log_data['action_type']    = 'message_note_status';
                 $log_data['message_id']     = $new['message_id'];
                 $log_data['was_agent_note'] = !$new['is_agent_note'];
@@ -675,16 +732,28 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                 return $log_data;
 
             case 'webhook':
-                $data                = $change instanceof ChangeData ? $change->getData() : array();
+                $data                = $change instanceof ChangeData ? $change->getData() : [];
                 $data['action_type'] = 'webhook';
 
                 return $data;
 
             case 'deleted_attachments':
-                $data                = $change instanceof ChangeData ? $change->getData() : array();
+                $data                = $change instanceof ChangeData ? $change->getData() : [];
                 $data['action_type'] = 'deleted_attachments';
 
                 return $data;
+
+            case 'problems':
+                return [
+                    'action_type' => 'changed_problems',
+                    'added'       => array_map(function (Problem $p) {
+                        return $p->getTitle();
+                    }, $added),
+                    'removed' => array_map(function (Problem $p) {
+                        return $p->getTitle();
+                    }, $removed),
+                ];
+                break;
 
             // Custom fields changed
             case strpos($change->getField(), 'custom_data.') === 0:
@@ -714,18 +783,18 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                     $value_before = $old->getData();
 
                     if ($is_choice) {
-                        $value_before = $old->field->getTitle();
+                        $value_before = $old->field ? $old->field->getTitle() : null;
                     }
                 }
                 if ($new) {
                     $value_after = $new->getData();
 
                     if ($is_choice) {
-                        $value_after = $new->field->getTitle();
+                        $value_after = $new->field ? $new->field->getTitle() : null;
                     }
                 }
 
-                $log_data                 = array();
+                $log_data                 = [];
                 $log_data['action_type']  = 'changed_custom_field';
                 $log_data['field_name']   = $field_name;
                 $log_data['field_id']     = $field_id;
@@ -737,15 +806,32 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                 return $log_data;
 
             case 'email_account':
-                return array(
+                return [
                     'action_type' => 'email_account',
                     'old'         => $old ? $old->address : null,
                     'new'         => $new ? $new->address : null,
-                );
+                ];
+                break;
+            case 'parent_ticket':
+                return [
+                    'action_type' => 'parent_ticket',
+                    'old'         => $old ? $old->id : null,
+                    'new'         => $new ? $new->id : null,
+                ];
+            case 'new_tasks':
+                if ($new instanceof Task) {
+                    return [
+                        'action_type' => 'task_created',
+                        'task_id'     => $new->getId(),
+                        'task_title'  => $new->getTitle(),
+                    ];
+                }
+
+                return [];
                 break;
 
             default:
-                return array();
+                return [];
         }
     }
 }

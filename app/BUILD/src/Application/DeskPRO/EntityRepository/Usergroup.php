@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -91,7 +92,7 @@ class Usergroup extends AbstractEntityRepository
             return $this->_usergroup_names;
         }
 
-        $ret = array();
+        $ret = [];
         if (in_array(1, $for_ids)) {
             $ret[1] = App::getTranslator()->phrase('agent.general.everyone');
         }
@@ -131,7 +132,7 @@ class Usergroup extends AbstractEntityRepository
     public function getByIds(array $ids, $keep_order = false)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         return $this->getEntityManager()->createQuery('
@@ -139,7 +140,7 @@ class Usergroup extends AbstractEntityRepository
             FROM DeskPRO:Usergroup u INDEX BY u.id
             WHERE u.id IN (?0)
             ORDER BY u.id DESC
-        ')->execute(array($ids));
+        ')->execute([$ids]);
     }
 
     /**
@@ -186,7 +187,7 @@ class Usergroup extends AbstractEntityRepository
     public function getCountsFor(array $ids)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         /** @var Connection $conn */
@@ -196,7 +197,7 @@ class Usergroup extends AbstractEntityRepository
             FROM person2usergroups
             WHERE usergroup_id IN (?)
             GROUP BY usergroup_id
-        ', array($ids), array(Connection::PARAM_INT_ARRAY));
+        ', [$ids], [Connection::PARAM_INT_ARRAY]);
         $output = Arrays::castToType($output, 'int', 'int');
 
         // Org counts
@@ -208,7 +209,7 @@ class Usergroup extends AbstractEntityRepository
             LEFT JOIN person2usergroups AS p2u ON (p2u.person_id = people.id AND p2u.usergroup_id = o2u.usergroup_id)
             WHERE o2u.usergroup_id IN (?) AND p2u.person_id IS NULL
             GROUP BY o2u.usergroup_id
-        ', array($ids), array(Connection::PARAM_INT_ARRAY));
+        ', [$ids], [Connection::PARAM_INT_ARRAY]);
 
         if ($results) {
             foreach ($results as $result) {
@@ -237,7 +238,7 @@ class Usergroup extends AbstractEntityRepository
     public function getOrganizationCountsFor(array $ids)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         /** @var Connection $conn */
@@ -248,7 +249,7 @@ class Usergroup extends AbstractEntityRepository
             FROM organization2usergroups
             WHERE usergroup_id IN (?)
             GROUP BY usergroup_id
-        ', array($ids), array(Connection::PARAM_INT_ARRAY));
+        ', [$ids], [Connection::PARAM_INT_ARRAY]);
     }
 
     /**
@@ -264,6 +265,6 @@ class Usergroup extends AbstractEntityRepository
             FROM person2usergroups
             LEFT JOIN usergroups ON usergroups.id = person2usergroups.usergroup_id
             WHERE usergroups.is_agent_group = 1
-        ', array(), 'usergroup_id', null, 'person_id');
+        ', [], 'usergroup_id', null, 'person_id');
     }
 }

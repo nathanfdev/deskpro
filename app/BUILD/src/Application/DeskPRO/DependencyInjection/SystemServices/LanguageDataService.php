@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Language;
 use Orb\Util\Arrays;
 
 class LanguageDataService extends BaseRepositoryService
@@ -51,7 +53,7 @@ class LanguageDataService extends BaseRepositoryService
      *
      * @var array
      */
-    protected $languages = array();
+    protected $languages = [];
 
     /**
      * @var int
@@ -61,7 +63,7 @@ class LanguageDataService extends BaseRepositoryService
     public static function create(DeskproContainer $container, array $options = null)
     {
         if (!$options) {
-            $options = array();
+            $options = [];
         }
         $options['entity']          = 'Application\\DeskPRO\\Entity\\Language';
         $options['default_lang_id'] = $container->getSetting('core.default_language_id');
@@ -109,8 +111,10 @@ class LanguageDataService extends BaseRepositoryService
     public function findLangCode($code)
     {
         $this->preload();
+
+        /** @var Language $lang */
         foreach ($this->languages as $lang) {
-            if ($lang->lang_code == $code) {
+            if ($lang->getLangCode() === $code || $lang->getLocale() === $code || substr($lang->getLocale(), 0, 2) == $code) {
                 return $lang;
             }
         }
@@ -126,10 +130,28 @@ class LanguageDataService extends BaseRepositoryService
     public function getLangCodes()
     {
         $this->preload();
-        $codes = array();
+        $codes = [];
 
         foreach ($this->languages as $lang) {
             $codes[] = $lang->lang_code;
+        }
+
+        return $codes;
+    }
+
+    /**
+     * Get an array of locale codes.
+     *
+     * @return string[]
+     */
+    public function getLocaleCodes()
+    {
+        $this->preload();
+        $codes = [];
+
+        /** @var Language $lang */
+        foreach ($this->languages as $lang) {
+            $codes[] = substr($lang->getLocale(), 0, 2);
         }
 
         return $codes;
@@ -140,9 +162,7 @@ class LanguageDataService extends BaseRepositoryService
      */
     public function getDefault()
     {
-        $this->preload();
-
-        return $this->get($this->default_lang_id);
+        return $this->default_lang_id ? $this->em->getRepository(Language::class)->find($this->default_lang_id) : null;
     }
 
     /**
@@ -219,7 +239,7 @@ class LanguageDataService extends BaseRepositoryService
     public function getByIds(array $ids, $keep_order = false)
     {
         $this->preload();
-        $ret = array();
+        $ret = [];
 
         foreach ($ids as $id) {
             if (isset($this->languages[$id])) {
@@ -254,7 +274,7 @@ class LanguageDataService extends BaseRepositoryService
     public function getTitles(array $for_ids = null)
     {
         $this->preload();
-        $ret = array();
+        $ret = [];
 
         if (!$for_ids) {
             $for_ids = array_keys($this->languages);

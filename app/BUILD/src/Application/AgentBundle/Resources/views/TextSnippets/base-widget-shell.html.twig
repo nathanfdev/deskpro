@@ -9,10 +9,10 @@
 		</header>
 		{# Page Containers #}
 		<div class="layout-content" style="top: 21px">
-			<div class="dp-page-content">
+			<div class="dp-page-content scroll-content">
 		{# /Page Containers #}
 			<ul id="%baseId%_catlist">
-				<li class="category category-0" data-category="0">
+				<li class="category category-0" data-category-id="0" data-is-global="1">
 					<a>
 						<span class="label">{{ phrase('agent.snippets.all_snippets') }}</span>
 					</a>
@@ -84,7 +84,7 @@
 			<div style="padding-bottom: 4px; vertical-align: middle;">
 				{{ phrase('agent.general.category') }}: <select name="category_id" class="category_id" id="%baseId%_editsnippet_category_select">
 					{% for category in snippet_cats %}
-						<option value="{{ category.id }}">{{ category.title }}</option>
+						<option value="{{ category.id }}" {% if loop.first == true %}selected="selected"{% endif %}>{{ category.title }}</option>
 					{% endfor %}
 				</select>
 

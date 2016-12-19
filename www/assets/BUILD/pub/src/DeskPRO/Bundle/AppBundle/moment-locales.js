@@ -1,0 +1,22 @@
+import moment from 'moment';
+
+require('moment/locale/ar.js');
+require('moment/locale/da.js');
+require('moment/locale/de.js');
+require('moment/locale/en-gb.js');
+require('moment/locale/es.js');
+require('moment/locale/fa.js');
+require('moment/locale/fi.js');
+require('moment/locale/fr.js');
+require('moment/locale/hu.js');
+require('moment/locale/it.js');
+require('moment/locale/ja.js');
+require('moment/locale/ko.js');
+require('moment/locale/nl.js');
+require('moment/locale/pl.js');
+require('moment/locale/pt.js');
+require('moment/locale/ro.js');
+require('moment/locale/ru.js');
+require('moment/locale/sk.js');
+require('moment/locale/sv.js');
+require('moment/locale/tr.js');

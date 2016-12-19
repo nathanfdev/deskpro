@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -113,9 +114,49 @@ class ApiToken extends DomainObject
         return $this->id.':'.$this->token;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson($person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScope()
+    {
+        return $this->scope;
+    }
+
+    /**
+     * @param string $scope
+     *
+     * @return $this
+     */
+    public function setScope($scope)
+    {
+        $this->setModelField('scope', $scope);
+
+        return $this;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -124,48 +165,50 @@ class ApiToken extends DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'api_token',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'token',
             'columnName' => 'token',
             'type'       => 'string',
             'length'     => 25,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'scope',
             'columnName' => 'scope',
             'type'       => 'string',
             'length'     => 50,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_expires',
             'columnName' => 'date_expires',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'person',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-            'joinColumns'  => array(array(
-                'name'                 => 'person_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => false,
-                'onDelete'             => 'cascade',
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                ],
+            ],
+        ]);
     }
 }

@@ -1,3 +1,0 @@
-id,subject,status,user,agent,date_created,custom "Text field",custom "Radio button field"
-144,How to submit a ticket,awaiting_agent,angry.customer@example.com,joe.smith@example.com,2013-03-10 17:16:18,some text 1,Choice 1
-145,Another Ticket,awaiting_user,angry.customer@example.com,joe.smith@example.com,2014-03-10 17:16:18,some text 2,Choice 2

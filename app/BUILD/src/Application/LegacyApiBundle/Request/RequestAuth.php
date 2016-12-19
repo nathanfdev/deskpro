@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,12 @@
  *
  * @category Api
  */
+
 namespace Application\LegacyApiBundle\Request;
 
-use Application\LegacyApiBundle\ApiUser;
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiKeyLog;
+use Application\LegacyApiBundle\ApiUser;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -83,9 +84,9 @@ class RequestAuth
             $this->api_user                = new ApiUser();
             $this->api_user->request_token = $this->getRequestToken();
 
-            #------------------------------
-            # Get API key or token
-            #------------------------------
+            //------------------------------
+            // Get API key or token
+            //------------------------------
 
             $this->api_user->api_key = $this->getApiKeyFromRequest();
             if (!$this->api_user->api_key) {
@@ -98,9 +99,9 @@ class RequestAuth
                 }
             }
 
-            #------------------------------
-            # Get API key or token
-            #------------------------------
+            //------------------------------
+            // Get API key or token
+            //------------------------------
 
             if ($this->api_user->api_key) {
                 $this->api_user->person = $this->api_user->api_key->person;
@@ -209,9 +210,6 @@ class RequestAuth
         return;
     }
 
-    /**
-     *
-     */
     protected function createApiLogEntry()
     {
         if (!$key = $this->api_user->api_key) {
@@ -220,15 +218,15 @@ class RequestAuth
 
         $log          = new ApiKeyLog();
         $log->key     = $key;
-        $log->request = array(
+        $log->request = [
             'path'    => $this->request->getPathInfo(),
             'method'  => $this->request->getMethod(),
             'payload' => $this->request->request->all(),
-        );
-        $log->response = array(
+        ];
+        $log->response = [
             'status'  => null,
             'content' => null, // parse json to array?
-        );
+        ];
 
         $this->em->persist($log);
         $this->em->flush($log);

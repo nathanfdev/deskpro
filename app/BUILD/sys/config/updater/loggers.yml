@@ -1,0 +1,48 @@
+monolog:
+  channels:
+    - updater.general
+    - updater.http
+
+  handlers:
+    logger.updater:
+      type: group
+      members: [logger.updater.stream, logger.updater.session]
+
+    logger.updater.session:
+      type: service
+      id: dp.updater.session_log_handler
+
+    logger.updater.stream:
+      level: debug
+      type: stream
+      path: '%kernel.logs_dir%/updater.log'
+      channels: [updater]
+      formatter: dp.updater.logger_line_formatter
+
+    logger.updater.general:
+      min_level: debug
+      type: filter
+      path: '%kernel.logs_dir%/updater.log'
+      handler: logger.updater
+      channels: [updater.general]
+
+    logger.updater.http:
+      min_level: info
+      type: filter
+      handler: logger.updater
+      channels: [updater.http]
+
+    logger.email_log_collector:
+      type: service
+      id: email.log_collector
+      channels: ['dp.email.out.mailer', 'dp.email.out.transport', 'dp.email.out.queue', 'dp.email.out.raw_transport']
+
+services:
+  dp.updater.session_log_handler:
+    class: DeskPRO\Bundle\UpdateBundle\Session\SessionLogHandler
+    arguments: ["@service_container"]
+
+  dp.updater.logger_line_formatter:
+    class: DeskPRO\Bundle\AppBundle\Logging\Formatter\CleanLineFormatter
+    arguments:
+      - "[%%datetime%%] <%%channel%%.%%level_name%%> %%message%%\n"

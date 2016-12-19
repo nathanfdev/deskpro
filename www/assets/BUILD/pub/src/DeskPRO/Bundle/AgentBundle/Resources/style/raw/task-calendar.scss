@@ -1,0 +1,63 @@
+.task-calendar {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  color: #999;
+
+  td {
+    border: 1px solid #ccc;
+    vertical-align: top;
+    width: 14.25%;
+    height: 100px;
+
+    &.weekend {
+      background-color: #eee;
+    }
+
+    .day-info {
+      display: block;
+    }
+
+    .additional {
+      color: #4681b2;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        padding: 0;
+        padding: 0;
+
+        a {
+          color: #fff;
+          background-color: #4681b2;
+          display: block;
+          padding: 2px 3px;
+          margin: 1px;
+          border-radius: 2px;
+          text-decoration: none;
+        }
+      }
+    }
+
+    &.non-month {
+      color: #ccc;
+
+      ul li a {
+        background-color: #999;
+      }
+    }
+  }
+}
+
+.task-calendar-navigation {
+  list-style-type: none;
+
+  li {
+    display: inline-block;
+    padding-right: 10px;
+  }
+}

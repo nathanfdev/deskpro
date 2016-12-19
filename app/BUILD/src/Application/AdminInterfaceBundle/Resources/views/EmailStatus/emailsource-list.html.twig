@@ -123,6 +123,7 @@
 						<th>Date</th>
 						<th>From</th>
 						<th>To</th>
+						<th>Cc</th>
 						<th>Account</th>
 						<th>Subject</th>
 						<th>Ticket</th>
@@ -136,6 +137,7 @@
 						<td style="white-space: nowrap" nowrap dp-date="result.date_created"></td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_from') }}</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_to') }}</td>
+						<td class="overflow-ellipsis">{{ ng_var('result.header_cc') }}</td>
 						<td class="overflow-ellipsis">
 							<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: result.email_account.id}') }}">
 								{{ ng_var('result.email_account.use_email_address') }}
@@ -191,13 +193,13 @@
 			<div style="text-align: center;" dp-show-spinning="loading_page"><i class="spinner-flat"></i></div>
 
 			<div class="dp-btn-pagination">
-				<button class="btn" ng-show="ListCtrl.page != 1" ng-click="ListCtrl.goPrevPage()">&lt; Prev</button>
+				<button class="btn" ng-show="ListCtrl.page > 1" ng-click="ListCtrl.goPrevPage()">&lt; Prev</button>
 				<select
 					ng-model="ListCtrl.page"
 					ui-select2
 					style="width: 130px;"
+					ng-options='page as ("Page " + page) for page in ListCtrl.page_nums'
 				>
-					<option ng-repeat="page in ListCtrl.page_nums" value="{{ ng_var('page') }}">Page {{ ng_var('page') }}</option>
 				</select>
 				<button class="btn" ng-show="ListCtrl.page < ListCtrl.num_pages" ng-click="ListCtrl.goNextPage()">Next &gt;</button>
 			</div>

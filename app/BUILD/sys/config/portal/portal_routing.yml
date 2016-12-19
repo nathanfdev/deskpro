@@ -1,0 +1,43 @@
+# This is the "main" file for the portal kernel. No other kernel imports this.
+# 1) It avoids recursion in the loader, and 2) Let's us add specific route config for this kernel only
+api_routes:
+    resource: "@ApiBundle/Resources/config/routing_api.yml"
+    prefix: /api/v2
+
+system_routes:
+    resource: "@SystemBundle/Resources/config/routing.yml"
+    prefix: /sys
+
+portal_routes:
+    resource: "@PortalBundle/Resources/config/routing_portal.yml"
+
+agent_routes:
+    resource: "@AgentBundle/Resources/config/agent-routing.php"
+
+dp_routes:
+    resource: "@DeskPRO/Resources/config/dp-routing.php"
+
+dpkernel_routes:
+    resource: "@DeskPRO/Resources/config/dp-routing.php"
+
+# any URL that isn't caught from the above config AND ends in "/"
+# we do this to redirect to the same URL without the trailing slash
+# For example, normally visiting /kb/ would be a 404. With this, it
+# redirects to /kb
+remove_trailing_slash:
+    path: /{url}
+    defaults: { _controller: PortalBundle:Portal:removeTrailingSlash }
+    requirements:
+        url: .*/$
+    methods: [GET]
+
+# this is the last registered route, so its the last one checked
+# it matches EVERYTHING, and the controller just throws a NotFoundHttpException
+# why? so that our 404 pages have access to the security token...
+# without this, the RouterListener throws an exception before FirewallListener
+# runs, and we lose all context of the user
+not_found_catch_all:
+    path:  /{path}
+    defaults: { _controller: PortalBundle:Error:notFound, path: '' }
+    requirements:
+        path: .*

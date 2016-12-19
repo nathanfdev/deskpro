@@ -1,122 +1,99 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Settings.save()">
-	<section class="dp-paneblock dp-listpane">
-	<header>
-		<h3>Portal Settings</h3>
-	</header>
+<div class="content-wrapper">
+	<div class="content setup">
+		<h1><i class="fa fa-cog"></i> Portal Setup</h1>
 
-	{##################################################################################################}
+		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Settings.save()">
 
-	<article class="form-horizontal dp-form">
-		<div class="panel panel-innertable">
-			<div class="panel-heading">
-				<h3>
-					<span>Published Content Settings</span>
-				</h3>
-			</div>
-			<div class="form-group">
-				<div class="col-lg-12">
-					<div class="inner-group" dp-error-class="form_props.show_ratings">
-						<label>
-							<input type="checkbox" ng-model="show_ratings_opt" />
-							<h4>Show ratings publicly</h4>
-						</label>
-						<div ng-show="show_ratings_opt">
-							Show ratings publicly in the portal after there have been
-                            <input type="number" name="show_ratings" class="form-control" ng-model="settings.show_ratings"
-                                   style="width: 80px;" required min="0" /> votes.
+			{##########################################################################################################}
+			{# APPS #}
+			{##########################################################################################################}
+
+			<div class="content-section">
+				<div class="apps-list">
+
+					<div class="col-half">
+						<div ng-class="{'widget-preview': Ctrl.settings.apps_kb, 'widget-preview-disabled': !Ctrl.settings.apps_kb}">
+							<div class="widget-header">
+								<button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_kb" />
+								<span class="title">Knowledgebase</span>
+								<a class="control" href="{{ ng_href('portal.kb_settings') }}">Manage <i class="fa fa-cog"></i></a>
+							</div>
+							<div class="widget-image">
+								<img src="{{ asset('app/Admin/Resources/img/widget-preview-kb.png') }}" alt="Widget Preview: Knowledgebase">
+							</div>
+
+							<div class="form-text">
+								<p>A news app lorel ipsum dolor sit amet ipsum. This is the text info for an app lorel ipsum dolor. A news app lorel ipsum dolor sit amet ipsum.</p>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="col-half omega">
+						<div ng-class="{'widget-preview': Ctrl.settings.apps_downloads, 'widget-preview-disabled': !Ctrl.settings.apps_downloads}">
+							<div class="widget-header">
+								<button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_downloads" />
+								<span class="title">Downloads</span>
+								<a class="control" href="{{ ng_href('portal.downloads_settings') }}">Manage  <i class="fa fa-cog"></i></a>
+							</div>
+							<div class="widget-image">
+								<img src="{{ asset('app/Admin/Resources/img/widget-preview-downloads.png') }}" alt="Widget Preview: Knowledgebase">
+							</div>
+
+							<div class="form-text">
+								<p>A news app lorel ipsum dolor sit amet ipsum. This is the text info for an app lorel ipsum dolor. A news app lorel ipsum dolor sit amet ipsum.</p>
+							</div>
 						</div>
 					</div>
-					<div class="inner-group">
-						<label>
-							<input type="checkbox" ng-model="settings.publish_comments" />
-							<h4>Enable comments on published content</h4>
-						</label>
-						<span class="help-block">
-							Enable comments on articles, news and downloads. (This setting does not affect Feedback; discussons on feedback is always enabled).
-						</span>
+
+
+
+					<div class="col-half">
+						<div ng-class="{'widget-preview': Ctrl.settings.apps_news, 'widget-preview-disabled': !Ctrl.settings.apps_news}">
+							<div class="widget-header">
+								<button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_news" />
+								<span class="title">News</span>
+								<a class="control" href="{{ ng_href('portal.news_settings') }}">Manage  <i class="fa fa-cog"></i></a>
+							</div>
+							<div class="widget-image">
+								<img src="{{ asset('app/Admin/Resources/img/widget-preview-news.png') }}" alt="Widget Preview: Knowledgebase">
+							</div>
+
+							<div class="form-text">
+								<p>A news app lorel ipsum dolor sit amet ipsum. This is the text info for an app lorel ipsum dolor. A news app lorel ipsum dolor sit amet ipsum.</p>
+							</div>
+						</div>
+
 					</div>
-				</div>
-			</div>
-		</div>
-	</article>
 
-	{##################################################################################################}
+					<div class="col-half omega">
+						<div ng-class="{'widget-preview': Ctrl.settings.apps_feedback, 'widget-preview-disabled': !Ctrl.settings.apps_feedback}">
+							<div class="widget-header">
+								<button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_feedback" />
+								<span class="title">Feedback</span>
+								<a class="control" href="{{ ng_href('portal.feedback_settings') }}">Manage  <i class="fa fa-cog"></i></a>
+							</div>
+							<div class="widget-image">
+								<img src="{{ asset('app/Admin/Resources/img/widget-preview-feedback.png') }}" alt="Widget Preview: Knowledgebase">
+							</div>
 
-	<article class="form-horizontal dp-form">
-		<div class="panel panel-innertable">
-			<div class="panel-heading">
-				<h3>
-					<span>CAPTCHA Settings</span>
-				</h3>
-			</div>
-				<div class="panel-help inhelp-body">
-					<p>
-						A CAPTCHA is a test to make sure that the user submitting content to your helpdesk is a human and not an automated program posting spam.
-					</p>
-					<p> Note that these are separate from the <a href="/admin/#/setup/settings">Rate-limiting CAPTCHA</a> settings.
-					</p>
-				</div>
-			<div class="form-group">
-				<div class="inner-group">
-					<label>
-						<input type="checkbox" ng-model="settings.register_captcha" />
-						<h4>Enable CAPTCHA on the registration form</h4>
-					</label>
-				</div>
-				<div class="inner-group">
-					<label>
-						<input type="checkbox" ng-model="settings.publish_captcha" />
-						<h4>Enable CAPTCHA on new feedback and new comment forms</h4>
-					</label>
-				</div>
-				<div class="inner-group" ng-show="settings.publish_captcha">
-					<label>
-						<input type="checkbox" ng-model="settings.always_show_captcha" />
-						<h4>Always show a CAPTCHA even for registered users who are logged in.</h4>
-					</label>
-				</div>
-			</div>
-		</div>
-	</article>
+							<div class="form-text">
+								<p>A news app lorel ipsum dolor sit amet ipsum. This is the text info for an app lorel ipsum dolor. A news app lorel ipsum dolor sit amet ipsum.</p>
+							</div>
+						</div>
+					</div>
 
-	{##################################################################################################}
 
-	<article class="form-horizontal dp-form">
-		<div class="panel panel-innertable">
-			<div class="panel-heading">
-				<h3>
-					<span>User Notifications</span>
-				</h3>
-			</div>
-			<div class="form-group">
-				<div class="inner-group">
-					<label>
-						<input type="checkbox" ng-model="settings.feedback_notify_comments" />
-						<h4>Notify users when feedback is updated</h4>
-					</label>
-					<span class="help-block">
-						When enabled, any user who participated in a feedback discussion will be notified when it is updated (new replies or status changes).
-					</span>
 				</div>
-				<div class="inner-group">
-					<label>
-						<input type="checkbox" ng-model="settings.kb_subscriptions" />
-						<h4>Enable knowledgebase subscriptions</h4>
-					</label>
-					<span class="help-block">
-						When enabled, users can subscribe to knowledgebase categories or specific articles so they can be notified of updates.
-					</span>
-				</div>
-			</div>
-		</div>
-	</article>
 
-	{##################################################################################################}
+			</div><!-- End .content-section -->
 
-	<footer>
-		<div class="dp-content">
+
+
+		<div class="content-section">
+			<h2 class="with-divider form-header"><span>Save Changes</span></h2>
 			<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 				<div dp-hide-spinning="saving">
 					<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
@@ -127,8 +104,8 @@
 				</div>
 			</div>
 		</div>
-	</footer>
+		</form>
+		<div dp-register-message="saved_settings">Settings saved successfully.</div>
 	</section>
-	</form>
-	<div dp-register-message="saved_settings">Settings saved successfully.</div>
+</div><!-- End content wrapper -->
 {% endblock %}

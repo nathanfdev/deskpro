@@ -1,0 +1,63 @@
+import 'babel-polyfill';
+import React from 'react';
+import { Provider } from 'react-redux';
+import ReactDOM from 'react-dom';
+import { AppContainer } from './Modules/Application/Components/AppContainer';
+import { store } from './Services/store';
+import { bootstrapWidget } from './Modules/Application/Actions/bootstrapActions';
+import { setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { widgetApi } from './Services/DpApi';
+import { repositoriesConfig } from './Modules/Application/DAL/config';
+import $ from 'jquery';
+import './Services/WindowApi';
+
+export class WidgetApp {
+
+  run() {
+    $(document).on('ready', this.start);
+  }
+
+  start() {
+    window.DP_DEV_MODE = __DEV__;
+
+    // - NOTICE: The widget_loader creates an iframe on the host page
+    // and includes this app into the frame.
+    // - So here we're getting a reference to the parent document,
+    // because below we will render the root react element into it instead.
+
+    const pageDoc = parent && parent.document;
+    if (!pageDoc) {
+      console.error('No parent document');
+      return;
+    }
+
+    // - NOTICE: We are rendering the react root element onto
+    // the parent page.
+    // - This way, we can render <Frame>'s and they are added
+    // to the parent DOM and can be positioned properly.
+    // - From a react app point of view, it doesn't know that
+    // the DOM is on a parent frame and the JS/state is on this page. Cool!
+
+    const $container = $('<div>', {
+      id:  'dp_widget_container',
+      css: {
+        display: 'block',
+        width:   '1px',
+        height:  '1px'
+      }
+    });
+
+    setApi(widgetApi);
+    loadRepositoriesConfig(repositoriesConfig);
+    store.dispatch(bootstrapWidget());
+
+    const content = (
+      <Provider store={store}>
+        <AppContainer />
+      </Provider>
+    );
+
+    $container.appendTo(pageDoc.body);
+    ReactDOM.render(content, $container.get(0));
+  }
+}

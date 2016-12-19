@@ -1,0 +1,24 @@
+<dp-help-page>
+	{% block listpane_help %}
+		<header>
+			<h1>The role of the Ticket Status field is determining whom needs to work on a ticket next.</h1>
+			<p>
+				DeskPRO is based on the back and forth communication between people with questions (Users) and people with answers to those questions (Agents). The status field is used to determine which type of person needs to respond to the ticket next.
+			</p>
+		</header>
+		<article>
+			<article>
+				<p>TODO</p>
+			</article>
+		</article>
+	{% endblock %}
+</dp-help-page>
+<div class="dp-layout-list">
+	<div class="dp-layout-list-listpane {{ list_class }}" ng-show="state_loading || $parent.state_loading"><div class="dp-layout-loading"><i></i></div></div>
+	<div class="dp-layout-list-editpane {{ list_class }}" ng-show="state_loading || $parent.state_loading"><div class="dp-layout-loading"><i></i></div></div>
+
+	<div class="ng-hide dp-layout-list-listpane {{ list_class }}" ng-hide="state_loading || $parent.state_loading">
+		<div class="dp-pane {{ list_class }}">{% block listpane_content %}{% endblock %}</div>
+	</div>
+	<div class="ng-hide dp-layout-list-editpane {{ list_class }}" ng-hide="state_loading || $parent.state_loading" ui-view="rightpane"></div>
+</div>

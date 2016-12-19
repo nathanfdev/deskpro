@@ -1,0 +1,147 @@
+.widget-editor {
+  $inline-label-width: 250px;
+  padding: 20px;
+
+  .right {
+    float: right;
+  }
+
+  h3 .icon {
+    font-size: 16px;
+    color: #b3b3b3;
+  }
+
+  .inline-block-label {
+    width: $inline-label-width;
+  }
+
+  .inline-radio-button {
+    width: 100px;
+  }
+
+  .add-language-button {
+    margin-left: $inline-label-width;
+  }
+
+  .ui.button.add-custom-field {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .ui.field.proactive-style {
+    width: 90%;
+    margin: 0 5%;
+  }
+
+  .errors {
+    color: red;
+    list-style-type: none;
+    padding-left: 0;
+
+    li {
+      padding-left: 0;
+    }
+  }
+
+  .sp-replacer {
+    border: none;
+    background: #fcfcfc;
+  }
+
+  .dp-item-list .drag-handle {
+    position: inherit;
+    float: right;
+    margin-right: 20px;
+    top: 0;
+  }
+
+  .ui.segments {
+    border-color: #47bf61;
+
+    .embed-help-title {
+
+      cursor: pointer;
+
+      .title-content {
+        display: inline-block;
+      }
+
+      h3 {
+        color: #42b257;
+      }
+
+      .circular-plus,
+      .big-arrow {
+        height: 40px;
+        width: 40px;
+        vertical-align: baseline;
+      }
+
+      .circular-plus {
+        margin-right: 10px;
+      }
+
+      .big-arrow {
+        float: right;
+      }
+
+      &.open {
+        .big-arrow {
+          transform: rotate(0.5turn);
+        }
+      }
+    }
+  }
+
+  .ui.attached.menu {
+    margin-top: 30px;
+  }
+
+  .cms-install h4 {
+    margin-bottom: 15px;
+  }
+
+  .widget-editor-live-demo-container {
+    margin-bottom: 10px;
+    z-index: 1000;
+    height: 520px;
+    background: url('../../../../images/admin/chat-widget/screenshot.png') bottom right no-repeat;
+    border: 1px solid #000000;
+
+    @media screen and (max-width: 1280px) {
+      background: url('../../../../images/admin/chat-widget/screenshot_small.png') bottom right no-repeat;
+    }
+
+    .widget-editor-live-demo-loader {
+      width: inherit;
+      height: inherit;
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      i {
+        display: block;
+        background: url('../../../../images/spinners/loading-big-circle.gif') no-repeat 50% 50%;
+        width: inherit;
+        height: inherit;
+      }
+    }
+
+    iframe {
+      width: 100%;
+      height: inherit;
+      border: 0;
+      top: 0;
+      left: 0;
+    }
+  }
+
+  .pending_changes {
+    margin-top: 10px;
+    color: #8c9295;
+    font-size: 12px;
+  }
+}
+.sp-input {
+  background: #fff;
+}

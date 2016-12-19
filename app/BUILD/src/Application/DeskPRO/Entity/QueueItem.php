@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -143,7 +144,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var string
      */
-    protected $data = array();
+    protected $data = [];
 
     public function __construct()
     {
@@ -158,32 +159,118 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'queue_items',
-            'indexes' => array(
-                'priority_idx' => array('columns' => array('priority')),
-            ),
-        ));
+            'indexes' => [
+                'priority_idx' => ['columns' => ['priority']],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'groupname', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'groupname'));
-        $metadata->mapField(array('fieldName' => 'priority', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'priority'));
-        $metadata->mapField(array('fieldName' => 'delay_until', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'delay_until'));
-        $metadata->mapField(array('fieldName' => 'ttr', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ttr'));
-        $metadata->mapField(array('fieldName' => 'is_ready', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_ready'));
-        $metadata->mapField(array('fieldName' => 'is_dataonly', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_dataonly'));
-        $metadata->mapField(array('fieldName' => 'is_ignored', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_ignored'));
-        $metadata->mapField(array('fieldName' => 'reserved_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'reserved_at'));
-        $metadata->mapField(array('fieldName' => 'timeout_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'timeout_at'));
-        $metadata->mapField(array('fieldName' => 'created_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_at'));
-        $metadata->mapField(array('fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'data'));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'groupname',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'groupname',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'priority',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'priority',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'delay_until',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'delay_until',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'ttr',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'ttr',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_ready',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_ready',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_dataonly',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_dataonly',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_ignored',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_ignored',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'reserved_at',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'reserved_at',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'timeout_at',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'timeout_at',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'created_at',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'created_at',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'data',
+            'type'       => 'array',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'data',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,51 +29,52 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Routing\Matcher;
 
 use Orb\Util\Strings;
 
 class UrlMatcher extends \Symfony\Component\Routing\Matcher\UrlMatcher
 {
-    /** @var bool|null  */
+    /** @var bool|null */
     protected $got_locale = null;
 
-    public function match($pathinfo)
+    public function match($pathInfo)
     {
-        #------------------------------
-        # We check for locale prefix in user section
-        #------------------------------
+        //------------------------------
+        // We check for locale prefix in user section
+        //------------------------------
 
         $this->got_locale = null;
 
-        $nocheck_sections = array(
+        $nocheck_sections = [
             '/agent',
             '/admin',
             '/dev',
             '/api',
-        );
+        ];
 
         $check_for_locale = true;
         foreach ($nocheck_sections as $s) {
-            if (strpos($pathinfo, $s) === 0) {
+            if (strpos($pathInfo, $s) === 0) {
                 $check_for_locale = false;
             }
         }
 
         if ($check_for_locale) {
-            $locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $pathinfo, 1);
+            $locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $pathInfo, 1);
             if ($locale) {
-                $locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z]{2}/#', $pathinfo, 1);
+                $locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z]{2}/#', $pathInfo, 1);
             }
 
             if ($locale) {
                 $this->got_locale = $locale;
 
                 // Remove it from the
-                $pathinfo = preg_replace('#^/(.*?)/#', '/', $pathinfo);
+                $pathInfo = preg_replace('#^/(.*?)/#', '/', $pathInfo);
             }
         }
 
-        return parent::match($pathinfo);
+        return parent::match($pathInfo);
     }
 }

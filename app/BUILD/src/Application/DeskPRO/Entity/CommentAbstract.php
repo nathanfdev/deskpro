@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,90 +31,163 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
+use DeskPRO\Component\Util\RegexUtils;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Base comments.
+ *
+ * @JMS\ExclusionPolicy("none")
  */
 abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
     const OBJ_PROP = '__abstract__';
 
-    const STATUS_VISIBLE         = 'visible';
-    const STATUS_VALIDATING      = 'validating';
-    const STATUS_USER_VALIDATING = 'user_validating';
-    const STATUS_TEMP            = 'temp';
-    const STATUS_DELETED         = 'deleted';
-    const STATUS_AGENT           = 'agent';
+    /**
+     * Publicly visible.
+     */
+    const STATUS_VISIBLE = 'visible';
+
+    /**
+     * Not public, but visible to agents.
+     */
+    const STATUS_HIDDEN = 'hidden';
+
+    /**
+     * Soft-deleted. Will be cleaned up eventually.
+     */
+    const STATUS_DELETED = 'deleted';
+
+    /**
+     * TODO what is?
+     */
+    const STATUS_AGENT = 'agent';
 
     /**
      * The unique ID.
+     *
+     * @JMS\Type("integer")
+     * @JMS\Groups({"list", "details"})
      *
      * @var int
      */
     protected $id = null;
 
     /**
+     * The id of person that wrote this comment.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     * @JMS\Groups({"list", "details"})
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Visitor
-     */
-    protected $visitor = null;
-
-    /**
+     * IP address with which comment was written.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups("details")
+     *
      * @var string
      */
     protected $ip_address = '';
 
     /**
+     * Visitor`s unique id.
+     *
+     * @JMS\Exclude()
+     * @JMS\Groups("details")
+     *
+     * @var string
+     */
+    protected $visitor_id = '';
+
+    /**
+     * Person`s email.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups("details")
+     *
      * @var string
      */
     protected $email = null;
 
     /**
+     * Person`s name.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups("details")
+     *
      * @var string
      */
     protected $name = null;
 
     /**
+     *  Website where comment was written.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups("details")
+     *
      * @var string
      */
     protected $website = null;
 
     /**
+     * Comment`s content itself.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"list", "details"})
+     *
      * @var string
      */
     protected $content;
 
     /**
+     * Comment`s status.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"list", "details"})
+     *
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     protected $status = 'visible';
 
     /**
-     * @var string
-     */
-    protected $validating = null;
-
-    /**
-     * Has this comment been reviewed? Either validated, or
-     * if it was published, seen to.
+     * Has this comment been reviewed by an agent?
+     *
+     * @JMS\Type("boolean")
+     * @JMS\Groups({"list", "details"})
      *
      * @var bool
      */
     protected $is_reviewed = false;
 
     /**
+     * When this comment was created.
+     *
+     * @JMS\Type("DateTime")
+     * @JMS\Groups({"list", "details"})
+     *
      * @var \DateTime
      */
     protected $date_created;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this['date_created'] = new \DateTime();
+    }
 
     /**
      * @return int
@@ -125,10 +198,102 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail($email)
+    {
+        $this->setModelField('email', $email);
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->setModelField('name', $name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebsite()
+    {
+        return $this->website;
+    }
+
+    /**
+     * @param string $website
+     */
+    public function setWebsite($website)
+    {
+        $this->setModelField('website', $website);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReviewed()
+    {
+        return $this->is_reviewed;
+    }
+
+    /**
+     * @param bool $is_reviewed
+     *
+     * @return $this
+     */
+    public function setIsReviewed($is_reviewed)
+    {
+        $this->setModelField('is_reviewed', $is_reviewed);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
      * @static
      *
      * @param Person $person
-     * @param bool   $use_request Use the current request to set visitor (and thus ip etc)
+     * @param bool   $use_request not used anymore?
      *
      * @return \Application\DeskPRO\Entity\CommentAbstract
      */
@@ -137,19 +302,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $comment         = new static();
         $comment->person = $person;
 
-        if ($use_request) {
-            $comment->visitor = App::getSession()->getVisitor();
-        }
-
         return $comment;
-    }
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        $this['date_created'] = new \DateTime();
     }
 
     /**
@@ -210,44 +363,6 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param Person $person
-     *
-     * @return $this
-     */
-    public function setPerson(Person $person = null)
-    {
-        $this->setModelField('person', $person);
-
-        return $this;
-    }
-
-    /**
-     * Set the visitor of the person who made this comment. If the name
-     * and email arent set they will be set to values of the visitor.
-     *
-     * @param Visitor $visitor
-     *
-     * @return string
-     */
-    public function setVisitor(Visitor $visitor = null)
-    {
-        $this->setModelField('visitor', $visitor);
-
-        if ($visitor === null) {
-            return;
-        }
-
-        $this['ip_address'] = $visitor['ip_address'];
-
-        if (!$this->name and $visitor['name']) {
-            $this['name'] = $visitor['name'];
-        }
-        if (!$this->email and $visitor['email']) {
-            $this['email'] = $visitor['email'];
-        }
-    }
-
-    /**
      * Set the Status.
      *
      * @param $new_status
@@ -258,11 +373,23 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         // any time after its created and the status is set
         // to visible means someone has reviewed its
-        if ($this->id && $new_status == 'visible') {
+        if ($this->id && $new_status == self::STATUS_VISIBLE) {
             $this->setModelField('is_reviewed', true);
         }
 
         $this->setModelField('status', $new_status);
+
+        return $this;
+    }
+
+    /**
+     * @param Person|null $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->setModelField('person', $person);
 
         return $this;
     }
@@ -295,6 +422,11 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $this->content;
     }
 
+    public function setContentReal($content)
+    {
+        $this->setModelField('content', $content);
+    }
+
     /**
      * @return string
      */
@@ -315,24 +447,24 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
             return '';
         }
         $content = Strings::standardEol($this->content);
-        $content = preg_replace("#<br\s*/?><p>#", '<p>', $content);
-        $content = preg_replace("#<p></p><br\s*/?>#", '<p>', $content);
-        $content = preg_replace("#</p><br\s*/?>#", '</p>', $content);
-        $content = preg_replace("#<br\s*/?></p>#", '</p>', $content);
-        $content = preg_replace("#<br\s*/?>?#", "\n", $content);
-        $content = preg_replace("#<p>\n?#", "\n", $content);
-        $content = preg_replace("#\n?</p>#", "\n", $content);
+        $content = RegexUtils::safePregReplace("#<br\s*/?><p>#", '<p>', $content);
+        $content = RegexUtils::safePregReplace("#<p></p><br\s*/?>#", '<p>', $content);
+        $content = RegexUtils::safePregReplace("#</p><br\s*/?>#", '</p>', $content);
+        $content = RegexUtils::safePregReplace("#<br\s*/?></p>#", '</p>', $content);
+        $content = RegexUtils::safePregReplace("#<br\s*/?>?#", "\n", $content);
+        $content = RegexUtils::safePregReplace("#<p>\n?#", "\n", $content);
+        $content = RegexUtils::safePregReplace("#\n?</p>#", "\n", $content);
         $content = html_entity_decode(strip_tags($content), \ENT_QUOTES, 'UTF-8');
         $content = trim($content);
 
         $lines_raw = explode("\n", $content);
-        $lines     = array();
+        $lines     = [];
         foreach ($lines_raw as $l) {
             $lines[] = trim($l);
         }
 
         $content = implode("\n", $lines);
-        $content = preg_replace("#\n{3,}#", "\n\n", $content);
+        $content = RegexUtils::safePregReplace("#\n{3,}#", "\n\n", $content);
 
         return $content;
     }
@@ -407,5 +539,50 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('date_created', $date_created);
 
         return $this;
+    }
+
+    /**
+     * @return Person|null
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVisitorId()
+    {
+        return $this->visitor_id;
+    }
+
+    /**
+     * @param string $visitor_id
+     */
+    public function setVisitorId($visitor_id)
+    {
+        $this->setModelField('visitor_id', $visitor_id);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpAddress()
+    {
+        return $this->ip_address;
+    }
+
+    /**
+     * @param string $ip_address
+     */
+    public function setIpAddress($ip_address)
+    {
+        $this->setModelField('ip_address', $ip_address);
+    }
+
+    public function isVisible()
+    {
+        return $this->getStatus() == self::STATUS_VISIBLE;
     }
 }

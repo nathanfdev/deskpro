@@ -1,0 +1,26 @@
+services:
+
+  person_manipulator:
+    class: DeskPRO\Bundle\PortalBundle\Person\PersonManipulator
+    arguments: ["@router", "@security.token_storage"]
+
+  pagerfanta.view.deskpro:
+    class: DeskPRO\Bundle\PortalBundle\View\Pagerfanta\DeskproView
+    public: false
+    tags:
+      - { name: pagerfanta.view, alias: deskpro }
+
+  portal_search_serializer:
+    class: DeskPRO\Bundle\PortalBundle\Search\SimplePortalEntitySerializer
+    arguments: ["@object_router", "@icon_factory"]
+
+  tickets.new_ticket:
+    class: DeskPRO\Bundle\PortalBundle\Ticket\NewTicket
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_manager"
+      - "@language_manager"
+      - "@person_factory"
+      - "@anti_abuse"
+      - "@router"
+      - "@brand_stack"

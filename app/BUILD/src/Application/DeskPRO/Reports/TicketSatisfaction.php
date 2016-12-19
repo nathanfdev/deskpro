@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
@@ -38,7 +39,7 @@ use Orb\Util\Dates;
 class TicketSatisfaction
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 
@@ -58,7 +59,7 @@ class TicketSatisfaction
          * @var \Application\DeskPRO\EntityRepository\TicketFeedback $repository
          */
 
-        $vars       = array();
+        $vars       = [];
         $repository = $this->em->getRepository('DeskPRO:TicketFeedback');
         $feedback   = $repository->getFeedbackForFeed($page - 1);
         $count      = $repository->getCountForPaging();
@@ -102,15 +103,15 @@ class TicketSatisfaction
                 LEFT JOIN tickets_messages ON (tickets_messages.id = ticket_feedback.message_id)
                 WHERE ticket_feedback.date_created BETWEEN ? AND ?
             ',
-            array($date_start, $date_end)
+            [$date_start, $date_end]
         );
 
-        $vars = array();
+        $vars = [];
 
         $all_agents    = $this->em->getRepository('DeskPRO:Person')->getAgents();
         $first_created = $this->em->getRepository('DeskPRO:TicketFeedback')->getFirstCreatedDate();
 
-        $days          = array();
+        $days          = [];
         $days_in_month = Dates::daysInMonth($month, $year);
         $day_date      = clone $dt;
 
@@ -121,11 +122,11 @@ class TicketSatisfaction
         }
 
         foreach ($all_agents as $agent) {
-            $totals[$agent['id']] = array(-1 => 0, 1 => 0, 0 => 0);
+            $totals[$agent['id']] = [-1 => 0, 1 => 0, 0 => 0];
         }
 
-        $summary = array();
-        $totals  = array();
+        $summary = [];
+        $totals  = [];
 
         foreach ($all_feedback as $feedback) {
             $d        = date('j', $feedback['created_at']);
@@ -133,10 +134,10 @@ class TicketSatisfaction
             $rating   = $feedback['rating'];
 
             if (!isset($summary[$d])) {
-                $summary[$d] = array();
+                $summary[$d] = [];
             }
             if (!isset($summary[$d][$agent_id])) {
-                $summary[$d][$agent_id] = array();
+                $summary[$d][$agent_id] = [];
             }
 
             if (!isset($summary[$d][$agent_id][$rating])) {
@@ -146,7 +147,7 @@ class TicketSatisfaction
             ++$summary[$d][$agent_id][$rating];
 
             if (!isset($totals[$agent_id])) {
-                $totals[$agent_id] = array();
+                $totals[$agent_id] = [];
             }
 
             if (!isset($totals[$agent_id][$rating])) {

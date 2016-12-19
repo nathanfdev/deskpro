@@ -1,0 +1,65 @@
+{
+	"package_name": "deskpro_us_google_plus",
+	"is_native": true,
+	"title": "Google+ Sign-In",
+	"description": "Allows users/agents to log in using Google accounts.",
+	"tags": ["usersources"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": false,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enable User Source",
+			"description": "Enable this usersource?",
+			"native_only": true
+		},
+		{
+			"name": "client_id",
+			"type": "text",
+			"label": "Client ID",
+			"description": "You can find or create this in your Google developer console (https://console.developers.google.com/). Once there, follow: Google APIs -> Google+ APIs -> Enable.",
+			"native_only": true
+		},
+		{
+			"name": "client_secret",
+			"type": "text",
+			"label": "Client Secret",
+			"description": "You can find or create this in your Google developer console (https://console.developers.google.com/). Once there, follow: Google APIs -> Google+ APIs -> Enable.",
+			"native_only": true
+		},
+		{
+			"name": "google_apps_domain",
+			"type": "text",
+			"label": "Google Apps Domain",
+			"description": "Optionally enter your Google Apps domain (e.g. example.com - no www. or http://) to allow only users from within your organisation to log in. When enabled, normal Google users (e.g. example@gmail.com) will not be allowed.",
+			"native_only": true
+		},
+		{
+			"name": "auto_agent",
+			"type": "checkbox",
+			"label": "Auto Agent",
+			"checkbox_label": "Automatically create agents if they do not already exist",
+			"usersource_display": "agent",
+			"default_value": true
+		},
+		{
+			"name": "actions",
+			"type": "array"
+		},
+		{
+		  "name": "raw_info_filter",
+		  "type": "text",
+		  "label": "Filter",
+		  "description": "You can filter based on info provided by the usersource. <a href='https://support.deskpro.com/kb/articles/477' target='_blank'>Learn about this feature</a>",
+		  "is_required": false
+		}
+	]
+}

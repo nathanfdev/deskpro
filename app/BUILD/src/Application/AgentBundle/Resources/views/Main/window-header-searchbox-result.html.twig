@@ -1,6 +1,6 @@
-{#########################################################################}
+{######################################################################## #}
 {# Tickets #}
-{#########################################################################}
+{######################################################################## #}
 
 <% if (group.type == 'ticket') { var ticket = result; var ticket_display = ticket; %>
 	<article class="row-item no-check" route-notabreload="1" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '<%- ticket.id %>'})|raw }}">
@@ -38,12 +38,6 @@
 					<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'spam') { %>
 						<label>{{ phrase('agent.tickets.status_hidden_spam') }}</label>
 					<% } %>
-					<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'temp') { %>
-						<label>{{ phrase('agent.tickets.status_hidden_temp') }}</label>
-					<% } %>
-					<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'validating') { %>
-						<label>{{ phrase('agent.tickets.status_hidden_validating') }}</label>
-					<% } %>
 
 					<% if (ticket_display.status == 'awaiting_agent') { %>
 						<i class="ticket-urgency"><%= ticket_display.urgency %></i>
@@ -69,9 +63,9 @@
 	</article>
 <% } %>
 
-{#########################################################################}
+{######################################################################## #}
 {# People #}
-{#########################################################################}
+{######################################################################## #}
 
 <% if (group.type == 'person') { var person = result; %>
 <article class="row-item single-row" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}">
@@ -79,12 +73,15 @@
 		<a class="name click-through" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
 			<span class="with-icon" style="background-image: url('<%- person.picture_url_16 %>');"><%- person.display_name %></span></a>
 		<span class="email">&lt;<%- (person.primary_email || {}).email %>&gt;</span>
-		<div class="bound-fade">
+		<div class="bound-fade" style="width: auto;">
 			<% if (person.tickets_count > 0) { %>
-				<span class="sub-items-link" ng-click="loadPersonTickets(result); $event.stopPropagation()">
+                <span class="sub-items-link" ng-click="loadPersonTickets(result); $event.stopPropagation()">
 					<%- person.tickets_count + ' Ticket' + (1 === person.tickets_count ? '' : 's') %>
 				</span>
 			<% } %>
+            <span class="sub-items-link" style="margin-right: 5px;" data-route="page:{{ path('agent_ticket_new', {person_id: '0000'})|replace({'0000': '<%= person.id %>'})|raw }}">
+                + Ticket
+            </span>
 		</div>
 	</div>
 </article>
@@ -129,28 +126,65 @@
 </div>
 <% } %>
 
-{#########################################################################}
+{######################################################################## #}
 {# Organization #}
-{#########################################################################}
+{######################################################################## #}
 
 <% if (group.type == 'organization') { var org = result; %>
-<article class="row-item single-row" route-notabreload="1" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%= org.id %>'})|raw }}">
-	<div class="top-row">
-		<div class="top-row-left">
-			<h3>
-				<span class="obj-id">#<%- org.id %></span>
-				<a class="subject click-through">
-					<%- org.name %>
-				</a>
-			</h3>
-		</div>
-	</div>
+<article class="row-item single-row" route-notabreload="1" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%- org.id %>'})|raw }}">
+    <div class="userinfo">
+        <span class="obj-id">#<%- org.id %></span>
+        <a class="subject click-through">
+            <%- org.name %>
+        </a>
+        <% if (org.members > 0) { %>
+        <div class="bound-fade">
+            <span class="sub-items-link" ng-click="loadOrgMembers(result); $event.stopPropagation()">
+                <%- org.members + ' ' + (1 === org.members ? 'Member' : 'Members') %>
+            </span>
+        </div>
+        <% } %>
+    </div>
 </article>
+<div ng-if="expandedOrg && result === expandedOrg && expandedOrg.members_data && expandedOrg.members_data.length">
+    <article ng-repeat="person in result.members_data" class="row-item single-row sub-item" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '{{ person.id }}'})|raw }}">
+        <div class="top-row">
+            <div class="top-row-left" style="width: auto;">
+                <h3>
+                    <a class="name click-through">
+                        <span class="with-icon" style="background-image: url('{{ ng_var('person.picture_url_16') }}');">
+                            {{ ng_var('person.display_name') }}
+                        </span>
+                    </a>
+                    <span class="email">
+                        &lt;{{ ng_var('(person.primary_email || {}).email') }}&gt;
+                    </span>
+                </h3>
+				<span class="sub-items-link" style="right: 5px; top: -17px;"
+					  data-route="page:{{ path('agent_ticket_new', {person_id: '0000'})|replace({'0000': '{{ person.id }}'})|raw }}"
+				>
+					+ Ticket
+				</span>
+            </div>
+        </div>
+    </article>
+    <article ng-if="org.members_data && org.members > 15" class="row-item single-row sub-item" ng-click="openAllMembers(result); $event.stopPropagation()">
+        <div class="top-row">
+            <div class="top-row-left">
+                <h3>
+                    <a class="subject click-through">
+                        View all <%- org.members %> members
+                    </a>
+                </h3>
+            </div>
+        </div>
+    </article>
+</div>
 <% } %>
 
-{#########################################################################}
+{######################################################################## #}
 {# Chat #}
-{#########################################################################}
+{######################################################################## #}
 
 <% if (group.type == 'chat_conversation') { var chat = result; %>
 <article class="row-item no-check" route-notabreload="1" data-route="page:{{ path('agent_userchat_view', {'conversation_id': '0000'})|replace({'0000': '<%- chat.id %>'})|raw }}">
@@ -186,9 +220,9 @@
 </article>
 <% } %>
 
-{#########################################################################}
+{######################################################################## #}
 {# Article #}
-{#########################################################################}
+{######################################################################## #}
 
 <% if (group.type == 'article') { var item = result; %>
 <article class="row-item single-row" route-notabreload="1" data-route="page:{{ path('agent_kb_article', {'article_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
@@ -205,9 +239,9 @@
 </article>
 <% } %>
 
-{#########################################################################}
+{######################################################################## #}
 {# Download #}
-{#########################################################################}
+{######################################################################## #}
 
 <% if (group.type == 'download') { var item = result; %>
 <article class="row-item single-row" route-notabreload="1" data-route="page:{{ path('agent_downloads_view', {'download_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
@@ -224,9 +258,9 @@
 </article>
 <% } %>
 
-{#########################################################################}
+{######################################################################## #}
 {# News #}
-{#########################################################################}
+{######################################################################## #}
 
 <% if (group.type == 'news') { var item = result; %>
 <article class="row-item single-row" route-notabreload="1" data-route="page:{{ path('agent_news_view', {'news_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
@@ -243,9 +277,9 @@
 </article>
 <% } %>
 
-{#########################################################################}
+{######################################################################## #}
 {# Feedback #}
-{#########################################################################}
+{######################################################################## #}
 
 <% if (group.type == 'feedback') { var item = result; %>
 <article class="row-item single-row" route-notabreload="1" data-route="page:{{ path('agent_feedback_view', {'feedback_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
@@ -262,9 +296,9 @@
 </article>
 <% } %>
 
-{#########################################################################}
+{######################################################################## #}
 {# Deleted tickets #}
-{#########################################################################}
+{######################################################################## #}
 
 <% if (group.type == 'deleted_tickets') { var item = result; %>
 <article class="row-item single-row" route-notabreload="1" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '<%- item.id %>'})|raw }}">

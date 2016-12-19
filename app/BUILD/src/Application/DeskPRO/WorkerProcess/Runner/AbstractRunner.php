@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Runner;
 
 use Application\DeskPRO\App;
@@ -52,7 +53,7 @@ abstract class AbstractRunner
      *
      * @var array
      */
-    protected $_job_cache = array();
+    protected $_job_cache = [];
 
     /**
      * @var array
@@ -133,14 +134,14 @@ abstract class AbstractRunner
         $GLOBALS['DP_CRON_LOGGER'] = $logger;
 
         if ($worker_job->getIsCrashed()) {
-            $logger->log('ERROR: Job appears to have crashed during the last run! The last run was started at '.$worker_job->last_start_date->format('Y-m-d H:i:s'), Logger::ERR, array('flag' => 'job_crash'));
+            $logger->log('ERROR: Job appears to have crashed during the last run! The last run was started at '.$worker_job->last_start_date->format('Y-m-d H:i:s'), Logger::ERR, ['flag' => 'job_crash']);
         }
 
         $mtime_start = microtime(true);
-        $logger->log("Job {$worker_job['id']} start", Logger::INFO, array('flag' => 'job_start'));
+        $logger->log("Job {$worker_job['id']} start", Logger::INFO, ['flag' => 'job_start']);
 
         $worker_job['last_start_date'] = new \DateTime();
-        App::getDb()->update('worker_jobs', array('last_start_date' => date('Y-m-d H:i:s')), array('id' => $worker_job->getId()));
+        App::getDb()->update('worker_jobs', ['last_start_date' => date('Y-m-d H:i:s')], ['id' => $worker_job->getId()]);
 
         $run_e = null;
 
@@ -165,13 +166,13 @@ abstract class AbstractRunner
 
         if ($run_e) {
             $logger->log(sprintf('Exception: %s[%d]: %s', get_class($run_e), $run_e->getCode(), $run_e->getMessage()), Logger::ERR);
-            \DeskPRO\Kernel\KernelErrorHandler::handleException($run_e);
+            \DpSys\LowError\SystemErrorHandler::logException($run_e);
         } else {
             $worker_job['last_run_date'] = new \DateTime();
-            App::getDb()->update('worker_jobs', array('last_run_date' => date('Y-m-d H:i:s')), array('id' => $worker_job->getId()));
+            App::getDb()->update('worker_jobs', ['last_run_date' => date('Y-m-d H:i:s')], ['id' => $worker_job->getId()]);
         }
 
-        $logger->log("Job {$worker_job['id']} done in {$mtime_total}s", Logger::INFO, array('flag' => 'job_end'));
+        $logger->log("Job {$worker_job['id']} done in {$mtime_total}s", Logger::INFO, ['flag' => 'job_end']);
 
         if ($this->job_time_limit) {
             @set_time_limit(0);

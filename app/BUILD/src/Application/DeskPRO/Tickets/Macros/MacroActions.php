@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Macros;
 
 use Application\DeskPRO\Entity\Person;
@@ -120,19 +121,19 @@ class MacroActions implements \Serializable, MacroActionInterface
      */
     public function exportToArray()
     {
-        $data = array();
+        $data = [];
 
         $data['version'] = 1;
-        $data['actions'] = array();
+        $data['actions'] = [];
         foreach ($this->actions->getAll() as $actions) {
             if (!($actions instanceof ActionDefinitionInterface)) {
                 continue;
             }
 
-            $data['actions'][] = array(
+            $data['actions'][] = [
                 'type'    => $actions->getActionType(),
                 'options' => $actions->getActionOptions()->all(),
-            );
+            ];
         }
 
         return $data;
@@ -178,7 +179,7 @@ class MacroActions implements \Serializable, MacroActionInterface
                 $this->addActionFromArray($action_info);
             } catch (\Exception $e) {
                 if (!empty($action_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('macro_'.$action_info['type']));
+                    SystemErrorHandler::logException($e, false, md5('macro_'.$action_info['type']));
                 }
             }
         }

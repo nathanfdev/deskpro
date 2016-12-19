@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -45,26 +46,20 @@ class CleanupQuarterHourly extends AbstractJob
 
     private function doRun()
     {
-        #------------------------------
-        # Page cache
-        #------------------------------
-
-        $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-        $cache->cleanup();
-
-        #------------------------------
-        # Old API logs
-        #------------------------------
+        //------------------------------
+        // Old API logs
+        //------------------------------
 
         App::$container->getEm()->getRepository('DeskPRO:ApiKeyLog')->cleanup();
 
-        #------------------------------
-        # Update table counts
-        #------------------------------
+        //------------------------------
+        // Update table counts
+        //------------------------------
 
-        $counts                               = array();
+        $counts                               = [];
         $counts['tickets']                    = App::getDb()->fetchColumn('SELECT COUNT(*) FROM `tickets`');
         $counts['tickets.resolved']           = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'resolved'");
+        $counts['tickets.awaiting_user']      = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'awaiting_user'");
         $counts['tickets.archive_validating'] = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'validating'");
         $counts['tickets.archive_spam']       = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'spam'");
         $counts['tickets.archive_deleted']    = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'deleted'");
@@ -72,10 +67,10 @@ class CleanupQuarterHourly extends AbstractJob
         $counts['people']                     = App::getDb()->fetchColumn('SELECT COUNT(*) FROM `people`');
 
         foreach ($counts as $k => $v) {
-            App::getDb()->replace('settings', array(
+            App::getDb()->replace('settings', [
                 'name'  => "core_tablecounts.$k",
                 'value' => (int) $v,
-            ));
+            ]);
         }
 
         $did_per_agent_filters = false;
@@ -96,11 +91,11 @@ class CleanupQuarterHourly extends AbstractJob
                 // Fetch in agent context
                 $filters = App::getOrm()->createQuery("
                     SELECT f
-                    FROM DeskPRO:TicketFilter f
-                    WHERE f.sys_name LIKE 'archive_%' AND f.sys_name != 'archive_resolved' AND f.sys_name != 'archive_awaiting_user'
+                    FROM DeskPRO:LegacyTicketFilter f
+                    WHERE f.sys_name LIKE 'archive_%'
                 ")->execute();
 
-                $inserts = array();
+                $inserts = [];
 
                 foreach ($all_agents as $agent) {
                     $agent->loadHelper('Agent');
@@ -111,19 +106,20 @@ class CleanupQuarterHourly extends AbstractJob
                     $agent->loadHelper('AgentPrefs');
 
                     foreach ($filters as $filter) {
-                        /* @var \Application\DeskPRO\Entity\TicketFilter $filter*/
+                        /* @var \Application\DeskPRO\Entity\LegacyTicketFilter $filter*/
                         $searcher = $filter->getSearcher();
                         $searcher->setPersonContext($agent);
+                        $searcher->setOrderBy('ticket.date_created');
 
                         $count = $searcher->getCount();
 
-                        $inserts[] = array(
+                        $inserts[] = [
                             'person_id'   => $agent->id,
                             'name'        => "ticket_counts.{$filter->sys_name}",
                             'value_str'   => $count,
                             'value_array' => null,
                             'date_expire' => null,
-                        );
+                        ];
                     }
                 }
 
@@ -136,6 +132,21 @@ class CleanupQuarterHourly extends AbstractJob
 
         if (!$did_per_agent_filters) {
             App::getDb()->executeUpdate("DELETE FROM people_prefs WHERE name LIKE 'ticket_counts.%'");
+        }
+
+        //------------------------------
+        // Enable cached slas
+        //------------------------------
+
+        if (!$this->getContainer()->getSetting('enable_cached_sla_counts')) {
+            $incompleteSlas     = App::getDb()->fetchColumn('SELECT COUNT(*) FROM ticket_slas WHERE is_completed = 0');
+            $awaitingAgentcount = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'awaiting_agent'");
+            if ($incompleteSlas >= 10000 || ($counts['tickets.awaiting_user'] + $awaitingAgentcount) >= 10000) {
+                $this->getContainer()->getDb()->replace('settings', [
+                    'name'  => 'enable_cached_sla_counts',
+                    'value' => time(),
+                ]);
+            }
         }
     }
 }

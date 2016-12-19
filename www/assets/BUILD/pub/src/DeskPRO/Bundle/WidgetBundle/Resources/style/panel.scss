@@ -1,0 +1,354 @@
+$border-color: #e7e7e7;
+
+
+.dpdesignportal {
+  background: #fff;
+  font-family: lato, helvetica, arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #363636;
+  width: 340px;
+  height: 100%;
+  margin-left: 5px;
+  min-height: 300px;
+  box-shadow: -0.1px 0 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.5s ease;
+  box-sizing: border-box;
+  &.hidden { right: -390px; }
+  *, *:before, *:after { box-sizing: inherit; }
+
+  // If we need it as a bubble (not stuck to the side)
+  // Will need calculated height based on content and where it comes from (kind of button, size etc - change it's fixed/bottom position)
+  &.chat-bubble {
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.5s ease;
+    margin: 5px 5px;
+
+    .dpdesignportal-powered-by-deskpro {
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      position: static;
+      padding: 7.5px 0;
+    }
+
+    .chat-bubble-content {
+      position: static;
+
+      .dpdesignportal-header {
+        position: static;
+      }
+
+      .dpdesignportal-chat-header-wrapper {
+        position: static;
+      }
+
+      .dpdesignportal-chat-footer {
+        position: static;
+      }
+    }
+
+    //&:after {
+    //  content: "";
+    //  display: block;
+    //  width: 0;
+    //  height: 0;
+    //  border: 4px solid rgba(0, 0, 0, 0.0);
+    //  border-top: 4px solid #fff;
+    //  position: absolute;
+    //  bottom: -8px;
+    //  right: 20px;
+    //  z-index: 1999;
+    //}
+  }
+
+  &.position-left {
+    margin-left: 0;
+    margin-right: 5px;
+
+    .dpdesignportal-powered-by-deskpro {
+      left: 0;
+    }
+  }
+
+  .grey { color: #bdbcbc; }
+  ul { margin: 0; padding: 0; list-style: none; }
+  h1, h2, h3 { padding: 0; margin: 0; font-size: 14px; font-weight: 400; }
+  form { padding: 0; margin: 0; position: relative; }
+
+  //@include respond-to(mobile) {// When on mobile, move the panel to the left side of the screen and full width
+  //  right: initial;
+  //  left: 0;
+  //  width: 100%;
+  //}
+
+  .dpdesignportal-content {
+    position: relative;
+    width: 100%;
+    padding-right: 5px;
+
+    a {
+      color: #3E77B7;
+    }
+
+    .scrollarea  {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: inherit;
+
+      .scrollarea-content {
+        .bottom-aligner {
+          display: inline-block;
+          height: 100%;
+          vertical-align: bottom;
+          width: 1px;
+        }
+
+        & > div {
+          margin: 1px;
+          display: inline-block;
+          width: 98%; // 100 and 99% conflict with bottom-aligner
+        }
+      }
+
+      $scrollbar-w: 5px;
+      $scrollbar-w2: 12px;
+
+      .scrollbar-container {
+        position: absolute;
+        background: transparent;
+        opacity: 0;
+        z-index: 1000;
+        transition: opacity .3s;
+
+        &:hover, &.active{
+          background: transparent;
+          opacity: 1;
+        }
+
+        .scrollbar {
+          background: rgba(0,0,0,0.3);
+          border-radius: 50px;
+        }
+
+        &.horizontal {
+          height: $scrollbar-w;
+          left: 0;
+          bottom: 2px;
+          right: 0;
+
+          .scrollbar {
+            width: 20px;
+            height: $scrollbar-w;
+          }
+        }
+
+        &.vertical{
+          width: $scrollbar-w;
+          right: 2px;
+          top: 0;
+          bottom: 0;
+
+          .scrollbar{
+            width: $scrollbar-w;
+            height: 20px;
+          }
+        }
+      }
+
+      &:hover .scrollbar-container{
+        opacity: .3;
+      }
+    }
+
+    .circle-spinner-wrapper {
+      position: relative;
+    }
+
+    .circle-spinner {
+      display: block;
+      margin: 30px auto 0;
+      width: 30px;
+
+      &.central {
+        margin-top: -15px;
+        margin-left: -15px;
+      }
+
+      i {
+        display: inline-block;
+        background: url('../img/loading-big-circle.gif') center;
+        background-size: 30px 30px;
+        width: 30px;
+        height: 30px;
+        margin: 0 auto;
+      }
+
+      &.chat-message-list {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+      }
+    }
+  }
+
+  &.full-screen {
+    width: 100%;
+    margin-left: 0;
+
+    .dpdesignportal-content {
+      padding-right: 10px;
+    }
+
+    .dpdesignportal-widget-body {
+      width: 100%;
+    }
+
+    .dpdesignportal-chat-footer {
+      width: 100%;
+    }
+
+    .dpdesignportal-powered-by-deskpro {
+      width: 100%;
+    }
+  }
+}
+
+.dpdesignportal-side-buttons-cover {// When the sidebar is on, a layer behind it to handle clicks on the blank space
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.0);
+  z-index: 199;
+  &.hidden { display: none;}
+}
+
+.dpdesignportal-side-buttons {
+  display: block;
+  width: 45px;
+  position: absolute;
+  z-index: 1999;
+  left: -45px;
+  top: 35%;
+  transition: all 0.5s ease;
+
+  li {
+    position: relative;
+    .dpdesignportal-side-buttons-count {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      z-index: 399;
+      background: #ff5460;
+      border-radius: 2px;
+      line-height: 1.2em;
+      padding: 2px 5px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 10px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  li > a {// Only style the list buttons
+    display: block;
+    width: 45px;
+    height: 45px;
+    color: #6fb49b;
+    text-align: center;
+    font-size: 16px;
+    i { position: relative; top: 14px;}
+    span { display: none;}
+  }
+
+  li > a:hover, li > a.active { color: #fff; }
+  li.color-1 > a { background: #299969; }
+  li.color-2 > a { background: #14855c; }
+  li.color-3 > a { background: #247457; }
+  li.color-4 > a { background: #1e684d; }
+
+  //@include respond-to(mobile) {
+  //  left: 0;
+  //  width: 80%;
+  //  height: 100%;
+  //  top: 0;
+  //  background: #1e684d;
+  //  &.mobile-hidden { left: -80%; }
+  //
+  //  a {
+  //    width: 100%;
+  //    text-align: left;
+  //    text-decoration: none;
+  //    padding-left: 15px;
+  //    padding-top: 10px;
+  //
+  //    i {
+  //      display: inline-block;
+  //      vertical-align: middle;
+  //      top: 0;
+  //      margin-right: 10px;
+  //    }
+  //
+  //    span {
+  //      display: inline-block;
+  //      vertical-align: middle;
+  //    }
+  //  }
+  //}
+}
+
+
+.dpdesignportal-side-notification {
+  @include add-corner(3px, #fd535f, 12px, left, "");
+  position: absolute;
+  background: #fff;
+  border: 1px solid #fd535f;
+  border-radius: 2px;
+  right: 0;
+  z-index: 1399;
+  width: 330px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+
+  .dpdesignportal-side-notification-close {
+    position: absolute;
+    top: 11px;
+    right: 10px;
+    color: #cecece;
+    font-size: 11px;
+    cursor: pointer;
+    &:hover { color: #333; }
+  }
+
+  .dpdesignportal-side-notification-header {
+    padding: 8px 30px 8px 5px;
+    border-bottom: 1px solid #e7e7e7;
+    h1 { font-size: 13px; }
+    h1 span { color: #9c9c9c; }
+  }
+
+  &.dpdesignportal-side-notification-mini {
+    @include add-corner(3px, #fd535f, middle, left, "");
+    h1 {
+      position: relative;
+      top: 2px;
+    }
+    .dpdesignportal-message-avatar {
+      position: relative;
+      top: -2px;
+      margin-right: 5px;
+    }
+    .dpdesignportal-side-notification-close { top: 12px;}
+  }
+
+  .dpdesignportal-side-notification-content { padding: 5px 0 5px 0; }
+  .incoming-message-reply-footer {
+    text-align: right;
+    padding: 5px 5px 0 0;
+  }
+}
+
+.hidden {
+  display: none;
+}

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,8 +31,10 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\Basic;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -42,19 +44,19 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class CustomDataArticle extends CustomDataAbstract
 {
     /**
-     * @var \Application\DeskPRO\Entity\Article
+     * @var Article
      */
     protected $article;
 
     /**
      * @var CustomDefArticle
      */
-    protected $field = null;
+    protected $field;
 
     /**
      * @var CustomDefArticle
      */
-    protected $root_field = null;
+    protected $root_field;
 
     /**
      * @return int
@@ -92,26 +94,41 @@ class CustomDataArticle extends CustomDataAbstract
         return $this;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * {@inheritdoc}
+     *
+     * @return Article
+     */
+    public function getOwner()
+    {
+        return $this->article;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+        $metadata->customRepositoryClassName = Basic::class;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
-            array(
-                'name'    => 'custom_data_article',
-                'indexes' => array(
-                    'obj_id_idx'   => array('columns' => array(0 => 'article_id')),
-                    'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'article_id')),
-                ),
-            )
+            [
+                'name'              => 'custom_data_article',
+                'uniqueConstraints' => [
+                    'unique_idx' => [
+                        'columns' => [
+                            'field_id',
+                            'article_id',
+                            'root_field_id',
+                        ],
+                    ],
+                ],
+            ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -119,74 +136,74 @@ class CustomDataArticle extends CustomDataAbstract
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'value',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'value',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'input',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'input',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'article',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Article',
+                'targetEntity' => Article::class,
                 'inversedBy'   => 'custom_data',
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'article_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefArticle',
-                'joinColumns'  => array(
-                    0 => array(
+                'targetEntity' => CustomDefArticle::class,
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'root_field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefArticle',
-                'joinColumns'  => array(
-                    0 => array(
+                'targetEntity' => CustomDefArticle::class,
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'root_field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
     }
 }

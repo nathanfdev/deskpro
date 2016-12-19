@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\App\Assets;
 
 use Application\DeskPRO\App\AppManagerInterface;
@@ -41,7 +42,6 @@ class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
     public function __construct(AppManagerInterface $manager, $native_file_root = null, $only_installed = true)
     {
         foreach ($manager->getAllPackages() as $package) {
-
             // No app is installed, dont need to output rjs map for it
             if ($only_installed && !count($manager->getPackageApps($package->name))) {
                 continue;

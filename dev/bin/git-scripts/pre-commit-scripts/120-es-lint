@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+define('ES_LINT', realpath(__DIR__ . '/../../es-lint.php'));
+
+$err_text = <<< END
+1) run dev/bin/es-lint for partial fix
+2) stage the code style changes, e.g. "git add ."
+3) try to commit again
+END;
+
+
+$outputs = null;
+$return_status = null;
+
+$cmd = ES_LINT . ' dry-run';
+exec($cmd, $outputs, $return_status);
+
+if (0 !== $return_status) {
+    echo implode(PHP_EOL, $outputs), PHP_EOL;
+    echo PHP_EOL . PHP_EOL . $err_text, PHP_EOL, PHP_EOL;
+    exit($return_status);
+}
+
+exit($return_status);

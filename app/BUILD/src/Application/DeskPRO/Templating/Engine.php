@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
@@ -47,7 +48,7 @@ class Engine extends BaseEngine
      *
      * @var array
      */
-    protected static $varied_templates = array(
+    protected static $varied_templates = [
         'DeskPRO:emails_agent:ticket-update.html.twig',
         'DeskPRO:emails_agent:new-ticket.html.twig',
         'DeskPRO:emails_agent:new-reply-user.html.twig',
@@ -60,7 +61,7 @@ class Engine extends BaseEngine
         'DeskPRO:emails_user:new-ticket.html.twig',
         'DeskPRO:emails_user:blank.html.twig',
         'DeskPRO:emails_user:ticket-autoclose-warn.html.twig',
-    );
+    ];
 
     protected function _initTemplateFilesMap()
     {
@@ -110,7 +111,7 @@ class Engine extends BaseEngine
             FROM templates
             WHERE name = ?
             LIMIT 1
-        ', array($name));
+        ', [$name]);
 
         return $id ? true : false;
     }
@@ -149,7 +150,7 @@ class Engine extends BaseEngine
             FROM templates
             WHERE name = ?
             LIMIT 1
-        ', array($name));
+        ', [$name]);
 
         if ($source === false) {
             $source = $this->getDefaultSource($name);
@@ -177,9 +178,9 @@ class Engine extends BaseEngine
      */
     public function splitSource($source)
     {
-        $parts = array(
+        $parts = [
             'source' => $source,
-        );
+        ];
 
         if (preg_match('#<dp:subject>(.*?)</dp:subject>#is', $source, $m)) {
             $parts['subject'] = trim($m[1]);
@@ -206,7 +207,7 @@ class Engine extends BaseEngine
     {
         try {
             $GLOBALS['DP_NOLOG_TPL_CACHE_ERR'] = true;
-            $ret                               = parent::exists($name);
+            $ret                               = parent::exists($name) || $this->isCustomTemplate($name);
             $GLOBALS['DP_NOLOG_TPL_CACHE_ERR'] = false;
 
             return $ret;

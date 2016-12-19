@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,79 +31,15 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\UserPermissions;
 
-use Application\DeskPRO\Entity\Usergroup;
-use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\People\AbstractGroupDbPersister;
 
-class GroupDbPersister
+class GroupDbPersister extends AbstractGroupDbPersister
 {
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    /**
-     * @var \Application\DeskPRO\DBAL\Connection
-     */
-    private $db;
-
-    /**
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
+    protected function getPermissionsProperties()
     {
-        $this->em = $em;
-        $this->db = $em->getConnection();
-    }
-
-    /**
-     * @param Usergroup       $group
-     * @param UserPermissions $perms
-     *
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public function savePerms(Usergroup $group, UserPermissions $perms)
-    {
-        $current_perms = $this->db->fetchAllCol('SELECT name FROM permissions WHERE usergroup_id = ?', array($group->id));
-
-        $set_perms = array();
-        foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
-            $obj = $perms->$coll_name;
-            foreach ($obj->getNames() as $prop) {
-                if ($obj->$prop) {
-                    $set_perms[] = $real_name.'.'.$prop;
-                }
-            }
-        }
-
-        $del_perms = array_diff($current_perms, $set_perms);
-        $new_perms = array_diff($set_perms, $current_perms);
-
-        $ins = array();
-        if ($new_perms) {
-            foreach ($new_perms as $p) {
-                $ins[] = array('usergroup_id' => $group->id, 'name' => $p, 'value' => 1, 'is_active' => 1);
-            }
-        }
-
-        $this->db->beginTransaction();
-        try {
-            if ($del_perms) {
-                $this->db->deleteIn('permissions', $del_perms, 'name', false, "usergroup_id = {$group->id}");
-            }
-            if ($ins) {
-                $this->db->batchInsert('permissions', $ins, true);
-            }
-
-            $this->db->commit();
-        } catch (\Exception $e) {
-            $this->db->rollback();
-            throw $e;
-        }
-
-        return true;
+        return UserPermissions::$prefix_map;
     }
 }

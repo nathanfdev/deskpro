@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
-use DeskPRO\Kernel\KernelErrorHandler;
 
 class AvailableTrigger
 {
@@ -47,13 +47,13 @@ class AvailableTrigger
             $is_chat_available = false;
 
             if (!App::getSetting('core.apps_chat')) {
-                $agent_ids = array();
+                $agent_ids = [];
             } else {
                 $agent_ids = App::getDb()->fetchAllCol("
                     SELECT person_id
                     FROM sessions
                     WHERE date_last >= ? AND active_status = 'available' AND is_person = 1 AND is_chat_available = 1 AND interface = 'agent'
-                ", array(date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'))));
+                ", [date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'))]);
                 $agent_ids = array_unique($agent_ids);
             }
 
@@ -78,7 +78,7 @@ class AvailableTrigger
                     WHERE person_id IN ($agent_ids_cs)
                 ");
                 if (!$ug_ids) {
-                    $ug_ids = array(0);
+                    $ug_ids = [0];
                 }
 
                 $all1 = App::$container->getAgentGroups()->getSysGroup('agent_all_perms')->id;
@@ -93,7 +93,14 @@ class AvailableTrigger
                     $dep_check = App::getDb()->fetchColumn("
                         SELECT department_id
                         FROM department_permissions
-                        WHERE (person_id IN ($agent_ids_cs) or usergroup_id IN ($ug_ids_cs)) AND app = 'chat' AND value = '1'
+                        WHERE 
+                          (
+                            department_permissions.person_id IN ($agent_ids_cs) 
+                            OR department_permissions.usergroup_id IN ($ug_ids_cs)
+                          ) 
+                          AND department_permissions.app = 'chat' 
+                          AND department_permissions.value = '1'
+                          AND department_permissions.is_active = 1  
                         LIMIT 1
                     ");
                 }
@@ -104,35 +111,12 @@ class AvailableTrigger
             }
         }
 
-        $trigger_File = dp_get_data_dir().'/chat_is_available.trigger';
+        $trigger_File = App::$container->getParameter('dp.user.cache_dir').'/chat_is_available.trigger';
         if ($is_chat_available) {
             file_put_contents($trigger_File, time());
             @chmod($trigger_File, 0777);
         } elseif (is_file($trigger_File)) {
-            unlink($trigger_File);
-        }
-
-        if ($update_urls = dp_get_config('chat_status_update_urls')) {
-            $val = $is_chat_available ? '1' : '0';
-
-            foreach ($update_urls as $url) {
-                $url = str_replace('%CHAT_STATUS%', $val, $url);
-
-                $context = stream_context_create(array(
-                    'http' => array(
-                        'timeout' => 5,
-                    ),
-                ));
-                $res = file_get_contents($url, false, $context);
-
-                if ($is_chat_available && strpos($res, 'DP_CHATSTATUS_WROTE_AVAILABLE') === false) {
-                    $e = new \RuntimeException("Failed to send chat status (1) to $url. Got response: $res");
-                    KernelErrorHandler::logException($e, false);
-                } elseif (!$is_chat_available && strpos($res, 'DP_CHATSTATUS_WROTE_UNAVAILABLE') === false) {
-                    $e = new \RuntimeException("Failed to send chat status (0) to $url. Got response: $res");
-                    KernelErrorHandler::logException($e, false);
-                }
-            }
+            @unlink($trigger_File);
         }
     }
 }

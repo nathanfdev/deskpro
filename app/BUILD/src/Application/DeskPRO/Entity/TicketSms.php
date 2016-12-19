@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -39,7 +40,6 @@ use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 /**
  * Ticket SMS Message.
- 
  *
  *@property int $id
  * @property Ticket $ticket
@@ -114,7 +114,7 @@ class TicketSms extends \Application\DeskPRO\Domain\DomainObject
 
     public function __construct($direction)
     {
-        $this->direction = $direction;
+        $this->setModelField('direction', $direction);
         $this->setModelField('date_created', new \DateTime());
     }
 
@@ -164,16 +164,16 @@ class TicketSms extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('tickets_sms');
-        $builder->addIndex(array('date_created'), 'date_created_idx');
+        $builder->addIndex(['date_created'], 'date_created_idx');
         $builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\TicketSms');
         $builder->addLifecycleEvent('incTicketCount', 'prePersist');
 

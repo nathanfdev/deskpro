@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,13 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\Collection;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Numbers;
@@ -83,7 +85,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
      * @param string $op
      * @param array  $options
      */
-    public function __construct($op, array $options = array())
+    public function __construct($op, array $options = [])
     {
         $this->op = $op;
         $this->_initOptions($options);
@@ -122,7 +124,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
      */
     protected function getDefaultOptions()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -182,7 +184,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                 $parts = explode('.', $prop_name);
 
                 while (($p = array_shift($parts)) !== null) {
-
                     // if we are using special array syntax
                     // we are collecting from an array (below)
                     $is_coll = false;
@@ -203,7 +204,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                 }
 
                 if ($value === null) {
-                    $value = array();
+                    $value = [];
                 }
 
                 // Means we found an array collection syntax like emails[]
@@ -213,7 +214,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                 if ($is_coll && $parts) {
                     $parts_default = $parts;
                     $all_values    = $value;
-                    $use_value     = array();
+                    $use_value     = [];
                     foreach ($all_values as $value) {
                         $parts = $parts_default;
                         while (($p = array_shift($parts)) !== null) {
@@ -278,14 +279,14 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
             $value = $value->toArray();
         }
 
-        return array(
+        return [
             'op'            => $op,
             'value'         => $value,
             'is_changed_op' => $is_change_op,
             'is_touched_op' => $is_touched_op,
             'was_changed'   => $was_changed,
             'was_touched'   => $was_touched,
-        );
+        ];
     }
 
     /**
@@ -392,15 +393,15 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         }
 
         if (!is_array($all_values)) {
-            $all_values = array($all_values);
+            $all_values = [$all_values];
         }
 
         if ($check_ids === null || empty($check_ids)) {
-            $check_ids = array();
+            $check_ids = [];
         }
 
         if (!is_array($check_ids)) {
-            $check_ids = array($check_ids);
+            $check_ids = [$check_ids];
         }
 
         if ($check_ids) {
@@ -694,10 +695,10 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         }
 
         if (!is_array($all_values)) {
-            $all_values = array($all_values);
+            $all_values = [$all_values];
         }
 
-        $check_value = is_array($check_value) ? $check_value : array($check_value);
+        $check_value = is_array($check_value) ? $check_value : [$check_value];
 
         $check_value_i = array_map(
             function ($v) {
@@ -707,7 +708,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         );
 
         $check_fn = function ($value) use ($op, $check_value_i, $check_value) {
-
             if (!is_string($value)) {
                 if ($value === null || $value === false) {
                     $value = '';
@@ -787,7 +787,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                             return false;
                         }
 
-                        if (preg_match($regex, $value)) {
+                        if (RegexUtils::safePregMatch($regex, $value)) {
                             if ($op == 'is_regex') {
                                 return true;
                             }

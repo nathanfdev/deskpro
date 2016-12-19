@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,7 +38,8 @@ use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Service\JIRA;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DpSys\LowError\SystemErrorHandler;
 use Imagine\Image\Box as ImageBox;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
@@ -46,24 +47,29 @@ use Orb\Util\Strings;
 use Orb\Zip\ZipException;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class AppsController.
+ *
+ * @ApiModes("all")
+ */
 class AppsController extends AbstractController
 {
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction()
     {
         $manager = $this->container->getAppManager();
 
-        $apps               = array();
-        $installed_packages = array();
+        $apps               = [];
+        $installed_packages = [];
         foreach ($manager->getAllApps() as $a) {
             $apps[]                                = $a->toApiData();
             $installed_packages[$a->package->name] = true;
         }
 
-        $packages = array();
+        $packages = [];
         foreach ($manager->getAllPackages() as $p) {
             $p_data                 = $p->toApiData();
             $p_data['is_installed'] = isset($installed_packages[$p->name]);
@@ -73,7 +79,7 @@ class AppsController extends AbstractController
 
         if ($tags = $this->in->getString('tags')) {
             $tags        = explode(',', $tags);
-            $package_ids = array();
+            $package_ids = [];
 
             $packages = array_filter($packages, function ($p) use ($tags, &$package_ids) {
                 $has = false;
@@ -101,7 +107,9 @@ class AppsController extends AbstractController
             WHERE u.app IS NOT NULL
         ')->execute();
         if ($usersources) {
-            $usersources = Arrays::rekey($usersources, function ($u) { return $u->app->getId(); });
+            $usersources = Arrays::rekey($usersources, function ($u) {
+                return $u->app->getId();
+            });
             $apps = array_map(function ($a) use ($usersources) {
                 if (isset($usersources[$a['id']])) {
                     $a['usersource'] = $usersources[$a['id']]->toApiData();
@@ -115,12 +123,12 @@ class AppsController extends AbstractController
         $apps     = array_values($apps);
         $packages = array_values($packages);
 
-        return $this->createApiResponse(array('packages' => $packages, 'apps' => $apps));
+        return $this->createApiResponse(['packages' => $packages, 'apps' => $apps]);
     }
 
-    ####################################################################################################################
-    # get-package
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-package
+    //###################################################################################################################
 
     public function getPackageAction($name)
     {
@@ -132,9 +140,9 @@ class AppsController extends AbstractController
 
         $package = $manager->getPackage($name);
 
-        #------------------------------
-        # Get readme
-        #------------------------------
+        //------------------------------
+        // Get readme
+        //------------------------------
 
         $readme      = '';
         $readme_html = '';
@@ -154,21 +162,21 @@ class AppsController extends AbstractController
         $data['readme']       = $readme;
         $data['readme_html']  = $readme_html;
 
-        #------------------------------
-        # Get assets
-        #------------------------------
+        //------------------------------
+        // Get assets
+        //------------------------------
 
-        $data['assets'] = array();
+        $data['assets'] = [];
         foreach ($package->assets as $asset) {
             $data['assets'][] = $asset->toApiData(false);
         }
 
-        #------------------------------
-        # Get installed app instances
-        #------------------------------
+        //------------------------------
+        // Get installed app instances
+        //------------------------------
 
         $appManager   = $this->container->getAppManager();
-        $data['apps'] = array();
+        $data['apps'] = [];
         foreach ($manager->getPackageApps($package->name) as $app) {
             $app = $app->toApiData(false);
             if ($package->isUsersource()) {
@@ -182,12 +190,12 @@ class AppsController extends AbstractController
             $data['is_installed'] = true;
         }
 
-        return $this->createApiResponse(array('package' => $data));
+        return $this->createApiResponse(['package' => $data]);
     }
 
-    ####################################################################################################################
-    # delete-package
-    ####################################################################################################################
+    //###################################################################################################################
+    // delete-package
+    //###################################################################################################################
 
     public function deletePackageAction($name)
     {
@@ -219,12 +227,12 @@ class AppsController extends AbstractController
         $this->em->remove($package);
         $this->em->flush();
 
-        return $this->createApiDeleteResponse(array('old_name' => $name));
+        return $this->createApiDeleteResponse(['old_name' => $name]);
     }
 
-    ####################################################################################################################
-    # install-package
-    ####################################################################################################################
+    //###################################################################################################################
+    // install-package
+    //###################################################################################################################
 
     public function installPackageAction($name)
     {
@@ -255,14 +263,14 @@ class AppsController extends AbstractController
         $app = $this->getAppManipulator()->installInstance($package, $context);
 
         return $this->createApiCreateResponse(
-            array('id' => $app->id),
-            $this->generateUrl('api_apps_instance', array('id' => $app->id))
+            ['id' => $app->id],
+            $this->generateUrl('api_apps_instance', ['id' => $app->id])
         );
     }
 
-    ####################################################################################################################
-    # get-instance
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-instance
+    //###################################################################################################################
 
     public function getInstanceAction($id)
     {
@@ -281,12 +289,12 @@ class AppsController extends AbstractController
             $data['permissions']      = $this->em->getRepository('DeskPRO:AppInstance')->getPermissionsForInstance($app);
         }
 
-        return $this->createApiResponse(array('app' => $data));
+        return $this->createApiResponse(['app' => $data]);
     }
 
-    ####################################################################################################################
-    # update-instance
-    ####################################################################################################################
+    //###################################################################################################################
+    // update-instance
+    //###################################################################################################################
 
     public function updateInstanceAction($id)
     {
@@ -306,27 +314,27 @@ class AppsController extends AbstractController
 
         $this->getAppManipulator()->updateInstance($app, $context);
 
-        $this->db->delete('app_instance_permissions', array('app_instance_id' => $app->id));
+        $this->db->delete('app_instance_permissions', ['app_instance_id' => $app->id]);
         if ($app->package->getTaggedAsset('app_js') && $this->in->getString('permissions.type') == 'set') {
             $app->perm_type = 'set';
-            $batch          = array();
+            $batch          = [];
 
             foreach ($this->in->getArrayOfInts('permissions.usergroup_ids') as $ugid) {
                 if ($this->container->getAgentGroups()->groupExists($ugid)) {
-                    $batch[] = array(
+                    $batch[] = [
                         'app_instance_id' => $app->id,
                         'usergroup_id'    => $ugid,
                         'person_id'       => null,
-                    );
+                    ];
                 }
             }
             foreach ($this->in->getArrayOfInts('permissions.person_ids') as $aid) {
                 if ($this->container->getAgentData()->has($aid)) {
-                    $batch[] = array(
+                    $batch[] = [
                         'app_instance_id' => $app->id,
                         'usergroup_id'    => null,
                         'person_id'       => $aid,
-                    );
+                    ];
                 }
             }
 
@@ -344,9 +352,9 @@ class AppsController extends AbstractController
         return $this->createApiSuccessResponse();
     }
 
-    ####################################################################################################################
-    # uninstall-instance
-    ####################################################################################################################
+    //###################################################################################################################
+    // uninstall-instance
+    //###################################################################################################################
 
     public function uninstallInstanceAction($id)
     {
@@ -360,12 +368,12 @@ class AppsController extends AbstractController
 
         $this->getAppManipulator()->uninstallInstance($app);
 
-        return $this->createApiDeleteResponse(array('old_id' => $id));
+        return $this->createApiDeleteResponse(['old_id' => $id]);
     }
 
-    ####################################################################################################################
-    # get-custom-assets
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-custom-assets
+    //###################################################################################################################
 
     public function getCustomAssetsAction($id)
     {
@@ -382,7 +390,7 @@ class AppsController extends AbstractController
         }
 
         $blob_storage = $this->container->getBlobStorage();
-        $assets       = array();
+        $assets       = [];
 
         foreach ($app->package->assets as $a) {
             if ($a->tag == 'js' || $a->tag == 'html' || $a->tag == 'app_js') {
@@ -395,12 +403,12 @@ class AppsController extends AbstractController
             }
         }
 
-        return $this->createApiResponse(array('assets' => $assets));
+        return $this->createApiResponse(['assets' => $assets]);
     }
 
-    ####################################################################################################################
-    # create-custom-app
-    ####################################################################################################################
+    //###################################################################################################################
+    // create-custom-app
+    //###################################################################################################################
 
     public function createCustomAppAction()
     {
@@ -408,46 +416,46 @@ class AppsController extends AbstractController
         $package->name         = 'com.deskpro.custom.'.DpStrings::random(15, Strings::CHARS_ALPHA_I);
         $package->title        = $this->in->getString('options.title') ?: 'Untitled';
         $package->description  = $package->title;
-        $package->tags         = array('custom');
+        $package->tags         = ['custom'];
         $package->author_name  = $this->person->getDisplayName();
         $package->author_email = $this->person->getEmailAddress();
-        $package->author_link  = $this->container->getSetting('core.deskpro_url');
+        $package->author_link  = $this->container->getBrandSetting('core.deskpro_url');
         $package->api_version  = 1;
         $package->version      = 1;
         $package->version_name = '1.0.0';
         $package->is_custom    = true;
         $package->is_single    = true;
-        $package->scopes       = array(AppPackage::SCOPE_AGENT);
+        $package->scopes       = [AppPackage::SCOPE_AGENT];
 
         $this->em->persist($package);
         $blob_storage = $this->container->getBlobStorage();
 
-        $with_blanks = array();
+        $with_blanks = [];
 
-        $locations     = array();
-        $js_files      = array();
-        $html_files    = array();
-        $require_files = array();
-        $require_names = array();
-        $tab_titles    = array();
+        $locations     = [];
+        $js_files      = [];
+        $html_files    = [];
+        $require_files = [];
+        $require_names = [];
+        $tab_titles    = [];
 
-        foreach (array('ticket', 'user', 'org') as $type) {
+        foreach (['ticket', 'user', 'org'] as $type) {
             $type_name = ucfirst($type);
             foreach ($this->in->getCleanValueArray('options.'.$type) as $name => $value) {
                 if (!$value) {
                     continue;
                 }
                 if ($name == 'blank') {
-                    $with_blanks[]   = array('type' => $type, 'class_name' => "{$type_name}_{$type_name}Context");
-                    $js_files[]      = array('type' => $type, 'file' => "$type_name/{$type_name}Context");
+                    $with_blanks[]   = ['type' => $type, 'class_name' => "{$type_name}_{$type_name}Context"];
+                    $js_files[]      = ['type' => $type, 'file' => "$type_name/{$type_name}Context"];
                     $require_files[] = $package->name."/js/$type_name/{$type_name}Context";
                     $require_names[] = "{$type_name}_{$type_name}Context";
                 } elseif (strpos($name, '.tab.title') !== false) {
                     $tab_titles["$type.$name"] = $value;
                 } else {
                     $js_name         = ucfirst(Strings::underscoreToCamelCase(str_replace('.', '_', $name)));
-                    $locations[]     = array('type' => $type, 'location' => $name, 'js_class' => $type_name.'_'.$js_name.'Controller', 'html_file' => "$type_name/".$js_name.'.html');
-                    $js_files[]      = array('type' => $type, 'file' => "$type_name/".$js_name.'Controller');
+                    $locations[]     = ['type' => $type, 'location' => $name, 'js_class' => $type_name.'_'.$js_name.'Controller', 'html_file' => "$type_name/".$js_name.'.html'];
+                    $js_files[]      = ['type' => $type, 'file' => "$type_name/".$js_name.'Controller'];
                     $html_files[]    = "$type_name/".$js_name;
                     $require_files[] = $package->name."/js/$type_name/{$js_name}Controller";
                     $require_names[] = str_replace(' ', '_', $type_name.'_'.$js_name.'Controller');
@@ -455,9 +463,9 @@ class AppsController extends AbstractController
             }
         }
 
-        #------------------------------
-        # Create JS files
-        #------------------------------
+        //------------------------------
+        // Create JS files
+        //------------------------------
 
         foreach ($js_files as $info) {
             $file = $info['file'];
@@ -465,7 +473,7 @@ class AppsController extends AbstractController
             if (preg_match('#Context$#', $file)) {
                 $js = "define(function () {\n\treturn {\n\t\tinit: function () {\n\t\t\t// TODO\n\t\t}\n\t};\n\n});";
             } else {
-                $injects = array('$scope');
+                $injects = ['$scope'];
                 if ($type == 'ticket') {
                     $injects[] = '$ticket';
                     $injects[] = '$person';
@@ -489,13 +497,13 @@ class AppsController extends AbstractController
 
             $asset      = $package->addAssetFromBlob($blob, $file.'.js');
             $asset->tag = 'js';
-            $asset->setMetadata(array('group_name' => preg_replace('#Controller$#', '', str_replace('/', '_', $file))));
+            $asset->setMetadata(['group_name' => preg_replace('#Controller$#', '', str_replace('/', '_', $file))]);
             $this->em->persist($asset);
         }
 
-        #------------------------------
-        # Create HTML files
-        #------------------------------
+        //------------------------------
+        // Create HTML files
+        //------------------------------
 
         foreach ($html_files as $file) {
             $html = 'Your HTML goes here';
@@ -508,16 +516,16 @@ class AppsController extends AbstractController
 
             $asset      = $package->addAssetFromBlob($blob, $file.'.html');
             $asset->tag = 'html';
-            $asset->setMetadata(array('group_name' => str_replace('/', '_', $file)));
+            $asset->setMetadata(['group_name' => str_replace('/', '_', $file)]);
             $this->em->persist($asset);
         }
 
-        #------------------------------
-        # Get app icons
-        #------------------------------
+        //------------------------------
+        // Get app icons
+        //------------------------------
 
-        $sizes      = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
-        $have_sizes = array();
+        $sizes      = [16, 24, 32, 48, 64, 96, 128, 192, 256, 512];
+        $have_sizes = [];
         $largest    = null;
 
         $path = DP_ROOT.'/src/Application/DeskPRO/App/Package/Resources/no-icon.png';
@@ -532,8 +540,8 @@ class AppsController extends AbstractController
         $asset->tag = "icons.app.$size";
         $this->em->persist($asset);
 
-        $largest           = array($path, $size, $blob);
-        $have_sizes[$size] = array($path, $size, $blob);
+        $largest           = [$path, $size, $blob];
+        $have_sizes[$size] = [$path, $size, $blob];
 
         // Missing sizes we'll just scale whatever
         // the largest icon we have
@@ -557,13 +565,13 @@ class AppsController extends AbstractController
             $asset->tag = "icons.app.$size";
             $this->em->persist($asset);
 
-            $largest           = array($path, $size, $blob);
+            $largest           = [$path, $size, $blob];
             $have_sizes[$size] = $blob;
         }
 
-        #------------------------------
-        # Main app.js
-        #------------------------------
+        //------------------------------
+        // Main app.js
+        //------------------------------
 
         $require_files = "'".implode("', '", $require_files)."'";
         $require_names = implode(', ', $require_names);
@@ -608,9 +616,9 @@ class AppsController extends AbstractController
 
         $this->em->flush();
 
-        #------------------------------
-        # Create an instance of it too
-        #------------------------------
+        //------------------------------
+        // Create an instance of it too
+        //------------------------------
 
         $app          = new AppInstance();
         $app->package = $package;
@@ -620,14 +628,14 @@ class AppsController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $app->id),
-            $this->generateUrl('api_apps_instance', array('id' => $app->id))
+            ['id' => $app->id],
+            $this->generateUrl('api_apps_instance', ['id' => $app->id])
         );
     }
 
-    ####################################################################################################################
-    # exec-package-action
-    ####################################################################################################################
+    //###################################################################################################################
+    // exec-package-action
+    //###################################################################################################################
 
     public function execPackageAction(Request $request, $name, $action)
     {
@@ -664,9 +672,9 @@ class AppsController extends AbstractController
         return $result;
     }
 
-    ####################################################################################################################
-    # exec-app-action
-    ####################################################################################################################
+    //###################################################################################################################
+    // exec-app-action
+    //###################################################################################################################
 
     public function execAppAction(Request $request, $id, $action)
     {
@@ -704,9 +712,9 @@ class AppsController extends AbstractController
         return $result;
     }
 
-    ####################################################################################################################
-    # resync-packages
-    ####################################################################################################################
+    //###################################################################################################################
+    // resync-packages
+    //###################################################################################################################
 
     public function resyncPackagesAction()
     {
@@ -729,15 +737,15 @@ class AppsController extends AbstractController
             $log = $e->getMessage();
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
             'log'     => $log,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # upload-package
-    ####################################################################################################################
+    //###################################################################################################################
+    // upload-package
+    //###################################################################################################################
 
     public function uploadPackageAction(Request $request)
     {
@@ -834,14 +842,14 @@ class AppsController extends AbstractController
         try {
             $def = $installer->installPackage($app_package, $def);
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
 
             return $this->createApiErrorResponse('install_error', 'There was a problem installing the package: '.$e->getMessage());
         }
 
-        return $this->createApiCreateResponse(array(
+        return $this->createApiCreateResponse([
             'package_name' => $def->name,
-        ), $this->generateUrl('api_apps_package', array('name' => $def->name)));
+        ], $this->generateUrl('api_apps_package', ['name' => $def->name]));
     }
 
     /**
@@ -859,9 +867,14 @@ class AppsController extends AbstractController
     {
         /** @var JIRA $js */
         $js   = $this->get(JIRA::NAME);
-        $meta = $js->getMeta();
+        $meta = null;
+        try {
+            $meta = $js->getMeta();
+        } catch (\Exception $e) {
+        }
+
         $meta = $meta ? $meta->toArray() : null;
 
-        return $this->createApiResponse(array('enabled' => $js->isEnabled(), 'meta' => $meta));
+        return $this->createApiResponse(['enabled' => $js->isEnabled(), 'meta' => $meta]);
     }
 }

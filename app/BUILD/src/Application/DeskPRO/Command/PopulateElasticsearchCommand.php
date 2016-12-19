@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\NewSearch\Provider\Doctrine as DoctrineProvider;
 use FOS\ElasticaBundle\IndexManager;
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
@@ -79,16 +80,15 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to repopulate')
             ->addOption('auto-reset', null, InputOption::VALUE_REQUIRED, 'Internal')
             ->addOption('reset', null, InputOption::VALUE_NONE, 'Reset index before populating')
-            ->addOption('offset', null, InputOption::VALUE_REQUIRED, 'Start indexing at offset', 0)
-            ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
-            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)', 500)
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
-            ->setDescription('Populates search indexes from providers')
-        ;
+            ->setDescription('Populates search indexes from providers');
     }
 
     /**
      * @see Symfony\Component\Console\Command\Command::initialize()
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
@@ -106,11 +106,16 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
 
     /**
      * @see Symfony\Component\Console\Command\Command::execute()
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         @set_time_limit(0);
-        if ($input->getOption('auto-reset') && App::$container->getSetting('elastica.requires_reset_started') != $input->getOption('auto-reset')) {
+        if ($input->getOption('auto-reset') && App::$container->getSetting('elastica.requires_reset_started') != $input->getOption('auto-reset') && $input->getOption('auto-reset') != 'requires_reset') {
             return;
         }
 
@@ -119,8 +124,12 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
             $reset = true;
         }
 
-        $this->getContainer()->getDb()->delete('settings', array('name' => 'elastica.requires_reset'));
-        $this->getContainer()->getDb()->delete('settings', array('name' => 'elastica.requires_reset_started'));
+        if ($input->getOption('auto-reset') == 'requires_reset' && !$reset) {
+            return;
+        }
+
+        $this->getContainer()->getDb()->delete('settings', ['name' => 'elastica.requires_reset']);
+        $this->getContainer()->getDb()->delete('settings', ['name' => 'elastica.requires_reset_started']);
 
         if (!App::$container->getSetting('elastica.enabled')) {
             $output->writeln('<error>Elasticsearch is not enabled.');
@@ -131,13 +140,14 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
         $indexes = array_keys($this->indexManager->getAllIndexes());
         $em      = App::$container->getEm();
 
-        $es_status = $em->getRepository('DeskPRO:DataStore')->getByName('sys.es_indexer', true);
+        /** @var DataStore $es_status */
+        $es_status = $em->getRepository(DataStore::class)->getByName('sys.es_indexer', true);
         $es_status->setData('date_created', new \DateTime());
         $es_status->setData('date_last', new \DateTime());
         $es_status->setData('date_completed', null);
         $es_status->setData('status', 'running');
 
-        $all_totals = array();
+        $all_totals = [];
 
         foreach ($indexes as $index) {
             /** @var $providers DoctrineProvider[] */
@@ -157,7 +167,6 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
         $em->flush();
 
         foreach ($indexes as $index) {
-
             /** @var $providers DoctrineProvider[] */
             $providers = $this->providerRegistry->getIndexProviders($index);
 
@@ -170,11 +179,11 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
                 $provider_id = $index.'_'.$type;
 
                 $total     = $all_totals[$provider_id];
-                $offset    = $input->getOption('offset');
-                $batchSize = $input->getOption('batch-size');
+                $offset    = 0;
+                $batchSize = 500;
 
                 for (; $offset < $total; $offset += $batchSize) {
-                    $arguments = $this->getArguments($input, $index, $type, $offset, ($offset + $batchSize), $batchSize);
+                    $arguments = $this->getArguments($input, $index, $type, $offset, $batchSize, $reset);
                     $this->runCommand($arguments, $output);
 
                     $done = min($total, $offset + $batchSize);
@@ -193,16 +202,13 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
         $em->flush();
     }
 
+    /**
+     * @param                 $arguments
+     * @param OutputInterface $output
+     */
     private function runCommand($arguments, OutputInterface $output)
     {
-        $php_path = dp_get_php_path(false);
-        $file     = escapeshellarg(realpath(DP_ROOT.'/../cmd.php'));
-
-        if (defined('DPC_IS_CLOUD')) {
-            $file .= ' --dpc-site-id '.DPC_SITE_ID;
-        }
-
-        $command = $php_path.' '.$file.' dp:elastica:index '.implode(' ', $arguments);
+        $command = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:elastica:index '.implode(' ', $arguments));
         $process = new Process($command);
         $process->setTimeout(600);
 
@@ -219,20 +225,26 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
         });
     }
 
-    private function getArguments($input, $index, $type, $offset, $limit, $batchSize)
+    /**
+     * @param InputInterface $input
+     * @param                $index
+     * @param                $type
+     * @param int            $offset
+     * @param int            $batchSize
+     * @param int            $doReset
+     *
+     * @return array
+     */
+    private function getArguments($input, $index, $type, $offset, $batchSize, $doReset)
     {
-        $arguments = array();
+        $arguments = [];
 
         $arguments[] = '--index="'.$index.'"';
         $arguments[] = '--type="'.$type.'"';
         $arguments[] = '--offset="'.$offset.'"';
-        $arguments[] = '--limit="'.$limit.'"';
         $arguments[] = '--batch-size="'.$batchSize.'"';
-        $arguments[] = '--no-reset ';
-
-        if ($input->hasOption('sleep')) {
-            $arguments[] = '--sleep="'.$input->getOption('sleep').'"';
-        }
+        $arguments[] = '--single-batch';
+        $arguments[] = '--no-reset';
 
         if ($input->hasOption('ignore-errors')) {
             $arguments[] = '--ignore-errors';

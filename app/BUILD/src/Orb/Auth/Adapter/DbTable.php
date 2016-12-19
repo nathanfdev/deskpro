@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Orb\Auth\Adapter;
 
 use Doctrine\DBAL\Connection;
@@ -120,7 +121,7 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
 
     protected function initOptions()
     {
-        $opts = array(
+        $opts = [
             self::OPT_TABLE            => '',
             self::OPT_FIELD_ID         => 'id',
             self::OPT_FIELD_USERNAME   => null,
@@ -129,7 +130,7 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
             self::OPT_FIELD_FIRST_NAME => null,
             self::OPT_FIELD_LAST_NAME  => null,
             self::OPT_FIELD_NAME       => null,
-        );
+        ];
         $this->options = new \Orb\Util\OptionsArray($opts);
     }
 
@@ -150,14 +151,14 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
                 $this->logger->logDebug('Missing username');
             }
 
-            return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));
+            return new Result(Result::FAILURE, null, ['error_code' => 'missing_input_username', 'error_message' => 'No username provided']);
         }
         if (!$this->set_password) {
             if ($this->logger) {
                 $this->logger->logDebug('Missing password');
             }
 
-            return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_password', 'error_message' => 'No password provided'));
+            return new Result(Result::FAILURE, null, ['error_code' => 'missing_input_password', 'error_message' => 'No password provided']);
         }
 
         $time_start = microtime(true);
@@ -171,7 +172,7 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
         }
 
         try {
-            $try = array();
+            $try = [];
             if (\Orb\Validator\StringEmail::isValueValid($this->set_username)) {
                 $try[] = 'getUserInfoForEmail';
             }
@@ -209,7 +210,7 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
                 $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR);
             }
 
-            return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
+            return new Result(Result::FAILURE_EXCEPTION, null, ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]);
         }
 
         $identity = $this->getIdentityFromUserInfo($userinfo);
@@ -240,12 +241,12 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
 
         // Map fields from the raw userinfo to common fields that most
         // auth adapters use by convention
-        $map = array(
+        $map = [
             self::OPT_FIELD_EMAIL      => 'email_address',
             self::OPT_FIELD_FIRST_NAME => 'first_name',
             self::OPT_FIELD_LAST_NAME  => 'last_name',
             self::OPT_FIELD_NAME       => 'name',
-        );
+        ];
 
         foreach ($map as $field_key => $info_key) {
             $field = $this->options[$field_key];
@@ -287,21 +288,22 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
                 break;
         }
 
-        return ($userinfo[$field] == $password_compare);
+        return $userinfo[$field] == $password_compare;
     }
 
-    public function getAllUserInfo($offset = 0)
+    public function getAllUserInfo($offset = 0, $limit = 1000)
     {
         if (!$this->getDb()) {
-            return array();
+            return [];
         }
 
-        $table = $this->options[self::OPT_TABLE];
-        // From MySQL manuel, OFFSET without LIMIT: http://dev.mysql.com/doc/refman/5.0/en/select.html#id4651990
-        $result = $this->db->executeQuery("SELECT * FROM $table LIMIT 18446744073709551610 OFFSET $offset")->fetchAll();
+        $table  = $this->options[self::OPT_TABLE];
+        $result = $this->db
+            ->executeQuery(sprintf('SELECT * FROM %s LIMIT %d, %d', $table, $offset, $limit))
+            ->fetchAll();
 
         if (!$result) {
-            return array();
+            return [];
         }
 
         return $result;
@@ -333,7 +335,7 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
             $result  = $this->db->fetchAssoc($sql);
         } else {
             $sql    = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
-            $result = $this->db->fetchAssoc($sql, array($username));
+            $result = $this->db->fetchAssoc($sql, [$username]);
         }
 
         if (!$result) {
@@ -367,7 +369,7 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
             $result  = $this->db->fetchAssoc($sql);
         } else {
             $sql    = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
-            $result = $this->db->fetchAssoc($sql, array($email));
+            $result = $this->db->fetchAssoc($sql, [$email]);
         }
 
         if (!$result) {
@@ -398,7 +400,7 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
             $result  = $this->db->fetchAssoc($sql);
         } else {
             $sql    = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
-            $result = $this->db->fetchAssoc($sql, array($id));
+            $result = $this->db->fetchAssoc($sql, [$id]);
         }
 
         if (!$result) {
@@ -413,7 +415,7 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
      */
     public function getUserInfoFromIdentity($id, $id_type = null)
     {
-        $try = array();
+        $try = [];
         if ($id_type === 'email' || (!$id_type && \Orb\Validator\StringEmail::isValueValid($id))) {
             $try[] = 'getUserInfoForEmail';
         }

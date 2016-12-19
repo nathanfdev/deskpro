@@ -1,0 +1,116 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+
+namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator;
+
+use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkConfigRepoInterface;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGeneratorInterface;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
+/**
+ * Class DefaultAgentLinkGenerator.
+ */
+class DefaultAgentLinkGenerator implements LinkGeneratorInterface
+{
+    /**
+     * @var LinkConfigRepoInterface
+     */
+    private $config_repo;
+
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $url_generator;
+
+    /**
+     * @var PropertyAccessor
+     */
+    private $property_accessor;
+
+    /**
+     * Constructor.
+     *
+     * @param LinkConfigRepoInterface $config_repo
+     * @param UrlGeneratorInterface   $url_generator
+     * @param PropertyAccessor        $property_accessor
+     */
+    public function __construct(
+        LinkConfigRepoInterface $config_repo,
+        UrlGeneratorInterface   $url_generator,
+        PropertyAccessor        $property_accessor
+    ) {
+        $this->config_repo       = $config_repo;
+        $this->url_generator     = $url_generator;
+        $this->property_accessor = $property_accessor;
+    }
+
+    /**
+     * Supports AGENT context if the config is NOT for a CUSTOM link.
+     *
+     * {@inheritdoc}
+     */
+    public function supports($object, $type, $context)
+    {
+        if (!ObjectRouter::CONTEXT_AGENT === $context) {
+            return false;
+        }
+
+        $config = $this->config_repo->getRouteInfo($object, $context, $type);
+
+        return $config !== ObjectRouter::CONFIG_CUSTOM;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generate($object, $type, $context, $extra_params, $reference_type)
+    {
+        $config = $this->config_repo->getRouteInfo($object, ObjectRouter::CONTEXT_AGENT, $type);
+
+        $route_name = $config['route'];
+
+        $route_params = [];
+        foreach ($config['route_param_map'] as $param_name => $property_path) {
+            $route_params[$param_name] = $this->property_accessor->getValue(
+                $object, $property_path
+            );
+        }
+
+        return $this->url_generator->generate(
+            $route_name,
+            array_merge($route_params, $extra_params),
+            $reference_type
+        );
+    }
+}

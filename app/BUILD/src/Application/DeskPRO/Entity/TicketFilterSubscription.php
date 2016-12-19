@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -47,7 +48,7 @@ class TicketFilterSubscription extends \Application\DeskPRO\Domain\DomainObject
     protected $id;
 
     /**
-     * @var \Application\DeskPRO\Entity\TicketFilter
+     * @var \Application\DeskPRO\Entity\LegacyTicketFilter
      */
     protected $filter;
 
@@ -134,33 +135,167 @@ class TicketFilterSubscription extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketFilterSubscription';
-        $metadata->setPrimaryTable(array('name' => 'ticket_filter_subscriptions'));
+        $metadata->setPrimaryTable(['name' => 'ticket_filter_subscriptions']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapField(array('fieldName' => 'email_created', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_created'));
-        $metadata->mapField(array('fieldName' => 'email_new', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_new'));
-        $metadata->mapField(array('fieldName' => 'email_leave', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_leave'));
-        $metadata->mapField(array('fieldName' => 'email_user_activity', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_user_activity'));
-        $metadata->mapField(array('fieldName' => 'email_agent_activity', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_agent_activity'));
-        $metadata->mapField(array('fieldName' => 'email_agent_note', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_agent_note'));
-        $metadata->mapField(array('fieldName' => 'email_property_change', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_property_change'));
-        $metadata->mapField(array('fieldName' => 'alert_created', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_created'));
-        $metadata->mapField(array('fieldName' => 'alert_new', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_new'));
-        $metadata->mapField(array('fieldName' => 'alert_leave', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_leave'));
-        $metadata->mapField(array('fieldName' => 'alert_user_activity', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_user_activity'));
-        $metadata->mapField(array('fieldName' => 'alert_agent_activity', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_agent_activity'));
-        $metadata->mapField(array('fieldName' => 'alert_agent_note', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_agent_note'));
-        $metadata->mapField(array('fieldName' => 'alert_property_change', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_property_change'));
-        $metadata->mapManyToOne(array('fieldName' => 'filter', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketFilter', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'filter_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapField([
+            'fieldName'  => 'email_created',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'email_created',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'email_new',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'email_new',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'email_leave',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'email_leave',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'email_user_activity',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'email_user_activity',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'email_agent_activity',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'email_agent_activity',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'email_agent_note',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'email_agent_note',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'email_property_change',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'email_property_change',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'alert_created',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'alert_created',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'alert_new',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'alert_new',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'alert_leave',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'alert_leave',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'alert_user_activity',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'alert_user_activity',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'alert_agent_activity',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'alert_agent_activity',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'alert_agent_note',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'alert_agent_note',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'alert_property_change',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'alert_property_change',
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'filter',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\LegacyTicketFilter',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'filter_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'person',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

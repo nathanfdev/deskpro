@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\App\AppManager;
@@ -40,7 +41,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class AppManagerService
 {
-    public static function create(DeskproContainer $container)
+    public static function createAppManager(DeskproContainer $container)
     {
         $em = $container->getEm();
 
@@ -51,7 +52,9 @@ class AppManagerService
         ')->execute();
 
         if (count($apps)) {
-            $names = array_map(function ($a) { return $a->package->name; }, $apps);
+            $names = array_map(function ($a) {
+                return $a->package->name;
+            }, $apps);
 
             // This loads assets for installed apps
             // into the EM so we dont have a query-per-app
@@ -61,7 +64,7 @@ class AppManagerService
                 LEFT JOIN package.assets asset
                 WHERE package.name IN (:names)
                 ORDER BY package.title
-            ')->execute(array('names' => $names));
+            ')->execute(['names' => $names]);
         }
 
         $packages = $em->createQuery('
@@ -88,12 +91,13 @@ class AppManagerService
 
         $app_service_container = new AppServiceContainer($container);
 
-        $app_paths = array(
+        $app_paths = [
             'default' => DP_ROOT.'/apps',
-        );
+        ];
 
-        if (dp_get_config('app_paths')) {
-            foreach (dp_get_config('app_paths') as $prefix => $path) {
+        $env = $container->get('deskpro.app_env');
+        if ($env->getConfig('paths.app_paths')) {
+            foreach ($env->getConfig('paths.app_paths') as $prefix => $path) {
                 $app_paths[$prefix] = $path;
             }
         }
@@ -101,5 +105,12 @@ class AppManagerService
         $app_manager = new AppManager($packages, $apps, $app_paths, $app_service_container, $usersources);
 
         return $app_manager;
+    }
+
+    public static function create(DeskproContainer $container)
+    {
+        // the legacy SystemServices will call this create(),
+        // but we want to use the DIC
+        return $container->get('deskpro.apps.manager');
     }
 }

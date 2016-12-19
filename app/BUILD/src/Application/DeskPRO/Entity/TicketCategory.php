@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,25 +31,42 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Ticket categories.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
-class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
+class TicketCategory extends DomainObject implements HasPhraseName, Hierarchical
 {
     /**
+     * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
+     * This category parent.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\TicketCategory>")
+     *
      * @var TicketCategory
      */
     protected $parent = null;
@@ -60,18 +77,31 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
     protected $children = null;
 
     /**
+     * Category title.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $title;
 
     /**
+     * Obviously it's display order for lists.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $display_order = 0;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
-        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     /**
@@ -101,6 +131,14 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
     }
 
     /**
+     * @return TicketCategory
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
      * @return string
      */
     public function getTitle()
@@ -117,7 +155,7 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
      */
     public function setRealTitle($title)
     {
-        $this->title = $title;
+        $this->setModelField('title', $title);
 
         return $this;
     }
@@ -151,24 +189,24 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
     /**
      * Add a child department.
      *
-     * @param Department $department
+     * @param TicketCategory $category
      */
-    public function addChild(TicketCategory $department)
+    public function addChild(TicketCategory $category)
     {
-        $department['parent'] = $this;
-        $this->children->add($department);
+        $category['parent'] = $this;
+        $this->children->add($category);
     }
 
     /**
      * Get children.
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return \Doctrine\Common\Collections\ArrayCollection|TicketCategory[]
      */
     public function getChildren()
     {
         if ($this->parent) {
             // empty collection
-            return new \Doctrine\Common\Collections\ArrayCollection();
+            return new ArrayCollection();
         }
 
         return $this->children;
@@ -202,13 +240,9 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -219,19 +253,23 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
     }
 
     /**
-     * Get the default value phrase for the object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         if ($property == 'full') {
             return $this->getFullTitle();
         }
 
         return $this->title;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
     }
 
     public function __toString()
@@ -242,7 +280,7 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
@@ -255,21 +293,63 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketCategory';
-        $metadata->setPrimaryTable(array('name' => 'ticket_categories'));
+        $metadata->setPrimaryTable(['name' => 'ticket_categories']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
-        $metadata->mapField(array('fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order'));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'title',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'title',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'display_order',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'display_order',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'parent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapOneToMany(array('fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory', 'mappedBy' => 'parent',  'orderBy' => array('display_order' => 'ASC')));
+        $metadata->mapManyToOne([
+            'fieldName'    => 'parent',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory',
+            'mappedBy'     => null,
+            'inversedBy'   => 'children',
+            'joinColumns'  => [
+                [
+                    'name'                 => 'parent_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'children',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory',
+            'mappedBy'     => 'parent',
+            'orderBy'      => ['display_order' => 'ASC'],
+        ]);
     }
 }

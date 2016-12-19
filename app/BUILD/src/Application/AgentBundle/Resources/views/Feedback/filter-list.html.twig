@@ -1,12 +1,20 @@
 {% extends 'AgentBundle::list-pane-layout.html.twig' %}
-{% block dp_declare %}
-	{{ set_tplvar('baseId', el_uid()) }}
-	{% if list_type == 'category' %}
-		{{ set_tplvar('subgroup_url', path('agent_feedback_category', {'category_id': category_id}) ~ '?subgroup=SUBGROUP_ID') }}
-	{% elseif list_type == 'status' %}
-		{{ set_tplvar('subgroup_url', path('agent_feedback_status', {'status': status}) ~ '?subgroup=SUBGROUP_ID') }}
-	{% endif %}
-{% endblock %}
+{%- if list_type == 'category' -%}
+	{% set tplvars = {
+		baseId: el_uid(),
+		subgroup_url: path('agent_feedback_category', {'category_id': category_id}) ~ '?subgroup=SUBGROUP_ID'
+	} %}
+{%- elseif list_type == 'status' -%}
+	{% set tplvars = {
+		baseId: el_uid(),
+		subgroup_url: path('agent_feedback_status', {'status': status}) ~ '?subgroup=SUBGROUP_ID'
+	} %}
+{%- else -%}
+	{% set tplvars = {
+		baseId: el_uid(),
+		subgroup_url: null
+	} %}
+{%- endif -%}
 
 {######################################################################################################################}
 {# METADATA #}
@@ -34,15 +42,7 @@
 		{% if not feedback %}
 			pageMeta.noResults = true;
 		{% endif %}
-
-		{% if list_type == 'status '%}
-			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_status', {'status': status}) }}';
-		{% elseif list_type == 'label' %}
-			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_label', {'label': label.id}) }}';
-		{% elseif list_type == 'category' %}
-			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_category', {'category_id': category_id}) }}';
-		{% endif %}
-
+		pageMeta.baseId = '{{ tplvars.baseId }}';
 		pageMeta.perPage = 50;
 		pageMeta.currentPage = {{ cur_page }};
 		pageMeta.resultIds = {{ result_ids|json_encode|raw }};

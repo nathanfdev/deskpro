@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\App;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
 /**
@@ -53,7 +54,7 @@ class AppManipulator
      */
     private $container;
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
@@ -98,7 +99,7 @@ class AppManipulator
             $assets       = Arrays::keyFromData($assets, 'id');
             $save_assets  = $saveAssets;
 
-            $remove_blobs = array();
+            $remove_blobs = [];
 
             foreach ($save_assets as $asset_info) {
                 if (!isset($assets[$asset_info['id']])) {

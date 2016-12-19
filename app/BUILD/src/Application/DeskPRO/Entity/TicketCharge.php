@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -231,13 +232,13 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Render a custom field.
      *
-     * @depreciated
+     * @deprecated
      */
     public function renderCustomField($field_id, $context = 'html')
     {
         $f_def = App::getEntityRepository('DeskPRO:CustomDefBilling')->find($field_id);
 
-        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, array($f_def));
+        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, [$f_def]);
 
         $value    = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
         $rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
@@ -284,7 +285,7 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $field_defs      = App::getApi('custom_fields.billing')->getEnabledFields();
-        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array($data), $field_defs);
+        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy([$data], $field_defs);
 
         $custom_fields = App::getApi('custom_fields.billing')->getFieldsDisplayArray(
             $field_defs,
@@ -296,7 +297,7 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
         return $custom_fields;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
@@ -313,18 +314,18 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketCharge';
-        $metadata->setPrimaryTable(array('name' => 'ticket_charges'));
+        $metadata->setPrimaryTable(['name' => 'ticket_charges']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -332,119 +333,124 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'charge_time',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'charge_time',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'amount',
                 'type'       => 'decimal',
                 'precision'  => 10,
                 'scale'      => 2,
                 'nullable'   => true,
                 'columnName' => 'amount',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'date_created',
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'date_created',
-            )
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'ticket',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
                 'mappedBy'     => null,
-                'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'inversedBy'   => 'charges',
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'ticket_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'person',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'organization',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'organization_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'agent',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'agent_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'set null',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
 
         $metadata->mapOneToMany(
-            array(
-                'fieldName'     => 'custom_data',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\CustomDataBilling',
-                'cascade'       => array('remove', 'persist', 'merge', 'detach'),
+            [
+                'fieldName'    => 'custom_data',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataBilling',
+                'cascade'      => [
+                    'remove',
+                    'persist',
+                    'merge',
+                    'detach',
+                ],
                 'mappedBy'      => 'ticket_charge',
                 'orphanRemoval' => true,
                 'dpApi'         => true,
-            )
+            ]
         );
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

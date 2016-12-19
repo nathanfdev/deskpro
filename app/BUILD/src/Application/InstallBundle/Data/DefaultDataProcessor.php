@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -101,11 +102,11 @@ class DefaultDataProcessor
             $data = @unserialize($row['data']);
         }
         if (!$data) {
-            $data = array();
+            $data = [];
         }
 
         if (!isset($data['installed'])) {
-            $data['installed'] = array();
+            $data['installed'] = [];
         }
 
         $this->data_info = $data;
@@ -116,12 +117,12 @@ class DefaultDataProcessor
      */
     private function flushDataInfo()
     {
-        $this->container->getDb()->delete('datastore', array('name' => 'sys.install.default_data'));
-        $this->container->getDb()->insert('datastore', array(
+        $this->container->getDb()->delete('datastore', ['name' => 'sys.install.default_data']);
+        $this->container->getDb()->insert('datastore', [
             'name' => 'sys.install.default_data',
             'auth' => DpStrings::random(15),
             'data' => serialize($this->data_info),
-        ));
+        ]);
     }
 
     /**
@@ -145,7 +146,7 @@ class DefaultDataProcessor
             return $this->data_classes;
         }
 
-        $this->data_classes = array();
+        $this->data_classes = [];
 
         $dir = dir($this->root_dir);
         while (($f = $dir->read()) !== false) {

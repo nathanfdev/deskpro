@@ -1,0 +1,5 @@
+#!/usr/bin/env php
+<?php
+
+array_splice($_SERVER['argv'], 1, 0, ['dp:update']);
+require __DIR__.'/../app/run/targets/console.php';

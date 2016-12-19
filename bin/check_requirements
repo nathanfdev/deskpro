@@ -1,0 +1,4 @@
+#!/usr/bin/env php
+<?php
+define('DP_RUN_BIN_SCRIPT', 'check_requirements');
+require __DIR__.'/../app/run/targets/php_bin_script.php';

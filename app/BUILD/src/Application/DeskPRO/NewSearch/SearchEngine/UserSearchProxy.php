@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,7 @@
 namespace Application\DeskPRO\NewSearch\SearchEngine;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 class UserSearchProxy implements UserSearchInterface
 {
@@ -39,7 +39,7 @@ class UserSearchProxy implements UserSearchInterface
     /** @var Mysql\UserSearch */
     protected $dbs;
 
-    /** @var DeskproContainer  */
+    /** @var DeskproContainer */
     protected $c;
 
     public function __construct(DeskproContainer $container)
@@ -60,7 +60,7 @@ class UserSearchProxy implements UserSearchInterface
             try {
                 return $this->es()->search($context, $query, $options);
             } catch (\Exception $e) {
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
 
                 // fallback on DB search
                 return $this->dbs()->search($context, $query, $options);
@@ -83,7 +83,7 @@ class UserSearchProxy implements UserSearchInterface
             try {
                 return $this->es()->similarTo($context, $content, $options);
             } catch (\Exception $e) {
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
 
                 // fallback on DB search
                 return $this->dbs()->similarTo($context, $content, $options);
@@ -96,8 +96,8 @@ class UserSearchProxy implements UserSearchInterface
     /**
      * @throws \Symfony\Component\DependencyInjection\ServiceCircularReferenceException
      * @throws \Symfony\Component\DependencyInjection\ServiceNotFoundException
-     * @return Elastic\UserSearch|SearchEngine
      *
+     * @return Elastic\UserSearch|SearchEngine
      */
     protected function es()
     {
@@ -122,6 +122,7 @@ class UserSearchProxy implements UserSearchInterface
 
         return $this->dbs = new Mysql\UserSearch(
             $this->c->getDbRead('search.searcher.content'),
+            $this->c->getEm(),
             new Mysql\MysqlResultsTransformer($this->c->getEm())
         );
     }

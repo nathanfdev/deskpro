@@ -1,0 +1,126 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+
+namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
+
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
+use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+
+/**
+ * Class LogoController.
+ */
+class LogoController extends AbstractApiController
+{
+    use HelperMethods;
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/logo")
+     * @Method({"POST"})
+     *
+     * @param Request $request
+     *
+     * @return ApiWrapper
+     */
+    public function uploadLogoAction(Request $request)
+    {
+        return $this->wrap(
+            $this->getAssetsManager()->uploadBlob($request->files->get('file'), AssetsManager::CUSTOM_LOGO_TAG)
+        );
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/favicon")
+     * @Method({"POST"})
+     *
+     * @param Request $request
+     *
+     * @return ApiWrapper
+     */
+    public function uploadFaviconAction(Request $request)
+    {
+        return $this->wrap(
+            $this->getAssetsManager()->uploadBlob($request->files->get('file'), AssetsManager::CUSTOM_LOGO_TAG)
+        );
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/logo")
+     * @Method({"GET"})
+     *
+     * @return ApiWrapper
+     */
+    public function getCustomLogoUrlAction()
+    {
+        return $this->wrap($this->getAssetsManager()->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_LOGO_TAG));
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/favicon")
+     * @Method({"GET"})
+     *
+     * @return ApiWrapper
+     */
+    public function getCustomFaviconUrlAction()
+    {
+        return $this->wrap($this->getAssetsManager()->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG));
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/logo")
+     * @Method({"DELETE"})
+     *
+     * @return ApiWrapper
+     */
+    public function deleteEditThemeSetLogoAssetAction()
+    {
+        return $this->wrap($this->getAssetsManager()->deleteEditThemeSetAsset(
+            $this->getAssetsManager()->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_LOGO_TAG)
+        ));
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/favicon")
+     * @Method({"DELETE"})
+     *
+     * @return ApiWrapper
+     */
+    public function deleteEditThemeSetFaviconAssetAction()
+    {
+        return $this->wrap($this->getAssetsManager()->deleteEditThemeSetAsset(
+            $this->getAssetsManager()->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG)
+        ));
+    }
+}

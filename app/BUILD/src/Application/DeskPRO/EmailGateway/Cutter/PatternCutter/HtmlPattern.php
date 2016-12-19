@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Cutter\PatternCutter;
 
 class HtmlPattern
@@ -84,11 +85,10 @@ class HtmlPattern
 
             // Match token is a regex string
             if ($segment[0] == '#') {
-                $this->tokens[] = array('match', trim($segment));
+                $this->tokens[] = ['match', trim($segment)];
 
             // Tag token
             } else {
-
                 // Space on each side for easy anchoring
                 $segment = " $segment ";
 
@@ -104,11 +104,11 @@ class HtmlPattern
                     // Closing tag: This just means :parent for us,
                     // its just telling the matcher to go up the tree again
                     if ($tag[0] == '/') {
-                        $this->tokens[] = array('nav', ':close', $depth--);
+                        $this->tokens[] = ['nav', ':close', $depth--];
 
                     // Normal tag, add it to the current tag bunch
                     } else {
-                        $this->tokens[] = array('nav', $tag, $depth++);
+                        $this->tokens[] = ['nav', $tag, $depth++];
                     }
                 }
             }

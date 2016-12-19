@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 
 class Build1413803749 extends AbstractBuild
 {
@@ -49,7 +50,7 @@ class Build1413803749 extends AbstractBuild
 
             $this->out('Add ticket_triggers.by_app_mode');
             $this->execMutateSql("ALTER TABLE ticket_triggers ADD by_app_mode LONGTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)'", true);
-            $this->container->getDb()->insertIgnore('install_data', array('build' => '1416914310', 'name' => 'did_app_triggers', 'data' => '1'));
+            $this->container->getDb()->insertIgnore('install_data', ['build' => '1416914310', 'name' => 'did_app_triggers', 'data' => '1']);
         }
 
         $userType = Usersource::TYPE_USER;
@@ -84,7 +85,7 @@ class Build1413803749 extends AbstractBuild
         $deskProUsers->is_enabled    = $enabled;
         $deskProUsers->display_order = -10; // ensure #1 order (initially!)
         $deskProUsers->title         = 'DeskPRO';
-        $deskProUsers->options       = array();
+        $deskProUsers->options       = [];
 
         $em->persist($deskProUsers);
         $em->flush($deskProUsers);

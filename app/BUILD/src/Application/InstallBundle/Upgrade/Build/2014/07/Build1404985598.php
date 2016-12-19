@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Entity\Usergroup;
@@ -40,8 +41,8 @@ class Build1404985598 extends AbstractBuild
         $db = $this->container->getDb();
         $em = $this->container->getEm();
 
-        $db->update('usergroups', array('title' => '[Custom] All Permissions'), array('title' => 'All Permissions'));
-        $db->update('usergroups', array('title' => '[Custom] All Non-Destructive Permissions'), array('title' => 'All Non-Destructive Permissions'));
+        $db->update('usergroups', ['title' => '[Custom] All Permissions'], ['title' => 'All Permissions']);
+        $db->update('usergroups', ['title' => '[Custom] All Non-Destructive Permissions'], ['title' => 'All Non-Destructive Permissions']);
 
         $g                 = new Usergroup();
         $g->title          = 'All Permissions';

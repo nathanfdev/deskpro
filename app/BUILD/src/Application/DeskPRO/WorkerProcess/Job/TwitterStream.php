@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -48,7 +49,7 @@ class TwitterStream extends AbstractJob
     const EVENT_LIMIT = 50;
 
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 
@@ -65,11 +66,11 @@ class TwitterStream extends AbstractJob
     /**
      * @var array
      */
-    protected $accounts = array();
+    protected $accounts = [];
     /**
      * @var array
      */
-    protected $twitter = array();
+    protected $twitter = [];
 
     public function run()
     {
@@ -103,14 +104,14 @@ class TwitterStream extends AbstractJob
                 if ($data) {
                     try {
                         $success = call_user_func(
-                            array($this, $method),
+                            [$this, $method],
                             $this->getAccount($event['account_id']),
                             $data
                         );
                     } catch (\Exception $e) {
                         $this->logStatus('exception caught: '.$e->getMessage().' '.$e->getFile().':'.$e->getLine());
                         $success = false;
-                        \DeskPRO\Kernel\KernelErrorHandler::logException($e);
+                        \DpSys\LowError\SystemErrorHandler::logException($e);
                     }
                 } else {
                     // couldn't unserialize the data, so just get rid of this
@@ -122,9 +123,9 @@ class TwitterStream extends AbstractJob
             }
 
             if ($success) {
-                $this->db->delete('twitter_stream', array(
+                $this->db->delete('twitter_stream', [
                     'id' => $event['id'],
-                ));
+                ]);
 
                 ++$processed;
             }
@@ -199,7 +200,7 @@ class TwitterStream extends AbstractJob
      * @param \Application\DeskPRO\Entity\TwitterAccount $account
      * @param object                                     $data
      *
-     * @return Boolean
+     * @return bool
      */
     protected function processStatus(TwitterAccount $account, $data)
     {
@@ -374,12 +375,12 @@ class TwitterStream extends AbstractJob
                             $friend->user    = $targetUser;
                             $this->em->persist($friend);
 
-                            App::getDb()->insert('client_messages', array(
+                            App::getDb()->insert('client_messages', [
                                 'channel'      => 'agent.twitter-friend',
                                 'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                                 'date_created' => date('Y-m-d H:i:s'),
-                                'data'         => serialize(array('action' => 'new', 'account_id' => $account->id)),
-                            ));
+                                'data'         => serialize(['action' => 'new', 'account_id' => $account->id]),
+                            ]);
                         }
                     } elseif ($targetUser->id == $account->getUserId()) {
                         // being followed
@@ -392,12 +393,12 @@ class TwitterStream extends AbstractJob
                             $follower->is_archived = $friend ? true : false;
                             $this->em->persist($follower);
 
-                            App::getDb()->insert('client_messages', array(
+                            App::getDb()->insert('client_messages', [
                                 'channel'      => 'agent.twitter-follower',
                                 'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                                 'date_created' => date('Y-m-d H:i:s'),
-                                'data'         => serialize(array('action' => ($friend ? 'new-archived' : 'new'), 'account_id' => $account->id)),
-                            ));
+                                'data'         => serialize(['action' => ($friend ? 'new-archived' : 'new'), 'account_id' => $account->id]),
+                            ]);
                         }
                     }
                     break;
@@ -410,13 +411,13 @@ class TwitterStream extends AbstractJob
                             $this->em->remove($friend);
                             $friend = null;
 
-                            App::getDb()->insert('client_messages', array(
+                            App::getDb()->insert('client_messages', [
                                 'channel'       => 'agent.twitter-friend',
                                 'auth'          => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                                 'date_created'  => date('Y-m-d H:i:s'),
-                                'data'          => serialize(array('action' => 'removed', 'account_id' => $account->id)),
+                                'data'          => serialize(['action' => 'removed', 'account_id' => $account->id]),
                                 'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray',
-                            ));
+                            ]);
                         }
                     }
                     break;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,20 +29,24 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Application\DeskPRO\Service\JIRA;
-use DeskPRO\Kernel\License;
+use DpSys\License;
+use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVariables;
 
-class GlobalVariables extends BaseGlobalVariables
+class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInterface
 {
     /** @var array */
-    protected $variables = array();
+    protected $variables = [];
 
     /** @var array simple cache of isAppAllowed() multiple calls */
-    protected $app_allowed_checks = array();
+    protected $app_allowed_checks = [];
 
     public function setVariable($name, $value)
     {
@@ -51,7 +55,7 @@ class GlobalVariables extends BaseGlobalVariables
 
     public function getLicense()
     {
-        return \DeskPRO\Kernel\License::getLicense();
+        return License::getLicense();
     }
 
     public function getVariable($name)
@@ -93,32 +97,6 @@ class GlobalVariables extends BaseGlobalVariables
     {
         $group_vars = App::get('deskpro.core.settings')->getGroup($group);
 
-        if ($group == 'user_style') {
-            if (defined('DPC_IS_CLOUD')) {
-                // Always use https cloud.deskpro.com for css,
-                // it'll always work regardless of how you mess with URLs and ssl certs
-                $group_vars['static_path'] = 'https://cloud.deskpro.com/web'.DPC_SITE_BUILD_NUM;
-            } else {
-                // External blob storage means we need ot use a full URL for assets
-                if (!App::getConfig('static_path') && App::getContainer()->getBlobStorage()->getPreferredAdapterId() == 's3') {
-                    $url = App::getSetting('core.deskpro_url');
-                    $url = str_replace('index.php', '', $url);
-                    $url = trim($url, '/');
-
-                    $group_vars['static_path'] = $url.'/web';
-                } else {
-                    // A custom defined static URL
-                    if (App::getConfig('static_path')) {
-                        $group_vars['static_path'] = rtrim(App::getConfig('static_path'), '/');
-
-                    // Default static path relative to current
-                    } else {
-                        $group_vars['static_path'] = rtrim('../..'.(App::getConfig('static_path') ?: '/web/'), '/');
-                    }
-                }
-            }
-        }
-
         return $group_vars;
     }
 
@@ -130,11 +108,6 @@ class GlobalVariables extends BaseGlobalVariables
     public function getSession()
     {
         return App::getSession();
-    }
-
-    public function getVisitor()
-    {
-        return App::getSession()->getVisitor();
     }
 
     public function getLanguage()
@@ -157,9 +130,12 @@ class GlobalVariables extends BaseGlobalVariables
         return License::getLicense()->isDemo();
     }
 
+    /**
+     * @deprecated
+     */
     public function getStyle()
     {
-        return App::getSystemService('style');
+        return;
     }
 
     public function getLogoBlob()
@@ -198,14 +174,14 @@ class GlobalVariables extends BaseGlobalVariables
 
         if ($accounts === null) {
             $accounts = array_map(function ($a) {
-                return array(
+                return [
                     'id'                    => $a->id,
                     'address'               => $a->address,
                     'other_addresses'       => $a->other_addresses,
                     'all_addresses'         => $a->getAllAddresses(),
                     'incoming_account_type' => $a->getIncomingAccountType(),
                     'outgoing_account_type' => $a->getOutgoingAccountType(),
-                );
+                ];
             }, App::$container->getEmailAccountManager()
                 ->getAllAccounts());
         }
@@ -242,6 +218,7 @@ class GlobalVariables extends BaseGlobalVariables
     {
         return App::getDataService('AgentTeam');
     }
+
     public function getAgentTeams()
     {
         return App::getDataService('AgentTeam');
@@ -279,11 +256,6 @@ class GlobalVariables extends BaseGlobalVariables
         return;
     }
 
-    public function getBrowserSniffer()
-    {
-        return App::get('browser_sniffer');
-    }
-
     public function get($name)
     {
         return $this->__get($name);
@@ -302,7 +274,7 @@ class GlobalVariables extends BaseGlobalVariables
             return $this->{"get$name"};
         }
 
-        if ($ent = \Orb\Util\Strings::extractRegexMatch('#^(.*?)Data$#', $name, 1)) {
+        if ($ent = Strings::extractRegexMatch('#^(.*?)Data$#', $name, 1)) {
             return App::getContainer()->getSystemService(ucfirst($ent).'Data');
         }
 
@@ -311,7 +283,7 @@ class GlobalVariables extends BaseGlobalVariables
 
     public function __call($method, $args)
     {
-        if ($var = \Orb\Util\Strings::extractRegexMatch('#^get(.*?)$#', $method, 1)) {
+        if ($var = Strings::extractRegexMatch('#^get(.*?)$#', $method, 1)) {
             return $this->__get(ucfirst($method));
         }
 
@@ -321,17 +293,6 @@ class GlobalVariables extends BaseGlobalVariables
     public function __isset($name)
     {
         return isset($this->variables[$name]);
-    }
-
-    public function getLastException()
-    {
-        if (!App::has('deskpro.exception_logger')) {
-            return;
-        }
-
-        $logger = App::get('deskpro.exception_logger');
-
-        return $logger->getLastException();
     }
 
     public function getTimezoneList()
@@ -349,7 +310,7 @@ class GlobalVariables extends BaseGlobalVariables
     {
         $request = App::getRequest();
 
-        return $request->getReturnParam() ?: $request->getRequestUri();
+        return LegacyRequestUtils::readReturnParam($request) ?: $request->getRequestUri();
     }
 
     public function isCloud()
@@ -405,12 +366,9 @@ class GlobalVariables extends BaseGlobalVariables
         if (defined('DPC_SITE_DOMAIN')) {
             return '//'.DPC_SITE_DOMAIN.'/web/';
         } else {
-            $asset_url = dp_get_config('assets_full_url');
-            if (!$asset_url) {
-                $asset_url = $this->container->getSetting('core.deskpro_url');
-                $asset_url = trim(str_replace('/index.php', '', $asset_url), '/');
-                $asset_url .= (dp_get_config('static_path') ?: '/web').'/';
-            }
+            $asset_url = $this->container->getBrandSetting('core.deskpro_url');
+            $asset_url = trim(str_replace('/index.php', '', $asset_url), '/');
+            $asset_url .= '/web/';
             $asset_url = preg_replace('#^https?://#', '//', $asset_url);
 
             return $asset_url;
@@ -422,12 +380,8 @@ class GlobalVariables extends BaseGlobalVariables
         if (defined('DPC_SITE_DOMAIN')) {
             return '//'.DPC_SITE_DOMAIN.'/';
         } else {
-            $helpdesk_url = trim(str_replace('/index.php', '', $this->container->getSetting('core.deskpro_url')), '/').'/';
+            $helpdesk_url = trim(str_replace('/index.php', '', $this->container->getBrandSetting('core.deskpro_url')), '/').'/';
             $deskpro_url  = $helpdesk_url;
-
-            if (!$this->container->getSetting('core.rewrite_urls')) {
-                $deskpro_url .= 'index.php/';
-            }
 
             $widget_url = $deskpro_url;
             $widget_url = preg_replace('#^https?://#', '//', $widget_url);
@@ -441,8 +395,21 @@ class GlobalVariables extends BaseGlobalVariables
         return '[app]';
     }
 
-    public function canResetDemo()
+    public function canResetHelpdesk()
     {
-        return true;
+        $query = $this
+            ->container
+            ->get('doctrine.orm.default_entity_manager')
+            ->createQuery('SELECT COUNT(t.id) FROM DeskPRO:Ticket t');
+        $count            = $query->getSingleScalarResult();
+        $settingsResolver = $this->container->get('settings_resolver');
+        $installTime      = $settingsResolver->getGlobalSettings()->get('core.install_timestamp');
+
+        return $count < 500 && $installTime && $installTime > time() - 90 * 60 * 60 * 24;
+    }
+
+    public function brandDefaultDepartment($type)
+    {
+        return App::get('brand_form_helper')->getDefaultDepartment($type);
     }
 }

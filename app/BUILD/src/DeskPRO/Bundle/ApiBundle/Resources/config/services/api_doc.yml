@@ -1,0 +1,28 @@
+services:
+  dp_api_doc.extractor.modes_handler:
+    class: DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\Handler\ModesTagsHandler
+    arguments:
+      - "@api_authorization.action_permissions.metadata_factory"
+    tags:
+      - { name: nelmio_api_doc.extractor.handler }
+
+  dp_api_doc.extractor.override_handler:
+    class: DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\Handler\OverrideHandler
+    arguments:
+      - "@annotations.reader"
+    tags:
+      - { name: nelmio_api_doc.extractor.handler }
+
+  dp_api_doc.extractor.api_unstable_handler:
+    class: DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\Handler\ApiUnstableHandler
+    arguments:
+      - "@annotations.reader"
+    tags:
+      - { name: nelmio_api_doc.extractor.handler }
+
+  dp_api_doc.parser.jms_metadata_parser:
+    class: DeskPRO\Bundle\ApiBundle\ApiDoc\Parser\JmsMetadataParser
+    arguments:
+      - "@jms_serializer.metadata_factory"
+      - "@jms_serializer.naming_strategy"
+      - "@nelmio_api_doc.doc_comment_extractor"

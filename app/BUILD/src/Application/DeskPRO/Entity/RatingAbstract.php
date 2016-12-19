@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -56,9 +57,9 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $person = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Visitor
+     * @var string
      */
-    protected $visitor = null;
+    protected $visitor_id = null;
 
     /**
      * @var string
@@ -94,8 +95,6 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
             if (!App::getCurrentPerson()->isGuest()) {
                 $rating->person = App::getCurrentPerson();
             }
-
-            $rating->visitor = App::getSession()->getVisitor();
         }
 
         return $rating;
@@ -123,6 +122,16 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    public function isPositive()
+    {
+        return $this->rating > 0;
+    }
+
+    public function isNegative()
+    {
+        return !$this->isPositive();
+    }
+
     public function rateUp()
     {
         $this->setRating(1);
@@ -130,26 +139,7 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     public function rateDown()
     {
-        return $this->setRating(-1);
-    }
-
-    public function setVisitor(Visitor $visitor = null)
-    {
-        $this->_onPropertyChanged('visitor', $this->visitor, $visitor);
-        $this->visitor = $visitor;
-
-        if ($visitor === null) {
-            return;
-        }
-
-        $this['ip_address'] = $visitor['ip_address'];
-
-        if (!$this->name and $visitor['name']) {
-            $this['name'] = $visitor['name'];
-        }
-        if (!$this->email and $visitor['email']) {
-            $this['email'] = $visitor['email'];
-        }
+        $this->setRating(-1);
     }
 
     public function getPersonId()
@@ -161,14 +151,61 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
         return 0;
     }
 
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->setModelField('person', $person);
+    }
+
+    /**
+     * @return string
+     */
     public function getVisitorId()
     {
-        if ($this->visitor) {
-            return $this->visitor->getId();
-        }
+        return $this->visitor_id;
+    }
 
-        return 0;
+    /**
+     * @param string $visitor_id
+     */
+    public function setVisitorId($visitor_id)
+    {
+        $this->setModelField('visitor_id', $visitor_id);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpAddress()
+    {
+        return $this->ip_address;
+    }
+
+    /**
+     * @param string $ip_address
+     */
+    public function setIpAddress($ip_address)
+    {
+        $this->setModelField('ip_address', $ip_address);
     }
 
     abstract public function setContentObject($obj);
+
+    /**
+     * @return string
+     */
+    public function getRating()
+    {
+        return $this->rating;
+    }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -36,98 +37,102 @@ use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Searcher\DownloadSearch;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/downloads",
  * 	description="Operations about Downloads",
  * 	basePath="/api"
- * )
+ * ).
+ *
+ * @ApiModes("all")
  */
 class DownloadController extends AbstractController
 {
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/downloads",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Search for downloads matching criteria",
      * 		notes="Returns list of downloads that matched.",
      *		type="array",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="category_id[]",
      *				description="Comma seperated IDs of categories to search in",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="category_id_specific[]",
      *				description="Comma seperated IDs of categories to search in",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="date_created_end",
      *				description="Requires the download to have been created before this date. Must be specified as a Unix timestamp.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="date_created_start",
      *				description="Requires the download to have been created after this date. Must be specified as a Unix timestamp.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label[]",
      *				description="Requires the download to have this label.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status[]",
      *				description="Requires the download to be in this status. Possible values: new, active, closed, hidden.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="new",
      *				description="If non-0, requires the download to be considered new (created within the last month). If 0, this does nothing.",
      *				paramType="query",
      *				required=false,
      *				type="boolean"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="popular",
      *				description="If non-0, requires the download to be considered popular (50 or more downloads). If 0, this does nothing.",
      *				paramType="query",
      *				required=false,
      *				type="boolean"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="order",
      *				description="Order of the results. Defaults to the publishing date.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="cache_id",
      *				description="If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="page",
      *				description="The page number of the results to fetch.",
      *				paramType="query",
@@ -136,39 +141,39 @@ class DownloadController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function searchAction()
     {
-        $search_map = array(
+        $search_map = [
             'category_id'          => DownloadSearch::TERM_CATEGORY,
             'category_id_specific' => DownloadSearch::TERM_CATEGORY_SPECIFIC,
             'label'                => DownloadSearch::TERM_LABEL,
             'new'                  => DownloadSearch::TERM_NEW,
             'popular'              => DownloadSearch::TERM_POPULAR,
             'status'               => DownloadSearch::TERM_STATUS,
-        );
+        ];
 
-        $terms = array();
+        $terms = [];
 
         foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
-                $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
+                $terms[] = ['type' => $search_key, 'op' => 'contains', 'options' => $value];
             }
         }
 
         $date_created_start = $this->in->getUint('date_created_start');
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
-            $terms[] = array('type' => DownloadSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1'             => $date_created_start,
-                'date2'             => $date_created_end,
-            ));
+            $terms[] = ['type' => DownloadSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => [
+                'date1' => $date_created_start,
+                'date2' => $date_created_end,
+            ]];
         } elseif ($date_created_start) {
-            $terms[] = array('type' => DownloadSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1'             => $date_created_start,
-            ));
+            $terms[] = ['type' => DownloadSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => [
+                'date1' => $date_created_start,
+            ]];
         }
 
         $order_by = $this->in->getString('order');
@@ -176,7 +181,7 @@ class DownloadController extends AbstractController
             $order_by = 'date:desc';
         }
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -195,65 +200,65 @@ class DownloadController extends AbstractController
         $page_ids  = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
         $downloads = App::getEntityRepository('DeskPRO:Download')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'      => $page,
             'per_page'  => $per_page,
             'total'     => count($ids),
             'cache_id'  => $result_cache->id,
             'downloads' => $this->getApiData($downloads),
-        ));
+        ]);
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/downloads",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Creates a new download.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="title",
      *				description="Title of the download. ",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="content",
      *				description="Content of the download. Marked up using HTML.",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="category_id",
      *				description="Category of the download.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label[]",
      *				description="Comma seperated list of Labels to apply to the download.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status",
      *				description="Status of the download. Defaults to new if not overridden by this or status_category_id.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="attach",
      *				description="Attached file that represents the download. See the <a href='https://support.deskpro.com/downloads/articles/88-api-basics'>API Basics</a> for more information on sending files to the API. Required if no attach_id is provided.",
      *				paramType="body",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="attach_id",
      *				description="The ID of an already uploaded file to include with the download. Required if no attach value is provided.",
      *				paramType="query",
@@ -262,11 +267,11 @@ class DownloadController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function newDownloadAction()
     {
-        $errors   = array();
+        $errors   = [];
         $download = new Download();
 
         $title = $this->in->getString('title');
@@ -284,7 +289,7 @@ class DownloadController extends AbstractController
 
         $cat = $this->em->find('DeskPRO:DownloadCategory', $this->in->getUint('category_id'));
         if (!$cat) {
-            $errors['category_id'] = array('invalid_argument.category_id', 'category_id not found');
+            $errors['category_id'] = ['invalid_argument.category_id', 'category_id not found'];
         } else {
             $download->category = $cat;
         }
@@ -306,13 +311,13 @@ class DownloadController extends AbstractController
                 $blob = $accept->accept($file);
             } else {
                 $message          = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
-                $errors['attach'] = array($error['error_code'].'.attach', $message);
+                $errors['attach'] = [$error['error_code'].'.attach', $message];
             }
         } else {
             $blob_id = $this->in->getUint('attach_id');
             $blob    = $this->em->find('DeskPRO:Blob', $blob_id);
             if (!$blob) {
-                $errors['attach_id'] = array('invalid_argument.attach_id', 'attach_id not found');
+                $errors['attach_id'] = ['invalid_argument.attach_id', 'attach_id not found'];
             }
         }
 
@@ -337,21 +342,25 @@ class DownloadController extends AbstractController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $download->id),
-            $this->generateUrl('api_downloads_download', array('download_id' => $download->id), true)
+            ['id' => $download->id],
+            $this->generateUrl(
+                'api_downloads_download',
+                ['download_id' => $download->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/downloads/{download_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a download by download ID.",
      * 		notes="Information about the download by download ID.",
      *		type="Download",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="download_id",
      *				description="ID of the download that needs to be searched.",
      *				paramType="path",
@@ -359,67 +368,67 @@ class DownloadController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download not found")
+     *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function getDownloadAction($download_id)
     {
         $download = $this->_getDownloadOr404($download_id);
 
-        return $this->createApiResponse(array('download' => $download->toApiData()));
+        return $this->createApiResponse(['download' => $download->toApiData()]);
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/downloads/{download_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Updates a Download by download ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="title",
      *				description="Title of the download. ",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="content",
      *				description="Content of the download. Marked up using HTML.",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="category_id",
      *				description="Category of the download.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label[]",
      *				description="Comma seperated list of Labels to apply to the download.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status",
      *				description="Status of the download. Defaults to new if not overridden by this or status_category_id.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="attach",
      *				description="Attached file that represents the download. See the <a href='https://support.deskpro.com/downloads/articles/88-api-basics'>API Basics</a> for more information on sending files to the API. Required if no attach_id is provided.",
      *				paramType="body",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="attach_id",
      *				description="The ID of an already uploaded file to include with the download. Required if no attach value is provided.",
      *				paramType="query",
@@ -428,13 +437,13 @@ class DownloadController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function postDownloadAction($download_id)
     {
         $download = $this->_getDownloadOr404($download_id, 'edit');
 
-        $revs = array();
+        $revs = [];
 
         $title = $this->in->getString('title');
         if ($title) {
@@ -455,7 +464,7 @@ class DownloadController extends AbstractController
         if ($content && $content != $download->content) {
             $download->content = $this->in->getHtml('content');
 
-            $rev          = ContentRevisionUtil::findOrCreate($download, array('content'), $this->person);
+            $rev          = ContentRevisionUtil::findOrCreate($download, ['content'], $this->person);
             $rev->content = $download->content;
 
             $revs['content'] = $rev;
@@ -486,7 +495,7 @@ class DownloadController extends AbstractController
 
             $download->blob = $blob;
 
-            $rev        = ContentRevisionUtil::findOrCreate($download, array('blob', 'title'), $this->person);
+            $rev        = ContentRevisionUtil::findOrCreate($download, ['blob', 'title'], $this->person);
             $rev->title = $download->title;
             $rev->blob  = $download->blob;
 
@@ -511,13 +520,13 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/{download_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a Download by ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="download_id",
      *				description="ID of the Download that needs to be deleted.",
      *				paramType="path",
@@ -525,9 +534,9 @@ class DownloadController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download not found")
+     *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteDownloadAction($download_id)
     {
@@ -541,14 +550,14 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/{download_id}/comments",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the comments for download",
      * 		notes="Information about the comments by Download ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="download_id",
      *				description="ID of the Download that needs to be searched.",
      *				paramType="path",
@@ -556,48 +565,48 @@ class DownloadController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download not found")
+     *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function getDownloadCommentsAction($download_id)
     {
         $download = $this->_getDownloadOr404($download_id);
         $comments = $this->em->getRepository('DeskPRO:DownloadComment')->getComments($download);
 
-        return $this->createApiResponse(array('comments' => $this->getApiData($comments)));
+        return $this->createApiResponse(['comments' => $this->getApiData($comments)]);
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/{download_id}/comments",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Add a comment for a download entry.",
      * 		notes="Creates a download comment by download ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="download_id",
      *				description="ID of the download that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="content",
      *				description="Text of the comment.",
      *				paramType="query",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="person_id",
      *				description=" ID of the person that owns the comment. If not provided, defaults to the agent making the request.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status",
      *				description="Status of the comment. Defaults to visible.",
      *				paramType="query",
@@ -605,9 +614,9 @@ class DownloadController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download not found")
+     *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function newDownloadCommentAction($download_id)
     {
@@ -638,27 +647,31 @@ class DownloadController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $comment->id),
-            $this->generateUrl('api_downloads_download_comments_comment', array('download_id' => $download->id, 'comment_id' => $comment->id), true)
+            ['id' => $comment->id],
+            $this->generateUrl(
+                'api_downloads_download_comments_comment',
+                ['download_id' => $download->id, 'comment_id' => $comment->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/{download_id}/comments/{comment_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets info about a specific download comment",
      * 		notes="Information about a specific download comment by Download ID and Comment ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="download_id",
      *				description="ID of the Download that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="comment_id",
      *				description="ID of the Download Comment that needs to be searched.",
      *				paramType="path",
@@ -666,9 +679,9 @@ class DownloadController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download not found")
+     *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function getDownloadCommentAction($download_id, $comment_id)
     {
@@ -678,46 +691,46 @@ class DownloadController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        return $this->createApiResponse(array('comment' => $comment->toApiData()));
+        return $this->createApiResponse(['comment' => $comment->toApiData()]);
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/{download_id}/comments/{comment_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Updates a comment for a download entry.",
      * 		notes="Updates a download comment by download ID and comment ID",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="download_id",
      *				description="ID of the download that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="comment_id",
      *				description="ID of the download comment that needs to be updated.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="content",
      *				description="Text of the comment.",
      *				paramType="query",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="person_id",
      *				description=" ID of the person that owns the comment. If not provided, defaults to the agent making the request.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="status",
      *				description="Status of the comment. Defaults to visible.",
      *				paramType="query",
@@ -725,9 +738,9 @@ class DownloadController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download not found")
+     *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function postDownloadCommentAction($download_id, $comment_id)
     {
@@ -760,21 +773,21 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/{download_id}/comments/{comment_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a comment for a download entry.",
      * 		notes="Deletes a download comment by download ID and comment ID",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="download_id",
      *				description="ID of the download that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="comment_id",
      *				description="ID of the download comment that needs to be deleted.",
      *				paramType="path",
@@ -782,9 +795,9 @@ class DownloadController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download not found")
+     *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteDownloadCommentAction($download_id, $comment_id)
     {
@@ -803,14 +816,14 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/{download_id}/labels",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the labels for download",
      * 		notes="Information about a download record's labels by Download ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="download_id",
      *				description="ID of the Download that needs to be searched.",
      *				paramType="path",
@@ -818,33 +831,33 @@ class DownloadController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download not found")
+     *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function getDownloadLabelsAction($download_id)
     {
         $download = $this->_getDownloadOr404($download_id);
 
-        return $this->createApiResponse(array('labels' => $this->getApiData($download->labels)));
+        return $this->createApiResponse(['labels' => $this->getApiData($download->labels)]);
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/{download_id}/labels",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Add a label for a download entry.",
      * 		notes="Creates a download label by download ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="download_id",
      *				description="ID of the download that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Label to add.",
      *				paramType="query",
@@ -852,9 +865,9 @@ class DownloadController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download not found")
+     *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function postDownloadLabelsAction($download_id)
     {
@@ -870,26 +883,29 @@ class DownloadController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('label' => $label),
-            $this->generateUrl('api_downloads_download_label', array('download_id' => $download->id, 'label' => $label), true)
+            ['label' => $label],
+            $this->generateUrl(
+                'api_downloads_download_label', ['download_id' => $download->id, 'label' => $label],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/{download_id}/labels/{label}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if download has a label.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="download_id",
      *				description="ID of the download that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Label to search for",
      *				paramType="path",
@@ -897,36 +913,36 @@ class DownloadController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download not found")
+     *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function getDownloadLabelAction($download_id, $label)
     {
         $download = $this->_getDownloadOr404($download_id);
 
         if ($download->getLabelManager()->hasLabel($label)) {
-            return $this->createApiResponse(array('exists' => true));
+            return $this->createApiResponse(['exists' => true]);
         } else {
-            return $this->createApiResponse(array('exists' => false));
+            return $this->createApiResponse(['exists' => false]);
         }
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/{download_id}/labels/{label}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Removes a label from download",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="download_id",
      *				description="ID of the download that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Label that needs to be deleted",
      *				paramType="path",
@@ -934,9 +950,9 @@ class DownloadController extends AbstractController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download not found")
+     *		SWG\ResponseMessage(code=404, message="Download not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteDownloadLabelAction($download_id, $label)
     {
@@ -950,19 +966,19 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/validating-comments",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets download comments that are awaiting validation."
      * 	)
-     * )
+     * ).
      */
     public function getValidatingCommentsAction()
     {
         $comments   = $this->em->getRepository('DeskPRO:DownloadComment')->getValidatingComments();
         $entity_key = 'download';
-        $output     = array();
+        $output     = [];
         foreach ($comments as $key => $value) {
             $output[$key] = $value->toApiData(false, true);
             if ($value->$entity_key) {
@@ -970,54 +986,54 @@ class DownloadController extends AbstractController
             }
         }
 
-        return $this->createApiResponse(array('comments' => $output));
+        return $this->createApiResponse(['comments' => $output]);
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/categories",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available download categories."
      * 	)
-     * )
+     * ).
      */
     public function getCategoriesAction()
     {
         $categories = $this->em->getRepository('DeskPRO:DownloadCategory')->getFlatHierarchy();
 
-        return $this->createApiResponse(array('categories' => $categories));
+        return $this->createApiResponse(['categories' => $categories]);
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/categories",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Creates a download category.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="title",
      *				description="Title of the category that needs to be created.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="parent_id",
      *				description="ID of the category's parent. Use 0 for no parent.",
      *				paramType="query",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="display_order",
      *				description="Order of display of categories. Lower numbers will be displayed first.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="usergroup_id[]",
      *				description="comma separated IDs of usergroup that has access. If not provided, defaults to all users.",
      *				paramType="query",
@@ -1026,15 +1042,15 @@ class DownloadController extends AbstractController
      *			)
      *		)
      * 	)
-     * )
+     * ).
      */
     public function postCategoriesAction()
     {
-        $errors = array();
+        $errors = [];
 
         $title = $this->in->getString('title');
         if (!$title) {
-            $errors['title'] = array('required_field.title', 'title empty or missing');
+            $errors['title'] = ['required_field.title', 'title empty or missing'];
         }
 
         $category = new \Application\DeskPRO\Entity\DownloadCategory();
@@ -1058,7 +1074,7 @@ class DownloadController extends AbstractController
         if ($this->in->checkIsset('usergroup_id')) {
             $usergroup_ids = $this->in->getCleanValueArray('usergroup_id', 'uint');
         } else {
-            $usergroup_ids = array($this->container->getUserGroups()->getEveryoneGroup()->getId());
+            $usergroup_ids = [$this->container->getUserGroups()->getEveryoneGroup()->getId()];
         }
 
         $this->db->beginTransaction();
@@ -1071,10 +1087,10 @@ class DownloadController extends AbstractController
                 if (!$usergroup_id) {
                     continue;
                 }
-                App::getDb()->insert('download_category2usergroup', array(
+                App::getDb()->insert('download_category2usergroup', [
                     'category_id'  => $category->getId(),
                     'usergroup_id' => $usergroup_id,
-                ));
+                ]);
             }
 
             $this->db->commit();
@@ -1084,19 +1100,23 @@ class DownloadController extends AbstractController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $category->id),
-            $this->generateUrl('api_downloads_category', array('category_id' => $category->id), true)
+            ['id' => $category->id],
+            $this->generateUrl(
+                'api_downloads_category',
+                ['category_id' => $category->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/categories/{category_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a download category.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="category_id",
      *				description="ID of the category to look for.",
      *				paramType="path",
@@ -1104,46 +1124,46 @@ class DownloadController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download Category not found")
+     *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function getCategoryAction($category_id)
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        return $this->createApiResponse(array('category' => $category->toApiData()));
+        return $this->createApiResponse(['category' => $category->toApiData()]);
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/categories/{category_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Updates a download category.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="category_id",
      *				description="ID of the category to look for.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="title",
      *				description="New Title of the category.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="parent_id",
      *				description="New ID of the category's parent. Use 0 for no parent.",
      *				paramType="query",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="display_order",
      *				description="New Order of display of categories. Lower numbers will be displayed first.",
      *				paramType="query",
@@ -1151,20 +1171,20 @@ class DownloadController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download Category not found")
+     *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function postCategoryAction($category_id)
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        $errors = array();
+        $errors = [];
 
         if ($this->in->checkIsset('title')) {
             $title = $this->in->getString('title');
             if (!$title) {
-                $errors['title'] = array('required_field.title', 'title empty or missing');
+                $errors['title'] = ['required_field.title', 'title empty or missing'];
             }
             $category->title = $title;
         }
@@ -1192,13 +1212,13 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/categories/{category_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="DELETES a download category.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="category_id",
      *				description="ID of the category to look for.",
      *				paramType="path",
@@ -1206,9 +1226,9 @@ class DownloadController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download Category not found")
+     *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteCategoryAction($category_id)
     {
@@ -1222,34 +1242,34 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/categories/{category_id}/downloads",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets downloads within a download category.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="category_id",
      *				description="ID of the category to look for.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="order",
      *				description="Order of the results. Defaults to the publishing date.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="cache_id",
      *				description="If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="page",
      *				description="The page number of the results to fetch.",
      *				paramType="query",
@@ -1257,24 +1277,24 @@ class DownloadController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download Category not found")
+     *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function getCategoryDownloadsAction($category_id)
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        $terms = array(
-            array('type' => DownloadSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => array($category->id)),
-        );
+        $terms = [
+            ['type' => DownloadSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => [$category->id]],
+        ];
 
         $order_by = $this->in->getString('order');
         if (!$order_by) {
             $order_by = 'date:desc';
         }
 
-        $extra = array();
+        $extra = [];
         if ($order_by !== null) {
             $extra['order_by'] = $order_by;
         }
@@ -1293,23 +1313,23 @@ class DownloadController extends AbstractController
         $page_ids  = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
         $downloads = App::getEntityRepository('DeskPRO:Download')->getByIds($page_ids, true);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'page'      => $page,
             'per_page'  => $per_page,
             'total'     => count($ids),
             'cache_id'  => $result_cache->id,
             'downloads' => $this->getApiData($downloads),
-        ));
+        ]);
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/categories/{category_id}/groups",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets groups with access to a download category.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="category_id",
      *				description="ID of the category to look for.",
      *				paramType="path",
@@ -1317,32 +1337,32 @@ class DownloadController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download Category not found")
+     *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function getCategoryGroupsAction($category_id)
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        return $this->createApiResponse(array('groups' => $this->getApiData($category->usergroups)));
+        return $this->createApiResponse(['groups' => $this->getApiData($category->usergroups)]);
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/categories/{category_id}/groups",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Adds a group to a download category.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="category_id",
      *				description="ID of the category to look for.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="id",
      *				description="ID of the group to add access for.",
      *				paramType="query",
@@ -1350,9 +1370,9 @@ class DownloadController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download Category not found")
+     *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function postCategoryGroupsAction($category_id)
     {
@@ -1374,33 +1394,37 @@ class DownloadController extends AbstractController
         }
 
         if (!$exists) {
-            $this->db->insert('download_category2usergroup', array(
+            $this->db->insert('download_category2usergroup', [
                 'category_id'  => $category->id,
                 'usergroup_id' => $group_id,
-            ));
+            ]);
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $group_id),
-            $this->generateUrl('api_downloads_category_group', array('category_id' => $category->id, 'group_id' => $group_id), true)
+            ['id' => $group_id],
+            $this->generateUrl(
+                'api_downloads_category_group',
+                ['category_id' => $category->id, 'group_id' => $group_id],
+                true
+            )
         );
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/categories/{category_id}/groups/{group_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if a group has access to a download category.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="category_id",
      *				description="ID of the category to look for.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="group_id",
      *				description="ID of the group to look for.",
      *				paramType="path",
@@ -1408,9 +1432,9 @@ class DownloadController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download Category not found")
+     *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function getCategoryGroupAction($category_id, $group_id)
     {
@@ -1424,24 +1448,24 @@ class DownloadController extends AbstractController
             }
         }
 
-        return $this->createApiResponse(array('exists' => $exists));
+        return $this->createApiResponse(['exists' => $exists]);
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/download/categories/{category_id}/groups/{group_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Removes a group's access to a download category.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="category_id",
      *				description="ID of the category to look for.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="group_id",
      *				description="ID of the group to look for.",
      *				paramType="path",
@@ -1449,9 +1473,9 @@ class DownloadController extends AbstractController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Download Category not found")
+     *		SWG\ResponseMessage(code=404, message="Download Category not found")
      * 	)
-     * )
+     * ).
      */
     public function deleteCategoryGroupAction($category_id, $group_id)
     {

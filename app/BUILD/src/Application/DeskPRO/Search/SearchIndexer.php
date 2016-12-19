@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Search
  */
+
 namespace Application\DeskPRO\Search;
 
 use Application\DeskPRO\App;
@@ -64,13 +65,13 @@ class SearchIndexer
 
     public function handle(array $updates, array $deletes)
     {
-        #------------------------------
-        # Elastic
-        #------------------------------
+        //------------------------------
+        // Elastic
+        //------------------------------
 
         if ($this->container->getSetting('elastica.enabled')) {
-            $updates_by_type = array();
-            $deletes_by_type = array();
+            $updates_by_type = [];
+            $deletes_by_type = [];
 
             $get_persister = function ($object) {
                 switch (true) {
@@ -99,7 +100,7 @@ class SearchIndexer
                 $persister_id = $get_persister($object);
                 if ($persister_id) {
                     if (!isset($updates_by_type[$persister_id])) {
-                        $updates_by_type[$persister_id] = array();
+                        $updates_by_type[$persister_id] = [];
                     }
                     $updates_by_type[$persister_id][] = $object;
                 }
@@ -108,7 +109,7 @@ class SearchIndexer
                 $persister_id = $get_persister($object);
                 if ($persister_id) {
                     if (!isset($deletes_by_type[$persister_id])) {
-                        $deletes_by_type[$persister_id] = array();
+                        $deletes_by_type[$persister_id] = [];
                     }
                     $deletes_by_type[$persister_id][] = $object;
                 }
@@ -123,9 +124,9 @@ class SearchIndexer
                 $persister->deleteMany($objects);
             }
 
-        #------------------------------
-        # Default
-        #------------------------------
+        //------------------------------
+        // Default
+        //------------------------------
         }
 
         foreach ($updates as $object) {
@@ -134,7 +135,7 @@ class SearchIndexer
                 case $object instanceof News:
                 case $object instanceof Download:
                 case $object instanceof Feedback:
-                    App::getContainer()->getSearchAdapter()->updateObjectsInIndex(array($object));
+                    App::getContainer()->getSearchAdapter()->updateObjectsInIndex([$object]);
                     break;
             }
         }
@@ -144,7 +145,7 @@ class SearchIndexer
                 case $object instanceof News:
                 case $object instanceof Download:
                 case $object instanceof Feedback:
-                    App::getContainer()->getSearchAdapter()->deleteObjectsFromIndex(array($object));
+                    App::getContainer()->getSearchAdapter()->deleteObjectsFromIndex([$object]);
                     break;
             }
         }

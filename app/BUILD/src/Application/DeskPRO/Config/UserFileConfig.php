@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Config;
 
 /**
@@ -38,18 +39,12 @@ class UserFileConfig extends \Orb\Util\OptionsArray
 {
     public function __construct($name)
     {
-        $array = array();
+        $array = [];
 
-        $sys_file  = DP_ROOT.'/sys/config/config.'.$name.'.php';
-        $user_file = dirname(DP_CONFIG_FILE).'/config.'.$name.'.php';
+        $sys_file = DP_ROOT.'/sys/config/config.'.$name.'.php';
 
         if (file_exists($sys_file)) {
             $array = require $sys_file;
-        }
-
-        if (file_exists($user_file)) {
-            $user_array = require $user_file;
-            $array      = array_merge($array, $user_array);
         }
 
         parent::__construct($array);

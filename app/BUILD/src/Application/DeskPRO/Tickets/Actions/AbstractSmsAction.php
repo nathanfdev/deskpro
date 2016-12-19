@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Sms
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\AppInstance;
@@ -73,33 +74,33 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
             );
         }
 
-        ###########################################################################
-        # Prepare the DeskproSmsSender
-        ###########################################################################
+        //##########################################################################
+        // Prepare the DeskproSmsSender
+        //##########################################################################
         $sms_sender = $this->getContainer()->getSystemService('sms_sender');
         $sms_sender->setDefaultProvider($this->getSmsProvider());
         $sms_sender->setDefaultFromNumber($this->getFromPhoneNumber());
 
-        ###########################################################################
-        # Format and prepare text message
-        ###########################################################################
+        //##########################################################################
+        // Format and prepare text message
+        //##########################################################################
         $action_message_template = $this->getActionOption('message');
         $formatter               = new SnippetFormatter($this->getContainer()->getTwig());
         $formatter->addVar('user_vars', $context->getUserVars());
         $message = $formatter->formatText($action_message_template, $ticket);
 
-        ###########################################################################
-        # Gather Raw Numbers
-        ###########################################################################
-        $numbers   = array();
+        //##########################################################################
+        // Gather Raw Numbers
+        //##########################################################################
+        $numbers   = [];
         $numbers[] = $this->getActionOption('to_number');
 
-        ###########################################################################
-        # Gather Agent IDs - from agent and team selections
-        # TODO: This stuff should almost certainly be more DRY and abstract for other actions to use.
-        ###########################################################################
-        $agents    = array();
-        $agent_ids = $this->getActionOption('agent_ids', array());
+        //##########################################################################
+        // Gather Agent IDs - from agent and team selections
+        // TODO: This stuff should almost certainly be more DRY and abstract for other actions to use.
+        //##########################################################################
+        $agents    = [];
+        $agent_ids = $this->getActionOption('agent_ids', []);
         foreach ($agent_ids as $aid) {
             if ($aid == 'assigned') {
                 if ($ticket->agent) {
@@ -115,8 +116,8 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
                 $agents[] = $aid;
             }
         }
-        $team_member_agents = array();
-        $team_ids           = $this->getActionOption('agent_teams', array());
+        $team_member_agents = [];
+        $team_ids           = $this->getActionOption('agent_teams', []);
         foreach ($team_ids as $tid) {
             if ($tid == 'assigned') {
                 if ($ticket->agent_team) {
@@ -133,8 +134,8 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
                 }
             }
         }
-        $department_agent_ids = array();
-        $department_ids       = $this->getActionOption('department_ids', array());
+        $department_agent_ids = [];
+        $department_ids       = $this->getActionOption('department_ids', []);
         $personRepo           = $this->getContainer()->getEm()->getRepository('DeskPRO:Person');
         foreach ($department_ids as $did) {
             $department_agents = $personRepo->getAgentsInDepartment($did);
@@ -143,15 +144,15 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
             }
         }
 
-        #############################################################################
-        # Convert Agent IDs into phone numbers - ensure agent is only selected once
-        #############################################################################
+        //############################################################################
+        // Convert Agent IDs into phone numbers - ensure agent is only selected once
+        //############################################################################
         $agents = array_merge($agents, $team_member_agents, $department_agent_ids);
         $agents = array_unique($agents);
         $repo   = $this->getContainer()->getEm()->getRepository('DeskPRO:Person');
         $agents = $repo->getPeopleResultsFromIds($agents);
         foreach ($agents as $agent) {
-            /** @var $agent Person */
+            /* @var $agent Person */
             if ($pn = $agent->getPrimaryPhoneNumber()) {
                 $numbers[] = $pn['number'];
             }
@@ -235,13 +236,13 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 
         $ticket->getStateChangeRecorder()->recordData(
             'app_message',
-            array(
+            [
                 'app_id'        => $app->id,
                 'app_title'     => $app->title,
                 'package_name'  => $app->package->name,
                 'package_title' => $app->package->title,
                 'message'       => $recordMsg,
-            )
+            ]
         );
     }
 

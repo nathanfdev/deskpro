@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerMysqlInfo;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -39,14 +40,21 @@ class ServerMysqlInfo
     /**
      * @var \Application\DeskPRO\DBAL\Connection
      */
-    protected $db;
+    private $db;
 
     /**
-     * @param Connection $db
+     * @var \Doctrine\ORM\EntityManager[]
      */
-    public function __construct(Connection $db)
+    private $ems;
+
+    /**
+     * @param Connection                    $db
+     * @param \Doctrine\ORM\EntityManager[] $ems
+     */
+    public function __construct(Connection $db, array $ems)
     {
-        $this->db = $db;
+        $this->db  = $db;
+        $this->ems = $ems;
     }
 
     /**
@@ -54,7 +62,7 @@ class ServerMysqlInfo
      */
     public function getMysqlInfo()
     {
-        return $this->db->fetchAllKeyValue('SHOW VARIABLES', array(), array(), 0, 1);
+        return $this->db->fetchAllKeyValue('SHOW VARIABLES', [], [], 0, 1);
     }
 
     /**
@@ -62,13 +70,16 @@ class ServerMysqlInfo
      */
     public function getSchemaDiff()
     {
-        $schema_diff = Util::getUpdateSchemaSql();
-        if ($schema_diff) {
-            $schema_diff = implode(";\n", $schema_diff).';';
-        } else {
-            $schema_diff = null;
+        $schema_diff = [];
+
+        foreach ($this->ems as $id => $em) {
+            $diff = Util::getUpdateSchemaSql($em);
+            if ($diff) {
+                $diff          = implode(";\n", $diff).';';
+                $schema_diff[] = "/* DB Connection: $id */\n\n$diff";
+            }
         }
 
-        return $schema_diff;
+        return implode("\n\n\n\n", $schema_diff);
     }
 }

@@ -1,0 +1,53 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+    <section class="dp-paneblock dp-listpane">
+        <header>
+            <h3>{{ phrase('admin.settings.email_rate_limiting') }}</h3>
+        </header>
+
+        <article class="form-horizontal dp-form">
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="panel panel-innertable">
+                        <div class="inner-group">
+                            <div>
+                                <span class="help-block">
+                                    {{ phrase('admin.settings.email_rate_limiting_help1') }}
+                                </span>
+                                <span class="help-block">
+                                    {{ phrase('admin.settings.email_rate_limiting_help2', {'url': ng_href('tickets.ticket_accounts.emailsources')}) }}
+                                </span>
+                                <span class="help-block">
+                                    {{ phrase('admin.settings.email_rate_limiting_help3') }}
+                                </span>
+
+                                {{ phrase('admin.settings.email_rate_limiting_after') }}
+                                <input type="number" min="1" ng-model="settings.rate_count" class="form-control" style="width: 50px;" />
+                                {{ phrase('admin.settings.email_rate_limiting_within') }}
+                                <dp-time-with-unit ng-model="settings.rate_time"></dp-time-with-unit>
+                                , {{ phrase('admin.settings.email_rate_limiting_reject') }}
+                                <dp-time-with-unit ng-model="settings.rate_locktime"></dp-time-with-unit>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <footer>
+            <div class="dp-content">
+                <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                    <div dp-hide-spinning="saving">
+                        <button class="btn btn-primary" ng-click="EmailRateLimiting.save()">{{ phrase('agent.general.save') }}</button>
+                    </div>
+                    <div dp-show-spinning="saving">
+                        <i class="spinner-flat"></i>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </section>
+
+    <div dp-register-message="saved_settings">{{ phrase('adm.ticket_accounts.saved') }}</div>
+{% endblock %}

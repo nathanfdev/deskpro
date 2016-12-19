@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -44,10 +45,10 @@ class UsersourceAuthAdapterFactoryService
      *
      * @return \Application\DeskPRO\Sms\DeskPROSmsSender
      */
-    public static function create(DeskproContainer $container, $options = array())
+    public static function create(DeskproContainer $container, $options = [])
     {
         return new UsersourceAuthAdapterFactory(
-            $container, $container->getRouter(), $container->getRequest(), $container->getSession(), DP_INTERFACE
+            $container, $container->getRouter(), $container->getSession(), isset($options['interface']) ? $options['interface'] : DP_INTERFACE
         );
     }
 }

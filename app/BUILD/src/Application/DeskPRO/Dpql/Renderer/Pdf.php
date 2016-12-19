@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Renderer;
 
 use Application\DeskPRO\App;
@@ -67,12 +68,12 @@ class Pdf extends Html
     {
         $html = parent::render();
 
-        $content_html = App::getTemplating()->render('DeskPRO:pdf_agent:report-builder.html.twig', array(
+        $contentHtml = App::getTemplating()->render('DeskPRO:pdf_agent:report-builder.html.twig', [
             'html'  => $html,
             'title' => $this->_title,
-        ));
+        ]);
 
-        $mpdf = new \mPDF_mPDF(
+        $mpdf = new \mPDF(
             'utf-8', // Language/Character set
             'A4', // Size
             '8', // Default Font Size
@@ -88,13 +89,13 @@ class Pdf extends Html
 
         $mpdf->SetBasePath(realpath(__DIR__.'/../../../../../web/images'));
 
-        $mpdf->WriteHTML($content_html);
+        $mpdf->WriteHTML($contentHtml);
 
         return $mpdf->Output('', 'S');
     }
 
     /**
-     * Charts not supported in CSV. Returns false.
+     * Charts not supported in PDF. Returns false.
      *
      * @param string $type
      * @param array  $rows

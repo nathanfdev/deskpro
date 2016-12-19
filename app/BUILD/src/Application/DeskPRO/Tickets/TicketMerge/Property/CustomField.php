@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\TicketMerge\Property;
 
 use Application\DeskPRO\Entity\CustomDataTicket;
@@ -53,6 +54,9 @@ class CustomField extends PropertyAbstract
      */
     public $lost = null;
 
+    /**
+     * @param CustomDefTicket $field
+     */
     public function setField(CustomDefTicket $field)
     {
         $this->field = $field;
@@ -65,17 +69,16 @@ class CustomField extends PropertyAbstract
         }
 
         // No children means its a simple field (text input etc)
-        if (!count($this->field->children)) {
+        if (!count($this->field->getChildren())) {
             if ($this->strategy == self::STRATEGY_RIGHT) {
                 $other_exist = $this->other_ticket->getCustomDataForField($this->field);
                 if ($other_exist) {
-                    $this->ticket->removeCustomDataForField($this->field);
-                    $this->_addCustomData($other_exist);
+                    $this->addCustomData($other_exist);
                 }
             } elseif ($this->strategy == self::STRATEGY_COMBINE) {
-                $exist       = $this->ticket->getCustomDataForField($this->field->id);
-                $other_exist = $this->other_ticket->getCustomDataForField($this->field->id);
-                if ($exist && $exist->input !== '') {
+                $exist       = $this->ticket->getCustomDataForField($this->field->getId());
+                $other_exist = $this->other_ticket->getCustomDataForField($this->field->getId());
+                if ($exist && $exist->getData()) {
                     if ($other_exist && $exist->getData() != $other_exist->getData()) {
                         $this->lost = $other_exist->getData();
                     }
@@ -84,27 +87,22 @@ class CustomField extends PropertyAbstract
                 }
 
                 if ($other_exist) {
-                    $this->ticket->removeCustomDataForField($this->field);
-                    $this->_addCustomData($other_exist);
+                    $this->addCustomData($other_exist);
                 }
             }
 
         // Children means we can potentially merge selections
         } else {
-            $multiple      = $this->field->getOption('multiple');
-            $hasValue      = false;
-            $hasOtherValue = false;
-            foreach ($this->field->children as $child) {
+            $multiple = $this->field->getOption('multiple');
+            $hasValue = false;
+            foreach ($this->field->getChildren() as $child) {
                 if ($this->ticket->getCustomDataForField($child)) {
                     $hasValue = true;
-                }
-                if ($this->other_ticket->getCustomDataForField($child)) {
-                    $hasOtherValue = true;
                 }
             }
 
             if ($this->strategy == self::STRATEGY_COMBINE) {
-                foreach ($this->field->children as $child) {
+                foreach ($this->field->getChildren() as $child) {
                     // Ignore if left already has a value
                     $exist       = $this->ticket->getCustomDataForField($child);
                     $other_exist = $this->other_ticket->getCustomDataForField($child);
@@ -122,36 +120,37 @@ class CustomField extends PropertyAbstract
                             continue;
                         }
 
-                        $this->_addCustomData($other_exist);
+                        $this->addCustomData($other_exist);
                     }
                 }
             } elseif ($this->strategy == self::STRATEGY_RIGHT) {
                 // Take right ones over left ones
-                foreach ($this->field->children as $child) {
-                    $exist = $this->ticket->getCustomDataForField($child);
-                    if ($exist && $hasOtherValue && !$multiple) {
-                        // remove this value as we'll get another
-                        $this->ticket->removeCustomDataForField($child);
-                    }
-
+                foreach ($this->field->getChildren() as $child) {
                     $other_exist = $this->other_ticket->getCustomDataForField($child);
                     if ($other_exist) {
-                        $this->_addCustomData($other_exist);
+                        $this->addCustomData($other_exist);
                     }
                 }
             }
         }
     }
 
-    protected function _addCustomData(CustomDataTicket $data)
+    /**
+     * @param CustomDataTicket $data
+     */
+    protected function addCustomData(CustomDataTicket $data)
     {
-        $new_data             = new CustomDataTicket();
-        $new_data->value      = $data->value;
-        $new_data->input      = $data->input;
-        $new_data->field      = $data->field;
-        $new_data->root_field = $data->root_field;
-        $new_data->ticket     = $this->ticket;
+        /** @var CustomDefTicket $field */
+        $field   = $data->getField();
+        $oldData = $this->ticket->getCustomDataForField($field);
 
-        $this->ticket->addCustomData($new_data);
+        $newData = $oldData ?: new CustomDataTicket();
+        $newData->setValue($data->getValue());
+        $newData->setInput($data->getInput());
+        $newData->setField($data->getField());
+        $newData->setRootField($data->getRootField());
+        $newData->setTicket($this->ticket);
+
+        $this->ticket->addCustomData($newData);
     }
 }

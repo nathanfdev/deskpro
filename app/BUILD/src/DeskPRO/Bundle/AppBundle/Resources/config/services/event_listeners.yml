@@ -1,0 +1,90 @@
+services:
+
+  # Note: SecurityHeadersResponseListener's service is defined in config.shared.php as it is used globally
+
+  event_listener.auto_post_on_get_request:
+    class: DeskPRO\Bundle\AppBundle\EventListener\AutoPostOnGetRequestListener
+    tags:
+      - { name: kernel.event_subscriber }
+
+  event_listener.anti_abuse_exception_listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\AntiAbuse\AntiAbuseExceptionListener
+    tags:
+      - { name: kernel.event_subscriber }
+
+  dp.api.event_listeners.label_entity:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\LabelListener
+    tags:
+      - { name: doctrine.event_listener, event: postPersist }
+      - { name: doctrine.event_listener, event: postRemove }
+
+  event_listener.object_translatable:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\ObjectTranslatableListener
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }
+
+  event_listener.custom_per_data:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomPerDataListener
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }
+
+  event_listener.agent_message:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\AgentChatMessageListener
+    arguments: ["@event_dispatcher"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.voice_account:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceAccountListener
+    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager", "@router"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.voice_queue:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceQueueListener
+    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager", "@router"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.voice_worker:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceWorkerListener
+    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.voice_number:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceNumberListener
+    arguments: ["@twilio_adapter"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.custom_data_ticket:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDataChangeListener
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.listener.client_message_listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageListener
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@jms_serializer.serializer"
+    tags:
+      - { name: kernel.event_subscriber }
+
+  annotations_cache_warmer:
+    class: DeskPRO\Bundle\AppBundle\CacheWarmer\AnnotationsCacheWarmer
+    arguments: ["@service_container"]
+    tags:
+      - { name: 'kernel.cache_warmer' }
+
+  iface_url_corrector.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\InterfaceUrlCorrectorEventListener
+    arguments: ["@deskpro.interface_info", "@logger"]
+    tags:
+      - { name: kernel.event_subscriber }
+
+  url_corrector.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\UrlCorrectorEventListener
+    arguments: ["@deskpro.interface_info", "@brand_stack", "@portal_mode_storage", "@logger"]
+    tags:
+      - { name: kernel.event_subscriber }

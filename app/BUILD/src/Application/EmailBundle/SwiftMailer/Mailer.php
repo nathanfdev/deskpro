@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\SwiftMailer;
 
 use Application\EmailBundle\SwiftMailer\Message\MessageFactoryInterface;
@@ -81,14 +82,6 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
         parent::__construct($transport);
 
         $this->message_factory = $message_factory;
-
-        if (!empty($GLOBALS['DP_CONFIG']['debug']['mail']['force_to'])) {
-            $this->logger->debug(
-                sprintf('[%s] Mailer: force_to = %s', date('Y-m-d H:i:s'), $GLOBALS['DP_CONFIG']['debug']['mail']['force_to']),
-                array('mailer' => $this, 'stage' => 'init')
-            );
-            $this->registerPlugin(new \Orb\Mail\Plugins\ForceToAddress($GLOBALS['DP_CONFIG']['debug']['mail']['force_to']));
-        }
     }
 
     /**
@@ -98,7 +91,6 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
     {
         $ref = Numbers::roundToMultiple(time(), 5).'-'.Strings::random(40, Strings::CHARS_ALPHANUM_IU);
         $message->getHeaders()->addTextHeader('X-DeskPRO-MessageRef', $ref);
-        $message->setId($ref.'@deskpro-message');
 
         $this->logger->debug(sprintf('Preprocessing: %s', $message->getId()));
 
@@ -113,7 +105,7 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
      * Queue the message so it is sent by the queue processor.
      *
      * @param Swift_Mime_Message $message
-     * @param \DateTime          $send_date When to send the message. If not specified, it will be sent the next time the processor is run.
+     * @param \DateTime          $send_date When to send the message. If not specified, it will be sent the next time the processor is run
      *
      * @return int
      */

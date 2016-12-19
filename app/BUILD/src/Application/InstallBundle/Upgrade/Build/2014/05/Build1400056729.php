@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\App\Native\NativeAppsSync;
@@ -53,7 +54,7 @@ class Build1400056729 extends AbstractBuild
             $this->execMutateSql('CREATE INDEX IDX_4E3C994C21AF6383 ON usersources (user_permission_group_id)');
 
             $this->execMutateSql('ALTER TABLE blobs ADD storage_loc_specific VARCHAR(50) DEFAULT NULL');
-            $this->container->getDb()->insertIgnore('install_data', array('build' => '1413803749', 'name' => 'did_pre_alter', 'data' => '1'));
+            $this->container->getDb()->insertIgnore('install_data', ['build' => '1413803749', 'name' => 'did_pre_alter', 'data' => '1']);
         }
 
         $app_syncer = new NativeAppsSync(

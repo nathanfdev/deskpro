@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Settings;
 
 use Orb\Util\Numbers;
@@ -103,10 +104,10 @@ class PasswordSettings
      */
     public function resetSettings()
     {
-        foreach (array('user', 'agent') as $type) {
+        foreach (['user', 'agent'] as $type) {
             $type_obj = $this->{$type.'_policy'};
 
-            foreach (array(
+            foreach ([
                 'min_length',
                 'max_age',
                 'forbid_reuse',
@@ -114,7 +115,7 @@ class PasswordSettings
                 'require_num_lowercase',
                 'require_num_number',
                 'require_num_symbol',
-            ) as $name) {
+            ] as $name) {
                 $type_obj->$name = $this->settings->get("$type.password_policy.$name");
             }
 
@@ -137,7 +138,7 @@ class PasswordSettings
      */
     public function toArray()
     {
-        return array(
+        return [
             'user'                           => $this->user_policy->toArray(),
             'agent'                          => $this->agent_policy->toArray(),
             'sessions_lifetime'              => $this->sessions_lifetime,
@@ -149,7 +150,7 @@ class PasswordSettings
             'enable_agent_rememberme'        => $this->enable_agent_rememberme,
             'enable_user_rememberme'         => $this->enable_user_rememberme,
             'agent_enable_kb_shortcuts'      => $this->agent_enable_kb_shortcuts,
-        );
+        ];
     }
 
     /**
@@ -176,7 +177,7 @@ class PasswordSettings
      */
     public function saveSettings()
     {
-        foreach (array('user', 'agent') as $type) {
+        foreach (['user', 'agent'] as $type) {
             $type_obj = $this->{$type.'_policy'};
 
             foreach ($type_obj->toArray() as $k => $v) {

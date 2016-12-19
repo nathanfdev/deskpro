@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\JobQueue\Processor;
 
 use Application\DeskPRO\Entity\Job;
@@ -37,7 +34,6 @@ use Application\DeskPRO\JobQueue\JobQueueException;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\OptionsResolver\Exception\ExceptionInterface as OptionsResolverException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Helper methods available to children, encouraged to extend this when creating a job processor (but not required to).
@@ -66,7 +62,6 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
             try {
                 $data = $this->getData($job);
             } catch (OptionsResolverException $e) {
-
                 // reject this because the payload data is invalid
                 $this->markRejected(
                     $job,
@@ -93,9 +88,9 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
      * Note: if the job data (payload) causes this resolver to throw an exception, the job will be rejected automatically
      * for you
      *
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    abstract public function setDataOptions(OptionsResolverInterface $resolver);
+    abstract public function configureOptions(OptionsResolver $resolver);
 
     /**
      * this is what needs to be implemented - this method will receive the payload and it needs to be dealt with.
@@ -179,22 +174,22 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 date_touch = :date_touch
             WHERE id = :job_id
             ',
-            array(
+            [
                 'log_summary'      => $log_summary,
                 'detailed_logs'    => $detailed_logs,
                 'completed_status' => Job::STATUS_COMPLETE,
                 'status_code'      => $status_code,
                 'date_touch'       => new \DateTime(),
                 'job_id'           => $job['id'],
-            ),
-            array(
+            ],
+            [
                 'log_summary'      => 'string',
                 'detailed_logs'    => 'text',
                 'completed_status' => 'string',
                 'status_code'      => 'string',
                 'date_touch'       => 'datetime',
                 'job_id'           => 'integer',
-            )
+            ]
         );
     }
 
@@ -219,22 +214,22 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 date_touch = :date_touch
             WHERE id = :job_id
             ',
-            array(
+            [
                 'log_summary'      => $log_summary,
                 'detailed_logs'    => $detailed_logs,
                 'completed_status' => Job::STATUS_REJECTED,
                 'status_code'      => $status_code,
                 'date_touch'       => new \DateTime(),
                 'job_id'           => $job['id'],
-            ),
-            array(
+            ],
+            [
                 'log_summary'      => 'string',
                 'detailed_logs'    => 'text',
                 'completed_status' => 'string',
                 'status_code'      => 'string',
                 'date_touch'       => 'datetime',
                 'job_id'           => 'integer',
-            )
+            ]
         );
     }
 
@@ -261,22 +256,22 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 has_warning = 1
             WHERE id = :job_id
             ',
-            array(
+            [
                 'log_summary'   => $log_summary,
                 'detailed_logs' => $this->formatExceptionIntoString($e),
                 'error_status'  => Job::STATUS_ERROR,
                 'status_code'   => $status_code,
                 'date_touch'    => new \DateTime(),
                 'job_id'        => $job['id'],
-            ),
-            array(
+            ],
+            [
                 'log_summary'   => 'string',
                 'detailed_logs' => 'text',
                 'error_status'  => 'string',
                 'status_code'   => 'string',
                 'date_touch'    => 'datetime',
                 'job_id'        => 'integer',
-            )
+            ]
         );
     }
 
@@ -305,18 +300,18 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 worker_id = NULL
             WHERE id = :job_id
             ',
-            array(
+            [
                 'date_now'       => new \DateTime(),
                 'date_retry'     => $retry_date,
                 'waiting_status' => Job::STATUS_WAITING,
                 'job_id'         => $job['id'],
-            ),
-            array(
+            ],
+            [
                 'date_now'       => 'datetime',
                 'date_retry'     => 'datetime',
                 'waiting_status' => 'string',
                 'job_id'         => 'integer',
-            )
+            ]
         );
     }
 
@@ -336,14 +331,14 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
             SET date_touch = :date_now
             WHERE id = :job_id
             ',
-            array(
+            [
                 'date_now' => new \DateTime(),
                 'job_id'   => $job['id'],
-            ),
-            array(
+            ],
+            [
                 'date_now' => 'datetime',
                 'job_id'   => 'integer',
-            )
+            ]
         );
     }
 
@@ -364,7 +359,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
         $data_array = json_decode($job['data'], true);
 
         $resolver = new OptionsResolver();
-        $this->setDataOptions($resolver);
+        $this->configureOptions($resolver);
 
         return $resolver->resolve($data_array);
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,8 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO;
 
+use Application\DeskPRO\DependencyInjection\AppSecretPass;
+use Application\DeskPRO\DependencyInjection\Compiler\AppVariablePass;
 use Application\DeskPRO\DependencyInjection\CoreExtension;
 use Application\DeskPRO\DependencyInjection\DoctrineEntityListenerPass;
 use Application\DeskPRO\DependencyInjection\ElasticaClientPass;
@@ -52,6 +55,8 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 
         $container->registerExtension(new CoreExtension());
         $container->registerExtension(new SearchExtension());
+        $container->addCompilerPass(new AppVariablePass());
+        $container->addCompilerPass(new AppSecretPass());
         $container->addCompilerPass(new ElasticaClientPass());
         $container->addCompilerPass(new DoctrineEntityListenerPass());
     }
@@ -61,7 +66,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
      */
     public function registerCommands(Application $application)
     {
-        $commands = array(
+        $commands = [
             'Application\\DeskPRO\\Command\\AgentsCommand',
             'Application\\DeskPRO\\Command\\AsseticCommand',
             'Application\\DeskPRO\\Command\\CheckBlobStorageCommand',
@@ -69,50 +74,33 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\DbCollationChangeCommand',
             'Application\\DeskPRO\\Command\\DecodeTacCommand',
             'Application\\DeskPRO\\Command\\DefaultDataCommand',
-            'Application\\DeskPRO\\Command\\DevBuildLangCommand',
-            'Application\\DeskPRO\\Command\\DevCheckReservedWordsCommand',
             'Application\\DeskPRO\\Command\\DevCommand',
-            'Application\\DeskPRO\\Command\\DevExportLangCommand',
-            'Application\\DeskPRO\\Command\\DevGenChangelogDocCommand',
             'Application\\DeskPRO\\Command\\DevGenDpqlDocsCommand',
-            'Application\\DeskPRO\\Command\\DevJobCreateIncomingSmsCommand',
-            'Application\\DeskPRO\\Command\\DevLangCheckVarsCommand',
-            'Application\\DeskPRO\\Command\\DevLangOneSkyInitCommand',
-            'Application\\DeskPRO\\Command\\DevLoadDataCommand',
-            'Application\\DeskPRO\\Command\\DevRebuildSyncDataCommand',
             'Application\\DeskPRO\\Command\\DevTestApiCommand',
             'Application\\DeskPRO\\Command\\FixBlobPathsCommand',
             'Application\\DeskPRO\\Command\\GenBuildClassCommand',
             'Application\\DeskPRO\\Command\\GenerateSchemaFileCommand',
-            'Application\\DeskPRO\\Command\\GenerateReportFileCommand',
             'Application\\DeskPRO\\Command\\GenRandomEmailCommand',
-            'Application\\DeskPRO\\Command\\InstallCommand',
             'Application\\DeskPRO\\Command\\IndexElasticsearchCommand',
             'Application\\DeskPRO\\Command\\InternalUpgradeRunnerCommand',
             'Application\\DeskPRO\\Command\\JobExecuteCommand',
             'Application\\DeskPRO\\Command\\JobSupervisorCommand',
-            'Application\\DeskPRO\\Command\\LanguageToPOCommand',
             'Application\\DeskPRO\\Command\\LicenseInfoCommand',
             'Application\\DeskPRO\\Command\\LoginTokenCommand',
             'Application\\DeskPRO\\Command\\MoveBlobsCommand',
             'Application\\DeskPRO\\Command\\OptimisePermsCommand',
             'Application\\DeskPRO\\Command\\PopulateElasticsearchCommand',
             'Application\\DeskPRO\\Command\\ProcessEmailCommand',
-            'Application\\DeskPRO\\Command\\RecountRatingsCommand',
             'Application\\DeskPRO\\Command\\RefillTicketActiveCommand',
-            'Application\\DeskPRO\\Command\\ReplayNewReplyTriggersCommand',
-            'Application\\DeskPRO\\Command\\ResendTicketEmailNotificationsCommand',
             'Application\\DeskPRO\\Command\\SchemaCommand',
             'Application\\DeskPRO\\Command\\SearchReindexCommand',
-            'Application\\DeskPRO\\Command\\SyncDataCommand',
             'Application\\DeskPRO\\Command\\TestCommand',
             'Application\\DeskPRO\\Command\\TestEmailDecodeCommand',
             'Application\\DeskPRO\\Command\\TestFilterCommand',
             'Application\\DeskPRO\\Command\\UpgradeCommand',
             'Application\\DeskPRO\\Command\\VerifyBlobsCommand',
-            'Application\\DeskPRO\\Command\\VerifySearchTablesCommand',
             'Application\\DeskPRO\\Command\\WorkerJobCommand',
-        );
+        ];
 
         foreach ($commands as $cmd) {
             $application->add(new $cmd());

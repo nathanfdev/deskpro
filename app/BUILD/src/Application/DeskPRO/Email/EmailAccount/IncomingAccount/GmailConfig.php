@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
@@ -50,14 +51,62 @@ class GmailConfig implements AccountConfigInterface
     public $password;
 
     /**
+     * @var string
+     */
+    public $clientId;
+
+    /**
+     * @var string
+     */
+    public $clientSecret;
+
+    /**
+     * @var string
+     */
+    public $token;
+
+    /**
+     * @var string
+     */
+    public $refreshToken;
+
+    /**
+     * 'read', 'delete', 'archive'.
+     *
+     * @var string
+     */
+    public $mode = 'read';
+
+    /**
+     * The mailbox to read from. Default blank means inbox.
+     *
+     * @var string
+     */
+    public $read_mailbox = null;
+
+    /**
+     * If using the 'archive' method, this is the mailbox name.
+     *
+     * @var string
+     */
+    public $archive_mailbox = null;
+
+    /**
      * {@inheritdoc}
      */
     public function serializeJsonArray()
     {
-        return array(
-            'user'     => $this->user,
-            'password' => $this->password,
-        );
+        return [
+            'user'            => $this->user,
+            'password'        => $this->password,
+            'clientId'        => $this->clientId,
+            'clientSecret'    => $this->clientSecret,
+            'token'           => $this->token,
+            'refreshToken'    => $this->refreshToken,
+            'mode'            => $this->mode,
+            'read_mailbox'    => $this->read_mailbox,
+            'archive_mailbox' => $this->archive_mailbox,
+        ];
     }
 
     /**
@@ -81,13 +130,19 @@ class GmailConfig implements AccountConfigInterface
         return 'gmail';
     }
 
-    ############################################################################
-    # Validation Metadata
-    ############################################################################
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
 
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('user', new Constraints\NotBlank());
-        $metadata->addPropertyConstraint('password', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('clientId', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('clientSecret', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('token', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('refreshToken', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('mode', new Constraints\Choice([
+            'choices' => ['read', 'delete', 'archive'],
+        ]));
     }
 }

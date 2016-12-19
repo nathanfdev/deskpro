@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,10 +31,12 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
@@ -86,23 +88,26 @@ class SendArbitraryUserEmail extends AbstractEmailAction
             return;
         }
 
-        #-------------------------
-        # Vars
-        #-------------------------
+        //-------------------------
+        // Vars
+        //-------------------------
 
         $default_vars = $this->getStandardEmailVars($ticket, $context, 'user');
 
-        #-------------------------
-        # Sort out the users to send to
-        #-------------------------
+        //-------------------------
+        // Sort out the users to send to
+        //-------------------------
 
-        /** @var \Application\DeskPRO\Entity\Person[] $send_people */
-        $send_people = array();
+        /** @var \Application\DeskPRO\Entity\Person[] $sendPeople */
+        $sendPeople = [];
 
         if ($this->getActionOption('send_org_managers')) {
-            $managers = $this->getContainer()->getEm()->getRepository('DeskPRO:Organization')->getManagers($ticket->organization);
+            /** @var \Application\DeskPRO\EntityRepository\Organization $orgRepo */
+            $orgRepo  = $this->getContainer()->getEm()->getRepository(Organization::class);
+            $managers = $orgRepo->getManagers($ticket->getOrganization());
+
             foreach ($managers as $p) {
-                $send_people[] = $p;
+                $sendPeople[$p->getEmailAddress()] = $p;
             }
         }
 
@@ -110,7 +115,7 @@ class SendArbitraryUserEmail extends AbstractEmailAction
         foreach ($this->getActionOption('emails') as $email) {
             $person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
             if ($person) {
-                $send_people[] = $person;
+                $sendPeople[$email] = $person;
             } else {
                 if ($reg_closed) {
                     continue;
@@ -119,45 +124,45 @@ class SendArbitraryUserEmail extends AbstractEmailAction
 
                 $eml        = new EmailAddress();
                 $eml->email = $email;
-                $person     = $person_processor->createPerson($eml, true);
+                $person     = $person_processor->createPerson($eml);
 
                 if ($person) {
-                    $send_people[] = $person;
+                    $sendPeople[$email] = $person;
                 }
             }
         }
 
-        $send_people = array_unique($send_people);
-
-        if (!$send_people) {
+        if (!$sendPeople) {
             $context->getLogger()->debug('[SendArbitraryUserEmail] no people to send to');
         }
 
-        #-------------------------
-        # Send emails
-        #-------------------------
+        //-------------------------
+        // Send emails
+        //-------------------------
 
-        foreach ($send_people as $person) {
+        foreach ($sendPeople as $email => $person) {
             $context->getLogger()->debug(sprintf('[SendArbitraryUserEmail] Sending to Person#%d %s <%s>', $person->id, $person->getDisplayName(), $person->primary_email ? $person->primary_email->email : '?'));
 
-            $build = TicketEmailBuilder::createFromContainer($this->getContainer())
+            $builder = TicketEmailBuilder::createFromContainer($this->getContainer())
                 ->setTicket($ticket)
                 ->setToPerson($person)
+                ->setToPersonEmail($email)
                 ->setUserMode()
                 ->setTemplateName($template)
                 ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
                 ->setMaxAttachSize(0)
                 ->setLogger($context->getLogger())
-                ->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
+                ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
                 ->setFromEmailAccount($from_account);
 
-            $ticket_email = $build->buildTicketEmail();
+            $ticket_email = $builder->buildTicketEmail();
+            $default_vars = array_merge($default_vars, $builder->getCommonVars($person->isAgent()));
 
             try {
                 $ticket_email->send($default_vars);
                 $this->recordEmailTicketLog($ticket_email, $ticket, $context);
             } catch (\Exception $e) {
-                $context->getLogger()->error(sprintf('Exception: [%s] %s', $e->getCode(), $e->getMessage()), array('exception' => $e));
+                $context->getLogger()->error(sprintf('Exception: [%s] %s', $e->getCode(), $e->getMessage()), ['exception' => $e]);
                 throw $e;
             }
 

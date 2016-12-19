@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,13 +31,25 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Templates used in the system.
+ *
+ * @property int       $id
+ * @property string    $name
+ * @property string    $template_code
+ * @property string    $template_compiled
+ * @property Brand     $brand
+ * @property ThemeSet  $theme_set
+ * @property \DateTime $date_created
+ * @property \DateTime $date_updated
  */
 class Template extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -47,13 +59,6 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
      * @var int
      */
     protected $id = null;
-
-    /**
-     * The style this template belongs to.
-     *
-     * @var Style
-     */
-    protected $style;
 
     /**
      * The logical name of the template. E.g., UserBundle:Main:resources.html.twig.
@@ -75,6 +80,11 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
      * @var string
      */
     protected $template_compiled = '';
+
+    /**
+     * @var ThemeSet
+     */
+    protected $theme_set;
 
     /**
      * @var \DateTime
@@ -100,11 +110,33 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getTemplateCode()
+    {
+        return $this->template_code;
+    }
+
+    public function getTemplateCompiled()
+    {
+        return $this->template_compiled;
+    }
+
+    public function setThemeSet(ThemeSet $themeSet)
+    {
+        $this->setModelField('theme_set', $themeSet);
+
+        return $this;
+    }
+
     public function setTemplate($code, $compiled)
     {
-        $this['template_code']     = $code;
-        $this['template_compiled'] = $compiled;
-        $this['date_updated']      = new \DateTime();
+        $this->setModelField('template_code', $code);
+        $this->setModelField('template_compiled', $compiled);
+        $this->setModelField('date_updated', new \DateTime());
     }
 
     public function isCustom()
@@ -121,23 +153,78 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
         return $name;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * @return ThemeSet
+     */
+    public function getThemeSet()
+    {
+        return $this->theme_set;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Template';
-        $metadata->setPrimaryTable(array('name' => 'templates'));
+        $metadata->setPrimaryTable(['name' => 'templates']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
-        $metadata->mapField(array('fieldName' => 'template_code', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template_code'));
-        $metadata->mapField(array('fieldName' => 'template_compiled', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template_compiled'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapField(array('fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_updated'));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'name',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'name',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'template_code',
+            'type'       => 'text',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'template_code',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'template_compiled',
+            'type'       => 'text',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'template_compiled',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_created',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'date_created',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_updated',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'date_updated',
+        ]);
+
+        $builder = new ClassMetadataBuilder($metadata);
+        $builder->createManyToOne('theme_set', 'DeskPRO\Bundle\AppBundle\Entity\ThemeSet')->build();
+
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'style', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Style', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'style_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Reader;
 
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
@@ -38,15 +39,15 @@ use Orb\Util\Strings;
 abstract class AbstractReader
 {
     /** @var array */
-    protected $vals = array();
+    protected $vals = [];
     /** @var array */
-    protected $properties = array();
+    protected $properties = [];
     /** @var string */
     protected $raw_source;
     /** @var string */
     protected $raw_headers;
     /** @var array */
-    protected $from_headers = array('from');
+    protected $from_headers = ['from'];
 
     public function _kill()
     {
@@ -63,8 +64,8 @@ abstract class AbstractReader
 
     public function resetAll()
     {
-        $this->vals       = array();
-        $this->properties = array();
+        $this->vals       = [];
+        $this->properties = [];
     }
 
     public function setProperty($name, $value)
@@ -256,10 +257,10 @@ abstract class AbstractReader
         if ($orig_to_email = $this->getOriginalTo()) {
             $eml        = new EmailAddress();
             $eml->email = strtolower($orig_to_email);
-            $orig_to    = array($eml);
+            $orig_to    = [$eml];
         }
 
-        $all = array();
+        $all = [];
         if ($to) {
             $all = array_merge($all, $to);
         }
@@ -342,7 +343,7 @@ abstract class AbstractReader
     {
         if (!isset($this->vals['headers']) || !isset($this->vals['headers'][$header])) {
             if (!isset($this->vals['headers'])) {
-                $this->vals['headers'] = array();
+                $this->vals['headers'] = [];
             }
             $this->vals['headers'][$header] = $this->_getHeader($header);
         }
@@ -478,7 +479,7 @@ abstract class AbstractReader
      */
     public function getId()
     {
-        /** @var Header $id */
+        /* @var Header $id */
         if (!$id = $this->getHeader('message-id')) {
             return;
         }

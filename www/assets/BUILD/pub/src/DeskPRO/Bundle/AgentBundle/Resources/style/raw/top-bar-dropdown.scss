@@ -1,0 +1,20 @@
+.dpw-top-bar-dropdown-footer { padding: 5px; }
+
+.dpw-top-bar-dropdown-button {
+  display: inline-block;
+  color: #4681b2;
+  background: #4681b2;
+  line-height: 1em;
+  padding: 9px 20px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 2px;
+  font-size: 12px;
+}
+
+.dpw-top-bar-dropdown-button.blank {
+  background: none;
+  color: #aeafb0;
+  text-decoration: underline;
+  &:hover { color: #333; }
+}

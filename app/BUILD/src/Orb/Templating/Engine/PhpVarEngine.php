@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Templating\Engine;
 
 use Symfony\Component\Templating\Storage\FileStorage;
@@ -42,7 +43,7 @@ use Symfony\Component\Templating\Storage\StringStorage;
  */
 class PhpVarEngine extends \Symfony\Bundle\FrameworkBundle\Templating\PhpEngine
 {
-    public function evaluate(Storage $template, array $parameters = array())
+    public function evaluate(Storage $template, array $parameters = [])
     {
         $OUTPUT       = $this->_preProcess($template, $parameters);
         $__template__ = $template;
@@ -69,7 +70,7 @@ class PhpVarEngine extends \Symfony\Bundle\FrameworkBundle\Templating\PhpEngine
         return $this->_postProcess($OUTPUT);
     }
 
-    protected function _preProcess(Storage $template, array $parameters = array())
+    protected function _preProcess(Storage $template, array $parameters = [])
     {
         return '';
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build\Helper201405;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\TicketLayout as TicketLayoutEntity;
 use Application\DeskPRO\TicketLayout;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 
 class LayoutGenerator
 {
@@ -91,7 +93,7 @@ class LayoutGenerator
 
         $layout->add(new TicketLayout\LayoutField('subject'));
         $layout->add(new TicketLayout\LayoutField('message'));
-        $layout->add(new TicketLayout\LayoutField('attach'));
+        $layout->add(new TicketLayout\LayoutField(FormFields::ATTACHMENTS));
 
         return $layout;
     }

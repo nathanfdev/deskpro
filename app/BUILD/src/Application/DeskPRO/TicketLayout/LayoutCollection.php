@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\TicketLayout;
 
 use Orb\Util\Strings;
@@ -42,7 +43,7 @@ class LayoutCollection implements \Countable, \IteratorAggregate
      *
      * @var Layout[]
      */
-    private $layouts;
+    private $layouts = [];
 
     /**
      * Adds a layout to the collection.
@@ -123,16 +124,16 @@ class LayoutCollection implements \Countable, \IteratorAggregate
         $js = "(function () {\n";
         $js .= "\tvar layoutMap = {\n";
 
-        $layout_codes = array();
+        $layoutCodes = [];
         foreach ($this->layouts as $k => $layout) {
             $k_str = "'$k'";
 
-            $code           = trim(Strings::modifyLines($layout->compileJsObj(), "\t\t\t"));
-            $bit_js         = "\t\t{$k_str}: {$code}";
-            $layout_codes[] = $bit_js;
+            $code          = trim(Strings::modifyLines($layout->compileJsObj(), "\t\t\t"));
+            $bit_js        = "\t\t{$k_str}: {$code}";
+            $layoutCodes[] = $bit_js;
         }
 
-        $js .= implode(",\n", $layout_codes)."\n";
+        $js .= implode(",\n", $layoutCodes)."\n";
         $js .= "\t};\n";
 
         $js .= "\treturn {\n";

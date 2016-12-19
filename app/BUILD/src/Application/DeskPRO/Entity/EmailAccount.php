@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -146,11 +147,11 @@ class EmailAccount extends DomainObject
      */
     public function setAccountType($account_type)
     {
-        if (!in_array($account_type, array(
+        if (!in_array($account_type, [
             self::TYPE_OUT,
             self::TYPE_TICKETS,
             self::TYPE_ARTICLES,
-        ))) {
+        ])) {
             throw new \InvalidArgumentException();
         }
 
@@ -188,7 +189,7 @@ class EmailAccount extends DomainObject
      */
     public function getAllAddresses()
     {
-        $addrs = $this->other_addresses ?: array();
+        $addrs = $this->other_addresses ?: [];
         array_unshift($addrs, $this->address);
 
         return $addrs;
@@ -295,7 +296,7 @@ class EmailAccount extends DomainObject
             }
         } else {
             if (!$new) {
-                $new = array();
+                $new = [];
             }
             $new[$name] = $value;
         }
@@ -315,18 +316,18 @@ class EmailAccount extends DomainObject
         $this->setModelField('options', $options);
     }
 
-    ############################################################################
-    # Export
-    ############################################################################
+    //###########################################################################
+    // Export
+    //###########################################################################
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
-        $data['incoming_account']      = $this->incoming_account ? $this->incoming_account->serializeJsonArray() : array();
+        $data['incoming_account']      = $this->incoming_account ? $this->incoming_account->serializeJsonArray() : [];
         $data['incoming_account_type'] = $this->getIncomingAccountType();
         $data['outgoing_account_type'] = $this->getOutgoingAccountType();
-        $data['outgoing_account']      = $this->outgoing_account ? $this->outgoing_account->serializeJsonArray() : array();
+        $data['outgoing_account']      = $this->outgoing_account ? $this->outgoing_account->serializeJsonArray() : [];
         $data['use_email_address']     = $this->getUseEmailAddress();
 
         return $data;
@@ -337,9 +338,9 @@ class EmailAccount extends DomainObject
         return sprintf('<EmailAccount:%d> %s', $this->id, implode(', ', $this->getAllAddresses()));
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -348,84 +349,84 @@ class EmailAccount extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\EmailAccount';
 
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'email_accounts',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'account_type',
             'fieldName'  => 'account_type',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'incoming_account',
             'fieldName'  => 'incoming_account',
             'type'       => 'dp_json_obj',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'outgoing_account',
             'fieldName'  => 'outgoing_account',
             'type'       => 'dp_json_obj',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'is_enabled',
             'fieldName'  => 'is_enabled',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'address',
             'fieldName'  => 'address',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'other_addresses',
             'fieldName'  => 'other_addresses',
             'type'       => 'simple_array',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'options',
             'fieldName'  => 'options',
             'type'       => 'json_array',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'date_created',
             'fieldName'  => 'date_created',
             'type'       => 'datetime',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'date_read_start',
             'fieldName'  => 'date_read_start',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'date_last_incoming',
             'fieldName'  => 'date_last_incoming',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'is_read_active',
             'fieldName'  => 'is_read_active',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
+        ]);
     }
 }

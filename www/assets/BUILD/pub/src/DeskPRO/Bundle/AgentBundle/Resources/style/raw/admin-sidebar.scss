@@ -1,0 +1,39 @@
+.sidebar-list {
+  li {
+    a.disabled {
+      color: #a8a8a8;
+    }
+  }
+
+  .fa-caret-down {
+    opacity: 0.5;
+    font-size: 0.9em;
+  }
+
+
+  .the-expandables {
+    height: auto;
+    overflow: hidden;
+    transition: all 0.5s ease;
+  }
+
+  .the-expandables.hidden {
+    display: block;
+    height: 0px;
+  }
+
+  .disabled-tag {
+    display: inline-block;
+    padding: 1px 4px;
+    top: 4px;
+    border-radius: 2px;
+    font-size: 0.7em;
+    text-transform: uppercase;
+    background: #cecece;
+    color: #686868;
+    position: absolute;
+    right: 4px;
+    font-style: italic;
+    font-weight: 600;
+  }
+}

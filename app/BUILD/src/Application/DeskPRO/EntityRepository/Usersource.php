@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Usersource\UsersourceCollection;
@@ -99,7 +100,7 @@ class Usersource extends AbstractEntityRepository
     {
         $all = $this->getAllUsersources();
 
-        $ret = array();
+        $ret = [];
         foreach ($all as $us) {
             if ($us->getAdapter()->isCapable(UsersourceInfo::CAPABILITY_FORM_LOGIN)) {
                 $ret[$us->id] = $us;
@@ -121,7 +122,7 @@ class Usersource extends AbstractEntityRepository
     {
         $all = $this->getAllUsersources();
 
-        $ret = array();
+        $ret = [];
         foreach ($all as $us) {
             if ($us->getAdapter()->isCapable(UsersourceInfo::CAPABILITY_COOKIE_LOGIN)) {
                 $ret[$us->id] = $us;
@@ -142,7 +143,7 @@ class Usersource extends AbstractEntityRepository
     {
         $all = $this->getAllUsersources();
 
-        $ret = array();
+        $ret = [];
         foreach ($all as $us) {
             if ($us->getAdapter()->isCapable(UsersourceInfo::CAPABILITY_SSO_JS)) {
                 $ret[$us->id] = $us;
@@ -165,7 +166,7 @@ class Usersource extends AbstractEntityRepository
     {
         $all = $this->getAllUsersources();
 
-        $ret = array();
+        $ret = [];
         foreach ($all as $us) {
             // TODO: Is this correct?
             if ($us->getAdapter()->isCapable(UsersourceInfo::CAPABILITY_FORM_LOGIN)) {
@@ -234,7 +235,7 @@ class Usersource extends AbstractEntityRepository
         $x = 0;
         foreach ($display_orders as $tr_id) {
             $x += 10;
-            $db->update($this->getTableName(), array('display_order' => $x), array('id' => $tr_id));
+            $db->update($this->getTableName(), ['display_order' => $x], ['id' => $tr_id]);
         }
 
         $db->commit();

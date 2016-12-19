@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,13 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use DeskPRO\Kernel\KernelErrorHandler;
+use Application\DeskPRO\Entity\TaskQueue;
+use Application\DeskPRO\TaskQueueJob\AbstractJob as TaskQueueJob;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Runs queued tasks if there are any.
@@ -52,33 +51,36 @@ class RunQueuedTasks extends AbstractJob
 
         while (($remaining_time = $max_run - (microtime(true) - $start_time)) > 1) {
             if (!$task) {
-                /** @var $task \Application\DeskPRO\Entity\TaskQueue */
-                $task = App::getEntityRepository('DeskPRO:TaskQueue')->getRunnableTask();
+                /** @var TaskQueue $task */
+                $task = App::getEntityRepository(TaskQueue::class)->getRunnableTask();
             }
 
             if (!$task) {
                 break;
             }
 
-            $logger->logInfo("Running task #$task->id: $task->runner_class");
+            $taskId          = $task->getId();
+            $taskRunnerClass = $task->getRunnerClass();
+
+            $logger->logInfo("Running task #$taskId: $taskRunnerClass");
 
             try {
                 $result = $task->runTask($remaining_time, $logger);
             } catch (\Exception $e) {
                 $result = false;
-                $logger->logWarn("Task #$task->id ($task->runner_class) errored: ".$e->getMessage());
-                KernelErrorHandler::logException($e);
+                $logger->logWarn("Task #$taskId ($taskRunnerClass) errored: ".$e->getMessage());
+                SystemErrorHandler::logException($e);
             }
 
             $em->flush();
 
-            if ($result === \Application\DeskPRO\TaskQueueJob\AbstractJob::TASK_COMPLETED) {
+            if ($result === TaskQueueJob::TASK_COMPLETED) {
                 // finished task, move on
-                $logger->logInfo("Task #$task->id ($task->runner_class) completed successfully.");
+                $logger->logInfo("Task #$taskId ($taskRunnerClass) completed successfully.");
                 $task = false;
-            } elseif ($result === \Application\DeskPRO\TaskQueueJob\AbstractJob::TASK_CONTINUING) {
+            } elseif ($result === TaskQueueJob::TASK_CONTINUING) {
                 // still running task, so keep $task in case we have more time
-                $logger->logInfo("Task #$task->id ($task->runner_class) to be continued.");
+                $logger->logInfo("Task #$taskId ($taskRunnerClass) to be continued.");
             } else {
                 // task errored, logged above already
                 $task = false;

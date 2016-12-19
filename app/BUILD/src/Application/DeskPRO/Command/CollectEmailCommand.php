@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -123,11 +124,11 @@ class CollectEmailCommand extends ContainerAwareCommand
                 $time = 60;
             }
 
-            #----------------------------------------
-            # Run the gateway collection
-            #----------------------------------------
+            //----------------------------------------
+            // Run the gateway collection
+            //----------------------------------------
 
-            $output->setVerbosity(3);
+            $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
             $logger = new Logger();
             $logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));
@@ -138,7 +139,7 @@ class CollectEmailCommand extends ContainerAwareCommand
             $runner->setPhpTimeLimit(900);
             $runner->executeAccount($account, $time, $only_collect);
 
-            App::getDb()->update('email_accounts', array('is_read_active' => 0), array('id' => $account->getId()));
+            App::getDb()->update('email_accounts', ['is_read_active' => 0], ['id' => $account->getId()]);
         }
 
         return 0;

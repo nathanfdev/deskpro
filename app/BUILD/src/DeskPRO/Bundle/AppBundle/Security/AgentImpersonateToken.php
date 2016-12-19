@@ -1,0 +1,88 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Security;
+
+use Application\DeskPRO\Entity\Person;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
+
+/**
+ * Represents someone logged in that is impersonating another user.
+ */
+class AgentImpersonateToken extends AbstractToken
+{
+    const ATTR_AGENT_IMPERSONATE = 'impersonating_agent_id';
+
+    /**
+     * @var string
+     */
+    protected $auth;
+
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $agent;
+
+    public function __construct($auth)
+    {
+        parent::__construct(['ROLE_USER']);
+
+        $this->auth = $auth;
+        // this will get set if valid $auth in AgentImpersonateProvider
+        // $this->setUser(null);
+        $this->setAuthenticated(false);
+    }
+
+    public function getAuth()
+    {
+        return $this->auth;
+    }
+
+    public function setAgent(Person $agent)
+    {
+        $this->agent = $agent;
+        // set the attribute so we can always know who the impersonating agent is
+        // only this attrbiute is useful in subsequent requests (session)
+        // so don't do ->getAgent(), instead get the attribute id and fetch the agent Person object yourslef
+        $this->setAttribute(self::ATTR_AGENT_IMPERSONATE, $agent->getId());
+    }
+
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    public function getCredentials()
+    {
+        return;
+    }
+}

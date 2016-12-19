@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,134 +31,296 @@
  *
  * @category Install
  */
+
 namespace Application\InstallBundle\Data\DefaultData;
+
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeam\AgentTeamTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipant\TicketParticipantTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
 class FilterData extends AbstractDefaultData
 {
     public function runInstall()
     {
-        #------------------------------
-        # Define filters
-        #------------------------------
+        // TODO: remove oldFilterInstall when newFilterInstall takes over
+        $this->oldFilterInstall();
+        $this->newFilterInstall();
+    }
 
-        $filters = array();
+    private function newFilterInstall()
+    {
+        $status_agent = new TicketStatusTerm(['status' => [Ticket::STATUS_AWAITING_AGENT]], TermInterface::OP_IS);
+        $status_user  = new TicketStatusTerm(['status' => [Ticket::STATUS_AWAITING_USER]], TermInterface::OP_IS);
 
-        $filters[] = array(
+        //------------------------------
+        // Inbox
+        //------------------------------
+
+        $filter_set = new TicketFilterSet();
+        $filter_set->setTitle('Inbox');
+        $filter_set->setIsDefault(true);
+        $filter_set->setDisplayOrder(10);
+        $this->getEm()->persist($filter_set);
+
+        // my tickets
+        $term = new CompositeTerm([], TermInterface::OP_AND);
+        $term->addTerm(new AgentTerm(['agent_ids' => [AgentTerm::ID_ME]], TermInterface::OP_IS));
+        $term->addTerm($status_agent);
+        $this->saveFilter('My Tickets', $term, $filter_set);
+
+        // my team's tickets
+        $term = new CompositeTerm([], TermInterface::OP_AND);
+        $term->addTerm(new AgentTeamTerm(['agent_team_ids' => [AgentTeamTerm::TEAM_ID_ME]], TermInterface::OP_IS));
+        $term->addTerm($status_agent);
+        $this->saveFilter('My Team\'s Tickets', $term, $filter_set);
+
+        // tickets I follow
+        $term = new CompositeTerm([], TermInterface::OP_AND);
+        $term->addTerm(new TicketParticipantTerm(['person_ids' => [TicketParticipantTerm::ID_ME]], TermInterface::OP_IS));
+        $term->addTerm($status_agent);
+        $this->saveFilter('Tickets I Follow', $term, $filter_set);
+
+        // unassigned tickets
+        $term = new CompositeTerm([], TermInterface::OP_AND);
+        $term->addTerm(new AgentTerm(['agent_ids' => [0]], TermInterface::OP_IS));
+        $term->addTerm(new AgentTeamTerm(['agent_team_ids' => [0]], TermInterface::OP_IS));
+        $term->addTerm($status_agent);
+        $this->saveFilter('Unassigned', $term, $filter_set);
+
+        // all tickets (awaiting agent)
+        $term = new TicketStatusTerm(['status' => [Ticket::STATUS_AWAITING_AGENT]], TermInterface::OP_IS);
+        $this->saveFilter('All', $term, $filter_set);
+
+        //------------------------------
+        // All Tickets
+        //------------------------------
+
+        $filter_set = new TicketFilterSet();
+        $filter_set->setTitle('All Tickets');
+        $filter_set->setIsDefault(true);
+        $filter_set->setDisplayOrder(20);
+        $this->getEm()->persist($filter_set);
+
+        // mine on hold
+        // TODO correct the term
+        $term = $status_agent;
+        $this->saveFilter('Mine On Hold', $term, $filter_set);
+
+        // all on hold
+        // TODO correct the term
+        $term = $status_agent;
+        $this->saveFilter('All On Hold', $term, $filter_set);
+
+        // my recent activity
+        // TODO correct the term
+        $term = $status_agent;
+        $this->saveFilter('My Recent Activity', $term, $filter_set);
+
+        // aging
+        // TODO correct the term
+        $term = $status_agent;
+        $this->saveFilter('Aging', $term, $filter_set);
+
+        // my recent activity
+        // TODO correct the term
+        $term = $status_agent;
+        $this->saveFilter('New (opened today)', $term, $filter_set);
+
+        // my awaiting user
+        $term = new CompositeTerm([], TermInterface::OP_AND);
+        $term->addTerm(new AgentTerm(['agent_ids' => [AgentTerm::ID_ME]], TermInterface::OP_IS));
+        $term->addTerm($status_user);
+        $this->saveFilter('My Awaiting User', $term, $filter_set);
+
+        // all awaiting user
+        $term = $status_user;
+        $this->saveFilter('All Awaiting User', $term, $filter_set);
+
+        // resolved
+        $term = new TicketStatusTerm(['status' => [Ticket::STATUS_RESOLVED]], TermInterface::OP_IS);
+        $this->saveFilter('Resolved', $term, $filter_set);
+
+        // archived
+        $term = new TicketStatusTerm(['status' => [Ticket::STATUS_ARCHIVED]], TermInterface::OP_IS);
+        $this->saveFilter('Archived', $term, $filter_set);
+
+        // spam
+        $term = new TicketStatusTerm(['status' => [Ticket::HIDDEN_STATUS_SPAM]], TermInterface::OP_IS);
+        $this->saveFilter('Spam', $term, $filter_set);
+
+        // deleted
+        $term = new TicketStatusTerm(['status' => [Ticket::HIDDEN_STATUS_DELETED]], TermInterface::OP_IS);
+        $this->saveFilter('Deleted', $term, $filter_set);
+
+        /////////
+        // save
+
+        $this->getEm()->flush();
+    }
+
+    private function oldFilterInstall()
+    {
+        //------------------------------
+        // Define filters
+        //------------------------------
+
+        $filters = [];
+
+        $filters[] = [
             'title'    => 'My Tickets',
             'sys_name' => 'agent',
             'order_by' => 'ticket.urgency:desc',
-            'terms'    => array(
-                array('type' => 'agent',  'op' => 'is', 'options' => array('agent' => '-1')),
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'awaiting_agent'),
-            ), ),
-        );
+            'terms'    => [
+                ['type' => 'agent', 'op' => 'is', 'options' => ['agent' => '-1']],
+                [
+                    'type'    => 'status',
+                    'op'      => 'is',
+                    'options' => ['status' => 'awaiting_agent'],
+                ],
+            ],
+        ];
 
-        $filters[] = array(
+        $filters[] = [
             'title'    => 'My Team\'s Tickets',
             'sys_name' => 'agent_team',
             'order_by' => 'ticket.urgency:desc',
-            'terms'    => array(
-                array('type' => 'agent_team',  'op' => 'is', 'options' => array('agent_team' => '-1')),
-                array('type' => 'status',      'op' => 'is', 'options' => array('status' => 'awaiting_agent'),
-            ), ),
-        );
+            'terms'    => [
+                ['type' => 'agent_team', 'op' => 'is', 'options' => ['agent_team' => '-1']],
+                [
+                    'type'    => 'status',
+                    'op'      => 'is',
+                    'options' => ['status' => 'awaiting_agent'],
+                ],
+            ],
+        ];
 
-        $filters[] = array(
+        $filters[] = [
             'title'    => 'Tickets I Follow',
             'sys_name' => 'participant',
             'order_by' => 'ticket.urgency:desc',
-            'terms'    => array(
-                array('type' => 'participant',  'op' => 'is', 'options' => array('agent' => '-1')),
-                array('type' => 'status',       'op' => 'is', 'options' => array('status' => 'awaiting_agent'),
-            ), ),
-        );
+            'terms'    => [
+                ['type' => 'participant', 'op' => 'is', 'options' => ['agent' => '-1']],
+                [
+                    'type'    => 'status',
+                    'op'      => 'is',
+                    'options' => ['status' => 'awaiting_agent'],
+                ],
+            ],
+        ];
 
-        $filters[] = array(
+        $filters[] = [
             'title'    => 'Unassigned',
             'sys_name' => 'unassigned',
             'order_by' => 'ticket.urgency:desc',
-            'terms'    => array(
-                array('type' => 'agent',      'op' => 'is', 'options' => array('agent' => '0')),
-                array('type' => 'agent_team', 'op' => 'is', 'options' => array('agent_team' => '0')),
-                array('type' => 'status',     'op' => 'is', 'options' => array('status' => 'awaiting_agent'),
-            ), ),
-        );
+            'terms'    => [
+                ['type' => 'agent', 'op' => 'is', 'options' => ['agent' => '0']],
+                ['type' => 'agent_team', 'op' => 'is', 'options' => ['agent_team' => '0']],
+                [
+                    'type'    => 'status',
+                    'op'      => 'is',
+                    'options' => ['status' => 'awaiting_agent'],
+                ],
+            ],
+        ];
 
-        $filters[] = array(
+        $filters[] = [
             'title'    => 'All',
             'sys_name' => 'all',
             'order_by' => 'ticket.urgency:desc',
-            'terms'    => array(
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'awaiting_agent'),
-            ), ),
-        );
+            'terms'    => [
+                [
+                    'type'    => 'status',
+                    'op'      => 'is',
+                    'options' => ['status' => 'awaiting_agent'],
+                ],
+            ],
+        ];
 
-        $filters[] = array(
+        $filters[] = [
             'title'    => 'Awaiting User',
             'sys_name' => 'archive_awaiting_user',
             'order_by' => 'ticket.urgency:desc',
-            'terms'    => array(
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'awaiting_user'),
-            ), ),
-        );
+            'terms'    => [
+                [
+                    'type'    => 'status',
+                    'op'      => 'is',
+                    'options' => ['status' => 'awaiting_user'],
+                ],
+            ],
+        ];
 
-        $filters[] = array(
+        $filters[] = [
             'title'    => 'Resolved',
             'sys_name' => 'archive_resolved',
             'order_by' => 'ticket.urgency:desc',
-            'terms'    => array(
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'resolved'),
-            ), ),
-        );
+            'terms'    => [
+                [
+                    'type'    => 'status',
+                    'op'      => 'is',
+                    'options' => ['status' => 'resolved'],
+                ],
+            ],
+        ];
 
-        $filters[] = array(
+        $filters[] = [
             'title'    => 'Archived',
             'sys_name' => 'archive_archived',
             'order_by' => 'ticket.urgency:desc',
-            'terms'    => array(
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'archived'),
-            ), ),
-        );
+            'terms'    => [
+                [
+                    'type'    => 'status',
+                    'op'      => 'is',
+                    'options' => ['status' => 'archived'],
+                ],
+            ],
+        ];
 
-        $filters[] = array(
-            'title'    => 'Awaiting Validation',
-            'sys_name' => 'archive_validating',
-            'order_by' => 'ticket.urgency:desc',
-            'terms'    => array(
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'hidden.validating'),
-            ), ),
-        );
-
-        $filters[] = array(
+        $filters[] = [
             'title'    => 'Spam',
             'sys_name' => 'archive_spam',
             'order_by' => 'ticket.urgency:desc',
-            'terms'    => array(
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'hidden.spam'),
-            ), ),
-        );
+            'terms'    => [
+                [
+                    'type'    => 'status',
+                    'op'      => 'is',
+                    'options' => ['status' => 'hidden.spam'],
+                ],
+            ],
+        ];
 
-        $filters[] = array(
+        $filters[] = [
             'title'    => 'Deleted',
             'sys_name' => 'archive_deleted',
             'order_by' => 'ticket.urgency:desc',
-            'terms'    => array(
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'hidden.deleted'),
-            ), ),
-        );
+            'terms'    => [
+                [
+                    'type'    => 'status',
+                    'op'      => 'is',
+                    'options' => ['status' => 'hidden.deleted'],
+                ],
+            ],
+        ];
 
-        #------------------------------
-        # Insert filters
-        #------------------------------
+        //------------------------------
+        // Insert filters
+        //------------------------------
 
-        $exist_id_map = $this->getDb()->fetchAllKeyValue('
+        $exist_id_map = $this->getDb()->fetchAllKeyValue(
+            '
             SELECT sys_name, id
             FROM ticket_filters
             WHERE sys_name IS NOT NULL
-        ');
+        '
+        );
 
         $order = 1;
-        foreach (array(0, 1) as $is_hold) {
+        foreach ([0, 1] as $is_hold) {
             foreach ($filters as $f) {
                 $is_archive = strpos($f['sys_name'], 'archive_') === 0;
 
@@ -176,14 +338,14 @@ class FilterData extends AbstractDefaultData
                 }
 
                 if (!$is_archive) {
-                    $f['terms'][] = array('type' => 'is_hold', 'op' => 'is', 'options' => array('is_hold' => $is_hold));
+                    $f['terms'][] = ['type' => 'is_hold', 'op' => 'is', 'options' => ['is_hold' => $is_hold]];
                 }
 
                 $f['terms'] = json_encode($f['terms']);
 
                 $exist_id = isset($exist_id_map[$f['sys_name']]) ? $exist_id_map[$f['sys_name']] : null;
                 if ($exist_id) {
-                    $this->getDb()->update('ticket_filters', $f, array('id' => $exist_id));
+                    $this->getDb()->update('ticket_filters', $f, ['id' => $exist_id]);
                 } else {
                     $this->getDb()->insert('ticket_filters', $f);
                 }
@@ -199,5 +361,20 @@ class FilterData extends AbstractDefaultData
     public function runSync()
     {
         $this->runInstall();
+    }
+
+    /**
+     * @param $filter_name
+     * @param $term
+     * @param $filter_set
+     */
+    private function saveFilter($filter_name, TermInterface $term, TicketFilterSet $filter_set)
+    {
+        $filter = new TicketFilter();
+        $filter->setTitle($filter_name);
+        $filter->setTerm($term);
+        $filter_set->addFilter($filter);
+
+        $this->getEm()->persist($filter);
     }
 }

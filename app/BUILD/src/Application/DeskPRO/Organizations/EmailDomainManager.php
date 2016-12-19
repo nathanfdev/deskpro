@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Mail
  */
+
 namespace Application\DeskPRO\Organizations;
 
 use Application\DeskPRO\Entity\Organization;
@@ -103,7 +104,6 @@ class EmailDomainManager
     {
         $this->em->beginTransaction();
         try {
-
             // Update tickets
             $this->db->executeUpdate('
                 UPDATE tickets
@@ -111,7 +111,7 @@ class EmailDomainManager
                 LEFT JOIN people_emails ON (people_emails.person_id = people.id)
                 SET tickets.organization_id = ?
                 WHERE people.organization_id IS NULL AND people_emails.email_domain = ?
-            ', array($orgdomain->organization->id, $orgdomain->domain));
+            ', [$orgdomain->organization->id, $orgdomain->domain]);
 
             $this->db->executeUpdate('
                 UPDATE tickets_search_active
@@ -119,14 +119,14 @@ class EmailDomainManager
                 LEFT JOIN people_emails ON (people_emails.person_id = people.id)
                 SET tickets_search_active.organization_id = ?
                 WHERE people.organization_id IS NULL AND people_emails.email_domain = ?
-            ', array($orgdomain->organization->id, $orgdomain->domain));
+            ', [$orgdomain->organization->id, $orgdomain->domain]);
 
             $count = $this->db->executeUpdate('
                 UPDATE people
                 LEFT JOIN people_emails ON (people_emails.person_id = people.id)
                 SET people.organization_id = ?
                 WHERE people.organization_id IS NULL AND people_emails.email_domain = ?
-            ', array($orgdomain->organization->id, $orgdomain->domain));
+            ', [$orgdomain->organization->id, $orgdomain->domain]);
 
             $this->em->flush();
             $this->em->commit();
@@ -148,7 +148,7 @@ class EmailDomainManager
                 LEFT JOIN people_emails ON (people_emails.person_id = people.id)
                 SET tickets.organization_id = ?
                 WHERE people.organization_id IS NOT NULL AND people_emails.email_domain = ?
-            ', array($orgdomain->organization->id, $orgdomain->domain));
+            ', [$orgdomain->organization->id, $orgdomain->domain]);
 
             $this->db->executeUpdate('
                 UPDATE tickets_search_active
@@ -156,14 +156,14 @@ class EmailDomainManager
                 LEFT JOIN people_emails ON (people_emails.person_id = people.id)
                 SET tickets_search_active.organization_id = ?
                 WHERE people.organization_id IS NOT NULL AND people_emails.email_domain = ?
-            ', array($orgdomain->organization->id, $orgdomain->domain));
+            ', [$orgdomain->organization->id, $orgdomain->domain]);
 
             $count = $this->db->executeUpdate('
                 UPDATE people
                 LEFT JOIN people_emails ON (people_emails.person_id = people.id)
                 SET people.organization_id = ?
                 WHERE people.organization_id IS NOT NULL AND people_emails.email_domain = ?
-            ', array($orgdomain->organization->id, $orgdomain->domain));
+            ', [$orgdomain->organization->id, $orgdomain->domain]);
 
             $this->em->flush();
             $this->em->commit();
@@ -188,7 +188,7 @@ class EmailDomainManager
                     LEFT JOIN people_emails ON (people_emails.person_id = people.id)
                     SET tickets.organization_id = ?
                     WHERE people.organization_id = ? AND people_emails.email_domain = ?
-                ', array(null, $orgdomain->organization->id, $orgdomain->domain));
+                ', [null, $orgdomain->organization->id, $orgdomain->domain]);
 
                 $this->db->executeUpdate('
                     UPDATE tickets_search_active
@@ -196,14 +196,14 @@ class EmailDomainManager
                     LEFT JOIN people_emails ON (people_emails.person_id = people.id)
                     SET tickets_search_active.organization_id = ?
                     WHERE people.organization_id = ? AND people_emails.email_domain = ?
-                ', array(null, $orgdomain->organization->id, $orgdomain->domain));
+                ', [null, $orgdomain->organization->id, $orgdomain->domain]);
 
                 $count = $this->db->executeUpdate('
                     UPDATE people
                     LEFT JOIN people_emails ON (people_emails.person_id = people.id)
                     SET people.organization_id = NULL
                     WHERE people.organization_id = ? AND people_emails.email_domain = ?
-                ', array($orgdomain->organization->id, $orgdomain->domain));
+                ', [$orgdomain->organization->id, $orgdomain->domain]);
             }
 
             $this->em->remove($orgdomain);

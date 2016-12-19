@@ -1,0 +1,51 @@
+  .site-header-search {
+    display: inline-block;
+    width: 30%;
+    background: #ededed;
+    border-radius: 2px;
+    margin-right: 10px;
+    // We can't use a border here (antialias & overflows makes it look weird)
+    position: relative;
+    height: $inner-top-bar-height - 2px;
+    top: 1px;
+    vertical-align: top;
+
+    form { height: $inner-top-bar-height; }
+
+    [type="text"], [type="submit"], [type="button"] {
+      float: left;
+      line-height: 1em;
+      display: block;
+      height: $inner-top-bar-height;
+      line-height: 1em;
+      padding: 0px;
+      margin: 0px;
+      border: 0px;
+      background: none;
+      font-family: "Lato", sans-serif;
+      border-radius: 3px;
+    }
+
+    [type="text"] {
+      padding-left: 35px;
+      @include retina-image("../img/icon-search", 14px 14px);
+      background-repeat: no-repeat;
+      background-position: 10px center;
+      padding-right: 110px;
+
+      &::-webkit-input-placeholder {
+        position: relative;
+        top: 1px;
+      }
+    }
+
+    [type="submit"], [type="button"] {
+      font-family: Lato, 'FontAwesome', helvetica, verdana, sans-serif;
+      font-size: 0.85em;
+      width: 103px;
+      color: #969696;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      position: absolute;
+      right: 0px;
+    }
+  }

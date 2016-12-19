@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,10 +31,10 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Server;
 
 use Application\DeskPRO\DBAL\Connection;
-use Orb\Util\Strings;
 
 class CronStatus
 {
@@ -66,7 +66,7 @@ class CronStatus
             SELECT value
             FROM settings
             WHERE name = ?
-        ', array('core.last_cron_run'));
+        ', ['core.last_cron_run']);
 
         if (!$this->last_run_ts) {
             $this->last_run_ts = 0;
@@ -118,43 +118,6 @@ class CronStatus
      */
     public function getCronBootErrors()
     {
-        // Check for error db record
-        $error_message = $this->db->fetchColumn("SELECT data FROM install_data WHERE build = 1 AND name = 'cron_run_errors'");
-        if (!$error_message) {
-            // Check for a logged message
-            if (file_exists(dp_get_log_dir().'/cron-boot-errors.log')) {
-                $error_message = file_get_contents(dp_get_log_dir().'/cron-boot-errors.log');
-            }
-        }
-
-        if ($error_message) {
-            $split        = explode('###', $error_message);
-            $codes_string = array_pop($split);
-            $codes_string = trim($codes_string);
-
-            $ini_path = Strings::extractRegexMatch('#^ini_path:(.*?)$#m', $codes_string, 1);
-
-            $error_codes = array();
-            if (preg_match_all('#^error:(.*?)$#m', $codes_string, $m, \PREG_PATTERN_ORDER)) {
-                $error_codes = $m[1];
-            }
-
-            $web_ini_path  = \Orb\Util\Env::getPhpIniPath();
-            $is_zendserver = false;
-            if ($web_ini_path) {
-                $is_zendserver = strpos($web_ini_path, 'ZendServer') !== false;
-            }
-
-            return array(
-                'error_codes'   => $error_codes,
-                'ini_path'      => $ini_path,
-                'is_zendserver' => $is_zendserver,
-                'web_ini_path'  => $web_ini_path,
-                'data_dir'      => dp_get_data_dir(),
-                'error_log'     => @file_get_contents(dp_get_log_dir().'/error.log')."\n\n\n".@file_get_contents(dp_get_log_dir().'/cli-phperr.log'),
-            );
-        }
-
         return;
     }
 }

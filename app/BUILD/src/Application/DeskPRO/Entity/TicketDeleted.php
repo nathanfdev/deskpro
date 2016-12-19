@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,16 +31,18 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * A log of deleted tickets.
  */
-class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
+class TicketDeleted extends DomainObject
 {
     /**
      * @var int
@@ -64,7 +66,7 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var int
-     * @var \Application\DeskPRO\Entity\Person
+     * @var Person
      */
     protected $by_person;
 
@@ -78,6 +80,9 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $reason;
 
+    /**
+     * TicketDeleted constructor.
+     */
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
@@ -91,6 +96,25 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @return int
+     */
+    public function getTicketId()
+    {
+        return $this->ticket_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReason()
+    {
+        return $this->reason;
+    }
+
+    /**
+     * @return int
+     */
     public function getByPersonId()
     {
         if ($this->by_person) {
@@ -100,6 +124,9 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
         return 0;
     }
 
+    /**
+     * @param $id
+     */
     public function setByPersonId($id)
     {
         if ($id) {
@@ -109,26 +136,90 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
+    /**
+     * @param ClassMetadata $metadata
+     *
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     */
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'tickets_deleted',
-            'indexes' => array(
-                'old_ref_idx' => array('columns' => array('old_ref')),
-            ),
-        ));
+            'indexes' => [
+                'old_ref_idx' => ['columns' => ['old_ref']],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'ticket_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ticket_id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'old_ptac', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'old_ptac'));
-        $metadata->mapField(array('fieldName' => 'old_ref', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'old_ref'));
-        $metadata->mapField(array('fieldName' => 'new_ticket_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'new_ticket_id'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapField(array('fieldName' => 'reason', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'reason'));
-        $metadata->mapManyToOne(array('fieldName' => 'by_person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'by_person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapField([
+            'fieldName'  => 'ticket_id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'ticket_id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'old_ptac',
+            'type'       => 'string',
+            'length'     => 80,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'old_ptac',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'old_ref',
+            'type'       => 'string',
+            'length'     => 80,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'old_ref',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'new_ticket_id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'new_ticket_id',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_created',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'date_created',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'reason',
+            'type'       => 'text',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'reason',
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'by_person',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'by_person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

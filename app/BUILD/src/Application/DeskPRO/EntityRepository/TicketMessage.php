@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -38,10 +39,15 @@ use Application\DeskPRO\Entity;
 
 class TicketMessage extends AbstractEntityRepository
 {
+    /**
+     * @param $ticket
+     *
+     * @return \Application\DeskPRO\Entity\TicketMessage|null
+     */
     public function getLastAgentReply($ticket)
     {
         if (!($ticket instanceof Entity\Ticket)) {
-            $ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket);
+            $ticket = App::getEntityRepository(Entity\Ticket::class)->find($ticket);
         }
 
         return $this->getEntityManager()->createQuery('
@@ -53,31 +59,41 @@ class TicketMessage extends AbstractEntityRepository
                 AND p.is_agent = 1
                 AND m.is_agent_note = 0
             ORDER BY m.id DESC
-        ')->setMaxResults(1)->setParameters(array(1 => $ticket))->getOneOrNullResult();
+        ')->setMaxResults(1)->setParameters([1 => $ticket])->getOneOrNullResult();
     }
 
     /**
      * Gets the last reply on the ticket (last non-note by either agent or user).
      *
-     * @param $ticket
+     * @param Entity\Ticket|int $ticket
+     * @param bool              $includeNote
      *
-     * @return mixed
+     * @return \Application\DeskPRO\Entity\TicketMessage|null
      */
-    public function getLastReply($ticket)
+    public function getLastReply($ticket, $includeNote = false)
     {
-        if (!($ticket instanceof Entity\Ticket)) {
-            $ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket);
+        if (!$ticket instanceof Entity\Ticket) {
+            $ticket = App::getEntityRepository(Entity\Ticket::class)->find($ticket);
         }
 
-        return $this->getEntityManager()->createQuery('
-            SELECT m
-            FROM DeskPRO:TicketMessage m
-            LEFT JOIN m.person p
-            WHERE
-                m.ticket = ?1
-                AND m.is_agent_note = 0
-            ORDER BY m.id DESC
-        ')->setMaxResults(1)->setParameters(array(1 => $ticket))->getOneOrNullResult();
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->select('m')
+            ->from(Entity\TicketMessage::class, 'm')
+            ->leftJoin('m.person', 'p')
+            ->where('m.ticket = :ticket')
+            ->orderBy('m.id', 'DESC')
+            ->setParameter('ticket', $ticket)
+            ->setMaxResults(1)
+        ;
+
+        if (!$includeNote) {
+            $qb->andWhere('m.is_agent_note = 0');
+        }
+
+        $result = $qb->getQuery()->getOneOrNullResult();
+
+        return $result;
     }
 
     /**
@@ -114,37 +130,62 @@ class TicketMessage extends AbstractEntityRepository
     /**
      * Get all messages in a ticket.
      *
-     * @param  $ticket
+     * @param int|Entity\Ticket $ticket
+     * @param array             $set_options
      *
-     * @return array
+     * @return \Application\DeskPRO\Entity\TicketMessage[]
      */
-    public function getTicketMessages($ticket, array $set_options = array())
+    public function getTicketMessages($ticket, array $set_options = [])
     {
-        $options = array_merge(array(
-            'order'      => 'ASC',
-            'limit'      => null,
-            'with_notes' => false,
-            'since_id'   => 0,
-        ), $set_options);
+        $options = array_merge([
+            'order'            => 'ASC',
+            'order_dir'        => null,
+            'limit'            => null,
+            'with_notes'       => false,
+            'with_attachments' => false,
+            'since_id'         => 0,
+            'ids'              => null,
+        ], $set_options);
+
+        // Compatibility with other repos format
+        if ($options['order_dir']) {
+            $options['order'] = $options['order_dir'];
+        }
 
         $order = strtoupper($options['order']);
-        if (!in_array($order, array('ASC', 'DESC'))) {
+        if (!in_array($order, ['ASC', 'DESC'])) {
             $order = 'ASC';
         }
 
         $q = $this->getEntityManager()->createQueryBuilder();
-        $q->from('DeskPRO:TicketMessage', 'm');
+        $q->from(Entity\TicketMessage::class, 'm');
         $q->select('m');
         $q->leftJoin('m.person', 'p');
         $q->where('m.ticket = :ticket');
         $q->addOrderBy('m.date_created', $order);
 
-        $params           = array();
+        if ($options['with_attachments']) {
+            $q->addSelect('a');
+            $q->leftJoin('m.attachments', 'a');
+        }
+
+        $params           = [];
         $params['ticket'] = $ticket;
 
         if (isset($options['since_id']) && $options['since_id']) {
             $q->andWhere('m.id > :since_id');
             $params['since_id'] = $options['since_id'];
+        }
+
+        if ($options['ids'] !== null) {
+            if (empty($options['ids'])) {
+                $ids = [0];
+            } else {
+                $ids = $options['ids'];
+            }
+
+            $q->andWhere('m.id IN (:ids)');
+            $params['ids'] = $ids;
         }
 
         if (!$options['with_notes']) {
@@ -174,14 +215,6 @@ class TicketMessage extends AbstractEntityRepository
      */
     public function checkDupeMessage(Entity\TicketMessage $message, $ticket = null, $secs_ago = 10800 /* 3 hours */, \Orb\Log\Logger $logger = null)
     {
-        if (App::getConfig('debug.disable_dupe_check')) {
-            if ($logger) {
-                $logger->logDebug('debug.disable_dupe_check is enabled');
-            }
-
-            return false;
-        }
-
         if (!App::getSetting('core_tickets.enable_dupe_checking')) {
             if ($logger) {
                 $logger->logDebug('core_tickets.enable_dupe_checking is disabled');
@@ -190,7 +223,7 @@ class TicketMessage extends AbstractEntityRepository
             return false;
         }
 
-        $timesnip = date_create('-'.$secs_ago.' seconds');
+        $timesnip = new \DateTime('-'.$secs_ago.' seconds');
 
         if ($ticket) {
             if ($logger) {
@@ -199,9 +232,12 @@ class TicketMessage extends AbstractEntityRepository
             $check_matches = $this->_em->createQuery('
                 SELECT m
                 FROM DeskPRO:TicketMessage m
-                LEFT JOIN m.ticket t
-                WHERE m.message_hash = ?0 AND m.date_created > ?1 AND m.ticket = ?2
-            ')->setParameters(array($message['message_hash'], $timesnip, $ticket))->getResult();
+                JOIN m.ticket t
+                WHERE m.message_hash = ?0 AND m.date_created > ?1 AND m.ticket = ?2 AND m.person = ?3
+                ORDER BY m.id DESC
+            ')->setMaxResults(1)->setParameters([
+                $message->getMessageHash(), $timesnip, $ticket, $message->getPerson(),
+            ])->getResult();
         } else {
             if ($logger) {
                 $logger->logDebug("[EntityRepository:TicketMessage] Checking {$message['id']} for dupes in any previous ticket (-$secs_ago s)");
@@ -209,12 +245,14 @@ class TicketMessage extends AbstractEntityRepository
             $check_matches = $this->_em->createQuery('
                 SELECT m
                 FROM DeskPRO:TicketMessage m
-                LEFT JOIN m.ticket AS t
-                WHERE m.message_hash = ?0 AND m.date_created > ?1 AND t.subject = ?2
-            ')->setParameters(array($message['message_hash'], $timesnip, $message->withNewSubject))->getResult();
+                JOIN m.ticket AS t
+                WHERE m.message_hash = ?0 AND m.date_created > ?1 AND t.subject = ?2 AND m.person = ?3
+            ')->setParameters([
+                $message->getMessageHash(), $timesnip, $message->withNewSubject, $message->getPerson(),
+            ])->getResult();
         }
 
-        $ids = array();
+        $ids = [];
         foreach ($check_matches as $t) {
             $ids[] = $t->getId();
         }
@@ -235,7 +273,7 @@ class TicketMessage extends AbstractEntityRepository
                 LEFT JOIN m.person p
                 WHERE m.ticket = ?0 AND m.id < ?1
                 ORDER BY m.id DESC
-            ')->setMaxResults(1)->setParameters(array($check->ticket->getId(), $check->getId()))->getOneOrNullResult();
+            ')->setMaxResults(1)->setParameters([$check->ticket->getId(), $check->getId()])->getOneOrNullResult();
 
             if ($logger) {
                 $logger->logDebug('[EntityRepository:TicketMessage] Prev message is: '.($prev_message ? $prev_message->id : 'none'));
@@ -255,7 +293,7 @@ class TicketMessage extends AbstractEntityRepository
             }
 
             // The previous message is also by us, so it is a dupe
-            if ($prev_message->person->id == $message->person->id) {
+            if ($prev_message->getPersonId() == $message->getPersonId()) {
                 if ($logger) {
                     $logger->logDebug("[EntityRepository:TicketMessage] {$check['id']} is a match because prev message is by us");
                 }

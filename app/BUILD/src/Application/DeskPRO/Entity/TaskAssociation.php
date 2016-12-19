@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,7 @@
  *
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -63,28 +64,50 @@ abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_SINGLE_TABLE);
-        $metadata->setDiscriminatorColumn(array(
+        $metadata->setDiscriminatorColumn([
             'name'   => 'assoc_type',
             'type'   => 'string',
             'length' => '50',
-        ));
-        $metadata->setDiscriminatorMap(array(
+        ]);
+        $metadata->setDiscriminatorMap([
             'person'       => 'TaskAssociatedPerson',
             'ticket'       => 'TaskAssociatedTicket',
             'organization' => 'TaskAssociatedOrganization',
             //'deal' => 'TaskAssociatedDeal',
-        ));
-        $metadata->setPrimaryTable(array('name' => 'task_associations'));
+        ]);
+        $metadata->setPrimaryTable(['name' => 'task_associations']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'task', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Task', 'mappedBy' => null, 'inversedBy' => 'task_associations', 'joinColumns' => array(0 => array('name' => 'task_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne([
+            'fieldName'    => 'task',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Task',
+            'mappedBy'     => null,
+            'inversedBy'   => 'task_associations',
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'task_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

@@ -1,0 +1,87 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
+
+use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+
+/**
+ * Can the user make comments?
+ */
+class ContentCommentVoter extends AbstractVoter
+{
+    /** everyone is allowed to VIEW comments, but can they submit a comment? */
+    const COMMENT_ARTICLE  = 'COMMENT_ARTICLE';
+    const COMMENT_FEEDBACK = 'COMMENT_FEEDBACK';
+    const COMMENT_DOWNLOAD = 'COMMENT_DOWNLOAD';
+    const COMMENT_NEWS     = 'COMMENT_NEWS';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function supports($attribute, $subject)
+    {
+        $supported = [self::COMMENT_ARTICLE, self::COMMENT_FEEDBACK, self::COMMENT_DOWNLOAD, self::COMMENT_NEWS];
+
+        return in_array($attribute, $supported);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function voteOnAttribute($attribute, $object, TokenInterface $token)
+    {
+        $user = $token->getUser();
+
+        if ($this->isLoggedIn($user)) {
+            $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
+        } else {
+            $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
+        }
+
+        if (!$this->getActiveBrandSetting('user.publish_comments', false)) {
+            return false; // if this setting is off, never allow comments
+        }
+
+        $permitted = $permission_bag->hasContentCategoryAccess($object);
+
+        switch ($attribute) {
+            case static::COMMENT_ARTICLE:
+                return $permission_bag->get('articles.comment') && $permitted;
+            case static::COMMENT_FEEDBACK:
+                return $permission_bag->get('feedback.comment') && $permitted;
+            case static::COMMENT_DOWNLOAD:
+                return $permission_bag->get('downloads.comment') && $permitted;
+            case static::COMMENT_NEWS:
+                return $permission_bag->get('news.comment') && $permitted;
+        }
+
+        return false;
+    }
+}

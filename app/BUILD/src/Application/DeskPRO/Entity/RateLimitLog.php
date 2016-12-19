@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -64,25 +65,92 @@ class RateLimitLog extends DomainObject
      */
     protected $date_created;
 
+    /** @var bool */
+    protected $is_lockout = false;
+
+    /**
+     * RateLimitLog constructor.
+     */
     public function __construct()
     {
         $this->date_created = new \DateTime();
     }
 
+    /**
+     * @param string $ip
+     *
+     * @return $this
+     */
     public function setIp($ip)
     {
-        $this->setModelField('ip', ip2long($ip));
+        $this->setModelField('ip', $ip);
+
+        return $this;
     }
 
+    /**
+     * @param string $action
+     *
+     * @return $this
+     */
+    public function setAction($action)
+    {
+        $this->setModelField('action', $action);
+
+        return $this;
+    }
+
+    /**
+     * @param $lockout
+     *
+     * @return $this
+     */
+    public function setIsLockout($lockout)
+    {
+        $this->setModelField('lockout', $lockout);
+
+        return $this;
+    }
+
+    /**
+     * @param int $person_id
+     *
+     * @return $this
+     */
+    public function setPersonId($person_id)
+    {
+        $this->setModelField('person_id', (int) $person_id);
+
+        return $this;
+    }
+
+    /**
+     * @param \DateTime $date_created
+     *
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getIp()
     {
-        return long2ip($this->ip);
+        return $this->ip;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
+    /**
+     * @param ClassMetadata $metadata
+     */
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
@@ -90,45 +158,55 @@ class RateLimitLog extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\RateLimitLog';
 
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'rate_limit_log',
-            'indexes' => array(
-                'search_idx' => array(
-                    'columns' => array('action', 'date_created', 'ip'),
-                ),
-            ),
-        ));
+            'indexes' => [
+                'search_idx' => [
+                    'columns' => [
+                        'action',
+                        'date_created',
+                        'ip',
+                    ],
+                ],
+            ],
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'action',
             'fieldName'  => 'action',
             'type'       => 'string',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'ip',
             'fieldName'  => 'ip',
-            'type'       => 'integer',
+            'type'       => 'string',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'person_id',
             'fieldName'  => 'person_id',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'date_created',
             'fieldName'  => 'date_created',
             'type'       => 'datetime',
             'nullable'   => false,
-        ));
+        ]);
+        $metadata->mapField([
+            'columnName' => 'is_lockout',
+            'fieldName'  => 'is_lockout',
+            'type'       => 'boolean',
+            'nullable'   => false,
+        ]);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -47,7 +48,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
     protected $id = null;
 
     /**
-     * @var Application\DeskPRO\Entity\Person
+     * @var \Application\DeskPRO\Entity\Person
      */
     protected $person;
 
@@ -56,21 +57,21 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var array
      */
-    protected $criteria = array();
+    protected $criteria = [];
 
     /**
      * An array of results.
      *
      * @var array
      */
-    protected $results = array();
+    protected $results = [];
 
     /**
      * Any extra data.
      *
      * @var array
      */
-    protected $extra = array();
+    protected $extra = [];
 
     /**
      * @var int
@@ -97,7 +98,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getExtraData($key, $default = null)
     {
-        return (isset($this->extra[$key]) ? $this->extra[$key] : $default);
+        return isset($this->extra[$key]) ? $this->extra[$key] : $default;
     }
 
     /**
@@ -129,6 +130,14 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @return array
+     */
+    public function getResults()
+    {
+        return $this->results;
+    }
+
     public function getPersonId()
     {
         if (!$this->person) {
@@ -138,23 +147,88 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
         return $this->person['id'];
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array('name' => 'result_cache'));
+        $metadata->setPrimaryTable(['name' => 'result_cache']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'criteria', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'criteria'));
-        $metadata->mapField(array('fieldName' => 'results', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'results'));
-        $metadata->mapField(array('fieldName' => 'extra', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'extra'));
-        $metadata->mapField(array('fieldName' => 'num_results', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_results'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapField(array('fieldName' => 'results_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'results_type'));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'criteria',
+            'type'       => 'array',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'criteria',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'results',
+            'type'       => 'array',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'results',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'extra',
+            'type'       => 'array',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'extra',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'num_results',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'num_results',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_created',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'date_created',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'results_type',
+            'type'       => 'string',
+            'length'     => 50,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'results_type',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => 'preferences', 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne([
+            'fieldName'    => 'person',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => 'preferences',
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

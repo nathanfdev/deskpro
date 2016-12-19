@@ -1,0 +1,215 @@
+imports:
+    - { resource: ../config.shared.php }
+    - { resource: ../../../src/DeskPRO/Bundle/AppBundle/Resources/config/notification.yml }
+# Keeping all parameter changes here rather than in various bundles
+parameters:
+  portal.session.name: sess_data
+  doctrine.orm.proxy_dir: "%kernel.cache_dir%/doctrine-proxies"
+  templating.globals.class: Application\DeskPRO\Templating\GlobalVariables
+  monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
+  file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
+  twig.class: DeskPRO\Bundle\PortalBundle\Twig\Environment
+  templating.name_parser.class: DeskPRO\Bundle\AppBundle\Templating\TemplateNameParser
+  jms_serializer.json_serialization_visitor.class: DeskPRO\Bundle\AppBundle\Serializer\Visitor\JsonSerializationVisitor
+
+services:
+  # legacy ext is required by some ticket functions (e.g. rendering notifications)
+  twig.helpers.deskpro_templating:
+    class: Application\DeskPRO\Twig\Extension\TemplatingExtension
+    arguments: ["@service_container"]
+    tags:
+      - { name: twig.extension }
+
+framework:
+    esi:             { enabled: true }
+    fragments:       { path: /_proxy }
+    #translator:      { fallback: "%locale%" }
+    secret:          "irrelevant - compiler pass will override this"
+    router:
+        resource: "%kernel.root_dir%/config/portal/portal_routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: false }
+    templating:
+        engines: ['twig', 'php'] # need PHP because login uses templating globals
+        assets_base_urls: "http://bogus/SET_IN_ASSET_PACKAGE_PASS"
+        packages:
+          app_assets: { base_url: "http://bogus/SET_IN_ASSET_PACKAGE_PASS" }
+          appsrc_assets: { base_url: "http://bogus/SET_IN_ASSET_PACKAGE_PASS" }
+          vendor_assets: { base_url: "http://bogus/SET_IN_ASSET_PACKAGE_PASS" }
+    default_locale:  "%locale%"
+    trusted_hosts:   ~
+    session:
+        handler_id:      session.handler.dbal
+        name:            dpsid-portal
+        cookie_httponly: true
+    fragments:       ~
+    http_method_override: true
+
+monolog:
+    channels: # you MUST also update api_config.yml if you change these
+        - "dp.tickets.filters.tengine.dbal.engine"
+        - "dp.tickets.filters.tengine.dbal.compiler"
+        - "dp.tickets.filters.tengine.php.engine"
+        - "dp.tickets.filters.tengine.php.compiler"
+    handlers:
+        main:
+            type:   service
+            id:     monolog.handler.deskpro_fingers_crossed
+
+# FOSHttpCacheBundle
+fos_http_cache:
+    user_context:
+        enabled: true
+        user_identifier_headers: ['Cookie']
+        hash_cache_ttl: 600 # only make the user-context-hash request once per 10 minute per GUEST w/ session
+
+
+# Security Configuration
+security:
+
+    role_hierarchy:
+      ROLE_AGENT: ROLE_USER
+      ROLE_ADMIN: ROLE_AGENT
+
+    providers:
+        dp_person_user_provider:
+            id: dp_person_user_provider
+
+    firewalls:
+        portal:
+            switch_user: { role: ROLE_ADMIN, parameter: _preview_as }
+            pattern: ^/
+            provider: dp_person_user_provider
+            agent_impersonate:
+                failure_path: /login?retry=auth
+                login_path: /impersonate/agent-login
+                require_previous_session: false
+                remember_me: false
+                always_use_default_target_path: true
+                default_target_path: /
+                target_path_parameter: _destination
+                use_referer: false
+            transfer_session_auth:
+                failure_path: /
+                login_path: /
+                require_previous_session: false
+                remember_me: false
+                always_use_default_target_path: false
+                default_target_path: /
+                target_path_parameter: _destination
+                use_referer: false
+            deskpro_form_login:
+                failure_path: /login?retry=auth
+                login_path: /login
+                use_forward: false
+                require_previous_session: false
+                remember_me: true
+                default_target_path: /
+                target_path_parameter: _destination
+                use_referer: true
+            anonymous:
+                key:    "irrelevant - compiler pass will override this"
+            logout:
+                path: portal_logout
+                csrf_parameter: auth
+                csrf_provider: security.csrf.token_manager
+                target: /
+                invalidate_session: true
+                handlers:  [security.authentication.logout_handler]
+                success_handler: security.authentication.logout_handler
+            remember_me:
+                key:      "irrelevant - compiler pass will override this"
+                lifetime: 31536000 # 365 days in seconds
+                path:     /
+                domain:   ~ # the current domain from $_SERVER
+                remember_me_parameter: remember_me
+
+    access_control:
+        - { path: ^/admin-preview-[0-9]+/, roles: [ROLE_ADMIN, ROLE_PREVIOUS_ADMIN] }
+        - { path: ^/(brand-[0-9]+/[a-z]+)?portal/api/style/(edit-theme-set|variable-groups), roles: [ROLE_ADMIN] }
+        - { path: template_editor, roles: [ROLE_ADMIN] }
+        - { path: ^/_internal/, roles: [ROLE_ADMIN] }
+
+
+# Twig Configuration
+twig:
+    exception_controller:  PortalBundle:Error:showException
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+    form:
+        resources:
+            - Theme::form_theme.html.twig
+
+sensio_framework_extra:
+    cache:    { annotations: true }
+    security:    { annotations: true }
+
+white_october_pagerfanta:
+    default_view: deskpro
+    exceptions_strategy:
+        out_of_range_page:        to_http_not_found
+        not_valid_current_page:   to_http_not_found
+
+jms_serializer:
+    metadata:
+        cache: none
+
+gregwar_captcha:
+    reload: true
+    expiration: 120
+
+fos_rest:
+    routing_loader:
+        default_format: json
+        include_format: false
+    allowed_methods_listener: true
+    body_converter:
+        enabled: false
+    param_fetcher_listener: true
+    serializer:
+        serialize_null: true
+    body_listener:
+        default_format: json
+        throw_exception_on_unsupported_content_type:  true
+        decoders:
+            json: fos_rest.decoder.jsontoform
+        array_normalizer:
+            forms: false
+    format_listener:
+        rules:
+            - { path: '^/(brand-[0-9]+/)?(\w+/)?portal/api/', priorities: ['json', 'js', 'jsonp'], fallback_format: json, exception_fallback_format: json, prefer_extension: true }
+            - { path: '^/', stop: true }
+    exception:
+        # disabled because this is portal and we want to use portal exception handler
+        enabled: false
+    view:
+        view_response_listener: force
+        formats:
+            json: true
+            jsonp: true
+            html: false
+        jsonp_handler:
+            callback_param: callback
+        failed_validation: HTTP_BAD_REQUEST
+        exception_wrapper_handler: DeskPRO\Bundle\ApiBundle\Fos\ExceptionWrapperHandler
+    routing_loader:
+        default_format: json
+
+nelmio_cors:
+    defaults:
+        allow_credentials: false
+        allow_origin: []
+        allow_headers: []
+        allow_methods: []
+        expose_headers: []
+        max_age: 0
+        hosts: []
+        origin_regex: false
+    paths:
+        '^/portal/api/':
+            allow_origin: ['*']
+            allow_headers: ['X-Agent-Request', 'Content-Type', 'Cache-Control', 'X-Requested-With']
+            allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
+            max_age: 3600

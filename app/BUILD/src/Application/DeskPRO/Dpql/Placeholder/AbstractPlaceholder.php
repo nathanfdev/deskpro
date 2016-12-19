@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Placeholder;
 
 use Application\DeskPRO\Dpql;
@@ -47,7 +48,7 @@ abstract class AbstractPlaceholder
      *
      * @var array
      */
-    protected static $_placeholderMap = array(
+    protected static $_placeholderMap = [
         'EVER'           => 'Ever',
         'LAST_MONTH'     => 'LastMonth',
         'LAST_WEEK'      => 'LastWeek',
@@ -65,7 +66,7 @@ abstract class AbstractPlaceholder
         'TODAY'          => 'Today',
         'TOMORROW'       => 'Tomorrow',
         'YESTERDAY'      => 'Yesterday',
-    );
+    ];
 
     /**
      * Name of the placeholder, in user-specified case.
@@ -106,7 +107,7 @@ abstract class AbstractPlaceholder
      * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
      */
     public function prepareWithIntervals(
-        Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = array()
+        Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = []
     ) {
         return $this->prepare($statement, $section, $stack, $select, $result);
     }
@@ -141,7 +142,7 @@ abstract class AbstractPlaceholder
      */
     public function prepareComparison(
         AbstractPart $lhs, $comparison, Display $statement, $section, array $stack,
-        Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = array()
+        Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = []
     ) {
         return false;
     }
@@ -162,7 +163,7 @@ abstract class AbstractPlaceholder
      * @param string $name
      *
      * @throws \Application\DeskPRO\Dpql\Exception
-     
+     *
      * @return \Application\DeskPRO\Dpql\Placeholder\AbstractPlaceholder
      */
     public static function create($name)

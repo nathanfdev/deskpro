@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
@@ -57,13 +58,13 @@ class Download extends AbstractEntityRepository
     public function getByIdsWithContext(array $ids, PersonEntity $person_context = null)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         if ($person_context) {
             $cat_ids = $person_context->getPermissionsManager()->DownloadCategories->getAllowedCategories();
             if (!$cat_ids) {
-                return array();
+                return [];
             }
 
             $downloads = $this->getEntityManager()->createQuery("
@@ -71,14 +72,14 @@ class Download extends AbstractEntityRepository
                 FROM DeskPRO:Download d INDEX BY d.id
                 WHERE d.id IN (?0) AND d.category IN (?1) AND d.status = 'published'
                 ORDER BY d.id DESC
-            ")->execute(array($ids, $cat_ids));
+            ")->execute([$ids, $cat_ids]);
         } else {
             $downloads = $this->getEntityManager()->createQuery('
                 SELECT d
                 FROM DeskPRO:Download d INDEX BY d.id
                 WHERE d.id IN (?0)
                 ORDER BY d.id DESC
-            ')->execute(array($ids));
+            ')->execute([$ids]);
         }
 
         return $downloads;
@@ -87,7 +88,7 @@ class Download extends AbstractEntityRepository
     public function getByResultIds(array $ids)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         $unsorted_downloads = $this->getEntityManager()->createQuery('
@@ -95,9 +96,9 @@ class Download extends AbstractEntityRepository
             FROM DeskPRO:Download d INDEX BY d.id
             WHERE d.id IN (?0)
             ORDER BY d.id DESC
-        ')->execute(array($ids));
+        ')->execute([$ids]);
 
-        $downloads = array();
+        $downloads = [];
 
         foreach ($ids as $id) {
             if (isset($unsorted_downloads[$id])) {
@@ -161,7 +162,7 @@ class Download extends AbstractEntityRepository
 
     public function getSectionCounts(PersonEntity $person_context = null)
     {
-        $counts = array();
+        $counts = [];
 
         $searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
         if ($person_context) {
@@ -182,13 +183,24 @@ class Download extends AbstractEntityRepository
         return $counts;
     }
 
+    public function countPublished()
+    {
+        return $this->getEntityManager()->createQuery(
+            "
+                        SELECT COUNT(n) as cc
+                        FROM DeskPRO:Download n
+                        WHERE n.status = 'published'
+                    "
+        )->getSingleScalarResult();
+    }
+
     public function getReportAssociations()
     {
-        return array(
-            'views' => array(
+        return [
+            'views' => [
                 'conditions'   => '%1$s.object_type = 2 AND %1$s.object_id = %2$s.id',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog',
-            ),
-        );
+            ],
+        ];
     }
 }

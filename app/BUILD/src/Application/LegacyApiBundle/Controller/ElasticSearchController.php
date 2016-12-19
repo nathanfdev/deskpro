@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,16 +29,22 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\ApacheTika\ClientManager;
 use Application\DeskPRO\Elastica\ClientFactory;
+use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Monolog\Logger;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Elastica\Response;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use Orb\Util\Numbers;
 
+/**
+ * @ApiModes("all")
+ */
 class ElasticSearchController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -49,27 +55,27 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # get-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-settings
+    //###################################################################################################################
 
     public function getSettingsAction()
     {
-        $values = array(
+        $values = [
             'enabled'        => (bool) $this->settings->get('elastica.enabled'),
             'requires_reset' => (bool) $this->settings->get('elastica.requires_reset'),
             'url'            => $this->settings->get('elastica.clients.default.url'),
             'tika_enabled'   => (bool) $this->settings->get('elastica.tika.enabled'),
             'tika_ip'        => $this->settings->get('elastica.tika.ip_address'),
             'tika_port'      => $this->settings->get('elastic_settings.tika_port'),
-        );
+        ];
 
-        return $this->createApiResponse(array('elastic_settings' => $values));
+        return $this->createApiResponse(['elastic_settings' => $values]);
     }
 
-    ####################################################################################################################
-    # save-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-settings
+    //###################################################################################################################
 
     public function saveSettingsAction()
     {
@@ -94,7 +100,7 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
         // Just turned on, we need to toggle the requires_reset flag
         if ((!$was_enabled || $this->in->getBool('reindex')) && $this->in->getBool('elastic_settings.enabled')) {
             $this->settings->setSetting('elastica.requires_reset', 1);
-            $es_status = $this->em->getRepository('DeskPRO:DataStore')->getByName('sys.es_indexer', false);
+            $es_status = $this->em->getRepository(DataStore::class)->getByName('sys.es_indexer', false);
             if ($es_status) {
                 $this->em->remove($es_status);
                 $this->em->flush();
@@ -106,20 +112,20 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
         return $this->createApiSuccessResponse();
     }
 
-    ####################################################################################################################
-    # test-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // test-settings
+    //###################################################################################################################
 
     public function testSettingsAction()
     {
-        #------------------------------
-        # Configure logger
-        #------------------------------
+        //------------------------------
+        // Configure logger
+        //------------------------------
 
         try {
             $config = ClientFactory::createConfigFromUrl($this->in->getString('url'));
         } catch (\Exception $e) {
-            return $this->createApiResponse(array('is_success' => false, 'log' => $e->getMessage()));
+            return $this->createApiResponse(['is_success' => false, 'log' => $e->getMessage()]);
         }
 
         $logger = new Logger('elastic_test');
@@ -134,17 +140,17 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 
         $config['logger'] = $elastica_logger;
 
-        #------------------------------
-        # Create client
-        #------------------------------
+        //------------------------------
+        // Create client
+        //------------------------------
 
         /** @var \Application\DeskPRO\Elastica\ClientFactory $client_factory */
         $client_factory = $this->container->get('deskpro.elastica.client_factory');
 
         $client = $client_factory->createClientByConfig($config);
-        #------------------------------
-        # Test client
-        #------------------------------
+        //------------------------------
+        // Test client
+        //------------------------------
 
         $ts_start = microtime(true);
         $error    = false;
@@ -172,7 +178,7 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
             try {
                 /** @var ClientManager $tika_client_manager */
                 $tika_client_manager = $this->container->get('deskpro.apache_tika.client_manager');
-                $config = $tika_client_manager->createConfigFromUrl(
+                $config              = $tika_client_manager->createConfigFromUrl(
                     $this->in->getString('tika_ip'),
                     $this->in->getString('tika_port')
                 );
@@ -188,10 +194,10 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
             }
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'is_success' => !$error,
             'log'        => $logger->getSavedMessages(),
-        ));
+        ]);
     }
 
     protected function checkVersion($url)
@@ -206,21 +212,22 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
         $res            = $client->request('/');
         if ($res instanceof Response) {
             $res = $res->getData();
-            if (version_compare(@$res['version']['number'], '2.0.0', '>=')) {
-                throw new \Exception('DeskPRO is not compatible with your ElasticSearch 2.x server. Please use DeskPRO with an ElasticSearch 1.x server. ElasticSearch 2.x is a very new update. We are working on adding support for this version and will ship an update in the near future.');
+            if (version_compare(@$res['version']['number'], '2.0.0') < 0) {
+                throw new \Exception('DeskPRO is not compatible with your ElasticSearch '.@$res['version']['number']
+                    .' server. Please use DeskPRO with an ElasticSearch 2.x server.');
             }
         }
     }
 
-    ####################################################################################################################
-    # index-status
-    ####################################################################################################################
+    //###################################################################################################################
+    // index-status
+    //###################################################################################################################
 
     public function indexStatusAction()
     {
-        $es_status = $this->em->getRepository('DeskPRO:DataStore')->getByName('sys.es_indexer', false);
+        $es_status = $this->em->getRepository(DataStore::class)->getByName('sys.es_indexer', false);
 
-        $status_data = $es_status ? $es_status->data : array();
+        $status_data = $es_status ? $es_status->data : [];
 
         $log_path = dp_get_log_dir().'/es-indexer.log';
         $log      = null;
@@ -246,21 +253,21 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
                 $stats = $index->request('_stats', 'GET')->getData();
 
                 if (!isset($stats['indices'][$index_name])) {
-                    $info = array('error' => 'no_index');
+                    $info = ['error' => 'no_index'];
                 } else {
-                    $info = array(
+                    $info = [
                         'size'          => @$stats['indices'][$index_name]['total']['store']['size_in_bytes'],
                         'size_readable' => Numbers::filesizeDisplay(@$stats['indices'][$index_name]['total']['store']['size_in_bytes']),
                         'num_docs'      => @$stats['indices'][$index_name]['total']['docs']['count'],
-                    );
+                    ];
                 }
             } catch (\Exception $e) {
-                $info = array('error' => 'no_status');
+                $info = ['error' => 'no_status'];
             }
         }
 
         if (empty($info['error']) && isset($index) && isset($index_name)) {
-            $types = array(
+            $types = [
                 'feedback'          => 'feedback',
                 'organization'      => 'organizations',
                 'person'            => 'people',
@@ -269,7 +276,7 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
                 'news'              => 'news',
                 'download'          => 'downloads',
                 'chat_conversation' => 'chat_conversations',
-            );
+            ];
 
             foreach ($types as $type => $table) {
                 try {
@@ -283,11 +290,11 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
             }
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'is_indexing'    => $is_indexing,
             'indexer_status' => $status_data ? $status_data : null,
             'indexer_log'    => $log ?: null,
             'info'           => $info,
-        ));
+        ]);
     }
 }

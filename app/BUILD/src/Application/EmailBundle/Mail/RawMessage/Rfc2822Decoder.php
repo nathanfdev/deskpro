@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Mail\RawMessage;
 
+use Application\EmailBundle\Mail\RawMessage\Mail\Part;
 use Orb\Util\Arrays;
 use Zend\Mail\Header\AbstractAddressList;
 use Zend\Mail\Header\Subject;
 use Zend\Mail\Storage\Exception\InvalidArgumentException;
-use Zend\Mail\Storage\Part;
 use Zend\Mime\Decode;
 
 /**
@@ -67,9 +68,9 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
             // TODO: Zend Mail Part tries to get headers from null-string
             throw new \Exception('Empty mail stream');
         }
-        $message = new Part(array(
+        $message = new Part([
             'raw' => $raw,
-        ));
+        ]);
 
         $message->getHeaders()->getPluginClassLoader()->registerPlugin('bcc',      'Application\\EmailBundle\\Mail\\RawMessage\\Mail\\Header\\Bcc');
         $message->getHeaders()->getPluginClassLoader()->registerPlugin('cc',       'Application\\EmailBundle\\Mail\\RawMessage\\Mail\\Header\\Cc');
@@ -77,7 +78,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
         $message->getHeaders()->getPluginClassLoader()->registerPlugin('reply-to', 'Application\\EmailBundle\\Mail\\RawMessage\\Mail\\Header\\ReplyTo');
         $message->getHeaders()->getPluginClassLoader()->registerPlugin('to',       'Application\\EmailBundle\\Mail\\RawMessage\\Mail\\Header\\To');
 
-        $data = array(
+        $data = [
             'from'        => $this->_readAddresses($message, 'from', true),
             'tos'         => $this->_readAddresses($message, 'to'),
             'ccs'         => $this->_readAddresses($message, 'cc'),
@@ -86,7 +87,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
             'text_part'   => $this->_readTextPart($message),
             'html_part'   => $this->_readHtmlPart($message),
             'attachments' => $this->_readAttachments($message),
-        );
+        ];
 
         $raw_message = RawMessage::newFromArray($data);
 
@@ -107,18 +108,18 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
         try {
             $header = $message->getHeader($header_name);
         } catch (InvalidArgumentException $e) {
-            return array();
+            return [];
         }
 
         if (!$header || !($header instanceof AbstractAddressList)) {
-            return array();
+            return [];
         }
 
         $list = array_values(Arrays::map(function ($v) {
-            return array(
+            return [
                 'name'  => trim($v->getName(), "\"'"),
                 'email' => $v->getEmail(),
-            );
+            ];
         }, $header->getAddressList()));
 
         if ($single) {
@@ -138,15 +139,15 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
      */
     private function _readHeaders(Part $message)
     {
-        $headers = array();
+        $headers = [];
 
         // Headers we will ignore because we read them elsewhere
-        $ignore_map = array(
+        $ignore_map = [
             'subject' => true,
             'from'    => true,
             'cc'      => true,
             'to'      => true,
-        );
+        ];
 
         foreach ($message->getHeaders()->toArray() as $name => $value) {
             if (isset($ignore_map[strtolower($name)])) {
@@ -154,7 +155,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
             }
 
             if (!isset($headers[$name])) {
-                $headers[$name] = array();
+                $headers[$name] = [];
             }
 
             if (is_array($value)) {
@@ -179,7 +180,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
         try {
             $subject = $message->getHeader('subject');
         } catch (InvalidArgumentException $e) {
-            return array();
+            return [];
         }
 
         if (!($subject instanceof Subject)) {
@@ -296,7 +297,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
      */
     private function _readAttachments(Part $message)
     {
-        $attachments = array();
+        $attachments = [];
 
         $part = null;
         if ($message->isMultipart()) {
@@ -336,13 +337,13 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
 
                 $data = $this->decodeMessage($message);
 
-                $a = array(
+                $a = [
                     'filename' => $filename,
                     'cid'      => $content_id,
                     'bin_data' => $data,
                     'type'     => $content_type,
                     'crc32'    => sprintf('%x', crc32($data)),
-                );
+                ];
 
                 $attachments[] = $a;
             }

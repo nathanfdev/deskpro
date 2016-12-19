@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category EmailGateway
  */
+
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
@@ -104,11 +105,11 @@ class ProcessReply extends ProcessAbstract
             if (!$this->person->PermissionsManager->TicketChecker->canReply($this->ticket)) {
                 if (!$this->ticket_email->is_bounce && !$this->reader->isFromRobot()) {
                     $message = App::getMailer()->createMessage();
-                    $message->setTemplate('DeskPRO:emails_agent:error-no-reply-perm.html.twig', array(
+                    $message->setTemplate('DeskPRO:emails_agent:error-no-reply-perm.html.twig', [
                         'ticket'  => $this->ticket,
                         'subject' => $this->reader->getSubject()->getSubjectUtf8(),
                         'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                    ));
+                    ]);
                     $message->setTo($this->reader->getFromAddress()->getEmail());
 
                     App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
@@ -138,7 +139,7 @@ class ProcessReply extends ProcessAbstract
                 $this->ticket,
                 $this->ticket_email,
                 $this->cleaner,
-                array($this, 'replaceInlineAttachTokens'),
+                [$this, 'replaceInlineAttachTokens'],
                 $this->getLogger()
             );
         } else {
@@ -149,7 +150,7 @@ class ProcessReply extends ProcessAbstract
                 $this->ticket_email,
                 $this->cleaner,
                 App::$container->getEmailAccountManager(),
-                array($this, 'replaceInlineAttachTokens'),
+                [$this, 'replaceInlineAttachTokens'],
                 $this->getLogger()
             );
         }
@@ -160,11 +161,11 @@ class ProcessReply extends ProcessAbstract
             $this->setError('missing_marker');
 
             $message = App::getMailer()->createMessage();
-            $message->setTemplate('DeskPRO:emails_agent:error-marker-missing.html.twig', array(
+            $message->setTemplate('DeskPRO:emails_agent:error-marker-missing.html.twig', [
                 'ticket'  => $this->ticket,
                 'subject' => $this->reader->getSubject()->getSubjectUtf8(),
                 'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-            ));
+            ]);
             $message->setTo($this->reader->getFromAddress()->getEmail());
 
             App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
@@ -238,7 +239,7 @@ class ProcessReply extends ProcessAbstract
             }
         }
 
-        $ticket_attach = array();
+        $ticket_attach = [];
         foreach ($this->processBlobs() as $blob) {
             if (isset($this->dupe_inline_blobs[$blob->getId()])) {
                 continue;
@@ -313,9 +314,9 @@ class ProcessReply extends ProcessAbstract
             $this->handleCc($this->ticket, $this->reader->getDeliveredAddresses());
         }
 
-        #------------------------------
-        # Reply actions
-        #------------------------------
+        //------------------------------
+        // Reply actions
+        //------------------------------
 
         if ($this->ticket_email->reply_actions) {
             $reply_actions_apply           = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
@@ -327,9 +328,9 @@ class ProcessReply extends ProcessAbstract
             $reply_actions_apply->apply($reply_actions_context);
         }
 
-        #------------------------------
-        # Default switch status
-        #------------------------------
+        //------------------------------
+        // Default switch status
+        //------------------------------
 
         if (!$this->ticket_email->is_bounce && !$message->is_agent_note && $did_add_message && !isset($this->ticket_email->reply_actions['status'])) {
             if ($this->person['is_agent'] && $context == 'agent') {
@@ -354,11 +355,11 @@ class ProcessReply extends ProcessAbstract
             App::getOrm()->flush();
 
             if ($email_info->charset_error) {
-                App::getOrm()->getConnection()->insert('tickets_messages_raw', array(
+                App::getOrm()->getConnection()->insert('tickets_messages_raw', [
                     'message_id' => $message['id'],
                     'raw'        => $email_info->body,
                     'charset'    => $email_info->charset_error,
-                ));
+                ]);
             }
             App::getDb()->commit();
         } catch (\Exception $e) {

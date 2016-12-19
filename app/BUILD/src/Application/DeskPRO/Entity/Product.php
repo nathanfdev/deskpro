@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,16 +31,21 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Products.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class Product extends CategoryAbstract implements HasPhraseName
 {
@@ -50,6 +55,12 @@ class Product extends CategoryAbstract implements HasPhraseName
     protected $custom_data;
 
     /**
+     * Parent of the product.
+     *
+     * @JMS\Expose()
+     * @JMS\Groups("details")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Product>")
+     *
      * @var \Application\DeskPRO\Entity\Product
      */
     protected $parent;
@@ -59,9 +70,24 @@ class Product extends CategoryAbstract implements HasPhraseName
      */
     protected $children;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
-        $this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->custom_data = new ArrayCollection();
+    }
+
+    /**
+     * @param $title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        return $this;
     }
 
     /**
@@ -81,13 +107,9 @@ class Product extends CategoryAbstract implements HasPhraseName
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -98,13 +120,9 @@ class Product extends CategoryAbstract implements HasPhraseName
     }
 
     /**
-     * Get the default value phrase for the object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         if ($property == 'full') {
             return $this->getFullTitle();
@@ -284,7 +302,7 @@ class Product extends CategoryAbstract implements HasPhraseName
      *
      * @return array
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
@@ -313,24 +331,88 @@ class Product extends CategoryAbstract implements HasPhraseName
         return $this->getFullTitle();
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Product';
-        $metadata->setPrimaryTable(array('name' => 'products'));
+        $metadata->setPrimaryTable(['name' => 'products']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
-        $metadata->mapField(array('fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order'));
-        $metadata->mapField(array('fieldName' => 'depth', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'depth'));
-        $metadata->mapField(array('fieldName' => 'root', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'root'));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'title',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'title',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'display_order',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'display_order',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'depth',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'depth',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'root',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'root',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => null, 'inversedBy' => 'children', 'joinColumns' => array(0 => array('name' => 'parent_id', 'referencedColumnName' => 'id'))));
-        $metadata->mapOneToMany(array('fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => 'parent',  'orderBy' => array('display_order' => 'ASC')));
-        $metadata->mapOneToMany(array('fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataProduct', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'product', 'orphanRemoval' => true,  'dpApi' => false));
+        $metadata->mapManyToOne([
+            'fieldName'    => 'parent',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Product',
+            'mappedBy'     => null,
+            'inversedBy'   => 'children',
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'parent_id',
+                    'referencedColumnName' => 'id',
+                ],
+            ],
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'children',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Product',
+            'mappedBy'     => 'parent',
+            'orderBy'      => ['display_order' => 'ASC'],
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'custom_data',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataProduct',
+            'cascade'      => [
+                0 => 'remove',
+                1 => 'persist',
+                3 => 'merge',
+            ],
+            'mappedBy'      => 'product',
+            'orphanRemoval' => true,
+            'dpApi'         => false,
+        ]);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Orb\Auth\Adapter;
 
 /**
@@ -36,17 +37,20 @@ namespace Orb\Auth\Adapter;
  */
 interface SsoLoginActionInterface
 {
-    const CONTEXT_BACKGROUND = 'background';
-    const CONTEXT_REDIRECT   = 'redirect';
+    const CONTEXT_BACKGROUND                 = 'background';
+    const CONTEXT_REDIRECT                   = 'redirect';
+    const TOKEN_ATTRIBUTE_BACKGROUND_REFRESH = 'background_refresh';
 
     /**
      * TODO: Depending on a controller is odd, this should be cleaned up eventually.
+     * TODO: no current implementers actually use this $controller arg. should replace with $request instead.
+     *
      *
      * @param \Application\DeskPRO\Controller\AbstractController $controller
      *
      * @return \Orb\Auth\Result
      */
-    public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller);
+    public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller = null);
 
     /**
      * Return true if the user is authenticated via a background js (iframe) and you want to signal that

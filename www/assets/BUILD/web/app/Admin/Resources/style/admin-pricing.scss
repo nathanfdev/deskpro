@@ -1,0 +1,506 @@
+.manage-deskpro-account {
+  @extend .admin-container;// in admin.scss
+  position: relative;
+  padding-right: 320px;
+
+  h1 { font-weight: 300; }
+}
+
+.manage-account-sidebar {
+  background: #f8fafa;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 300px;
+  border-left: 1px solid #d0d9e6;
+
+  h1 {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #787979;
+    margin-bottom: 10px;
+  }
+
+  // Generic container (with some specifics for bgs etc)
+  .sidebar-box {
+    padding: 10px;
+
+    &.billing-details-box {
+      background: #f1f5f6;
+      border-bottom: 1px solid #d0d9e6;
+    }
+
+    &.card-holder {
+      border-top: 1px solid #d0d9e6;
+      padding-top: 0px;
+      background: #fff;
+    }
+  }
+
+  form {
+    label {
+      display: block;
+      color: #999a9a;
+    }
+
+    div { position: relative; }
+
+    // Dots for cc entry
+    .cc {
+      input {
+        @include placeholder {
+          line-height: 10px;
+          position: relative;
+
+          font-size: 10px;
+          letter-spacing: 4px;
+        }
+      }
+    }
+
+    .card-details {// Two small inputs
+      position: relative;
+      .expires, .ccv {
+        display: inline-block;
+        margin-right: 5px;
+        vertical-align: top;
+
+        input, .select-dropdown { width: 100px; }
+      }
+
+      .ccv {
+        i {
+          position: absolute;
+          right: -25px;
+          top: 46px;
+          color: #ccc;
+          cursor: default;
+        }
+      }
+    }
+
+    .vat {
+      @include clearfix;
+      input {
+        display: block;
+        float: left;
+        width: 65%;
+      }
+
+      a {
+        display: block;
+        float: left;
+        width: 33%;
+        margin-left: 2%;
+        text-align: center;
+        line-height: 1em;
+        padding: 10px;
+        border: 1px solid #cfd2d7;
+        background: #cfd2d7;
+        border-radius: 2px;
+        text-decoration: none;
+        color: #5d5d5d;
+      }
+    }
+
+    .vat-tag {
+      display: inline-block;
+      padding: 8px 5px;
+      line-height: 1px;
+      background: #60ab8d;
+      color: #fff;
+      font-size: 0.85em;
+      font-style: italic;
+      border-radius: 2px;
+      margin-left: 8px;
+      position: absolute;
+      margin-top: -2px;
+
+      &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        left: -10px;
+        top: 5px;
+        border: 5px solid rgba(0, 0, 0, 0);
+        border-right: 5px solid #60ab8d;
+      }
+    }
+
+    .select-dropdown, [type="text"] {
+      margin-left: 0px;
+      line-height: 1em;
+      padding: 10px;
+      border: 1px solid #d1d5da;
+      background: #fff;
+      font-family: inherit;
+      display: block;
+      border-radius: 2px;
+
+      @include placeholder {
+        font-style: italic;
+        color: #8e8e8e;
+        font-size: 0.85em;
+      }
+    }
+
+    [type="submit"], .button, [type="button"] {
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-top: 20px;
+    }
+  }
+
+  .item-valid {
+    position: absolute;
+    top: 37px;
+    right: 10px;
+    color: #60ab8d;
+  }
+
+
+
+
+
+  .select-dropdown {
+    position: relative;
+    cursor: pointer;
+
+    i {
+      position: absolute;
+      right: 10px;
+    }
+
+    .dropdown-content {
+      display: block;
+      position: absolute;
+      left: 0px;
+      top: 38px;
+      z-index: 999;
+      border: 1px solid #d1d5da;
+      background: #fff;
+      width: 100%;
+      border-radius: 2px;
+      max-height: 180px;
+      overflow: scroll;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+
+      a {
+        display: inline-block;
+        padding: 10px;
+        text-decoration: none;
+      }
+
+      li {
+        border-bottom: 1px solid #d1d5da;
+        &:last-child { border-bottom: 0px; }
+      }
+
+      ul {
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
+      }
+    }
+  }
+}
+
+
+.bill-me-in {
+  @include clearfix;
+  margin-bottom: 20px;
+
+  span {
+    display: block;
+    float: left;
+    vertical-align: middle;
+    width: 30%;
+    padding: 10px;
+  }
+
+  .label {
+    padding-left: 0px;
+    color: #999a9a;
+    text-align: right;
+  }
+
+  .select-dropdown {
+    display: block;
+    width: 70%;
+    float: left;
+    border: 1px solid #d1d5da;
+    border-radius: 2px;
+    background: #fff;
+    min-width: 140px;
+    cursor: pointer;
+    margin-left: 0px;
+    padding: 10px;
+    i {
+      top: 12px;
+    }
+  }
+}
+
+
+// Selected plan details on the sidebar
+.selected-plan {
+  table {
+    font-size: 0.95em;
+    border-top: 1px solid #d1d5da;
+    width: 100%;
+    line-height: 1.6em;
+    td {
+      padding: 3px;
+    }
+
+    .grey {     color: #b1b4b4; }
+    .mid {      text-align: center; }
+    .divider {  border-top: 1px solid #d1d5da; }
+    .focus {    font-size: 1.2em; }
+    .blue {     color: #4083af; }
+    .last {     text-align: right; }
+
+    .total {
+      text-align: right;
+      font-size: 1.5em;
+      font-weight: 600;
+      color: #4083af;
+
+      span {
+        font-weight: 400;
+        font-size: 0.7em;
+        color: #b1b4b4;
+      }
+    }
+  }
+}
+
+
+.pay-by {
+  padding-top: 10px;
+  a {
+    color: #adafaf;
+    font-weight: 600;
+    font-size: 1.1em;
+    display: inline-block;
+    line-height: 1em;
+    text-decoration: none;
+    margin-right: 20px;
+    outline: none;
+
+    .text {
+      display: inline-block;
+      padding-bottom: 4px;
+    }
+  }
+
+  .active {
+    color: #4681b2;
+
+    .text {
+      display: inline-block;
+      padding-bottom: 4px;
+      border-bottom: 2px solid #4681b2;
+    }
+
+    .radio-button {
+      border: 3px solid #4681b2;
+    }
+  }
+
+  .radio-button {
+    @extend %radio-button;
+    margin-right: 5px;
+    position: relative;
+    top: 2px;
+  }
+}
+
+
+
+// Three premium types
+.pricing-stages {
+  @include clearfix;
+  margin-top: 20px;
+  padding-top: 50px;
+  text-align: center;
+  padding-bottom: 30px;
+
+  .selected-plan-tooltip {
+    display: block;
+    position: absolute;
+    width: 100%;
+    left: 0px;
+    top: -35px;
+    text-align: center;
+
+    span {
+      background: #4083af;
+      color: #fff;
+      width: 125px;
+      display: inline-block;
+      border-radius: 2px;
+      padding: 4px 10px;
+      text-transform: uppercase;
+      font-size: 0.75em;
+      font-weight: 600;
+
+      &:before {
+        content: "";
+        width: 0px;
+        height: 0px;
+        position: absolute;
+        border: 7px solid rgba(0, 0, 0, 0.0);
+        border-top: 7px solid #4083af;
+        left: 47.5%;
+        bottom: -10px;
+      }
+    }
+  }
+
+  .radio-button {
+    @extend %radio-button;
+  }
+
+  .radio-button-wrapper {
+    display: inline-block;
+    border-left: 4px solid #fff;
+    border-right: 4px solid #fff;
+    position: absolute;
+    top: -7px;
+    left: 46%;
+  }
+
+  .pricing {
+    position: relative;
+    border: 1px solid #d1d5da;
+    width: 31%;
+    margin-left: 1%;
+    margin-right: 1%;
+    text-align: center;
+    padding: 10px;
+    padding-top: 20px;
+    padding-bottom: 0px;
+    display: block;
+    float: left;
+    border-radius: 2px;
+
+    h1 {
+      font-size: 1em;
+      font-weight: 600;
+      margin-bottom: 0px;
+      color: #878787;
+    }
+
+    &.pricing-active {
+      border: 1px solid #4083af;
+      position: relative;
+      top: -20px;
+
+      h1 {
+        color: #4083af;
+      }
+
+      .price {
+        color: #4083af;
+      }
+
+      .radio-button {
+        border: 3px solid #4083af;
+      }
+    }
+  }
+
+  .price {
+    display: block;
+    font-size: 4em;
+    font-weight: 600;
+    color: #dcdcdc;
+  }
+
+  .price-info {
+    color: #b6b6b6;
+    font-size: 0.9em;
+  }
+
+  .expand-full-features {
+    display: block;
+    font-size: 0.9em;
+    text-decoration: none;
+    margin-top: 10px;
+    position: relative;
+    top: 7px;
+
+    span {
+      display: block;
+      text-align: center;
+      color: #969696;
+    }
+
+    i {
+      display: inline-block;
+      margin-top: 4px;
+      color: #cecece;
+      background: #fff;
+      padding: 0px 5px;
+    }
+  }
+
+  .expand-full-features:hover {
+    span {
+      text-decoration: underline;
+    }
+  }
+
+  ul {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    margin-top: 15px;
+    color: #848484;
+
+    li {
+      display: block;
+      border-top: 1px solid #ededed;
+      padding: 10px;
+    }
+  }
+}
+
+
+
+
+
+// Number of agent seats
+.pick-agent-seats {
+  color: #ababab;
+
+  span {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .agent-count-dropdown {
+    border: 1px solid #4083af;
+    border-radius: 2px;
+    margin-left: 5px;
+    margin-right: 5px;
+
+    .count {
+      padding-left: 25px;
+      padding-right: 25px;
+      color: #4083af;
+      font-weight: 600;
+    }
+
+    .icon {
+      border-left: 1px solid #4083af;
+      padding: 15px;
+    }
+  }
+}
+
+
+
+// Faq and logo cloud

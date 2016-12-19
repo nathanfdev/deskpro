@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,14 +31,18 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
+use Doctrine\ORM\EntityManager;
 
+/**
+ * Class RunFilterUpdates.
+ */
 class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterface
 {
     /**
@@ -47,12 +51,17 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
     protected $container;
 
     /**
-     * @param Connection           $db
-     * @param FilterChangeDetector $filter_change_detector
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @param DeskproContainer $container
      */
     public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
+        $this->em        = $this->container->get('doctrine.orm.default_entity_manager');
     }
 
     /**
@@ -67,26 +76,34 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
             return;
         }
 
-        $detector        = $this->container->getTicketFilterChangeDetector();
-        $change_set      = $detector->getFilterChangeSet($ticket, $context);
-        $client_messages = $change_set->getListUpdateClientMessages();
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
+        $personRepo     = $this->em->getRepository(Person::class);
+        $onlineAgentIds = $personRepo->getActiveAgents(true);
 
-        $rows     = array();
-        $channels = array();
-        $agents   = array();
+        $detector        = $this->container->getTicketFilterChangeDetector();
+        $change_set      = $detector->getFilterChangeSet($ticket, $context, $onlineAgentIds);
+        $client_messages = $change_set->getListUpdateClientMessages($onlineAgentIds);
+
+        $rows     = [];
+        $channels = [];
+        $agents   = [];
 
         foreach ($client_messages as $cm) {
-            $channels[$cm->channel]                            = true;
-            $agents[$cm->for_person ? $cm->for_person->id : 0] = true;
-            $rows[]                                            = array(
-                'channel'           => $cm->channel,
-                'auth'              => $cm->auth,
-                'data'              => serialize($cm->data),
-                'created_by_client' => $cm->created_by_client ?: '',
-                'for_client'        => $cm->for_client ?: null,
-                'date_created'      => $cm->date_created->format('Y-m-d H:i:s'),
-                'for_person_id'     => $cm->for_person ? $cm->for_person->id : null,
-            );
+            $channel  = $cm->getChannel();
+            $person   = $cm->getForPerson();
+            $personId = $person ? $person->getId() : null;
+
+            $channels[$channel]      = true;
+            $agents[(int) $personId] = true;
+            $rows[]                  = [
+                'channel'           => $channel,
+                'auth'              => $cm->getAuth(),
+                'data'              => serialize($cm->getData()),
+                'created_by_client' => $cm->getCreatedByClient() ?: '',
+                'for_client'        => $cm->getForClient() ?: null,
+                'date_created'      => $cm->getDateCreated()->format('Y-m-d H:i:s'),
+                'for_person_id'     => $personId,
+            ];
         }
 
         if ($rows) {

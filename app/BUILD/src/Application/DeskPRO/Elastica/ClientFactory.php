@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -75,12 +75,12 @@ class ClientFactory
         if ($this->settings->get("elastica.clients.$id.url")) {
             $config = self::createConfigFromUrl($this->settings->get("elastica.clients.$id.url"));
         } else {
-            $config = array(
+            $config = [
                 'host'      => $this->settings->get("elastica.clients.$id.host"),
                 'port'      => $this->settings->get("elastica.clients.$id.port"),
                 'path'      => $this->settings->get("elastica.clients.$id.path") ?: null,
                 'transport' => $this->settings->get("elastica.clients.$id.transport") ?: null,
-            );
+            ];
         }
 
         if (!$config['host'] || !$config['port']) {
@@ -119,15 +119,15 @@ class ClientFactory
             throw new MissingConfigurationException('Missing host');
         }
 
-        $config = array(
+        $config = [
             'host'      => $url_info->host,
             'port'      => $url_info->port ?: 9200,
             'path'      => $url_info->path ?: null,
             'transport' => strtolower($url_info->get('scheme', 'http')) == 'https' ? 'Https' : 'Http',
-        );
+        ];
 
         if ($url_info->user && $url_info->pass) {
-            $config['headers'] = array('Authorization' => 'Basic '.base64_encode($url_info->user.':'.$url_info->pass));
+            $config['headers'] = ['Authorization' => 'Basic '.base64_encode($url_info->user.':'.$url_info->pass)];
         }
 
         return $config;
@@ -142,17 +142,17 @@ class ClientFactory
     {
         $config = new OptionsArray($config);
 
-        $client_options = array(
+        $client_options = [
             'host'      => $config->get('host', 'localhost'),
             'port'      => $config->get('port', 9200),
             'path'      => $config->get('path', null),
             'transport' => $config->get('transport', null),
-            'headers'   => $config->get('headers', array()),
+            'headers'   => $config->get('headers', []),
             'log'       => $config->get('log', null),
-        );
+        ];
 
         if ($config->get('transport') == 'Https') {
-            $client_options['curl'] = array(CURLOPT_SSL_VERIFYPEER => false);
+            $client_options['curl'] = [CURLOPT_SSL_VERIFYPEER => false];
         }
 
         $client = new Client($client_options);

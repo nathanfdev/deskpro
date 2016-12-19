@@ -1,0 +1,27 @@
+services:
+
+  form_error.validator_errors_generator.api:
+    class: DeskPRO\Bundle\AppBundle\Form\Error\ValidatorErrorsGenerator
+    arguments: ["@form_error.code_factory", "@form_error.message_factory.api"]
+
+  form_error.form_errors_generator.api:
+    class: DeskPRO\Bundle\AppBundle\Form\Error\FormErrorsGenerator
+    arguments: ["@form_error.code_factory", "@form_error.message_factory.api"]
+
+  form_error.message_factory.api:
+    class: DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory
+    arguments: ["@deskpro.core.translate", "api.error_codes."]
+
+  form_error.message_factory.portal:
+    class: DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory
+    arguments: ["@deskpro.core.translate", "portal.forms.error_"]
+
+  form_error.code_factory:
+    class: DeskPRO\Bundle\AppBundle\Form\Error\ErrorCodeFactory
+    arguments: ["@form_error.code_factory_exception", "@form_error.code_factory_validator"]
+
+  form_error.code_factory_validator:
+    class: DeskPRO\Bundle\AppBundle\Form\Error\ValidatorErrorCodeFactory
+
+  form_error.code_factory_exception:
+    class: DeskPRO\Bundle\AppBundle\Form\Error\ExceptionErrorCodeFactory

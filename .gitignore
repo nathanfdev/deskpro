@@ -1,7 +1,118 @@
+misc files
+.DS_Store
+.idea
+nbproject
+catalog.xml
+.settings
+.buildpath
+.project
+.tags
+*.komodoproject
+*.sublime*
+running_tests.trigger
+*.swp
+.tm_properties
+.php_cs.cache
+npm-debug.log
+.jest-cache
+phantomjsdriver.log
+php_errors.log
+yarn-error.log
+
+/dev/scratch/*
+!/dev/scratch/README.md
+/dev/dev_config
+bin/deskpro-importer-tools
+
+# vendors and build files
+/node_modules
+/app/BUILD/vendor
+/www/assets/BUILD/web/node_modules
+/www/assets/BUILD/web/bower_components
+/www/assets/BUILD/web/app/node_modules
+/www/assets/BUILD/web/app/bower_components
+/www/assets/BUILD/web/app-build
+/www/assets/BUILD/web/compiled
+/www/assets/BUILD/web/loader-build
+/www/assets/BUILD/web/stylesheets-less/admin/styleguide
+/www/assets/BUILD/pub/node_modules
+/www/assets/BUILD/pub/src-build
+/www/assets/BUILD/pub/build
+/www/assets/BUILD/pub/slate.tmp
+/www/assets/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
+/www/assets/BUILD/pub/src/DeskPRO/Bundle/WidgetBundle/WidgetApp_Reducers.js
+/www/assets/BUILD/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/precompiled-fontawesome.css
+
+/app/BUILD/tests/tools/node_modules
+
+# cache dirs
+/var/cache/*
+!/var/cache/.gitkeep
+/var/kernel_cache/*
+!/var/kernel_cache/.gitkeep
+/var/debug/*
+!/var/debug/.gitkeep
+/var/tests/*
+!/var/tests/.gitkeep
+/var/tmp/*
+!/var/tmp/.gitkeep
+
+# logs
+/var/logs/*
+!/var/logs/.gitkeep
+
+# data
+/attachments/*
+!/attachments/.gitkeep
+/backups/*
+!/backups/.gitkeep
+
+# builds
+/app/BUILD/sys/bootstrap.php
+/app/BUILD/sys/compiled.php
+/app/BUILD/sys/config/template-map.php
+/app/BUILD/sys/config/changed-files.php
+/app/BUILD/sys/Resources/distro-checksums.php
+/app/BUILD/sys/Resources/cloudflare-ips.php
+/app/BUILD/sys/Resources/agent-perm-names.php
+/app/BUILD/sys/Resources/serverinfo/warmupit.php
+/app/BUILD/src/Application/InstallBundle/Data/schema.php
+/app/BUILD/src/Application/DeskPRO/Dpql/Parser.out
+/app/BUILD/sys/enc
+
+/app/BUILD/src/DeskPRO/Bundle/PortalBundle/Themes/Base/Resources/templates_map_cache.php
+/app/BUILD/src/DeskPRO/Bundle/PortalBundle/Themes/Sidebar/Resources/templates_map_cache.php
+/app/BUILD/src/DeskPRO/Bundle/PortalBundle/Themes/Standard/Resources/templates_map_cache.php
+
+# tests
+/app/BUILD/tests/config/config.all.php
+/app/BUILD/tests/config/config.test.php
+
+# Dev
+/www/assets/BUILD/web/sassdoc/vars.json
+/www/assets/BUILD/web/build
+/www/assets/BUILD/web/compiled
+/www/assets/BUILD/web/app/build/*/build.js
+/www/assets/BUILD/web/stylesheets/agent
+/www/assets/BUILD/web/stylesheets/admin
+/www/assets/BUILD/web/stylesheets/report
+
+# Config
+/config/*
+/config/advanced/*
+!/config/.gitkeep
+!/config/advanced/.gitkeep
+
+
+
+###################### Legacy
+
 # IDE project files
 .DS_Store
 /.idea
 /web/app/.idea/
+/web/.idea/
+/pub/.idea/
 /nbproject/
 /catalog.xml
 /.settings/
@@ -13,30 +124,44 @@
 /running_tests.trigger
 *.swp
 .DS_Store
+.tm_properties
 .php_cs.cache
+
+/dev/scratch
+/dev/dev_config
 
 # vendors and build files
 /app/vendor
-/app/node_modules
-/app/BUILD/vendor
 /web/node_modules
 /web/bower_components
 /web/app/node_modules
 /web/app/bower_components
 /web/app-build
+/web/compiled
 /web/loader-build
-app/BUILD/sys/config/template-map.php
-app/BUILD/tests/config/config.all.php
+/pub/node_modules
+/pub/src-build
+/pub/build
+/pub/npm-debug.log
+/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
+/pub/src/DeskPRO/Bundle/WidgetBundle/WidgetApp_Reducers.js
+/app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/views/apidocs/index.html.twig
+
+/app/tests/tools/node_modules
+/app/tests/tools/npm-debug.log
+/app/tests/tools/logs/*
+!/app/tests/tools/logs/.gitkeep
+/app/tests/e2e/logs/*
+!/app/tests/e2e/logs/screenshots
+/app/tests/e2e/logs/screenshots/*
+!/app/tests/e2e/logs/screenshots/.gitkeep
 
 # cache and log files
-npm-debug.log
 /app/sys/cache/*
 !/app/sys/cache/index.html
 app/sys/logs/*
 /app/sys/bootstrap.php
 /app/sys/compiled.php
-/app/sys/config/build-time.php
-/app/sys/config/build-num.php
 /app/sys/config/template-map.php
 /app/sys/Resources/distro-checksums.php
 /app/sys/Resources/cloudflare-ips.php
@@ -48,6 +173,8 @@ app/sys/Resources/agent-perm-names.php
 /app/src/Cloud/bin/twitter-cloud.log
 /app/src/Cloud/bin/twitter-cloud-control.txt
 /app/src/Cloud/bin/twitter-cloud.pid
+/app/tests/coverage
+!/app/tests/coverage/.gitkeep
 
 /data/last-email_error.dat
 /data/is_installed.dat
@@ -77,14 +204,18 @@ data/encryption-key.bin.*
 /data/manuals
 /data/emailstore
 /data/import/csv/export/*
+/data/http_cache/
 /data/importer.pid
 
+web/sassdoc/vars.json
 /web/build
 /web/app/build/*/build.js
 /web/stylesheets/agent
 /web/stylesheets/admin
 /web/stylesheets/report
 /app/sys/config/changed-files.php
+/app/sys/logs/dev.log
+/log
 
 # Place devs can use as scratch space
 /_dev
@@ -98,4 +229,31 @@ data/encryption-key.bin.*
 /app/testing/logs/*
 !/app/testing/logs/.gitkeep
 /app/testing/data/dbset-cache
+/app/tests/config.test.php
+!/app/tests/coverage/cov/.gitkeep
 demodata/
+npm-debug.log
+
+pub/.jest-cache
+app/tests/phantomjsdriver.log
+www/assets/BUILD/pub/src/tests/E2E/reports/*
+www/assets/BUILD/pub/bin/chromedriver
+www/assets/BUILD/pub/bin/selenium.jar
+www/assets/BUILD/pub/src/tests/E2E/config.js
+www/assets/BUILD/pub/nightwatch.conf.js
+
+# Ignore other builds
+/app/*
+!/app/bin
+!/app/BUILD
+!/app/run
+/www/assets/*
+!/www/assets/index.html
+!/www/assets/BUILD
+!/www/assets/.htaccess
+
+/app/BUILD/sys/config/build-info.php
+/app/BUILD/sys/config/build-time.txt
+/app/BUILD/sys/config/build-num.txt
+/app/BUILD/sys/config/commit-id.txt
+/app/run/build-num.txt

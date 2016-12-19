@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
-namespace Application\DeskPRO\Search\IndexInitializer;
+
+namespace Application\DeskPRO\Search\Indexer\Initializer;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Log\Logger;
 
 abstract class ContentInitializer extends AbstractInitializer
 {
@@ -41,9 +43,9 @@ abstract class ContentInitializer extends AbstractInitializer
     {
         $this->preRun();
 
-        #------------------------------
-        # Run through each content type
-        #------------------------------
+        //------------------------------
+        // Run through each content type
+        //------------------------------
 
         $time_start = microtime(true);
         $total      = 0;

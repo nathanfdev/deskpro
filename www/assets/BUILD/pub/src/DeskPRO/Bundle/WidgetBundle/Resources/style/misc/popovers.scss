@@ -1,0 +1,77 @@
+.dpdesignportal-popover {
+  position: relative;
+  font-family: lato, helvetica, arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #363636;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+
+  border: 1px solid #4681b2;
+  padding: 12px 10px;
+  border-radius: 2px;
+  background: #fff;
+  width: 300px;
+
+  &.dpdesignportal-popover-end-chat {
+    text-align: center;
+
+    &.top {
+      @include add-corner(5px, #4681b2, 90%, bottom, "");
+      margin-right: 5px;
+    }
+    &.bottom {
+      @include add-corner(5px, #4681b2, 90%, top, "");
+      margin-right: 10px;
+    }
+  }
+
+  &.dpdesignportal-popover-request-transcript {
+    @include add-corner(5px, #4681b2, 50%, top, "");
+    padding: 10px 5px 5px 7px;
+
+    .dpdesignportal-popover-request-transcript-sent-message {
+      text-align: center;
+      padding: 0 20px;
+    }
+  }
+
+  .dpdesignportal-popover-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #dadada;
+    font-size: 11px;
+    cursor: hand;
+    z-index: 1001;
+  }
+
+  h1 {
+    font-size: 14.5px;
+    margin-bottom: 1px;
+    color: #4b4b4b;
+  }
+
+  p {
+    font-size: 12px;
+    &.grey {
+      color: #a5a5a5;
+    }
+  }
+
+  .popover-buttons {
+    margin-top: 17px;
+  }
+
+  button.dpdesignportal-button {
+    font-size: 12px;
+    i {
+      font-size: 11px;
+      margin-right: 3px;
+    }
+    &.locked {
+      opacity: 0.5;
+      cursor: default;
+    }
+  }
+}

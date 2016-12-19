@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,7 +36,7 @@ class SettingsProcessor extends Base
 
     const NAMES = 'core.settings.names';
 
-    protected $skip = array(
+    protected $skip = [
         'core.site_url',
         'core.deskpro_build',
         'core.deskpro_build_num',
@@ -45,49 +45,63 @@ class SettingsProcessor extends Base
         'core.last_cron_start',
         'core.last_heartbeat',
         'core.license',
-    );
+    ];
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doProcess(array $data)
     {
-        $enc = $this->connection->fetchColumn(
-            'select value from settings where name = :name',
-            array('name' => self::NAMES)
-        );
-        if (!$settings = json_decode($enc, 1)) {
-            throw new \Exception('Settings backup not found');
-        }
-        foreach ($this->skip as $k) {
-            $settings[$k] = null;
-        }
-        $settings[self::NAMES] = $enc;
+        $this->connection->beginTransaction();
 
-        $this->connection->executeUpdate(
-            'delete from settings where name not in (:names)',
-            array('names' => array_keys($settings)),
-            array('names' => Connection::PARAM_STR_ARRAY)
-        );
-
-        foreach ($this->skip as $k) {
-            unset($settings[$k]);
-        }
-
-        foreach ($settings as $k => $v) {
-            $this->connection->executeUpdate(
-                'replace into settings values (:name, :value)',
-                array('name' => $k, 'value' => $v)
+        try {
+            $enc = $this->connection->fetchColumn(
+                'select value from settings where name = :name',
+                ['name' => self::NAMES]
             );
+            if (!$settings = json_decode($enc, 1)) {
+                throw new \Exception('Settings backup not found');
+            }
+
+            foreach ($this->skip as $k) {
+                $settings[$k] = null;
+            }
+
+            $settings[self::NAMES] = $enc;
+
+            $this->connection->executeUpdate(
+                'delete from settings where name not in (:names)',
+                ['names' => array_keys($settings)],
+                ['names' => Connection::PARAM_STR_ARRAY]
+            );
+
+            foreach ($this->skip as $k) {
+                unset($settings[$k]);
+            }
+
+            foreach ($settings as $k => $v) {
+                $this->connection->executeUpdate(
+                    'replace into settings values (:name, :value)',
+                    ['name' => $k, 'value' => $v]
+                );
+            }
+
+            $this->connection->commit();
+        } catch (\Exception $e) {
+            $this->connection->rollBack();
+            throw $e;
         }
     }
 
     public static function saveBaseSettings(Connection $connection)
     {
-        $settings = array();
+        $settings = [];
         foreach ($connection->fetchAll('select * from settings') as $row) {
             $settings[$row['name']] = $row['value'];
         }
         $connection->executeUpdate(
             'replace into settings values (:name, :value)',
-            array('name' => self::NAMES, 'value' => json_encode($settings))
+            ['name' => self::NAMES, 'value' => json_encode($settings)]
         );
     }
 }

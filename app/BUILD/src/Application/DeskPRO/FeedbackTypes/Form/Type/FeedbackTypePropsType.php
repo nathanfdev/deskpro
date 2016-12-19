@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,48 +26,54 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\FeedbackTypes\Form\Type;
 
+use Application\DeskPRO\Entity\FeedbackCategory;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class FeedbackTypePropsType.
+ */
 class FeedbackTypePropsType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title', 'text', array('required' => true));
-        $builder->add(
-            'usergroups',
-            'entity',
-            array(
-                 'class'         => 'DeskPRO:Usergroup',
-                 'required'      => false,
-                 'expanded'      => true,
-                 'multiple'      => true,
-                 'property'      => 'title',
-                 'query_builder' => function (EntityRepository $er) {
-                     return $er->createQueryBuilder('u')->where(
-                         'u.is_agent_group = false AND u.is_enabled = true'
-                     );
-                 },
-            )
-        );
+        $builder
+            ->add('title', 'text', ['required' => true])
+            ->add('usergroups', 'entity', [
+                'class'         => 'DeskPRO:Usergroup',
+                'required'      => false,
+                'expanded'      => true,
+                'multiple'      => true,
+                'property'      => 'title',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('u')->where(
+                        'u.is_agent_group = false AND u.is_enabled = true'
+                    );
+                },
+            ])
+        ;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                 'data_class' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
-            )
-        );
+        $resolver->setDefaults([
+            'data_class' => FeedbackCategory::class,
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'feedback_type';

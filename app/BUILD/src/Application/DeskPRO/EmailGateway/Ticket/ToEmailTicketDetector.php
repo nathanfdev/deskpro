@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
@@ -68,7 +69,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
      * $detector = new ToEmailTicketDetector('ticket-TAC@example.com');
      * </code>
      *
-     * @param string $account_pattern The pattern with the special token TICKET_CODE in it.
+     * @param string $account_pattern The pattern with the special token TICKET_CODE in it
      */
     public function __construct($account_pattern)
     {
@@ -87,7 +88,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
      */
     public function findExistingTicket(AbstractReader $reader)
     {
-        $search_addr = array();
+        $search_addr = [];
         foreach ($reader->getToAddresses() as $addr) {
             $search_addr[] = $addr->email;
         }
@@ -103,9 +104,9 @@ class ToEmailTicketDetector implements TicketDetectorInterface
             return;
         }
 
-        #------------------------------
-        # Try to find the ticket and user now
-        #------------------------------
+        //------------------------------
+        // Try to find the ticket and user now
+        //------------------------------
 
         $ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($match_ptac);
 

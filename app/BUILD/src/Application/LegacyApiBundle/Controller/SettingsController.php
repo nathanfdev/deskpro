@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,25 +32,28 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\Form\CustomField\Type\PersonStartType;
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\Entity\Blob;
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
+use Application\DeskPRO\Settings\GeneralPortalSettings;
 use Application\DeskPRO\Settings\GeneralSettings;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Application\DeskPRO\Settings\PasswordSettings;
-use Application\DeskPRO\Settings\PortalSettings;
 use Application\DeskPRO\Settings\RegistrationSettings;
 use Application\DeskPRO\Settings\ServerSettings;
 use Application\DeskPRO\Settings\TicketFwdSettings;
 use Application\DeskPRO\Settings\TicketSettings;
-use DeskPRO\Kernel\License;
+use Application\LegacyApiBundle\Form\CustomField\Type\PersonStartType;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DpSys\License;
 use Orb\Util\Env;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @ApiModes("all")
+ */
 class SettingsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -61,50 +64,50 @@ class SettingsController extends AbstractController implements ProtectedControll
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # get-value
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-value
+    //###################################################################################################################
 
     public function getValueAction($name)
     {
         $value = $this->settings->get($name);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'name'  => $name,
             'value' => $value,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # set-value
-    ####################################################################################################################
+    //###################################################################################################################
+    // set-value
+    //###################################################################################################################
 
     public function setValueAction($name)
     {
         $value = $this->settings->setSetting($name, $this->in->getString('value'));
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'name'  => $name,
             'value' => $value,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # ticket-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // ticket-settings
+    //###################################################################################################################
 
     public function ticketSettingsAction()
     {
         $ticket_settings = new TicketSettings($this->settings);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'ticket_settings' => $ticket_settings->toArray(),
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save-ticket-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-ticket-settings
+    //###################################################################################################################
 
     public function saveTicketSettingsAction()
     {
@@ -115,22 +118,22 @@ class SettingsController extends AbstractController implements ProtectedControll
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # ticket-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // ticket-settings
+    //###################################################################################################################
 
     public function ticketFwdSettingsAction()
     {
         $ticket_fwd_settings = new TicketFwdSettings($this->settings, $this->container->getEmailAccountManager());
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'ticket_fwd_settings' => $ticket_fwd_settings->toArray(),
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save-ticket-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-ticket-settings
+    //###################################################################################################################
 
     public function saveTicketFwdSettingsAction()
     {
@@ -141,22 +144,22 @@ class SettingsController extends AbstractController implements ProtectedControll
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # server-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // server-settings
+    //###################################################################################################################
 
     public function serverSettingsAction()
     {
         $server_settings = new ServerSettings($this->settings);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'server_settings' => $server_settings->toArray(),
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save-server-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-server-settings
+    //###################################################################################################################
 
     public function saveServerSettingsAction()
     {
@@ -167,57 +170,75 @@ class SettingsController extends AbstractController implements ProtectedControll
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # general-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // general-settings
+    //###################################################################################################################
 
     public function generalSettingsAction()
     {
         $general_settings = new GeneralSettings($this->settings);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'general_settings' => $general_settings->toArray(),
             'max_filesize'     => Env::getEffectiveMaxUploadSize(),
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save-general-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-general-settings
+    //###################################################################################################################
 
     public function saveGeneralSettingsAction()
     {
-        $general_settings = new GeneralSettings($this->settings);
-        $general_settings->setArray($this->in->getArrayValue('general_settings'));
-        $general_settings->saveSettings();
+        try {
+            $settings = new GeneralSettings($this->settings);
+            $settings->setArray($this->in->getArrayValue('general_settings'));
+            $settings->saveSettings();
 
-        return $this->createSuccessResponse();
+            return $this->createSuccessResponse();
+        } catch (\Exception $e) {
+            return $this->createApiErrorResponse('settings_not_saved', 'Settings were not saved.');
+        }
     }
 
-    ####################################################################################################################
-    # portal-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // portal-settings
+    //###################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @deprecated
+     */
     public function portalSettingsAction()
     {
-        $portal_settings = new PortalSettings($this->settings);
+        $portal_settings = new GeneralPortalSettings($this->settings);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'portal_settings' => $portal_settings->toArray(),
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save-portal-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-portal-settings
+    //###################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @deprecated
+     */
     public function savePortalSettingsAction()
     {
-        $portal_settings = new PortalSettings($this->settings);
-        $portal_settings->setArray($this->in->getArrayValue('portal_settings'));
-        $portal_settings->saveSettings();
+        try {
+            $settings = new GeneralPortalSettings($this->settings);
+            $settings->setArray($this->in->getArrayValue('portal_settings'));
+            $settings->saveSettings();
 
-        return $this->createSuccessResponse();
+            return $this->createSuccessResponse();
+        } catch (\Exception $e) {
+            return $this->createApiErrorResponse('settings_not_saved', 'Settings were not saved.');
+        }
     }
 
     public function saveCustomFaviconAction($blob_id, $blob_auth)
@@ -232,7 +253,7 @@ class SettingsController extends AbstractController implements ProtectedControll
 
         if ($blob) {
             $ext = strtolower(Strings::getExtension($blob->getFilename()));
-            if (!$ext || !in_array($ext, array('gif', 'png', 'jpg', 'jpeg', 'ico'))) {
+            if (!$ext || !in_array($ext, ['gif', 'png', 'jpg', 'jpeg', 'ico'])) {
                 throw $this->createNotFoundException();
             }
 
@@ -260,7 +281,7 @@ class SettingsController extends AbstractController implements ProtectedControll
                     $gd_dest = imagecreatetruecolor(16, 16);
                     imagecopyresampled($gd_dest, $gd, 0, 0, 0, 0, 16, 16, $width, $height);
 
-                    $file_content = \phpthumb_ico::GD2ICOstring(array($gd_dest));
+                    $file_content = \phpthumb_ico::GD2ICOstring([$gd_dest]);
                 }
             } else {
                 $file_content = $file;
@@ -281,20 +302,17 @@ class SettingsController extends AbstractController implements ProtectedControll
             $this->settings->setSetting('core.favicon_blob_url', null);
         }
 
-        $cache = new UserPageCache();
-        $cache->invalidateAll();
-
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # all-settings-raw
-    ####################################################################################################################
+    //###################################################################################################################
+    // all-settings-raw
+    //###################################################################################################################
 
     public function allSettingsRawAction()
     {
         $settings_files = new AdvancedSettings();
-        $all_settings   = array();
+        $all_settings   = [];
 
         foreach ($settings_files->getAllSettings() as $name => $default_value) {
             $value = $set = $this->container->getSetting($name);
@@ -322,11 +340,11 @@ class SettingsController extends AbstractController implements ProtectedControll
                 $value = '<BLANK>';
             }
 
-            $all_settings[$name] = array(
+            $all_settings[$name] = [
                 'name'          => $name,
                 'default_value' => $default_value,
                 'value'         => $value,
-            );
+            ];
         }
 
         foreach ($this->container->getSettingsHandler()->getIterator() as $name => $value) {
@@ -344,21 +362,21 @@ class SettingsController extends AbstractController implements ProtectedControll
                 $value = '';
             }
 
-            $all_settings[$name] = array(
+            $all_settings[$name] = [
                 'name'          => $name,
                 'default_value' => '',
                 'value'         => $value,
-            );
+            ];
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'all_settings' => array_values($all_settings),
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save-all-settings-raw
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-all-settings-raw
+    //###################################################################################################################
 
     public function saveAllSettingsRawAction()
     {
@@ -383,24 +401,24 @@ class SettingsController extends AbstractController implements ProtectedControll
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # registration-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // registration-settings
+    //###################################################################################################################
 
     public function registrationSettingsAction()
     {
         $reg_settings        = new RegistrationSettings($this->settings, $this->em);
         $rate_limit_settings = new LoginRateLimitSettings($this->settings, $this->in->getString('rate_limit_context'));
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'registration_settings' => $reg_settings->toArray(),
             'rate_limit_settings'   => $rate_limit_settings->toArray(),
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save-registration-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-registration-settings
+    //###################################################################################################################
 
     public function saveRegistrationSettingsAction()
     {
@@ -415,24 +433,24 @@ class SettingsController extends AbstractController implements ProtectedControll
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # password-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // password-settings
+    //###################################################################################################################
 
     public function passwordSettingsAction()
     {
         $password_settings   = new PasswordSettings($this->settings);
         $rate_limit_settings = new LoginRateLimitSettings($this->settings, $this->in->getString('rate_limit_context'));
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'settings'            => $password_settings->toArray(),
             'rate_limit_settings' => $rate_limit_settings->toArray(),
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save-password-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-password-settings
+    //###################################################################################################################
 
     public function savePasswordSettingsAction()
     {
@@ -447,14 +465,23 @@ class SettingsController extends AbstractController implements ProtectedControll
         return $this->passwordSettingsAction();
     }
 
-    ############################################################################
-    # save-start-settings
-    ############################################################################
+    //###########################################################################
+    // save-start-settings
+    //###########################################################################
 
     public function setStartSettingsAction(Request $request)
     {
         $this->settings->setSetting('core.deskpro_url', $this->in->getString('deskpro_url'));
         $this->settings->setSetting('core.deskpro_name', $this->in->getString('deskpro_name'));
+
+        $brand = $this->get('brand_stack')->getDefaultBrand();
+        $db    = $this->get('database_connection');
+        $db->delete('settings_brand', ['name' => 'core.deskpro_url', 'brand_id' => $brand->getId()]);
+        $db->insert('settings_brand', [
+            'name'     => 'core.deskpro_url',
+            'value'    => $this->in->getString('deskpro_url'),
+            'brand_id' => $brand->getId(),
+        ]);
 
         $content = json_decode($request->getContent(), 1);
 
@@ -504,9 +531,9 @@ class SettingsController extends AbstractController implements ProtectedControll
         return $this->createApiSuccessResponse();
     }
 
-    ############################################################################
-    # set-done-initial
-    ############################################################################
+    //###########################################################################
+    // set-done-initial
+    //###########################################################################
 
     public function setDoneInitialAction()
     {
@@ -519,83 +546,107 @@ class SettingsController extends AbstractController implements ProtectedControll
         return $this->createApiSuccessResponse();
     }
 
-    ####################################################################################################################
-    # portal-app-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // portal-app-settings
+    //###################################################################################################################
 
+    /**
+     * @param $app
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @deprecated please use Api v2
+     */
     public function portalAppSettingsAction($app)
     {
         switch ($app) {
             case 'news':
-                $settings = array(
-                    'enabled'     => (bool) $this->settings->get('core.apps_news'),
-                    'tab_enabled' => (bool) $this->settings->get('user.portal_tab_news'),
-                );
+                $settings = [
+                    'enabled'       => (bool) $this->settings->get('core.apps_news'),
+                    'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_news'),
+                    'subscriptions' => (bool) $this->settings->get('user.news_subscriptions'),
+                ];
                 break;
 
             case 'kb':
-                $settings = array(
-                    'enabled'     => (bool) $this->settings->get('core.apps_kb'),
-                    'tab_enabled' => (bool) $this->settings->get('user.portal_tab_articles'),
-                );
+                $settings = [
+                    'enabled'       => (bool) $this->settings->get('core.apps_kb'),
+                    'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_articles'),
+                    'subscriptions' => (bool) $this->settings->get('user.kb_subscriptions'),
+                ];
                 break;
 
             case 'feedback':
-                $settings = array(
-                    'enabled'     => (bool) $this->settings->get('core.apps_feedback'),
-                    'tab_enabled' => (bool) $this->settings->get('user.portal_tab_feedback'),
-                );
+                $settings = [
+                    'enabled'       => (bool) $this->settings->get('core.apps_feedback'),
+                    'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_feedback'),
+                    'subscriptions' => (bool) $this->settings->get('user.feedback_subscriptions'),
+                ];
                 break;
 
             case 'downloads':
-                $settings = array(
-                    'enabled'     => (bool) $this->settings->get('core.apps_downloads'),
-                    'tab_enabled' => (bool) $this->settings->get('user.portal_tab_downloads'),
-                );
+                $settings = [
+                    'enabled'       => (bool) $this->settings->get('core.apps_downloads'),
+                    'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_downloads'),
+                    'subscriptions' => (bool) $this->settings->get('user.downloads_subscriptions'),
+                ];
                 break;
 
             default:
                 throw $this->createNotFoundException();
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'settings' => $settings,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save-portal-app-settings
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-portal-app-settings
+    //###################################################################################################################
 
+    /**
+     * @param $app
+     *
+     * @throws \Exception
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @deprecated use Api v2 instead
+     */
     public function savePortalAppSettingsAction($app)
     {
         switch ($app) {
             case 'news':
-                $settings = array(
-                    'core.apps_news'       => $this->in->getBoolInt('settings.enabled'),
-                    'user.portal_tab_news' => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
-                );
+                $settings = [
+                    'core.apps_news'          => $this->in->getBoolInt('settings.enabled'),
+                    'user.portal_tab_news'    => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
+                    'user.news_subscriptions' => (int) $this->in->getBool('settings.subscriptions'),
+                ];
                 break;
 
             case 'kb':
-                $settings = array(
+                $settings = [
                     'core.apps_kb'             => $this->in->getBoolInt('settings.enabled'),
                     'user.portal_tab_articles' => (int) ($this->in->getBoolInt('settings.enabled') && $this->in->getBoolInt('settings.tab_enabled')),
-                );
+                    'user.kb_subscriptions'    => (int) $this->in->getBool('settings.subscriptions'),
+                ];
                 break;
 
             case 'feedback':
-                $settings = array(
-                    'core.apps_feedback'       => $this->in->getBoolInt('settings.enabled'),
-                    'user.portal_tab_feedback' => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
-                );
+                $settings = [
+                    'core.apps_feedback'          => $this->in->getBoolInt('settings.enabled'),
+                    'user.portal_tab_feedback'    => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
+                    'user.feedback_subscriptions' => (int) $this->in->getBool('settings.subscriptions'),
+                ];
                 break;
 
             case 'downloads':
-                $settings = array(
-                    'core.apps_downloads'       => $this->in->getBoolInt('settings.enabled'),
-                    'user.portal_tab_downloads' => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
-                );
+                $settings = [
+                    'core.apps_downloads'          => $this->in->getBoolInt('settings.enabled'),
+                    'user.portal_tab_downloads'    => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
+                    'user.downloads_subscriptions' => (int) $this->in->getBool('settings.subscriptions'),
+                ];
                 break;
 
             default:
@@ -652,18 +703,18 @@ class SettingsController extends AbstractController implements ProtectedControll
      */
     public function getLogoBlobAction()
     {
-        if (!$blob_id = $this->settings->get('agent.login_logo_blob_id')) {
-            throw new NotFoundHttpException();
+        /* @var Blob $blob */
+        $blobId = $this->settings->get('agent.login_logo_blob_id');
+        $blob   = $blobId ? $this->em->find(Blob::class, $blobId) : null;
+
+        if ($blob) {
+            $result = array_merge($blob->toApiData(), [
+                'thumbnail' => rtrim($this->settings->get('core.deskpro_url'), '/').$blob->getThumbnailUrl('360x100'),
+            ]);
+        } else {
+            $result = ['empty' => true];
         }
 
-        /** @var $blob Blob */
-        if (!$blob = $this->em->find('DeskPRO:Blob', $blob_id)) {
-            throw new NotFoundHttpException();
-        }
-
-        $data              = $blob->toApiData();
-        $data['thumbnail'] = rtrim($this->settings->get('core.deskpro_url'), '/').$blob->getThumbnailUrl('360x100');
-
-        return $this->createJsonResponse($data);
+        return $this->createJsonResponse($result);
     }
 }

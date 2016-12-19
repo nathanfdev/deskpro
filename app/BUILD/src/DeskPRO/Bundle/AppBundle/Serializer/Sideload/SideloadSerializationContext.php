@@ -1,0 +1,273 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Serializer\Sideload;
+
+use Application\DeskPRO\Entity\Person;
+use JMS\Serializer\SerializationContext;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+
+/**
+ * Class SideloadSerializationContext.
+ */
+class SideloadSerializationContext extends SerializationContext
+{
+    /**
+     * @var SideloadStore
+     */
+    protected $sideloadStore;
+
+    /**
+     * @var array
+     */
+    protected $includes;
+
+    /**
+     * @var bool
+     */
+    protected $exclusionEnabled = true;
+
+    /**
+     * @var array
+     */
+    protected $mapping = [];
+
+    /**
+     * @var TokenStorageInterface
+     */
+    protected $tokenStorage;
+
+    /**
+     * @var bool
+     */
+    protected $idsOnly = false;
+
+    /**
+     * @var Request
+     */
+    protected $request;
+
+    /**
+     * Constructor.
+     *
+     * @param array                 $includes
+     * @param TokenStorageInterface $tokenStorage
+     */
+    public function __construct(array $includes = [], TokenStorageInterface $tokenStorage = null)
+    {
+        parent::__construct();
+
+        $this->sideloadStore = new SideloadStore();
+        $this->includes      = $includes;
+        $this->tokenStorage  = $tokenStorage;
+    }
+
+    /**
+     * @param ContainerInterface $container
+     *
+     * @return SideloadSerializationContext
+     */
+    public static function createContext(ContainerInterface $container)
+    {
+        $request     = $container->get('request_stack')->getCurrentRequest();
+        $rawIncludes = $request->query->get('include');
+        $idsOnly     = $request->query->getBoolean('ids_only', false);
+
+        $context = new self(self::cleanIncludes($rawIncludes), $container->get('security.token_storage'));
+        $context->setIdsOnly($idsOnly);
+        $context->setRequest($request);
+
+        return $context;
+    }
+
+    /**
+     * @param bool $enabled
+     *
+     * @return $this
+     */
+    public function setExclusionEnabled($enabled = true)
+    {
+        $this->exclusionEnabled = (bool) $enabled;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getExclusionStrategy()
+    {
+        if ($this->exclusionEnabled) {
+            return parent::getExclusionStrategy();
+        }
+
+        return;
+    }
+
+    /**
+     * @return SideloadStore
+     */
+    public function getSideloadStore()
+    {
+        return $this->sideloadStore;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIncludes()
+    {
+        return $this->includes;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function hasInclude($type)
+    {
+        return in_array($type, $this->includes);
+    }
+
+    /**
+     * @return array
+     */
+    public function getMapping()
+    {
+        return $this->mapping;
+    }
+
+    /**
+     * @param string $className
+     *
+     * @return bool
+     */
+    public function getMappedClass($className)
+    {
+        if (isset($this->mapping[$className])) {
+            return $this->mapping[$className];
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array $mapping
+     *
+     * @return $this
+     */
+    public function setMapping(array $mapping)
+    {
+        $this->mapping = $mapping;
+
+        return $this;
+    }
+
+    /**
+     * @return Person|null
+     */
+    public function getUser()
+    {
+        if ($this->tokenStorage) {
+            $person = $this->tokenStorage->getToken()->getUser();
+
+            return $person instanceof Person ? $person : null;
+        }
+
+        return;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIdsOnly()
+    {
+        return $this->idsOnly;
+    }
+
+    /**
+     * @param bool $idsOnly
+     *
+     * @return $this
+     */
+    public function setIdsOnly($idsOnly)
+    {
+        $this->idsOnly = $idsOnly;
+
+        return $this;
+    }
+
+    /**
+     * @return Request
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return $this
+     */
+    public function setRequest(Request $request = null)
+    {
+        $this->request = $request;
+
+        return $this;
+    }
+
+    /**
+     * @param string $requested_includes_string
+     *
+     * @return array
+     */
+    protected static function cleanIncludes($requested_includes_string)
+    {
+        if (null === $requested_includes_string) {
+            return [];
+        }
+
+        $exploded = explode(',', $requested_includes_string);
+
+        $cleaned = [];
+
+        foreach ($exploded as $type) {
+            $type = trim($type);
+
+            if (!empty($type)) {
+                $cleaned[] = $type;
+            }
+        }
+
+        return $cleaned;
+    }
+}

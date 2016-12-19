@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,16 @@
  *
  * @category Input
  */
+
 namespace Orb\Images;
 
 use Orb\Util\Numbers;
 
 class Util
 {
+    /** @ToDo this functionality was removed from less, replaced by bootstrap gradient mixin
+     * So we should delete this class if it doesn't use on other places
+     */
     /**
      * Create a gradient image useful for repeating backgrounds.
      *

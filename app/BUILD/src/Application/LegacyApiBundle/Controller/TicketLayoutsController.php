@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,27 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 
 /**
  * Simple ticket layouts CRUD.
  *
- * @SWG\Resource(
- * 	resourcePath="/ticket_layout",
- * 	description="Operations about Ticket layouts",
- * 	basePath="/api"
- * )
+ * @ApiModes("all")
  */
 class TicketLayoutsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -62,48 +58,19 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
         return $multi;
     }
 
-    ####################################################################################################################
-    # get
-    ####################################################################################################################
+    //###################################################################################################################
+    // get
+    //###################################################################################################################
 
     /**
      * @param int $dep_id
      *
-     * @return Response
-     *
-     * @SWG\Api(
-     * 	path="/ticket_layouts/{dep_id}",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get ticket layout for given department",
-     * 		notes="",
-     *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="dep_id",
-     *				description="Ticket department ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
-     *
-     * @SWG\Api(
-     * 	path="/ticket_layouts/default",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get default ticket layout",
-     * 		notes="",
-     *		type="array",
-     *  )
-     * )
+     * @return JsonResponse
      */
     public function getAction($dep_id = 0)
     {
-        $is_default    = false;
-        $ticket_layout = null;
+        $isDefault    = false;
+        $ticketLayout = null;
 
         if ($dep_id) {
             $dep = $this->container->getSystemService('ticket_departments')->getById($dep_id);
@@ -111,160 +78,83 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
                 throw $this->createNotFoundException();
             }
 
-            $ticket_layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => $dep));
+            $ticketLayout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(['department' => $dep]);
         }
 
-        if (!$ticket_layout) {
-            $is_default    = true;
-            $ticket_layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => null));
+        if (!$ticketLayout) {
+            $isDefault    = true;
+            $ticketLayout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(['department' => null]);
         }
 
-        if (!$ticket_layout) {
-            $is_default    = true;
-            $ticket_layout = new TicketLayout(null);
+        if (!$ticketLayout) {
+            $isDefault    = true;
+            $ticketLayout = new TicketLayout(null);
         }
 
         $filter = new LayoutFieldFilter(
             $this->container->getTicketFieldManager(),
             $this->container->getPersonFieldManager()
         );
-        $filter->filterInvalid($ticket_layout->user_layout);
-        $filter->filterInvalid($ticket_layout->agent_layout);
+        $filter->filterInvalid($ticketLayout->user_layout);
+        $filter->filterInvalid($ticketLayout->agent_layout);
 
-        return $this->createApiResponse(array(
-            'layout' => array(
-                'user'  => $ticket_layout->user_layout->exportToArray(),
-                'agent' => $ticket_layout->agent_layout->exportToArray(),
-            ),
-            'is_default' => $is_default,
-        ));
+        return $this->createApiResponse([
+            'layout' => [
+                'user'  => $ticketLayout->user_layout->exportToArray(),
+                'agent' => $ticketLayout->agent_layout->exportToArray(),
+            ],
+            'is_default' => $isDefault,
+        ]);
     }
 
-    ####################################################################################################################
-    # stats
-    ####################################################################################################################
+    //###################################################################################################################
+    // stats
+    //###################################################################################################################
 
     /**
-     * @return Response
-     *
-     * @SWG\Api(
-     * 	path="/ticket_layouts/stats",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Show layout statistic by departments",
-     * 		notes="",
-     *		type="array",
-     *  )
-     * )
+     * @return JsonResponse
      */
     public function getLayoutStatsAction()
     {
-        $deps_with_layouts = $this->db->fetchAllCol('
+        $depsWithLayouts = $this->db->fetchAllCol('
             SELECT department_id
             FROM ticket_layouts
             WHERE department_id IS NOT NULL
         ');
-        if ($deps_with_layouts) {
-            $deps_with_layouts = array_fill_keys($deps_with_layouts, true);
+        if ($depsWithLayouts) {
+            $depsWithLayouts = array_fill_keys($depsWithLayouts, true);
         }
 
-        $data = array('default' => array(), 'custom' => array());
+        $data = ['default' => [], 'custom' => []];
 
-        /** @var \Application\DeskPRO\Departments\TicketDepartments $ticket_deps */
-        $ticket_deps = $this->container->getSystemService('ticket_departments');
+        /** @var \Application\DeskPRO\Departments\TicketDepartments $ticketDeps */
+        $ticketDeps = $this->container->getSystemService('ticket_departments');
 
-        foreach ($ticket_deps->getAll() as $dep) {
-            if (isset($deps_with_layouts[$dep->id])) {
+        foreach ($ticketDeps->getAll() as $dep) {
+            if (isset($depsWithLayouts[$dep->getId()])) {
                 $data['custom'][] = $dep->toApiData();
             } else {
                 $data['default'][] = $dep->toApiData();
             }
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'layout_info'   => $data,
             'count_custom'  => count($data['custom']),
             'count_default' => count($data['default']),
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
     /**
      * @param int $dep_id
      *
      * @throws \Exception
      *
-     * @return Response
-     *
-     *
-     * @SWG\Api(
-     * 	path="/ticket_layouts/{dep_id}",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Update existing department layout by department ID",
-     * 		notes="",
-     *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="dep_id",
-     *				description="Department ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *          @SWG\Parameter(
-     *				name="layout[user]",
-     *				description="Layout user",
-     *				paramType="query",
-     *				required=false,
-     *				type="string",
-     *			),
-     *          @SWG\Parameter(
-     *				name="layout[agent]",
-     *				description="Layout agent",
-     *				paramType="query",
-     *				required=false,
-     *				type="string",
-     *			),
-     *      )
-     *  )
-     * )
-     
-     * @SWG\Api(
-     * 	path="/ticket_layouts/default",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Update default ticket layout",
-     * 		notes="",
-     *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="dep_id",
-     *				description="Department ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *          @SWG\Parameter(
-     *				name="layout[user]",
-     *				description="Layout user",
-     *				paramType="query",
-     *				required=false,
-     *				type="string",
-     *			),
-     *          @SWG\Parameter(
-     *				name="layout[agent]",
-     *				description="Layout agent",
-     *				paramType="query",
-     *				required=false,
-     *				type="string",
-     *			),
-     *      )
-     *  )
-     * )
+     * @return JsonResponse
      */
     public function saveAction($dep_id = 0)
     {
@@ -274,23 +164,23 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
                 throw $this->createNotFoundException();
             }
 
-            $layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => $dep));
+            $layout = $this->em->getRepository(TicketLayout::class)->findOneBy(['department' => $dep]);
         } else {
             $dep    = null;
-            $layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => null));
+            $layout = $this->em->getRepository(TicketLayout::class)->findOneBy(['department' => null]);
         }
 
         if (!$layout) {
             $layout = new TicketLayout($dep);
         }
 
-        $user_layout  = new Layout();
-        $agent_layout = new Layout();
+        $userLayout  = new Layout();
+        $agentLayout = new Layout();
 
-        $layout_user_array  = $this->in->getArrayValue('layout.user');
-        $layout_agent_array = $this->in->getArrayValue('layout.agent');
+        $layoutUserArray  = $this->in->getArrayValue('layout.user');
+        $layoutAgentArray = $this->in->getArrayValue('layout.agent');
 
-        $fn_order = function ($a, $b) {
+        $fnOrder = function ($a, $b) {
             $a_o = isset($a['display_order']) ? $a['display_order'] : 0;
             $b_o = isset($b['display_order']) ? $b['display_order'] : 0;
 
@@ -301,66 +191,70 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
             return $a_o < $b_o ? -1 : 1;
         };
 
-        usort($layout_user_array, $fn_order);
-        usort($layout_agent_array, $fn_order);
+        usort($layoutUserArray, $fnOrder);
+        usort($layoutAgentArray, $fnOrder);
 
-        foreach ($layout_user_array as $field_info) {
+        foreach ($layoutUserArray as $field_info) {
             $field = new LayoutField($field_info['field_type'], $field_info['field_id'] ?: null);
+            if (!$this->filterField($field)) {
+                continue;
+            }
             $field->setOptionsFromArray($field_info['options']);
-            $user_layout->add($field);
+            $userLayout->add($field);
         }
-        foreach ($layout_agent_array as $field_info) {
+        foreach ($layoutAgentArray as $field_info) {
             $field = new LayoutField($field_info['field_type'], $field_info['field_id'] ?: null);
+            if (!$this->filterField($field)) {
+                continue;
+            }
             $field->setOptionsFromArray($field_info['options']);
-            $agent_layout->add($field);
+            $agentLayout->add($field);
         }
 
-        $layout->user_layout  = $user_layout;
-        $layout->agent_layout = $agent_layout;
+        $layout->setUserLayout($userLayout);
+        $layout->setAgentLayout($agentLayout);
 
         $this->em->persist($layout);
         $this->em->flush();
 
         // Sanity check
         if ($layout->department) {
-            $this->db->executeUpdate('DELETE FROM ticket_layouts WHERE department_id = ? AND id != ?', array($layout->department->id, $layout->id));
+            $this->db->executeUpdate('DELETE FROM ticket_layouts WHERE department_id = ? AND id != ?',
+                [$layout->getDepartment()->getId(), $layout->getId()]);
         } else {
-            $this->db->executeUpdate('DELETE FROM ticket_layouts WHERE department_id IS NULL AND id != ?', array($layout->id));
+            $this->db->executeUpdate('DELETE FROM ticket_layouts WHERE department_id IS NULL AND id != ?',
+                [$layout->getId()]);
         }
 
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # delete
-    ####################################################################################################################
+    private function filterField(LayoutField $field)
+    {
+        static $fields = [];
+        if (!$fields) {
+            // We retrieve constants from FormFields to filter ticket layout
+            $reflectionClass = new \ReflectionClass(FormFields::class);
+            $fields          = $reflectionClass->getConstants();
+        }
+
+        if (!in_array($field->getFieldType(), $fields)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    //###################################################################################################################
+    // delete
+    //###################################################################################################################
 
     /**
      * @param $dep_id
      *
      * @throws \Exception
      *
-     * @return Response
-     *
-     *
-     * @SWG\Api(
-     * 	path="/ticket_layouts/{dep_id}",
-     * 	@SWG\Operation(
-     * 		method="DELETE",
-     * 		summary="Delete department ticket layout by department ID",
-     * 		notes="",
-     *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="dep_id",
-     *				description="department ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
+     * @return JsonResponse
      */
     public function deleteAction($dep_id)
     {
@@ -369,48 +263,29 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
             throw $this->createNotFoundException();
         }
 
-        $this->db->executeUpdate('DELETE FROM ticket_layouts WHERE department_id = ?', array($dep->id));
+        $this->db->executeUpdate('DELETE FROM ticket_layouts WHERE department_id = ?', [$dep->id]);
 
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # get-field-status
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-field-status
+    //###################################################################################################################
 
     /**
      * Get field use statistic.
      *
      * @param $field_id
      *
-     * @return Response
-     *
-     * @SWG\Api(
-     * 	path="/ticket_layouts/fields/{field_id}",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get field use statistic",
-     * 		notes="",
-     *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="field_id",
-     *				description="Field ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
+     * @return JsonResponse
      */
     public function getFieldStatusAction($field_id)
     {
         $dm = $this->getContainer()->getTicketDepartments();
         $lm = $this->getContainer()->getTicketLayoutManager();
 
-        $agent_status = array();
-        $user_status  = array();
+        $agentStatus = [];
+        $userStatus  = [];
 
         foreach ($lm->getAgentLayouts() as $id => $layout) {
             $dep = null;
@@ -421,10 +296,10 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
                 }
                 $dep = $dep->toApiData();
             }
-            $agent_status[$id] = array(
+            $agentStatus[$id] = [
                 'department' => $dep,
                 'enabled'    => $layout->has($field_id),
-            );
+            ];
         }
         foreach ($lm->getUserLayouts() as $id => $layout) {
             $dep = null;
@@ -435,13 +310,13 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
                 }
                 $dep = $dep->toApiData();
             }
-            $user_status[$id] = array(
+            $userStatus[$id] = [
                 'department' => $dep,
                 'enabled'    => $layout->has($field_id),
-            );
+            ];
         }
 
-        $sort_fn = function ($a, $b) {
+        $sortFn = function ($a, $b) {
             $ao = $a['department'] ? $a['department']['display_order'] : -1000;
             $bo = $b['department'] ? $b['department']['display_order'] : -1000;
 
@@ -451,107 +326,88 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 
             return $ao < $bo ? -1 : 1;
         };
-        uasort($agent_status, $sort_fn);
-        uasort($user_status, $sort_fn);
+        uasort($agentStatus, $sortFn);
+        uasort($userStatus, $sortFn);
 
-        return $this->createApiResponse(array(
-            'agent_layouts' => $agent_status,
-            'user_layouts'  => $user_status,
-        ));
+        return $this->createApiResponse([
+            'agent_layouts' => $agentStatus,
+            'user_layouts'  => $userStatus,
+        ]);
     }
 
-    ####################################################################################################################
-    # save-field-status
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-field-status
+    //###################################################################################################################
 
     /**
      * @param $field_id
      *
-     * @return Response
-     *
-     * @SWG\Api(
-     * 	path="/ticket_layouts/fields/{field_id}",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Save field status",
-     * 		notes="",
-     *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="field_id",
-     *				description="Field ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
+     * @return JsonResponse
      */
     public function saveFieldStatusAction($field_id)
     {
-        $enable_user_layouts  = $this->in->getArrayOfUInts('enable_user_layouts');
-        $enable_agent_layouts = $this->in->getArrayOfUInts('enable_agent_layouts');
+        $enableUserLayouts  = $this->in->getArrayOfUInts('enable_user_layouts');
+        $enableAgentLayouts = $this->in->getArrayOfUInts('enable_agent_layouts');
 
-        $layout_records = $this->em->getRepository('DeskPRO:TicketLayout')->findAll();
+        $layoutRecords = $this->em->getRepository(TicketLayout::class)->findAll();
 
-        $field_type    = $field_id;
-        $field_type_id = null;
+        $fieldType   = $field_id;
+        $fieldTypeId = null;
 
         if (preg_match('#^(ticket_field)_(\d+)$#', $field_id, $m)) {
-            $field_type    = $m[1];
-            $field_type_id = $m[2];
+            $fieldType   = $m[1];
+            $fieldTypeId = $m[2];
         }
 
-        foreach ($layout_records as $layout) {
+        foreach ($layoutRecords as $layout) {
             /* @var $layout TicketLayout */
-            $dep_id = $layout->department ? $layout->department->id : 0;
+            $depId = $layout->getDepartment() ? $layout->getDepartment()->getId() : 0;
 
-            $user_layout  = clone $layout->user_layout;
-            $agent_layout = clone $layout->agent_layout;
+            $userLayout  = clone $layout->getUserLayout();
+            $agentLayout = clone $layout->getAgentLayout();
 
-            $has_user  = $layout->user_layout->has($field_id);
-            $has_agent = $layout->agent_layout->has($field_id);
+            $hasUser  = $layout->getUserLayout()->has($field_id);
+            $hasAgent = $layout->getAgentLayout()->has($field_id);
 
-            $want_user  = in_array($dep_id, $enable_user_layouts);
-            $want_agent = in_array($dep_id, $enable_agent_layouts);
+            $wantUser  = in_array($depId, $enableUserLayouts);
+            $wantAgent = in_array($depId, $enableAgentLayouts);
 
             $change = false;
 
-            if ($has_user && !$want_user) {
-                $user_layout->remove($field_id);
+            if ($hasUser && !$wantUser) {
+                $userLayout->remove($field_id);
                 $change = true;
-            } elseif (!$has_user && $want_user) {
-                $field = new LayoutField($field_type, $field_type_id);
-                $field->setOptionsFromArray(array(
+            } elseif (!$hasUser && $wantUser) {
+                $field = new LayoutField($fieldType, $fieldTypeId);
+                $field->setOptionsFromArray([
                     'on_editticket'      => true,
                     'on_viewticket'      => true,
-                    'on_viewticket_mode' => 'value',
+                    'on_viewticket_mode' => 'always',
                     'on_newticket'       => true,
-                ));
-                $user_layout->add($field, 'message');
+                ]);
+                $userLayout->add($field, 'message');
                 $change = true;
             }
 
-            if ($has_agent && !$want_agent) {
-                $agent_layout->remove($field_id);
+            if ($hasAgent && !$wantAgent) {
+                $agentLayout->remove($field_id);
                 $change = true;
-            } elseif (!$has_agent && $want_agent) {
-                $field = new LayoutField($field_type, $field_type_id);
-                $field->setOptionsFromArray(array(
+            } elseif (!$hasAgent && $wantAgent) {
+                $field = new LayoutField($fieldType, $fieldTypeId);
+                $field->setOptionsFromArray([
                     'on_editticket'      => true,
                     'on_viewticket'      => true,
-                    'on_viewticket_mode' => 'value',
+                    'on_viewticket_mode' => 'always',
                     'on_newticket'       => true,
-                ));
-                $agent_layout->add($field, 'message');
+                ]);
+                $agentLayout->add($field, 'message');
                 $change = true;
             }
 
             if ($change) {
-                $layout->user_layout  = $user_layout;
-                $layout->agent_layout = $agent_layout;
-                $layout->date_updated = new \DateTime();
+                $layout->setUserLayout($userLayout);
+                $layout->setAgentLayout($agentLayout);
+                $layout->setDateUpdated(new \DateTime());
                 $this->em->persist($layout);
             }
         }

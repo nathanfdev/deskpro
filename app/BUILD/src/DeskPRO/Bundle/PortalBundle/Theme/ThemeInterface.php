@@ -1,0 +1,142 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+
+namespace DeskPRO\Bundle\PortalBundle\Theme;
+
+/**
+ * Representation of a DeskPRO Theme.
+ */
+interface ThemeInterface
+{
+    /**
+     * Templates have a string identifier. "base", or "default", or "default-modified", etc. Must be unique.
+     *
+     * @return string
+     */
+    public function getId();
+
+    /**
+     * A human readable name of the theme (used in dropdown, reporting, etc).
+     *
+     * @return string
+     */
+    public function getName();
+
+    /**
+     * Returns the parent of this theme. This theme will inherit templates/tags/controllers of the parent, and can
+     * override them.
+     *
+     * @return ThemeInterface|null
+     */
+    public function getParent();
+
+    /**
+     * The theme ID of the parent theme.
+     *
+     * @return string|null
+     */
+    public function getParentId();
+
+    /**
+     * @return string absolute path to the root of this theme's templates
+     */
+    public function getBaseTemplateDir();
+
+    /**
+     * @return string absolute path to the root of this theme's controllers
+     */
+    public function getBaseControllerDir();
+
+    /**
+     * @return string absolute path to the root of this themes stylesheets
+     */
+    public function getStylesheetsPath();
+
+    /**
+     * @return string|null base namespace of controllers, like: DeskPRO\Bundle\PortalBundle\Themes\Standard
+     */
+    public function getNamespace();
+
+    /**
+     * Get the tag for the given tag name.
+     *
+     * @param $tag_name
+     *
+     * @return Tag|null
+     */
+    public function getTag($tag_name);
+
+    /**
+     * Similar to getTag() but it also recursivley climbs the tree until it finds the tag.
+     *
+     * @param $tag_name
+     *
+     * @return Tag|null
+     */
+    public function resolveTag($tag_name);
+
+    /**
+     * Return a list of all tag objects.
+     *
+     * @return Tag[]
+     */
+    public function getTags();
+
+    /**
+     * Get a map of "Theme:x:y.html.twig" => "/abs/path/to/source/twig/file.twig" for all templates that this theme
+     * can resolve. This means recursively going through the parents for a complete list. See AbstractTheme.
+     *
+     * @return array
+     */
+    public function getTemplateMap();
+
+    /**
+     * Return an array of instantiated Tag objects for use within this theme.
+     *
+     * @return Tag[]
+     */
+    public static function getHardCodedTags();
+
+    /**
+     * Sets the parent of the theme.
+     *
+     * @param ThemeInterface $parent
+     */
+    public function setParent(ThemeInterface $parent);
+
+    /**
+     * Sets an array of tag objects, replaces previously set tags with new array.
+     *
+     * @param Tag[] $tags
+     */
+    public function setTags(array $tags);
+}

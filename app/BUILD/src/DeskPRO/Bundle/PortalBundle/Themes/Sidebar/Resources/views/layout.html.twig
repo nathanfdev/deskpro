@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html {% if language.is_rtl %}class="as-rtl" dir="rtl"{% endif %}>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ brand_setting('core.deskpro_name')|e }}{% endif %}</title>
+    <meta name="viewport" content="width=device-width">
+    {% include 'Theme:Internal:head-include.html.twig' %}
+    <link href="{{ portal_css_url() }}" media="all" rel="stylesheet" type="text/css" />
+</head>
+<body class="{% if is_agent() or is_admin() or is_impersonating() %}with-agent-bar{% endif %} portal-mode-{{ portal_mode() }}">
+{% include 'Theme:Internal:custom-header.html.twig' %}
+{% include 'Theme:Internal:body-include.html.twig' %}
+{% block doc_begin %}{% endblock %}
+{% if cls is not defined %}
+    {% set cls = "column-half-plus" %}
+{% endif %}
+<div class="dp-page-body">
+
+    {% show agent_bar %}
+
+    <div class="world">
+        <section class="page-top-section">
+            <div class="column-full">
+              {% show section alerts %}
+              {% show section page_top %}
+            </div>
+        </section>
+
+        <section class="column-full page-main-section">
+            <div class="{{ cls }}">
+                <section class="search-section">
+                    {% show section search_bar %}
+                </section>
+                <div class="column-full">
+
+                <section>
+                    {% show section flashes %}
+                    <div class="column-full">
+                        {% block page_content %}
+                            {% block content_header %}
+                                {% if should_show_nav_buttons() %}
+                                    <section class="welcome-news">
+                                        {% show section nav_buttons %}
+                                    </section>
+                                {% endif %}
+                            {% endblock content_header %}
+                            <section>
+                                <div class="column-full">
+                                    {% block inner_content %}
+                                    {% endblock inner_content %}
+                                </div>
+                            </section>
+                        {% endblock page_content %}
+                    </div>
+                </section>
+                    </div>
+            </div>
+            {% block sidebar %}
+                <aside class="sidebar">
+                    {% show section sidebar %}
+                </aside>
+            {% endblock sidebar %}
+        </section>
+
+        <section class="page-bottom-section">
+            <div class="column-full">
+                {% show section footer %}
+            </div>
+        </section>
+    </div>
+</div>
+
+{% include 'Theme:Internal:custom-footer.html.twig' %}
+{% block doc_end %}{% endblock %}
+{% include 'Theme:Internal:foot-include.html.twig' %}
+
+<script type="text/javascript">
+    {{ portal_custom_js()|raw }}
+</script>
+
+</body>
+</html>
+

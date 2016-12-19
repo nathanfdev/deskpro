@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Auth
  */
+
 namespace Orb\Auth\Adapter;
 
 use Orb\Auth\Result;
@@ -91,7 +92,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
             if ($this->logger) {
                 $this->logger->log("[Twitter] authenticateInitialize exception: {$e->getCode()} {$e->getMessage()}", 'ERR');
             }
-            $result = new Result(Result::FAILURE_EXCEPTION, null, array(Result::MSG_EXCEPTION => $e));
+            $result = new Result(Result::FAILURE_EXCEPTION, null, [Result::MSG_EXCEPTION => $e]);
 
             return $result;
         }
@@ -100,7 +101,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 
         $redirect_url = $oauth->getRedirectUrl();
 
-        $result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
+        $result = new Result(Result::REQUIRES_REDIRECT, null, [Result::MSG_REDIRECT => $redirect_url]);
 
         if ($this->logger) {
             $this->logger->log("[Twitter] authenticateInitialize success: Token({$token}) Redirect({$redirect_url})", 'DEBUG');
@@ -123,7 +124,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
                 $this->logger->log('[Twitter] authenticateCallback fail: Missing token', 'DEBUG');
             }
 
-            return new Result(Result::FAILURE, null, array('error_code' => 'invalid_token', 'error_message' => 'Invalid verify token'));
+            return new Result(Result::FAILURE, null, ['error_code' => 'invalid_token', 'error_message' => 'Invalid verify token']);
         }
 
         if ($this->logger) {
@@ -136,7 +137,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
         $client = $access_token->getHttpClient($this->getOauthConfig());
         $client->setUri('https://api.twitter.com/1.1/account/verify_credentials.json');
         $client->setMethod(\Zend\Http\Request::METHOD_GET);
-        $client->setOptions(array('sslverifypeer' => false));
+        $client->setOptions(['sslverifypeer' => false, 'adapter' => 'Zend\Http\Client\Adapter\Curl']);
         $response = $client->send();
 
         if ($this->logger) {
@@ -150,10 +151,10 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
                 $this->logger->log('[Twitter] authenticateCallback failed_verify_credentials', 'DEBUG');
             }
 
-            return new Result(Result::FAILURE, null, array('error_code' => 'failed_verify_credentials', 'error_message' => 'Failed to call API service to verify credentials'));
+            return new Result(Result::FAILURE, null, ['error_code' => 'failed_verify_credentials', 'error_message' => 'Failed to call API service to verify credentials']);
         }
 
-        $raw_userinfo = array(
+        $raw_userinfo = [
             'access_token'        => $access_token->getToken(),
             'access_token_secret' => $access_token->getTokenSecret(),
             'identity'            => $account_data['id_str'],
@@ -162,7 +163,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
             'url'                 => $account_data['url'],
             'nickname'            => $account_data['screen_name'],
             'raw'                 => $account_data,
-        );
+        ];
 
         $identity = new \Orb\Auth\Identity($account_data['id'], $raw_userinfo);
         $identity->setFriendlyIdentity($account_data['screen_name']);
@@ -184,10 +185,10 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
         static $has_set_http_client = false;
         if (!$has_set_http_client) {
             $has_set_http_client = true;
-            $httpClient          = new \Zend\Http\Client(null, array(
-                'adapter'       => 'Zend\Http\Client\Adapter\Socket',
+            $httpClient          = new \Zend\Http\Client(null, [
+                'adapter'       => 'Zend\Http\Client\Adapter\Curl',
                 'sslverifypeer' => false,
-            ));
+            ]);
             OAuth::setHttpClient($httpClient);
         }
 
@@ -196,11 +197,11 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 
     public function getOauthConfig()
     {
-        return array(
+        return [
             'callbackUrl'    => $this->getCallbackUrl(),
             'siteUrl'        => 'https://api.twitter.com/oauth',
             'consumerKey'    => $this->consumer_key,
             'consumerSecret' => $this->consumer_secret,
-        );
+        ];
     }
 }

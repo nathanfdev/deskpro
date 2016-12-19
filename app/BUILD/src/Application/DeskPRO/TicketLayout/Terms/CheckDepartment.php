@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,9 +31,11 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\TicketLayout\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 
 class CheckDepartment extends AbstractTicketLayoutTerm
 {
@@ -53,11 +55,28 @@ class CheckDepartment extends AbstractTicketLayoutTerm
     }
 
     /**
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function isSubmittedDataMatch(array $data)
+    {
+        $have_id  = isset($data[FormFields::DEPARTMENT]) ? $data[FormFields::DEPARTMENT] : 0;
+        $is_match = in_array($have_id, $this->options['department_ids']);
+
+        if ($this->op == self::OP_NOT) {
+            $is_match = !$is_match;
+        }
+
+        return $is_match;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function compileJsCheck()
     {
-        $js_ids = array();
+        $js_ids = [];
         foreach ((array) $this->options['department_ids'] as $id) {
             $js_ids[] = (int) $id;
         }

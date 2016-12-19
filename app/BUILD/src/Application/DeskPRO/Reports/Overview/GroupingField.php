@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Brand;
+use DeskPRO\Component\Util\MapUtils;
 use Orb\Util\Arrays;
 
 class GroupingField
 {
+    const BRAND           = 'brand';
     const DEPARTMENT      = 'department';
     const TICKET_CATEGORY = 'ticket_category';
     const TICKET_WORKFLOW = 'ticket_workflow';
@@ -116,101 +120,109 @@ class GroupingField
     public function getFieldInfo()
     {
         switch ($this->field) {
+            case self::BRAND:
+                return ['select'   => 'COALESCE(tickets.brand_id, 0) AS group_field',
+                        'group_by' => 'group_field',
+                        'join'     => '',
+                        'where'    => '',
+                ];
+                break;
+
             case self::DEPARTMENT:
-                return array('select'   => 'COALESCE(tickets.department_id, 0) AS group_field',
-                             'group_by' => 'group_field',
-                             'join'     => '',
-                             'where'    => '',
-                );
+                return ['select'   => 'COALESCE(tickets.department_id, 0) AS group_field',
+                        'group_by' => 'group_field',
+                        'join'     => '',
+                        'where'    => '',
+                ];
                 break;
 
             case self::AGENT:
-                return array('select'   => 'COALESCE(tickets.agent_id, 0) AS group_field',
-                             'group_by' => 'group_field',
-                             'join'     => '',
-                             'where'    => '',
-                );
+                return ['select'   => 'COALESCE(tickets.agent_id, 0) AS group_field',
+                        'group_by' => 'group_field',
+                        'join'     => '',
+                        'where'    => '',
+                ];
                 break;
 
             case self::AGENT_TEAM:
-                return array('select'   => 'COALESCE(tickets.agent_team_id, 0) AS group_field',
-                             'group_by' => 'group_field',
-                             'join'     => '',
-                             'where'    => '',
-                );
+                return ['select'   => 'COALESCE(tickets.agent_team_id, 0) AS group_field',
+                        'group_by' => 'group_field',
+                        'join'     => '',
+                        'where'    => '',
+                ];
                 break;
 
             case self::TICKET_CATEGORY:
-                return array('select'   => 'COALESCE(tickets.category_id, 0) AS group_field',
-                             'group_by' => 'group_field',
-                             'join'     => '',
-                             'where'    => '',
-                );
+                return ['select'   => 'COALESCE(tickets.category_id, 0) AS group_field',
+                        'group_by' => 'group_field',
+                        'join'     => '',
+                        'where'    => '',
+                ];
                 break;
 
             case self::TICKET_WORKFLOW:
-                return array('select'   => 'COALESCE(tickets.workflow_id, 0) AS group_field',
-                             'group_by' => 'group_field',
-                             'join'     => '',
-                             'where'    => '',
-                );
+                return ['select'   => 'COALESCE(tickets.workflow_id, 0) AS group_field',
+                        'group_by' => 'group_field',
+                        'join'     => '',
+                        'where'    => '',
+                ];
                 break;
 
             case self::TICKET_PRIORITY:
-                return array('select'   => 'COALESCE(tickets.priority_id, 0) AS group_field',
-                             'group_by' => 'group_field',
-                             'join'     => '',
-                             'where'    => '',
-                );
+                return ['select'   => 'COALESCE(tickets.priority_id, 0) AS group_field',
+                        'group_by' => 'group_field',
+                        'join'     => '',
+                        'where'    => '',
+                ];
                 break;
 
             case self::LANGUAGE:
-                return array('select'   => 'tickets.language_id',
-                             'group_by' => 'tickets.language_id',
-                             'join'     => '',
-                             'where'    => '',
-                );
+                return ['select'   => 'tickets.language_id',
+                        'group_by' => 'tickets.language_id',
+                        'join'     => '',
+                        'where'    => '',
+                ];
                 break;
 
             case self::PRODUCT:
-                return array('select'   => 'COALESCE(tickets.product_id, 0) AS group_field',
-                             'group_by' => 'group_field',
-                             'join'     => '',
-                             'where'    => '',
-                );
+                return ['select'   => 'COALESCE(tickets.product_id, 0) AS group_field',
+                        'group_by' => 'group_field',
+                        'join'     => '',
+                        'where'    => '',
+                ];
                 break;
 
             case self::TICKET_URGENCY:
-                return array('select'   => 'tickets.urgency',
-                             'group_by' => 'tickets.urgency',
-                             'join'     => '',
-                             'where'    => '',
-                );
+                return ['select'   => 'tickets.urgency',
+                        'group_by' => 'tickets.urgency',
+                        'join'     => '',
+                        'where'    => '',
+                ];
                 break;
 
             case self::ORGANIZATION:
-                return array('select'   => 'COALESCE(tickets.organization_id, 0) AS org_id',
-                             'group_by' => 'org_id',
-                             'join'     => '',
-                             'where'    => '',
-                );
+                return ['select'   => 'COALESCE(tickets.organization_id, 0) AS org_id',
+                        'group_by' => 'org_id',
+                        'join'     => '',
+                        'where'    => '',
+                ];
                 break;
 
             case self::USERGROUP:
-                return array(
+                return [
                     'select'   => 'COALESCE(person2usergroups.usergroup_id, 0) AS usergroup_id',
                     'group_by' => 'usergroup_id',
                     'join'     => 'LEFT JOIN person2usergroups ON (person2usergroups.person_id = tickets.person_id)',
                     'where'    => '',
-                );
+                ];
                 break;
 
             case self::USER:
-                return array('select'   => 'tickets.person_id',
-                             'group_by' => 'tickets.person_id',
-                             'join'     => '',
-                             'where'    => '',
-                );
+                return ['select'   => 'tickets.person_id',
+                        'group_by' => 'tickets.person_id',
+                        'join'     => '',
+                        'where'    => '',
+                ];
                 break;
 
             case self::TICKET_FIELD:
@@ -219,17 +231,17 @@ class GroupingField
                 if ($field_def->isChoiceType()) {
                     $children = App::getSystemService('ticket_fields_manager')->getFieldChildren($field_def);
                     if (!$children) {
-                        return array(
+                        return [
                             'select'   => '0 as group_field',
                             'group_by' => 'group_field',
                             'join'     => '',
                             'where'    => '',
-                        );
+                        ];
                     }
 
                     $ids = implode(',', array_keys($children));
 
-                    return array(
+                    return [
                         'select'   => 'COALESCE(custom_def_ticket.title, 0) AS group_field',
                         'group_by' => 'group_field',
                         'join'     => "
@@ -237,14 +249,14 @@ class GroupingField
                             LEFT JOIN custom_def_ticket ON (custom_def_ticket.id = custom_data_ticket.field_id)
                         ",
                         'where' => '',
-                    );
+                    ];
                 } else {
-                    return array(
+                    return [
                         'select'   => 'COALESCE(custom_data_ticket.input, 0) AS group_field',
                         'group_by' => 'group_field',
                         'join'     => 'LEFT JOIN custom_data_ticket ON (custom_data_ticket.ticket_id = tickets.id AND custom_data_ticket.field_id = '.$this->field_id.')',
                         'where'    => '',
-                    );
+                    ];
                 }
                 break;
 
@@ -254,17 +266,17 @@ class GroupingField
                 if ($field_def->isChoiceType()) {
                     $children = App::getSystemService('person_fields_manager')->getFieldChildren($field_def);
                     if (!$children) {
-                        return array(
+                        return [
                             'select'   => '0 as group_field',
                             'group_by' => 'group_field',
                             'join'     => '',
                             'where'    => '',
-                        );
+                        ];
                     }
 
                     $ids = implode(',', array_keys($children));
 
-                    return array(
+                    return [
                         'select'   => 'COALESCE(custom_def_people.title, 0) AS group_field',
                         'group_by' => 'group_field',
                         'join'     => "
@@ -272,14 +284,14 @@ class GroupingField
                             LEFT JOIN custom_def_people ON (custom_def_people.id = custom_data_person.field_id)
                         ",
                         'where' => '',
-                    );
+                    ];
                 } else {
-                    return array(
+                    return [
                         'select'   => 'COALESCE(custom_data_person.input, 0) AS group_field',
                         'group_by' => 'group_field',
                         'join'     => 'LEFT JOIN custom_data_person ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id = '.$this->field_id.')',
                         'where'    => '',
-                    );
+                    ];
                 }
                 break;
 
@@ -295,13 +307,21 @@ class GroupingField
      *
      * @return array|null
      */
-    public function getTitles(array $values = array())
+    public function getTitles(array $values = [])
     {
         if ($this->titles !== null) {
             return $this->titles;
         }
 
         switch ($this->field) {
+            case self::BRAND:
+                $brands       = App::getEntityRepository(Brand::class)->findAll();
+                $this->titles = MapUtils::map($brands, function ($key, $value) {
+                    /* @var Brand $value */
+                    return [$value->getId(), $value->getName()];
+                });
+                break;
+
             case self::DEPARTMENT:
                 $this->titles = App::getDataService('Department')->getFullNames('tickets');
                 break;
@@ -345,7 +365,7 @@ class GroupingField
                         array_keys($values)
                     );
                 } else {
-                    $names = array();
+                    $names = [];
                 }
 
                 Arrays::unshiftAssoc($names, '0', 'No Organization');
@@ -362,7 +382,7 @@ class GroupingField
 
             case self::USER:
 
-                $names = array();
+                $names = [];
 
                 if ($values) {
                     $people = App::getOrm()->getRepository('DeskPRO:Person')->getByIds(array_keys($values));
@@ -381,7 +401,7 @@ class GroupingField
                     unset($names[0]);
                     $this->titles = $names;
                 } else {
-                    $this->titles = array();
+                    $this->titles = [];
                 }
                 break;
 
@@ -392,7 +412,7 @@ class GroupingField
                     unset($names[0]);
                     $this->titles = $names;
                 } else {
-                    $this->titles = array();
+                    $this->titles = [];
                 }
                 break;
 

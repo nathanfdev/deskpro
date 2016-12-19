@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,20 +31,28 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * A custom field definition.
+ *
+ * @property int $id
+ * @property CustomFieldDefinition $parent
+ * @property ArrayCollection $children
  */
-class CustomFieldDefinition extends DomainObject implements HasPhraseName
+class CustomFieldDefinition extends DomainObject implements HasPhraseName, Hierarchical
 {
     /**
      * The unique ID.
@@ -165,15 +173,183 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
      */
     protected $context_id;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->children        = new ArrayCollection();
         $this->description     = '';
         $this->display_order   = 0;
-        $this->options         = array();
+        $this->options         = [];
         $this->is_enabled      = true;
         $this->is_user_enabled = true;
         $this->is_agent_field  = false;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return CustomFieldDefinition
+     */
+    public function spawnChild($title)
+    {
+        $new                  = new self();
+        $new->parent          = $this;
+        $new->title           = $title;
+        $new->form_type       = $this->form_type;
+        $new->owner_class     = $this->owner_class;
+        $new->context_class   = $this->context_class;
+        $new->is_enabled      = $this->is_enabled;
+        $new->is_user_enabled = $this->is_user_enabled;
+        $new->is_agent_field  = $this->is_agent_field;
+        $new->app             = $this->app;
+
+        return $new;
+    }
+
+    /**
+     * @return ArrayCollection|CustomFieldDefinition[]
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @param int $defId
+     *
+     * @return CustomFieldDefinition
+     */
+    public function getChildById($defId)
+    {
+        $criteria = new Criteria();
+        $criteria->andWhere($criteria->expr()->eq('id', $defId));
+
+        return $this->children->matching($criteria)->first();
+    }
+
+    /**
+     * @param mixed $contextEntity
+     *
+     * @return \Doctrine\Common\Collections\Collection|static
+     */
+    public function getChoices($contextEntity)
+    {
+        if (!$contextEntity || !$contextEntity->getId()) {
+            return new ArrayCollection();
+        }
+
+        $criteria = new Criteria();
+        $criteria->andWhere($criteria->expr()->eq('context_id', $contextEntity->getId()));
+        $criteria->andWhere($criteria->expr()->eq('context_class', ClassUtils::getClass($contextEntity)));
+
+        return $this->children->matching($criteria);
+    }
+
+    /**
+     * @param CustomFieldDefinition $child
+     */
+    public function addChild(CustomFieldDefinition $child)
+    {
+        $this->children->add($child);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForOrganization()
+    {
+        return $this->context_class == Organization::class;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForPerson()
+    {
+        return $this->context_class == Person::class;
+    }
+
+    /**
+     * @param mixed $entity
+     *
+     * @return $this
+     */
+    public function setContext($entity)
+    {
+        if ($entity) {
+            $this->setModelField('context_class', ClassUtils::getClass($entity));
+            $this->setModelField('context_id', $entity->getId());
+        } else {
+            $this->setModelField('context_class', '');
+            $this->setModelField('context_id', null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return bool|string
+     */
+    public function isEnabled()
+    {
+        return $this->is_enabled;
+    }
+
+    /**
+     * @param bool $agent_interface
+     *
+     * @return bool
+     */
+    public function isRequired($agent_interface = false)
+    {
+        // never required if agent is filling it out
+        if ($agent_interface) {
+            return false;
+        }
+
+        return (bool) $this->getOption('required', false);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultValue()
+    {
+        return $this->default_value;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMultiple()
+    {
+        return (bool) $this->getOption('multiple', false);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExpanded()
+    {
+        return (bool) $this->getOption('expanded', false);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOptionsEditableByUser()
+    {
+        return (bool) $this->getOption('allow_edit', false);
     }
 
     /**
@@ -236,12 +412,9 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
     }
 
     /**
-     * @param null      $property
-     * @param Translate $translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -255,12 +428,9 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
     }
 
     /**
-     * @param null      $property
-     * @param Translate $translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         if ($property == 'description') {
             return $this->description;
@@ -269,85 +439,218 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         return $this->title;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'custom_field_definition',
-            'indexes' => array(
-                'context_idx' => array('columns' => array('context_class', 'context_id')),
-            ),
-        ));
+            'indexes' => [
+                'context_idx' => [
+                    'columns' => [
+                        'context_class',
+                        'context_id',
+                    ],
+                ],
+            ],
+        ]);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomFieldDefinition';
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
 
         // todo is these columns required?
-        $metadata->mapField(array('fieldName' => 'js_class', 'type' => 'string', 'nullable' => false, 'columnName' => 'js_class'));
-        $metadata->mapField(array('fieldName' => 'has_form_template', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_form_template'));
-        $metadata->mapField(array('fieldName' => 'has_display_template', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_display_template'));
+        $metadata->mapField([
+            'fieldName'  => 'js_class',
+            'type'       => 'string',
+            'nullable'   => false,
+            'columnName' => 'js_class',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'has_form_template',
+            'type'       => 'boolean',
+            'nullable'   => false,
+            'columnName' => 'has_form_template',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'has_display_template',
+            'type'       => 'boolean',
+            'nullable'   => false,
+            'columnName' => 'has_display_template',
+        ]);
 
-        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'nullable' => false, 'columnName' => 'title'));
-        $metadata->mapField(array('fieldName' => 'description', 'type' => 'text', 'nullable' => false, 'columnName' => 'description'));
-        $metadata->mapField(array('fieldName' => 'options', 'type' => 'array', 'nullable' => false, 'columnName' => 'options'));
-        $metadata->mapField(array('fieldName' => 'default_value', 'type' => 'string', 'length' => 500, 'nullable' => true, 'columnName' => 'default_value'));
-        $metadata->mapField(array('fieldName' => 'display_order', 'type' => 'integer', 'nullable' => false, 'columnName' => 'display_order'));
+        $metadata->mapField([
+            'fieldName'  => 'title',
+            'type'       => 'string',
+            'nullable'   => false,
+            'columnName' => 'title',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'description',
+            'type'       => 'text',
+            'nullable'   => false,
+            'columnName' => 'description',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'options',
+            'type'       => 'array',
+            'nullable'   => false,
+            'columnName' => 'options',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'default_value',
+            'type'       => 'string',
+            'length'     => 500,
+            'nullable'   => true,
+            'columnName' => 'default_value',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'display_order',
+            'type'       => 'integer',
+            'nullable'   => false,
+            'columnName' => 'display_order',
+        ]);
 
-        $metadata->mapField(array('fieldName' => 'is_enabled', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_enabled'));
-        $metadata->mapField(array('fieldName' => 'is_user_enabled', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_user_enabled'));
-        $metadata->mapField(array('fieldName' => 'is_agent_field', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_agent_field'));
+        $metadata->mapField([
+            'fieldName'  => 'is_enabled',
+            'type'       => 'boolean',
+            'nullable'   => false,
+            'columnName' => 'is_enabled',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_user_enabled',
+            'type'       => 'boolean',
+            'nullable'   => false,
+            'columnName' => 'is_user_enabled',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_agent_field',
+            'type'       => 'boolean',
+            'nullable'   => false,
+            'columnName' => 'is_agent_field',
+        ]);
 
-        $metadata->mapField(array('fieldName' => 'form_type', 'type' => 'string', 'nullable' => false, 'columnName' => 'form_type'));
-        $metadata->mapField(array('fieldName' => 'owner_class', 'type' => 'string', 'nullable' => false, 'columnName' => 'owner_class'));
-        $metadata->mapField(array('fieldName' => 'context_class', 'type' => 'string', 'nullable' => true, 'columnName' => 'context_class'));
-        $metadata->mapField(array('fieldName' => 'context_id', 'type' => 'integer', 'nullable' => true, 'columnName' => 'context_id'));
+        $metadata->mapField([
+            'fieldName'  => 'form_type',
+            'type'       => 'string',
+            'nullable'   => false,
+            'columnName' => 'form_type',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'owner_class',
+            'type'       => 'string',
+            'nullable'   => false,
+            'columnName' => 'owner_class',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'context_class',
+            'type'       => 'string',
+            'nullable'   => true,
+            'columnName' => 'context_class',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'context_id',
+            'type'       => 'integer',
+            'nullable'   => true,
+            'columnName' => 'context_id',
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'parent',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomFieldDefinition',
+            'targetEntity' => self::class,
             'mappedBy'     => null,
             'inversedBy'   => 'children',
-            'joinColumns'  => array(
-                0 => array(
+            'joinColumns'  => [
+                0 => [
                     'name'                 => 'parent_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => true,
                     'onDelete'             => 'cascade',
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
-        $metadata->mapOneToMany(array(
+        $metadata->mapOneToMany([
             'fieldName'    => 'children',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomFieldDefinition',
-            'cascade'      => array('remove', 'persist', 'merge'),
-            'mappedBy'     => 'parent',
-            'orderBy'      => array(
+            'targetEntity' => self::class,
+            'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+            'cascade'      => [
+                'remove',
+                'persist',
+                'merge',
+            ],
+            'mappedBy' => 'parent',
+            'orderBy'  => [
                 'display_order' => 'ASC',
-            ),
-        ));
+            ],
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'app',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance',
             'mappedBy'     => null,
             'inversedBy'   => null,
-            'joinColumns'  => array(
-                0 => array(
+            'joinColumns'  => [
+                0 => [
                     'name'                 => 'app_id',
                     'referencedColumnName' => 'id',
                     'unique'               => false,
                     'nullable'             => true,
                     'onDelete'             => 'set null',
                     'columnDefinition'     => null,
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getOwnerClass()
+    {
+        return $this->owner_class;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContextClass()
+    {
+        return $this->context_class;
+    }
+
+    /**
+     * @return int
+     */
+    public function getContextId()
+    {
+        return $this->context_id;
+    }
+
+    public function getOption($name, $default = null)
+    {
+        if (isset($this->options[$name])) {
+            return $this->options[$name];
+        }
+
+        return $default;
     }
 }

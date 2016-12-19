@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
@@ -47,8 +48,6 @@ class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \
     protected $person;
     /** @var Session */
     protected $session;
-    /** @var \Application\DeskPRO\Entity\Visitor */
-    protected $visitor;
 
     protected $ticket_count = null;
 
@@ -56,7 +55,6 @@ class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \
     {
         $this->person  = $person;
         $this->session = $options['session'];
-        $this->visitor = $options['visitor'];
     }
 
     public function _getThis()
@@ -66,11 +64,11 @@ class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \
 
     public function getShortCallableNames()
     {
-        return array(
+        return [
             'HelpdeskUser'    => '_getThis',
             'getHelpdeskUser' => '_getThis',
             'getTicketCount'  => 'getTicketCount',
-        );
+        ];
     }
 
     public function getTicketCount()

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -40,24 +41,22 @@ use Application\DeskPRO\Entity\Ticket;
 class SetSlaCompleteAction extends AbstractAction
 {
     /** @var array */
-    protected $actions = array();
+    protected $actions = [];
 
     public function __construct($sla_complete, $sla_id)
     {
-        $this->actions = array($sla_complete => array($sla_id));
+        $this->actions = [$sla_complete => [$sla_id]];
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
         foreach ($this->actions as $complete => $sla_ids) {
             if (in_array('0', $sla_ids)) {
                 // take action for all
-                $sla_ids = array('0');
+                $sla_ids = ['0'];
             }
             foreach ($sla_ids as $sla_id) {
                 if ($sla_id) {
@@ -71,7 +70,7 @@ class SetSlaCompleteAction extends AbstractAction
                         continue;
                     }
 
-                    $ticket_slas = array($ticket_sla);
+                    $ticket_slas = [$ticket_sla];
                 } else {
                     $ticket_slas = $ticket->ticket_slas;
                 }
@@ -84,15 +83,13 @@ class SetSlaCompleteAction extends AbstractAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
-        return array(
-            array('action' => 'set_sla_complete', 'actions' => $this->actions),
-        );
+        return [
+            ['action' => 'set_sla_complete', 'actions' => $this->actions],
+        ];
     }
 
     /**
@@ -104,9 +101,7 @@ class SetSlaCompleteAction extends AbstractAction
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -124,18 +119,18 @@ class SetSlaCompleteAction extends AbstractAction
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {
-        $parts = array();
+        $parts = [];
         foreach ($this->actions as $complete => $sla_ids) {
             if (in_array('0', $sla_ids)) {
                 // take action for all
                 $titles = null;
             } else {
                 $slas   = App::getEntityRepository('DeskPRO:Sla')->getByIds($sla_ids);
-                $titles = array();
+                $titles = [];
                 foreach ($slas as $s) {
                     $titles[$s->id] = $as_html ? htmlspecialchars($s->title) : $s->title;
                 }

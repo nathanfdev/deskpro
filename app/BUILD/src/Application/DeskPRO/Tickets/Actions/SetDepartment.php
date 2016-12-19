@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\App;
@@ -75,8 +76,8 @@ class SetDepartment extends AbstractContainerAwareAction implements ActionInterf
         // Tmp hack until can figure out why this isn't persisted on at least one server
         // IIS, PHP 5.4.24, WinCache 1.3.4.0
         if (isset(App::$container)) { // if is to prevent this during testing
-            App::$container->getDb()->executeUpdate('UPDATE tickets SET department_id = ? WHERE id = ?', array($dep->id, $ticket->id));
-            App::$container->getDb()->executeUpdate('UPDATE tickets_search_active SET department_id = ? WHERE id = ?', array($dep->id, $ticket->id));
+            App::$container->getDb()->executeUpdate('UPDATE tickets SET department_id = ? WHERE id = ?', [$dep->id, $ticket->id]);
+            App::$container->getDb()->executeUpdate('UPDATE tickets_search_active SET department_id = ? WHERE id = ?', [$dep->id, $ticket->id]);
         }
     }
 
@@ -110,7 +111,7 @@ class SetDepartment extends AbstractContainerAwareAction implements ActionInterf
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
         if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'department')) {
-            return array('department');
+            return ['department'];
         }
 
         return;

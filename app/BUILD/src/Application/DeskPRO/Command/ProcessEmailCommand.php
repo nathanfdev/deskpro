@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -58,7 +59,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
         $this->addOption('enable-retries', null, InputOption::VALUE_NONE, 'If processing the message fails, enable retry scheduling instead of setting to "error".');
         $this->addOption('insert-only', null, InputOption::VALUE_NONE, 'Save the source with an inserted status (do not process right now)');
         $this->addOption('expect-pending', null, InputOption::VALUE_NONE, 'When used with --source, this ensures that the source is either "inserted" or "retry" states.');
-        $this->setHelp("Example usage with dp:gen-rand-email:\n\tphp cmd.php dp:gen-rand-email --from=\"user@example.com\" --to=\"gateway@example.com\" | php cmd.php dp:process-email --file");
+        $this->setHelp("Example usage with dp:gen-rand-email:\n\tbin/console dp:gen-rand-email --from=\"user@example.com\" --to=\"gateway@example.com\" | bin/console dp:process-email --file");
     }
 
     /**
@@ -71,6 +72,8 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
+
         $success_string = $input->getOption('success-string');
         $error_string   = $input->getOption('error-string');
         $insert_only    = $input->getOption('insert-only');
@@ -81,9 +84,9 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $input->setOption('account', $input->getOption('to'));
         }
 
-        #----------------------------------------
-        # Read/save source object
-        #----------------------------------------
+        //----------------------------------------
+        // Read/save source object
+        //----------------------------------------
 
         if ($input->getOption('source')) {
             $source = $this->getContainer()->getEm()->find('DeskPRO:EmailSource', $input->getOption('source'));
@@ -139,29 +142,34 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
             $raw_source = Strings::standardEol($raw_source);
 
-            $header_end = strpos($raw_source, "\r\n\r\n");
+            $header_end = strpos($raw_source, "\n\n");
             if ($header_end === false) {
                 // Means an empty body (eg message with only subject)
                 // But we trimmed above so the \n\n sep would be trimmed off
-                $raw_source .= "\r\n\r\n";
-                $header_end = strpos($raw_source, "\r\n\r\n");
+                $raw_source .= "\n\n";
+                $header_end = strpos($raw_source, "\n\n");
             }
 
             $raw_headers = trim(substr($raw_source, 0, $header_end));
+
+            if (isset($raw_headers[4000])) {
+                $raw_headers = substr($raw_headers, 0, 4000);
+            }
 
             $reader = new EzcReader();
             $reader->setRawSource($raw_source);
             $account = $this->findEmailAccountFrom($reader);
 
             $source = new EmailSource();
-            $source->fromArray(array(
+            $source->fromArray([
                 'email_account' => $account,
                 'headers'       => $raw_headers,
                 'status'        => 'inserted',
-            ));
+            ]);
 
             // Rough matching, just for info purposes when browsing a list
             $source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $raw_headers) ?: '';
+            $source->header_cc      = Strings::extractRegexMatch('#^Cc:\s*(.*?)$#m', $raw_headers) ?: '';
             $source->header_from    = Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $raw_headers) ?: '';
             $source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $raw_headers) ?: '';
             $source->object_type    = 'ticket';
@@ -187,9 +195,9 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $output->writeln(sprintf('<info>Saved email source #'.$source->getId().' (took %.5s)</info>', microtime(true) - $t));
         }
 
-        #----------------------------------------
-        # Get gateway account
-        #----------------------------------------
+        //----------------------------------------
+        // Get gateway account
+        //----------------------------------------
 
         $account_id = $input->getOption('account');
 
@@ -246,13 +254,11 @@ class ProcessEmailCommand extends ContainerAwareCommand
             App::getOrm()->flush();
         }
 
-        #----------------------------------------
-        # Run the gateway
-        #----------------------------------------
+        //----------------------------------------
+        // Run the gateway
+        //----------------------------------------
 
         if (!$insert_only) {
-            $output->setVerbosity(3);
-
             $logger = new Logger();
             $logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));
             $logger->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
@@ -285,8 +291,10 @@ class ProcessEmailCommand extends ContainerAwareCommand
                 return 1;
             }
         } else {
-            global $DP_CONFIG;
-            if (!empty($DP_CONFIG['adv_email_process'])) {
+            /* @var \DpRun\DpEnv $DP_ENV */
+            global $DP_ENV;
+
+            if ($DP_ENV->getConfig('async_email_processing.process')) {
                 /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
                 $proc = App::getContainer()->get('in_email.proc_queue');
                 $proc->enqueueNewEmail($source);

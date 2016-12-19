@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,18 +29,22 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
  * Operations about Ticket urgencies.
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/ticket_urgencies",
  * 	description="Operations about Ticket urgencies",
  * 	basePath="/api"
  * )
+ *
+ * @ApiModes("all")
  */
 class TicketUrgenciesController extends AbstractController implements ProtectedControllerInterface
 {
@@ -52,16 +56,16 @@ class TicketUrgenciesController extends AbstractController implements ProtectedC
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_urgencies",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get list of ticket counted urgency",
      * 		notes="",
@@ -73,6 +77,6 @@ class TicketUrgenciesController extends AbstractController implements ProtectedC
     {
         $counts = $this->em->getRepository('DeskPRO:Ticket')->countTicketsByUrgency();
 
-        return $this->createApiResponse(array('urgency_counts' => $counts));
+        return $this->createApiResponse(['urgency_counts' => $counts]);
     }
 }

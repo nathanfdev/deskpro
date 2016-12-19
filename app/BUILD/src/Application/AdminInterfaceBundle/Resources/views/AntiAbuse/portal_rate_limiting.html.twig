@@ -1,0 +1,618 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+    <section class="dp-paneblock dp-listpane">
+        <header>
+            <h3>
+                <span>{{ phrase('admin.settings.portal_rate_limit_header') }}</span>
+            </h3>
+        </header>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+
+                        <div class="inner-group">
+                            <label>
+                                <h4>
+                                    <input type="checkbox" class="form-control" ng-model="general_settings.rate_limit_disabled" style="width: auto;vertical-align: middle;margin-top: 1px;" />
+                                    {{ phrase('admin.settings.portal_disable_rate_limit') }}
+                                </h4>
+                            </label>
+                        </div>
+
+                        <div class="inner-group" ng-hide="general_settings.rate_limit_disabled">
+                            <label>
+                                <h4>
+                                    {{ phrase('admin.settings.portal_rate_limit_ip_whitelist') }}
+                                    <i class="fa fa-question-circle qmark-icon" tooltip="{{ phrase('admin.settings.portal_rate_limit_whitelist_text') }}" tooltip-placement="right"></i>
+                                </h4>
+                            </label>
+                            <div>
+                                <input type="text" class="form-control"
+                                       ng-model="general_settings.rate_limit_ips"
+                                       style="width: 40%;"
+                                       ng-list
+                                />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="dp-paneblock dp-listpane" ng-if="usersourceSettings.has_user_login_form" ng-hide="general_settings.rate_limit_disabled">
+        <header>
+            <h3>{{ phrase('admin.settings.portal_login_rate_limit') }}</h3>
+        </header>
+
+        <article class="form-horizontal dp-form" ng-if="usersourceSettings.has_user_login_form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.guest_rate_limit.login_settings.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_login_rate_limit_guest') }}</h4>
+                            </label>
+                            <div ng-show="settings.guest_rate_limit.login_settings.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_login_attempted') }}
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.login_settings.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.login_settings.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.guest_rate_limit.login_settings.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                    <span ng-show="settings.guest_rate_limit.login_settings.response === 'lockout'">
+                                        {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                        <input
+                                                type="number"
+                                                min="1"
+                                                ng-model="settings.guest_rate_limit.login_settings.lockout_time"
+                                                class="form-control" style="width: 60px;" />
+                                        {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                    </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.user_rate_limit.login_settings.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_login_rate_limit_user') }}</h4>
+                            </label>
+                            <div ng-show="settings.user_rate_limit.login_settings.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_login_attempted') }}
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.login_settings.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.login_settings.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.user_rate_limit.login_settings.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                    <span ng-show="settings.user_rate_limit.login_settings.response === 'lockout'">
+                                        {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                        <input
+                                                type="number"
+                                                min="1"
+                                                ng-model="settings.user_rate_limit.login_settings.lockout_time"
+                                                class="form-control" style="width: 60px;" />
+                                        {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                    </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.agent_rate_limit.login_settings.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_login_rate_limit_agent') }}</h4>
+                            </label>
+                            <div ng-show="settings.agent_rate_limit.login_settings.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_login_attempted') }}
+                                <input type="number" min="1" ng-model="settings.agent_rate_limit.login_settings.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.agent_rate_limit.login_settings.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.agent_rate_limit.login_settings.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                    <span ng-show="settings.agent_rate_limit.login_settings.response === 'lockout'">
+                                        {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                        <input
+                                                type="number"
+                                                min="1"
+                                                ng-model="settings.agent_rate_limit.login_settings.lockout_time"
+                                                class="form-control" style="width: 60px;" />
+                                        {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                    </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="dp-paneblock dp-listpane" ng-if="usersourceSettings.reg_enabled || usersourceSettings.has_user_login_form" ng-hide="general_settings.rate_limit_disabled">
+        <header>
+            <h3>{{ phrase('admin.settings.portal_rate_limit_account') }}</h3>
+        </header>
+
+        <article class="form-horizontal dp-form" ng-if="usersourceSettings.reg_enabled">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.account_rate_limit.registration_settings.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_registration_rate_limit') }}</h4>
+                            </label>
+                            <div ng-show="settings.account_rate_limit.registration_settings.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_registration_attempted') }}
+                                <input type="number" min="1" ng-model="settings.account_rate_limit.registration_settings.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.account_rate_limit.registration_settings.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.account_rate_limit.registration_settings.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                <span ng-show="settings.account_rate_limit.registration_settings.response === 'lockout'">
+                                    {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                    <input
+                                            type="number"
+                                            min="1"
+                                            ng-model="settings.account_rate_limit.registration_settings.lockout_time"
+                                            class="form-control" style="width: 60px;" />
+                                    {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form" ng-if="usersourceSettings.has_user_login_form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.account_rate_limit.reset_password_settings.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_forgot_password_rate_limit') }}</h4>
+                            </label>
+                            <div ng-show="settings.account_rate_limit.reset_password_settings.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_forgot_password_attempted') }}
+                                <input type="number" min="1" ng-model="settings.account_rate_limit.reset_password_settings.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.account_rate_limit.reset_password_settings.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.account_rate_limit.reset_password_settings.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                <span ng-show="settings.account_rate_limit.reset_password_settings.response === 'lockout'">
+                                    {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        ng-model="settings.account_rate_limit.reset_password_settings.lockout_time"
+                                        class="form-control" style="width: 60px;" />
+                                    {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="dp-paneblock dp-listpane" ng-hide="general_settings.rate_limit_disabled">
+        <header>
+            <h3>{{ phrase('admin.settings.portal_rate_limit_logged_in') }}</h3>
+        </header>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.user_rate_limit.submit_ticket.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_ticket_rate_limit') }}</h4>
+                            </label>
+                            <div ng-show="settings.user_rate_limit.submit_ticket.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_ticket_attempted') }}
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_ticket.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_ticket.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.user_rate_limit.submit_ticket.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                <span ng-show="settings.user_rate_limit.submit_ticket.response === 'lockout'">
+                                    {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                    <input
+                                            type="number"
+                                            min="1"
+                                            ng-model="settings.user_rate_limit.submit_ticket.lockout_time"
+                                            class="form-control" style="width: 60px;" />
+                                    {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form" ng-if="feedbackSettings.enabled">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.user_rate_limit.submit_feedback.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_feedback_rate_limit') }}</h4>
+                            </label>
+                            <div ng-show="settings.user_rate_limit.submit_feedback.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_feedback_attempted') }}
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_feedback.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_feedback.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.user_rate_limit.submit_feedback.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                <span ng-show="settings.user_rate_limit.submit_feedback.response === 'lockout'">
+                                    {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                    <input
+                                            type="number"
+                                            min="1"
+                                            ng-model="settings.user_rate_limit.submit_feedback.lockout_time"
+                                            class="form-control" style="width: 60px;" />
+                                    {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.user_rate_limit.submit_comment.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_comment_rate_limit') }}</h4>
+                            </label>
+                            <div ng-show="settings.user_rate_limit.submit_comment.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_comment_attempted') }}
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_comment.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_comment.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.user_rate_limit.submit_comment.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                <span ng-show="settings.user_rate_limit.submit_comment.response === 'lockout'">
+                                    {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                    <input
+                                            type="number"
+                                            min="1"
+                                            ng-model="settings.user_rate_limit.submit_comment.lockout_time"
+                                            class="form-control" style="width: 60px;" />
+                                    {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.user_rate_limit.upload_attachment.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_upload_rate_limit') }}</h4>
+                            </label>
+                            <div ng-show="settings.user_rate_limit.upload_attachment.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_upload_attempted') }}
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.upload_attachment.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.upload_attachment.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.user_rate_limit.upload_attachment.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                <span ng-show="settings.user_rate_limit.upload_attachment.response === 'lockout'">
+                                    {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                    <input
+                                            type="number"
+                                            min="1"
+                                            ng-model="settings.user_rate_limit.upload_attachment.lockout_time"
+                                            class="form-control" style="width: 60px;" />
+                                    {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.user_rate_limit.share_content.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_share_rate_limit') }}</h4>
+                            </label>
+                            <div ng-show="settings.user_rate_limit.share_content.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_share_attempted') }}
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.share_content.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.share_content.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.user_rate_limit.share_content.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                <span ng-show="settings.user_rate_limit.share_content.response === 'lockout'">
+                                    {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                    <input
+                                            type="number"
+                                            min="1"
+                                            ng-model="settings.user_rate_limit.share_content.lockout_time"
+                                            class="form-control" style="width: 60px;" />
+                                    {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="dp-paneblock dp-listpane" ng-hide="general_settings.rate_limit_disabled">
+        <header>
+            <h3>{{ phrase('admin.settings.portal_rate_limit_guests') }}</h3>
+        </header>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.guest_rate_limit.submit_ticket.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_ticket_rate_limit') }}</h4>
+                            </label>
+                            <div ng-show="settings.guest_rate_limit.submit_ticket.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_ticket_attempted') }}
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_ticket.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_ticket.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.guest_rate_limit.submit_ticket.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                <span ng-show="settings.guest_rate_limit.submit_ticket.response === 'lockout'">
+                                    {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                    <input
+                                            type="number"
+                                            min="1"
+                                            ng-model="settings.guest_rate_limit.submit_ticket.lockout_time"
+                                            class="form-control" style="width: 60px;" />
+                                    {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form" ng-if="feedbackSettings.enabled">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.guest_rate_limit.submit_feedback.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_feedback_rate_limit') }}</h4>
+                            </label>
+                            <div ng-show="settings.guest_rate_limit.submit_feedback.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_feedback_attempted') }}
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_feedback.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_feedback.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.guest_rate_limit.submit_feedback.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                <span ng-show="settings.guest_rate_limit.submit_feedback.response === 'lockout'">
+                                    {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                    <input
+                                            type="number"
+                                            min="1"
+                                            ng-model="settings.guest_rate_limit.submit_feedback.lockout_time"
+                                            class="form-control" style="width: 60px;" />
+                                    {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.guest_rate_limit.submit_comment.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_comment_rate_limit') }}</h4>
+                            </label>
+                            <div ng-show="settings.guest_rate_limit.submit_comment.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_comment_attempted') }}
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_comment.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_comment.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.guest_rate_limit.submit_comment.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                <span ng-show="settings.guest_rate_limit.submit_comment.response === 'lockout'">
+                                    {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                    <input
+                                            type="number"
+                                            min="1"
+                                            ng-model="settings.guest_rate_limit.submit_comment.lockout_time"
+                                            class="form-control" style="width: 60px;" />
+                                    {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.guest_rate_limit.upload_attachment.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_upload_rate_limit') }}</h4>
+                            </label>
+                            <div ng-show="settings.guest_rate_limit.upload_attachment.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_upload_attempted') }}
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.upload_attachment.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.upload_attachment.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.guest_rate_limit.upload_attachment.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                <span ng-show="settings.guest_rate_limit.upload_attachment.response === 'lockout'">
+                                    {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                    <input
+                                            type="number"
+                                            min="1"
+                                            ng-model="settings.guest_rate_limit.upload_attachment.lockout_time"
+                                            class="form-control" style="width: 60px;" />
+                                    {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.guest_rate_limit.share_content.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_share_rate_limit') }}</h4>
+                            </label>
+                            <div ng-show="settings.guest_rate_limit.share_content.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_share_attempted') }}
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.share_content.limit" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.share_content.time" class="form-control" style="width: 60px;" />
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                <select ng-model="settings.guest_rate_limit.share_content.response">
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
+                                </select>
+                                <span ng-show="settings.guest_rate_limit.share_content.response === 'lockout'">
+                                    {{ phrase('admin.settings.portal_rate_limit_for') }}
+                                    <input
+                                            type="number"
+                                            min="1"
+                                            ng-model="settings.guest_rate_limit.share_content.lockout_time"
+                                            class="form-control" style="width: 60px;" />
+                                    {{ phrase('admin.settings.portal_rate_limit_minutes') }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="dp-paneblock dp-listpane">
+        <footer>
+            <div class="dp-content">
+                <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                    <div dp-hide-spinning="saving_settings">
+                        <button class="btn btn-primary"  ng-click="PortalRateLimiting.save()">{{ phrase('agent.general.save') }}</button>
+                    </div>
+                    <div dp-show-spinning="saving_settings">
+                        <i class="spinner-flat"></i>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </section>
+
+    <div dp-register-message="saved_settings">{{ phrase('admin.general.save_settings_success') }}</div>
+{% endblock %}

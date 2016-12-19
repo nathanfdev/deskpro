@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\People\PermissionChecker;
 
 use Application\DeskPRO\Entity\ChatConversation;
@@ -58,10 +59,10 @@ class ChatChecker extends AbstractChecker
             return false;
         }
 
-        #------------------------------
-        # If the user is part of the chat
-        # then we know right away they can view
-        #------------------------------
+        //------------------------------
+        // If the user is part of the chat
+        // then we know right away they can view
+        //------------------------------
 
         if ($convo->agent && $convo->agent->id == $this->person->id) {
             return true;
@@ -71,25 +72,25 @@ class ChatChecker extends AbstractChecker
             return true;
         }
 
-        #------------------------------
-        # Can't view certain deps
-        #------------------------------
+        //------------------------------
+        // Can't view certain deps
+        //------------------------------
 
         if ($convo->department && !$this->person->getHelper('AgentPermissions')->isDepartmentAllowed($convo->department, 'chat')) {
             return false;
         }
 
-        #------------------------------
-        # Cant view unassigned
-        #------------------------------
+        //------------------------------
+        // Cant view unassigned
+        //------------------------------
 
         if (!$convo->agent && !$this->person->hasPerm('agent_chat.view_unassigned')) {
             return false;
         }
 
-        #------------------------------
-        # Cant view others
-        #------------------------------
+        //------------------------------
+        // Cant view others
+        //------------------------------
 
         if ($convo->agent && !$this->person->hasPerm('agent_chat.view_others')) {
             return false;

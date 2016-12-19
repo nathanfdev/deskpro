@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
 use Orb\Util\Util;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LoginTokenCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -65,17 +66,19 @@ class LoginTokenCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         $output->writeln("<info>Email: $email</info>");
         $output->writeln("<info>Token: $token</info>");
 
+        $router = $this->getContainer()->get('router');
+
         if ($person->is_agent) {
             if ($person->can_admin) {
-                $url = App::getRouter()->generateUrl('user').'agent/login?tok='.$person->getId().'-'.$token;
+                $url = $router->generate('user', [], UrlGeneratorInterface::ABSOLUTE_URL).'agent/login?return=/admin/&tok='.$person->getId().'-'.$token;
                 $output->writeln("<info>Admin Quick Login: $url</info>");
             }
 
-            $url = App::getRouter()->generateUrl('user').'agent/login?tok='.$person->getId().'-'.$token;
+            $url = $router->generate('user', [], UrlGeneratorInterface::ABSOLUTE_URL).'agent/login?tok='.$person->getId().'-'.$token;
             $output->writeln("<info>Agent Quick Login: $url</info>");
         }
 
-        $url = App::getRouter()->generateUrl('user').'login?tok='.$person->getId().'-'.$token;
+        $url = $router->generate('user', [], UrlGeneratorInterface::ABSOLUTE_URL).'login?tok='.$person->getId().'-'.$token;
         $output->writeln("<info>User Quick Login: $url</info>");
 
         $output->writeln('Note: This token will only work for the next 5 minutes.');

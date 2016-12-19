@@ -103,7 +103,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; New feedback is visible immediately (no agent validation)</td>
+				<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_feedback_no_review') }}</td>
 				<td>
 					{{ _self.perm_toggle('feedback', 'no_submit_validate') }}
 				</td>
@@ -115,7 +115,7 @@
 				</td>
 			</tr>
 
-			{% if app.getSetting('user.publish_comments') %}
+			{% if cross_brand_setting('user.publish_comments') %}
 
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.submit_feedback_comments') }}</td>
@@ -126,10 +126,10 @@
 
 			{% endif %}
 
-			{% if app.getSetting('user.publish_comments') %}
+			{% if cross_brand_setting('user.publish_comments') %}
 
 				<tr>
-					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; New comments are visible immediately (no agent validation)</td>
+					<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_comment_no_review') }}</td>
 					<td>
 						{{ _self.perm_toggle('feedback', 'no_comment_validate') }}
 					</td>
@@ -159,7 +159,7 @@
 				</td>
 			</tr>
 
-			{% if app.getSetting('user.publish_comments') %}
+			{% if cross_brand_setting('user.publish_comments') %}
 
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.submit_article_comments') }}</td>
@@ -170,16 +170,23 @@
 
 			{% endif %}
 
-			{% if app.getSetting('user.publish_comments') %}
+			{% if cross_brand_setting('user.publish_comments') %}
 
 				<tr>
-					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; New comments are visible immediately (no agent validation)</td>
+					<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_comment_no_review') }}</td>
 					<td>
 						{{ _self.perm_toggle('article', 'no_comment_validate') }}
 					</td>
 				</tr>
 
 			{% endif %}
+
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_share_articles') }}</td>
+				<td>
+					{{ _self.perm_toggle('article', 'share') }}
+				</td>
+			</tr>
 
 		</tbody>
 	</table>
@@ -203,7 +210,7 @@
 				</td>
 			</tr>
 
-			{% if app.getSetting('user.publish_comments') %}
+			{% if cross_brand_setting('user.publish_comments') %}
 
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.submit_download_comments') }}</td>
@@ -214,10 +221,10 @@
 
 			{% endif %}
 
-			{% if app.getSetting('user.publish_comments') %}
+			{% if cross_brand_setting('user.publish_comments') %}
 
 				<tr>
-					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; New comments are visible immediately (no agent validation)</td>
+					<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_comment_no_review') }}</td>
 					<td>
 						{{ _self.perm_toggle('download', 'no_comment_validate') }}
 					</td>
@@ -253,7 +260,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; New comments are visible immediately (no agent validation)</td>
+				<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_comment_no_review') }}</td>
 				<td>
 					{{ _self.perm_toggle('news', 'no_comment_validate') }}
 				</td>

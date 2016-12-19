@@ -1,0 +1,8 @@
+imports:
+  - { resource: install_config.yml }
+
+framework:
+    profiler: { only_exceptions: false }
+
+debug:
+    max_items: 400

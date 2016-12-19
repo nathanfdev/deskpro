@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,35 +31,58 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Avatar\AvatarOwner;
+use DeskPRO\Bundle\AppBundle\Entity\PersonList;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
  * An agent team is a group of agents. Similar to usergroups but for agents.
+ *
+ * @property string $name
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
-class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
+class AgentTeam extends DomainObject implements PersonList, AvatarOwner
 {
     /**
      * The unique ID.
      *
      * @var int
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $id = null;
 
     /**
+     * The name of agent team.
+     *
      * @var string
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
-    protected $name;
+    protected $name = '';
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @Assert\All({
+     *     @AppAssert\Person\PersonType(type="agent")
+     * })
+     *
+     * @var ArrayCollection
      */
     protected $members = null;
 
@@ -69,6 +92,11 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
     protected $avatar;
 
     /**
+     * @var ArrayCollection
+     */
+    protected $project_members;
+
+    /**
      * @return int
      */
     public function getId()
@@ -76,9 +104,18 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
     public function __construct()
     {
-        $this->members = new ArrayCollection();
+        $this->members         = new ArrayCollection();
+        $this->project_members = new ArrayCollection();
     }
 
     public function addPerson(Entity\Person $person)
@@ -104,60 +141,117 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
     public function getAvatarUrl($size = 50)
     {
         if (!$this->hasAvatar()) {
-            return App::get('router')->generate('serve_default_picture', array(
-                's'        => $size,
-                'size-fit' => 1,
-            ), true);
+            return App::get('router')->generate(
+                'serve_default_picture',
+                [
+                    's'        => $size,
+                    'size-fit' => 1,
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
         }
 
         return $this->avatar->getThumbnailUrl($size);
     }
 
-    ############################################################################
-    # Validation Metadata
-    ############################################################################
+    /**
+     * @return ArrayCollection|Person[]
+     */
+    public function getPersonList()
+    {
+        return $this->members;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return bool
+     */
+    public function hasMember(Person $person)
+    {
+        return $this->members->matching(new Criteria(Criteria::expr()->eq('id', $person->getId())))->count() > 0;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getAvatarBlob()
+    {
+        return $this->avatar;
+    }
+
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
 
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('name', new NotBlank());
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AgentTeam';
-        $metadata->setPrimaryTable(array('name' => 'agent_teams'));
+        $metadata->setPrimaryTable(['name' => 'agent_teams']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
+        $metadata->mapField(
+            [
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'name',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'name',
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'project_members',
+                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
+                'mappedBy'     => 'team',
+            ]
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToMany(array(
+        $metadata->mapManyToMany([
             'fieldName'    => 'members',
-            'mapedBy'      => 'teams',
+            'inversedBy'   => 'teams',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-            'joinTable'    => array(
+            'joinTable'    => [
                 'name'               => 'agent_team_members',
-                'joinColumns'        => array(array('name' => 'team_id', 'onDelete' => 'CASCADE')),
-                'inverseJoinColumns' => array(array('name' => 'person_id', 'onDelete' => 'CASCADE')),
-            ),
-            'orderBy' => array('name' => 'ASC'),
-        ));
-        $metadata->mapManyToOne(array(
+                'joinColumns'        => [['name' => 'team_id', 'onDelete' => 'CASCADE']],
+                'inverseJoinColumns' => [['name' => 'person_id', 'onDelete' => 'CASCADE']],
+            ],
+            'orderBy' => ['name' => 'ASC'],
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'avatar',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
             'mappedBy'     => null,
             'inversedBy'   => null,
-            'joinColumns'  => array(array(
+            'joinColumns'  => [[
                 'name'                 => 'avatar_blob_id',
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'set null',
-            )),
+            ]],
             'dpApi' => true,
-        ));
+        ]);
     }
 }

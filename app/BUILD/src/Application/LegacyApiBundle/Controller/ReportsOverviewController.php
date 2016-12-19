@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+
+/**
+ * @ApiModes("all")
+ */
 class ReportsOverviewController extends AbstractController
 {
-    ####################################################################################################################
-    # get data (for specified type)
-    ####################################################################################################################
+    //###################################################################################################################
+    // get data (for specified type)
+    //###################################################################################################################
 
     public function getDataAction($type)
     {
@@ -48,9 +54,9 @@ class ReportsOverviewController extends AbstractController
         return $this->createApiResponse($reports_overview->getOverviewData($type));
     }
 
-    ####################################################################################################################
-    # get statistics (for specified type)
-    ####################################################################################################################
+    //###################################################################################################################
+    // get statistics (for specified type)
+    //###################################################################################################################
 
     public function getStatsAction($type)
     {
@@ -61,10 +67,10 @@ class ReportsOverviewController extends AbstractController
         $reports_overview->setPerson($this->person);
 
         $grouping_field = $this->in->getString('grouping_field');
-        $options        = array(
+        $options        = [
             'date_choice' => $this->in->getString('date_choice'),
             'sla_id'      => $this->in->getString('sla_id'),
-        );
+        ];
 
         try {
             return $this->createApiResponse($reports_overview->getStats($type, $grouping_field, $options));

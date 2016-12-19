@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Settings;
 
 use Orb\Util\Arrays;
@@ -90,7 +91,13 @@ class TicketSettings
     /** @var bool|false */
     public $email_reply_as_note = false;
 
-    public $agent_defaults = array(
+    /** @var bool */
+    public $web_require_validation = false;
+
+    /** @var bool */
+    public $email_require_validation = false;
+
+    public $agent_defaults = [
         'newticket_status'        => 'awaiting_user',
         'newticket_agent'         => 'assign',
         'newticket_team'          => null,
@@ -107,7 +114,7 @@ class TicketSettings
         'reply_resolve_auto_close_tab'      => true,
 
         'view_reverse_order' => true,
-    );
+    ];
 
     /**
      * @param Settings $settings
@@ -123,8 +130,11 @@ class TicketSettings
      */
     public function resetSettings()
     {
-        $this->satisfaction_enabled   = (bool) $this->settings->get('core.tickets.enable_feedback');
-        $this->satisfaction_agentread = (bool) $this->settings->get('core.tickets.feedback_agents_read');
+        $this->satisfaction_enabled   = (bool) $this->settings->get('core_tickets.enable_feedback');
+        $this->satisfaction_agentread = (bool) $this->settings->get('core_tickets.feedback_agents_read');
+
+        $this->web_require_validation   = (bool) $this->settings->get('core_tickets.web_require_validation');
+        $this->email_require_validation = (bool) $this->settings->get('core_tickets.email_require_validation');
 
         $this->kbsuggest_web_enabled = (bool) $this->settings->get('core.show_ticket_suggestions');
 
@@ -139,7 +149,7 @@ class TicketSettings
         $this->lock_autorelease_enabled = (bool) $this->settings->get('core_tickets.unlock_on_close');
         $this->lock_timeout             = (int) $this->settings->get('core_tickets.lock_lifetime');
 
-        $this->ref_enabled = (bool) $this->settings->get('core.tickets.use_ref');
+        $this->ref_enabled = (bool) $this->settings->get('core_tickets.use_ref');
 
         if ($this->ref_enabled && $this->settings->get('core.ref_pattern')) {
             $this->ref_custom_enabled        = true;
@@ -172,22 +182,22 @@ class TicketSettings
         if ($wh) {
             $this->working_hours = $wh;
         } else {
-            $this->working_hours = array(
+            $this->working_hours = [
                 'timezone'   => 'UTC',
                 'start_hour' => 9,
                 'start_min'  => 0,
                 'end_hour'   => 17,
                 'end_min'    => 0,
-                'holidays'   => array(),
-                'work_days'  => array(),
-            );
+                'holidays'   => [],
+                'work_days'  => [],
+            ];
         }
 
         if (!@$this->working_hours['holidays']) {
-            $this->working_hours['holidays'] = array();
+            $this->working_hours['holidays'] = [];
         }
         if (!@$this->working_hours['work_days']) {
-            $this->working_hours['work_days'] = array();
+            $this->working_hours['work_days'] = [];
         }
 
         $this->from_email_headers = explode(',', $this->settings->get('core_email.from_email_headers'));
@@ -196,7 +206,7 @@ class TicketSettings
         $this->from_email_headers = Arrays::func($this->from_email_headers, 'strtolower');
 
         if (!$this->from_email_headers) {
-            $this->from_email_headers = array('from', 'reply-to', 'x-original-from');
+            $this->from_email_headers = ['from', 'reply-to', 'x-original-from'];
         }
 
         $this->email_reply_as_note = (bool) $this->settings->get('core_tickets.email_reply_as_note');
@@ -207,11 +217,13 @@ class TicketSettings
      */
     public function toArray()
     {
-        $export_settings = array();
+        $export_settings = [];
 
-        foreach (array(
+        foreach ([
             'satisfaction_enabled',
             'satisfaction_agentread',
+            'web_require_validation',
+            'email_require_validation',
             'kbsuggest_web_enabled',
             'timelog_enabled',
             'timelog_autostart',
@@ -231,7 +243,7 @@ class TicketSettings
             'working_hours',
             'from_email_headers',
             'email_reply_as_note',
-        ) as $s) {
+        ] as $s) {
             $export_settings[$s] = $this->$s;
         }
 
@@ -250,7 +262,7 @@ class TicketSettings
                 $this->from_email_headers = Arrays::removeFalsey($this->from_email_headers);
                 $this->from_email_headers = Arrays::func($this->from_email_headers, 'strtolower');
                 if (!$this->from_email_headers) {
-                    $this->from_email_headers = array('from', 'reply-to', 'x-original-from');
+                    $this->from_email_headers = ['from', 'reply-to', 'x-original-from'];
                 }
             } else {
                 if (property_exists($this, $s)) {
@@ -265,9 +277,12 @@ class TicketSettings
      */
     public function saveSettings()
     {
-        $this->settings->setSetting('core.tickets.enable_feedback',      (int) $this->satisfaction_enabled);
-        $this->settings->setSetting('core.tickets.feedback_agents_read', (int) $this->satisfaction_agentread);
+        $this->settings->setSetting('core_tickets.enable_feedback',      (int) $this->satisfaction_enabled);
+        $this->settings->setSetting('core_tickets.feedback_agents_read', (int) $this->satisfaction_agentread);
         $this->settings->setSetting('core.show_ticket_suggestions',      (int) $this->kbsuggest_web_enabled);
+
+        $this->settings->setSetting('core_tickets.web_require_validation', (int) $this->web_require_validation);
+        $this->settings->setSetting('core_tickets.email_require_validation', (int) $this->email_require_validation);
 
         $this->settings->setSetting('core_tickets.enable_timelog',       (int) $this->timelog_enabled);
 
@@ -286,7 +301,7 @@ class TicketSettings
         $this->settings->setSetting('core_tickets.unlock_on_close',      (int) $this->lock_autorelease_enabled);
         $this->settings->setSetting('core_tickets.lock_lifetime',        (int) $this->lock_timeout);
 
-        $this->settings->setSetting('core.tickets.use_ref',              (int) $this->ref_enabled);
+        $this->settings->setSetting('core_tickets.use_ref',              (int) $this->ref_enabled);
 
         if ($this->ref_enabled) {
             if ($this->ref_custom_enabled) {

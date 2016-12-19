@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
@@ -103,7 +104,7 @@ class PeopleResultsDisplay
     {
         $this->people       = $people;
         $this->people_count = count($people);
-        $this->people_ids   = array();
+        $this->people_ids   = [];
         foreach ($this->people as $p) {
             $this->people_ids[] = $p->id;
         }
@@ -139,7 +140,7 @@ class PeopleResultsDisplay
         }
 
         if (!$this->people_count) {
-            $this->all_labels = array();
+            $this->all_labels = [];
 
             return $this->all_labels;
         }
@@ -150,7 +151,7 @@ class PeopleResultsDisplay
             SELECT person_id, label
             FROM labels_people
             WHERE person_id IN ($people_ids)
-        ", array(), 'person_id', null, 'label');
+        ", [], 'person_id', null, 'label');
 
         return $this->all_labels;
     }
@@ -165,7 +166,7 @@ class PeopleResultsDisplay
         }
 
         if (!$this->people_count) {
-            $this->people_usernames = array();
+            $this->people_usernames = [];
 
             return $this->people_usernames;
         }
@@ -176,7 +177,7 @@ class PeopleResultsDisplay
             SELECT person_id, identity_friendly
             FROM person_usersource_assoc
             WHERE person_id IN ($people_ids) AND identity_friendly != ''
-        ", array(), 'person_id', null, 'identity_friendly');
+        ", [], 'person_id', null, 'identity_friendly');
 
         return $this->people_usernames;
     }
@@ -191,7 +192,7 @@ class PeopleResultsDisplay
         }
 
         if ($this->primary_emails === null) {
-            $primary_email_ids = array();
+            $primary_email_ids = [];
             foreach ($this->people as $p) {
                 if ($p->primary_email) {
                     $primary_email_ids[] = $p->primary_email->getId();
@@ -215,13 +216,13 @@ class PeopleResultsDisplay
             LEFT JOIN d.field def
             LEFT JOIN d.root_field root_def
             WHERE d.person IN (?0)
-        ')->execute(array(array_values($this->people_ids)));
+        ')->execute([array_values($this->people_ids)]);
 
-        $this->all_fields_data = array();
+        $this->all_fields_data = [];
         foreach ($data as $d) {
             $tid = $d->person->getId();
             if (!isset($this->all_fields_data[$tid])) {
-                $this->all_fields_data[$tid] = array();
+                $this->all_fields_data[$tid] = [];
             }
 
             $this->all_fields_data[$tid][] = $d;
@@ -239,7 +240,7 @@ class PeopleResultsDisplay
     {
         $this->getAllFieldsData();
 
-        return isset($this->all_fields_data[$person->getId()]) ? $this->all_fields_data[$person->getId()] : array();
+        return isset($this->all_fields_data[$person->getId()]) ? $this->all_fields_data[$person->getId()] : [];
     }
 
     /**
@@ -251,20 +252,20 @@ class PeopleResultsDisplay
             $field_data = $this->em->createQuery('
                 SELECT cp FROM DeskPRO:CustomDataPerson cp
                 WHERE cp.person IN (?0)
-            ')->execute(array($this->people_ids));
+            ')->execute([$this->people_ids]);
 
-            $person_data = array();
+            $person_data = [];
 
             foreach ($field_data as $data) {
                 $pid = $data->person->getId();
                 if (!isset($person_data[$pid])) {
-                    $person_data[$pid] = array();
+                    $person_data[$pid] = [];
                 }
 
                 $person_data[$pid][] = $data;
             }
 
-            $this->people_fields = array();
+            $this->people_fields = [];
             foreach ($person_data as $pid => $custom_data) {
                 $this->people_fields[$pid] = $this->field_manager->getDisplayArray($this->field_manager->createFieldDataFromArray($custom_data), null);
             }
@@ -273,7 +274,7 @@ class PeopleResultsDisplay
         if (isset($this->people_fields[$person->id])) {
             return $this->people_fields[$person->id];
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -288,7 +289,7 @@ class PeopleResultsDisplay
     {
         $this->getAllLabels();
 
-        return empty($this->all_labels[$person->id]) ? array() : $this->all_labels[$person->id];
+        return empty($this->all_labels[$person->id]) ? [] : $this->all_labels[$person->id];
     }
 
     /**
@@ -302,7 +303,7 @@ class PeopleResultsDisplay
     {
         $this->getAllUsernames();
 
-        return empty($this->people_usernames[$person->id]) ? array() : $this->people_usernames[$person->id];
+        return empty($this->people_usernames[$person->id]) ? [] : $this->people_usernames[$person->id];
     }
 
     /**

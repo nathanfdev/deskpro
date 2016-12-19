@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\SourceMapper\EmailRateLimit;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -47,7 +48,9 @@ class EmailRateLimitFactory
         $db             = $container->getDb();
         $dp_account_ids = null;
         if (defined('DPC_IS_CLOUD') && DPC_DEMO_EXPIRE) {
-            $dp_account_ids = array_map(function ($r) { return $r['id']; }, $db->fetchAll("
+            $dp_account_ids = array_map(function ($r) {
+                return $r['id'];
+            }, $db->fetchAll("
                 SELECT id
                 FROM email_accounts
                 WHERE outgoing_account LIKE '%PhpMailConfig%'
@@ -69,10 +72,10 @@ class EmailRateLimitFactory
                 }
             }
 
-            $limits = array(
+            $limits = [
                 24  => 50,
                 336 => 300,
-            );
+            ];
 
             return new EmailRateLimit(
                 $container->getEm()->getRepository('EmailBundle:SendmailSource'),

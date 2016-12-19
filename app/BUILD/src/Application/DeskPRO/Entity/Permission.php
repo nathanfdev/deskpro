@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,26 +31,33 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Orb\Util\Numbers;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Permissions are flags applied groups or specific users.
  *
- * @property int $id
- * @property string $name
+ * @property int       $id
+ * @property string    $name
  * @property Usergroup $usergroup
- * @property Person $person
- * @property bool $value
+ * @property Person    $person
+ * @property bool      $value
+ * @property bool      $is_active
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class Permission extends DomainObject
 {
     /**
      * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -58,6 +65,9 @@ class Permission extends DomainObject
 
     /**
      * The name of the permission.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -82,7 +92,10 @@ class Permission extends DomainObject
     /**
      * Any numeric number (ex filesize, flag).
      *
-     * @var bool
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
+     * @var int
      */
     protected $value = null;
 
@@ -99,6 +112,9 @@ class Permission extends DomainObject
      *
      * So we turn these extra perms "off" so the resolver doesn't fetch them. That means if a
      * hd with many agent uses groups instead of overrides, permission resolving is much much faster.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -130,24 +146,26 @@ class Permission extends DomainObject
     /**
      * Combine an array of permissions into a superduper array of effective permissions.
      *
-     * @param \Application\DeskPRO\Entity\Permission[]|array $perms
+     * @param self[]|array $perms
+     * @param array        $mergeEffectivePermissions
      *
      * @return array
      */
-    public static function getEffectivePermissions(array $perms)
+    public static function getEffectivePermissions(array $perms, array $mergeEffectivePermissions = [])
     {
-        $effective_perms = array();
+        $effective_perms = $mergeEffectivePermissions;
 
         foreach ($perms as $perm) {
             if (is_array($perm)) {
                 $k = $perm['name'];
                 $v = $perm['value'];
             } else {
-                $k = $perm->name;
-                $v = $perm->value;
+                /** @var self $k */
+                $k = $perm->getName();
+                $v = $perm->getValue();
             }
 
-            if (!Numbers::isInteger($v)) {
+            if (is_scalar($v)) {
                 $v = (int) $v;
             }
 
@@ -161,97 +179,147 @@ class Permission extends DomainObject
         return $effective_perms;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * @param $value
+     *
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        $this->setModelField('value', $value);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Permission
+     */
+    public function setName($name)
+    {
+        $this->setModelField('name', $name);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return Permission
+     */
+    public function setPerson(Person $person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'permissions',
-            'indexes' => array(
-                'is_active_idx' => array('columns' => array('is_active')),
-            ),
-        ));
+            'indexes' => [
+                'is_active_idx' => ['columns' => ['is_active']],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'id',
-                 'type'       => 'integer',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'id',
-                 'id'         => true,
-            )
+            [
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'name',
-                 'type'       => 'string',
-                 'length'     => 50,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'name',
-            )
+            [
+                'fieldName'  => 'name',
+                'type'       => 'string',
+                'length'     => 50,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'name',
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'value',
-                 'type'       => 'text',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => true,
-                 'columnName' => 'value',
-            )
+            [
+                'fieldName'  => 'value',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'value',
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'is_active',
                 'type'       => 'boolean',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
-                'options'    => array('default' => '1'),
+                'options'    => ['default' => '1'],
                 'columnName' => 'is_active',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
-            array(
-                 'fieldName'    => 'usergroup',
-                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
-                 'mappedBy'     => null,
-                 'inversedBy'   => null,
-                 'joinColumns'  => array(
-                     0 => array(
-                         'name'                 => 'usergroup_id',
-                         'referencedColumnName' => 'id',
-                         'nullable'             => true,
-                         'onDelete'             => 'cascade',
-                         'columnDefinition'     => null,
-                     ),
-                 ),
-            )
+            [
+                'fieldName'    => 'usergroup',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'inversedBy'   => 'permissions',
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'usergroup_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToOne(
-            array(
-                 'fieldName'    => 'person',
-                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-                 'mappedBy'     => null,
-                 'inversedBy'   => null,
-                 'joinColumns'  => array(
-                     0 => array(
-                         'name'                 => 'person_id',
-                         'referencedColumnName' => 'id',
-                         'nullable'             => true,
-                         'onDelete'             => 'cascade',
-                         'columnDefinition'     => null,
-                     ),
-                 ),
-            )
+            [
+                'fieldName'    => 'person',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'person_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+            ]
         );
     }
 }

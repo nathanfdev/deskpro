@@ -1,0 +1,729 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+    <form class="ui form widget-editor admin-next">
+        <div class="ui grid">
+            <div class="seven wide column">
+                <h3>
+                    <i class="icon setting"></i>{{ phrase('admin.widget.settings_heading') }}
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" id="enabled" ng-model="brand_settings.widget.enabled" class="hidden right">
+                        <label for="enabled">&nbsp;</label>
+                    </div>
+                </h3>
+                <div class="ui styled fluid accordion" ng-show="brand_settings.widget.enabled">
+                    <div class="element">
+                        <div class="title" ng-class="{'active': section == 'button_settings'}" ng-click="section = 'button_settings'">
+                            <i class="dropdown icon"></i>
+                            {{ phrase('admin.widget.button_settings') }}
+                        </div>
+                        <div class="content" ng-class="{'active': section == 'button_settings'}" data-target="button_settings">
+                            <div class="field">
+                                <label for="label">Label</label>
+                                <div class="inline fields">
+                                    <div class="thirteen wide field">
+                                        <input type="text" name="label" ng-model="brand_settings.button.translations[0].name">
+                                    </div>
+                                    <div class="three wide field">
+                                        <dp-semantic-language-button translations="brand_settings.button.translations" key="name" languages="languages">
+                                        </dp-semantic-language-button>
+                                    </div>
+                                </div>
+                                <ul class="errors">
+                                    <li ng-repeat="error in formErrors.settings.fields.brand.fields.button.fields.translations.errors">
+                                        {{ ng_var('error.message') }}
+                                    </li>
+                                </ul>
+                                <ul class="errors" ng-repeat="translation in brand_settings.button.translations">
+                                    <li ng-repeat="error in formErrors.settings.fields.brand.fields.button.fields.translations.fields['translations_' + $index].fields.name.errors">
+                                        {{ ng_var('error.message') }}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="field">
+                                <label for="size">{{ phrase('admin.widget.button_size') }}</label>
+                                <div class="inline fields">
+                                    <div class="field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="size" id="button_size_small"
+                                                   ng-model="brand_settings.button.size" value="small" class="hidden">
+                                            <label for="button_size_small">
+                                                {{ phrase('admin.widget.button_size_small') }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="size" id="button_size_medium"
+                                                   ng-model="brand_settings.button.size" value="medium" class="hidden">
+                                            <label for="button_size_medium">
+                                                {{ phrase('admin.widget.button_size_medium') }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="size" id="button_size_large"
+                                                   ng-model="brand_settings.button.size" value="large" class="hidden">
+                                            <label for="button_size_large">
+                                                {{ phrase('admin.widget.button_size_large') }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>{{ phrase('admin.widget.colors') }}</label>
+                                <div class="inline field">
+                                    <spectrum-colorpicker
+                                            ng-model="brand_settings.button.colors.background"
+                                            format="'hex'"
+                                            class="color-picker"
+                                            options="{
+                                        showPalette: true,
+                                        palette: ['#62ad8c'],
+                                        showSelectionPalette: false,
+                                        showInput: true
+                                    }"
+                                    ></spectrum-colorpicker>
+                                    <label for="background_color">{{ phrase('admin.widget.background_color') }}</label>
+                                </div>
+                                <div class="inline field">
+                                    <spectrum-colorpicker
+                                            ng-model="brand_settings.button.colors.text"
+                                            format="'hex'"
+                                            class="color-picker"
+                                            options="{
+                                        showPalette: true,
+                                        palette: ['#ffffff'],
+                                        showSelectionPalette: false,
+                                        showInput: true
+                                    }"
+                                    ></spectrum-colorpicker>
+                                    <label for="background_color">{{ phrase('admin.widget.text_icon_color') }}</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Widget type</label>
+                                <div class="inline fields">
+                                    <div class="seven wide field">
+                                        <img src="{{ asset('images/admin/widget-position-right-corner.png') }}"
+                                             alt="corner">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="widget_type" id="widget_type_corner"
+                                                   ng-model="brand_settings.widget.type" value="bubble" class="hidden">
+                                            <label for="widget_type_corner">{{ phrase('admin.widget.corner') }}</label>
+                                        </div>
+                                    </div>
+                                    <div class="two wide field">
+                                        - or -
+                                    </div>
+                                    <div class="seven wide field">
+                                        <img src="{{ asset('images/admin/widget-position-right-column.png') }}"
+                                             alt="column">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="widget_type" id="widget_type_column"
+                                                   ng-model="brand_settings.widget.type" value="column" class="hidden">
+                                            <label for="widget_type_column">{{ phrase('admin.widget.column') }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Position</label>
+                                <div class="inline fields">
+                                    <div class="seven wide field">
+                                        <img src="{{ asset('images/admin/widget-position-right-corner.png') }}"
+                                             alt="right-corner">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="widget_position" id="widget_position_right"
+                                                   ng-model="brand_settings.widget.position" value="right"
+                                                   class="hidden">
+                                            <label for="widget_position_right">{{ phrase('general.phrases.right') }}</label>
+                                        </div>
+                                    </div>
+                                    <div class="two wide field">
+                                        - or -
+                                    </div>
+                                    <div class="seven wide field">
+                                        <img src="{{ asset('images/admin/widget-position-left-corner.png') }}"
+                                             alt="left-corner">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="widget_position" id="widget_position_left"
+                                                   ng-model="brand_settings.widget.position" value="left"
+                                                   class="hidden">
+                                            <label for="widget_position_left">{{ phrase('general.phrases.left') }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="element">
+                        <div class="title" ng-class="{'active': section == 'chat_settings'}" ng-click="section = 'chat_settings'">
+                            <i class="dropdown icon"></i>
+                            {{ phrase('admin.widget.chat_settings') }}
+                        </div>
+                        <div class="content" ng-class="{'active': section == 'chat_settings'}" data-target="chat_settings">
+                            <div class="field">
+                                <div class="inline field">
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" id="chat_enabled" ng-model="global_settings.chat.enabled"
+                                               class="hidden right">
+                                        <label for="chat_enabled">{{ phrase('admin.widget.chat_switcher') }} <i class="icon help circle"></i></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field" ng-if="global_settings.chat.enabled">
+                                <label>{{ phrase('admin.widget.chat_permissions_title') }}</label>
+                                <p>{{ phrase('admin.widget.chat_permissions_desc') }}</p>
+                                <div class="inline field" ng-repeat="group in user_groups">
+                                    <div class="ui checkbox">
+                                        <input type="checkbox" id="permission_group_{{ ng_var('group.id') }}"
+                                               class="hidden" ng-model="user_group_permission[group.id]"
+                                               ng-disabled="Ctrl.chat_custom_fields(group)"
+                                        >
+                                        <label for="permission_group_{{ ng_var('group.id') }}"
+                                               title="{{ ng_var('group.note') }}"
+                                               ng-click="Ctrl.changeRights(group)">{{ ng_var('group.title') }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field" ng-if="global_settings.chat.enabled">
+                                <div class="field">
+                                    <div class="inline field">
+                                        <div class="ui toggle checkbox">
+                                            <input type="checkbox" id="require_informations"
+                                                   ng-model="brand_settings.chat.request_user_info" class="hidden right">
+                                            <label for="require_informations">
+                                                {{ phrase('admin.widget.chat_request_person_for_comments') }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <p>
+                                        {{ phrase('admin.widget.chat_request_person_desc') }}
+                                    </p>
+                                    <div class="inline field" ng-if="brand_settings.chat.request_user_info">
+                                        <div class="ui toggle checkbox">
+                                            <input type="checkbox" id="require_department"
+                                                   ng-model="brand_settings.chat.allow_department_selection" class="hidden right">
+                                            <label for="require_department">
+                                                {{ phrase('admin.widget.chat_allow_department_selection') }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div ng-if="brand_settings.chat.request_user_info">
+                                        <div class="dp-item-list">
+                                            <div class="inline field">
+                                                <div class="ui checkbox">
+                                                    <input type="checkbox" id="information_name" disabled="disabled"
+                                                           checked="checked" class="hidden">
+                                                    <label for="information_name">
+                                                        Name
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="inline field">
+                                                <div class="ui checkbox">
+                                                    <input type="checkbox" id="information_email" disabled="disabled"
+                                                           checked="checked" class="hidden">
+                                                    <label for="information_email">
+                                                        Email address
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div ui-sortable="Ctrl.chatFieldsSortOptions" class="chat-custom-fields">
+                                                <div class="inline field with-drag-handle" ng-repeat="field in chat_custom_fields" data-id="{{ ng_var('field.id') }}">
+                                                    <div class="ui checkbox">
+                                                        <input type="checkbox" id="custom_field_{{ ng_var('field.id') }}"
+                                                               ng-model="field.is_enabled" class="hidden">
+                                                        <label for="custom_field_{{ ng_var('field.id') }}">
+                                                            {{ ng_var('field.title') }}
+                                                            <i class="fa fa-bars drag-handle"></i>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <a href="#/chat/fields" class="ui basic button add-custom-field">
+                                            <i class="icon plus"></i> ADD CUSTOM FIELD
+                                        </a>
+                                        <div class="field">
+                                            <label>Begin chat mode (automated)</label>
+                                            <div class="inline fields">
+                                                <div class="eight wide field">
+                                                    <div class="ui checkbox image field proactive-style">
+                                                        <input type="radio" name="chat_mode"
+                                                               ng-model="brand_settings.chat.begin_mode"
+                                                               id="chat_mode_form" class="hidden"
+                                                               value="form">
+                                                        <label for="chat_mode_form">
+                                                            {{ phrase('admin.widget.proactive_chat_reply_form') }}
+                                                            <div class="ui divider"></div>
+                                                            <img src="{{ asset('images/admin/chat-widget/form-illustration.png') }}"
+                                                                 alt="form illustration"/>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="eight wide field">
+                                                    <div class="ui checkbox image field proactive-style">
+                                                        <input type="radio" name="chat_mode"
+                                                               ng-model="brand_settings.chat.begin_mode"
+                                                               id="chat_mode_conversation" class="hidden"
+                                                               value="conversation">
+                                                        <label for="chat_mode_conversation">
+                                                            {{ phrase('admin.widget.proactive_chat_reply_button') }}
+                                                            <div class="ui divider"></div>
+                                                            <img src="{{ asset('images/admin/chat-widget/chat-illustration.png') }}"
+                                                                 alt="chat illustration"/>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="element" ng-show="global_settings.chat.enabled">
+                        <div class="title" ng-class="{'active': section == 'proactive_settings'}" ng-click="section = 'proactive_settings'">
+                            <i class="dropdown icon"></i>
+                            Proactive chat settings
+                        </div>
+                        <div class="content" ng-class="{'active': section == 'proactive_settings'}" data-target="proactive_settings">
+                            <div class="field">
+                                <div class="inline field">
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" id="proactive_chat_enabled"
+                                               ng-model="brand_settings.chat.proactive" class="hidden right">
+                                        <label for="proactive_chat_enabled">Proactive chat enabled</label>
+                                    </div>
+                                </div>
+                                <p>
+                                    Having proactive chat enabled switched on enabled a popup that encourages users to
+                                    chat with you
+                                </p>
+                            </div>
+                            <div class="field" ng-show="brand_settings.chat.proactive">
+                                <label>Proactive chat widget style</label>
+                                <div class="ui grid">
+                                    <div class="three column row">
+                                        <div class="column">
+                                            <div class="ui checkbox image field proactive-style">
+                                                <input type="radio" name="widget_style"
+                                                       ng-model="brand_settings.chat.popup.style"
+                                                       id="proactive_style_agent_text_button" class="hidden"
+                                                       value="agent_text_button">
+                                                <label for="proactive_style_agent_text_button">
+                                                    Agent with text and button
+                                                    <div class="ui divider"></div>
+                                                    <img src="{{ asset('images/admin/chat-widget/agent-text-button.png') }}"
+                                                         alt="agent text and input"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="column">
+                                            <div class="ui checkbox image field proactive-style">
+                                                <input type="radio" ng-disabled="brand_settings.chat.request_user_info" name="widget_style"
+                                                       ng-model="brand_settings.chat.popup.style"
+                                                       id="proactive_style_agent_text_input" class="hidden"
+                                                       value="agent_text_input">
+                                                <label for="proactive_style_agent_text_input">
+                                                    Agent with text and input field
+                                                    <div class="ui divider"></div>
+                                                    <img src="{{ asset('images/admin/chat-widget/agent-text-input.png') }}"
+                                                         alt="agent text and input"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="column">
+                                            <div class="ui checkbox image field proactive-style">
+                                                <input type="radio" name="widget_style"
+                                                       ng-model="brand_settings.chat.popup.style"
+                                                       id="proactive_style_agents_button" class="hidden"
+                                                       value="agents_button">
+                                                <label for="proactive_style_agents_button">
+                                                    Agent(s) images only with button
+                                                    <div class="ui divider"></div>
+                                                    <img src="{{ asset('images/admin/chat-widget/agents-button.png') }}"
+                                                         alt="agent text and input"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="three column row">
+                                        <div class="column">
+                                            <div class="ui checkbox image field proactive-style">
+                                                <input type="radio" name="widget_style"
+                                                       ng-model="brand_settings.chat.popup.style"
+                                                       id="proactive_style_text_button" class="hidden"
+                                                       value="text_button">
+                                                <label for="proactive_style_text_button">
+                                                    Text only with button
+                                                    <div class="ui divider"></div>
+                                                    <img src="{{ asset('images/admin/chat-widget/text-button.png') }}"
+                                                         alt="agent text and input"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="column">
+                                            <div class="ui checkbox image field proactive-style">
+                                                <input type="radio" name="widget_style" ng-disabled="brand_settings.chat.request_user_info"
+                                                       ng-model="brand_settings.chat.popup.style"
+                                                       id="proactive_style_text_input"
+                                                       class="hidden" value="text_input">
+                                                <label for="proactive_style_text_input">
+                                                    Text only with text input
+                                                    <div class="ui divider"></div>
+                                                    <img src="{{ asset('images/admin/chat-widget/text-input.png') }}"
+                                                         alt="agent text and input"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="column">
+                                            <div class="ui checkbox image field proactive-style">
+                                                <input type="radio" name="widget_style"
+                                                       ng-model="brand_settings.chat.popup.style"
+                                                       id="proactive_style_widget_button_agent" class="hidden"
+                                                       value="widget_button_agent">
+                                                <label for="proactive_style_widget_button_agent">
+                                                    Agent with widget button
+                                                    <div class="ui divider"></div>
+                                                    <img src="{{ asset('images/admin/chat-widget/widget-button-agent.png') }}"
+                                                         alt="agent text and input"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-show="brand_settings.chat.popup.style == 'text_input' || brand_settings.chat.popup.style == 'text_button'">
+                                    <label>
+                                        Chat pop-up heading
+                                    </label>
+                                    <div class="inline fields">
+                                        <div class="thirteen wide field">
+                                            <input type="text" name="label" ng-model="brand_settings.chat.popup.translations[0].heading">
+                                        </div>
+                                        <div class="three wide field">
+                                            <dp-semantic-language-button translations="brand_settings.chat.popup.translations" key="heading" languages="languages">
+                                            </dp-semantic-language-button>
+                                        </div>
+                                    </div>
+                                    <label>Subheading</label>
+                                    <div class="inline fields">
+                                        <div class="thirteen wide field">
+                                            <textarea rows="3" ng-model="brand_settings.chat.popup.translations[0].subheading"></textarea>
+                                        </div>
+                                        <div class="three wide field">
+                                            <dp-semantic-language-button translations="brand_settings.chat.popup.translations" key="subheading" languages="languages">
+                                            </dp-semantic-language-button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-show="brand_settings.chat.popup.style == 'agent_text_input' || brand_settings.chat.popup.style == 'agent_text_button'">
+                                    <label>Agent title</label>
+                                    <div class="inline fields">
+                                        <div class="thirteen wide field">
+                                            <input type="text" name="label" ng-model="brand_settings.chat.popup.translations[0].title">
+                                        </div>
+                                        <div class="three wide field">
+                                            <dp-semantic-language-button translations="brand_settings.chat.popup.translations" key="title" languages="languages">
+                                            </dp-semantic-language-button>
+                                        </div>
+                                    </div>
+                                    <label>Message</label>
+                                    <div class="inline fields">
+                                        <div class="thirteen wide field">
+                                            <textarea rows="3" ng-model="brand_settings.chat.popup.translations[0].message"></textarea>
+                                        </div>
+                                        <div class="three wide field">
+                                            <dp-semantic-language-button translations="brand_settings.chat.popup.translations" key="message" languages="languages">
+                                            </dp-semantic-language-button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="with-margin" ng-show="brand_settings.chat.popup.style == 'agent_text_button' || brand_settings.chat.popup.style == 'text_button' || brand_settings.chat.popup.style == 'agents_button'">
+                                    <label>Start conversation button</label>
+                                    <div class="inline fields">
+                                        <div class="thirteen wide field">
+                                            <textarea rows="3" ng-model="brand_settings.chat.popup.translations[0].start_button"></textarea>
+                                        </div>
+                                        <div class="three wide field">
+                                            <dp-semantic-language-button translations="brand_settings.chat.popup.translations" key="start_button" languages="languages">
+                                            </dp-semantic-language-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="element">
+                        <div class="title" ng-class="{'active': section == 'ticket_settings'}" ng-click="section = 'ticket_settings'">
+                            <i class="dropdown icon"></i>
+                            {{ phrase('admin.widget.ticket_settings') }}
+                        </div>
+                        <div class="content" ng-class="{'active': section == 'ticket_settings'}" data-target="ticket_settings">
+                            <div class="field">
+                                <div>
+                                    <label>Department</label>
+                                    <div class="inline field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="ticket_department" id="ticket_department_select"
+                                                   class="hidden" ng-model="brand_settings.ticket.select_department" value="custom">
+                                            <label for="ticket_department_select">Selected by the user in the ticket
+                                                form</label>
+                                        </div>
+                                    </div>
+                                    <div class="inline field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="ticket_department" id="ticket_department_set"
+                                                   class="hidden" ng-model="brand_settings.ticket.select_department" value="default">
+                                            <label for="ticket_department_set">Set department (removes from the ticket
+                                                form)</label>
+
+                                            <br/>
+                                            <select ng-model="brand_settings.ticket.default_department" ng-show="brand_settings.ticket.select_department == 'default'">
+                                                <option ng-repeat="option in departments" ng-value="option.id" ng-selected="brand_settings.ticket.default_department == option.id">
+                                                    {{ ng_var('option.title') }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <ul class="errors">
+                                        <li ng-repeat="error in formErrors.settings.fields.brand.fields.ticket.fields.select_department.errors">
+                                            {{ ng_var('error.message') }}
+                                        </li>
+                                    </ul>
+                                    <ul class="errors">
+                                        <li ng-repeat="error in formErrors.settings.fields.brand.fields.ticket.fields.default_department.errors">
+                                            {{ ng_var('error.message') }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content" ng-class="{'active': section == 'ticket_settings'}" data-target="ticket_settings">
+                            <div class="field">
+                                <div>
+                                    <label>Subject</label>
+                                    <div class="inline field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="ticket_subject" id="ticket_subject_select_custom"
+                                                   class="hidden" ng-model="brand_settings.ticket.select_subject"
+                                                   value="custom">
+                                            <label for="ticket_subject_select_custom">
+                                                Ask user for a subject
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="inline field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="ticket_subject" id="ticket_subject_select_message"
+                                                   class="hidden" ng-model="brand_settings.ticket.select_subject"
+                                                   value="message">
+                                            <label for="ticket_subject_select_message">
+                                                Set the subject as the first 5 words of the message
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="inline field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="ticket_subject" id="ticket_subject_select_set"
+                                                   class="hidden" ng-model="brand_settings.ticket.select_subject"
+                                                   value="default">
+                                            <label for="ticket_subject_select_set">
+                                                Set a subject
+                                            </label>
+                                            <input type="text" ng-model="brand_settings.ticket.default_subject"
+                                                   ng-show="brand_settings.ticket.select_subject == 'default'" />
+                                        </div>
+                                    </div>
+                                    <ul class="errors">
+                                        <li ng-repeat="error in formErrors.settings.fields.brand.fields.ticket.fields.select_subject.errors">
+                                            {{ ng_var('error.message') }}
+                                        </li>
+                                    </ul>
+                                    <ul class="errors">
+                                        <li ng-repeat="error in formErrors.settings.fields.brand.fields.ticket.fields.default_subject.errors">
+                                            {{ ng_var('error.message') }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui vertical divider">
+            </div>
+            <div class="nine wide column">
+                <div class="ui segments">
+                    <div class="ui segment embed-help-title" ng-click="show_embed_help = !show_embed_help"
+                        ng-class="{'open': show_embed_help || !brand_settings.widget.enabled}">
+                        <img class="circular-plus" src="{{ asset('images/admin/chat-widget/green-circular-plus.svg') }}" />
+                        <div class="title-content">
+                            <h3>Add widget &amp; chat to your site</h3>
+                            Get instructions and help on how to add the widget to your website
+                        </div>
+                        <img class="big-arrow" src="{{ asset('images/admin/chat-widget/green-arrow.svg') }}" />
+                    </div>
+                    <div class="ui segment" ng-show="show_embed_help || !brand_settings.widget.enabled">
+                        <label>Embed code</label>
+                        <div class="inline fields">
+                            <div class="ui twelve wide field">
+                                <input type="text" id="widget_code" readonly="readonly" onClick="this.select();" ng-model="code"/>
+                            </div>
+                            <div class="ui four wide field">
+                                <button dp-clipboard
+                                        class="ui basic button"
+                                        data-clipboard-target="#widget_code"
+                                        ngclipboard-success="Growl.success('The code snippet was copied to your clipboard')">COPY</button>
+                            </div>
+                        </div>
+                        <div class="inline fields">
+                            <div class="ui toggle checkbox">
+                                <input type="checkbox" id="enabled_on_portal" ng-model="enabled_on_portal" class="hidden right">
+                                <label for="enabled_on_portal">Enable the widget on your user portal</label>
+                            </div>
+                        </div>
+                        <div class="ui top attached tabular menu">
+                            <a class="active item" dp-tab-btn="main.install.cms">Manually installing the widget</a>
+                            <a class="item" dp-tab-btn="main.install.tickets">Install widget in a CMS</a>
+                        </div>
+                        <div class="ui bottom attached active tab segment cms-install" dp-tab-body="main.install.cms">
+                            <div class="ui equal width grid">
+                                <div class="column">
+                                    <i class="big icon copy"></i>
+                                    <h4>Copy the code</h4>
+                                    Set up your widget then copy the embed code above.
+                                </div>
+                                <div class="column">
+                                    <i class="big icon code"></i>
+                                    <h4>Paste on your site</h4>
+                                    Place the embed code in the &lt;head&gt; section of your website.
+                                </div>
+                                <div class="column">
+                                    <i class="big icon laptop"></i>
+                                    <h4>Get started</h4>
+                                    Save the changes and users can start using the widget!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui bottom attached tab segment" dp-tab-body="main.install.tickets">
+                            <div class="ui grid">
+                                <div class="five wide column">
+                                    <div class="ui basic fluid button">
+                                        <a href="http://support.deskpro.com/kb/articles/541" target="_blank">
+                                            <i class="icon wordpress"></i>Wordpress
+                                        </a>
+                                    </div>
+                                    <div class="ui basic fluid button">
+                                        <a href="http://support.deskpro.com/kb/articles/542" target="_blank">
+                                            <i class="icon shopify"></i> Shopify
+                                        </a>
+                                    </div>
+                                    <div class="ui basic fluid button">
+                                        <a href="http://support.deskpro.com/kb/articles/543" target="_blank">
+                                            <i class="icon drupal"></i> Drupal
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="five wide column">
+                                    <div class="ui basic fluid button">
+                                        <a href="http://support.deskpro.com/kb/articles/544" target="_blank">
+                                            <i class="icon magento"></i> Magento
+                                        </a>
+                                    </div>
+                                    <div class="ui basic fluid button">
+                                        <a href="http://support.deskpro.com/kb/articles/545" target="_blank">
+                                            <i class="icon joomla"></i> Joomla
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui segment" ng-show="show_embed_help || !brand_settings.widget.enabled">
+                        <h3>Need more help?</h3>
+                        <p>Use the form below and we'll email a member of your team who manages the technical side of
+                            things,
+                            we'll send them the code and setup instructions.</p>
+                        <div class="inline fields">
+                            <div class="ui ten wide field">
+                                <input type="email" ng-model="emailSendInstructions" placeholder="Email address">
+                            </div>
+                            <div class="ui six wide field">
+                                <button class="ui button" ng-click="Ctrl.sendInstructions()">Send Instructions</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui segment" ng-show="show_embed_help || !brand_settings.widget.enabled">
+                        <h3>Advanced settings and overrides.</h3>
+                        <p>If you'd like more control over how your widget works and it's appearance on different pages,
+                            brands
+                            etc please visit the following knowledgebase articles to get you started:</p>
+                        <div class="ui list">
+                            <div class="item"><i class="browser icon"></i>
+                                <div class="content">
+                                    <a href="http://support.deskpro.com/kb/articles/546" target="_blank">
+                                        Overriding widget and chat settings
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="item"><i class="browser icon"></i>
+                                <div class="content">
+                                    <a href="http://support.deskpro.com/kb/articles/547" target="_blank">
+                                        Advance help &amp; chat widget styles
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview" ng-hide="show_embed_help || !brand_settings.widget.enabled">
+                    <div class="ui inline field" ng-if="false">
+                        <label>Preview</label>
+                        <div class="ui labeled action input">
+                            <div class="ui label">
+                                http://
+                            </div>
+                            <input type="text" id="iframe-target" placeholder="mysite.com">
+                            <button class="ui basic button" ng-click="Ctrl.changeFrameSource()">Go</button>
+                        </div>
+                    </div>
+                    <div class="ui pointing menu">
+                        <div class="item">
+                            Preview Mode:
+                        </div>
+                        <a class="item" ng-class="{'active': demo_state == 'button'}" ng-click="Ctrl.changeDemoState('button')">
+                            Button
+                        </a>
+                        <a class="item" ng-class="{'active': demo_state == 'pre-chat'}" ng-click="Ctrl.changeDemoState('pre-chat')" ng-if="global_settings.chat.enabled">
+                            Pre-chat
+                        </a>
+                        <a class="item" ng-class="{'active': demo_state == 'in-chat'}" ng-click="Ctrl.changeDemoState('in-chat')" ng-if="global_settings.chat.enabled">
+                            In Chat
+                        </a>
+                        <a class="item" ng-class="{'active': demo_state == 'ticket'}" ng-click="Ctrl.changeDemoState('ticket')">
+                            Ticket
+                        </a>
+                    </div>
+                    <div class="widget-editor-live-demo-container">
+                        <div class="widget-editor-live-demo-loader" ng-hide="widgetLoaded"><i></i></div>
+                        <iframe id="live-demo" ng-show="widgetLoaded"></iframe>
+                    </div>
+                </div>
+
+                <button class="ui button right" ng-click="Ctrl.reset()">Reset to default</button>
+                <button class="ui button" ng-click="Ctrl.discard()" ng-disabled="!flag_has_changed">Discard changes</button>
+                <button class="ui button" ng-click="Ctrl.updateChatCode()" ng-disabled="!flag_has_changed">Save</button>
+                <div ng-show="flag_has_changed" class="pending_changes">
+                    <p>
+                        Pending changes
+                    </p>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

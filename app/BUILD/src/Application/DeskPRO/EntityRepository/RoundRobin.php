@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,9 +31,10 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity\RoundRobinAgent;
+use Application\DeskPRO\Entity\RoundRobinAgent as RoundRobinAgentEntity;
 
 class RoundRobin extends AbstractEntityRepository
 {
@@ -44,14 +45,14 @@ class RoundRobin extends AbstractEntityRepository
      * @param \Application\DeskPRO\Entity\RoundRobin $robin
      * @param array                                  $agents
      */
-    public function setAgents(\Application\DeskPRO\Entity\RoundRobin $robin, array $agents = array())
+    public function setAgents(\Application\DeskPRO\Entity\RoundRobin $robin, array $agents = [])
     {
         $robin->agents->clear();
         $this->_em->flush();
         $sort = 0;
 
         foreach ($agents as $agentData) {
-            $agentRef        = new RoundRobinAgent();
+            $agentRef        = new RoundRobinAgentEntity();
             $agentRef->robin = $robin;
             $agentRef->agent = $this->_em->getReference('DeskPRO:Person', $agentData['id']);
             $this->_em->persist($agentRef);

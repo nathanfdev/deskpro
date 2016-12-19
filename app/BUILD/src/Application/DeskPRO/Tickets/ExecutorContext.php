@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
@@ -46,10 +47,11 @@ class ExecutorContext implements ExecutorContextInterface
     const EVENT_UPDATE = 'update';
     const EVENT_NOOP   = 'noop';
 
-    const METHOD_API   = 'api';
-    const METHOD_WEB   = 'web';
-    const METHOD_EMAIL = 'email';
-    const METHOD_SMS   = 'sms';
+    const METHOD_API    = 'api';
+    const METHOD_WEB    = 'web';
+    const METHOD_EMAIL  = 'email';
+    const METHOD_MOBILE = 'mobile';
+    const METHOD_SMS    = 'sms';
 
     /**
      * @var \Orb\Util\OptionsArray
@@ -79,7 +81,7 @@ class ExecutorContext implements ExecutorContextInterface
     /**
      * @var array
      */
-    private $event_method_options = array();
+    private $event_method_options = [];
 
     /**
      * @var null
@@ -95,7 +97,7 @@ class ExecutorContext implements ExecutorContextInterface
     {
         if (!$logger) {
             // Null logger
-            $logger = new Logger('ticket', array(new NullHandler()));
+            $logger = new Logger('ticket', [new NullHandler()]);
         }
 
         $this->vars      = new OptionsArray();
@@ -211,14 +213,14 @@ class ExecutorContext implements ExecutorContextInterface
      * @param string $event_method         Event method (email, api, or web)
      * @param array  $event_method_options Event options (eg a URL etc)
      */
-    public function setEventMethod($event_method, array $event_method_options = array())
+    public function setEventMethod($event_method, array $event_method_options = [])
     {
         $this->event_method         = $event_method;
         $this->event_method_options = $event_method_options;
     }
 
     /**
-     * @return string email, api or web
+     * @return string email, mobile, api or web
      */
     public function getEventMethod()
     {

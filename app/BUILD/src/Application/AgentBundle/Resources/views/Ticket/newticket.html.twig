@@ -2,7 +2,6 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTicket';
 pageMeta.title = '{{ phrase('agent.general.new_ticket') }}';
 pageMeta.ticket_id = 0;
-pageMeta.agentMap = {{ agent_map|json_encode|raw }};
 
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'ticket'}) }}';
 pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
@@ -46,6 +45,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div style="display:none;" class="error-message person_id person_no_user">&bull; {{ phrase('agent.tickets.please_choose_or_create_user') }}</div>
 	<div style="display:none;" class="error-message person_email_address">&bull; {{ phrase('agent.general.error_email_address') }}</div>
 	<div style="display:none;" class="error-message person_email_address_gateway">&bull; {{ phrase('agent.tickets.email_is_ticket_account') }}</div>
+	<div style="display:none;" class="error-message brand_id">&bull; {{ phrase('agent.general.select_a_brand') }}</div>
 	<div style="display:none;" class="error-message department_id">&bull; {{ phrase('agent.general.select_a_department') }}</div>
 	<div style="display:none;" class="error-message message">&bull; {{ phrase('agent.general.enter_a_message') }}</div>
 	<div style="display:none;" class="error-message person_disabled">&bull; {{ phrase('agent.tickets.user_is_disabled') }}</div>
@@ -162,112 +162,143 @@ pageMeta.baseId = '{{ baseId }}';
 		<article id="{{baseId}}_headerbox_box_props" class="headerbox">
 			<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table" id="{{baseId}}_fields_container">
 				<tbody>
-					<th width="80">{{ phrase('agent.general.department') }}</th>
-					<td>
-						{% include 'AgentBundle:Common:select-department.html.twig' with {
-							'name': "newticket[department_id]",
-							'id': baseId ~ '_dep',
-							'departments': app.departments.getPersonDepartments(app.user, 'tickets', [], 'assign'),
-							'selected': ticket.department_id,
-                            'add_attr': 'data-style-type="icons" data-select-icon-size="22"',
-							with_blank: true
-						} %}
-					</td>
+					{% if brands|length > 1 %}
+						<tr>
+							<th width="80">{{ phrase('agent.general.brand') }}</th>
+							<td>
+								{% include 'AgentBundle:Common:select-standard.html.twig' with {
+								'name': "newticket[brand_id]",
+								'id': baseId ~ '_brand',
+								'add_classname': 'brand_id ' ~ add_classname,
+								'with_blank': true,
+								'categories': brands,
+								} %}
+							</td>
+						</tr>
+					{% endif %}
+					<tr>
+						<th width="80">{{ phrase('agent.general.department') }}</th>
+						<td>
+							{% if not ticket.department_id %}
+								{% set dep = app.brandDefaultDepartment('agent').getId() %}
+							{% else %}
+								{% set dep = ticket.department_id %}
+							{% endif %}
+							{% include 'AgentBundle:Common:select-department.html.twig' with {
+								'name': "newticket[department_id]",
+								'id': baseId ~ '_dep',
+								'departments': app.departments.getPersonDepartments(app.user, 'tickets', [], 'assign'),
+								'selected': dep,
+								'add_attr': 'data-style-type="icons" data-select-icon-size="22"',
+								with_blank: true
+							} %}
+						</td>
+					</tr>
 				</tbody>
 
 				{% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.view') and app.user.PermissionsManager.get('TicketChecker').canAssociateProblem(ticket) %}
 					<tbody>
-					<th>
-						{{ phrase('agent.problems.problem') }}
-					</th>
-					<td>
+						<tr>
+							<th>
+								{{ phrase('agent.problems.problem') }}
+							</th>
+							<td>
 
-						{% if app.user.hasPerm('agent_problems.create') %}
-							{% set open_problems = [{id: -1, title: phrase('agent.problems.create_problem')}]|merge(open_problems) %}
-						{% endif %}
+								{% if app.user.hasPerm('agent_problems.create') %}
+									{% set open_problems = [{id: -1, title: phrase('agent.problems.create_problem')}]|merge(open_problems) %}
+								{% endif %}
 
-						<div>
-							{% include 'AgentBundle:Common:select-standard.html.twig' with {
-							'name': 'problem_id',
-							'add_classname': 'problem_id',
-							'add_attr': '',
-							'with_blank': 1,
-							'blank_title': 'None',
-							'categories': open_problems,
-							'id': baseId ~ '_select_problem'
-							} %}
+								<div>
+									{% include 'AgentBundle:Common:select-standard.html.twig' with {
+									'name': 'problem_id',
+									'add_classname': 'problem_id',
+									'add_attr': '',
+									'with_blank': 1,
+									'blank_title': 'None',
+									'categories': open_problems,
+									'id': baseId ~ '_select_problem'
+									} %}
 
-							{% if app.user.hasPerm('agent_problems.create') %}
-								<input id="{{ baseId }}_problem_title" type="text" name="problem_title"
-									   style="display: none;" placeholder="{{ phrase('agent.problems.problem') }}"/>
-							{% endif %}
-						</div>
-					</td>
+									{% if app.user.hasPerm('agent_problems.create') %}
+										<input id="{{ baseId }}_problem_title" type="text" name="problem_title"
+											   style="display: none;" placeholder="{{ phrase('agent.problems.problem') }}"/>
+									{% endif %}
+								</div>
+							</td>
+						</tr>
 					</tbody>
 				{% endif %}
 
 				{% if app.getSetting('core.use_ticket_category') %}
 					<tbody class="col fieldprop ticket-field item-on category inline-field" style="display: none;">
-						<th>{{ phrase('agent.general.category') }}</th>
-						<td>
-							<div>
-								{% include 'AgentBundle:Common:select-category.html.twig' with {
-									'name': "newticket[category_id]",
-									'id': baseId ~ '_cat',
-									'categories': ticket_options.ticket_categories_hierarchy,
-									'selected': ticket.category_id,
-									'with_blank': true
-								} %}
-							</div>
-						</td>
+						<tr>
+							<th>{{ phrase('agent.general.category') }}</th>
+							<td>
+								<div>
+									{% include 'AgentBundle:Common:select-category.html.twig' with {
+										'name': "newticket[category_id]",
+										'id': baseId ~ '_cat',
+										'categories': ticket_options.ticket_categories_hierarchy,
+										'selected': ticket.category_id,
+										'with_blank': true
+									} %}
+								</div>
+							</td>
+						</tr>
 					</tbody>
 				{% endif %}
 
 				{% if app.getSetting('core.use_ticket_priority') %}
 					<tbody class="col fieldprop ticket-field item-on priority inline-field" style="display: none;">
-						<th>{{ phrase('agent.general.priority') }}</th>
-						<td>
-							{% include 'AgentBundle:Common:select-priority.html.twig' with {
-								'name': "newticket[priority_id]",
-								'id': baseId ~ '_pri',
-								'add_classname': 'ticket_priority',
-								'selected': ticket.priority_id,
-								'priorities': ticket_options.ticket_priorities,
-								'with_blank': true
-							} %}
-						</td>
+						<tr>
+							<th>{{ phrase('agent.general.priority') }}</th>
+							<td>
+								{% include 'AgentBundle:Common:select-priority.html.twig' with {
+									'name': "newticket[priority_id]",
+									'id': baseId ~ '_pri',
+									'add_classname': 'ticket_priority',
+									'selected': ticket.priority_id,
+									'priorities': ticket_options.ticket_priorities,
+									'with_blank': true
+								} %}
+							</td>
+						</tr>
 					</tbody>
 				{% endif %}
 
 				{% if app.getSetting('core.use_ticket_workflow') %}
 					<tbody class="col fieldprop ticket-field item-on workflow inline-field" style="clear:both;display: none;">
-						<th>{{ phrase('agent.general.workflow') }}</th>
-						<td>
-							{% include 'AgentBundle:Common:select-workflow.html.twig' with {
-								'name': "newticket[workflow_id]",
-								'id': baseId ~ '_work',
-								'add_classname': 'ticket_workflow',
-								'selected': ticket.workflow_id,
-								'workflows': ticket_options.ticket_workflows,
-								'with_blank': true
-							} %}
-						</td>
+						<tr>
+							<th>{{ phrase('agent.general.workflow') }}</th>
+							<td>
+								{% include 'AgentBundle:Common:select-workflow.html.twig' with {
+									'name': "newticket[workflow_id]",
+									'id': baseId ~ '_work',
+									'add_classname': 'ticket_workflow',
+									'selected': ticket.workflow_id,
+									'workflows': ticket_options.ticket_workflows,
+									'with_blank': true
+								} %}
+							</td>
+						</tr>
 					</tbody>
 				{% endif %}
 
 				{% if app.getSetting('core.use_product') %}
 					<tbody class="col fieldprop ticket-field item-on product inline-field" style="clear:both;display: none;">
-						<th>{{ phrase('agent.general.product') }}</th>
-						<td>
-							{% include 'AgentBundle:Common:select-product.html.twig' with {
-								'name': "newticket[product_id]",
-								'id': baseId ~ '_prod',
-								'add_classname': 'ticket_product',
-								'products': ticket_options.products_hierarchy,
-								'selected': ticket.product_id,
-								'with_blank': true
-							} %}
-						</td>
+						<tr>
+							<th>{{ phrase('agent.general.product') }}</th>
+							<td>
+								{% include 'AgentBundle:Common:select-product.html.twig' with {
+									'name': "newticket[product_id]",
+									'id': baseId ~ '_prod',
+									'add_classname': 'ticket_product',
+									'products': ticket_options.products_hierarchy,
+									'selected': ticket.product_id,
+									'with_blank': true
+								} %}
+							</td>
+						</tr>
 					</tbody>
 				{% endif %}
 
@@ -275,12 +306,12 @@ pageMeta.baseId = '{{ baseId }}';
 				{% if custom_fields %}
 					{% for f in custom_fields if f.field_def.getTypeName() != 'hidden' %}
 						<tbody class="col fieldprop ticket-field item-on ticket-field-{{f.field_def.id}} item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;">
-						<tr>
-							<th>{{ f.title }}</th>
-							<td>
-								{{ render_custom_field_form(f) }}
-							</td>
-						</tr>
+							<tr>
+								<th>{{ f.title }}</th>
+								<td>
+									{{ render_custom_field_form(f) }}
+								</td>
+							</tr>
 						</tbody>
 					{% endfor %}
 				{% endif %}
@@ -360,8 +391,6 @@ pageMeta.baseId = '{{ baseId }}';
 								</li>
 							{% endif %}
 						</ul>
-						<input type="hidden" id="{{ baseId }}_billing_type_hidden" name="billing_type" value="time" />
-						<input type="hidden" id="{{ baseId }}_billing_id_hidden" name="billing_id" value="" />
 					</td>
 				</tr>
 				{% for f in billing_fields %}
@@ -494,7 +523,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<table cellpadding="0" cellspacing="0" border="0"><tr>
 			<td valign="middle" style="vertical-align: middle;">
 				<div id="{{ baseId }}_send_btn">
-					<div class="dp-btn-group dp-dropup" id="{{ baseId }}_reply_btn_group">
+					<div class="dp-btn-group dp-dropup hide-note" id="{{ baseId }}_reply_btn_group">
 						<a class="dp-btn dp-btn-primary submit-trigger">
 							<i class="icon-share-alt"></i>&nbsp;
 							{% if app.getSetting('core_tickets.new_status') == 'awaiting_user' %}
@@ -509,13 +538,16 @@ pageMeta.baseId = '{{ baseId }}';
 						</a>
 						<a class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger"><span class="dp-caret dp-caret-up"></span></a>
 					</div>
+					<a class="dp-btn dp-btn-primary submit-trigger hide-reply" style="position: relative; z-index: 50; display: none;">
+						<i class="icon-share"></i>&nbsp;
+						{{ phrase('agent.tickets.add_note') }}
+					</a>
 					<a id="discard-draft-btn" class="dp-btn dp-btn-primary" type="button" style="display: none;">
 						<span>
 							{{ phrase('agent.tickets.discard_draft') }}
 						</span>
 					</a>
 				</div>
-
 				<div id="{{ baseId }}_send_loading" style="display: none;">
 					<span class="flat-spinner"></span>
 				</div>

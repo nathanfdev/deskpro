@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
@@ -55,16 +56,16 @@ class Dp3Detector implements TicketDetectorInterface
 
         $subject_text = $reader->getSubject()->getSubject();
 
-        $body_text   = array();
+        $body_text   = [];
         $body_text[] = $reader->getBodyText()->getBody();
         $body_text[] = strip_tags($reader->getBodyHtml()->getBody());
         $body_text   = implode(' ', $body_text);
 
         $from_email = $reader->getFromAddress()->getEmail();
 
-        #------------------------------
-        # Match user gateway codes
-        #------------------------------
+        //------------------------------
+        // Match user gateway codes
+        //------------------------------
 
         $ticket = $this->userMatchSubject($subject_text);
         if (!$ticket) {
@@ -72,7 +73,6 @@ class Dp3Detector implements TicketDetectorInterface
         }
 
         if ($ticket && !$ticket->isArchived()) {
-
             // In DP3 they must already be on the ticket
             $person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($from_email);
             if ($person && $ticket->findEmailForPerson($person)) {
@@ -82,9 +82,9 @@ class Dp3Detector implements TicketDetectorInterface
             return $ticket;
         }
 
-        #------------------------------
-        # Match tech gateway codes
-        #------------------------------
+        //------------------------------
+        // Match tech gateway codes
+        //------------------------------
 
         $ticket = $this->techMatchSubject($subject_text);
         if ($ticket && !$ticket->isArchived()) {
@@ -104,18 +104,18 @@ class Dp3Detector implements TicketDetectorInterface
      */
     public function userMatchSubject($subject_text)
     {
-        #------------------------------
-        # Match ref
-        #------------------------------
+        //------------------------------
+        // Match ref
+        //------------------------------
 
         if (!preg_match('#\[([0-9]{4}-[A-Za-z]{4}-[0-9]{4})\]#', $subject_text, $m)) {
             return;
         }
         $old_ref = $m[1];
 
-        #------------------------------
-        # Match authcode after ref
-        #------------------------------
+        //------------------------------
+        // Match authcode after ref
+        //------------------------------
 
         $pos = strpos($subject_text, $m[0]);
 
@@ -124,17 +124,17 @@ class Dp3Detector implements TicketDetectorInterface
         }
         $old_auth = $m[1];
 
-        #------------------------------
-        # Fetch map info
-        #------------------------------
+        //------------------------------
+        // Fetch map info
+        //------------------------------
 
-        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketref_'.$old_ref));
+        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', ['dp3_ticketref_'.$old_ref]);
         if ($map_info) {
             $map_info = @unserialize($map_info);
 
         // Might have a merge record
         } else {
-            $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketmerge_'.$old_ref));
+            $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', ['dp3_ticketmerge_'.$old_ref]);
             if ($map_info) {
                 $map_info = @unserialize($map_info);
             }
@@ -143,9 +143,9 @@ class Dp3Detector implements TicketDetectorInterface
             return;
         }
 
-        #------------------------------
-        # Check and return ticket
-        #------------------------------
+        //------------------------------
+        // Check and return ticket
+        //------------------------------
 
         if ($old_auth != $map_info['old_auth']) {
             return;
@@ -171,17 +171,17 @@ class Dp3Detector implements TicketDetectorInterface
         $old_ref  = $m[1];
         $old_auth = $m[2];
 
-        #------------------------------
-        # Fetch map info
-        #------------------------------
+        //------------------------------
+        // Fetch map info
+        //------------------------------
 
-        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketref_'.$old_ref));
+        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', ['dp3_ticketref_'.$old_ref]);
         if ($map_info) {
             $map_info = @unserialize($map_info);
 
         // Might have a merge record
         } else {
-            $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketmerge_'.$old_ref));
+            $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', ['dp3_ticketmerge_'.$old_ref]);
             if ($map_info) {
                 $map_info = @unserialize($map_info);
             }
@@ -190,9 +190,9 @@ class Dp3Detector implements TicketDetectorInterface
             return;
         }
 
-        #------------------------------
-        # Check and return ticket
-        #------------------------------
+        //------------------------------
+        // Check and return ticket
+        //------------------------------
 
         if ($old_auth != $map_info['old_auth']) {
             return;
@@ -219,11 +219,11 @@ class Dp3Detector implements TicketDetectorInterface
         $old_tech_id   = $m[2];
         $old_tech_auth = $m[3];
 
-        #------------------------------
-        # Fetch map info
-        #------------------------------
+        //------------------------------
+        // Fetch map info
+        //------------------------------
 
-        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_ticketref_'.$old_ref));
+        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', ['dp3_ticketref_'.$old_ref]);
         if ($map_info) {
             $map_info = @unserialize($map_info);
         }
@@ -231,7 +231,7 @@ class Dp3Detector implements TicketDetectorInterface
             return;
         }
 
-        $techmap_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array('dp3_techpass_'.$old_tech_id));
+        $techmap_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', ['dp3_techpass_'.$old_tech_id]);
         if ($techmap_info) {
             $techmap_info = @unserialize($techmap_info);
         }
@@ -239,9 +239,9 @@ class Dp3Detector implements TicketDetectorInterface
             return;
         }
 
-        #------------------------------
-        # Check and return ticket
-        #------------------------------
+        //------------------------------
+        // Check and return ticket
+        //------------------------------
 
         $check_tech_auth = substr(md5($techmap_info['old_pass'].$map_info['old_auth']), 0, 8);
         if ($check_tech_auth != $old_tech_auth) {

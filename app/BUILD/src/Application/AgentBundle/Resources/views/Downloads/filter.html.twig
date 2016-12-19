@@ -1,7 +1,5 @@
 {% extends 'AgentBundle::list-pane-layout.html.twig' %}
-{% block dp_declare %}
-	{{ set_tplvar('baseId', el_uid()) }}
-{% endblock %}
+{% set tplvars = { baseId: el_uid() } %}
 
 {######################################################################################################################}
 {# METADATA #}
@@ -9,7 +7,7 @@
 {% block top %}
 	<script>
 		pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.DownloadList';
-		pageMeta.refreshUrl = '{{ path('agent_downloads_list', {'cache_id': result_id}) }}';
+		pageMeta.refreshUrl = '{{ path('agent_downloads_list', {'cache_id': result_id, 'category_id': category.id }) }}';
 		pageMeta.url_fragment = '{{ url_fragment('agent_downloads_list', {'category_id': category.id}) }}';
 		pageMeta.baseId = '{{ tplvars.baseId }}';
 	</script>
@@ -138,7 +136,7 @@
 		<header><h1>{{ phrase('agent.publish.reorder_category_title') }}</h1></header>
 		<article>
 			<div style="padding: 10px;" id="{{ tplvars.baseId }}_cattree" data-treedata="{{ cat_structure_data|json_encode }}"></div>
-			<input type="hidden" id="{{ tplvars.baseId }}_cattree_struct" name="category_structure" name="category_structure" value="" />
+			<input type="hidden" id="{{ tplvars.baseId }}_cattree_struct" name="category_structure" value="" />
 		</article>
 	</section>
 

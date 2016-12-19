@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,45 +28,88 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
-class Problem extends \Application\DeskPRO\Domain\DomainObject
+/**
+ * Class Problem.
+ *
+ * @JMS\ExclusionPolicy("all")
+ */
+class Problem extends DomainObject
 {
     const FILTER_PREFIX = 'problem_';
 
     /**
+     * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id;
 
     /**
+     * Problem title.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     protected $title;
 
     /**
+     * Person who created the problem.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
      * @var Person
      */
     protected $creator;
 
     /**
+     * Date when the problem was created.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $created;
 
     /**
+     * Is problem still has no solution?
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_open;
 
     /**
+     * Tickets associated with problem.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Ticket>>")
+     *
      * @var ArrayCollection
      */
     protected $tickets;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->created = new \DateTime();
@@ -74,9 +117,97 @@ class Problem extends \Application\DeskPRO\Domain\DomainObject
         $this->tickets = new ArrayCollection();
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * @return Person
+     */
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
+    /**
+     * @param Person $creator
+     *
+     * @return $this
+     */
+    public function setCreator($creator)
+    {
+        $this->setModelField('creator', $creator);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOpen()
+    {
+        return $this->is_open;
+    }
+
+    /**
+     * @param bool $is_open
+     *
+     * @return $this
+     */
+    public function setIsOpen($is_open)
+    {
+        $this->setModelField('is_open', $is_open);
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection|Ticket[]
+     */
+    public function getTickets()
+    {
+        return $this->tickets;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * @param \DateTime $created
+     *
+     * @return $this
+     */
+    public function setCreated(\DateTime $created)
+    {
+        $this->setModelField('created', $created);
+
+        return $this;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -85,12 +216,12 @@ class Problem extends \Application\DeskPRO\Domain\DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Problem';
 
         if (defined('DP_INTERFACE') && DP_INTERFACE != 'install') {
-            foreach (array(
+            foreach ([
                          Events::prePersist,
                          Events::postPersist,
                          Events::preUpdate,
                          Events::postUpdate,
-                     ) as $event) {
+                     ] as $event) {
                 $metadata->addEntityListener(
                     $event,
                     'Application\DeskPRO\Entity\EventListener\ProblemListener',
@@ -100,81 +231,81 @@ class Problem extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $metadata->setPrimaryTable(
-            array(
+            [
                 'name'    => 'problems',
-                'indexes' => array(),
-            )
+                'indexes' => [],
+            ]
         );
 
         $metadata->mapField(
-            array(
+            [
                 'fieldName' => 'id',
                 'type'      => 'integer',
                 'id'        => true,
-            )
+            ]
         );
 
         $metadata->mapField(
-            array(
+            [
                 'fieldName' => 'title',
-            )
+            ]
         );
 
         $metadata->mapField(
-            array(
+            [
                 'fieldName' => 'created',
                 'type'      => 'datetime',
-            )
+            ]
         );
 
         $metadata->mapField(
-            array(
+            [
                 'fieldName' => 'is_open',
                 'type'      => 'boolean',
-            )
+            ]
         );
 
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'creator',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-                'joinColumns'  => array(
-                    array(
+                'joinColumns'  => [
+                    [
                         'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
                         'onDelete'             => 'set null',
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
 
         $metadata->mapManyToMany(
-            array(
+            [
                 'fieldName'    => 'tickets',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
-                'cascade'      => array('persist', 'merge'),
+                'targetEntity' => Ticket::class,
+                'cascade'      => ['persist', 'merge'],
                 'mappedBy'     => 'problems',
-                'joinTable'    => array(
+                'joinTable'    => [
                     'name'        => 'problem2tickets',
-                    'joinColumns' => array(
-                        array(
+                    'joinColumns' => [
+                        [
                             'name'                 => 'problem_id',
                             'referencedColumnName' => 'id',
                             'nullable'             => true,
                             'onDelete'             => 'cascade',
-                        ),
-                    ),
-                    'inverseJoinColumns' => array(
-                        array(
+                        ],
+                    ],
+                    'inverseJoinColumns' => [
+                        [
                             'name'                 => 'ticket_id',
                             'referencedColumnName' => 'id',
                             'nullable'             => true,
                             'onDelete'             => 'cascade',
-                        ),
-                    ),
-                ),
-            )
+                        ],
+                    ],
+                ],
+            ]
         );
     }
 }

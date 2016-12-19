@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -44,9 +45,9 @@ class TicketMessageEmailId extends \Application\DeskPRO\Domain\DomainObject
 
     protected $email_id;
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -54,34 +55,36 @@ class TicketMessageEmailId extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 //		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketMessageEmailId';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'tickets_message_email_id',
-            'indexes' => array(
-                'email_id_idx' => array('columns' => array('email_id')),
-            ),
-        ));
+            'indexes' => [
+                'email_id_idx' => ['columns' => ['email_id']],
+            ],
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName' => 'id',
             'id'        => true,
             'type'      => 'integer',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'email_id',
             'nullable'   => false,
             'columnName' => 'email_id',
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'message',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage',
             'inversedBy'   => 'email_message_id',
-            'joinColumns'  => array(array(
-                'name'                 => 'message_id',
-                'referencedColumnName' => 'id',
-                'onDelete'             => 'CASCADE',
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'message_id',
+                    'referencedColumnName' => 'id',
+                    'onDelete'             => 'CASCADE',
+                ],
+            ],
+        ]);
     }
 }

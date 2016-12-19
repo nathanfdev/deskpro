@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\Triggers\Edit;
 
 use Application\DeskPRO\Entity\Department;
@@ -131,16 +132,16 @@ class SpecialTriggerEdit
 
         if ($this->event == TicketTrigger::EVENT_TYPE_UPDATE) {
             $trigger->event_trigger = 'update';
-            $trigger->by_agent_mode = array('api', 'email', 'web');
-            $trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
+            $trigger->by_agent_mode = ['api', 'email', 'web', 'mobile'];
+            $trigger->by_user_mode  = ['api', 'email', 'form', 'portal', 'widget'];
 
-            $terms_set->add(new CheckDepartment('changed_to', array('department_ids' => array($this->obj->id))));
+            $terms_set->add(new CheckDepartment('changed_to', ['department_ids' => [$this->obj->id]]));
         } else {
             $trigger->event_trigger = 'newticket';
-            $trigger->by_agent_mode = array('api', 'email', 'web');
-            $trigger->by_user_mode  = array('form', 'portal', 'widget');
+            $trigger->by_agent_mode = ['api', 'email', 'web', 'mobile'];
+            $trigger->by_user_mode  = ['api', 'form', 'portal', 'widget'];
 
-            $terms_set->add(new CheckDepartment('is', array('department_ids' => array($this->obj->id))));
+            $terms_set->add(new CheckDepartment('is', ['department_ids' => [$this->obj->id]]));
         }
 
         $terms->addTerm($terms_set);
@@ -158,14 +159,14 @@ class SpecialTriggerEdit
 
         $terms     = new TriggerTerms();
         $terms_set = new TriggerTermComposite();
-        $terms_set->add(new CheckEmailAccount('is', array('email_account_ids' => array($this->obj->id))));
+        $terms_set->add(new CheckEmailAccount('is', ['email_account_ids' => [$this->obj->id]]));
         $terms->addTerm($terms_set);
 
         $trigger->terms = $terms;
 
         $trigger->event_trigger = 'newticket';
-        $trigger->by_agent_mode = array('email');
-        $trigger->by_user_mode  = array('email');
+        $trigger->by_agent_mode = ['email'];
+        $trigger->by_user_mode  = ['email'];
     }
 
     private function applySatisfactionToTrigger(TicketTrigger $trigger)
@@ -175,21 +176,21 @@ class SpecialTriggerEdit
         $trigger->email_account = null;
         $trigger->department    = null;
 
-        $ratings = array(
+        $ratings = [
             'positive' => 1,
             'neutral'  => 0,
             'negative' => -1,
-        );
+        ];
 
         $terms     = new TriggerTerms();
         $terms_set = new TriggerTermComposite();
-        $terms_set->add(new CheckSatisfactionSubmittedRating('is', array('rating' => $ratings[$this->obj])));
+        $terms_set->add(new CheckSatisfactionSubmittedRating('is', ['rating' => $ratings[$this->obj]]));
         $terms->addTerm($terms_set);
         $trigger->terms = $terms;
 
         $trigger->event_trigger = 'update';
-        $trigger->by_agent_mode = array('api', 'email', 'web');
-        $trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
+        $trigger->by_agent_mode = ['api', 'email', 'web', 'mobile'];
+        $trigger->by_user_mode  = ['api', 'email', 'form', 'portal', 'widget'];
 
         $trigger->sys_name = self::TYPE_SATISFACTION.'_'.$this->obj;
     }

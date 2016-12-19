@@ -1,0 +1,16 @@
+#!/bin/bash
+
+DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../"
+cd $DIR_ROOT/app/tests/tools
+
+echo "Begin selenium"
+./bin/selenium-start
+sleep 2
+
+echo "Begin phantomjs"
+./bin/phantomjs-start
+sleep 2
+
+echo ".. done"
+
+./node_modules/forever/bin/forever list

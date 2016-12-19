@@ -1,4 +1,4 @@
-<section class="search-reuslts page-set" data-page="{{page}}">
+<section class="search-results page-set" data-page="{{page}}">
 {% for ticket in tickets %}
 
 {% set ticket_person = ticket.person %}
@@ -73,6 +73,11 @@
 						{{ phrase('agent.general.none') }}
 					{% endif %}
 					</span>
+				</li>
+			{% elseif field == 'brand' %}
+				<li class="{{field}}">
+					<span class="prop-title">{{ phrase('agent.general.brand') }}:</span>
+					<span class="prop-val ref" data-prop-value="{{ticket.brand.id}}">{{ ticket.brand.name }}</span>
 				</li>
 			{% elseif field == 'ref' %}
 				<li class="{{field}}">

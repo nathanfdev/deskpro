@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,14 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO;
 
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Search\Adapter\MysqlAdapter;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use Orb\Log\Filter\CallbackFormatter;
 use Orb\Log\LogItem;
 use Orb\Util\Arrays;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * A global singleton that facilitates fetching well known objects and values.
@@ -59,7 +62,7 @@ class App
      *
      * @var array
      */
-    protected static $_fileconfig = array();
+    protected static $_fileconfig = [];
 
     /**
      * Array of instantiated API handlers.
@@ -97,6 +100,17 @@ class App
      */
     public static function getCurrentPerson()
     {
+        if (!self::$_current_person) {
+            $tokenStorage = self::$container->get('security.token_storage');
+
+            $token  = $tokenStorage->getToken();
+            $person = $token ? $token->getUser() : null;
+
+            if ($person instanceof Entity\Person) {
+                self::$_current_person = $person;
+            }
+        }
+
         return self::$_current_person;
     }
 
@@ -146,7 +160,7 @@ class App
      *
      * @return mixed
      */
-    public static function getSystemObject($service_name, array $options = array())
+    public static function getSystemObject($service_name, array $options = [])
     {
         return self::$container->getSystemObject($service_name, $options);
     }
@@ -254,7 +268,15 @@ class App
     }
 
     /**
-     * @return Routing\Router
+     * @return \DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter
+     */
+    public static function getObjectRouter()
+    {
+        return self::$container->get('object_router');
+    }
+
+    /**
+     * @return RouterInterface
      */
     public static function getRouter()
     {
@@ -287,6 +309,14 @@ class App
     public static function getPersonActivityLogger()
     {
         return self::$container->getPersonActivityLogger();
+    }
+
+    /**
+     * @return EventLogger
+     */
+    public static function getEventLogger()
+    {
+        return self::$container->get('dp_sys.alerts.event_logger');
     }
 
     /**
@@ -384,7 +414,7 @@ class App
     /**
      * @var array
      */
-    protected static $_api_handler_names = array(
+    protected static $_api_handler_names = [
         'tickets'                     => 'Application\\DeskPRO\\Tickets\\Tickets',
         'tickets.filters'             => 'Application\\DeskPRO\\Tickets\\Filters',
         'tickets.edit'                => 'Application\\DeskPRO\\Tickets\\TicketEdit',
@@ -398,7 +428,7 @@ class App
         'custom_fields.products'      => 'Application\\DeskPRO\\CustomFields\\ProductFields',
         'custom_fields.util'          => 'Application\\DeskPRO\\CustomFields\\Util',
         'filestorage'                 => '',
-    );
+    ];
 
     /**
      * Get an API handler. It will be instantiated if it hasn't been already.
@@ -504,10 +534,6 @@ class App
      */
     public static function getConfig($config_name, $default = null, $file_name = self::DEFAULT_NAME)
     {
-        if ($config_name == 'enable_twitter' && !(isset($GLOBALS['DP_CONFIG']['enable_twitter']) && !$GLOBALS['DP_CONFIG']['enable_twitter']) && !defined('DPC_IS_CLOUD')) {
-            return true;
-        }
-
         if (!isset(self::$_fileconfig[$file_name])) {
             self::_loadConfig($file_name);
         }

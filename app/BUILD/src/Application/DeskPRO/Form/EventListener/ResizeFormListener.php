@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,8 +28,8 @@
 
 namespace Application\DeskPRO\Form\EventListener;
 
-use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Form\Extension\Core\EventListener\ResizeFormListener as BaseListener;
 use Symfony\Component\Form\FormEvent;
@@ -38,19 +38,19 @@ use Symfony\Component\Form\FormEvents;
 class ResizeFormListener extends BaseListener
 {
     /**
-     * @var \Application\DeskPRO\CustomFields\CustomDataPersister
+     * @var EntityManager
      */
-    protected $persister;
+    protected $em;
 
     /**
      * @var array
      */
     protected $newEntriesMap;
 
-    public function __construct($type, array $options = array(), $allowAdd = false, $allowDelete = false, $deleteEmpty = false, CustomDataPersister $persister)
+    public function __construct($type, array $options, $allowAdd, $allowDelete, $deleteEmpty, EntityManager $em)
     {
         parent::__construct($type, $options, $allowAdd, $allowDelete, $deleteEmpty);
-        $this->persister = $persister;
+        $this->em = $em;
     }
 
     /**
@@ -58,9 +58,9 @@ class ResizeFormListener extends BaseListener
      */
     public static function getSubscribedEvents()
     {
-        return array_merge(parent::getSubscribedEvents(), array(
+        return array_merge(parent::getSubscribedEvents(), [
             FormEvents::POST_SUBMIT => 'postSubmit',
-        ));
+        ]);
     }
 
     /**
@@ -72,22 +72,22 @@ class ResizeFormListener extends BaseListener
     {
         $form                = $event->getForm();
         $data                = $event->getData();
-        $this->newEntriesMap = array();
+        $this->newEntriesMap = [];
 
         if (null === $data || '' === $data) {
-            $data = array();
+            $data = [];
         }
 
         if (!is_array($data) && !($data instanceof \Traversable && $data instanceof \ArrayAccess)) {
             throw new UnexpectedTypeException($data, 'array or (\Traversable and \ArrayAccess)');
         }
 
-        $map = array();
+        $map = [];
         foreach ($form as $name => $child) {
             $map[$child->get('id')->getData()] = $name;
         }
 
-        $newData = array();
+        $newData = [];
         foreach ($data as $value) {
             if (isset($map[$value['id']])) {
                 $newData[$map[$value['id']]] = $value;
@@ -106,7 +106,7 @@ class ResizeFormListener extends BaseListener
             foreach ($form as $name => $child) {
                 // todo $data[$name]['title'] is very rare! only for DpCategoryBuilderType
                 if (!isset($data[$name]) || empty($data[$name]['title']) && $child->getData() instanceof DomainObject) {
-                    $this->persister->remove($child->getData());
+                    $this->em->remove($child->getData());
                     $form->remove($name);
                 }
             }
@@ -115,7 +115,6 @@ class ResizeFormListener extends BaseListener
         // Add all additional rows
         if ($this->allowAdd) {
             foreach ($data as $name => $value) {
-
                 // todo: very strange issue. might be php bug
                 if (!$name) {
                     continue;
@@ -123,9 +122,9 @@ class ResizeFormListener extends BaseListener
 
                 // todo $value['title'] is very rare! only for DpCategoryBuilderType
                 if (!$form->has($name) && !empty($value['title'])) {
-                    $form->add($name, $this->type, array_replace(array(
+                    $form->add($name, $this->type, array_replace([
                         'property_path' => '['.$name.']',
-                    ), $this->options));
+                    ], $this->options));
 
                     // we add only item index here
                     $this->newEntriesMap[] = $name;
@@ -145,10 +144,10 @@ class ResizeFormListener extends BaseListener
 
         foreach ($this->newEntriesMap as $name) {
             if ($form[$name]->getData() instanceof DomainObject) {
-                $this->persister->add($form[$name]->getData());
+                $this->em->persist($form[$name]->getData());
             }
         }
 
-        $this->newEntriesMap = array();
+        $this->newEntriesMap = [];
     }
 }

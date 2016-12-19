@@ -15,64 +15,6 @@
 
 {##############################}
 
-<section class="running-section on" ng-show="is_error && error.php_path">
-	<div class="title">
-		<em><i class="fa fa-warning"></i></em>
-		<strong>Update Error: Could not find the path to 'php'</strong>
-	</div>
-	<p>
-		The upgrade utility requires the path to the PHP executable but we could not detect it automatically.
-		You will need to locate the executable and then supply its path in config.php.
-	</p>
-</section>
-
-{##############################}
-
-<section class="running-section on" ng-show="is_error && error.php_binary_failcheck">
-	<div class="title">
-		<em><i class="fa fa-warning"></i></em>
-		<strong>Update Error: Could not find the path to 'php'</strong>
-	</div>
-	<p>
-		The upgrade utility requires the path to the PHP executable but the one defined is invalid
-		or does not meet server requirements ({{ ng_var('error_message') }}). You must edit
-		your config.php to specify the path to a correct PHP binary.
-	</p>
-</section>
-
-{##############################}
-
-<section class="running-section on" ng-show="is_error && error.php_binary_failcheck">
-	<div class="title">
-		<em><i class="fa fa-warning"></i></em>
-		<strong>Update Error: Could not verify the path to 'php'</strong>
-	</div>
-	<p>
-		The upgrade utility requires the path to the PHP executable but the one defined is invalid
-		or does not meet server requirements ({{ ng_var('error_message') }}). You must edit
-		your config.php to specify the path to a correct PHP binary.
-	</p>
-</section>
-
-{##############################}
-
-<section class="running-section on" ng-show="is_error && error.mysqldump_path">
-	<div class="title">
-		<em><i class="fa fa-warning"></i></em>
-		<strong>Update Error: Could not find the path to 'mysqldump'</strong>
-	</div>
-	<p>
-		The upgrade utility requires the path to the MySQL Dump executable but we could not detect it automatically.
-		You will need to locate the executable and then supply its path in config.php.
-	</p>
-	<p>
-		Note: If you want to manage backups manually, deselect the "Backup my database" option when scheduling the upgrade.
-		The database backup step will be skipped and this requirement will no longer be necessary.
-	</p>
-</section>
-
-{##############################}
-
 <section class="running-section on" ng-show="is_error && error.tmp_dir">
 	<div class="title">
 		<em><i class="fa fa-warning"></i></em>
@@ -203,7 +145,7 @@
 		There was a problem while trying to make database backups of your helpdesk. The upgrade was aborted.
 	</p>
 	<p>
-		This probably means the path to "mysqldump" is incorrect. You should check the value you have in config.php
+		This probably means the path to "mysqldump" is incorrect. You should check the value you have in config.paths.php
 		is correct.
 	</p>
 	<p>

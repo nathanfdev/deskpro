@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,20 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\TaskQueue;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
+/**
+ * Class CsvExportController.
+ *
+ * @ApiModes("all")
+ */
 class CsvExportController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -46,7 +54,7 @@ class CsvExportController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * @return Response
+     * @return JsonResponse
      */
     public function startAction()
     {
@@ -56,7 +64,7 @@ class CsvExportController extends AbstractController implements ProtectedControl
         if (!$rep->getTasksInGroup('data_export')) {
             $rep->enqueueTask(
                 'Application\\DeskPRO\\TaskQueueJob\\CsvExport',
-                array(),
+                [],
                 'data_export'
             );
         }
@@ -65,7 +73,7 @@ class CsvExportController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * @return Response
+     * @return JsonResponse
      */
     public function stopAction()
     {
@@ -84,11 +92,11 @@ class CsvExportController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * @return Response
+     * @return JsonResponse
      */
     public function statusAction()
     {
-        $res = array('status' => null);
+        $res = ['status' => null];
 
         /** @var TaskQueue $rep */
         $rep = $this->em->getRepository('DeskPRO:TaskQueue');
@@ -110,22 +118,22 @@ class CsvExportController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * @return Response
+     * @return JsonResponse
      */
     public function listAction()
     {
         $datas = $this->em->getRepository('DeskPRO:TmpData')->getByName('csv_export.file', false);
-        $ret   = array();
+        $ret   = [];
 
         foreach ($datas as $data) {
             /* @var $data TmpData */
-            $ret[] = array(
+            $ret[] = [
                 'created'  => $data->date_created->format('Y-m-d H:i:s'),
                 'code'     => $data->getCode(),
                 'count'    => $data->getData('count'),
                 'filename' => pathinfo($data->getData('file'), PATHINFO_BASENAME),
                 'expire'   => $data->date_expire->format('Y-m-d H:i:s'),
-            );
+            ];
         }
 
         return $this->createApiResponse($ret);

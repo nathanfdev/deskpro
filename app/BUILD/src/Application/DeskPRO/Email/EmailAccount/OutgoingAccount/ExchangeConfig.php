@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
@@ -87,7 +88,7 @@ class ExchangeConfig implements AccountConfigInterface
      */
     public function serializeJsonArray()
     {
-        return array(
+        return [
             'host'            => $this->host,
             'port'            => $this->port,
             'user'            => $this->user,
@@ -95,7 +96,7 @@ class ExchangeConfig implements AccountConfigInterface
             'mode'            => $this->mode,
             'read_mailbox'    => $this->read_mailbox,
             'archive_mailbox' => $this->archive_mailbox,
-        );
+        ];
     }
 
     /**
@@ -119,16 +120,16 @@ class ExchangeConfig implements AccountConfigInterface
         return 'exchange';
     }
 
-    ############################################################################
-    # Validation Metadata
-    ############################################################################
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
 
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('host', new Constraints\NotBlank());
-        $metadata->addPropertyConstraint('port', new Constraints\GreaterThan(array('value' => 1)));
-        $metadata->addPropertyConstraint('mode', new Constraints\Choice(array(
-            'choices' => array('read', 'delete', 'archive'),
-        )));
+        $metadata->addPropertyConstraint('port', new Constraints\GreaterThan(['value' => 1]));
+        $metadata->addPropertyConstraint('mode', new Constraints\Choice([
+            'choices' => ['read', 'delete', 'archive'],
+        ]));
     }
 }

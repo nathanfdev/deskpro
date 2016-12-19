@@ -1,0 +1,9 @@
+$default-layout-direction: "LTR" !default;
+$layout-direction: "LTR" !default;
+$text-left: left !default;
+$text-right: right !default;
+$float-left: left !default;
+$float-right: right !default;
+@import "../../../../../../node_modules/bi-app-sass/bi-app/bi-app-ltr";
+
+@import "portal-style";

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Languages;
 
 use Application\DeskPRO\App;
@@ -45,9 +46,28 @@ use Application\DeskPRO\Products\Products;
 use Application\DeskPRO\Tickets\TicketCategories;
 use Application\DeskPRO\Tickets\TicketPriorities;
 use Application\DeskPRO\Tickets\TicketWorkflows;
+use DeskPRO\Component\Util\MapUtils;
 
 class PhraseData
 {
+    private static $groupFileMap = [
+        'adm'     => 'admin.php',
+        'admin'   => 'admin.php',
+        'api'     => 'api.php',
+        'agent'   => 'agent.php',
+        'general' => 'general.php',
+        'portal'  => 'portal.php',
+        'user'    => 'portal.php',
+    ];
+
+    private static $reverseMap = [
+        'admin'   => ['adm', 'admin'],
+        'api'     => ['api'],
+        'agent'   => ['agent'],
+        'general' => ['general'],
+        'portal'  => ['portal', 'user'],
+    ];
+
     /**
      * @var \Application\DeskPRO\EntityRepository\Phrase
      */
@@ -77,13 +97,13 @@ class PhraseData
         if ($language) {
             $custom_phrases = $this->loadCustomPhrases($language, $phrase_group);
         } else {
-            $custom_phrases = array();
+            $custom_phrases = [];
         }
 
-        $phrase_data = array();
+        $phrase_data = [];
         $flat_array  = $ticket_deps->getFlatArray();
 
-        foreach (array('agent', 'user') as $type) {
+        foreach (['agent', 'user'] as $type) {
             foreach ($flat_array as $dep_row) {
                 /** @var \Application\DeskPRO\Entity\Department $dep */
                 $dep = $dep_row['object'];
@@ -100,7 +120,7 @@ class PhraseData
                     $custom = isset($custom_phrases[$id]) ? $custom_phrases[$id] : null;
                 }
 
-                $row = array(
+                $row = [
                     'id'      => $id,
                     'depth'   => $dep_row['depth'],
                     'type'    => 'ticket_department',
@@ -109,7 +129,7 @@ class PhraseData
                     'lang'    => $dep->user_title ?: $dep->title,
                     'custom'  => $custom,
                     'type'    => $type,
-                );
+                ];
 
                 // The default for the language
                 $row['lang_default'] = $row['lang'] ?: $row['default'];
@@ -137,10 +157,10 @@ class PhraseData
         if ($language) {
             $custom_phrases = $this->loadCustomPhrases($language, $phrase_group);
         } else {
-            $custom_phrases = array();
+            $custom_phrases = [];
         }
 
-        $phrase_data = array();
+        $phrase_data = [];
 
         foreach ($ticket_cats->getFlatArray() as $cat_row) {
             /** @var \Application\DeskPRO\Entity\TicketCategory $cat */
@@ -148,7 +168,7 @@ class PhraseData
 
             $id = $phrase_group.'.'.$cat->id.'_title';
 
-            $row = array(
+            $row = [
                 'id'      => $id,
                 'depth'   => $cat_row['depth'],
                 'type'    => 'ticket_category',
@@ -156,7 +176,7 @@ class PhraseData
                 'default' => $cat->title,
                 'lang'    => $cat->title,
                 'custom'  => isset($custom_phrases[$id]) ? $custom_phrases[$id] : null,
-            );
+            ];
 
             // The default for the language
             $row['lang_default'] = $row['lang'] ?: $row['default'];
@@ -183,15 +203,15 @@ class PhraseData
         if ($language) {
             $custom_phrases = $this->loadCustomPhrases($language, $phrase_group);
         } else {
-            $custom_phrases = array();
+            $custom_phrases = [];
         }
 
-        $phrase_data = array();
+        $phrase_data = [];
 
         foreach ($ticket_works->getAll() as $work) {
             $id = $phrase_group.'.'.$work->id.'_title';
 
-            $row = array(
+            $row = [
                 'id'      => $id,
                 'depth'   => 0,
                 'type'    => 'ticket_category',
@@ -199,7 +219,7 @@ class PhraseData
                 'default' => $work->title,
                 'lang'    => $work->title,
                 'custom'  => isset($custom_phrases[$id]) ? $custom_phrases[$id] : null,
-            );
+            ];
 
             // The default for the language
             $row['lang_default'] = $row['lang'] ?: $row['default'];
@@ -226,15 +246,15 @@ class PhraseData
         if ($language) {
             $custom_phrases = $this->loadCustomPhrases($language, $phrase_group);
         } else {
-            $custom_phrases = array();
+            $custom_phrases = [];
         }
 
-        $phrase_data = array();
+        $phrase_data = [];
 
         foreach ($ticket_pris->getAll() as $pri) {
             $id = $phrase_group.'.'.$pri->id.'_title';
 
-            $row = array(
+            $row = [
                 'id'      => $id,
                 'depth'   => 0,
                 'type'    => 'ticket_category',
@@ -242,7 +262,7 @@ class PhraseData
                 'default' => $pri->title,
                 'lang'    => $pri->title,
                 'custom'  => isset($custom_phrases[$id]) ? $custom_phrases[$id] : null,
-            );
+            ];
 
             // The default for the language
             $row['lang_default'] = $row['lang'] ?: $row['default'];
@@ -269,10 +289,10 @@ class PhraseData
         if ($language) {
             $custom_phrases = $this->loadCustomPhrases($language, $phrase_group);
         } else {
-            $custom_phrases = array();
+            $custom_phrases = [];
         }
 
-        $phrase_data = array();
+        $phrase_data = [];
 
         foreach ($chat_deps->getFlatArray() as $dep_row) {
             /** @var \Application\DeskPRO\Entity\Department $dep */
@@ -280,7 +300,7 @@ class PhraseData
 
             $id = $phrase_group.'.'.$dep->id.'_title';
 
-            $row = array(
+            $row = [
                 'id'      => $id,
                 'depth'   => $dep_row['depth'],
                 'type'    => 'ticket_department',
@@ -288,7 +308,7 @@ class PhraseData
                 'default' => $dep->title,
                 'lang'    => $dep->user_title ?: $dep->title,
                 'custom'  => isset($custom_phrases[$id]) ? $custom_phrases[$id] : null,
-            );
+            ];
 
             // The default for the language
             $row['lang_default'] = $row['lang'] ?: $row['default'];
@@ -315,10 +335,10 @@ class PhraseData
         if ($language) {
             $custom_phrases = $this->loadCustomPhrases($language, $phrase_group);
         } else {
-            $custom_phrases = array();
+            $custom_phrases = [];
         }
 
-        $phrase_data = array();
+        $phrase_data = [];
 
         foreach ($products->getFlatArray() as $prod_row) {
             /** @var \Application\DeskPRO\Entity\Product $prod */
@@ -326,7 +346,7 @@ class PhraseData
 
             $id = $phrase_group.'.'.$prod->id.'_title';
 
-            $row = array(
+            $row = [
                 'id'      => $id,
                 'depth'   => $prod_row['depth'],
                 'type'    => 'product',
@@ -334,7 +354,7 @@ class PhraseData
                 'default' => $prod->title,
                 'lang'    => $prod->title,
                 'custom'  => isset($custom_phrases[$id]) ? $custom_phrases[$id] : null,
-            );
+            ];
 
             // The default for the language
             $row['lang_default'] = $row['lang'] ?: $row['default'];
@@ -369,19 +389,23 @@ class PhraseData
                 $phrase_group = 'obj_customdeforganization';
                 break;
 
-            default: return array();
+            case 'DeskPRO:CustomDefChat':
+                $phrase_group = 'obj_customdefchat';
+                break;
+
+            default: return [];
         }
 
         if ($language) {
             $custom_phrases = $this->loadCustomPhrases($language, $phrase_group);
         } else {
-            $custom_phrases = array();
+            $custom_phrases = [];
         }
 
         $fn_get_rows = function (CustomDefAbstract $field, $depth = 0) use ($phrase_group, $custom_phrases, $fm, &$fn_get_rows) {
             $id = $phrase_group.'.'.$field->id.'_title';
 
-            $row = array(
+            $row = [
                 'id'      => $id,
                 'depth'   => $depth,
                 'type'    => 'field',
@@ -389,12 +413,12 @@ class PhraseData
                 'default' => $field->title,
                 'lang'    => $field->title,
                 'custom'  => isset($custom_phrases[$id]) ? $custom_phrases[$id] : null,
-            );
+            ];
 
             $row['lang_default'] = $row['lang'] ?: $row['default'];
             $row['set']          = $row['custom'] ?: $row['lang_default'];
 
-            $phrase_data = array($row);
+            $phrase_data = [$row];
 
             if ($children = $fm->getFieldChildren($field)) {
                 foreach ($children as $child_field) {
@@ -405,7 +429,7 @@ class PhraseData
             return $phrase_data;
         };
 
-        $phrase_data = array();
+        $phrase_data = [];
 
         foreach ($fm->getFields() as $field) {
             $phrase_data = array_merge($phrase_data, $fn_get_rows($field, 0));
@@ -435,15 +459,15 @@ class PhraseData
         if ($language) {
             $custom_phrases = $this->loadCustomPhrases($language, $phrase_group);
         } else {
-            $custom_phrases = array();
+            $custom_phrases = [];
         }
 
-        $phrase_data = array();
+        $phrase_data = [];
 
         foreach ($all_statuses as $status) {
             $id = $phrase_group.'.'.$status->id.'_title';
 
-            $row = array(
+            $row = [
                 'id'      => $id,
                 'depth'   => 0,
                 'type'    => 'feedback_status',
@@ -451,7 +475,7 @@ class PhraseData
                 'default' => $status->title,
                 'lang'    => $status->title,
                 'custom'  => isset($custom_phrases[$id]) ? $custom_phrases[$id] : null,
-            );
+            ];
 
             $row['lang_default'] = $row['lang'] ?: $row['default'];
             $row['set']          = $row['custom'] ?: $row['lang_default'];
@@ -483,15 +507,15 @@ class PhraseData
         if ($language) {
             $custom_phrases = $this->loadCustomPhrases($language, $phrase_group);
         } else {
-            $custom_phrases = array();
+            $custom_phrases = [];
         }
 
-        $phrase_data = array();
+        $phrase_data = [];
 
         foreach ($all_types as $type) {
             $id = $phrase_group.'.'.$type->id.'_title';
 
-            $row = array(
+            $row = [
                 'id'      => $id,
                 'depth'   => 0,
                 'type'    => 'feedback_status',
@@ -499,7 +523,7 @@ class PhraseData
                 'default' => $type->title,
                 'lang'    => $type->title,
                 'custom'  => isset($custom_phrases[$id]) ? $custom_phrases[$id] : null,
-            );
+            ];
 
             $row['lang_default'] = $row['lang'] ?: $row['default'];
             $row['set']          = $row['custom'] ?: $row['lang_default'];
@@ -523,13 +547,13 @@ class PhraseData
         if ($language) {
             $custom_phrases = $this->loadCustomPhrases($language, $phrase_group);
         } else {
-            $custom_phrases = array();
+            $custom_phrases = [];
         }
 
         $all  = $repos->getAllIndexedById();
         $flat = $repos->getFlatHierarchy();
 
-        $phrase_data = array();
+        $phrase_data = [];
 
         foreach ($flat as $cat_row) {
             /** @var \Application\DeskPRO\Entity\ArticleCategory $cat */
@@ -537,7 +561,7 @@ class PhraseData
 
             $id = $phrase_group.'.'.$cat->id.'_title';
 
-            $row = array(
+            $row = [
                 'id'      => $id,
                 'depth'   => $cat_row['depth'],
                 'type'    => 'kb_category',
@@ -545,7 +569,7 @@ class PhraseData
                 'default' => $cat->title,
                 'lang'    => $cat->title,
                 'custom'  => isset($custom_phrases[$id]) ? $custom_phrases[$id] : null,
-            );
+            ];
 
             // The default for the language
             $row['lang_default'] = $row['lang'] ?: $row['default'];
@@ -573,8 +597,8 @@ class PhraseData
             $lang_phrases   = $this->loadSystemPhrases($language->sys_name, $group_id);
             $custom_phrases = $this->loadCustomPhrases($language, $group_id);
         } else {
-            $lang_phrases   = array();
-            $custom_phrases = array();
+            $lang_phrases   = [];
+            $custom_phrases = [];
         }
 
         $phrase_ids = array_merge(
@@ -585,14 +609,14 @@ class PhraseData
         $phrase_ids = array_unique($phrase_ids);
         sort($phrase_ids, \SORT_STRING);
 
-        $phrase_data = array();
+        $phrase_data = [];
         foreach ($phrase_ids as $id) {
-            $row = array(
+            $row = [
                 'id'      => $id,
                 'default' => isset($default_phrases[$id]) ? $default_phrases[$id] : null,
                 'lang'    => isset($lang_phrases[$id]) ? $lang_phrases[$id] : null,
                 'custom'  => isset($custom_phrases[$id]) ? $custom_phrases[$id] : null,
-            );
+            ];
 
             // The default for the language
             $row['lang_default'] = $row['lang'] ?: $row['default'];
@@ -614,21 +638,23 @@ class PhraseData
     public function loadCustom(Language $language)
     {
         $custom_phrases = $this->phrase_repos->getCustomPhrases($language);
-        $custom_phrases = array_filter($custom_phrases, function ($x) { return strpos($x['name'], 'obj_') !== 0; });
+        $custom_phrases = array_filter($custom_phrases, function ($x) {
+            return strpos($x['name'], 'obj_') !== 0;
+        });
 
         if (!$custom_phrases) {
-            return array();
+            return [];
         }
 
-        $phrase_groups = array();
+        $phrase_groups = [];
         foreach ($custom_phrases as $phr) {
             if ($phr->groupname) {
                 $phrase_groups[] = $phr->groupname;
             }
         }
 
-        $default_phrases = array();
-        $lang_phrases    = array();
+        $default_phrases = [];
+        $lang_phrases    = [];
 
         if ($phrase_groups && $language) {
             $phrase_groups = array_unique($phrase_groups);
@@ -639,16 +665,16 @@ class PhraseData
             }
         }
 
-        $phrase_data = array();
+        $phrase_data = [];
 
         foreach ($custom_phrases as $phr) {
             $id  = $phr->name;
-            $row = array(
+            $row = [
                 'id'      => $id,
                 'default' => isset($default_phrases[$id]) ? $default_phrases[$id] : null,
                 'lang'    => isset($lang_phrases[$id]) ? $lang_phrases[$id] : null,
                 'custom'  => $phr->phrase,
-            );
+            ];
 
             // The default for the language
             $row['lang_default'] = $row['lang'] ?: $row['default'];
@@ -676,24 +702,28 @@ class PhraseData
         $group_id = preg_replace('#[^a-zA-Z0-9\.\-_]#', '', $group_id);
 
         $parts = explode('.', $group_id);
-        if (count($parts) != 2) {
-            return array();
+        if (count($parts) != 2 || !isset(self::$groupFileMap[$parts[0]])) {
+            return [];
         }
 
         $path = $this->lang_dir
             .DIRECTORY_SEPARATOR
             .$lang_name
             .DIRECTORY_SEPARATOR
-            .$parts[0]
-            .DIRECTORY_SEPARATOR
-            .$parts[1]
-            .'.php';
+            .self::$groupFileMap[$parts[0]];
 
         if (!file_exists($path)) {
-            return array();
+            return [];
         }
 
+        $subGroupId = $parts[1];
+
         $phrases = require $path;
+        $phrases = MapUtils::filter($phrases, function ($phraseId) use ($subGroupId) {
+            $parts = explode('.', $phraseId);
+
+            return $subGroupId === @$parts[1];
+        });
 
         return $phrases;
     }
@@ -706,6 +736,19 @@ class PhraseData
      */
     private function loadCustomPhrases(Language $language, $group_id)
     {
-        return $this->phrase_repos->getPhrasesInGroup($language, $group_id);
+        // we need to fetch both: portal and user for portal.* group as well as adm and admin for admin.*
+
+        $parts   = explode('.', $group_id);
+        $phrases = [];
+        if (isset(self::$reverseMap[$parts[0]])) {
+            foreach (self::$reverseMap[$parts[0]] as $prefix) {
+                $newParts = $parts;
+                array_shift($newParts);
+                array_unshift($newParts, $prefix);
+                $phrases += $this->phrase_repos->getPhrasesInGroup($language, implode('.', $newParts));
+            }
+        }
+
+        return $phrases;
     }
 }

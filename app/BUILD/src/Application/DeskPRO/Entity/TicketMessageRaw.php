@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -60,18 +61,47 @@ class TicketMessageRaw extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $charset = 'UNKNOWN';
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setIdentifier(array('message'));
-        $metadata->setPrimaryTable(array('name' => 'tickets_messages_raw'));
+        $metadata->setIdentifier(['message']);
+        $metadata->setPrimaryTable(['name' => 'tickets_messages_raw']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'raw', 'type' => 'dpblob_file', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'raw'));
-        $metadata->mapField(array('fieldName' => 'charset', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'charset'));
-        $metadata->mapManyToOne(array('fieldName' => 'message', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'message_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapField([
+            'fieldName'  => 'raw',
+            'type'       => 'dpblob_file',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'raw',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'charset',
+            'type'       => 'string',
+            'length'     => 100,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'charset',
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'message',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'message_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

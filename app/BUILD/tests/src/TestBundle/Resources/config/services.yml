@@ -1,0 +1,61 @@
+parameters:
+    test.client.parameters:
+        - HTTP_HOST: '/'
+
+services:
+
+    test_faker:
+        class: Faker\Generator
+        factory: [Faker\Factory, create]
+
+    test_factory.person:
+        class: DpTestSrc\TestBundle\Factory\PersonTestFactory
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@test_faker"
+
+
+    dataset_manager:
+        class: DpTestSrc\TestBundle\DataSetManager
+        arguments:
+            sets:
+                - "@dbset.empty"
+                - "@dbset.fresh"
+                - "@dbset.api"
+                - "@dbset.term_engine"
+
+    dbset.empty:
+        class: DpTestSrc\TestBundle\DataSet\EmptyDb
+        arguments:
+            - "@service_container"
+            - "@doctrine.dbal.default_connection"
+            - %kernel.cache_dir%/dbset
+
+    dbset.fresh:
+        class: DpTestSrc\TestBundle\DataSet\FreshDb
+        arguments:
+            - "@service_container"
+            - "@doctrine.dbal.default_connection"
+            - %kernel.cache_dir%/dbset
+
+    dbset.api:
+        class: DpTestSrc\TestBundle\DataSet\ApiDb
+        arguments:
+            - "@service_container"
+            - "@doctrine.dbal.default_connection"
+            - %kernel.cache_dir%/dbset
+
+    dbset.term_engine:
+        class: DpTestSrc\TestBundle\DataSet\TermEngineDb
+        arguments:
+            - "@service_container"
+            - "@doctrine.dbal.default_connection"
+            - %kernel.cache_dir%/dbset
+
+    user_details:
+        class: DpTestSrc\TestBundle\UserDetailsRepo
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+
+    twilio_adapter:
+        class: DpTestSrc\TestBundle\Mock\TwilioNullAdapter

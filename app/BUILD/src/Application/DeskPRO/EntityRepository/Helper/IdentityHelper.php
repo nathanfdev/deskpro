@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository\Helper;
 
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
@@ -56,7 +57,7 @@ class IdentityHelper
     /**
      * @var array
      */
-    protected $collections = array();
+    protected $collections = [];
 
     /**
      * @param \Doctrine\ORM\EntityManager                                    $em
@@ -78,8 +79,8 @@ class IdentityHelper
      */
     public function findByIds(array $ids, $same_order = true)
     {
-        $missing = array();
-        $return  = array();
+        $missing = [];
+        $return  = [];
 
         if (!$this->hasIdentityMap()) {
             $missing = $ids;
@@ -99,7 +100,7 @@ class IdentityHelper
                 SELECT o
                 FROM {$this->entity_name} o INDEX BY o.id
                 WHERE o.id IN(?0)
-            ")->execute(array($ids));
+            ")->execute([$ids]);
 
             if ($q_res) {
                 $return = array_merge($return, $q_res);
@@ -122,10 +123,10 @@ class IdentityHelper
     {
         $map = $this->em->getUnitOfWork()->getIdentityMap();
         if (!isset($map[$this->entity_name])) {
-            return array();
+            return [];
         }
 
-        $ret = array();
+        $ret = [];
         foreach ($map[$this->entity_name] as $id_hash => $object) {
             $ret[] = $this->em->getUnitOfWork()->getByIdHash($id_hash, $this->entity_name);
         }
@@ -146,7 +147,7 @@ class IdentityHelper
     }
 
     /**
-     * @param $id
+     * @param $name
      *
      * @return array|null
      */
@@ -156,7 +157,7 @@ class IdentityHelper
             return;
         }
 
-        $return = array();
+        $return = [];
 
         foreach ($this->collections[$name] as $find_id) {
             $obj = $this->em->getUnitOfWork()->tryGetById($find_id, $this->entity_name);
@@ -185,7 +186,7 @@ class IdentityHelper
     /**
      * Add a collection.
      *
-     * @param $name
+     * @param       $name
      * @param array $ids
      */
     public function setCollectionIds($name, array $ids)
@@ -196,12 +197,12 @@ class IdentityHelper
     /**
      * Adds a collection from an array result set of objects.
      *
-     * @param $name
+     * @param       $name
      * @param array $results
      */
     public function setCollectionFromResults($name, array $results)
     {
-        $this->collections[$name] = array();
+        $this->collections[$name] = [];
 
         foreach ($results as $k => $r) {
             $this->collections[$name][$k] = $r->getId();

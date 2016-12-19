@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,14 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Log\Writer;
 
 use Application\DeskPRO\App;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
 {
-    private $rows_info     = array();
+    private $rows_info     = [];
     private $auto_flush_at = 50;
 
     /**
@@ -71,22 +72,22 @@ class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
                 }
             }
 
-            $this->rows_info[] = array('size' => $data_len + $message_len, 'row' => array(
-                'log_name'                    => $log_item->getLogName(),
-                'session_name'                => $log_item->getSessionName(),
-                'message'                     => $message,
-                'priority'                    => $log_item->getPriority(),
-                'priority_name'               => $log_item->getPriorityName(),
-                'date_created'                => $log_item->getDatetime()->format('Y-m-d H:i:s'),
-                'flag'                        => $log_item->getFlag() ?: null,
-                'data'                        => $data,
-            ));
+            $this->rows_info[] = ['size' => $data_len + $message_len, 'row' => [
+                'log_name'      => $log_item->getLogName(),
+                'session_name'  => $log_item->getSessionName(),
+                'message'       => $message,
+                'priority'      => $log_item->getPriority(),
+                'priority_name' => $log_item->getPriorityName(),
+                'date_created'  => $log_item->getDatetime()->format('Y-m-d H:i:s'),
+                'flag'          => $log_item->getFlag() ?: null,
+                'data'          => $data,
+            ]];
 
             if (isset($this->rows_info[$this->auto_flush_at])) {
                 $this->flush();
             }
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e, false);
+            SystemErrorHandler::logException($e, false);
         }
     }
 
@@ -96,12 +97,12 @@ class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
             $max_size = $this->getMaxSize();
 
             $rows            = array_reverse($this->rows_info);
-            $this->rows_info = array();
+            $this->rows_info = [];
 
             while ($rows) {
                 $size  = 0;
                 $count = 0;
-                $batch = array();
+                $batch = [];
                 do {
                     $r = array_pop($rows);
                     if (!$r) {
@@ -117,7 +118,7 @@ class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
                 }
             }
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e, false);
+            SystemErrorHandler::logException($e, false);
         }
     }
 }

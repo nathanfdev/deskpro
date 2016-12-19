@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,10 @@
 namespace Application\DeskPRO\Form\Type;
 
 use Application\DeskPRO\Form\EventListener\ResizeFormListener;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DpCategoryBuilderType extends CollectionType
 {
@@ -41,6 +42,21 @@ class DpCategoryBuilderType extends CollectionType
      * @var ResizeFormListener
      */
     protected $listener;
+
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * DpCategoryBuilderType constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
     /**
      * {@inheritdoc}
@@ -53,24 +69,24 @@ class DpCategoryBuilderType extends CollectionType
             $options['allow_add'],
             $options['allow_delete'],
             $options['delete_empty'],
-            $options['persister']
+            $this->em
         ));
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        parent::setDefaultOptions($resolver);
-        $resolver
-            ->setRequired(array('persister'))
-            ->addAllowedTypes(array(
-                'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
-            ));
+        parent::configureOptions($resolver);
     }
 
     public function getName()
+    {
+        return $this->getBlockPrefix();
+    }
+
+    public function getBlockPrefix()
     {
         return 'dp_category_builder';
     }

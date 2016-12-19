@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,31 +39,34 @@ use Orb\Util\Arrays;
 class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform.
+     * {@inheritdoc}
      *
      * @param Person $object
-     * @param array  $fields
-     *
-     * @return Document
      */
     public function transform($object, array $fields)
     {
         $document = new Document();
-
         $document->setId($object->getId());
-
         $document->set('name', $object->name);
         $document->set('first_name', $object->first_name);
         $document->set('last_name', $object->last_name);
+        $document->set('is_agent', $object->isAgent());
 
-        $emails = array();
-        foreach ($object->emails as $e) {
-            $emails[] = $e->email;
+        $emails       = [];
+        $emailDomains = [];
+        foreach ($object->getEmails() as $e) {
+            $emails[] = $e->getEmail();
+            if ($e->getEmailDomain()) {
+                $emailDomains[] = $e->getEmailDomain();
+            }
         }
 
         $document->set('emails', $emails);
+        if ($emailDomains) {
+            $document->set('email_domains', $emailDomains);
+        }
 
-        $phones = array();
+        $phones = [];
         foreach ($object->phone_numbers as $p) {
             $pn = $p->getPhoneNumber();
             if ($pn) {
@@ -74,7 +77,9 @@ class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
         $document->set('phone_numbers', $phones);
 
         if ($object->labels) {
-            $labels = Arrays::map(function ($l) { return $l->label; }, $object->labels);
+            $labels = Arrays::map(function ($l) {
+                return $l->label;
+            }, $object->labels);
             $document->set('labels', $labels);
         }
 

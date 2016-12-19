@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,13 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Helper added to People who are agents, works with agent-specific stuff.
@@ -80,7 +82,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 
     public function getShortCallableNames()
     {
-        return array(
+        return [
             'getAgent' => '_getThis',
             'agent'    => '_getThis',
 
@@ -100,7 +102,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
             'getSignature'      => 'getSignature',
             'getSignatureHtml'  => 'getSignatureHtml',
             'getTweetSignature' => 'getTweetSignature',
-        );
+        ];
     }
 
     /**
@@ -133,7 +135,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         try {
             $this->_agent_teams = App::$container->getAgentData()->getTeamsForAgent($this->person);
         } catch (\InvalidArgumentException $e) {
-            $this->_agent_teams = array();
+            $this->_agent_teams = [];
         }
 
         return $this->_agent_teams;
@@ -150,7 +152,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
             return $this->_agent_team_ids;
         }
 
-        $this->_agent_team_ids = array();
+        $this->_agent_team_ids = [];
         foreach ($this->getTeams() as $team) {
             $this->_agent_team_ids[] = $team['id'];
         }
@@ -189,7 +191,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
      */
     public function hasTeams()
     {
-        return ($this->countTeams() > 0);
+        return $this->countTeams() > 0;
     }
 
     /**
@@ -285,7 +287,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
             return $this->_dep_allowed_ids;
         }
 
-        $this->_dep_allowed_ids = array();
+        $this->_dep_allowed_ids = [];
         foreach ($this->_access['departments'] as $dep) {
             $this->_dep_allowed_ids[] = $dep['id'];
         }
@@ -330,8 +332,11 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 
         if ($sig_html) {
             $fn = function ($m) {
-                $url = App::getSetting('core.deskpro_url');
-                $url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[1], 'filename' => $m[2]), false), '/');
+                /*
+                 * @Todo ensure the proper brand is stacked here
+                 */
+                $url = App::getContainer()->getBrandSetting('core.deskpro_url');
+                $url .= ltrim(App::getRouter()->generate('serve_blob', ['blob_auth_id' => $m[1], 'filename' => $m[2]], RouterInterface::ABSOLUTE_PATH), '/');
 
                 return sprintf('<img src="%s" title="%s" class="dp-signature-image" alt="%s" />',
                     $url, htmlspecialchars($m[2]), htmlspecialchars($m[0])
@@ -350,11 +355,11 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     public function getGroupedSnippets($as_array = false)
     {
         if ($this->_snippets === null) {
-            $this->_snippets = App::getOrm()->getRepository('DeskPRO:TextSnippet')
+            $this->_snippets = App::getOrm()->getRepository(Entity\TextSnippet::class)
                                   ->getSnippetsForAgent('tickets', $this->person);
 
-            $snippets_flat = array();
-            $cats_flat     = array();
+            $snippets_flat = [];
+            $cats_flat     = [];
             foreach ($this->_snippets as $group) {
                 $snippets_flat = array_merge($snippets_flat, $group['snippets']);
                 $cats_flat[]   = $group['category'];
@@ -366,12 +371,12 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         }
 
         if ($as_array) {
-            $ret = array();
+            $ret = [];
             foreach ($this->_snippets as $group) {
-                $g_row = array('category' => array('id' => $group['category']->id, 'title' => $group['category']->title), 'snippets' => array());
+                $g_row = ['category' => ['id' => $group['category']->id, 'title' => $group['category']->title], 'snippets' => []];
 
                 foreach ($group['snippets'] as $s) {
-                    $s_row = array('id' => $s->id, 'title' => $s->title);
+                    $s_row = ['id' => $s->id, 'title' => $s->title];
 
                     if (empty($s_row['title'])) {
                         $s_langs = App::getContainer()->getObjectLangRepository()->getLoadedRecs($s);
@@ -428,10 +433,10 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     {
         $macros = $this->getMacros();
 
-        $struct = array(
-            'items'     => array(),
-            'sub_menus' => array(),
-        );
+        $struct = [
+            'items'     => [],
+            'sub_menus' => [],
+        ];
 
         foreach ($macros as $m) {
             $parts = $m->getTitleParts();
@@ -440,7 +445,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
             $last = &$struct;
             foreach ($parts as $p) {
                 if (!isset($last['sub_menus'][$p])) {
-                    $last['sub_menus'][$p] = array('items' => array(), 'sub_menus' => array());
+                    $last['sub_menus'][$p] = ['items' => [], 'sub_menus' => []];
                 }
                 $last = &$last['sub_menus'][$p];
             }
@@ -449,15 +454,15 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         }
 
         $fn = function ($col) use (&$fn) {
-            $items = array();
+            $items = [];
 
             foreach ($col['items'] as $itm) {
                 $p       = $itm->getTitleParts();
-                $items[] = array('type' => 'item', 'title' => array_pop($p), 'item' => $itm);
+                $items[] = ['type' => 'item', 'title' => array_pop($p), 'item' => $itm];
             }
             foreach ($col['sub_menus'] as $title => $sub) {
                 $sub_items = $fn($sub);
-                $items[]   = array('type' => 'collection', 'title' => $title, 'items' => $sub_items);
+                $items[]   = ['type' => 'collection', 'title' => $title, 'items' => $sub_items];
             }
 
             usort($items, function ($a, $b) {

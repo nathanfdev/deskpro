@@ -1,0 +1,114 @@
+services:
+
+  dp.console.updater.upgrade_session_listener:
+    class: DeskPRO\Bundle\UpdateBundle\Command\ConsoleEvents\UpgradeSessionListener
+    arguments: ["@service_container"]
+    tags:
+      - { name: kernel.event_subscriber }
+
+  ######################################################################################################################
+  # Distro
+  ######################################################################################################################
+
+  dp.updater.distro.downloader:
+    class: DeskPRO\Bundle\UpdateBundle\Distro\DistroDownloader
+    factory: [DeskPRO\Bundle\UpdateBundle\Distro\DistroDownloader, create]
+    arguments:
+      - "@monolog.logger.updater.general"
+      - "@monolog.logger.updater.http"
+
+  dp.updater.distro.manifest_loader:
+    class: DeskPRO\Bundle\UpdateBundle\Distro\DistroManifestLoader
+    factory: [DeskPRO\Bundle\UpdateBundle\Distro\DistroManifestLoader, create]
+    arguments:
+      - "@=service('deskpro.app_env').getConfig('paths.distro_manifest', constant('DeskPRO\\\\Bundle\\\\UpdateBundle\\\\Distro\\\\DistroManifestLoader::VERSION_API_ROOT'))"
+      - "@monolog.logger.updater.general"
+      - "@monolog.logger.updater.http"
+
+  dp.updater.distro.installer:
+    class: DeskPRO\Bundle\UpdateBundle\Distro\DistroInstaller
+    arguments:
+      - "@deskpro.zippy"
+      - "@dp.updater.instance_reader"
+      - "@=service('deskpro.app_env').getUserTmpDir()"
+    calls:
+      - [setLogger, ["@monolog.logger.updater.general"]]
+
+  dp.updater.instance_reader:
+    class: DeskPRO\Bundle\UpdateBundle\Instance\InstanceReader
+    arguments:
+      - "@=service('deskpro.app_env').getAppName()"
+      - "@=service('deskpro.app_env').getBuildDirRoot()"
+      - "@=service('deskpro.app_env').getWwwRoot()"
+      - "@=service('deskpro.app_env').getKernelCacheDirRoot()"
+
+  ######################################################################################################################
+  # Backups
+  ######################################################################################################################
+
+  dp.updater.backup.cmd_builder:
+    class: DeskPRO\Bundle\UpdateBundle\DbBackup\CmdBuilder
+    arguments:
+      - "@=service('deskpro.app_env').getConfig('paths.mysql_path')"
+      - "@=service('deskpro.app_env').getConfig('paths.mysqldump_path')"
+
+  dp.updater.backup.db_backup_verifier:
+    class: DeskPRO\Bundle\UpdateBundle\DbBackup\DbVerify
+    calls:
+      - [setLogger, ["@monolog.logger.updater.general"]]
+
+  dp.updater.backup.db_backup:
+    class: DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackup
+    arguments:
+      - "@dp.updater.backup.cmd_builder"
+      - "@dp.updater.backup.db_backup_verifier"
+    calls:
+      - [setLogger, ["@monolog.logger.updater.general"]]
+
+  ######################################################################################################################
+  # Activator
+  ######################################################################################################################
+
+  dp.updater.activate.build_activator:
+    class: DeskPRO\Bundle\UpdateBundle\BuildActivate\BuildActivator
+    arguments:
+      - "@dp.updater.activate.hd_state"
+      - "@dp.updater.activate.req_checker"
+      - "@dp.updater.activate.upgrade_runner"
+      - "@dp.updater.activate.run_activator"
+    calls:
+      - [setLogger, ["@monolog.logger.updater.general"]]
+
+  dp.updater.activate.hd_state:
+    class: DeskPRO\Bundle\UpdateBundle\BuildActivate\HelpdeskState\HelpdeskStateModifier
+    arguments:
+      - "@deskpro.low_dp_env"
+    calls:
+      - [setLogger, ["@monolog.logger.updater.general"]]
+
+  dp.updater.activate.req_checker:
+    class: DeskPRO\Bundle\UpdateBundle\BuildActivate\ReqCheck\ReqCheck
+    arguments:
+      - "@=service('deskpro.app_env').getConfig('paths.php_path')"
+    calls:
+      - [setLogger, ["@monolog.logger.updater.general"]]
+
+  dp.updater.activate.upgrade_runner:
+    class: DeskPRO\Bundle\UpdateBundle\BuildActivate\UpgradeRunner\UpgradeRunner
+    arguments:
+      - "@=service('deskpro.app_env').getConfig('paths.php_path')"
+    calls:
+      - [setLogger, ["@monolog.logger.updater.general"]]
+
+  dp.updater.activate.run_activator:
+    class: DeskPRO\Bundle\UpdateBundle\BuildActivate\RunActivator\RunActivator
+    arguments:
+      - "@deskpro.zippy"
+      - "@=service('deskpro.app_env').getUserTmpDir()"
+    calls:
+      - [setLogger, ["@monolog.logger.updater.general"]]
+
+  dp.updater.session_manager_factory:
+    class: DeskPRO\Bundle\UpdateBundle\Session\UpdateSessionManagerFactory
+    arguments:
+      - "@=service('deskpro.app_env').getUserTmpDir()"

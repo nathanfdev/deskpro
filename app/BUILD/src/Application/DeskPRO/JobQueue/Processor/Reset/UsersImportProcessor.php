@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,7 @@
 namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
 use Application\DeskPRO\People\Purger;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UsersImportProcessor extends Base
 {
@@ -38,18 +38,19 @@ class UsersImportProcessor extends Base
     /**
      * {@inheritdoc}
      */
-    public function setDataOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'context_person_id' => null,
-                'limit'             => 100,
-                'offset'            => 0,
-                'labeled_by'        => null,
-            )
-        );
+        $resolver->setDefaults([
+            'context_person_id' => null,
+            'limit'             => 100,
+            'offset'            => 0,
+            'labeled_by'        => null,
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doProcess(array $data)
     {
         $count = 0;
@@ -66,6 +67,9 @@ class UsersImportProcessor extends Base
         return $count;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getPersons(array $data)
     {
         $limit  = (int) @$data['limit'];
@@ -82,6 +86,6 @@ class UsersImportProcessor extends Base
                 ->getResult();
         }
 
-        return $rep->findBy(array('is_agent' => false), null, $limit, $offset);
+        return $rep->findBy(['is_agent' => false], null, $limit, $offset);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Docs API Controller.
+ *
+ * @ApiModes("all")
  */
 class DocsController extends AbstractController
 {
@@ -47,50 +51,50 @@ class DocsController extends AbstractController
         $this->settings = $this->get('deskpro.core.settings');
     }
 
-    public function preAction($action, $arguments = null)
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
         return;
     }
 
-    ####################################################################################################################
-    # about
-    ####################################################################################################################
+    //###################################################################################################################
+    // about
+    //###################################################################################################################
 
     public function aboutAction()
     {
         return $this->render('LegacyApiBundle:SwaggerUi:about.html.twig');
     }
 
-    ####################################################################################################################
-    # api
-    ####################################################################################################################
+    //###################################################################################################################
+    // api
+    //###################################################################################################################
 
     public function apiAction()
     {
         return $this->render('LegacyApiBundle:SwaggerUi:api.html.twig');
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction()
     {
         return $this->serveResource('deskpro-api');
     }
 
-    ####################################################################################################################
-    # get
-    ####################################################################################################################
+    //###################################################################################################################
+    // get
+    //###################################################################################################################
 
     public function getAction($id)
     {
         return $this->serveResource($id);
     }
 
-    ####################################################################################################################
-    # get-agents-for-key
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-agents-for-key
+    //###################################################################################################################
 
     public function getAgentsForKeyAction()
     {
@@ -99,22 +103,22 @@ class DocsController extends AbstractController
             if ($apikey->isFlagSet('super')) {
                 $agents = $this->container->getAgentData()->getNames();
             } else {
-                $agents                      = array();
+                $agents                      = [];
                 $agents[$apikey->person->id] = $apikey->person->getDisplayName();
             }
             $default_id = $apikey->person ? $apikey->person->id : 0;
         } else {
-            $agents     = array();
+            $agents     = [];
             $default_id = 0;
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'names'      => $agents,
             'default_id' => $default_id,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     private function getResourcePath($res)
     {
@@ -128,6 +132,6 @@ class DocsController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        return $this->createJsonResponse(SafeFile::fileGetContents($path, DP_ROOT.'/src/Application/LegacyApiBundle/Resources/views/SwaggerDocs'));
+        return $this->createJsonResponse(file_get_contents($path));
     }
 }

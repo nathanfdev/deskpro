@@ -1,0 +1,32 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('server.incidents') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Incidents</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>
+				{{ phrase('admin.general.incident') }} #{{ ng_var('View.incident.id') }}
+				&mdash; {{ ng_var('View.incident.title') }}
+                <span ng-if="View.incident.resolved">
+                    &mdash; {{ phrase('admin.general.resolved') }}
+                </span>
+			</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-fill indent">
+				<div class="panel-body" ng-bind-html="View.instructions_html"></div>
+			</div>
+		</article>
+	</section>
+
+{% endblock %}

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql;
 
 /**
@@ -37,6 +38,10 @@ namespace Application\DeskPRO\Dpql;
  */
 class ResultHandler
 {
+    const FLAG_HIERARCHICAL            = 1;
+    const FLAG_WITH_ROLLUP             = 2;
+    const FLAG_HIERARCHY_DESCENDS_FROM = 3;
+
     /**
      * List of columns that should be selected.
      *
@@ -50,7 +55,7 @@ class ResultHandler
      *
      * @var array[int]
      */
-    protected $_columns = array();
+    protected $_columns = [];
 
     /**
      * List of columns that will be grouped on in the X direction.
@@ -61,7 +66,7 @@ class ResultHandler
      *
      * @var array[int]
      */
-    protected $_groupXColumns = array();
+    protected $_groupXColumns = [];
 
     /**
      * List of columns that will be grouped on in the Y direction.
@@ -71,12 +76,12 @@ class ResultHandler
      *
      * @var array[int]
      */
-    protected $_groupYColumns = array();
+    protected $_groupYColumns = [];
 
     /**
      * @var array
      */
-    protected $_groupStackColumns = array();
+    protected $_groupStackColumns = [];
 
     /**
      * List of columns that will be used to split the results into
@@ -86,14 +91,19 @@ class ResultHandler
      *
      * @var array[int]
      */
-    protected $_splitColumns = array();
+    protected $_splitColumns = [];
 
     /**
      * List of select column IDs that should be totaled.
      *
      * @var array
      */
-    protected $_totalColumns = array();
+    protected $_totalColumns = [];
+
+    /**
+     * @var array
+     */
+    protected $_flags = [];
 
     /**
      * Adds a column that will be selected/output into the results.
@@ -104,11 +114,11 @@ class ResultHandler
      */
     public function addSelectColumn($title, $resultId, $renderer = null)
     {
-        $this->_columns[] = array(
+        $this->_columns[] = [
             'title'    => $title,
             'resultId' => $resultId,
             'renderer' => $renderer,
-        );
+        ];
     }
 
     /**
@@ -133,12 +143,12 @@ class ResultHandler
      */
     public function addGroupYColumn($title, $groupResultId, $resultId, $renderer = null)
     {
-        $this->_groupYColumns[] = array(
+        $this->_groupYColumns[] = [
             'title'         => $title,
             'groupResultId' => $groupResultId,
             'resultId'      => $resultId,
             'renderer'      => $renderer,
-        );
+        ];
     }
 
     /**
@@ -156,18 +166,18 @@ class ResultHandler
      * a matrix table.
      *
      * @param string        $title
-     * @param int           $groupResultId The ID of the column in the results that holds the grouping field value
+     * @param int|string    $groupResultId The ID of the column in the results that holds the grouping field value
      * @param int           $resultId
      * @param \Closure|null $renderer
      */
     public function addGroupXColumn($title, $groupResultId, $resultId, $renderer = null)
     {
-        $this->_groupXColumns[] = array(
+        $this->_groupXColumns[] = [
             'title'         => $title,
             'groupResultId' => $groupResultId,
             'resultId'      => $resultId,
             'renderer'      => $renderer,
-        );
+        ];
     }
 
     /**
@@ -182,10 +192,10 @@ class ResultHandler
 
     public function addGroupStackColumn($groupId, $printId)
     {
-        $this->_groupStackColumns[] = array(
+        $this->_groupStackColumns[] = [
             'groupId' => $groupId,
             'printId' => $printId,
-        );
+        ];
     }
 
     public function getGroupStackColumns()
@@ -201,10 +211,10 @@ class ResultHandler
      */
     public function addSplitColumn($resultId, $renderer = null)
     {
-        $this->_splitColumns[] = array(
+        $this->_splitColumns[] = [
             'resultId' => $resultId,
             'renderer' => $renderer,
-        );
+        ];
     }
 
     /**
@@ -231,5 +241,29 @@ class ResultHandler
     public function getTotalColumns()
     {
         return $this->_totalColumns;
+    }
+
+    /**
+     * @param int $flag
+     *
+     * @throws Exception
+     */
+    public function addFlag($flag)
+    {
+        $this->_flags[] = $flag;
+
+        if ($this->hasFlag(self::FLAG_WITH_ROLLUP) && $this->hasFlag(self::FLAG_HIERARCHY_DESCENDS_FROM)) {
+            throw new Exception('You cannot use WITH ROLLUP and HIERARCHY_DESCENDS_FROM() together');
+        }
+    }
+
+    /**
+     * @param int $flag
+     *
+     * @return bool
+     */
+    public function hasFlag($flag)
+    {
+        return in_array($flag, $this->_flags);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@ use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\CustomFieldData;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
+use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -39,7 +40,7 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 /**
  * Class ChoiceDataTransformer.
  */
-class ChoiceDataTransformer  implements DataTransformerInterface
+class ChoiceDataTransformer implements DataTransformerInterface
 {
     /**
      * @var CustomDataPersister
@@ -56,7 +57,13 @@ class ChoiceDataTransformer  implements DataTransformerInterface
      */
     protected $previous;
 
-    public function __construct(CustomDataPersister $persister, DomainObject $owner)
+    /**
+     * Constructor.
+     *
+     * @param CustomDataPersister         $persister
+     * @param CustomPerDataOwnerInterface $owner
+     */
+    public function __construct(CustomDataPersister $persister, CustomPerDataOwnerInterface $owner)
     {
         $this->persister = $persister;
         $this->owner     = $owner;
@@ -73,17 +80,17 @@ class ChoiceDataTransformer  implements DataTransformerInterface
      */
     public function transform($value)
     {
-        $this->previous = array();
+        $this->previous = [];
 
         if (!$value) {
-            return array('value' => null);
+            return ['value' => null];
         }
 
         // single choice
         if ($value instanceof CustomFieldData) {
             $this->previous[$value->definition['id']] = $value;
 
-            return array('value' => $value->definition);
+            return ['value' => $value->definition];
         }
 
         // multiple choices
@@ -94,7 +101,7 @@ class ChoiceDataTransformer  implements DataTransformerInterface
                 $coll->add($data->definition);
             }
 
-            return array('value' => $coll);
+            return ['value' => $coll];
         }
 
         throw new TransformationFailedException();
@@ -123,7 +130,7 @@ class ChoiceDataTransformer  implements DataTransformerInterface
         if ($value instanceof CustomFieldDefinition) {
             $data = null;
             foreach ($this->previous as $previous) {
-                /** @var $previous CustomFieldData */
+                /* @var $previous CustomFieldData */
                 // mark to delete
                 if ($previous->definition['id'] != $value['id']) {
                     $this->persister->remove($previous);
@@ -141,10 +148,10 @@ class ChoiceDataTransformer  implements DataTransformerInterface
 
         // multiple choices
         if ($value instanceof ArrayCollection || is_array($value)) {
-            $ret = array();
+            $ret = [];
 
             foreach ($value as $definition) {
-                /** @var $definition CustomFieldDefinition */
+                /* @var $definition CustomFieldDefinition */
                 if (!isset($this->previous[$definition['id']])) {
                     $ret[] = $this->createNewData($definition);
                 } else {
@@ -173,7 +180,7 @@ class ChoiceDataTransformer  implements DataTransformerInterface
         $data->definition      = $definition;
         $data->root_definition = $definition->parent ?: $definition;
         $data->owner           = $this->owner;
-        $this->persister->add($data);
+        $this->owner->getCustomPerData()->add($data);
 
         return $data;
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,14 @@
  *
  * @category Controller
  */
+
 namespace Application\DeskPRO\HttpKernel\Controller;
 
-use Application\DeskPRO\HttpFoundation\Request;
+use Application\DeskPRO\HttpKernel\Event\PrePostEvent;
 use Application\DeskPRO\Util;
 use Orb\Util\Arrays;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -53,7 +55,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     /**
      * The request.
      *
-     * @var \Application\DeskPRO\HttpFoundation\Request
+     * @var \Symfony\Component\HttpFoundation\Request
      */
     public $request;
 
@@ -79,7 +81,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     public function __construct(ContainerInterface $container)
     {
         $this->setContainer($container);
-        $this->request          = $this->get('request');
+        $this->request          = $this->container->get('request_stack')->getCurrentRequest();
         $this->response         = $this->get('response');
         $this->event_dispatcher = $this->get('event_dispatcher');
         $this->init();
@@ -100,9 +102,9 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     {
     }
 
-    public function DeskPRO_onControllerPreAction($event)
+    public function DeskPRO_onControllerPreActionHandler(PrePostEvent $event)
     {
-        $ret = $this->preAction($event->get('action'), $event->get('arguments'));
+        $ret = $this->preActionHandler($event->get('request'), $event->get('action'), $event->get('arguments'));
         if ($ret) {
             $event->setResponse($ret);
         }
@@ -114,16 +116,17 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      * If this method returns a response object, then that repsonse is used and
      * the original action is NOT called. Any other return value is discarded.
      *
-     * @param string $action    The action that will be called
-     * @param array  $arguments The arguments that will be passed in
+     * @param Request $request
+     * @param string  $action    The action that will be called
+     * @param array   $arguments The arguments that will be passed in
      */
-    public function preAction($action, $arguments = null)
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
     }
 
-    public function DeskPRO_onControllerPostAction($event)
+    public function DeskPRO_onControllerPostActionHandler($event)
     {
-        $ret = $this->postAction($event->get('response'));
+        $ret = $this->postActionHandler($event->get('response'));
         if ($ret) {
             $event->setResponse($ret);
         }
@@ -148,9 +151,9 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      * and the original discarded. Any other return value will be discarded and result
      * in the original response being used.
      *
-     * @param Symfony\Component\HttpFoundation\Response $response
+     * @param \Symfony\Component\HttpFoundation\Response $response
      */
-    public function postAction($response)
+    public function postActionHandler($response)
     {
     }
 
@@ -163,9 +166,9 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      *
      * @return Response
      */
-    public function redirectRoute($route, array $parameters = array(), $status = 302)
+    public function redirectRoute($route, array $parameters = [], $status = 302)
     {
-        $url = $this->generateUrl($route, $parameters, true);
+        $url = $this->generateUrl($route, $parameters);
 
         return $this->redirect($url, $status);
     }
@@ -215,7 +218,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 
             return $response;
         } else {
-            $response = new \Application\ApiBundle\HttpFoundation\JsonResponse();
+            $response = new \Application\LegacyApiBundle\HttpFoundation\JsonResponse();
 
             // Because IE will sometimes prompt to download json when using iframe transport for ajax if we dont do this
             if ($this->request->isXmlHttpRequest() || isset($_SERVER['HTTP_ACCEPT']) && (strpos(
@@ -286,7 +289,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      *
      * @return Response
      */
-    public function renderJson($view, array $parameters = array(), Response $response = null)
+    public function renderJson($view, array $parameters = [], Response $response = null)
     {
         if ($response === null) {
             $response = $this->container->get('response');

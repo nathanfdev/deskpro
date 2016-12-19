@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Renderer;
 
 /**
@@ -112,9 +113,9 @@ class Csv extends AbstractRenderer
         $groupYColumns = $this->_handler->getGroupYColumns();
         $selectColumns = $this->_handler->getSelectColumns();
 
-        $output = array();
+        $output = [];
 
-        $columns = array();
+        $columns = [];
         foreach ($groupXColumns as $column) {
             $columns[] = $this->wrapCell($column['title']);
         }
@@ -128,7 +129,7 @@ class Csv extends AbstractRenderer
         $output[] = implode(',', $columns);
 
         foreach ($rows as $row) {
-            $columns = array();
+            $columns = [];
             foreach ($groupXColumns as $column) {
                 $columns[] = $this->wrapCell($this->_renderCellValue($row, $column));
             }
@@ -145,8 +146,8 @@ class Csv extends AbstractRenderer
         // output a row of totals if requested - only do it with grouping, as otherwise there's
         // no real way of marking a row as the totals and that'd be confusing
         $totalColumns = $this->_handler->getTotalColumns();
-        if (count($rows) > 1  && $totalColumns && $groupYColumns) {
-            $cells = array();
+        if (count($rows) > 1 && $totalColumns && $groupYColumns) {
+            $cells = [];
 
             if ($groupYColumns) {
                 foreach ($groupYColumns as $column) {
@@ -156,7 +157,7 @@ class Csv extends AbstractRenderer
                 $cells[] = $this->wrapCell('Total');
             }
 
-            $columnTotals = array();
+            $columnTotals = [];
             foreach ($rows as $row) {
                 foreach ($totalColumns as $id) {
                     if ($this->getColumnValue($row, $id) === null) {
@@ -201,24 +202,24 @@ class Csv extends AbstractRenderer
         $prepared = $this->_prepareMatrixTable($rows);
         $lookup   = $prepared['lookup'];
 
-        $rows = array();
+        $rows = [];
 
-        $rowGroups  = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['yDistinct']);
-        $headerCols = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['xDistinct']);
+        $rowGroups  = $this->_getFinalMatrixPathsWithPrintable(['root'], $prepared['yDistinct']);
+        $headerCols = $this->_getFinalMatrixPathsWithPrintable(['root'], $prepared['xDistinct']);
 
         $select = $this->_handler->getSelectColumns();
         $first  = reset($select);
-        if (count($select) == 1 && in_array($first['renderer'], array('number', 'numberraw'), true)) {
+        if (count($select) == 1 && in_array($first['renderer'], ['number', 'numberraw'], true)) {
             $totalType = $first['renderer'];
         } else {
             $totalType = false;
         }
 
-        $headerRow = array();
+        $headerRow = [];
         foreach ($this->_handler->getGroupYColumns() as $column) {
             $headerRow[] = $this->wrapCell('');
         }
-        $parts = array();
+        $parts = [];
         foreach ($this->_handler->getGroupXColumns() as $column) {
             $parts[] = $column['title'];
         }
@@ -233,7 +234,7 @@ class Csv extends AbstractRenderer
 
         $rows[] = implode(',', $headerRow);
 
-        $headerRow = array();
+        $headerRow = [];
         foreach ($this->_handler->getGroupYColumns() as $column) {
             $headerRow[] = $this->wrapCell($column['title']);
         }
@@ -249,13 +250,13 @@ class Csv extends AbstractRenderer
 
         if (!$rowGroups) {
             // need to fake it so we get a row with no Y grouping
-            $rowGroups = array('root' => array());
+            $rowGroups = ['root' => []];
         }
 
-        $columnTotals = array();
+        $columnTotals = [];
 
         foreach ($rowGroups as $yPath => $printable) {
-            $columns  = array();
+            $columns  = [];
             $rowTotal = 0;
 
             foreach ($printable as $print) {
@@ -287,7 +288,7 @@ class Csv extends AbstractRenderer
         }
 
         if ($totalType && $this->_handler->getGroupYColumns()) {
-            $columns = array();
+            $columns = [];
             foreach ($this->_handler->getGroupYColumns() as $rowGroupSkip) {
                 $columns[] = $this->wrapCell('');
             }

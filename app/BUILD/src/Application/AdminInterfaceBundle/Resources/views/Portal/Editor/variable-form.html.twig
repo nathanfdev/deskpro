@@ -1,0 +1,25 @@
+<!-- Show a warning when trying to render a variable of unknown type -->
+
+<div ng-if="
+    variable.type != 'color' &&
+    variable.type != 'font' &&
+    variable.type != 'size' &&
+    variable.type != 'float'
+">
+    Unknown varible type <b ng-bind="variable.type"></b>
+</div>
+
+<!-- Render proper directive depending on variable type -->
+
+<div ng-if="variable.type == 'color'">
+    <dp-portal-designer-color-form variable="variable" values="values"></dp-portal-designer-color-form>
+</div>
+<div ng-if="variable.type == 'float'">
+    <dp-portal-designer-float-form variable="variable" values="values"></dp-portal-designer-float-form>
+</div>
+<div ng-if="variable.type == 'size'">
+    <dp-portal-designer-size-form variable="variable" values="values"></dp-portal-designer-size-form>
+</div>
+<div ng-if="variable.type == 'font'">
+    <dp-portal-designer-font-form variable="variable" values="values"></dp-portal-designer-font-form>
+</div>

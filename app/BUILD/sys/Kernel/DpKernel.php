@@ -1,0 +1,160 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+
+namespace DpSys\Kernel;
+
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Symfony\Component\Config\Loader\LoaderInterface;
+
+class DpKernel extends BaseKernel
+{
+    /**
+     * @var string
+     */
+    private $interface;
+
+    /**
+     * @var DeskproContainer
+     */
+    protected $container;
+
+    /**
+     * Constructor.
+     *
+     * @param string       $environment
+     * @param bool         $debug
+     * @param \DpRun\DpEnv $env
+     */
+    public function __construct($environment, $debug, \DpRun\DpEnv $env = null)
+    {
+        parent::__construct($environment, $debug, $env);
+
+        $this->interface = DP_INTERFACE;
+
+        if (!defined('DP_DEBUG')) {
+            if ($this->isDebug()) {
+                define('DP_DEBUG', true);
+            } else {
+                define('DP_DEBUG', false);
+            }
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getInterface()
+    {
+        return $this->interface;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function registerBundleDirs()
+    {
+        $bundle_dirs = [
+            'Application' => DP_ROOT.'/src/Application',
+            'Bundle'      => DP_ROOT.'/src/Bundle',
+        ];
+
+        if (defined('DPC_IS_CLOUD')) {
+            $bundle_dirs['Cloud'] = DP_ROOT.'/src/Cloud';
+        }
+
+        return $bundle_dirs;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function registerContainerConfiguration(LoaderInterface $loader)
+    {
+        $loader->load(DP_ROOT.'/sys/config/config_'.$this->getEnvironment().'.php');
+    }
+
+    //###################################################################################################################
+
+    /**
+     * {@inheritdoc}
+     */
+    public function registerBundles()
+    {
+        $bundles = [
+            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new \Symfony\Bundle\TwigBundle\TwigBundle(),
+            new \Symfony\Bundle\MonologBundle\MonologBundle(),
+            new \Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
+            new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
+            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new \FOS\ElasticaBundle\FOSElasticaBundle(),
+
+            new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
+            new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+
+            new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
+            new \FOS\RestBundle\FOSRestBundle(),
+            new \JMS\SerializerBundle\JMSSerializerBundle(),
+
+            new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
+
+            new \Application\DeskPRO\DeskPROBundle(),
+            new \Application\EmailBundle\EmailBundle(),
+            new \Application\AdminInterfaceBundle\AdminInterfaceBundle(),
+            new \Application\AgentBundle\AgentBundle(),
+            new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
+            new \Application\UserBundle\UserBundle(),
+            new \Application\LegacyApiBundle\LegacyApiBundle(),
+            new \Application\ImportBundle\ImportBundle(),
+
+            new \DeskPRO\Bundle\AppBundle\AppBundle(),
+            new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
+            new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
+
+            new \DeskPRO\Bundle\UpdateBundle\UpdateBundle(),
+            new \Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
+        ];
+
+        if (defined('DPC_IS_CLOUD')) {
+            $bundles = array_merge($bundles, [
+                new \Cloud\LegacyApiBundle\CloudLegacyApiBundle(),
+                new \Cloud\AdminInterfaceBundle\CloudAdminInterfaceBundle(),
+            ]);
+        }
+
+        if (in_array($this->getEnvironment(), ['dev', 'test'])) {
+            $bundles[] = new \Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
+        }
+
+        return $bundles;
+    }
+}

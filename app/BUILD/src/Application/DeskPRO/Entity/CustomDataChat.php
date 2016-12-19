@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -44,45 +45,108 @@ class CustomDataChat extends CustomDataAbstract
     /**
      * The conversation the message belongs to.
      *
-     * @var \Application\DeskPRO\Entity\ChatConversation
+     * @var ChatConversation
      */
     protected $conversation;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefChat
+     * @var CustomDefChat
      */
-    protected $field = null;
+    protected $field;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefChat
+     * @var CustomDefChat
      */
-    protected $root_field = null;
+    protected $root_field;
+
+    /**
+     * @return ChatConversation
+     */
+    public function getConversation()
+    {
+        return $this->conversation;
+    }
+
+    /**
+     * @param ChatConversation $conversation
+     *
+     * @return $this
+     */
+    public function setConversation($conversation)
+    {
+        $this->setModelField('conversation', $conversation);
+
+        return $this;
+    }
 
     public function getConversationId()
     {
         return $this->conversation->getId();
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * {@inheritdoc}
+     *
+     * @return ChatConversation
+     */
+    public function getOwner()
+    {
+        return $this->conversation;
+    }
+
+    /**
+     * Set a field.
+     *
+     * @param CustomDefChat $field
+     *
+     * @return $this
+     */
+    public function setField(CustomDefChat $field = null)
+    {
+        $this->setModelField('field', $field);
+
+        return $this;
+    }
+
+    /**
+     * Set a root field.
+     *
+     * @param CustomDefChat $field
+     *
+     * @return $this
+     */
+    public function setRootField(CustomDefChat $field = null)
+    {
+        $this->setModelField('root_field', $field);
+
+        return $this;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDataChat';
+        $metadata->customRepositoryClassName = self::class;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
-            array(
-                'name'    => 'custom_data_chat',
-                'indexes' => array(
-                    'obj_id_idx'   => array('columns' => array(0 => 'conversation_id')),
-                    'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'conversation_id')),
-                ),
-            )
+            [
+                'name'              => 'custom_data_chat',
+                'uniqueConstraints' => [
+                    'unique_idx' => [
+                        'columns' => [
+                            'field_id',
+                            'conversation_id',
+                            'root_field_id',
+                        ],
+                    ],
+                ],
+            ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -90,78 +154,78 @@ class CustomDataChat extends CustomDataAbstract
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'value',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'value',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'input',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'input',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'conversation',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation',
+                'targetEntity' => ChatConversation::class,
                 'inversedBy'   => 'custom_data',
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'conversation_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefChat',
+                'targetEntity' => CustomDefChat::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'root_field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefChat',
+                'targetEntity' => CustomDefChat::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'root_field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
     }
 }

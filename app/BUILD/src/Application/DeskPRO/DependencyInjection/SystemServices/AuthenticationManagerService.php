@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\Auth\AuthenticationManager;
@@ -36,7 +37,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class AuthenticationManagerService
 {
-    public static function create(DeskproContainer $container)
+    public static function create(DeskproContainer $container, $interface = DP_INTERFACE)
     {
         /** @var \Application\DeskPRO\Usersource\UsersourceManager $um */
         $um = $container->getSystemService('usersource_manager');
@@ -47,15 +48,15 @@ class AuthenticationManagerService
         /* @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $as */
         $aaf = $container->getSystemService('usersource_auth_adapter_factory');
 
-        /* @var \Application\DeskPRO\Settings\Settings $as */
-        $app_settings = $container->getSettingsHandler();
+        /* @var \Application\DeskPRO\NewSettings\SettingsBag $as */
+        $app_settings = $container->getSettingsResolver()->getGlobalSettings();
 
         return new AuthenticationManager(
             $as,
             $um,
             $aaf,
             $app_settings,
-            DP_INTERFACE == 'user' ? 'user' : 'agent'
+            $interface == 'user' ? 'user' : 'agent'
         );
     }
 }

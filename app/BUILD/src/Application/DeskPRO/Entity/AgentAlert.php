@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -65,7 +66,7 @@ class AgentAlert extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * @var bool
@@ -119,33 +120,137 @@ class AgentAlert extends \Application\DeskPRO\Domain\DomainObject
     public function addTargetMap($target, array $keys)
     {
         if (!isset($this->data['@target_maps'])) {
-            $this->data['@target_maps'] = array();
+            $this->data['@target_maps'] = [];
         }
 
         $this->data['@target_maps'][$target] = $keys;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypename()
+    {
+        return $this->typename;
+    }
+
+    /**
+     * @param Person $person
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->person = $person;
+    }
+
+    /**
+     * @param string $typename
+     */
+    public function setTypename($typename)
+    {
+        $this->typename = $typename;
+    }
+
+    /**
+     * @param array $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDismissed()
+    {
+        return $this->is_dismissed;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'agent_alerts',
-            'indexes' => array(
-                'date_created_idx' => array('columns' => array('date_created')),
-                'is_dismissed_idx' => array('columns' => array('is_dismissed', 'date_created')),
-            ),
-        ));
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'typename', 'type' => 'string', 'length' => 255, 'nullable' => false, 'columnName' => 'typename'));
-        $metadata->mapField(array('fieldName' => 'data', 'type' => 'array', 'nullable' => false, 'columnName' => 'data'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_created'));
-        $metadata->mapField(array('fieldName' => 'is_dismissed', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_dismissed'));
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+            'indexes' => [
+                'date_created_idx' => ['columns' => ['date_created']],
+                'is_dismissed_idx' => [
+                    'columns' => [
+                        'is_dismissed',
+                        'date_created',
+                    ],
+                ],
+            ],
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'typename',
+            'type'       => 'string',
+            'length'     => 255,
+            'nullable'   => false,
+            'columnName' => 'typename',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'data',
+            'type'       => 'array',
+            'nullable'   => false,
+            'columnName' => 'data',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_created',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'date_created',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_dismissed',
+            'type'       => 'boolean',
+            'nullable'   => false,
+            'columnName' => 'is_dismissed',
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'person',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

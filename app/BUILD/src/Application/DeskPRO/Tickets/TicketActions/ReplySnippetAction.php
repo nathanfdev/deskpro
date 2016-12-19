@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -93,7 +93,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
      */
     public function getSnippetTitles()
     {
-        $titles = array();
+        $titles = [];
         foreach ($this->snippet_items as $item) {
             $t = $item->snippet ? $item->snippet->title : null;
             if ($t) {
@@ -109,7 +109,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
      */
     public function getSnippetIds()
     {
-        $ids = array();
+        $ids = [];
         foreach ($this->snippet_items as $item) {
             $id = $item->snippet ? $item->snippet->id : null;
             if ($id) {
@@ -121,13 +121,16 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Person $person
+     * {@inheritdoc}
      */
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function checkPermission(Ticket $ticket, Person $person)
     {
         if (!$person->PermissionsManager->TicketChecker->canReply($ticket)) {
@@ -138,9 +141,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -174,15 +175,15 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         $message         = new TicketMessage();
         $message->person = $this->person_context;
 
-        $snippet_text = array();
+        $snippet_text = [];
         foreach ($this->snippet_items as $item) {
             $text = App::getTranslator()->objectChoosePhraseText(
                 $item->snippet,
                 'snippet',
-                array(
+                [
                     $ticket->language,
                     $this->person_context->getRealLanguage(),
-                )
+                ]
             );
             $text = trim($text);
             if (!$text) {
@@ -202,7 +203,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
                     array_unshift($snippet_text, $text);
                     break;
                 case 'overwrite':
-                    $snippet_text = array($text);
+                    $snippet_text = [$text];
                     break;
             }
         }
@@ -219,25 +220,21 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
         if (!$this->snippet_items) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('action' => 'reply_snippet'),
-        );
+        return [
+            ['action' => 'reply_snippet'],
+        ];
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -249,7 +246,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {
@@ -261,7 +258,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         // when being viewed from replybox
         // See TicketController::ajaxGetMacroAction
         if (isset($_GET['macro_reply_context'])) {
-            $ret       = array();
+            $ret       = [];
             $reply_pos = null;
 
             foreach ($this->snippet_items as $item) {
@@ -278,14 +275,14 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 
                 $html = '';
                 if (!empty($GLOBALS['DP_ACTIVE_TICKET'])) {
-                    $snippet_text = array();
+                    $snippet_text = [];
 
                     $text = App::getTranslator()->objectChoosePhraseText(
                         $item->snippet,
                         'snippet',
-                        array(
+                        [
                             $GLOBALS['DP_ACTIVE_TICKET']->language,
-                        )
+                        ]
                     );
 
                     if ($text = trim($text)) {
@@ -297,7 +294,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
                                 array_unshift($snippet_text, $text);
                                 break;
                             case 'overwrite':
-                                $snippet_text = array($text);
+                                $snippet_text = [$text];
                                 break;
                         }
 

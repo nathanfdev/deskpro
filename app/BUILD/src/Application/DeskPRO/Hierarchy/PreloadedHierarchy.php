@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Hierarchy;
 
 class PreloadedHierarchy
@@ -41,17 +42,17 @@ class PreloadedHierarchy
     /**
      * @var array
      */
-    protected $root_ids = array();
+    protected $root_ids = [];
 
     /**
      * @var array
      */
-    protected $child_to_parent = array();
+    protected $child_to_parent = [];
 
     /**
      * @var array
      */
-    protected $parent_to_children = array();
+    protected $parent_to_children = [];
 
     /**
      * @var array
@@ -75,7 +76,7 @@ class PreloadedHierarchy
 
     public function __construct($objects)
     {
-        $this->objects = array();
+        $this->objects = [];
 
         foreach ($objects as $obj) {
             $this->objects[$obj->getId()] = $obj;
@@ -87,7 +88,7 @@ class PreloadedHierarchy
                 $this->child_to_parent[$obj->getId()] = $pid;
 
                 if (!isset($this->parent_to_children[$pid])) {
-                    $this->parent_to_children[$pid] = array();
+                    $this->parent_to_children[$pid] = [];
                 }
                 $this->parent_to_children[$pid][$obj->getId()] = $obj->getId();
             }
@@ -118,7 +119,7 @@ class PreloadedHierarchy
      */
     public function getByIds(array $ids)
     {
-        $ret = array();
+        $ret = [];
         foreach ($ids as $id) {
             if (!isset($this->objects[$id])) {
                 continue;
@@ -200,10 +201,10 @@ class PreloadedHierarchy
         $id = is_object($obj_or_id) ? $obj_or_id->getId() : intval($obj_or_id);
 
         if ($this->isRoot($id)) {
-            return array();
+            return [];
         }
 
-        $parent_ids = array();
+        $parent_ids = [];
         $current_id = $id;
 
         while (isset($this->child_to_parent[$current_id])) {
@@ -223,7 +224,7 @@ class PreloadedHierarchy
     {
         $id         = is_object($obj_or_id) ? $obj_or_id->getId() : intval($obj_or_id);
         $parent_ids = $this->getParentPathIds($id);
-        $parents    = array();
+        $parents    = [];
 
         foreach ($parent_ids as $pid) {
             $parents[] = $this->getById($pid);
@@ -269,10 +270,10 @@ class PreloadedHierarchy
     {
         $id = is_object($obj_or_id) ? $obj_or_id->getId() : intval($obj_or_id);
         if (!isset($this->parent_to_children[$id])) {
-            return array();
+            return [];
         }
 
-        $child_ids = array();
+        $child_ids = [];
         foreach ($this->parent_to_children[$id] as $cid) {
             $child_ids[] = $cid;
         }
@@ -288,7 +289,7 @@ class PreloadedHierarchy
     public function getChildren($obj_or_id)
     {
         $child_ids = $this->getChildrenIds($obj_or_id);
-        $childs    = array();
+        $childs    = [];
 
         foreach ($child_ids as $cid) {
             $childs[] = $this->getById($cid);
@@ -349,10 +350,10 @@ class PreloadedHierarchy
 
     private function getFlatArrayRecursive($objects, $depth = 0)
     {
-        $flat = array();
+        $flat = [];
 
         foreach ($objects as $obj) {
-            $flat[] = array('object' => $obj, 'depth' => $depth);
+            $flat[] = ['object' => $obj, 'depth' => $depth];
 
             if ($this->hasChildren($obj)) {
                 $subs = $this->getFlatArrayRecursive($this->getChildren($obj), $depth + 1);

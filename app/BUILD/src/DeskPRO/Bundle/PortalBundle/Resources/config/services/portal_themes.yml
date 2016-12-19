@@ -1,0 +1,88 @@
+services:
+
+  theme_resolver:
+    class: DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver
+    arguments:
+        - "@service_container"
+        - "@theme_repository"
+        - "@tag_processor"
+        - "@doctrine.orm.default_entity_manager"
+        - "@logger"
+
+
+  tag_processor:
+    lazy: true
+    class: DeskPRO\Bundle\PortalBundle\Theme\TagProcessor
+    arguments:
+      - "@tag_request_factory"
+      - [ "@tag_handler.esi", "@tag_handler.inline" ]
+      - "@dp_sys.alerts.event_logger"
+
+
+  tag_handler.esi:
+    class: DeskPRO\Bundle\PortalBundle\Theme\TagHandler\EsiTagHandler
+    arguments:
+      - "@service_container"
+      - "@portal_cache_helper"
+      - "@portal_mode_storage"
+
+
+  tag_handler.inline:
+    class: DeskPRO\Bundle\PortalBundle\Theme\TagHandler\InlineTagHandler
+    arguments:
+      - "@service_container"
+
+
+  tag_request_factory:
+    class: DeskPRO\Bundle\PortalBundle\Theme\TagRequestFactory
+    arguments:
+      - "@request_stack"
+      - "@language_manager"
+      - "@service_container"
+
+
+  theme_view_factory:
+    class: DeskPRO\Bundle\PortalBundle\Theme\ThemeViewFactory
+    arguments: ["@brand_stack", "@portal_brand_theme_loader"]
+
+
+  theme_repository:
+    class: DeskPRO\Bundle\PortalBundle\Theme\ThemeRepository
+    arguments: ["@portal_cache.themes", "@annotation_reader", "@logger"]
+
+
+  portal_cache.themes:
+    class: Symfony\Component\Config\ConfigCache
+    arguments:
+      - %kernel.cache_dir%/portalThemes.php
+      - %kernel.debug%
+
+
+  portal_cache.template_cache_warmer:
+    class: DeskPRO\Bundle\PortalBundle\CacheWarmer\ThemeTemplateCacheWarmer
+    arguments: ["@theme_resolver", "@service_container" ]
+    tags:
+      - { name: 'kernel.cache_warmer', priority: -200 }
+
+
+  portal_cache.theme_cache_warmer:
+    class: DeskPRO\Bundle\PortalBundle\CacheWarmer\ThemeRepositoryCacheWarmer
+    arguments: ["@theme_repository"]
+    tags:
+      - { name: 'kernel.cache_warmer', priority: -300 }
+
+
+  portal_brand_theme_loader:
+    class: DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader
+    arguments:
+      - "@brand_container_factory"
+      - "@theme_resolver"
+      - "@portal_mode_storage"
+
+  twig.helpers.deskpro_userdate:
+    class: Application\DeskPRO\Twig\Extension\UserDateExtension
+    arguments:
+      - "@service_container"
+    public: false
+    tags:
+      - { name: twig.extension }

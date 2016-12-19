@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -67,6 +67,7 @@ class ClientManager
 
     /**
      * @param array $config
+     *
      * @return WebClient
      */
     private function createClientFromConfig($config)
@@ -80,7 +81,7 @@ class ClientManager
     }
 
     /**
-     * @param string $ip
+     * @param string   $ip
      * @param int|null $port
      *
      * @throws \Application\DeskPRO\Exception\MissingConfigurationException
@@ -97,10 +98,10 @@ class ClientManager
             throw new MissingConfigurationException('Invalid port');
         }
 
-        $config = array(
-            'ip'      => $ip,
-            'port'    => $port ?: 9998,
-        );
+        $config = [
+            'ip'   => $ip,
+            'port' => $port ?: 9998,
+        ];
 
         return $config;
     }
@@ -110,11 +111,13 @@ class ClientManager
         if (!$this->client) {
             $this->client = $this->createClient();
         }
+
         return $this->client;
     }
 
     /**
      * @param array $config
+     *
      * @return WebClient
      */
     public function getClientFromConfig($config)
@@ -122,6 +125,7 @@ class ClientManager
         if (!$this->client) {
             $this->client = $this->createClientFromConfig($config);
         }
+
         return $this->client;
     }
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,16 +34,21 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
+use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
+use Application\DeskPRO\CustomFields\PersonFieldManager;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\EntityRepository\ChatConversation as ChatConversationRepository;
+use Application\DeskPRO\EntityRepository\Person;
 use Application\DeskPRO\EntityRepository\Ticket;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
-use Application\DeskPRO\Mail\Mailer;
 use Application\DeskPRO\People\PersonEditManager;
+use Application\DeskPRO\People\PersonMerge\PersonMerge;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
 use Symfony\Component\Form\FormError;
@@ -56,9 +61,9 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class PersonController extends AbstractController
 {
-    ############################################################################
-    # /agent/people/:person_id                                   agent_people_view
-    ############################################################################
+    //###########################################################################
+    // /agent/people/:person_id                                   agent_people_view
+    //###########################################################################
 
     public function viewAction($person_id, $with_warn_for_email = false)
     {
@@ -80,9 +85,9 @@ class PersonController extends AbstractController
             $person->loadHelper('Agent');
         }
 
-        #------------------------------
-        # Custom fields
-        #------------------------------
+        //------------------------------
+        // Custom fields
+        //------------------------------
 
         $manager = $this->container->getCustomFieldManager();
 
@@ -95,9 +100,9 @@ class PersonController extends AbstractController
         $form                      = $manager->createDefinitionsFormForContext($person);
         $custom_fields_definitions = $form->createView();
 
-        #------------------------------
-        # Misc info needed
-        #------------------------------
+        //------------------------------
+        // Misc info needed
+        //------------------------------
 
         $notes = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
         /** @var Ticket $rep */
@@ -105,14 +110,14 @@ class PersonController extends AbstractController
         $person_tickets       = $rep->getPersonTickets($person, 251, 'status');
         $person_tickets_count = $rep->countTicketsForPerson(
             $person,
-            array('awaiting_agent', 'awaiting_user', 'resolved', 'archived', 'hidden')
+            ['awaiting_agent', 'awaiting_user', 'resolved', 'archived', 'hidden']
         );
 
         $person_files       = $this->em->getRepository('DeskPRO:PersonFile')->getFilesForPerson($person);
         $person_files_count = count($person_files);
 
         $max                    = 5;
-        $person_tickets_initial = array();
+        $person_tickets_initial = [];
         foreach ($person_tickets as $t) {
             if ($t->status == 'open') {
                 $person_tickets_initial[$t->id] = $t;
@@ -148,30 +153,25 @@ class PersonController extends AbstractController
 
         $activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForPerson($person, 50);
 
-        $contact_data = array();
+        $contact_data = [];
         foreach ($person->contact_data as $cd) {
             if (!isset($contact_data[$cd->contact_type])) {
-                $contact_data[$cd->contact_type] = array();
+                $contact_data[$cd->contact_type] = [];
             }
             $contact_data[$cd->contact_type][] = $cd->getTemplateVars();
         }
 
-        $contact_data['phone_numbers'] = $this->createForm('collection', $person->phone_numbers, array(
+        $contact_data['phone_numbers'] = $this->createForm('collection', $person->phone_numbers, [
             'type'         => new PhoneNumberType(),
             'allow_add'    => true,
             'allow_delete' => true,
-            'options'      => array(
+            'options'      => [
                 'label'            => false,
                 'show_phone_label' => true,
-            ),
-        ))->createView();
+            ],
+        ])->createView();
 
         $session = $this->em->getRepository('DeskPRO:Session')->getSessionForPerson($person);
-        if ($session) {
-            $visitor = $session->visitor;
-        } else {
-            $visitor = $this->em->getRepository('DeskPRO:Visitor')->getVisitorForPerson($person);
-        }
 
         $timezone_options = \DateTimeZone::listIdentifiers();
         $usergroup_names  = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
@@ -187,20 +187,22 @@ class PersonController extends AbstractController
         if ($person->organization) {
             $org_members_count = $this->em->getRepository('DeskPRO:Organization')->countMembersFor($person->organization);
 
-            $org_contact_data = array();
+            $org_contact_data = [];
             foreach ($person->organization->contact_data as $cd) {
                 if (!isset($org_contact_data[$cd->contact_type])) {
-                    $org_contact_data[$cd->contact_type] = array();
+                    $org_contact_data[$cd->contact_type] = [];
                 }
                 $org_contact_data[$cd->contact_type][] = $cd->getTemplateVars();
             }
         }
 
-        $person_chats       = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForPerson($person);
-        $person_chats_count = count($person_chats);
+        /** @var ChatConversationRepository $chatConversationRepository */
+        $chatConversationRepository = $this->em->getRepository(ChatConversation::class);
+        $person_chats               = $chatConversationRepository->getPastChatsForPerson($person);
+        $person_chats_count         = count($person_chats);
 
         $is_editable = $this->isPersonEditable($person);
-        $perms       = array(
+        $perms       = [
             'edit'           => $is_editable && $this->person->hasPerm('agent_people.edit'),
             'delete'         => $is_editable && $this->person->hasPerm('agent_people.delete'),
             'merge'          => $is_editable && $this->person->hasPerm('agent_people.merge'),
@@ -210,7 +212,7 @@ class PersonController extends AbstractController
             'notes'          => $is_editable && $this->person->hasPerm('agent_people.notes'),
             'org_create'     => $is_editable && $this->person->hasPerm('agent_org.create'),
             'login_as'       => !$person->is_agent && $this->person->hasPerm('agent_people.login_as'),
-        );
+        ];
 
         $person_api = $person->getDataForWidget();
 
@@ -289,8 +291,6 @@ class PersonController extends AbstractController
             return $response;
         }
 
-        $validating_emails = $this->em->getRepository('DeskPRO:PersonEmailValidating')->getForPerson($person);
-
         $has_email_validating = false;
         foreach ($person->emails as $e) {
             if (!$e->is_validated) {
@@ -299,7 +299,7 @@ class PersonController extends AbstractController
             }
         }
 
-        $banned_emails = array();
+        $banned_emails = [];
         foreach ($person->getEmailAddresses() as $eml) {
             $match = null;
             if (App::getOrm()->getRepository('DeskPRO:BanEmail')->isEmailBanned($eml, $match)) {
@@ -308,21 +308,19 @@ class PersonController extends AbstractController
         }
 
         $changelog = $this->em->getRepository('DeskPRO:LogEvent')->findBy(
-            array('subject' => 'Person', 'subject_id' => $person['id'], 'parent' => null),
-            array('id' => 'DESC')
+            ['subject' => 'Person', 'subject_id' => $person['id'], 'parent' => null],
+            ['id' => 'DESC']
         );
 
-        return $this->render('AgentBundle:Person:view.html.twig', array(
+        return $this->render('AgentBundle:Person:view.html.twig', [
             'with_warn_for_email'       => $with_warn_for_email,
             'person'                    => $person,
             'banned_emails'             => $banned_emails,
-            'validating_emails'         => $validating_emails,
             'has_email_validating'      => $has_email_validating,
             'person_api'                => $person_api,
             'person_usergroups_ids'     => $person_usergroups_ids,
             'person_org_usergroups_ids' => $person_org_usergroups_ids,
             'session'                   => $session,
-            'visitor'                   => $visitor,
             'timezone_options'          => $timezone_options,
             'usergroup_names'           => $usergroup_names,
             'contact_data'              => $contact_data,
@@ -347,46 +345,25 @@ class PersonController extends AbstractController
             'changelog'                 => $changelog,
 
             'custom_fields_definitions' => $custom_fields_definitions,
-        ));
+        ]);
     }
 
     public function getBasicInfoAction($person_id)
     {
         $person = $this->getPersonOr404($person_id);
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'person_id'    => $person,
             'name'         => $person->getDisplayName(),
             'email'        => $person->getPrimaryEmailAddress(),
             'contact_name' => $person->getDisplayContact(),
-            'url'          => $this->generateUrl('agent_people_view', array('person_id' => $person->id)),
-        ));
+            'url'          => $this->generateUrl('agent_people_view', ['person_id' => $person->id]),
+        ]);
     }
 
-    public function validateEmailAddressAction($id, $security_token)
-    {
-        $this->ensureAuthToken('validate_email', $security_token);
-
-        $email_validating = $this->em->find('DeskPRO:PersonEmailValidating', $id);
-        if (!$email_validating) {
-            throw $this->createNotFoundException();
-        }
-
-        $validator = new \Application\DeskPRO\People\EmailValidator($email_validating);
-
-        $email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email_validating->getEmail());
-        if ($email_exists) {
-            return $this->createJsonResponse(array('error' => true, 'message' => 'Email already exists on another account'));
-        }
-
-        $email = $validator->validate();
-
-        return $this->createJsonResponse(array('success' => true));
-    }
-
-    ############################################################################
-    # viewSession
-    ############################################################################
+    //###########################################################################
+    // viewSession
+    //###########################################################################
 
     public function viewSessionAction($session_id)
     {
@@ -396,38 +373,29 @@ class PersonController extends AbstractController
             return $this->viewAction($session->person->id);
         }
 
-        $visitor        = $session->visitor;
-        $related_person = null;
-        if ($session->visitor && $session->visitor->email) {
-            $related_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($session->visitor->email);
+        // removed visitor assocations
+        $related_person     = null;
+        $person_chats       = [];
+        $person_chats_count = 0;
 
-            if ($related_person) {
-                return $this->viewAction($related_person->id, $session->visitor->email);
-            }
-        }
-
-        $person_chats       = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForVisitor($session->visitor);
-        $person_chats_count = count($person_chats);
-
-        return $this->render('AgentBundle:Person:view-session.html.twig', array(
+        return $this->render('AgentBundle:Person:view-session.html.twig', [
             'person_chats'       => $person_chats,
             'person_chats_count' => $person_chats_count,
             'session'            => $session,
-            'visitor'            => $visitor,
-        ));
+        ]);
     }
 
-    ############################################################################
-    # /agent/people/:person_id/ajax-save                     agent_people_ajaxsave
-    ############################################################################
+    //###########################################################################
+    // /agent/people/:person_id/ajax-save                     agent_people_ajaxsave
+    //###########################################################################
 
     public function ajaxSaveAction($person_id)
     {
         $person = $this->getPersonOr404($person_id);
 
-        $data = array(
+        $data = [
             'success' => true,
-        );
+        ];
 
         $action = $this->in->getString('action');
 
@@ -458,7 +426,7 @@ class PersonController extends AbstractController
                     $this->em->persist($person);
                 }
 
-                $data['bit_html'] = $this->renderView('AgentBundle:Person:view-bit-timezoneinfo.html.twig', array('person' => $person));
+                $data['bit_html'] = $this->renderView('AgentBundle:Person:view-bit-timezoneinfo.html.twig', ['person' => $person]);
 
                 break;
 
@@ -555,22 +523,22 @@ class PersonController extends AbstractController
                     if ($person->organization) {
                         $org_members_count = $this->em->getRepository('DeskPRO:Organization')->countMembersFor($person->organization) + $add;
 
-                        $org_contact_data = array();
+                        $org_contact_data = [];
                         foreach ($person->organization->contact_data as $cd) {
                             if (!isset($contact_data[$cd->contact_type])) {
-                                $contact_data[$cd->contact_type] = array();
+                                $contact_data[$cd->contact_type] = [];
                             }
                             $org_contact_data[$cd->contact_type][] = $cd->getTemplateVars();
                         }
                     }
 
                     // Regenerate the HTML block
-                    $html = $this->renderView('AgentBundle:Person:view-org-info.html.twig', array(
+                    $html = $this->renderView('AgentBundle:Person:view-org-info.html.twig', [
                         'org'               => $org,
                         'person'            => $person,
                         'org_members_count' => $org_members_count,
                         'org_contact_data'  => $org_contact_data,
-                    ));
+                    ]);
 
                     $data['organization_id'] = $org->id;
                     $data['html']            = $html;
@@ -582,7 +550,7 @@ class PersonController extends AbstractController
                 }
 
                 $conn = $this->em->getConnection();
-                foreach (array('tickets', 'tickets_search_active') as $table) {
+                foreach (['tickets', 'tickets_search_active'] as $table) {
                     $conn->executeQuery(
                         sprintf(
                             'update %s set organization_id = %s where person_id = %d and organization_id %s',
@@ -601,8 +569,8 @@ class PersonController extends AbstractController
                 $usergroup_ids = Arrays::removeFalsey($usergroup_ids);
 
                 $usergroups = $usergroup_ids
-                    ? $this->em->getRepository('DeskPRO:Usergroup')->findBy(array('id' => $usergroup_ids))
-                    : array();
+                    ? $this->em->getRepository('DeskPRO:Usergroup')->findBy(['id' => $usergroup_ids])
+                    : [];
 
                 foreach ($person->usergroups as $personGroup) {
                     if ($personGroup->is_agent_group) {
@@ -651,32 +619,16 @@ class PersonController extends AbstractController
                     $person->setPassword($this->in->getString('password'));
                     $this->em->persist($person);
 
-                    $this->db->delete('sessions', array('person_id' => $person->id));
+                    $this->db->delete('sessions', ['person_id' => $person->id]);
 
                     $email = $person->getPrimaryEmailAddress();
-                    if (!$email) {
-                        // We are implicitly validating the account when we set a password
-                        $validating_emails = $validating_emails = $this->em->getRepository('DeskPRO:PersonEmailValidating')->getForPerson($person);
-
-                        foreach ($validating_emails as $v_eml) {
-                            $validator = new \Application\DeskPRO\People\EmailValidator($v_eml);
-
-                            $email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($v_eml->getEmail());
-                            if ($email_exists) {
-                                continue;
-                            }
-
-                            $email = $validator->validate();
-                            break;
-                        }
-                    }
 
                     if ($email) {
                         $message = $this->container->getMailer()->createMessage();
                         $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-                        $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', array(
+                        $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', [
                             'person' => $person,
-                        ));
+                        ]);
 
                         $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
                             $message->prepare();
@@ -686,21 +638,21 @@ class PersonController extends AbstractController
                     }
                 }
                 break;
-        case 'upload-vcard':
-                $blobId = $this->in->getUint('blob_id');
+                        case 'upload-vcard':
+                                $blobId = $this->in->getUint('blob_id');
 
-                $blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
+                                $blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
 
-                $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+                                $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
 
-                $vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
+                                $vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
 
-                $vCardReader->applyToPerson($content, $person);
+                                $vCardReader->applyToPerson($content, $person);
 
-                break;
+                                break;
 
             default:
-                return $this->createJsonResponse(array('error' => true, 'message' => 'Unknown action'));
+                return $this->createJsonResponse(['error' => true, 'message' => 'Unknown action']);
                 break;
         }
 
@@ -712,12 +664,12 @@ class PersonController extends AbstractController
             SET
                 organization_id = ?, organization_position = ?, organization_manager = ?
             WHERE id = ?
-        ', array(
+        ', [
             $person->getOrganizationId() ?: null,
             $person->organization_position ?: '',
             $person->organization_manager ?: 0,
             $person->getId(),
-        ));
+        ]);
 
         return $this->createJsonResponse($data);
     }
@@ -746,22 +698,22 @@ class PersonController extends AbstractController
 
         /** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
         $field_manager = $this->container->getPersonFieldManager();
-        $custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : array();
+        $custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : [];
 
-        $invalid_custom_fields = array();
+        $invalid_custom_fields = [];
         $is_valid              = true;
-        foreach ($field_manager->getFields() as $field) {
-            $errors = $field->getHandler()->validateFormData($custom_fields);
+        foreach ($field_manager->getDefinedFields() as $field) {
+            $errors = $field->getHandler()->validateFormData($custom_fields, HandlerAbstract::CONTEXT_AGENT);
             foreach ($errors as $code) {
                 $invalid_custom_fields['field_'.$field->getId()] = preg_replace('#^(.*?)\.#', '', $code);
                 $is_valid                                        = false;
             }
         }
         if (!$is_valid) {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'error'                 => true,
                 'invalid_custom_fields' => $invalid_custom_fields,
-            ));
+            ]);
         }
 
         // specific user custom fields definitions
@@ -769,13 +721,13 @@ class PersonController extends AbstractController
         $form    = $manager->createDefinitionsFormForContext($person);
         // fix: jquery removes empty arrays from post request
         if (!$request->request->has($form->getName())) {
-            $request->request->set($form->getName(), array());
+            $request->request->set($form->getName(), []);
         }
         if (!$form->handleRequest($request)->isValid()) {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'error'                 => true,
                 'invalid_custom_fields' => $form->getErrors(true, true)->current(),
-            ));
+            ]);
         }
         $manager->flush($form);
 
@@ -791,38 +743,38 @@ class PersonController extends AbstractController
 
         $custom_fields = $field_manager->getDisplayArrayForObject($person);
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
-            'tpl'     => $this->renderView('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
+            'tpl'     => $this->renderView('AgentBundle:Person:view-customfields-rendered-rows.html.twig', [
                 'timezone_options'          => $timezone_options,
                 'person'                    => $person,
                 'custom_fields'             => $custom_fields,
                 'custom_fields_definitions' => $form->createView(),
-            )),
-        ));
+            ]),
+        ]);
     }
 
     public function changePictureOverlayAction($person_id)
     {
         $person = $this->getPersonOr404($person_id);
 
-        return $this->render('AgentBundle:Person:change-person-picture.html.twig', array(
+        return $this->render('AgentBundle:Person:change-person-picture.html.twig', [
             'person' => $person,
-        ));
+        ]);
     }
 
     public function uploadVcardOverlayAction($person_id)
     {
         $person = $this->getPersonOr404($person_id);
 
-        return $this->render('AgentBundle:Person:upload-vcard-overlay.html.twig', array(
+        return $this->render('AgentBundle:Person:upload-vcard-overlay.html.twig', [
             'person' => $person,
-        ));
+        ]);
     }
 
-    ############################################################################
-    # unban-email
-    ############################################################################
+    //###########################################################################
+    // unban-email
+    //###########################################################################
 
     public function unbanEmailAction($person_id, $email_id)
     {
@@ -840,17 +792,17 @@ class PersonController extends AbstractController
 
         $banned_pattern = null;
         if (App::getOrm()->getRepository('DeskPRO:BanEmail')->isEmailBanned($email->email, $banned_pattern)) {
-            App::getDb()->delete('ban_emails', array('banned_email' => $banned_pattern));
+            App::getDb()->delete('ban_emails', ['banned_email' => $banned_pattern]);
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
-        ));
+        ]);
     }
 
-    ############################################################################
-    # save-contact-data
-    ############################################################################
+    //###########################################################################
+    // save-contact-data
+    //###########################################################################
 
     public function saveContactDataAction(Request $request, $person_id)
     {
@@ -862,28 +814,28 @@ class PersonController extends AbstractController
 
         $this->em->beginTransaction();
 
-        $errors = array();
+        $errors = [];
 
         $changed_primary_email = false;
 
-        $contact_data_array = array();
+        $contact_data_array = [];
         foreach ($person->contact_data as $cd) {
             if (!isset($contact_data_array[$cd->contact_type])) {
-                $contact_data_array[$cd->contact_type] = array();
+                $contact_data_array[$cd->contact_type] = [];
             }
             $contact_data_array[$cd->contact_type][$cd->getId()] = $cd->getTemplateVars();
         }
-        $added = array();
+        $added = [];
 
-        $phones_form = $this->createForm('collection', $person->phone_numbers, array(
+        $phones_form = $this->createForm('collection', $person->phone_numbers, [
             'type'         => new PhoneNumberType(),
             'allow_add'    => true,
             'allow_delete' => true,
-            'options'      => array(
+            'options'      => [
                 'label'            => false,
                 'show_phone_label' => true,
-            ),
-        ));
+            ],
+        ]);
 
         try {
             if ($this->person->hasPerm('agent_people.manage_emails')) {
@@ -997,7 +949,7 @@ class PersonController extends AbstractController
 
         // to handle empty form submission
         if (!$request->get('collection')) {
-            $request->request->set('collection', array());
+            $request->request->set('collection', []);
         }
         $phones_form->handleRequest($request);
         if ($phones_form->isValid()) {
@@ -1017,57 +969,57 @@ class PersonController extends AbstractController
         }
 
         // Reset display array
-        $contact_data_array = array(
+        $contact_data_array = [
             'phone_numbers' => $phones_form->createView(),
-        );
+        ];
         foreach ($person->contact_data as $cd) {
             if (!isset($contact_data_array[$cd->contact_type])) {
-                $contact_data_array[$cd->contact_type] = array();
+                $contact_data_array[$cd->contact_type] = [];
             }
             $contact_data_array[$cd->contact_type][$cd->getId()] = $cd->getTemplateVars();
         }
 
         foreach ($added as $cd) {
             if (!isset($contact_data_array[$cd->contact_type])) {
-                $contact_data_array[$cd->contact_type] = array();
+                $contact_data_array[$cd->contact_type] = [];
             }
             $contact_data_array[$cd->contact_type][$cd->getId()] = $cd->getTemplateVars();
         }
 
         $is_editable = $this->isPersonEditable($person);
-        $perms       = array(
+        $perms       = [
             'edit'           => $is_editable && $this->person->hasPerm('agent_people.edit'),
             'delete'         => $is_editable && $this->person->hasPerm('agent_people.delete'),
             'manage_emails'  => $is_editable && $this->person->hasPerm('agent_people.manage_emails'),
             'reset_password' => $is_editable && $this->person->hasPerm('agent_people.reset_password'),
             'notes'          => $is_editable && $this->person->hasPerm('agent_people.notes'),
             'org_create'     => $is_editable && $this->person->hasPerm('agent_org.create'),
-        );
+        ];
 
-        $display_html = $this->renderView('AgentBundle:Person:view-contact-display.html.twig', array(
+        $display_html = $this->renderView('AgentBundle:Person:view-contact-display.html.twig', [
             'person'       => $person,
             'contact_data' => $contact_data_array,
             'perms'        => $perms,
-        ));
-        $editor_overlay_html = $this->renderView('AgentBundle:Person:contact-overlay.html.twig', array(
+        ]);
+        $editor_overlay_html = $this->renderView('AgentBundle:Person:contact-overlay.html.twig', [
             'person'       => $person,
             'contact_data' => $contact_data_array,
             'perms'        => $perms,
-        ));
+        ]);
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success'               => 1,
             'display_html'          => $display_html,
             'editor_overlay_html'   => $editor_overlay_html,
             'errors'                => $errors ? $errors : false,
             'primary_email_address' => $person->getPrimaryEmailAddress(),
             'changed_primary_email' => $changed_primary_email,
-        ));
+        ]);
     }
 
-    ############################################################################
-    # /agent/people/:person_id/ajax-save-organization        agent_people_ajaxsave_organization
-    ############################################################################
+    //###########################################################################
+    // /agent/people/:person_id/ajax-save-organization        agent_people_ajaxsave_organization
+    //###########################################################################
 
     public function ajaxSaveOrganizationAction($person_id)
     {
@@ -1087,12 +1039,12 @@ class PersonController extends AbstractController
             $em->persist($person);
             $em->flush();
 
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'success'               => true,
                 'person_id'             => $person['id'],
                 'organization_name'     => '',
                 'organization_position' => '',
-            ));
+            ]);
         }
 
         $org = Organization::getRepository()->find($org_id);
@@ -1104,17 +1056,17 @@ class PersonController extends AbstractController
         $em->persist($person);
         $em->flush();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success'               => true,
             'person_id'             => $person['id'],
             'organization_name'     => $org['name'],
             'organization_position' => $person['organization_position'],
-        ));
+        ]);
     }
 
-    ############################################################################
-    # /agent/people/:person_id/ajax-save-note           agent_people_ajaxsave_note
-    ############################################################################
+    //###########################################################################
+    // /agent/people/:person_id/ajax-save-note           agent_people_ajaxsave_note
+    //###########################################################################
 
     public function ajaxSaveNoteAction($person_id)
     {
@@ -1127,11 +1079,11 @@ class PersonController extends AbstractController
         $note_txt = $this->in->getString('note');
 
         if (!$note_txt) {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'error'      => true,
                 'error_code' => 'no_message',
                 'person_id'  => $person->id,
-            ));
+            ]);
         }
 
         $em = App::getOrm();
@@ -1147,11 +1099,11 @@ class PersonController extends AbstractController
         $em->flush();
         $em->commit();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success'      => true,
             'person_id'    => $person['id'],
-            'note_li_html' => $this->renderView('AgentBundle:Person:note-li.html.twig', array('note' => $note)),
-        ));
+            'note_li_html' => $this->renderView('AgentBundle:Person:note-li.html.twig', ['note' => $note]),
+        ]);
     }
 
     /**
@@ -1176,12 +1128,12 @@ class PersonController extends AbstractController
         $this->em->remove($note);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
-    ############################################################################
-    # /agent/people/:person_id/ajax-save-note           agent_people_ajaxsave_note
-    ############################################################################
+    //###########################################################################
+    // /agent/people/:person_id/ajax-save-note           agent_people_ajaxsave_note
+    //###########################################################################
 
     public function ajaxSaveFileAction($person_id)
     {
@@ -1199,11 +1151,11 @@ class PersonController extends AbstractController
             $blob = $this->em->find('DeskPRO:Blob', $this->in->getUint('blob_id'));
 
             if (!$blob) {
-                return $this->createJsonResponse(array(
+                return $this->createJsonResponse([
                     'error'      => true,
                     'error_code' => 'invalid_blob',
                     'person_id'  => $person->id,
-                ));
+                ]);
             }
 
             $file = new PersonFile();
@@ -1224,16 +1176,16 @@ class PersonController extends AbstractController
         $em->flush();
         $em->commit();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success'   => true,
             'person_id' => $person['id'],
-            'html'      => $this->renderView('AgentBundle:Person:file-row.html.twig', array('file' => $file)),
-        ));
+            'html'      => $this->renderView('AgentBundle:Person:file-row.html.twig', ['file' => $file]),
+        ]);
     }
 
-    ############################################################################
-    # ajax-save-labels
-    ############################################################################
+    //###########################################################################
+    // ajax-save-labels
+    //###########################################################################
 
     public function ajaxSaveLabelsAction($person_id)
     {
@@ -1250,12 +1202,12 @@ class PersonController extends AbstractController
         $this->em->persist($person);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => 1));
+        return $this->createJsonResponse(['success' => 1]);
     }
 
-    ############################################################################
-    # merge
-    ############################################################################
+    //###########################################################################
+    // merge
+    //###########################################################################
 
     public function mergeOverlayAction($person_id, $other_person_id = 0)
     {
@@ -1272,48 +1224,48 @@ class PersonController extends AbstractController
             $other_custom_fields = false;
         }
 
-        return $this->render('AgentBundle:Person:merge-overlay.html.twig', array(
+        return $this->render('AgentBundle:Person:merge-overlay.html.twig', [
             'person'               => $person,
             'person_custom_fields' => $person_custom_fields,
             'other_person'         => $other_person,
             'other_custom_fields'  => $other_custom_fields,
-        ));
+        ]);
     }
 
     public function mergeAction($person_id, $other_person_id)
     {
-        $person       = $this->getPersonOr404($person_id);
-        $other_person = $this->getPersonOr404($other_person_id);
+        $person      = $this->getPersonOr404($person_id);
+        $otherPerson = $this->getPersonOr404($other_person_id);
 
-        if (!$person || !$other_person) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        if (!$person || !$otherPerson) {
+            throw new NotFoundHttpException();
         }
 
         if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($person)) {
-            return $this->createJsonResponse(array('success' => false));
+            return $this->createJsonResponse(['success' => false]);
         }
 
-        if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($other_person)) {
-            return $this->createJsonResponse(array('success' => false));
+        if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($otherPerson)) {
+            return $this->createJsonResponse(['success' => false]);
         }
 
-        $old_person_id = $other_person['id'];
+        $oldPersonId = $otherPerson['id'];
 
-        $logEvent = new Entity\LogEvent(new UserMerged($person, $other_person), $this->person);
-        $merge    = new \Application\DeskPRO\People\PersonMerge\PersonMerge($this->person, $person, $other_person);
+        $logEvent = new Entity\LogEvent(new UserMerged($person, $otherPerson), $this->person);
+        $merge    = new PersonMerge($this->person, $person, $otherPerson);
         $merge->merge();
         $this->container->get('deskpro.logger.changelog')->info($logEvent);
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
             'id'      => $person['id'],
-            'old_id'  => $old_person_id,
-        ));
+            'old_id'  => $oldPersonId,
+        ]);
     }
 
-    ############################################################################
-    # delete
-    ############################################################################
+    //###########################################################################
+    // delete
+    //###########################################################################
 
     public function deletePersonAction($person_id, $security_token)
     {
@@ -1332,21 +1284,21 @@ class PersonController extends AbstractController
             $this->em->getConnection()->executeQuery(
                     'REPLACE INTO persons_deleted (person_id, by_person_id, reason, date_created)
                      VALUES (:person, :by_person, :reason, :date)
-                ', array(
+                ', [
                     'person'    => $person_id,
                     'by_person' => $this->person->id,
                     'reason'    => $this->in->getString('reason'),
                     'date'      => date('Y-m-d H:i:s'),
-                )
+                ]
             );
 
             if ($this->in->getBool('ban')) {
                 foreach ($person->emails as $email) {
                     $email_addy = strtolower($email->email);
-                    App::getDb()->replace('ban_emails', array(
+                    App::getDb()->replace('ban_emails', [
                         'banned_email' => $email_addy,
                         'is_pattern'   => 0,
-                    ));
+                    ]);
                 }
             }
 
@@ -1361,12 +1313,12 @@ class PersonController extends AbstractController
             throw $e;
         }
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
-    ############################################################################
-    # login-as
-    ############################################################################
+    //###########################################################################
+    // login-as
+    //###########################################################################
 
     public function loginAsAction($person_id)
     {
@@ -1376,7 +1328,7 @@ class PersonController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        foreach (array('dpsid') as $cookie_name) {
+        foreach (['dpsid'] as $cookie_name) {
             if (!empty($_COOKIE[$cookie_name])) {
                 $sess2 = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($_COOKIE[$cookie_name]);
                 if ($sess2) {
@@ -1389,19 +1341,19 @@ class PersonController extends AbstractController
             $cookie->send();
         }
 
-        $tmp = Entity\TmpData::create('agent_user_login', array(
+        $tmp = Entity\TmpData::create('agent_user_login', [
             'agent_id'  => $this->person->getId(),
             'person_id' => $person->id,
-        ), '+5 minutes');
+        ], '+5 minutes');
         $this->em->persist($tmp);
         $this->em->flush();
 
-        return $this->redirectRoute('user_login_agentlogin', array('code' => $tmp->getCode()));
+        return $this->redirectRoute('portal_agent_login', ['code' => $tmp->getCode()]);
     }
 
-    ############################################################################
-    # New person
-    ############################################################################
+    //###########################################################################
+    // New person
+    //###########################################################################
 
     public function newPersonAction()
     {
@@ -1411,9 +1363,9 @@ class PersonController extends AbstractController
 
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newperson', $this->person->id);
 
-        #------------------------------
-        # Custom fields
-        #------------------------------
+        //------------------------------
+        // Custom fields
+        //------------------------------
 
         // We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
         // So dont remove it even though it looks like it's not used! :-)
@@ -1427,14 +1379,14 @@ class PersonController extends AbstractController
         $timezone_options = \DateTimeZone::listIdentifiers();
         $usergroup_names  = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
 
-        return $this->render('AgentBundle:Person:newperson.html.twig', array(
+        return $this->render('AgentBundle:Person:newperson.html.twig', [
             'state'            => $state,
             'custom_fields'    => $custom_fields,
             'timezone_options' => $timezone_options,
             'usergroup_names'  => $usergroup_names,
 
             'custom_fields_definitions' => $custom_fields_definitions->createView(),
-        ));
+        ]);
     }
 
     public function newPersonSaveAction(Request $request)
@@ -1468,10 +1420,10 @@ class PersonController extends AbstractController
             $fields = $vCardReader->parseVCard($content);
 
             if (!isset($fields['emails']) || !count($fields['emails'])) {
-                return $this->createJsonResponse(array(
+                return $this->createJsonResponse([
                     'success'        => false,
-                    'error_messages' => array('No valid email was found in the vCard'),
-                ));
+                    'error_messages' => ['No valid email was found in the vCard'],
+                ]);
             }
 
             $new_email = $fields['emails'][0];
@@ -1483,22 +1435,22 @@ class PersonController extends AbstractController
 
         // Check for dupe email address
         if (!$new_email || !\Orb\Validator\StringEmail::isValueValid($new_email)) {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'success'        => false,
-                'error_messages' => array('Please enter a valid email address'),
-            ));
+                'error_messages' => ['Please enter a valid email address'],
+            ]);
         } elseif ($account_manager->findAccountForEmailAddress($new_email)) {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'success'        => false,
-                'error_messages' => array('That email address is in use by a ticket account'),
-            ));
+                'error_messages' => ['That email address is in use by a ticket account'],
+            ]);
         } else {
             $check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($new_email);
             if ($check_exists) {
-                return $this->createJsonResponse(array(
+                return $this->createJsonResponse([
                     'success'        => false,
-                    'error_messages' => array('The email address you entered already belongs to an existing user'),
-                ));
+                    'error_messages' => ['The email address you entered already belongs to an existing user'],
+                ]);
             }
         }
 
@@ -1531,38 +1483,76 @@ class PersonController extends AbstractController
                 $message->setToPerson($person);
                 $message->setTemplate(
                     'DeskPRO:emails_user:register-welcome-byagent.html.twig',
-                    array(
+                    [
                         'person' => $person,
-                    )
+                    ]
                 );
                 $mailer->send($message);
             }
 
             return $this->createJsonResponse(
-                array(
+                [
                     'success'   => true,
                     'person_id' => $person['id'],
-                )
+                ]
             );
         }
 
         $formType = new \Application\AgentBundle\Form\Type\NewPerson();
         $form     = $this->get('form.factory')->create($formType, $newperson);
 
-        if ($this->get('request')->getMethod() == 'POST') {
-            $form->handleRequest($this->get('request'));
+        if ($request->getMethod() == 'POST') {
+            $form->handleRequest($request);
             $form->isValid();
 
             $newperson->setCustomFieldForm($_POST);
-            $newperson->save();
 
+            /** @var PersonFieldManager $fieldsManager */
+            $fieldsManager = App::getSystemService('PersonFieldsManager');
+            $personFields  = $fieldsManager->getDefinedFields();
+
+            $fieldErrors = [];
+            foreach ($personFields as $field) {
+                $errors = $field->getHandler()->validateFormData($newperson->custom_fields ?: [], HandlerAbstract::CONTEXT_AGENT);
+
+                foreach ($errors as $code) {
+                    $title = $field->getTitle();
+                    $str   = "Please correct $title";
+                    $code  = str_replace('field_'.$field->getId().'.', '', $code);
+                    switch ($code) {
+                        case 'required':
+                            $str = "$title is required";
+                            break;
+                        case 'min_length':
+                            $str = "$title is too short";
+                            break;
+                        case 'max_length':
+                            $str = "$title is too long";
+                            break;
+                        case 'regex':
+                            $str = "$title is invalid";
+                            break;
+                    }
+
+                    $fieldErrors[] = $str;
+                }
+            }
+
+            if (count($fieldErrors)) {
+                return $this->createJsonResponse([
+                    'success'        => false,
+                    'error_messages' => $fieldErrors,
+                ]);
+            }
+
+            $newperson->save();
             $person = $newperson->getPerson();
 
             $manager                   = $this->container->getCustomFieldManager();
             $custom_fields_definitions = $manager->createDefinitionsFormForContext($person);
             // fix: jquery removes empty arrays from post request
             if (!$request->request->has($custom_fields_definitions->getName())) {
-                $request->request->set($custom_fields_definitions->getName(), array());
+                $request->request->set($custom_fields_definitions->getName(), []);
             }
             if ($custom_fields_definitions->handleRequest($request)->isValid()) {
                 $manager->flush($custom_fields_definitions);
@@ -1584,22 +1574,22 @@ class PersonController extends AbstractController
                 $mailer  = $this->get('mailer');
                 $message = $mailer->createMessage();
                 $message->setToPerson($person);
-                $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
+                $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', [
                     'person' => $person,
-                ));
+                ]);
 
                 $mailer->send($message);
                 $trans->setPersonContext($this->person);
             }
 
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'success'   => true,
                 'person_id' => $person['id'],
-            ));
+            ]);
         } else {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'success' => false,
-            ));
+            ]);
         }
     }
 
@@ -1611,9 +1601,25 @@ class PersonController extends AbstractController
 
         $person_tickets = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 250, $sort_by);
 
-        return $this->render('AgentBundle:Person:view-tickets.html.twig', array(
+        return $this->render('AgentBundle:Person:view-tickets.html.twig', [
             'tickets' => $person_tickets,
-        ));
+        ]);
+    }
+
+    public function getPersonChatsAction($person_id)
+    {
+        $person = $this->getPersonOr404($person_id);
+
+        /** @var ChatConversationRepository $chatConversationRepository */
+        $chatConversationRepository = $this->em->getRepository(ChatConversation::class);
+
+        $orderBy  = $this->in->getString('order_by');
+        $orderDir = $this->in->getString('order_dir');
+        $chats    = $chatConversationRepository->getPastChatsForPerson($person, $orderBy, $orderDir);
+
+        return $this->render('AgentBundle:Person:view-chats.html.twig', [
+            'chats' => $chats,
+        ]);
     }
 
     public function isPersonEditable($person)
@@ -1667,5 +1673,27 @@ class PersonController extends AbstractController
         $ret = $rep->getTeamsRaw();
 
         return $this->createJsonResponse($ret);
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getNotifierMapAction()
+    {
+        /** @var Person $personRepo */
+        $personRepo = $this->em->getRepository(Entity\Person::class);
+        $agents     = $personRepo->getAgents();
+        $agentMap   = [];
+
+        foreach ($agents as $agent) {
+            $agentMap[$agent->getId()] = [
+                'name'        => $agent->getDisplayName(),
+                'picture_url' => $agent->getPictureUrl(20),
+            ];
+        }
+
+        unset($agentMap[$this->person->getId()]);
+
+        return $this->createJsonResponse($agentMap);
     }
 }

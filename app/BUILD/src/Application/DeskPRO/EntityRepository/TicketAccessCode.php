@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -69,7 +70,7 @@ class TicketAccessCode extends AbstractEntityRepository
             SELECT *
             FROM ticket_access_codes
             WHERE id = ? AND auth = ?
-        ', array($info['access_code_id'], $info['auth']));
+        ', [$info['access_code_id'], $info['auth']]);
 
         if (!$tac) {
             return;
@@ -80,15 +81,16 @@ class TicketAccessCode extends AbstractEntityRepository
 
     public function findByTicketAndPerson($ticket, $person)
     {
-        if (!$person->id || !$ticket->id) {
+        if (!$person || !$person->id || !$ticket || !$ticket->id) {
             return;
         }
+
         try {
             $rec = $this->getEntityManager()->createQuery('
                 SELECT tac
                 FROM DeskPRO:TicketAccessCode tac
                 WHERE tac.ticket = ?1 AND tac.person = ?2
-            ')->setParameters(array(1 => $ticket, 2 => $person))->setMaxResults(1)->getSingleResult();
+            ')->setParameters([1 => $ticket, 2 => $person])->setMaxResults(1)->getSingleResult();
 
             return $rec;
         } catch (\Doctrine\ORM\NoResultException $e) {

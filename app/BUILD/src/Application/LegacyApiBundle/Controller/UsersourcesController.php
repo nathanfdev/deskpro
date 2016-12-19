@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\AppPackage;
@@ -37,12 +38,16 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
 use Application\DeskPRO\Usersource\Sync\SyncException;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use League\Url\Url;
 use Orb\Auth\Adapter\CallbackInterface;
 use Orb\Auth\Adapter\ExtraDetailsInterface;
 use Orb\Auth\Adapter\IframeSsoInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 
+/**
+ * @ApiModes("all")
+ */
 class UsersourcesController extends AbstractController
 {
     public function personRefreshAction($usersource_id, $identity_or_email)
@@ -103,12 +108,12 @@ class UsersourcesController extends AbstractController
 
         $usersources = array_map(
             function (Usersource $us) {
-                return array('usersource' => $us->toApiData(), 'app' => $us->app ? $us->app->toApiData() : null);
+                return ['usersource' => $us->toApiData(), 'app' => $us->app ? $us->app->toApiData() : null];
             },
             (array) $sources
         );
 
-        return $this->createApiResponse(array('usersources' => $usersources));
+        return $this->createApiResponse(['usersources' => $usersources]);
     }
 
     public function availableAppPackagesAction($interface)
@@ -117,8 +122,8 @@ class UsersourcesController extends AbstractController
         $packages = $this->container->getAppManager()->getAllPackages();
 
         $available_packages = array_filter($packages, function (AppPackage $package) use ($sources) {
-                if ($package->isUsersource()) {
-                    /** @var \Application\DeskPRO\Entity\Usersource $source */
+            if ($package->isUsersource()) {
+                /** @var \Application\DeskPRO\Entity\Usersource $source */
                     foreach ($sources as $source) {
                         /** @var \Application\DeskPRO\Entity\AppInstance $app */
                         if ($app = $source->app) {
@@ -128,11 +133,11 @@ class UsersourcesController extends AbstractController
                         }
                     }
 
-                    return true;
-                }
-
-                return false;
+                return true;
             }
+
+            return false;
+        }
         );
 
         $available_packages = array_map(
@@ -166,10 +171,10 @@ class UsersourcesController extends AbstractController
         }
 
         return $this->createApiResponse(
-            array(
+            [
                 'usersource' => $source->toApiData(),
                 'app'        => $source->app ? $source->app->toApiData() : null,
-            )
+            ]
         );
     }
 
@@ -194,10 +199,10 @@ class UsersourcesController extends AbstractController
         $next = $this->getSyncManager()->getNextScheduledSyncDate();
 
         return $this->createApiResponse(
-            array(
+            [
                 'running_now' => $this->getSyncManager()->isSyncRunning(),
                 'next_sync'   => $next ? $next->format('Y-m-d H:i:s') : null,
-            )
+            ]
         );
     }
 
@@ -236,9 +241,9 @@ class UsersourcesController extends AbstractController
         }
 
         return $this->createApiResponse(
-            array(
+            [
                 'sync_log' => $sync_log,
-            )
+            ]
         );
     }
 
@@ -268,7 +273,7 @@ class UsersourcesController extends AbstractController
 
         $adapter = $this->container->getSystemService('usersource_auth_adapter_factory')->getAuthAdapter($source, null, $type);
 
-        $details = array();
+        $details = [];
         if ($adapter instanceof ExtraDetailsInterface) {
             try {
                 $details = $adapter->getExtraDetails();
@@ -277,9 +282,9 @@ class UsersourcesController extends AbstractController
         }
 
         return $this->createApiResponse(
-            array(
+            [
                 'usersource_details' => $details,
-            )
+            ]
         );
     }
 
@@ -299,10 +304,10 @@ class UsersourcesController extends AbstractController
         $this->em->getRepository('DeskPRO:Usersource')->checkAndEnableDeskpro();
 
         return $this->createApiResponse(
-            array(
+            [
                 'usersource' => $source->toApiData(),
                 'app'        => $source->app ? $source->app->toApiData() : null,
-            )
+            ]
         );
     }
 
@@ -346,20 +351,20 @@ class UsersourcesController extends AbstractController
 
         if ($adapter instanceof IframeSsoInterface) {
             $vars = array_merge(
-                array(
+                [
                     'iframe_url' => '',
                     'render'     => true,
-                ),
+                ],
                 $adapter->getIframeTemplateParams(false)
             );
 
             return $this->createApiSuccessResponse(
-                array_merge(array(
+                array_merge([
                     'iframe_html' => $this->renderView(
                             'DeskPRO:Auth:_sso_iframe_for_test.html.twig',
                             $vars
                         ),
-                ),
+                ],
                 $adapter->getIframeTemplateParams(false))
             );
         }
@@ -413,7 +418,7 @@ class UsersourcesController extends AbstractController
      */
     protected function createPerson($email)
     {
-        $person = Person::newContactPerson(array('email' => $email));
+        $person = Person::newContactPerson(['email' => $email]);
         $this->em->persist($person);
 
         return $person;

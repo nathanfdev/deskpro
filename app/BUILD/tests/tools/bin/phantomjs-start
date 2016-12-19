@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../../../"
+cd $DIR_ROOT/app/tests/tools
+
+if [ -f logs/phantomjs.pid ]; then
+  if ps -p `cat logs/phantomjs.pid` > /dev/null; then
+    echo "Already started"
+    exit
+  fi
+fi
+
+./node_modules/forever/bin/forever start --uid "phantomjs" --append -m 1 --minUptime 1000 --spinSleepTime 1000 --killSignal SIGTERM --pidFile `pwd`/logs/phantomjs.pid -l `pwd`/logs/proc-phantomjs.log -o `pwd`/logs/phantomjs.log -e `pwd`/logs/phantomjs.err `pwd`/node_modules/phantomjs/bin/phantomjs --webdriver=8643 --webdriver-selenium-grid-hub=http://127.0.0.1:4444

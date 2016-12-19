@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,45 +43,57 @@ class TextSnippetsController extends AbstractController
         return false;
     }
 
-    ####################################################################################################################
-    # get-widget-shell
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-widget-shell
+    //###################################################################################################################
 
     public function getWidgetShellAction($typename)
     {
-        $snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent($typename, $this->person);
+        $snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent(
+            $typename,
+            $this->person
+        );
 
         if ($typename != 'tickets' && $typename != 'chat') {
             throw $this->createNotFoundException();
         }
 
-        return $this->render("AgentBundle:TextSnippets:$typename-widget-shell.html.twig", array(
-            'snippet_cats' => $snippet_cats,
-        ));
+        return $this->render(
+            "AgentBundle:TextSnippets:$typename-widget-shell.html.twig",
+            [
+                'snippet_cats' => $snippet_cats,
+            ]
+        );
     }
 
-    ####################################################################################################################
-    # reload-client
-    ####################################################################################################################
+    //###################################################################################################################
+    // reload-client
+    //###################################################################################################################
 
     public function reloadClientAction($typename)
     {
-        $snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent($typename, $this->person);
+        $snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent(
+            $typename,
+            $this->person
+        );
 
         foreach ($this->container->getLanguageData()->getAll() as $lang) {
             $this->container->getObjectLangRepository()->preloadObjectCollection($lang, $snippet_cats);
         }
 
-        $snippets_count = $this->em->getRepository('DeskPRO:TextSnippet')->countSnippetsForAgent($typename, $this->person);
-        $per_page       = 250;
-        $num_pages      = ceil($snippets_count / $per_page);
+        $snippets_count = $this->em->getRepository('DeskPRO:TextSnippet')->countSnippetsForAgent(
+            $typename,
+            $this->person
+        );
+        $per_page  = 250;
+        $num_pages = ceil($snippets_count / $per_page);
 
-        $data = array(
+        $data = [
             'typename'       => $typename,
             'snippets_count' => $snippets_count,
             'num_pages'      => $num_pages,
-            'snippet_cats'   => array(),
-        );
+            'snippet_cats'   => [],
+        ];
 
         foreach ($snippet_cats as $cat) {
             $data['snippet_cats'][] = $cat->toApiData();
@@ -90,18 +102,23 @@ class TextSnippetsController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-    ####################################################################################################################
-    # reload-client-batch
-    ####################################################################################################################
+    //###################################################################################################################
+    // reload-client-batch
+    //###################################################################################################################
 
     public function reloadClientBatchAction($typename, $batch = 1)
     {
-        $snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getAllSnippetsForAgent($typename, $this->person, $batch, 250);
+        $snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getAllSnippetsForAgent(
+            $typename,
+            $this->person,
+            $batch,
+            250
+        );
         foreach ($this->container->getLanguageData()->getAll() as $lang) {
             $this->container->getObjectLangRepository()->preloadObjectCollection($lang, $snippets);
         }
 
-        $data = array('snippets' => array());
+        $data = ['snippets' => []];
         foreach ($snippets as $snippet) {
             $data['snippets'][] = $snippet->toApiData();
         }
@@ -109,27 +126,27 @@ class TextSnippetsController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-    ####################################################################################################################
-    # filter-snippets
-    ####################################################################################################################
+    //###################################################################################################################
+    // filter-snippets
+    //###################################################################################################################
 
     public function filterSnippetsAction($typename)
     {
         $category_id   = $this->in->getUint('category_id') ?: null;
-        $filter_string = $this->in->getString('filter_string');
-        $language_id   = $this->in->getUint('language_id');
+        $filter_string = $this->in->getString('filter_string') ?: null;
+        $language_id   = $this->in->getUint('language_id') ?: null;
 
         /** @var \Application\DeskPRO\EntityRepository\TextSnippet $rep */
         $rep = $this->em->getRepository('DeskPRO:TextSnippet');
 
-        $results = $rep->filterSnippetsForAgent($filter_string, $typename, $this->person, 1, 500, $category_id, $language_id);
+        $results = $rep->filterSnippetsForAgent($filter_string, $typename, $this->person, 1, 1000, $category_id, $language_id);
 
-        return $this->createJsonResponse(array('snippets' => $results));
+        return $this->createJsonResponse(['snippets' => $results]);
     }
 
-    ####################################################################################################################
-    # get-snippet
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-snippet
+    //###################################################################################################################
 
     public function getSnippetAction($typename, $id)
     {
@@ -142,14 +159,14 @@ class TextSnippetsController extends AbstractController
             $this->container->getObjectLangRepository()->preloadObject($lang, $snippet);
         }
 
-        $data = array('snippet' => $snippet->toApiData());
+        $data = ['snippet' => $snippet->toApiData()];
 
         return $this->createJsonResponse($data);
     }
 
-    ####################################################################################################################
-    # save-snippet
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-snippet
+    //###################################################################################################################
 
     public function saveSnippetAction($typename, $id)
     {
@@ -162,9 +179,11 @@ class TextSnippetsController extends AbstractController
             $snippet = new TextSnippet();
         }
 
-        if ($category = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'))) {
-            $snippet->category = $category;
+        $category = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUInt('category_id'));
+        if (!$category) {
+            throw $this->createNotFoundException('Category not found');
         }
+        $snippet->category = $category;
 
         $snippet->setShortcutCode($this->in->getString('shortcut_code'));
         $snippet->is_draft = $this->in->getBool('is_draft');
@@ -194,12 +213,12 @@ class TextSnippetsController extends AbstractController
 
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => true, 'snippet' => $snippet->toApiData()));
+        return $this->createJsonResponse(['success' => true, 'snippet' => $snippet->toApiData()]);
     }
 
-    ####################################################################################################################
-    # delete-snippet
-    ####################################################################################################################
+    //###################################################################################################################
+    // delete-snippet
+    //###################################################################################################################
 
     public function deleteSnippetAction($typename, $id)
     {
@@ -211,12 +230,12 @@ class TextSnippetsController extends AbstractController
         $this->em->remove($snippet);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => true, 'snippet_id' => $id));
+        return $this->createJsonResponse(['success' => true, 'snippet_id' => $id]);
     }
 
-    ####################################################################################################################
-    # save-category
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-category
+    //###################################################################################################################
 
     public function saveCategoryAction($typename, $id)
     {
@@ -252,12 +271,12 @@ class TextSnippetsController extends AbstractController
 
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => true, 'category' => $cat->toApiData()));
+        return $this->createJsonResponse(['success' => true, 'category' => $cat->toApiData()]);
     }
 
-    ####################################################################################################################
-    # delete-category
-    ####################################################################################################################
+    //###################################################################################################################
+    // delete-category
+    //###################################################################################################################
 
     public function deleteCategoryAction($typename, $id)
     {
@@ -266,33 +285,43 @@ class TextSnippetsController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $has_snippets = $this->db->fetchColumn('
+        $has_snippets = $this->db->fetchColumn(
+            '
             SELECT COUNT(*)
             FROM text_snippets
             WHERE category_id = ? AND is_draft = 0
-        ', array($cat->getId()));
+        ',
+            [$cat->getId()]
+        );
 
-        $has_draft_snippets = $this->db->fetchColumn('
+        $has_draft_snippets = $this->db->fetchColumn(
+            '
             SELECT COUNT(*)
             FROM text_snippets
             WHERE category_id = ? AND is_draft = 1
-        ', array($cat->getId()));
+        ',
+            [$cat->getId()]
+        );
 
         if ($has_snippets || $has_draft_snippets) {
-            return $this->createJsonResponse(array(
-                'error'        => true,
-                'error_code'   => 'not_empty',
-                'count'        => $has_snippets,
-                'count_drafts' => $has_draft_snippets,
-            ));
+            return $this->createJsonResponse(
+                [
+                    'error'        => true,
+                    'error_code'   => 'not_empty',
+                    'count'        => $has_snippets,
+                    'count_drafts' => $has_draft_snippets,
+                ]
+            );
         }
 
         $this->em->remove($cat);
         $this->em->flush();
 
-        return $this->createJsonResponse(array(
-            'success'     => true,
-            'category_id' => $id,
-        ));
+        return $this->createJsonResponse(
+            [
+                'success'     => true,
+                'category_id' => $id,
+            ]
+        );
     }
 }

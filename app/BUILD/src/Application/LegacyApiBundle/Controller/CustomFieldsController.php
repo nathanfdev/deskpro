@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,10 +32,6 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
-use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\CustomFields\FieldDisplayArray;
 use Application\DeskPRO\CustomFields\FieldManager;
 use Application\DeskPRO\CustomFields\Handler\Choice;
@@ -44,25 +40,33 @@ use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository\CustomDefAbstract;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\SimpleDefinitionType;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @ApiModes("all")
+ */
 class CustomFieldsController extends AbstractController implements ProtectedControllerInterface
 {
-    protected $allowed = array(
-        'owner'   => array('ticket', 'person'),
-        'context' => array('person', 'organization'),
-    );
+    protected $allowed = [
+        'owner'   => ['ticket', 'person'],
+        'context' => ['person', 'organization'],
+    ];
 
-    public static $allowed_common = array(
+    public static $allowed_common = [
         'person'  => 'Person',
         'org'     => 'Organization',
         'ticket'  => 'Ticket',
         'billing' => 'TicketCharge',
-    );
+    ];
 
     /**
      * {@inheritdoc}
@@ -98,18 +102,18 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
         return 'Application\DeskPRO\Entity\\'.Container::camelize($owner);
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     /**
      * @param Request $request
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function listAction(Request $request)
     {
-        $criteria = array('parent' => null);
+        $criteria = ['parent' => null];
 
         if ($owner = $this->in->getString('owner')) {
             $criteria['owner_class'] = $this->filterOwnerClass($owner);
@@ -121,7 +125,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 
         $definitions = $this->em->getRepository('DeskPRO:CustomFieldDefinition')->findBy(
             $criteria,
-            array('display_order' => 'ASC')
+            ['display_order' => 'ASC']
         );
 
         return $this->createApiResponse($this->getApiData($definitions, false));
@@ -133,11 +137,11 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      * @param Request $request
      * @param $id
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function childrenAction(Request $request, $id)
     {
-        $criteria = array('parent' => $id);
+        $criteria = ['parent' => $id];
 
         if ($context = $this->in->getString('context')) {
             $criteria['context_class'] = $this->filterContextClass($context);
@@ -148,7 +152,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 
         $definitions = $this->em->getRepository('DeskPRO:CustomFieldDefinition')->findBy(
             $criteria,
-            array('display_order' => 'ASC')
+            ['display_order' => 'ASC']
         );
 
         return $this->createApiResponse($this->getApiData($definitions, false));
@@ -162,7 +166,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function addChildAction(Request $request, $id)
     {
@@ -176,34 +180,34 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
             throw new NotFoundHttpException();
         }
 
-        $form = $this->createForm(new SimpleDefinitionType(), null, array(
+        $form = $this->createForm(new SimpleDefinitionType(), null, [
             'context' => $context,
             'parent'  => $definition,
-        ));
+        ]);
         $form->submit($request->request->all());
 
         if ($form->isValid()) {
             $this->em->persist($form->getData());
             $this->em->flush();
         } else {
-            $this->createApiErrorInfoResponse('form_error', 'Validation error.', array());
+            $this->createApiErrorInfoResponse('form_error', 'Validation error.', []);
         }
 
         return $this->createApiResponse($this->getApiData($form->getData(), false));
     }
 
-    ####################################################################################################################
-    # get-custom-field
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-custom-field
+    //###################################################################################################################
 
     public function getAction($id)
     {
         return $this->createApiResponse($this->getDefinition($id)->toApiData());
     }
 
-    ####################################################################################################################
-    # save-custom-field
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-custom-field
+    //###################################################################################################################
 
     public function saveAction($id)
     {
@@ -224,13 +228,12 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
             $this->em->persist($definition);
         }
 
-        $form = $this->createForm($definition->createDefinitionType(), $definition, array(
-            'context'   => new Ticket(),
-            'persister' => new CustomDataPersister(),
-        ))->submit($post);
+        $form = $this->createForm($definition->createDefinitionType(), $definition, [
+            'context' => new Ticket(),
+        ])->submit($post);
 
         if (!$form->isValid()) {
-            return $this->createApiErrorInfoResponse('form_error', 'Validation error', array());
+            return $this->createApiErrorInfoResponse('form_error', 'Validation error', []);
         }
 
         $this->em->flush();
@@ -238,9 +241,9 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
         return $this->getAction($definition['id']);
     }
 
-    ####################################################################################################################
-    # delete-custom-field
-    ####################################################################################################################
+    //###################################################################################################################
+    // delete-custom-field
+    //###################################################################################################################
 
     public function deleteAction($id)
     {
@@ -250,9 +253,9 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
         return $this->createApiDeleteResponse();
     }
 
-    ####################################################################################################################
-    # toggleField
-    ####################################################################################################################
+    //###################################################################################################################
+    // toggleField
+    //###################################################################################################################
 
     public function toggleFieldAction($field_id, $is_enabled)
     {
@@ -263,9 +266,9 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
         return $this->createSuccessResponse();
     }
 
-    ####################################################################################################################
-    # save-display-order
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-display-order
+    //###################################################################################################################
 
     public function saveDisplayOrderAction()
     {
@@ -299,12 +302,12 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      */
     public function deleteOptionAction(Request $request)
     {
-        $types = array(
+        $types = [
             'tickets'       => 'CustomDefTicket',
             'organizations' => 'CustomDefOrganization',
             'people'        => 'CustomDefPerson',
             'chats'         => 'CustomDefChat',
-        );
+        ];
 
         if (!$repClass = @$types[$this->in->getString('type')]) {
             throw new BadRequestHttpException();
@@ -313,7 +316,9 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
             throw new BadRequestHttpException();
         }
 
-        if (!$ids = array_filter($ids, function ($id) {return 'cb_' !== substr($id, 0, 3);})) {
+        if (!$ids = array_filter($ids, function ($id) {
+            return 'cb_' !== substr($id, 0, 3);
+        })) {
             throw new BadRequestHttpException();
         }
         /** @var CustomDefAbstract $rep */
@@ -323,7 +328,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 
             case 1:
                 $hasData  = $rep->hasData($ids);
-                $response = array('success' => $hasData);
+                $response = ['success' => $hasData];
                 $root     = (int) min($ids);
 
                 if (!$hasData) {
@@ -333,8 +338,8 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
                 }
 
                 $field   = $rep->getByOptions($ids);
-                $options = array();
-                $map     = array();
+                $options = [];
+                $map     = [];
                 foreach ($field->children as $child) {
                     if ($pid = $child->getOption('parent_id')) {
                         if ($root !== $child['id']) {
@@ -393,7 +398,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
         /** @var FieldManager $manager */
         $manager = $this->container->getSystemService($objectType.'_fields_manager');
         $array   = $manager->getDisplayArrayForObject($object);
-        $ret     = array();
+        $ret     = [];
         foreach ($array as $display_array) {
             /* @var $field FieldDisplayArray */
             if ($display_array instanceof FormView) {
@@ -407,12 +412,12 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
                 $display_array = $display_array->toArray();
             }
 
-            $data = array(
+            $data = [
                 'id'    => $display_array['id'],
                 'title' => $display_array['title'],
                 'type'  => $display_array['field_handler'],
                 'value' => trim($handler->renderText($display_array['value'], $display_array)),
-            );
+            ];
 
             if ($handler instanceof Choice && @$display_array['value']['children']) {
                 $data['children'] = $display_array['value']['children'];
@@ -455,11 +460,11 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 
         /** @var FieldManager $manager */
         $manager = $this->container->getSystemService($objectType.'_fields_manager');
-        $submit  = array(
+        $submit  = [
             'field_'.$id => @$data['value'],
-        );
+        ];
 
-        $manager->saveFormToObject($submit, $object);
+        $manager->saveFormToObject($submit, $object, true);
 
         return $this->createSuccessResponse();
     }

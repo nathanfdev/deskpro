@@ -1,0 +1,320 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Settings;
+
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\DataStore;
+use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractTranslationModel;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupTranslation;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetUrlSettings;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
+use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Asset\Packages;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+
+/**
+ * Class WidgetSettingsResolver.
+ */
+class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
+{
+    const CHAT_REQUIRE_LOGIN    = 'portal.chat.require_login';
+    const CHAT_EMAIL_VALIDATION = 'portal.chat.email_validation';
+    const CHAT_ENABLED          = 'portal.chat.enabled';
+    const ENABLED_ON_PORTAL     = 'portal.widget.enabled';
+    const ENABLED               = 'widget.enabled';
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @var Packages
+     */
+    private $assetPackages;
+
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    /**
+     * @var PortalPermissionsManager
+     */
+    private $permissionsManager;
+
+    /**
+     * @var PortalModeStorage
+     */
+    private $portalModeStorage;
+
+    /**
+     * @var string
+     */
+    private $basePath;
+
+    /**
+     * Constructor.
+     *
+     * @param BrandAwareSettingsResolver $settingsResolver
+     * @param EntityManager              $em
+     * @param Packages                   $assetPackages
+     * @param RouterInterface            $router
+     * @param TokenStorageInterface      $tokenStorage
+     * @param PortalPermissionsManager   $permissionsManager
+     * @param PortalModeStorage          $portalModeStorage
+     * @param string                     $basePath
+     */
+    public function __construct(
+        BrandAwareSettingsResolver $settingsResolver,
+        EntityManager              $em,
+        Packages                   $assetPackages,
+        RouterInterface            $router,
+        TokenStorageInterface      $tokenStorage,
+        PortalPermissionsManager   $permissionsManager,
+        PortalModeStorage          $portalModeStorage,
+        $basePath
+    ) {
+        parent::__construct($settingsResolver);
+
+        $this->em                 = $em;
+        $this->assetPackages      = $assetPackages;
+        $this->tokenStorage       = $tokenStorage;
+        $this->permissionsManager = $permissionsManager;
+        $this->portalModeStorage  = $portalModeStorage;
+        $this->basePath           = $basePath;
+
+        if ($router instanceof PortalRouter) {
+            $this->router = $router->getBaseRouter();
+        } else {
+            $this->router = $router;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isChatEnabled()
+    {
+        return (bool) $this->getSetting(self::CHAT_ENABLED);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isChatEmailValidation()
+    {
+        return (bool) $this->getSetting(self::CHAT_EMAIL_VALIDATION);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isChatRequireLogin()
+    {
+        return (bool) $this->getSetting(self::CHAT_REQUIRE_LOGIN);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabledOnPortal()
+    {
+        return (bool) $this->getSetting(self::ENABLED_ON_PORTAL);
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return WidgetSettings
+     */
+    public function getWidgetSettings(Brand $brand)
+    {
+        $model = new WidgetSettings();
+        $model
+            ->setUrl($this->getWidgetUrlSettings($brand))
+            ->setSettings($this->getWidgetOptions($brand))
+            ->setEnabledOnPortal($this->isEnabledOnPortal())
+            ->setBrand($brand)
+        ;
+
+        return $model;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return WidgetUrlSettings
+     */
+    public function getWidgetUrlSettings(Brand $brand)
+    {
+        $portalMode = $this->portalModeStorage->getMode();
+
+        if ($portalMode && $portalMode->isBrand()) {
+            $baseUrl     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+            $helpdeskUrl = rtrim($baseUrl, '/').'/brand-'.$brand->getId();
+        } else {
+            $baseUrl     = $this->router->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
+            $helpdeskUrl = $baseUrl;
+        }
+
+        $loaderUrl = $this->assetPackages->getUrl('widget_loader.min.js', 'app_assets');
+        $widgetUrl = $this->assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets');
+
+        if (!preg_match('#^https?://#i', $loaderUrl)) {
+            $loaderUrl = rtrim(str_replace($this->basePath, '', $baseUrl), '/').$loaderUrl;
+        }
+        if (!preg_match('#^https?://#i', $widgetUrl)) {
+            $widgetUrl = rtrim(str_replace($this->basePath, '', $baseUrl), '/').$widgetUrl;
+        }
+
+        $model = new WidgetUrlSettings();
+        $model
+            ->setWidgetLoader($loaderUrl)
+            ->setWidgetBundle($widgetUrl)
+            ->setHelpdesk($helpdeskUrl)
+        ;
+
+        return $model;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return WidgetOptions
+     */
+    public function getWidgetOptions(Brand $brand)
+    {
+        $model = new WidgetOptions();
+        $model
+            ->setGlobal($this->getWidgetGlobalOptions())
+            ->setBrand($this->getWidgetBrandOptions($brand))
+        ;
+
+        return $model;
+    }
+
+    /**
+     * @return WidgetGlobalSettings
+     */
+    public function getWidgetGlobalOptions()
+    {
+        $model = new WidgetGlobalSettings();
+        $chat  = $model->getChat();
+        $chat
+            ->setEnabled($this->isChatEnabled())
+            ->setEmailValidation($this->isChatEmailValidation())
+            ->setRequireLogin($this->isChatRequireLogin())
+        ;
+
+        $company = $model->getCompany();
+        $company->setName($this->getSetting('core.site_name'));
+
+        return $model;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return WidgetBrandSettings
+     */
+    public function getWidgetBrandOptions(Brand $brand)
+    {
+        $model     = null;
+        $dataStore = $this->em->getRepository(DataStore::class)->findOneBy([
+            'name' => 'widget.brand_settings.'.$brand->getId(),
+        ]);
+
+        if ($dataStore) {
+            $model = $dataStore->getData('brand_settings');
+        }
+
+        // create new brand settings
+        if (!$model instanceof WidgetBrandSettings) {
+            $model = new WidgetBrandSettings();
+        }
+
+        $popupTranslations  = $model->getChat()->getPopup()->getTranslations();
+        $buttonTranslations = $model->getButton()->getTranslations();
+
+        // filter deleted language translations
+        $languages    = $this->em->getRepository(Language::class)->findAll();
+        $languagesIds = array_map(function (Language $language) {
+            return $language->getId();
+        }, $languages);
+
+        /** @var AbstractTranslationModel[]|ArrayCollection $propTranslations */
+        foreach ([$popupTranslations, $buttonTranslations] as $propTranslations) {
+            foreach ($propTranslations as $translation) {
+                if (!in_array($translation->getLanguage(), $languagesIds)) {
+                    $propTranslations->removeElement($translation);
+                }
+            }
+        }
+
+        // set default translations
+        $defaultLanguage = $this->em->getRepository(Language::class)->findOneBy([]);
+        if ($defaultLanguage) {
+            if (!count($popupTranslations)) {
+                $defaultTranslation = new WidgetBrandChatPopupTranslation();
+                $defaultTranslation->setLanguage($defaultLanguage->getId());
+                $popupTranslations->add($defaultTranslation);
+            }
+
+            if (!count($buttonTranslations)) {
+                $defaultTranslation = new WidgetBrandButtonTranslation();
+                $defaultTranslation->setLanguage($defaultLanguage->getId());
+
+                $buttonTranslations->add($defaultTranslation);
+            }
+        }
+
+        // reset translation collection keys
+        $model->getChat()->getPopup()->setTranslations(new ArrayCollection($popupTranslations->getValues()));
+        $model->getButton()->setTranslations(new ArrayCollection($buttonTranslations->getValues()));
+
+        return $model;
+    }
+}

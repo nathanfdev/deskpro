@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,9 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\EditEmailAccount;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\EditEmailAccountType;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
@@ -42,9 +40,17 @@ use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Settings\EmailAccountsSettings;
 use Application\EmailBundle\Queue\QueueProc;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Env;
 use Orb\Validator\StringEmail;
+use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @ApiModes("all")
+ */
 class EmailAccountsController extends AbstractController implements ProtectedControllerInterface
 {
     /** @var array|null */
@@ -62,13 +68,13 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         return $multi;
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction()
     {
-        $data = array('email_accounts' => array());
+        $data = ['email_accounts' => []];
 
         $manager = $this->container->getEmailAccountManager();
         foreach ($manager->getAllAccounts() as $acc) {
@@ -78,9 +84,9 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # get
-    ####################################################################################################################
+    //###################################################################################################################
+    // get
+    //###################################################################################################################
 
     public function getAction($id)
     {
@@ -100,7 +106,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
                 SELECT trigger
                 FROM DeskPRO:TicketTrigger trigger
                 WHERE trigger.email_account = ?0
-            ')->setParameters(array($account))->getOneOrNullResult();
+            ')->setParameters([$account])->getOneOrNullResult();
         }
 
         if (!$trigger) {
@@ -112,9 +118,9 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
     public function saveAction($id)
     {
@@ -140,6 +146,10 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         );
 
         $data = $this->getSaveFormData($account);
+
+        if ($data instanceof Response) {
+            return $data;
+        }
 
         // Copy gmail config into the transport
         if ($data['incoming_type'] == 'gmail') {
@@ -168,9 +178,9 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         if ($id) {
             return $this->createApiSuccessResponse();
         } else {
-            return $this->createApiCreateResponse(array(
+            return $this->createApiCreateResponse([
                 'email_account_id' => $account->id,
-            ), $this->generateUrl('api_emailaccounts_get', array('id' => $account->id)));
+            ], $this->generateUrl('api_emailaccounts_get', ['id' => $account->id]));
         }
     }
 
@@ -184,9 +194,9 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         return $this->in->getAll('post');
     }
 
-    ####################################################################################################################
-    # remove
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove
+    //###################################################################################################################
 
     public function removeAction($id)
     {
@@ -199,12 +209,12 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $this->em->remove($account);
         $this->em->flush();
 
-        return $this->createApiDeleteResponse(array('old_id' => $old_id));
+        return $this->createApiDeleteResponse(['old_id' => $old_id]);
     }
 
-    ####################################################################################################################
-    # test-account
-    ####################################################################################################################
+    //###################################################################################################################
+    // test-account
+    //###################################################################################################################
 
     public function testAccountAction()
     {
@@ -222,16 +232,16 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $tester = new IncomingAccountTester(EmailAccountUtil::decryptIncomingAccount($edit_account->getIncomingAccountConfig(), $this->container->get('dp_enc')));
         $tester->test();
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'is_success'    => $tester->isSuccess(),
             'log'           => $tester->getLog(),
             'message_count' => $tester->getMessageCount(),
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # test-outgoing-account
-    ####################################################################################################################
+    //###################################################################################################################
+    // test-outgoing-account
+    //###################################################################################################################
 
     public function testOutgoingAccountAction()
     {
@@ -247,36 +257,37 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $form->submit($data);
 
         if (!StringEmail::isValueValid($this->in->getString('test_email.to'))) {
-            return $this->createApiResponse(array(
+            return $this->createApiResponse([
                 'is_success' => false,
                 'log'        => 'Invalid TO email address',
-            ));
+            ]);
         }
-        if (!StringEmail::isValueValid($this->in->getString('test_email.from'))) {
-            return $this->createApiResponse(array(
+        if (!StringEmail::isValueValid($this->in->getString('test_email.from')) || !$this->validateCustomEmailAddress($this->in->getString('test_email.from'))) {
+            return $this->createApiResponse([
                 'is_success' => false,
                 'log'        => 'Invalid FROM email address',
-            ));
+            ]);
         }
 
         $out_account = $edit_account->getOutgoingAccountConfig();
         if (!$out_account) {
-            return $this->createApiResponse(array(
+            return $this->createApiResponse([
                 'is_success' => false,
                 'log'        => 'No outgoing account configuration was specified.',
-            ));
+            ]);
         }
 
         try {
             $raw_tr = $this->container->get('email.raw_transport_factory')->createTransport(EmailAccountUtil::decryptOutgoingAccount($out_account, $this->container->get('dp_enc')));
         } catch (\Exception $e) {
-            return $this->createApiResponse(array(
+            return $this->createApiResponse([
                 'is_success' => false,
                 'log'        => $e->getMessage(),
-            ));
+                'trace'      => $e->getTraceAsString(),
+            ]);
         }
 
-        QueueProc::$__dp_current_sendmail = array('id' => '@TEST');
+        QueueProc::$__dp_current_sendmail = ['id' => '@TEST'];
 
         $logger = $this->container->get('monolog.logger.dp.email.out.queue');
 
@@ -291,15 +302,15 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
         $logger->info('Begin send test');
 
-        $failed = array();
+        $failed = [];
 
         try {
             $sent = $raw_tr->sendRawMessage(
-                $this->in->getString('test_email.from'),
-                array($this->in->getString('test_email.to')),
-                $fp,
-                $failed
-            );
+            $this->in->getString('test_email.from'),
+            [$this->in->getString('test_email.to')],
+            $fp,
+            $failed
+        );
 
             if ($failed) {
                 $logger->notice(sprintf('NOTICE: Failed recipients: %s', implode(', ', $failed)));
@@ -317,10 +328,10 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $log = $this->container->get('email.log_collector')->getLogForMessage('@TEST');
         $log = preg_replace("#^(\[.*?\]) (.*?)\.([A-Z]+): #m", '$1 ', $log);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'is_success' => $sent > 0,
             'log'        => $log,
-        ));
+        ]);
     }
 
     /**
@@ -337,10 +348,10 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
             $this->emailSettings = new EmailAccountsSettings($this->settings);
         }
 
-        $data = array(
+        $data = [
             'email_settings' => $this->emailSettings->toArray(),
             'max_filesize'   => Env::getEffectiveMaxUploadSize(),
-        );
+        ];
 
         return $this->createApiResponse($data);
     }
@@ -355,5 +366,17 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $this->emailSettings->fromArray($data);
 
         return $this->getSettingsAction();
+    }
+
+    /**
+     * Hook to validate a custom email address. Overriden on cloud to ensure safe email address.
+     *
+     * @param string $email
+     *
+     * @return bool
+     */
+    protected function validateCustomEmailAddress($email)
+    {
+        return true;
     }
 }

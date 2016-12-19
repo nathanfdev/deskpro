@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader as AbstractEmailReader;
@@ -39,7 +40,7 @@ use Orb\Log\Logger;
 class DetectInlineReply implements Loggable
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 
@@ -197,7 +198,7 @@ class DetectInlineReply implements Loggable
             return $this->message_texts;
         }
 
-        $this->message_texts = array();
+        $this->message_texts = [];
 
         $body = $this->reader->getBodyHtml()->getBodyUtf8();
         if (!$body) {
@@ -269,7 +270,7 @@ class DetectInlineReply implements Loggable
         // Eg: [attach:image:14ACHKTRCNWD1382226544B:test.png]
         $message_text = preg_replace('#\[attach:(.*?):(.*?):(.*?)\]#', '', $message_text);
 
-        $message_text = str_replace(array('<br/>', '<br />', '<br>'), ' ', $message_text);
+        $message_text = str_replace(['<br/>', '<br />', '<br>'], ' ', $message_text);
         $message_text = strip_tags($message_text);
         $message_text = html_entity_decode($message_text, \ENT_QUOTES, 'UTF-8');
         $message_text = preg_replace('#[\pZ\pC\s]+#u', ' ', $message_text);

@@ -17,7 +17,7 @@
 		<div ng-show="isMainLoading" style="text-align: center; padding: 15px;">
 			<i class="spinner-circle-32"></i>
 		</div>
-		<div ng-show="!isMainLoading">
+		<div ng-show="isMainLoading === false">
 			<div ng-if="index_running" class="result-is-indexing">
 				<i class="fa fa-exclamation-circle"></i>
 				Search results may be incomplete because items are still being indexed.

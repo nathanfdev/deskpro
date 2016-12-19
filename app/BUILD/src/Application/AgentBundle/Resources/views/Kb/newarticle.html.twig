@@ -36,6 +36,16 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="first section cat-section" id="{{baseId}}_cat_section">
 	<div class="content">
 		<div class="col">
+			<h4>{{ phrase('agent.general.brand') }}</h4>
+			<select name="newarticle[brand]" id="new_article_brand_id">
+				{% for brand in brands %}
+					<option value="{{ brand.id }}" {% if selected_brand_id == brand.id %}selected="selected"{% endif %}>
+						{{ brand.name }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col">
 			<h4>{{ phrase('agent.general.category') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
 				'name': 'newarticle[category_id]',
@@ -55,12 +65,10 @@ pageMeta.baseId = '{{ baseId }}';
 			<select name="newarticle[status]">
 				{% if app.user.hasPerm('agent_publish.validate') %}
 					<option value="published">{{ phrase('agent.publish.status_published') }}</option>
+					<option value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
 				{% endif %}
-				{% if constant('DP_DEBUG') or not app.user.hasPerm('agent_publish.validate') %}
-					<option value="hidden.validating" selected="selected">{{ phrase('agent.publish.status_published') }} ({{ phrase('agent.general.requires_validation') }})</option>
-				{% endif %}
-				<option value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
 				<option value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
+				<option  value="hidden.pending">{{ phrase('agent.publish.status_hidden_pending') }}</option>
 			</select>
 		</div>
 		<br class="clear" />

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
@@ -96,9 +97,9 @@ class SearchReindexCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 
         $output->writeln(sprintf('%d objects will be processed in %d batches', count($all_ids), count($all_batch_ids)));
 
-        #------------------------------
-        # Process each
-        #------------------------------
+        //------------------------------
+        // Process each
+        //------------------------------
 
         $x = 0;
         foreach ($all_batch_ids as $batch_ids) {

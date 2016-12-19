@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -40,6 +41,10 @@ use Orb\Util\Util;
 /**
  * A cache of various permissions for a given set of usergroups. For example,
  * a computed array of category ID's 1,3,5 has access to.
+ *
+ * @deprecated we cache using a cache adapter now (\Application\DeskPRO\Cache\CacheAdapterInterface)
+ *             on new-portal. this was used on the old way of using permissions.
+ *             AGENT/ADMIN/etc still use this
  */
 class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -70,7 +75,7 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var bool
      */
-    protected $perms = array();
+    protected $perms = [];
 
     /**
      * @var null|array
@@ -130,24 +135,56 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
         return Usergroup::generateUsergroupSetKey($usergroup_ids);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PermissionCache';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'permissions_cache',
-            'indexes' => array(
-                'usergroup_key_idx' => array('columns' => array('usergroup_key')),
-            ),
-        ));
+            'indexes' => [
+                'usergroup_key_idx' => ['columns' => ['usergroup_key']],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'usergroup_key', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'usergroup_key', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'usergroup_ids', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'usergroup_ids'));
-        $metadata->mapField(array('fieldName' => 'perms', 'type' => 'object', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'perms'));
+        $metadata->mapField([
+            'fieldName'  => 'name',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'name',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'usergroup_key',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'usergroup_key',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'usergroup_ids',
+            'type'       => 'text',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'usergroup_ids',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'perms',
+            'type'       => 'object',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'perms',
+        ]);
     }
 }

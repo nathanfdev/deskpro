@@ -11,11 +11,10 @@
 {% else %}
 	{{ phrase('agent.emails.notice_login_attempt') }}<br />
 {% endif %}
-
-{% if session.visitor %}
-	{{ phrase('agent.emails.user_ip') }}: {{ session.visitor.visit_track.ip_address }}<br />
-	{{ phrase('agent.general.user_agent') }}: {{ session.visitor.visit_track.user_agent }}<br />
-	{{ phrase('agent.emails.referring_page') }}: {{ session.visitor.visit_track.ref_page_url|default('n/a') }}<br />
-	{{ phrase('agent.general.landing_page') }}: {{ session.visitor.visit_track.page_url|default('n/a') }}<br />
-	{{ phrase('agent.emails.first_seen') }}: {{ session.visitor.date_created|date('fulltime') }}<br />
-{% endif %}
+<ul>
+	<li>{{ phrase('agent.emails.user_ip') }}: {{ request.getClientIp() }}</li>
+	<li>{{ phrase('agent.emails.user_agent') }}: {{ request.headers.get('User-Agent') }}</li>
+	<li>{{ phrase('agent.emails.landing_page') }}: {{ request.getRequestUri() }}</li>
+	<li>{{ phrase('agent.emails.referer_page') }}: {{ request.headers.get('Referer') }}</li>
+	<li>{{ phrase('agent.emails.first_seen') }}: {{ firstSeen.format('D, jS M Y g:ia') }}</li>
+</ul>

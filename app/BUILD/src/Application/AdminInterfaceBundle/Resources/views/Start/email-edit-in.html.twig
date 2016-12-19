@@ -53,6 +53,14 @@
 				</div>
 			</td>
 		</tr>
+		<tr ng-show="form.in_pop3_account.secure">
+			<th>No validation</th>
+			<td>
+				<label style="display: inline-block">
+					<input type="checkbox" ng-model="form.in_pop3_account.disable_cert_validation" /> Disable certificate validation
+				</label>
+			</td>
+		</tr>
 		<tr>
 			<th>Username</th>
 			<td><input type="text" class="form-control" name="title" ng-model="form.in_pop3_account.user" style="width: 50%;" /></td>

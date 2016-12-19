@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -130,7 +131,7 @@ class AppInstance extends DomainObject
      */
     public function getSettings()
     {
-        return $this->settings ? $this->settings : array();
+        return $this->settings ? $this->settings : [];
     }
 
     /**
@@ -166,7 +167,7 @@ class AppInstance extends DomainObject
             return $this->settings;
         }
 
-        $native_only = array();
+        $native_only = [];
 
         foreach ($this->package->settings_def as $info) {
             if (isset($info['native_only']) && $info['native_only']) {
@@ -195,17 +196,17 @@ class AppInstance extends DomainObject
     {
         $trigger_events = $this->package->trigger_events;
         if (!$trigger_events || empty($trigger_events[$type])) {
-            return array();
+            return [];
         }
 
-        $events = array();
+        $events = [];
 
         foreach ($trigger_events[$type] as $name => $label) {
-            $events[] = array(
+            $events[] = [
                 'event_id' => $this->package->name.'.'.$this->id.'.'.$name,
                 'name'     => $name,
                 'label'    => $label,
-            );
+            ];
         }
 
         return $events;
@@ -214,9 +215,9 @@ class AppInstance extends DomainObject
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
-        $data = array();
+        $data = [];
 
         $data['id']              = $this->id;
         $data['package_name']    = $this->package->name;
@@ -224,7 +225,7 @@ class AppInstance extends DomainObject
         $data['perm_type']       = $this->perm_type;
         $data['secret_key']      = $this->secret_key;
         $data['auth_key']        = $this->auth_key;
-        $data['settings']        = $this->settings ?: array();
+        $data['settings']        = $this->settings ?: [];
         $data['date_created']    = $this->date_created->format('Y-m-d H:i:s');
         $data['date_created_ts'] = $this->date_created->getTimestamp();
 
@@ -235,9 +236,9 @@ class AppInstance extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -245,74 +246,76 @@ class AppInstance extends DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AppInstance';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'app_instances',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'perm_type',
             'fieldName'  => 'perm_type',
             'type'       => 'string',
             'length'     => 15,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'title',
             'fieldName'  => 'title',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'secret_key',
             'fieldName'  => 'secret_key',
             'type'       => 'string',
             'length'     => 40,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'auth_key',
             'fieldName'  => 'auth_key',
             'type'       => 'string',
             'length'     => 40,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'settings',
             'fieldName'  => 'settings',
             'type'       => 'json_array',
             'nullable'   => true,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'date_created',
             'fieldName'  => 'date_created',
             'type'       => 'datetime',
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'package',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppPackage',
-            'joinColumns'  => array(array(
-                'name'                 => 'package_name',
-                'referencedColumnName' => 'name',
-                'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-                'fetch'                => 'EAGER',
-            )),
-        ));
+            'fetch'        => ClassMetadataInfo::FETCH_LAZY,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'package_name',
+                    'referencedColumnName' => 'name',
+                    'nullable'             => true,
+                    'onDelete'             => 'CASCADE',
+                ],
+            ],
+        ]);
     }
 }

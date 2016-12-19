@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,24 +29,29 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\Entity\ApiToken;
+use Symfony\Component\HttpFoundation\Request;
 
 class StartController extends AbstractController
 {
-    public function preAction($action, $arguments = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
         if (defined('DPC_IS_CLOUD')) {
             throw $this->createNotFoundException();
         }
 
-        return parent::preAction($action, $arguments);
+        return parent::preActionHandler($request, $action, $arguments);
     }
 
-    ####################################################################################################################
-    # index
-    ####################################################################################################################
+    //###################################################################################################################
+    // index
+    //###################################################################################################################
 
     public function indexAction()
     {
@@ -58,18 +63,13 @@ class StartController extends AbstractController
         $this->em->persist($token);
         $this->em->flush();
 
-        $php_path     = $this->container->getPhpBinaryPath();
-        $php_path_set = dp_get_config('php_path');
-
         $not_user = $this->person->getLabelManager()->hasLabel('not_user');
 
-        return $this->render('AdminInterfaceBundle:Start:layout.html.twig', array(
+        return $this->render('AdminInterfaceBundle:Start:layout.html.twig', [
             'api_token'             => $token,
             'session'               => $this->session->getEntity(),
             'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
-            'php_path'              => $php_path,
-            'php_path_set'          => $php_path_set,
             'not_user'              => $not_user,
-        ));
+        ]);
     }
 }

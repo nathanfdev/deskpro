@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,40 +31,51 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Labels\Label;
+use Application\DeskPRO\Entity\Labels\LabelsOwner;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * News.
- *
- * @SWG\Model (id="News")
+ * @PortalLinkRoute("portal_news_view", route_param_map={"slug": "slug"})
+ * @PortalLinkRoute("portal_news_view", route_param_map={"slug": "id"}, type="permalink")
+ * @PortalLinkRoute("portal_news_post_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
+ * @PortalLinkRoute("portal_news_post_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
+ * @PortalLinkRoute("portal_news_post_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  */
-class News extends ContentAbstract implements HighlightableModelInterface
+class News extends ContentAbstract implements HighlightableModelInterface, LabelsOwner
 {
+    const CONTENT_TYPE = 'news';
+
     /**
      * @var \Application\DeskPRO\Entity\NewsCategory
-     *
-     * @SWG\Property(name="category", type="NewsCategory")
      */
     protected $category;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * Revisions of this news.
      *
-     * @SWG\Property(name="revisions", type="array", @SWG\Items("NewsRevision"))
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $revisions;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * String array of labels associated with this news.
      *
-     * @SWG\Property(name="labels", type="array", @SWG\Items("LabelNews"))
+     * @Assert\Valid()
+     * @AppAssert\UniqueCollection(property={"label"})
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection|LabelNews[]
      */
     protected $labels;
 
@@ -74,6 +85,11 @@ class News extends ContentAbstract implements HighlightableModelInterface
      * @var array
      */
     protected $_search_highlights;
+
+    /**
+     * @var \DateTime
+     */
+    protected $date_updated;
 
     /**
      * @var \DateTime
@@ -90,14 +106,14 @@ class News extends ContentAbstract implements HighlightableModelInterface
         $content = $this->getContent();
 
         // Remove the intro separator
-        $content = preg_replace('#[\r\n]+\-{3,}[\r\n]+#', "\n", $content);
+        $content = RegexUtils::safePregReplace('#[\r\n]+\-{3,}[\r\n]+#', "\n", $content);
 
         return $content;
     }
 
     public function getExcerptHtml()
     {
-        $content = Strings::standardEol($this->getContent());
+        $content = Strings::html2Text($this->getContent());
         if ($pos = strpos($content, '![more]')) {
             $excerpt = substr($content, $pos);
         } elseif ($pos = strpos($content, "\n\n")) {
@@ -110,7 +126,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
             $words   = str_word_count($excerpt, 2);
             $pos     = Arrays::getNthKey($words, 50);
             $excerpt = substr($excerpt, 0, $pos);
-            $excerpt = preg_replace('#[^a-zA-Z0-9]$#', '', $excerpt);
+            $excerpt = RegexUtils::safePregReplace('#[^a-zA-Z0-9]$#', '', $excerpt);
             $excerpt .= '...';
         }
 
@@ -127,20 +143,6 @@ class News extends ContentAbstract implements HighlightableModelInterface
         return $diff;
     }
 
-    public function getLink()
-    {
-        $url = App::getRouter()->generate('user_news_view', array('slug' => $this->getUrlSlug()), true);
-
-        return $url;
-    }
-
-    public function getPermalink()
-    {
-        $url = App::getRouter()->generate('user_news_view', array('slug' => $this->id), true);
-
-        return $url;
-    }
-
     /**
      * Set a category.
      *
@@ -150,18 +152,19 @@ class News extends ContentAbstract implements HighlightableModelInterface
      */
     public function setCategory(NewsCategory $category = null)
     {
-        if ($category) {
-            $this->setModelField('category', $category);
-        } else {
-            $this->setModelField('category', -1);
-        }
+        $this->setModelField('category', $category);
 
         return $this;
     }
 
+    public function getCategoryId()
+    {
+        return $this->category['id'];
+    }
+
     public function getCategoryPath()
     {
-        $path = array();
+        $path = [];
 
         $cat    = $this->category;
         $path[] = $cat;
@@ -178,7 +181,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
      *
      * @return $this
      */
-    public function resetLabels()
+    public function clearLabels()
     {
         foreach ($this->labels as $data) {
             $this->labels->removeElement($data);
@@ -190,17 +193,28 @@ class News extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @param LabelNews $label
+     * @param Label $label
      *
      * @return $this
      */
-    public function addLabel(LabelNews $label)
+    public function addLabel(Label $label)
     {
         $label['news'] = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', null, $this->labels);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeLabel(Label $label)
+    {
+        if ($this->labels->contains($label)) {
+            $this->labels->removeElement($label);
+            $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+        }
     }
 
     /**
@@ -211,20 +225,14 @@ class News extends ContentAbstract implements HighlightableModelInterface
         return $this->labels;
     }
 
-    public function _invalidatePageCache()
-    {
-        $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-        $cache->invalidateRegex('/_news(-|_view_'.intval($this->getId()).'-|_\d+)/');
-    }
-
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
-            $data['labels'] = array();
+            $data['labels'] = [];
             foreach ($this->labels as $label) {
                 $data['labels'][] = $label['label'];
             }
@@ -265,27 +273,57 @@ class News extends ContentAbstract implements HighlightableModelInterface
         }
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    protected function addSlugHistory($old_slug)
+    {
+        $history = new NewsSlugHistory($this, $old_slug);
+        $this->slug_history->add($history);
+
+        return $history;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndAction()
+    {
+        return $this->end_action;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\News';
         $metadata->setPrimaryTable(
-            array(
+            [
                 'name'    => 'news',
-                'indexes' => array(
-                    'date_published_idx' => array('columns' => array(0 => 'date_published')),
-                    'status_idx'         => array('columns' => array('status')),
-                ),
-            )
+                'indexes' => [
+                    'date_published_idx'    => ['columns' => [0 => 'date_published']],
+                    'date_updated_idx'      => ['columns' => ['date_updated']],
+                    'date_last_comment_idx' => ['columns' => ['date_last_comment']],
+                    'status_idx'            => ['columns' => ['status']],
+                ],
+            ]
         );
-        $metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -293,10 +331,10 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'slug',
                 'type'       => 'string',
                 'length'     => 100,
@@ -304,10 +342,11 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'slug',
-            )
+                'unique'     => true,
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'title',
                 'type'       => 'string',
                 'length'     => 255,
@@ -315,60 +354,60 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'title',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'content',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'content',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'view_count',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'view_count',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'total_rating',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'total_rating',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'num_comments',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'num_comments',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'num_ratings',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'num_ratings',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'status',
                 'type'       => 'string',
                 'length'     => 15,
@@ -376,10 +415,10 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'status',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'hidden_status',
                 'type'       => 'string',
                 'length'     => 15,
@@ -387,111 +426,148 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'hidden_status',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'date_created',
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'date_created',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
+                'fieldName'  => 'date_updated',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_updated',
+            ]
+        );
+        $metadata->mapField(
+            [
                 'fieldName'  => 'date_published',
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'date_published',
-            )
+            ]
         );
         $metadata->mapField(
-            array('fieldName' => 'date_end', 'type' => 'datetime', 'nullable' => true, 'columnName' => 'date_end')
+            [
+                'fieldName'  => 'date_last_comment',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_last_comment',
+            ]
         );
         $metadata->mapField(
-            array(
+            ['fieldName' => 'date_end', 'type' => 'datetime', 'nullable' => true, 'columnName' => 'date_end']
+        );
+        $metadata->mapField(
+            [
                 'fieldName'  => 'end_action',
                 'type'       => 'string',
                 'length'     => 10,
                 'nullable'   => true,
                 'columnName' => 'end_action',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'category',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory',
                 'mappedBy'     => null,
-                'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'inversedBy'   => 'articles',
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'category_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
         $metadata->mapOneToMany(
-            array(
+            [
                 'fieldName'    => 'revisions',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsRevision',
-                'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'     => 'news',
-            )
+            ]
         );
         $metadata->mapOneToMany(
-            array(
+            [
                 'fieldName'     => 'labels',
                 'targetEntity'  => 'Application\\DeskPRO\\Entity\\LabelNews',
-                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'      => 'news',
                 'orphanRemoval' => true,
-            )
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'person',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'set null',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'language',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'language_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'slug_history',
+                'targetEntity' => 'Application\DeskPRO\Entity\NewsSlugHistory',
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'     => 'news',
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'comments',
+                'targetEntity' => NewsComment::class,
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'     => 'news',
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+            ]
         );
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\SoapClient;
 
 if (!class_exists('\SoapClient', false)) {
@@ -51,7 +52,7 @@ if (!class_exists('\SoapClient', false)) {
             $v = libxml_disable_entity_loader(false);
 
             try {
-                parent::__construct($wsdl, $options ?: array());
+                parent::__construct($wsdl, $options ?: []);
             } catch (\Exception $e) {
                 libxml_disable_entity_loader($v);
                 throw $e;
@@ -62,7 +63,7 @@ if (!class_exists('\SoapClient', false)) {
 
         private function _verifyWsdlFile($wsdl)
         {
-            $raw = @file_get_contents($wsdl, null, stream_context_create(array('http' => array('timeout' => 10))));
+            $raw = @file_get_contents($wsdl, null, stream_context_create(['http' => ['timeout' => 10]]));
             if (!$raw) {
                 throw new SafeSoapClientException('Server', 'dp_bad_response');
             }
@@ -74,6 +75,8 @@ if (!class_exists('\SoapClient', false)) {
     }
 }
 
-class SafeSoapClientException extends \SoapFault
-{
+if (class_exists('\SoapFault')) {
+    class SafeSoapClientException extends \SoapFault
+    {
+    }
 }

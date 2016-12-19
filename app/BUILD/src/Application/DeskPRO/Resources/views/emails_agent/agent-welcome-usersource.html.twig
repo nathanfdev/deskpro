@@ -16,7 +16,7 @@
 
 <br/><br/>
 
-{{ phrase('agent.emails.newagent-login-link', { link: app.getSetting('core.deskpro_url') ~ 'agent/' }) }}<br />
+{{ phrase('agent.emails.newagent-login-link', { link: brand_setting('core.deskpro_url') ~ 'agent/' }) }}<br />
 {{ phrase('agent.emails.newagent-login-your-email', { email: agent.email_address }) }}<br />
 {% if agent.getPlaintextPassword() %}
 	{{ phrase('agent.emails.newagent-login-initial-password', { password: agent.getPlaintextPassword() }) }}<br/><br/>

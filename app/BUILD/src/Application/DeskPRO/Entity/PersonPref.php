@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,8 +31,10 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -40,10 +42,10 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * Every person can have various data or preferences associated with their account.
  * These are just key value pairs basically.
  */
-class PersonPref extends \Application\DeskPRO\Domain\DomainObject
+class PersonPref extends DomainObject
 {
     /**
-     * @var Application\DeskPRO\Entity\Person
+     * @var Person
      */
     protected $person;
 
@@ -78,6 +80,11 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
         return is_array($this->value_array) ? $this->value_array : $this->value_str;
     }
 
+    /**
+     * @param string|array $val
+     *
+     * @return PersonPref
+     */
     public function setValue($val)
     {
         $old_val_str = $this->value_str;
@@ -94,16 +101,22 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 
         $this->_onPropertyChanged('value_str', $old_val_str, $this->value_str);
         $this->_onPropertyChanged('value_array', $old_val_arr, $this->value_array);
+
+        return $this;
     }
 
     /**
      * Set name.
      *
      * @param string $name
+     *
+     * @return PersonPref
      */
     public function setName($name)
     {
         $this->setModelField('name', $name);
+
+        return $this;
     }
 
     /**
@@ -119,17 +132,21 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Set value_str.
      *
-     * @param text $valueStr
+     * @param string $valueStr
+     *
+     * @return PersonPref
      */
     public function setValueStr($valueStr)
     {
         $this->setModelField('value_str', $valueStr);
+
+        return $this;
     }
 
     /**
      * Get value_str.
      *
-     * @return text
+     * @return string
      */
     public function getValueStr()
     {
@@ -140,10 +157,14 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
      * Set value_array.
      *
      * @param array $valueArray
+     *
+     * @return PersonPref
      */
     public function setValueArray($valueArray)
     {
         $this->setModelField('value_array', $valueArray);
+
+        return $this;
     }
 
     /**
@@ -159,17 +180,21 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Set date_expire.
      *
-     * @param datetime $dateExpire
+     * @param \DateTime $dateExpire
+     *
+     * @return PersonPref
      */
     public function setDateExpire($dateExpire)
     {
         $this->setModelField('date_expire', $dateExpire);
+
+        return $this;
     }
 
     /**
      * Get date_expire.
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getDateExpire()
     {
@@ -179,38 +204,99 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Set person.
      *
-     * @param Application\DeskPRO\Entity\Person $person
+     * @param Person $person
+     *
+     * @return PersonPref
      */
-    public function setPerson(\Application\DeskPRO\Entity\Person $person)
+    public function setPerson(Person $person)
     {
         $this->setModelField('person', $person);
+
+        return $this;
     }
 
     /**
      * Get person.
      *
-     * @return Application\DeskPRO\Entity\Person
+     * @return Person
      */
     public function getPerson()
     {
         return $this->person;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonPref';
-        $metadata->setPrimaryTable(array('name' => 'people_prefs'));
+        $metadata->setPrimaryTable(['name' => 'people_prefs']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => 'preferences', 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapField(array('fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'value_str', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value_str'));
-        $metadata->mapField(array('fieldName' => 'value_array', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value_array'));
-        $metadata->mapField(array('fieldName' => 'date_expire', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_expire'));
-        $metadata->setIdentifier(array('person', 'name'));
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'person',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'mappedBy'     => null,
+                'inversedBy'   => 'preferences',
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'person_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'name',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'name',
+                'id'         => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'value_str',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'value_str',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'value_array',
+                'type'       => 'array',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'value_array',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'date_expire',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_expire',
+            ]
+        );
+        $metadata->setIdentifier([
+            'person',
+            'name',
+        ]);
     }
 }

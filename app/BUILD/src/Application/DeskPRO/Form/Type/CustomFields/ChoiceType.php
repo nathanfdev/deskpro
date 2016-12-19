@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,7 +36,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ChoiceType extends CustomFieldType
 {
@@ -50,7 +50,7 @@ class ChoiceType extends CustomFieldType
         $fieldOptions = $this->getValueOptions();
 
         $builder
-            ->add('value', 'entity', array_merge($fieldOptions, array(
+            ->add('value', 'entity', array_merge($fieldOptions, [
 
                 'empty_value' => !empty($fieldOptions['expanded']) ? false : 'Choose an option',
 
@@ -59,23 +59,22 @@ class ChoiceType extends CustomFieldType
                 'query_builder' => function (EntityRepository $er) use ($that, $options) {
                     return $that->getChoicesQueryBuilder($er, $options);
                 },
-            )))
-            ->addModelTransformer(new ChoiceDataTransformer($options['persister'], $options['owner']))
-        ;
+            ]))
+            ->addModelTransformer(new ChoiceDataTransformer($options['persister'], $options['owner']));
 
         parent::buildForm($builder, $options);
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        parent::setDefaultOptions($resolver);
-        $resolver->setDefaults(array(
+        parent::configureOptions($resolver);
+        $resolver->setDefaults([
             'data_class' => null,
             'allow_edit' => false,
-        ));
+        ]);
     }
 
     /**
@@ -115,7 +114,7 @@ class ChoiceType extends CustomFieldType
             $rendered = $data['title'];
         } else {
             // @var $data CustomFieldDefinition[]
-            $rendered = array();
+            $rendered = [];
             foreach ($data as $el) {
                 $rendered[] = $el['title'];
             }

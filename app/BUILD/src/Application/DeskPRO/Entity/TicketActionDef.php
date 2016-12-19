@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -110,7 +111,7 @@ class TicketActionDef extends DomainObject
      */
     public function getSettings()
     {
-        return $this->settings ? $this->settings : array();
+        return $this->settings ? $this->settings : [];
     }
 
     /**
@@ -142,14 +143,14 @@ class TicketActionDef extends DomainObject
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
-        $data                     = array();
+        $data                     = [];
         $data['id']               = $this->id;
         $data['action_name']      = $this->action_name;
         $data['def_class']        = $this->def_class;
         $data['app']              = $this->app ? $this->app->toApiData(false, false) : null;
-        $data['settings']         = $this->settings ?: array();
+        $data['settings']         = $this->settings ?: [];
         $data['action_title']     = $this->getDef()->getTitle();
         $data['action_class']     = $this->getDef()->getTriggerActionClass();
         $data['macro_class']      = $this->getDef()->getMacroActionClass();
@@ -158,9 +159,9 @@ class TicketActionDef extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -169,51 +170,53 @@ class TicketActionDef extends DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'              => 'ticket_actions_def',
-            'uniqueConstraints' => array('action_name_idx' => array('columns' => array('action_name'))),
-        ));
+            'uniqueConstraints' => ['action_name_idx' => ['columns' => ['action_name']]],
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'id',
             'columnName' => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'action_name',
             'columnName' => 'action_name',
             'type'       => 'string',
             'length'     => 50,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'def_class',
             'columnName' => 'def_class',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => true,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'settings',
             'columnName' => 'settings',
             'type'       => 'json_array',
             'nullable'   => true,
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'app',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance',
-            'joinColumns'  => array(array(
-                'name'                 => 'app_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'cascade',
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'app_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                ],
+            ],
+        ]);
     }
 }

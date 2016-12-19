@@ -1,0 +1,421 @@
+.log-back-in-warning {
+  background: #4e4e4e;
+  width: 400px;
+  margin: 0 auto;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  padding: 15px;
+
+  position: relative;
+  top: 2px;
+
+  h1 {
+    color: #fff;
+    padding: 0;
+    margin: 0;
+    font-weight: 400;
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+
+  p {
+    margin: 0;
+    padding: 0;
+    margin-top: 5px;
+    color: #cdcdcd;
+    line-height: 1.7em;
+    font-size: 12px;
+  }
+
+  .log-back-in-browser {
+    display: inline-block;
+    line-height: 1em;
+    padding: 7px;
+    border-radius: 2px;
+    background: rgba(0, 0, 0, 0.15);
+    color: #939393;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+}
+
+.dpw-login {
+  position: relative;
+  text-align: left;
+  max-width: 400px;
+  background: #fff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  border: 3px solid #9cbcda;
+  padding: 12px;
+  padding-top: 5px;
+  font-size: 12px;
+  margin:  0 auto;
+
+  &.log-back-in {
+    border: 1px solid #4e4e4e;
+
+  }
+
+  // Header with logo and intro blurb
+  .dpw-login-header {
+    text-align: center;
+    margin-bottom: 20px;
+
+    .dpw-login-header-logo {// Logo image container
+      margin: 0 auto;
+      max-width: 100%;
+      max-height: 90px;
+      margin-bottom: 8px;
+
+      img {
+        max-width: 290px;
+        max-height: 90px;
+      }
+
+      > a {
+        display: block;
+        text-decoration: none;
+        border: 1px dotted #cbc7c7;
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 5px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        color: #c8c3c3;
+        cursor: pointer;
+        transition: all 0.5s ease;
+        i {
+          font-size: 18px;
+          color: #e5e5e5;
+        }
+
+        span {
+          margin-top: 15px;
+          display: block;
+          text-transform: uppercase;
+          font-weight: bold;
+          font-size: 10px;
+        }
+
+        &:hover {
+          color: #afaaaa;
+          i { color: #afaaaa; }
+        }
+      }
+    }
+
+    h1 {
+      font-weight: 400;
+      font-size: 16px;
+      padding: 0;
+      margin: 0;
+      color: #9b9b9b;
+    }
+  }
+
+  form {
+    padding: 0;
+    margin: 0;
+  }
+
+  // Box for input[text]
+  .dpw-login-form-container {
+    display: block;
+    border: 1px solid #e6e6e6;
+    border-radius: 2px;
+    position: relative;
+    margin: 0;
+    margin-bottom: 15px;
+    transition: all 0.5s ease;
+
+    .dpw-login-form-input-icon {
+      position: absolute;
+      top: 16px;
+      left: 10px;
+      color: #cdcdcd;
+      font-size: 12px;
+    }
+
+    label {
+      position: absolute;
+      top: -10px;
+      left: 8px;
+      display: inline-block;
+      background: #fff;
+      line-height: 1em;
+      padding: 3px 8px;
+      color: #868686;
+      font-size: 12px;
+      margin: 0;
+    }
+
+    &:hover, &.active { border: 1px solid #3d83c5; }
+  }
+
+  form.disabled {
+    opacity: 0.5;
+  }
+
+  // Buttons and Inputs
+  input[type="submit"] {
+    background: #3d83c5;
+    border: 0;
+    border-radius: 2px;
+    display: block;
+    width: 100%;
+    text-align: center;
+    line-height: 1em;
+    font-size: 14px;
+    padding: 18px 15px;
+    color: #fff;
+    margin-top: 10px;
+    &:hover { background: #3376b5; }
+
+    &.locked {
+      opacity: 0.5;
+      cursor: default;
+    }
+  }
+
+  input[type="text"], input[type="password"], input[type="email"] {
+    border: 0;
+    line-height: 1.2em;
+    margin: 0;
+    display: block;
+    width: 100%;
+    font-weight: 400;
+    padding: 14px 10px 14px 30px;
+    outline: none;
+
+    &::-webkit-input-placeholder { color: #d3d3d3; font-weight: 400; opacity: 1; }
+    &:-moz-placeholder { color: #d3d3d3; font-weight: 400; opacity: 1; }
+    &::-moz-placeholder { color: #d3d3d3; font-weight: 400; opacity: 1; }
+    &:-ms-input-placeholder { color: #d3d3d3; font-weight: 400; opacity: 1; }
+
+    &:disabled { background: inherit; }
+  }
+
+  input[type="password"] {
+    &::-webkit-input-placeholder {
+      font-size: 26px;
+      letter-spacing: 5px;
+      color: #e7e7e7;
+      line-height: 0;
+    }
+    &::-moz-placeholder { /* Firefox 19+ */
+      font-size: 26px;
+      letter-spacing: 5px;
+      color: #e7e7e7;
+      line-height: 0;
+    }
+    &:-ms-input-placeholder {
+      font-size: 26px;
+      letter-spacing: 5px;
+      color: #e7e7e7;
+      line-height: 0;
+    }
+    &:-moz-placeholder { /* Firefox 18- */
+      font-size: 26px;
+      letter-spacing: 5px;
+      color: #e7e7e7;
+      line-height: 0;
+    }
+  }
+
+  .dpw-spinner {
+    display: block;
+    margin: 15px auto 0;
+    width: 15px;
+
+    i {
+      display: inline-block;
+      background: url('../img/loading-small-flat.gif') center;
+      background-size: 15px 15px;
+      width: 15px;
+      height: 15px;
+      margin: 0 auto;
+    }
+  }
+
+  .dpw-login-form-log-out {
+    text-align: center;
+    display: block;
+    padding: 8px 5px 0 5px;
+    font-size: 14px;
+
+
+    a { color: #b5b5b5;}
+  }
+
+  // Remember me and password reminder
+  .dpw-login-form-options {
+    font-size: 12px;
+    margin-top: -5px;
+
+    .password-reminder {
+      color: #c7c7c7;
+      float: right;
+      &:hover { color: #333; }
+    }
+
+    .dpw-login-form-remember-me {
+      cursor: pointer;
+      color: #7e7e7e;
+      &:hover { color: #333; }
+    }
+
+    .dpw--checkbox-boxy {
+      position: relative;
+      top: -1px;
+      margin-right: 4px;
+      width: 13px;
+      height: 13px;
+      i { top: 0; }
+    }
+  }
+
+  // COntainer for alternative logins
+  .dpw-login-form-alternate-login-button {
+    display: block;
+    width: 100%;
+    border-radius: 2px;
+    line-height: 1em;
+    padding: 18px 15px;
+    background: #333;
+    text-decoration: none;
+    text-align: center;
+
+    &.onelogin {
+      background: #00a9e0;
+      background-image: url(../img/samples/sample-alt-login.png);
+      background-repeat: no-repeat;
+      background-size: 85px 24px;
+      background-position: center center;
+      &:hover { background-color: #109ecc; }
+    }
+
+    &.more {
+      background: #dedede;
+      color: #797979;
+      &:hover { background: #d1cfcf; }
+      i { font-size: 11px; margin-left: 3px;}
+    }
+  }
+}
+
+
+.dpw-login-language-controls {
+  text-align: right;
+  position: relative;
+
+  .dpw-login-language-controls-button {
+    opacity: 0.5;
+    cursor: pointer;
+    &:hover { opacity: 1; }
+  }
+
+  hr {
+    display: inline-block;
+    height: 10px;
+    width: 1px;
+    padding: 0;
+    margin: 0 2px;
+    border: 0;
+    vertical-align: middle;
+    background: #dfdfdf;
+  }
+
+  i {
+    display: inline-block;
+    vertical-align: middle;
+    color: #bdbdbd;
+    font-size: 10px;
+    margin-top: 1px;
+  }
+
+  .dpw-login-language-controls-flag {
+    display: inline-block;
+    width: 16px;
+    height: 10px;
+    border-radius: 2px;
+    background: #e56a73;
+    vertical-align: middle;
+    background-size: cover;
+
+    &.uk { background-image: url(../img/samples/sample-flag.png); }
+  }
+}
+
+// If we need a more button, remove the extra html if not needed
+.dpw-login-form-alternate-login {
+  &:after { content: ""; display: table; clear: both; }// Clearfix
+
+  div.dpw-login-form-main-button {
+    float: left;
+    width: 70%;
+  }
+
+  div.dpw-login-form-extra-buttons {
+    float: right;
+    width: 30%;
+    padding-left: 10px;
+  }
+}
+
+
+.dpw-login-form-divider {
+  position: relative;
+  margin: 15px 0;
+
+  .dpw-login-form-divider-title {
+    position: absolute;
+    top: -7px;
+    left: 10px;
+    line-height: 1em;
+    padding: 2px 5px;
+    background: #fff;
+    color: #cdcdcd;
+    font-size: 12px;
+  }
+
+  hr {
+    display: block;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    height: 1px;
+    width: 100%;
+    background: #e6e6e6;
+  }
+}
+
+.dpw-left-panel-footer {
+  text-align: left;
+  font-size: 11px;
+  color: #8a8a8a;
+  padding-top: 10px;
+  padding-left: 5px;
+
+  .text { margin-right: 5px; }
+
+  hr {
+    display: inline-block;
+    vertical-align: middle;
+    width: 1px;
+    height: 10px;
+    background: #8b8b8b;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  a { color: #3b7ebd; }
+
+  i {
+    color: #bfc0c0;
+    margin-right: 5px;
+  }
+}

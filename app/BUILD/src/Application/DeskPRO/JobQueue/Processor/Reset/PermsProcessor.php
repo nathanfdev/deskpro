@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,9 @@ class PermsProcessor extends Base
 {
     const JOB_TYPE = 'reset.perms';
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doProcess(array $data)
     {
         $this->connection->executeUpdate('DELETE FROM permissions');
@@ -40,7 +43,7 @@ class PermsProcessor extends Base
 
         $translate = $this->container->getTranslator();
 
-        ##BEGIN:usergroups.everyone##
+        //#BEGIN:usergroups.everyone##
         $g             = new \Application\DeskPRO\Entity\Usergroup();
         $g['title']    = $translate->phrase('agent.defaults.usergroup_everyone');
         $g['note']     = $translate->phrase('agent.defaults.usergroup_everyone_note');
@@ -49,7 +52,7 @@ class PermsProcessor extends Base
         $this->em->flush();
         $USERGROUP_EVERYONE = $g;
 
-        ##BEGIN:usergroups.register##
+        //#BEGIN:usergroups.register##
         $g             = new \Application\DeskPRO\Entity\Usergroup();
         $g['title']    = $translate->phrase('agent.defaults.usergroup_registered');
         $g['note']     = $translate->phrase('agent.defaults.usergroup_registered_note');
@@ -58,7 +61,7 @@ class PermsProcessor extends Base
         $this->em->flush();
         $USERGROUP_REG = $g;
 
-        ##BEGIN:usergroups.agent_all##
+        //#BEGIN:usergroups.agent_all##
         $AGENTGROUP_ALL                   = new \Application\DeskPRO\Entity\Usergroup();
         $AGENTGROUP_ALL['title']          = $translate->phrase('agent.defaults.usergroup_agent_all_perms');
         $AGENTGROUP_ALL['note']           = $translate->phrase('agent.defaults.usergroup_agent_all_perms_note');
@@ -69,7 +72,7 @@ class PermsProcessor extends Base
 
         $this->connection->executeUpdate(sprintf('INSERT INTO person2usergroups VALUES (%d, %d)', $data['context_person_id'], $AGENTGROUP_ALL->id));
 
-        ##BEGIN:usergroups.agent_all_nondestructive##
+        //#BEGIN:usergroups.agent_all_nondestructive##
         $AGENTGROUP_ALL_ND                   = new \Application\DeskPRO\Entity\Usergroup();
         $AGENTGROUP_ALL_ND['title']          = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive');
         $AGENTGROUP_ALL_ND['note']           = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive_note');

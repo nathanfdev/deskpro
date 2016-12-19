@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -38,6 +39,11 @@ use Application\DeskPRO\Entity\Department as DepartmentEntity;
 
 class Department extends AbstractCategoryRepository
 {
+    public function countAll()
+    {
+        return $this->_em->createQuery('SELECT count(d) FROM DeskPRO:Department d')->getSingleScalarResult();
+    }
+
     public function getAll()
     {
         return $this->getRootNodes();
@@ -80,33 +86,33 @@ class Department extends AbstractCategoryRepository
     {
         $perms = App::getDb()->fetchAll(
             'SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?',
-            array($dep->id)
+            [$dep->id]
         );
 
-        $data = array(
-            'usergroups'  => array(),
-            'agentgroups' => array(),
-            'agents'      => array(),
-        );
+        $data = [
+            'usergroups'  => [],
+            'agentgroups' => [],
+            'agents'      => [],
+        ];
 
         foreach ($perms as $perm) {
             if ($perm['usergroup_id']) {
                 if (App::getContainer()->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
-                    $data['agentgroups'][] = array(
+                    $data['agentgroups'][] = [
                         'usergroup_id' => (int) $perm['usergroup_id'],
                         'perm_name'    => $perm['name'],
-                    );
+                    ];
                 } else {
-                    $data['usergroups'][] = array(
+                    $data['usergroups'][] = [
                         'usergroup_id' => (int) $perm['usergroup_id'],
                         'perm_name'    => $perm['name'],
-                    );
+                    ];
                 }
             } elseif ($perm['person_id']) {
-                $data['agents'][] = array(
+                $data['agents'][] = [
                     'agent_id'  => (int) $perm['person_id'],
                     'perm_name' => $perm['name'],
-                );
+                ];
             }
         }
 
@@ -126,7 +132,7 @@ class Department extends AbstractCategoryRepository
     {
         switch ($context) {
             case 'ticket':
-                $opt         = 'core.tickets.default_department';
+                $opt         = 'core_tickets.default_department';
                 $check_field = 'is_tickets_enabled';
                 break;
             case 'chat':
@@ -174,10 +180,13 @@ class Department extends AbstractCategoryRepository
     {
         switch ($context) {
             case 'ticket':
-                $check_field = 'is_tickets_enabled';
+                $check_field = 'AND d.is_tickets_enabled = 1';
                 break;
             case 'chat':
-                $check_field = 'is_chat_enabled';
+                $check_field = 'AND d.is_chat_enabled = 1';
+                break;
+            case 'both':
+                $check_field = '';
                 break;
             default:
                 throw new \InvalidArgumentException("Unknown context `$context`");
@@ -186,8 +195,9 @@ class Department extends AbstractCategoryRepository
         return $this->getEntityManager()->createQuery("
             SELECT d
             FROM DeskPRO:Department d
-            WHERE d.parent IS NOT NULL
-                AND d.$check_field = 1
+            LEFT JOIN d.children c 
+            WHERE c.id IS NULL
+                $check_field
         ")->execute();
     }
 }

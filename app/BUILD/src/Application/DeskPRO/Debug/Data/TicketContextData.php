@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Debug\Data;
 
 use Application\DeskPRO\App;
@@ -41,12 +42,12 @@ class TicketContextData implements DataInterface
         $teams          = App::getDb()->fetchAll('SELECT * FROM agent_teams ORDER BY id ASC');
         $groups         = App::getDb()->fetchAll('SELECT * FROM usergroups ORDER BY id ASC');
         $email_accounts = App::getDb()->fetchAll('SELECT id, account_type, is_enabled, address, other_addresses, date_created FROM email_accounts ORDER BY id ASC');
-        $agents         = array();
+        $agents         = [];
         foreach (App::$container->getAgentData()->getAgents() as $a) {
             $agents[] = $a->toBasicApiData();
         }
 
-        $data                   = array();
+        $data                   = [];
         $data['departments']    = $deps;
         $data['agents']         = $agents;
         $data['agent_teams']    = $teams;

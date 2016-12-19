@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\App\Package;
 
 use DeskPRO\Component\Filesystem\SafeFile;
@@ -61,7 +62,7 @@ class ManifestReader
     /**
      * @var array
      */
-    private $error_details = array();
+    private $error_details = [];
 
     /**
      * @param array $data
@@ -81,7 +82,7 @@ class ManifestReader
     public static function newFromFile($path)
     {
         if (!is_file($path)) {
-            return new self(array(), self::ERR_INVALID_FILE, array('file', 'missing_path'));
+            return new self([], self::ERR_INVALID_FILE, ['file', 'missing_path']);
         }
 
         $json = SafeFile::fileGetContents($path, dirname($path));
@@ -98,7 +99,7 @@ class ManifestReader
     {
         $data = @json_decode($json, true);
         if (!$data) {
-            return new self(array(), self::ERR_INVALID_FILE, array('file', 'invalid_json'));
+            return new self([], self::ERR_INVALID_FILE, ['file', 'invalid_json']);
         }
 
         return new self($data);
@@ -117,10 +118,10 @@ class ManifestReader
         if ($set_error) {
             $this->error_code = $set_error;
             if ($set_error_detail) {
-                $this->error_details = array($set_error_detail);
+                $this->error_details = [$set_error_detail];
             }
         } else {
-            $fields = array(
+            $fields = [
                 'package_name',
                 'is_native',
                 'title',
@@ -135,9 +136,9 @@ class ManifestReader
                 'tags',
                 'trigger_events',
                 'settings_def',
-            );
+            ];
 
-            $docheck = array();
+            $docheck = [];
 
             foreach ($fields as $f) {
                 $setter = Strings::underscoreToCamelCase('set_'.str_replace('.', '_', $f));
@@ -147,29 +148,29 @@ class ManifestReader
                         // allowed to be unset
                         continue;
                     }
-                    $this->error_details[] = array('missing', $f);
+                    $this->error_details[] = ['missing', $f];
                 } elseif ($f == 'settings_def') {
                     if (!is_array($value)) {
-                        $this->error_details[] = array('invalid', $f);
+                        $this->error_details[] = ['invalid', $f];
                     } else {
                         $this->manifest->$setter($value);
                     }
                 } elseif ($f == 'trigger_events') {
                     if (!is_array($value)) {
-                        $this->error_details[] = array('invalid', $f);
+                        $this->error_details[] = ['invalid', $f];
                     } else {
                         $this->manifest->$setter($value);
                     }
                 } elseif ($f == 'tags') {
                     if (!is_array($value)) {
-                        $this->error_details[] = array('invalid', $f);
+                        $this->error_details[] = ['invalid', $f];
                     } else {
                         $this->manifest->$setter($value);
                     }
                 } elseif ($f == 'api_version') {
                     $value = (int) $value;
                     if ($value != 1) {
-                        $this->error_details[] = array('invalid', $f);
+                        $this->error_details[] = ['invalid', $f];
                     } else {
                         $this->manifest->$setter($value);
                     }
@@ -178,7 +179,7 @@ class ManifestReader
                     $this->manifest->setIsNative($value);
                 } else {
                     if (!is_scalar($value)) {
-                        $this->error_details[] = array('invalid', $f);
+                        $this->error_details[] = ['invalid', $f];
                     } else {
                         $value = trim($value);
                         $this->manifest->$setter($value);
@@ -210,19 +211,19 @@ class ManifestReader
                 case 'api_version':
                 case 'version':
                     if (!$value) {
-                        $this->error_details[] = array('invalid', $f);
+                        $this->error_details[] = ['invalid', $f];
                     }
                     break;
 
                 case 'author.email':
                     if (!StringEmail::isValueValid($value)) {
-                        $this->error_details[] = array('invalid', $f);
+                        $this->error_details[] = ['invalid', $f];
                     }
                     break;
 
                 case 'author.link':
                     if (!preg_match('#^https?://#', $value)) {
-                        $this->error_details[] = array('invalid', $f);
+                        $this->error_details[] = ['invalid', $f];
                     }
                     break;
             }
@@ -258,7 +259,7 @@ class ManifestReader
      */
     public function getErrorDetailAsString()
     {
-        $lines = array();
+        $lines = [];
         foreach ($this->error_details as $err) {
             $lines[] = sprintf('[%s] %s', $err[0], $err[1]);
         }

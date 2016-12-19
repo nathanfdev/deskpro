@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -88,60 +89,64 @@ class TicketEscalationLog extends DomainObject
         return $this->id;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->inheritanceType      = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
         $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType        = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'ticket_escalation_logs',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'id'         => true,
             'fieldName'  => 'id',
             'columnName' => 'id',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_ran',
             'columnName' => 'date_ran',
             'type'       => 'datetime',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_criteria',
             'columnName' => 'date_criteria',
             'type'       => 'datetime',
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'ticket',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
-            'joinColumns'  => array(array(
-                'name'                 => 'ticket_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'cascade',
-                'columnDefinition'     => null,
-            )),
-        ));
-        $metadata->mapManyToOne(array(
+            'joinColumns'  => [
+                [
+                    'name'                 => 'ticket_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'escalation',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketEscalation',
-            'joinColumns'  => array(array(
-                'name'                 => 'escalation_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'cascade',
-                'columnDefinition'     => null,
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'escalation_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

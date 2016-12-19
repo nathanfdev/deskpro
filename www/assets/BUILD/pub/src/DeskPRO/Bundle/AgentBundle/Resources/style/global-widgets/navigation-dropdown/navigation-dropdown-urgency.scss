@@ -1,0 +1,80 @@
+.dpwd-dropdown-urgency-quick-change-button {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1em;
+  padding: 4px;
+  padding-top: 5px;
+  padding-left: 7px;
+  margin-top: -5px;
+  margin-bottom: -3px;
+  margin-left: 3px;
+  margin-right: 3px;
+  background: #e5e5e5;
+  border-radius: 2px;
+  font-size: 11px;
+  font-weight: 500;
+
+  i {
+    font-size: 9px;
+    margin-left: 2px;
+    margin-right: 2px;
+  }
+}
+
+// Not sure why it won't use the include from the main list// remove as needed
+@import "./navigation-mixins.scss";
+
+.dpwd-dropdown-urgency-quick-change-button.active {
+  @include add-corner(3px, #589b7e, 6px, right, hover);
+}
+
+.dpw-navigation-dropdown-item.active, .dpw-navigation-dropdown-item:hover  {
+  .dpwd-dropdown-urgency-quick-change-button {
+    background: #4e9174;
+    color: #fff;
+  }
+
+  .dpwd-dropdown-urgency-quick-change-button:hover {
+    background: #fff;
+    color: #333;
+    i { color: inherit;}
+  }
+}
+
+
+.panel-urgency-list {
+  width: 240px;
+  border: 1px solid #d4d4d4;
+  border-radius: 2px;
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: block;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  li {
+    display: block;
+    width: 100%;
+  }
+
+  span {
+    display: block;
+    line-height: 1em;
+    padding: 6px;
+    cursor: pointer;
+    font-weight: 400;
+  }
+
+  .dpw--ticket-status {
+    display: block;
+    width: 100%;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

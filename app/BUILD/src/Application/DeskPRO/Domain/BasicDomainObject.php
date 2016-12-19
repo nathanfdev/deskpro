@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
@@ -42,9 +43,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\PersistentCollection;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * The basic entitiy class.
+ *
+ * @Serializer\ExclusionPolicy("ALL")
  */
 abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 {
@@ -60,12 +64,12 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
      *
      * @var array
      */
-    private $_listeners = array();
+    private $_listeners = [];
 
     /**
      * @var array
      */
-    private $_custom_callables = array();
+    private $_custom_callables = [];
 
     /**
      * @var StateChangeRecorder
@@ -106,7 +110,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
      */
     public function toArray($mode = self::TOARRAY_NOOP)
     {
-        $values = array();
+        $values = [];
 
         $only_real = true;
 
@@ -169,7 +173,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         $r     = new \ReflectionObject($this);
         $props = $r->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED);
 
-        $keys = array();
+        $keys = [];
         foreach ($props as $prop) {
             // Skip _props because they arent entity properties
             if ($prop->name[0] === '_') {
@@ -281,7 +285,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         // setX
         } else {
             if (!isset($arguments[0])) {
-                $arguments = array(null);
+                $arguments = [null];
             }
 
             $this[$prop] = $arguments[0];
@@ -304,9 +308,9 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         throw new \BadMethodCallException("Method `$name` is undefined");
     }
 
-    ############################################################################
-    # ArrayAccess Implementation
-    ############################################################################
+    //###########################################################################
+    // ArrayAccess Implementation
+    //###########################################################################
 
     public function offsetExists($offset)
     {
@@ -360,7 +364,6 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         } elseif (property_exists($this, $offset) and $offset[0] != '_') {
             return $this->$offset;
         } else {
-
             // Handle _id's
             if (substr($offset, -3) === '_id') {
                 $func   = substr($func, 0, -3);
@@ -400,7 +403,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
     public function addPropertyChangedListener(PropertyChangedListener $listener)
     {
         if (empty($this->_listeners['property'])) {
-            $this->_listeners['property'] = array();
+            $this->_listeners['property'] = [];
         }
 
         $this->_listeners['property'][] = $listener;
@@ -429,7 +432,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
      */
     public function addCustomCallable($name, $fn, $args = null)
     {
-        $this->_custom_callables[$name] = array($fn, $args);
+        $this->_custom_callables[$name] = [$fn, $args];
     }
 
     public function ensureDefaultPropertyChangedListener()
@@ -451,7 +454,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 
     public function __clone()
     {
-        $this->_listeners = array();
+        $this->_listeners = [];
     }
 
     /**
@@ -477,12 +480,35 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
                 }
 
                 if ($val instanceof PersistentCollection) {
-                    $val->initialize();
-                    $new_coll = new ArrayCollection($val->getSnapshot());
+                    // hotfix -- problem filters not updating
+                    // https://trello.com/c/h42231s0
+                    if ($prop === 'problems' && !$val->isInitialized() && $this instanceof Ticket) {
+                        $val->initialize();
+                    }
+                    if ($val->isInitialized()) {
+                        $newVal = new ArrayCollection($val->getSnapshot());
+                    } else {
+                        $reflection = new \ReflectionClass($val);
+                        $newVal     = $reflection->newInstanceWithoutConstructor();
+
+                        foreach ($reflection->getProperties() as $reflectionProperty) {
+                            $reflectionProperty->setAccessible(true);
+
+                            if ($reflectionProperty->getName() === 'collection') {
+                                $propValue = new ArrayCollection();
+                            } else {
+                                $propValue = $reflectionProperty->getValue($val);
+                            }
+
+                            $reflectionProperty->setValue($newVal, $propValue);
+                            $reflectionProperty->setAccessible(false);
+                        }
+                    }
                 } else {
-                    $new_coll = $val;
+                    $newVal = $val;
                 }
-                $this->_state_clone->__setPropValue__($prop, $new_coll);
+
+                $this->_state_clone->__setPropValue__($prop, $newVal);
             }
         }
 

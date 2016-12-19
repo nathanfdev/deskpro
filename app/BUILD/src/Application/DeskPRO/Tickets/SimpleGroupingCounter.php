@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -40,7 +41,7 @@ use Application\DeskPRO\DBAL\Connection;
 class SimpleGroupingCounter extends GroupingCounter
 {
     /** @var array */
-    protected $_ticket_ids = array();
+    protected $_ticket_ids = [];
 
     public function __construct(array $ticket_ids, $group_by)
     {
@@ -60,7 +61,7 @@ class SimpleGroupingCounter extends GroupingCounter
         }
         $select_fields[] = 'COUNT(*) AS total';
 
-        $wheres = array('tickets.id IN (?)');
+        $wheres = ['tickets.id IN (?)'];
 
         $sql = '
             SELECT '.implode(', ', $select_fields).'
@@ -69,7 +70,7 @@ class SimpleGroupingCounter extends GroupingCounter
             $group_by WITH ROLLUP
         ";
 
-        $counts = $db->fetchAll($sql, array($this->_ticket_ids), array(Connection::PARAM_INT_ARRAY));
+        $counts = $db->fetchAll($sql, [$this->_ticket_ids], [Connection::PARAM_INT_ARRAY]);
 
         return $counts;
     }

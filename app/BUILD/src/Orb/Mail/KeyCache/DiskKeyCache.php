@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Orb\Mail\KeyCache;
 
 /**
@@ -67,7 +68,7 @@ class DiskKeyCache implements \Swift_KeyCache
      *
      * @var array
      */
-    private $_keys = array();
+    private $_keys = [];
 
     /**
      * Create a new DiskKeyCache with the given $stream for cloning to make
@@ -233,7 +234,7 @@ class DiskKeyCache implements \Swift_KeyCache
     {
         if ($this->hasKey($nsKey, $itemKey)) {
             $this->_freeHandle($nsKey, $itemKey);
-            unlink($this->_path.'/'.$nsKey.'/'.$itemKey);
+            @unlink($this->_path.'/'.$nsKey.'/'.$itemKey);
         }
     }
 
@@ -250,7 +251,7 @@ class DiskKeyCache implements \Swift_KeyCache
             }
 
             if (is_dir($this->_path.'/'.$nsKey)) {
-                rmdir($this->_path.'/'.$nsKey);
+                @rmdir($this->_path.'/'.$nsKey);
             }
 
             unset($this->_keys[$nsKey]);
@@ -271,7 +272,7 @@ class DiskKeyCache implements \Swift_KeyCache
             if (!mkdir($cacheDir)) {
                 throw new \Swift_IoException('Failed to create cache directory '.$cacheDir);
             }
-            $this->_keys[$nsKey] = array();
+            $this->_keys[$nsKey] = [];
         }
     }
 

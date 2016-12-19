@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Search
  */
+
 namespace Application\DeskPRO\Search\Adapter;
 
 use Application\DeskPRO\App;
@@ -46,7 +47,7 @@ use Orb\Util\CapabilityInformerInterface;
 abstract class AbstractAdapter implements CapabilityInformerInterface, PersonContextInterface
 {
     /** @var array */
-    public static $capabilities = array();
+    public static $capabilities = [];
 
     /**#@+
      * Capability constants for use with CapabilityInformerInterface
@@ -68,14 +69,14 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     /**
      * @var array
      */
-    protected $class_to_contenttype = array();
+    protected $class_to_contenttype = [];
 
     /**
      * An array of already initialized contenttypes.
      *
      * @var array
      */
-    protected $contenttypes = array();
+    protected $contenttypes = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Person
@@ -250,31 +251,31 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
      */
     public function getResultSetObjects(ResultSet $result_set, $full_info = false)
     {
-        #------------------------------
-        # Sort results into types
-        #------------------------------
+        //------------------------------
+        // Sort results into types
+        //------------------------------
 
         // We do this because the ContenTypes are created to efficiently
         // handle fetching multiple items at once. So we can fetch each of
         // the same type of content with a single query each
 
-        $result_set_typed = array();
+        $result_set_typed = [];
 
         foreach ($result_set->getResults() as $result) {
             $type_name = $result->getContentTypeName();
 
             if (!isset($result_set_typed[$type_name])) {
-                $result_set_typed[$type_name] = array();
+                $result_set_typed[$type_name] = [];
             }
 
             $result_set_typed[$type_name][$result->getId()] = $result;
         }
 
-        #------------------------------
-        # Get objects for each type
-        #------------------------------
+        //------------------------------
+        // Get objects for each type
+        //------------------------------
 
-        $objects_typed = array();
+        $objects_typed = [];
         foreach ($result_set_typed as $type_name => $results) {
             $type    = $this->getContentType($type_name);
             $objects = $type->resultsToObjects($results);
@@ -284,11 +285,11 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
             }
         }
 
-        #------------------------------
-        # Now we have to construct the final array in the correct order
-        #------------------------------
+        //------------------------------
+        // Now we have to construct the final array in the correct order
+        //------------------------------
 
-        $objects = array();
+        $objects = [];
 
         foreach ($result_set->getResults() as $result) {
             $type_name = $result->getContentTypeName();
@@ -304,11 +305,11 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
             $key = $type_name.'.'.$obj_id;
 
             if ($full_info) {
-                $objects[$key] = array(
+                $objects[$key] = [
                     'object' => $objects_typed[$type_name][$obj_id],
                     'type'   => $type_name,
                     'result' => $result,
-                );
+                ];
             } else {
                 $objects[$key] = $objects_typed[$type_name][$obj_id];
             }
@@ -324,7 +325,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
      */
     public function updateObjectInIndex($object)
     {
-        $this->updateDocumentsInIndex(array($object));
+        $this->updateDocumentsInIndex([$object]);
     }
 
     /**
@@ -338,7 +339,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
             return;
         }
 
-        $documents = array();
+        $documents = [];
 
         foreach ($objects as $object) {
             $doc         = $this->getContentTypeForObject($object)->objectToDocument($object);
@@ -359,7 +360,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
             return;
         }
 
-        $documents = array();
+        $documents = [];
 
         foreach ($objects as $object) {
             $doc         = $this->getContentTypeForObject($object)->objectToDocument($object);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Debug\Data;
 
 use Application\DeskPRO\App;
@@ -46,7 +47,7 @@ class TicketFilterData implements DataInterface
 
         $subs_data = App::getDb()->fetchAll('SELECT * FROM ticket_filter_subscriptions ORDER BY person_id ASC');
 
-        $data                = array();
+        $data                = [];
         $data['filters']     = $filter_data;
         $data['filter_subs'] = $subs_data;
 

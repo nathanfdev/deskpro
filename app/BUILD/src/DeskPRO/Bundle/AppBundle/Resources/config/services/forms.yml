@@ -1,0 +1,299 @@
+services:
+
+  # extensions
+  form.form_extension:
+    class: DeskPRO\Bundle\AppBundle\Form\Extension\DeskproFormExtension
+    tags:
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
+
+  form.text_transformer_extension:
+    class: DeskPRO\Bundle\AppBundle\Form\Extension\TextTransformerExtension
+    tags:
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\TextType' }
+
+  form.choice_transformer_extension:
+    class: DeskPRO\Bundle\AppBundle\Form\Extension\ChoiceExtension
+    tags:
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\ChoiceType' }
+
+  # helpers
+  form_hierarchy_generator:
+    class: DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
+    arguments: ["@doctrine.orm.default_entity_manager", "@data.departments", "@data.feedback", "@language_manager", "@brand_stack"]
+
+  custom_field_manager:
+    class: DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
+    arguments: ["@doctrine.orm.default_entity_manager"]
+
+  ticket_layout_factory:
+    class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory
+    arguments: ["@doctrine.orm.default_entity_manager", "@?captcha_decider"]
+
+  ticket_field_settings:
+    class: DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings
+    arguments: ["@doctrine.orm.default_entity_manager", "@brand_aware_settings_resolver"]
+
+  ticket_with_layouts_api_field_resolver:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\ApiFieldResolver
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@form_hierarchy_generator"
+      - "@language_manager"
+      - "@custom_field_manager"
+      - "@ticket_field_settings"
+      - "@brand_aware_settings_resolver"
+
+  ticket_with_layouts_web_field_resolver:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\WebFieldResolver
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@form_hierarchy_generator"
+      - "@language_manager"
+      - "@custom_field_manager"
+      - "@ticket_field_settings"
+      - "@brand_aware_settings_resolver"
+
+  ticket_with_layouts_api_field_renderer:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\ApiFieldRenderer
+
+  ticket_with_layouts_web_field_renderer:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\WebFieldRenderer
+    arguments:
+      - "@language_manager"
+
+  # forms
+  form.html_textarea:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType
+    arguments: ["@deskpro.core.input_cleaner"]
+    tags:
+      - { name: form.type }
+
+  form.person_identity:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
+
+  form.person_email_choice:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailChoiceType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
+
+  form.entity_hierarchy:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\EntityHierarchyType
+    arguments: ["@form_hierarchy_generator"]
+    tags:
+      - { name: form.type }
+
+  form.custom_data:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType
+    arguments: ["@validator"]
+    tags:
+      - { name: form.type }
+
+  form.deskpro_contextual_per_field_choice:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldChoiceType
+    arguments: ["@form_hierarchy_generator"]
+    tags:
+      - { name: form.type }
+
+  form.custom_field_choice:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldChoiceType
+    arguments: ["@form_hierarchy_generator"]
+    tags:
+      - { name: form.type }
+
+  form.dp_hidden:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType
+    arguments: ["@request_stack"]
+    tags:
+      - { name: form.type }
+
+  form.entity_hidden:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\HiddenEntityType
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type }
+
+  form.person:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType
+    arguments: ["@doctrine.orm.default_entity_manager", "@custom_field_manager"]
+    tags:
+      - { name: form.type }
+
+  form.ticket:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType
+    arguments: ["@custom_field_manager", "@brand_form_helper"]
+    tags:
+      - { name: form.type }
+
+  form.organization:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationType
+    arguments: ["@custom_field_manager"]
+    tags:
+      - { name: form.type }
+
+  form.organization_email_domains:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationEmailDomainsType
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type }
+
+  form.organization_member:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationMemberType
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type }
+
+  form.auth_blob:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type }
+
+  form.term_engine.term:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType
+    arguments:
+        - "@form.term_engine.term_transformer"
+    tags:
+      - { name: form.type, alias: term_engine_term }
+
+  form.term_engine.term_transformer:
+    class: DeskPRO\Bundle\AppBundle\Form\DataTransformer\TermEngineTermTransformer
+    arguments:
+      - "@term_to_json_converter"
+
+  form.ticket_message_attachment:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentType
+    arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
+    tags:
+      - { name: form.type }
+
+  form.ticket_message_attachment_collection_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentCollectionType
+    arguments: ["@settings_resolver"]
+    tags:
+      - { name: form.type }
+
+  form.ticket_message_inline_attachment:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageInlineAttachmentType
+    arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
+    tags:
+      - { name: form.type }
+
+  form.ticket_participant_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantType
+    arguments: ["@settings_resolver"]
+    tags:
+      - { name: form.type }
+
+  form.ticket_participants_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType
+    arguments: ["@settings_resolver"]
+    tags:
+      - { name: form.type }
+
+  form.ticket_with_layouts:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@form_hierarchy_generator"
+      - "@brand_form_helper"
+    tags:
+      - { name: form.type }
+
+  form.ticket_with_layouts_manipulator:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsManipulatorType
+    arguments:
+      - "@form_hierarchy_generator"
+    tags:
+      - { name: form.type }
+
+  form.web_ticket_with_layouts:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType
+    arguments:
+      - "@ticket_with_layouts_web_field_resolver"
+      - "@ticket_with_layouts_web_field_renderer"
+      - "@ticket_layout_factory"
+    tags:
+      - { name: form.type }
+
+  form.web_full_ticket_with_layouts:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType
+    arguments:
+      - "@ticket_layout_factory"
+      - "@ticket_with_layouts_web_field_resolver"
+      - "@ticket_with_layouts_web_field_renderer"
+    tags:
+      - { name: form.type }
+
+  form.api_ticket_with_layouts:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType
+    arguments:
+      - "@ticket_with_layouts_api_field_resolver"
+      - "@ticket_with_layouts_api_field_renderer"
+      - "@ticket_layout_factory"
+    tags:
+      - { name: form.type }
+
+  form.ticket_message:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType
+    arguments: ["@language_manager", "@?api_client_info"]
+    tags:
+      - { name: form.type }
+
+  form.widget_brand_ticket_settings:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\WidgetBrandTicketSettingsType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
+
+  form.base_settings_traslation:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Settings\BaseTranslationType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
+
+  form.api.agent_chat.start_chat:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatType
+    arguments: ["@doctrine.orm.default_entity_manager", "@data.departments"]
+    tags:
+      - { name: form.type }
+
+  form.deskpro_category_builder:
+    class: Application\DeskPRO\Form\Type\DpCategoryBuilderType
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type, alias: dp_category_builder }
+
+  form.department:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType
+    arguments:
+      - "@brand_stack"
+    tags:
+      - { name: form.type }
+
+  form.recaptcha:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType
+    arguments: ["@settings_resolver", "@language_manager"]
+    tags:
+      - { name: form.type }
+
+  form.voice_account:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAccountType
+    arguments:
+      - "@twilio_adapter"
+    tags:
+      - { name: form.type }
+
+  form.voice_queue:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceQueueType
+    arguments:
+      - "@twilio_adapter"
+    tags:
+      - { name: form.type }

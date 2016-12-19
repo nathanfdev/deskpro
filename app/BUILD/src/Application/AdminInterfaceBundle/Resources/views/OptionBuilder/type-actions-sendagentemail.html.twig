@@ -102,8 +102,8 @@
 							<td>
 								<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.from_name" ng-init="" style="min-width: 50px;">
 									<option value="performer" ng-if="object_type != 'escalation'">Name of the person who initiated the action</option>
-									<option value="helpdesk_name">Helpdesk Name ({{ app.getSetting('core.deskpro_name') }})</option>
-									{% if app.getSetting('core.site_name') %}<option value="site_name">Site Name ({{ app.getSetting('core.site_name') }})</option>{% endif %}
+									<option value="helpdesk_name">Helpdesk Name ({{ brand_setting('core.deskpro_name')|e }})</option>
+									{% if brand_setting('core.site_name') %}<option value="site_name">Site Name ({{ brand_setting('core.site_name') }})</option>{% endif %}
 									<option value="custom">Enter a custom name</option>
 								</select>
 								<div style="padding-top: 3px; width: 250px;">

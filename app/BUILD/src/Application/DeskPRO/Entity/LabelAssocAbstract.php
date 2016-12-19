@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,16 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
+
+use Application\DeskPRO\Entity\Labels\Label;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Base labels associations class.
  */
-abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
+abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject implements Label
 {
     /**
      * The 'type' of label this is for, as it could be found in the
@@ -46,29 +50,49 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $label;
 
-    /**
-     * @param string $label
-     */
-    public function setLabel($label)
+    public function __construct($value = null)
     {
-        $label       = trim($label);
-        $label       = str_replace(',', '', $label);
-        $this->label = $label;
+        if ($value) {
+            $this->setLabel($value);
+        }
     }
 
     /**
-     * Returns label name.
-     *
-     * @return string
+     * {@inheritdoc}
+     */
+    public function setLabel($label)
+    {
+        $label = trim($label);
+        $label = str_replace(',', '', $label);
+        $this->setModelField('label', $label);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getLabel()
     {
         return $this->label;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return static::LABEL_TYPENAME;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function __toString()
     {
         return $this->label;

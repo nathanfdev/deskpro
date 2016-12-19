@@ -1,0 +1,118 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
+
+use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+
+/**
+ * Concerned only with wether or not a person can use a section / module of the portal.
+ */
+class UseSectionVoter extends AbstractVoter
+{
+    const USE_ARTICLES      = 'USE_ARTICLES';
+    const USE_FEEDBACK      = 'USE_FEEDBACK';
+    const USE_CHAT          = 'USE_CHAT';
+    const USE_DOWNLOADS     = 'USE_DOWNLOADS';
+    const USE_NEWS          = 'USE_NEWS';
+    const USE_TICKETS       = 'USE_TICKETS';
+    const VIEW_TICKETS_LINK = 'VIEW_TICKETS_LINK';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function supports($attribute, $subject)
+    {
+        return in_array($attribute, [
+            self::USE_ARTICLES,
+            self::USE_FEEDBACK,
+            self::USE_CHAT,
+            self::USE_DOWNLOADS,
+            self::USE_NEWS,
+            self::USE_TICKETS,
+            self::VIEW_TICKETS_LINK,
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function voteOnAttribute($attribute, $object, TokenInterface $token)
+    {
+        $user = $token->getUser();
+
+        if ($this->isLoggedIn($user)) {
+            $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
+        } else {
+            $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
+        }
+
+        switch ($attribute) {
+            case static::USE_ARTICLES:
+                return $this->getActiveBrandSetting('core.apps_kb') && $permissionBag->get('articles.use');
+            case static::USE_FEEDBACK:
+                return $this->getActiveBrandSetting('core.apps_feedback') && $permissionBag->get('feedback.use');
+            case static::USE_CHAT:
+                return $this->getActiveBrandSetting('core.apps_chat') && $permissionBag->get('chat.use');
+            case static::USE_DOWNLOADS:
+                return $this->getActiveBrandSetting('core.apps_downloads') && $permissionBag->get('downloads.use');
+            case static::USE_NEWS:
+                return $this->getActiveBrandSetting('core.apps_news') && $permissionBag->get('news.use');
+            case static::USE_TICKETS:
+                return $permissionBag->get('tickets.use');
+            case static::VIEW_TICKETS_LINK:
+                return $permissionBag->get('tickets.use')
+                    || $this->isLoggedOutAndRegisteredUsergroupAllows($user, 'tickets.use');
+        }
+
+        return false;
+    }
+
+    /**
+     * A very specific method that return true if:.
+     *
+     * 1. The user is logged out
+     * 2. The given permission is granted in the "Registered" usergroup.
+     *
+     * @param $user
+     * @param $perm
+     *
+     * @return bool
+     */
+    private function isLoggedOutAndRegisteredUsergroupAllows($user, $perm)
+    {
+        if ($this->isLoggedIn($user)) {
+            return false; // logged in, so method this is false
+        }
+
+        $registered_bag = $this->getPortalPermissionsManager()->getPartialPermissionBagForRegisteredUsergroup();
+
+        return $registered_bag->get($perm);
+    }
+}

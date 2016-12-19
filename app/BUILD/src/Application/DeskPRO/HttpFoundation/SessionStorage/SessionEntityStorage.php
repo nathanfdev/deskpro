@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,9 +31,11 @@
  *
  * @category HttpFoundation
  */
+
 namespace Application\DeskPRO\HttpFoundation\SessionStorage;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\NewSettings\SettingsResolver;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
@@ -82,42 +84,51 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      */
     protected $session;
 
+    /**
+     * @var \Application\DeskPRO\NewSettings\SettingsResolver
+     */
+    protected $settings_resolver;
+
     protected $last_save_hash = null;
 
     /**
-     * @param \Doctrine\ORM\EntityManager $em
-     * @param null                        $options
+     * @param EntityManager    $em
+     * @param null             $options
+     * @param SettingsResolver $settings_resolver
      */
-    public function __construct(\Doctrine\ORM\EntityManager $em, $options = null)
+    public function __construct(EntityManager $em, $options, SettingsResolver $settings_resolver)
     {
-        $this->em = $em;
-        $this->db = $em->getConnection();
-
-        $cookieDefaults = session_get_cookie_params();
+        $this->em                = $em;
+        $this->db                = $em->getConnection();
+        $this->settings_resolver = $settings_resolver;
+        $cookieDefaults          = session_get_cookie_params();
 
         $cookie_name = 'dpsid';
+        if (!defined('DP_INTERFACE')) {
+            define('DP_INTERFACE', 'user');
+        }
         if (DP_INTERFACE == 'agent' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin') {
             $cookie_name .= '-'.DP_INTERFACE;
         }
 
         $this->options['name'] = $cookie_name;
 
-        $cookieDefaults['domain']   = App::getSetting('core.cookie_domain');
-        $cookieDefaults['path']     = App::getSetting('core.cookie_path');
+        $cookieDefaults['domain']   = $settings_resolver->getGlobalSettings()->get('core.cookie_domain');
+        $cookieDefaults['path']     = $settings_resolver->getGlobalSettings()->get('core.cookie_path');
         $cookieDefaults['httponly'] = true;
 
         if (\Orb\Util\Web::getRequestProtocol() == 'HTTPS') {
             $cookieDefaults['secure'] = true;
         }
 
-        $this->options = array_merge(array(
+        $this->options = array_merge([
             'name'     => $cookie_name,
             'lifetime' => $cookieDefaults['lifetime'],
             'path'     => $cookieDefaults['path'],
             'domain'   => $cookieDefaults['domain'],
             'secure'   => $cookieDefaults['secure'],
             'httponly' => isset($cookieDefaults['httponly']) ? $cookieDefaults['httponly'] : false,
-        ), $options);
+        ], $options);
 
         session_name($this->options['name']);
 
@@ -134,12 +145,12 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         }
 
         session_set_save_handler(
-            array($this, 'open'),
-            array($this, 'close'),
-            array($this, 'read'),
-            array($this, 'write'),
-            array($this, 'destroy'),
-            array($this, 'gc')
+            [$this, 'open'],
+            [$this, 'close'],
+            [$this, 'read'],
+            [$this, 'write'],
+            [$this, 'destroy'],
+            [$this, 'gc']
         );
 
         // this is COOKIE liftime. We always want it to be a session cookie
@@ -171,10 +182,10 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         }
 
         // Sessions are deleted on cron, but we'll also enforce it here
-        $cutoff = time() - App::getSetting('core.sessions_lifetime');
+        $cutoff = time() - $this->settings_resolver->getGlobalSettings()->get('core.sessions_lifetime');
 
         $is_valid = ($session and $session['date_last']->getTimestamp() > $cutoff);
-        if ($is_valid && App::getSetting('core.session_keepalive_require_page') && $session['date_last_page']) {
+        if ($is_valid && $this->settings_resolver->getGlobalSettings()->get('core.session_keepalive_require_page') && $session['date_last_page']) {
             if ($session['date_last_page']->getTimestamp() < $cutoff) {
                 $is_valid = false;
             }
@@ -248,7 +259,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
         if ($session && $session->getId()) {
             try {
-                $this->db->delete('sessions', array('id' => $session->getId()));
+                $this->db->delete('sessions', ['id' => $session->getId()]);
                 $this->em->detach($session);
             } catch (\Exception $e) {
             }
@@ -325,7 +336,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
         $this->last_save_hash = $save_hash;
 
-        $sess_rec              = array();
+        $sess_rec              = [];
         $sess_rec['data']      = $data;
         $sess_rec['date_last'] = isset($_SESSION['_sf2_attributes']['dplast']) ? date('Y-m-d H:i:s', $_SESSION['_sf2_attributes']['dplast']) : date('Y-m-d H:i:s', time());
 
@@ -333,9 +344,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $sess_rec['date_last_page'] = date('Y-m-d H:i:s', $_SESSION['_sf2_attributes']['dplastpage']);
         }
 
-        $sess_rec['is_person']  = 0;
-        $sess_rec['person_id']  = null;
-        $sess_rec['visitor_id'] = (isset($_SESSION['_sf2_attributes']['dpvid']) ? $_SESSION['_sf2_attributes']['dpvid'] : null);
+        $sess_rec['is_person'] = 0;
+        $sess_rec['person_id'] = null;
 
         if (!empty($GLOBALS['DP_CURRENT_USER_IP'])) {
             $sess_rec['ip_address'] = $GLOBALS['DP_CURRENT_USER_IP'];
@@ -389,14 +399,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $sess_rec['is_helpdesk'] = 1;
         }
 
-        try {
-            $this->db->update('sessions', $sess_rec, array('id' => $id));
-        } catch (\Exception $e) {
-            // Cron periodically clears things like visitor tracks, so there could in rare
-            // cases be an update where the visitor is no longer valid by the time this session is written
-            unset($sess_rec['visitor_id']);
-            $this->db->update('sessions', $sess_rec, array('id' => $id));
-        }
+        $this->db->update('sessions', $sess_rec, ['id' => $id]);
 
         return true;
     }
@@ -439,7 +442,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         }
 
         if (!$this->session) {
-            $this->session = App::getEntityRepository('DeskPRO:Session')->find($this->getEntityId());
+            $this->session = $this->em->getRepository('DeskPRO:Session')->find($this->getEntityId());
         }
 
         return $this->session;
@@ -485,7 +488,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
     /**
      * Returns the session name.
      *
-     * @return mixed The session name.
+     * @return mixed The session name
      *
      * @api
      */
@@ -516,15 +519,21 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $this->metadataBag->stampNew();
         }
 
-        $ret = session_regenerate_id($destroy);
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $ret = session_regenerate_id($destroy);
+        } else {
+            // were going to consider regeneration as true. Actually it's hard to realise why it's not started yet.
+            $ret = true;
+            $this->start();
+        }
 
         if ($this->isStarted() && $this->getEntity()) {
             session_write_close();
             $session = new \Application\DeskPRO\Entity\Session();
 
             // hardcoded copy of old session params
-            $copyProps = array('interface', 'person', 'visitor', 'user_agent', 'ip_address', 'is_person', 'is_bot',
-                'is_helpdesk', 'active_status', 'is_chat_available', );
+            $copyProps = ['interface', 'person', 'user_agent', 'ip_address', 'is_person', 'is_bot',
+                'is_helpdesk', 'active_status', 'is_chat_available', ];
             foreach ($copyProps as $prop) {
                 $session[$prop] = $this->session[$prop];
             }
@@ -566,7 +575,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         }
 
         // clear out the session
-        $_SESSION = array();
+        $_SESSION = [];
 
         // reconnect the bags to the session
         $this->loadSession();
@@ -646,11 +655,11 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $session = &$_SESSION;
         }
 
-        $bags = array_merge($this->bags, array($this->metadataBag));
+        $bags = array_merge($this->bags, [$this->metadataBag]);
 
         foreach ($bags as $bag) {
             $key           = $bag->getStorageKey();
-            $session[$key] = isset($session[$key]) ? $session[$key] : array();
+            $session[$key] = isset($session[$key]) ? $session[$key] : [];
             $bag->initialize($session[$key]);
         }
     }
@@ -661,13 +670,13 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * For convenience we omit 'session.' from the beginning of the keys.
      * Explicitly ignores other ini keys.
      *
-     * @param array $options Session ini directives array(key => value).
+     * @param array $options Session ini directives array(key => value)
      *
      * @see http://php.net/session.configuration
      */
     public function setOptions(array $options)
     {
-        $validOptions = array_flip(array(
+        $validOptions = array_flip([
             'cache_limiter', 'cookie_domain', 'cookie_httponly',
             'cookie_lifetime', 'cookie_path', 'cookie_secure',
             'entropy_file', 'entropy_length', 'gc_divisor',
@@ -677,7 +686,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             'use_only_cookies', 'use_trans_sid', 'upload_progress.enabled',
             'upload_progress.cleanup', 'upload_progress.prefix', 'upload_progress.name',
             'upload_progress.freq', 'upload_progress.min-freq', 'url_rewriter.tags',
-        ));
+        ]);
 
         foreach ($options as $key => $value) {
             if (isset($validOptions[$key])) {

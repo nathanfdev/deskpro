@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Banning;
 
 use Application\DeskPRO\Entity\BanEmail;
@@ -37,7 +38,7 @@ use Doctrine\ORM\EntityManager;
 class EmailBans
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 
@@ -176,10 +177,10 @@ class EmailBans
     {
         $this->preload();
 
-        $result = array();
+        $result = [];
 
         foreach ($this->email_bans as $email_ban) {
-            $result[] = array('banned_email' => $email_ban);
+            $result[] = ['banned_email' => $email_ban];
         }
 
         return $result;

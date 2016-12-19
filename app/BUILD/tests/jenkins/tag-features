@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+
+list($tag, $numThreads, $path) = array_values(getopt('', ['tag:', 'num:', 'path:']));
+
+$path = __DIR__ . '/' . $path;
+if (!$p = realpath($path)) {
+    echo "\nERROR: $path does not exist!\n\n";
+    exit(1);
+} else {
+    $path = $p;
+}
+echo "\nTagging $path .feature files with @{$tag}-N to run in {$numThreads} threads";
+
+$i = 1;
+$iterator = new RecursiveDirectoryIterator($path);
+foreach (new RecursiveIteratorIterator($iterator) as $filename => $file) {
+    /** @var \SplFileInfo $file */
+    if ($file->getExtension() === 'feature') {
+        $content = "@$tag-{$i}\n";
+        $content .= file_get_contents($filename);
+        file_put_contents($filename, $content);
+        $i = $i % $numThreads + 1;
+    }
+}
+echo "\n";

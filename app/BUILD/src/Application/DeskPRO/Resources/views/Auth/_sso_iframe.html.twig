@@ -4,8 +4,10 @@
 	frame.src = "{{ iframe_url }}";
 	frame.height = 0;
 	frame.width = 0;
-	$(function () {
-		$('body').append(frame);
-	});
+	function ready() {
+		document.body.appendChild(frame);
+		window.removeEventListener('DOMContentLoaded', ready);
+	}
+	window.addEventListener('DOMContentLoaded', ready);
 </script>
 {% endif %}

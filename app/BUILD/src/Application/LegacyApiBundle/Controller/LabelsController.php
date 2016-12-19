@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\EntityRepository\LabelDef;
+use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @ApiModes("all")
+ */
 class LabelsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -50,9 +55,9 @@ class LabelsController extends AbstractController implements ProtectedController
         return $this->createApiResponse($type ? $this->rep()->getDefinitionsByType($type) : $this->rep()->getAllDefinitions());
     }
 
-    ####################################################################################################################
-    # update
-    ####################################################################################################################
+    //###################################################################################################################
+    // update
+    //###################################################################################################################
 
     public function updateDefinitionAction()
     {
@@ -77,9 +82,9 @@ class LabelsController extends AbstractController implements ProtectedController
         return $this->createApiResponse($rep->getDefinition($type, $label)->toApiData());
     }
 
-    ####################################################################################################################
-    # create
-    ####################################################################################################################
+    //###################################################################################################################
+    // create
+    //###################################################################################################################
 
     public function createDefinitionAction()
     {
@@ -113,9 +118,9 @@ class LabelsController extends AbstractController implements ProtectedController
         return $this->createApiResponse($definition->toApiData());
     }
 
-    ####################################################################################################################
-    # remove
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove
+    //###################################################################################################################
 
     public function deleteDefinitionAction()
     {
@@ -130,7 +135,7 @@ class LabelsController extends AbstractController implements ProtectedController
             throw $this->createNotFoundException();
         }
 
-        return $this->createApiResponse(array(), 200);
+        return $this->createApiResponse([], 200);
     }
 
     /**

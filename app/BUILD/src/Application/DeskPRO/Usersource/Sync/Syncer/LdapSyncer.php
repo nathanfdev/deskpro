@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Usersource\Sync\Syncer;
 
 use Application\DeskPRO\Entity\Person;
@@ -53,25 +54,25 @@ class LdapSyncer extends AbstractSyncer
         }
 
         if ($cursor->getPhase() == 1) {
-            $this->helper->log(Logger::INFO, 'starting phase 1 ['.print_r($cursor, true).']', array($cursor));
+            $this->helper->log(Logger::INFO, 'starting phase 1 ['.print_r($cursor, true).']', [$cursor]);
             $this->runFirstPass($usersource, $cursor, $pause_check);
             if ($cursor->getPhase() > 1) {
-                $this->helper->log(Logger::INFO, 'pausing phase 1 ['.print_r($cursor, true).']', array($cursor));
+                $this->helper->log(Logger::INFO, 'pausing phase 1 ['.print_r($cursor, true).']', [$cursor]);
             }
         }
 
         if ($cursor->getPhase() == 2) {
-            $this->helper->log(Logger::INFO, 'starting phase 2 ['.print_r($cursor, true).']', array($cursor));
+            $this->helper->log(Logger::INFO, 'starting phase 2 ['.print_r($cursor, true).']', [$cursor]);
             $this->runSecondPass($usersource, $cursor, $pause_check);
             if ($cursor->getPhase() > 1) {
-                $this->helper->log(Logger::INFO, 'pausing phase 2 ['.print_r($cursor, true).']', array($cursor));
+                $this->helper->log(Logger::INFO, 'pausing phase 2 ['.print_r($cursor, true).']', [$cursor]);
             }
         }
 
         $this->helper->getEm()->flush();
 
         if ($cursor->getPhase() == 3) {
-            $this->helper->log(Logger::INFO, 'finished syncing this usersource, marking it as completed  ['.print_r($cursor, true).']', array($cursor));
+            $this->helper->log(Logger::INFO, 'finished syncing this usersource, marking it as completed  ['.print_r($cursor, true).']', [$cursor]);
             $cursor->markCompleted();
         }
     }
@@ -82,8 +83,8 @@ class LdapSyncer extends AbstractSyncer
 
         /** @var \Doctrine\DBAL\Connection $conn */
         $conn              = $this->helper->getEm()->getConnection();
-        $tmp_ids_to_remove = array();
-        $rows              = $conn->fetchAll('SELECT * FROM tmp_data WHERE name = :name', array('name' => self::TMP_DATA_NAME));
+        $tmp_ids_to_remove = [];
+        $rows              = $conn->fetchAll('SELECT * FROM tmp_data WHERE name = :name', ['name' => self::TMP_DATA_NAME]);
         $total             = count($rows);
         $this->helper->log(Logger::INFO, 'counted '.$total.' left to process in phase 2, starting');
         foreach ($rows as $row) {
@@ -103,8 +104,8 @@ class LdapSyncer extends AbstractSyncer
                 // get rid of the tmp data we dealt with in this round
                 $conn->executeQuery(
                     'DELETE FROM tmp_data WHERE id IN (:ids)',
-                    array('ids' => $tmp_ids_to_remove),
-                    array('ids' => Connection::PARAM_INT_ARRAY)
+                    ['ids' => $tmp_ids_to_remove],
+                    ['ids' => Connection::PARAM_INT_ARRAY]
                 );
 
                 return;
@@ -114,7 +115,7 @@ class LdapSyncer extends AbstractSyncer
         $this->helper->log(Logger::INFO, 'finished processing all remaining ('.$total.') records');
         $conn->executeQuery(
             'DELETE FROM tmp_data WHERE name = :name',
-            array('name' => self::TMP_DATA_NAME)
+            ['name' => self::TMP_DATA_NAME]
         );
 
         // move us on from here, finished the ldap sync
@@ -138,7 +139,7 @@ class LdapSyncer extends AbstractSyncer
             $this->helper->log(Logger::INFO, 'deleting all usersource sync temp data from tmp_data table, starting fresh');
             $this->helper->getEm()->getConnection()->executeQuery(
                 'DELETE FROM tmp_data WHERE name = :name',
-                array('name' => self::TMP_DATA_NAME)
+                ['name' => self::TMP_DATA_NAME]
             );
         }
 
@@ -181,7 +182,7 @@ class LdapSyncer extends AbstractSyncer
                 $this->helper->log(
                     Logger::INFO,
                     sprintf('user does not meet filter criteria'),
-                    array($raw_info)
+                    [$raw_info]
                 )
                 ;
                 $cursor->incrementLocation();
@@ -197,7 +198,6 @@ class LdapSyncer extends AbstractSyncer
             // NOTE: if we are having problems with not all info being updated, uncomment this line
             // it is MUST slower, but potentially more accurate
             // $processed_raw_info = $adapter->getIdentityForDn($raw_info['identity']);
-
 
             $tmp = new TmpData();
             if (isset($processed_raw_info['email_address'])) {
@@ -264,7 +264,7 @@ class LdapSyncer extends AbstractSyncer
             $this->helper->log(
                 Logger::INFO,
                 sprintf('user does not meet filter criteria'),
-                array($raw_info)
+                [$raw_info]
             )
             ;
 
@@ -280,10 +280,10 @@ class LdapSyncer extends AbstractSyncer
 
     public function supportsUsersourceAdapter($adapter_class)
     {
-        return in_array($adapter_class, array(
+        return in_array($adapter_class, [
             'Application\DeskPRO\Usersource\Adapter\Ldap',
             'Application\DeskPRO\Usersource\Adapter\ActiveDirectory',
-        ));
+        ]);
     }
 
     /**

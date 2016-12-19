@@ -1,0 +1,315 @@
+$window-header-height: 44px;
+$app-switcher-width: 55px;
+$app-switcher-expanded-width: 150px;
+$nav-frame-width: 220px;
+$nav-frame-header-height: 48px;
+$nav-collapsed-width: 15px;
+
+// $list-frame-width: 450px;
+$list-frame-width: 800px;
+$tab-frame-width: 100%;
+$tab-frame-padding: 10px;
+
+$kanban-frame-width: 800px;
+
+// Scrollable elements MUST be within a positioned container.
+// In common cases such as the main panes, we use CSS to override the
+// top/bottom px positions here to take into account other things like headers, etc
+.dp-scrollable {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: visible;
+
+  &.as-native-scrollbar { overflow: hidden; }
+  &.as-native-scrollbar.as-horizontal { overflow-x: auto; }
+  &.as-native-scrollbar.as-vertical   { overflow-y: auto; }
+}
+
+.dp-window {
+  .dp-window-header {
+    @extend .site-header;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: $window-header-height;
+    z-index: 301;
+  }
+
+  .app-bar {
+    overflow: hidden;
+  }
+
+  .dp-app-switcher {
+    @extend .app-bar-wrapper;
+    float: none;
+    height: auto;
+
+    position: absolute;
+    top: $window-header-height;
+    left: 0;
+    bottom: 0;
+    width: $app-switcher-width;
+    z-index: 300;
+
+    transition: all 0.25s ease;
+
+    .app-switcher-size-toggle {
+      display: block;
+      text-align: center;
+      position: absolute;
+      color: #fff;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-decoration: none;
+    }
+
+    .app-switcher-collapse {
+      display: none;
+    }
+    .app-switcher-expand {
+      display: block;
+    }
+
+    &.expanded {
+      width: $app-switcher-expanded-width;
+
+      .app-switcher-collapse {
+        display: block;
+      }
+      .app-switcher-expand {
+        display: none;
+      }
+
+      .app-bar {
+        width: auto;
+      }
+    }
+  }
+
+  .dp-nav-frame {
+    @extend .sidebar;
+    float: none;
+    height: auto;
+    overflow: hidden;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    overflow-y: auto;
+
+    transition: all 0.25s ease;
+
+    a.nav-expand-button {
+      display: none;
+      background-color: #4681B2;
+      width: $nav-collapsed-width;
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 500;
+      bottom: 0;
+    }
+
+    &.collapsed {
+      width: $nav-collapsed-width;
+      overflow-y: hidden;
+
+      a.nav-expand-button {
+        display: block;
+      }
+    }
+  }
+
+  .dpw-sidebar-main-title-footer {
+    position: absolute;
+    top: $nav-frame-header-height;
+    height: 10px;
+    z-index: 2;
+    border-bottom: none;
+    background: transparent;
+  }
+
+  .list-sidebar-title:first-child {
+    margin-top: 0;
+  }
+
+  .dp-nav-frame-body {
+    position: absolute;
+    top: $nav-frame-header-height;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+  }
+
+  .dp-content-outer-frame {
+    position: absolute;
+    top: $window-header-height;
+    left: $app-switcher-width + $nav-frame-width;
+    bottom: 0;
+    right: 0;
+    z-index: 95;
+    height: auto;
+    overflow: hidden;
+  }
+
+  .dp-list-frame {
+    position: absolute;
+    z-index: 50;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #f8f8f8;
+    border-right: 1px solid darken(#f8f8f8, 10%);
+    height: auto;
+    //overflow-y: hidden;
+
+    transition: all 0.25s ease;
+
+    &.kanban {
+      width: $kanban-frame-width;
+    }
+
+    .dragging-item {
+      opacity: 0;
+    }
+  }
+
+  .dp-list-frame-contents {
+    position: absolute;
+    top: $control-bar-height + 1px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  .dp-tab-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background: #d4d8de;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+
+    .blank-text {
+      font-size: 12px;
+      position: absolute;
+      top: 50%;
+      text-align: center;
+      width: 100%;
+      line-height: 1em;
+      margin-top: -71px;
+      font-style: italic;
+
+      p {
+        color: #999;
+      }
+
+      .hero-icon {
+        font-size: 100px;
+        margin-bottom: 30px;
+      }
+    }
+  }
+}
+
+.dp-panes-middle {
+  position: absolute;
+  top: $window-header-height;
+  left: $app-switcher-width;
+  right: 0;
+  bottom: 0;
+}
+
+.dp-panes-app {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+
+.dp-panes-tabbody {
+  position: absolute;
+  top: 44px;
+  left: $nav-frame-width + $list-frame-width;
+  right: 0;
+  bottom: 0;
+}
+
+.dp-panes-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: $nav-frame-width;
+
+  .dp-collapsed-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #CACFD6;
+    border-right: 1px solid darken(#CACFD6, 10%);
+    cursor: pointer;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.17);
+    &:hover {
+      background: lighten(#CACFD6, 5%);
+    }
+  }
+
+  &.with-nav-hover {
+    .dp-panes-nav-body { display: block !important; }
+  }
+
+  &.with-nav-on {
+    .dp-collapsed-placeholder { display: none; }
+  }
+
+  &.with-nav-off {
+    width: $nav-collapsed-width;
+    .dp-panes-nav-body { display: none; }
+    .dp-collapsed-placeholder { display: block; }
+  }
+}
+
+.dp-panes-list {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: $nav-frame-width;
+
+  &.with-nav-off {
+    left: $nav-collapsed-width;
+  }
+
+  &.with-list-off {
+    display: none;
+  }
+}
+
+.app-frame-container {
+  display: none;
+  &.app-active {
+    display: block;
+  }
+}
+
+.positioned-element {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  //visibility: hidden; // todo breaks dropdowns
+}

@@ -1,0 +1,174 @@
+#!/usr/bin/env php
+<?php
+
+$DP_DIR = realpath(__DIR__.'/../../../');
+chdir($DP_DIR);
+
+function dp_build_runcmd($cmd) {
+    $out = null;
+    $ret = null;
+
+    echo "\$ $cmd\n";
+    exec($cmd, $out, $ret);
+
+    $out = implode("\n", $out);
+    echo $out;
+
+    if ($ret) {
+        echo "Command failed with status {$ret}\n";
+        exit(1);
+    }
+
+    return $out;
+}
+
+$options = getopt('', [
+    'quick',
+    'with-build:',
+    'with-build-time:',
+    'with-build-name:',
+]);
+
+$is_quick = (bool) @$options['quick'];
+
+########################################################################################################################
+# Init project
+########################################################################################################################
+
+echo "Running init-project\n";
+dp_build_runcmd('dev/bin/init-project');
+
+########################################################################################################################
+# Hacks
+########################################################################################################################
+
+echo "Patching zend-ldap/src/Node.php\n";
+
+// This hack is necessary because it causes false negative in auth when using AD
+// because of bad matching when the Base DN entered in admin is not a 100%
+// match (including case) to that of the directory.
+// E.g., OU=foo,DC=bar does not match ou=foo,dc=com when it actually should
+//
+// So we remove that check because it doesnt matter for us. We only search
+// the specific base dn for accounts anyway, so we already know it's a child of it.
+
+$f          = $DP_DIR.'/app/BUILD/vendor/zendframework/zend-ldap/src/Node.php';
+$content    = file_get_contents($f);
+$newContent = str_replace('if (!Dn::isChildOf($this->_getDn(), $ldap->getBaseDn())) {', 'if (/* DESKPRO EDIT: Removed isChildOf check */false) {', $content);
+
+if (strpos($newContent, 'DESKPRO EDIT') === false) {
+    echo "\n\n";
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+    echo "Failed to patch zend-ldap/src/Node.php\n";
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+    echo "\n\n";
+    exit(1);
+}
+
+file_put_contents($f, $newContent);
+unset($f, $content, $newContent);
+echo ".. Done\n";
+
+########################################################################################################################
+# Cache warmup
+########################################################################################################################
+
+echo "Cache warmup: dev\n";
+dp_build_runcmd('bin/console cache:warmup --kernel dev --env prod --no-debug --verbose --barg is-building');
+
+echo "Cache warmup: dp\n";
+dp_build_runcmd('bin/console cache:warmup --kernel dp --env prod --no-debug --verbose --barg is-building');
+
+echo "Cache warmup: portal\n";
+dp_build_runcmd('bin/console cache:warmup --kernel portal --env prod --no-debug --verbose --barg is-building');
+
+echo "Cache warmup: install\n";
+dp_build_runcmd('bin/console cache:warmup --kernel install --env prod --no-debug --verbose --barg is-building');
+
+echo "Cache warmup: api\n";
+dp_build_runcmd('bin/console cache:warmup --kernel api --env prod --no-debug --verbose --barg is-building');
+
+########################################################################################################################
+# Legacy Assets
+########################################################################################################################
+
+echo "Legacy assets\n";
+dp_build_runcmd('bin/console dp:assetic -r ALL --kernel dp --env prod --verbose');
+
+####################################################################################################################php####
+# Schema file
+########################################################################################################################
+
+echo "Generating schema file\n";
+dp_build_runcmd('bin/console dpdev:gen:schema-file --env prod --barg is-building');
+
+########################################################################################################################
+# Template map
+########################################################################################################################
+
+if (!$is_quick) {
+    echo "Generating template map\n";
+    dp_build_runcmd('bin/console dpdev:gen:template-map --env prod');
+}
+
+########################################################################################################################
+# Warmup Map
+########################################################################################################################
+
+if (!$is_quick) {
+    echo "Generating warmup map\n";
+    dp_build_runcmd('bin/console dpdev:gen:warmup-file --env prod');
+}
+
+########################################################################################################################
+# Build time/versions
+########################################################################################################################
+
+echo "Placing versions\n";
+
+$build_num  = intval(@$options['with-build']) ?: 0;
+$build_time = intval(@$options['with-build-time']) ?: time();
+$build_name = @$options['with-build-name'] ?: null;
+
+if (!$build_name) {
+    if (file_exists($DP_DIR.'/app/BUILD/sys/config/build-name.txt')) {
+        $build_name = trim(file_get_contents($DP_DIR.'/app/BUILD/sys/config/build-name.txt'));
+    } else {
+        $build_name = $buld_num;
+    }
+}
+
+$build_name = str_replace('BUILD', $build_num, $build_name);
+
+file_put_contents($DP_DIR.'/app/BUILD/sys/config/build-time.txt', $build_time);
+file_put_contents($DP_DIR.'/app/BUILD/sys/config/build-num.txt', $build_num);
+file_put_contents($DP_DIR.'/app/BUILD/sys/config/build-name.txt', $build_name);
+
+// To avoid file reads and make it op-cachable, we also have this in a php file
+file_put_contents($DP_DIR.'/app/BUILD/sys/config/build-info.php', '<?php return ' . var_export([
+    'build-time' => $build_time,
+    'build-num'  => $build_num,
+    'build-name' => $build_name
+], true) . ';');
+
+// record the build of the sys run files
+file_put_contents($DP_DIR.'/app/run/build-num.txt', $build_num);
+
+// get the current git commit
+if (is_dir('./.git')) {
+    $out = trim(dp_build_runcmd('git rev-parse HEAD'));
+    file_put_contents($DP_DIR.'/app/BUILD/sys/config/commit-id.txt',$out);
+}
+
+########################################################################################################################
+# Encode files
+########################################################################################################################
+
+dp_build_runcmd('dev/bin/build/encode-files');
+
+########################################################################################################################
+# Checksum file
+########################################################################################################################
+
+echo "Generating file integrity map\n";
+dp_build_runcmd('bin/console dpdev:gen:integrity-map');

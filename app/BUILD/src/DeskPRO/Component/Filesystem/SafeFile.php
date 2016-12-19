@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -59,7 +59,7 @@ class SafeFile
     /**
      * @var array
      */
-    private static $blacklist = array();
+    private static $blacklist = [];
 
     /**
      * @var bool
@@ -95,7 +95,7 @@ class SafeFile
      */
     public static function resetBlacklist()
     {
-        self::$blacklist = array();
+        self::$blacklist = [];
     }
 
     /**
@@ -114,7 +114,7 @@ class SafeFile
     private static function normalizePath($path)
     {
         if (is_array($path)) {
-            $res = array();
+            $res = [];
             foreach ($path as $p) {
                 $res[] = self::normalizePath($p);
             }
@@ -146,7 +146,7 @@ class SafeFile
         }
 
         if (!is_array($list)) {
-            $list = array($list);
+            $list = [$list];
         }
 
         $list = self::normalizePath($list);
@@ -181,12 +181,12 @@ class SafeFile
      *
      * @return bool
      */
-    public static function matchesBlacklist($path, $whitelist = array())
+    public static function matchesBlacklist($path, $whitelist = [])
     {
         $bl = self::$blacklist;
         if ($whitelist) {
             if (!is_array($whitelist)) {
-                $whitelist = array($whitelist);
+                $whitelist = [$whitelist];
             }
 
             $whitelist = self::normalizePath($whitelist);
@@ -215,7 +215,7 @@ class SafeFile
      *
      * @return bool
      */
-    public static function isValid($path, $whitelist = array())
+    public static function isValid($path, $whitelist = [])
     {
         return !self::matchesBlacklist($path, $whitelist) && self::matchesList($path, $whitelist);
     }
@@ -228,7 +228,7 @@ class SafeFile
      *
      * @return bool|string
      */
-    public static function fileGetContents($path, $whitelist = array())
+    public static function fileGetContents($path, $whitelist = [])
     {
         $orig_path = $path;
         $path      = realpath($path);
@@ -252,7 +252,7 @@ class SafeFile
      *
      * @return bool|string
      */
-    public static function file($path, $whitelist = array())
+    public static function file($path, $whitelist = [])
     {
         $orig_path = $path;
         $path      = realpath($path);
@@ -277,7 +277,7 @@ class SafeFile
      *
      * @return bool|resource
      */
-    public static function fileOpen($path, $mode, $whitelist = array())
+    public static function fileOpen($path, $mode, $whitelist = [])
     {
         $orig_path = $path;
         $path      = realpath($path);

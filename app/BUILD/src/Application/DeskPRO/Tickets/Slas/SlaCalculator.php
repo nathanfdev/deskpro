@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\Slas;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -161,7 +162,7 @@ class SlaCalculator
      */
     public function calculateCompletedDate(Ticket $ticket)
     {
-        $dates = array();
+        $dates = [];
 
         if ($ticket->status == 'resolved') {
             if ($ticket->date_resolved) {
@@ -235,7 +236,7 @@ class SlaCalculator
      */
     public function getTestTime(Ticket $ticket)
     {
-        $times = array(time());
+        $times = [time()];
 
         if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
             if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {

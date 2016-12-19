@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -48,9 +49,7 @@ class RemoveParticipants extends AbstractAction
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -61,19 +60,17 @@ class RemoveParticipants extends AbstractAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
-        $actions = array();
+        $actions = [];
 
         foreach ($this->remove_people_ids as $pid) {
-            $actions[] = array(
+            $actions[] = [
                 'action'    => 'remove_participant',
                 'person_id' => $pid,
-            );
+            ];
         }
 
         return $actions;
@@ -90,9 +87,7 @@ class RemoveParticipants extends AbstractAction
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -104,7 +99,7 @@ class RemoveParticipants extends AbstractAction
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {
@@ -114,7 +109,7 @@ class RemoveParticipants extends AbstractAction
             return '';
         }
 
-        $names = array();
+        $names = [];
         foreach ($people as $p) {
             $names[$p->id] = $as_html ? htmlspecialchars($p->getDisplayName()) : $p->getDisplayName();
         }
@@ -125,6 +120,6 @@ class RemoveParticipants extends AbstractAction
             }
         }
 
-        return $tr->phrase('agent.tickets.remove_participants_action', array('parts' => implode(', ', $names)));
+        return $tr->phrase('agent.tickets.remove_participants_action', ['parts' => implode(', ', $names)]);
     }
 }

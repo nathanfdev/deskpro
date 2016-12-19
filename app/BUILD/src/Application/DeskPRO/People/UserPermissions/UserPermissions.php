@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,8 +31,10 @@
  *
  * @category People
  */
+
 namespace Application\DeskPRO\People\UserPermissions;
 
+use Application\DeskPRO\People\PermissionsSetInterface;
 use Application\DeskPRO\People\UserPermissions\Value\ArticlePermissions;
 use Application\DeskPRO\People\UserPermissions\Value\ChatPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\DownloadPermissions;
@@ -40,7 +42,7 @@ use Application\DeskPRO\People\UserPermissions\Value\FeedbackPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\NewsPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\TicketPermissions;
 
-class UserPermissions
+class UserPermissions implements PermissionsSetInterface
 {
     /**
      * @var \Application\DeskPRO\People\UserPermissions\Value\TicketPermissions
@@ -72,6 +74,18 @@ class UserPermissions
      */
     public $news;
 
+    /**
+     * @var array
+     */
+    public static $prefix_map = [
+        'tickets'   => 'ticket',
+        'chat'      => 'chat',
+        'feedback'  => 'feedback',
+        'articles'  => 'article',
+        'downloads' => 'download',
+        'news'      => 'news',
+    ];
+
     public function __construct()
     {
         $this->ticket   = new TicketPermissions();
@@ -87,9 +101,9 @@ class UserPermissions
      */
     public function toArray()
     {
-        $arr = array();
+        $arr = [];
         foreach ($this->getTypes() as $prop) {
-            $arr[$prop] = array();
+            $arr[$prop] = [];
             foreach ($this->$prop->getNames() as $name) {
                 $arr[$prop][$name] = (bool) $this->$prop->$name;
             }
@@ -121,6 +135,6 @@ class UserPermissions
      */
     public function getTypes()
     {
-        return array('ticket', 'chat', 'feedback', 'article', 'download', 'news');
+        return ['ticket', 'chat', 'feedback', 'article', 'download', 'news'];
     }
 }

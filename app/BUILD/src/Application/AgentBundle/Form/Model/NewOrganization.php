@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
@@ -40,11 +41,11 @@ class NewOrganization
     /** @var string */
     public $name;
     /** @var array */
-    public $labels = array();
+    public $labels = [];
     /** @var array */
-    public $usergroup_ids = array();
+    public $usergroup_ids = [];
     /** @var array */
-    public $custom_fields = array();
+    public $custom_fields = [];
     /** @var Organization */
     protected $_org;
 
@@ -53,7 +54,7 @@ class NewOrganization
      */
     protected $_em;
 
-    public function __construct(Person $person_context)
+    public function __construct(Person $person_context = null)
     {
         $this->_person_context = $person_context;
 
@@ -62,7 +63,7 @@ class NewOrganization
 
     public function setCustomFieldForm(array $form)
     {
-        $this->custom_fields = isset($form['org_custom_fields']) ? $form['org_custom_fields'] : array();
+        $this->custom_fields = isset($form['org_custom_fields']) ? $form['org_custom_fields'] : [];
     }
 
     public function save()
@@ -93,7 +94,7 @@ class NewOrganization
         $org->getLabelManager()->setLabelsArray($this->labels);
         $this->_em->flush();
 
-        $this->_org = $org;
+        return $this->_org = $org;
     }
 
     public function getOrganization()

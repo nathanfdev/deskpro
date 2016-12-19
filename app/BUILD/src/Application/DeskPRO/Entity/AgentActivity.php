@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -44,7 +45,7 @@ class AgentActivity extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var \Application\DeskPRO\Entity\Person
      */
-    protected $person = null;
+    protected $agent = null;
 
     /**
      * @var \DateTime
@@ -61,23 +62,66 @@ class AgentActivity extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('date_active', $date_active);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * @deprecated It's supposed to be $agent
+     *
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @deprecated It's supposed to be $agent
+     *
+     * @param Person $x
+     */
+    public function setPerson($x)
+    {
+        $this->agent = $x;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AgentActivity';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'agent_activity',
-            'indexes' => array(
-                'date_created_idx' => array('columns' => array('date_active')),
-            ),
-        ));
+            'indexes' => [
+                'date_created_idx' => ['columns' => ['date_active']],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'date_active', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_active', 'id' => true));
+        $metadata->mapField([
+            'fieldName'  => 'date_active',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'date_active',
+            'id'         => true,
+        ]);
         //$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'id' => true));
+        $metadata->mapManyToOne([
+            'fieldName'    => 'agent',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'agent_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+            'id' => true,
+        ]);
     }
 }

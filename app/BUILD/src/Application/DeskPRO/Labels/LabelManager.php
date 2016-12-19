@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category ORM
  */
+
 namespace Application\DeskPRO\Labels;
 
 use Application\DeskPRO\App;
@@ -47,7 +48,7 @@ class LabelManager
     protected $label_entity_name;
     /** @var string */
     protected $labels_property;
-    /** @var \Doctrine\ORM\EntityManager  */
+    /** @var \Doctrine\ORM\EntityManager */
     protected $em;
 
     public function __construct($entity, $label_entity_name, $labels_property = 'labels')
@@ -118,7 +119,7 @@ class LabelManager
         if (!$skip_corrections) {
             $rep    = $this->em->getRepository('DeskPRO:LabelDef');
             $type   = $rep->getTypeByEntityName($this->label_entity_name);
-            $labels = $rep->correctLabels($type, array($label), true);
+            $labels = $rep->correctLabels($type, [$label], true);
             $label  = array_pop($labels);
         }
 
@@ -131,39 +132,6 @@ class LabelManager
         $labelobj          = $this->createLabelEntity();
         $labelobj['label'] = $label;
         $this->entity->addLabel($labelobj);
-
-        $type_name = strtolower(\Orb\Util\Util::getBaseClassname($this->entity)).'s';
-        if ($type_name == 'chatconversations') {
-            $type_name = 'chat';
-        }
-
-        if ($type_name == 'persons') {
-            $type_name = 'people';
-        }
-
-        if ($type_name == 'feedbacks') {
-            $type_name = 'feedback';
-        }
-
-        if ($type_name == 'newss') {
-            $type_name = 'news';
-        }
-
-        /** @var LabelDef $rep */
-        $rep = $this->em->getRepository('DeskPRO:LabelDef');
-        if ('chat_conversations' === $type_name) {
-            $type_name = 'chat';
-        }
-        if (!$definition = $rep->getDefinition($type_name, $label)) {
-            $definition = new \Application\DeskPRO\Entity\LabelDef(array(
-                'label_type' => $type_name,
-                'label'      => $label,
-                'color'      => $rep->getColorForLabel($label),
-            ));
-            $this->em->persist($definition);
-            $rep->updateDefinitionUsages($definition);
-            $this->em->flush();
-        }
 
         if ($this->entity instanceof Ticket && $this->entity->getTicketLogger()) {
             $this->entity->getTicketLogger()->recordMultiPropertyChanged('label_added', null, $label);
@@ -187,7 +155,7 @@ class LabelManager
 
     public function getLabelsArray()
     {
-        $labels = array();
+        $labels = [];
         foreach ($this->entity[$this->labels_property] as $label) {
             $labels[] = $label['label'];
         }
@@ -215,13 +183,13 @@ class LabelManager
     {
         // back compatibility
         if (!$labels) {
-            $labels = array();
+            $labels = [];
         } elseif (!is_array($labels)) {
             $labels = explode(',', $labels);
         }
 
         $labels_raw = $labels;
-        $labels     = array();
+        $labels     = [];
 
         foreach ($labels_raw as $label) {
             $label = self::normalizeLabel($label);

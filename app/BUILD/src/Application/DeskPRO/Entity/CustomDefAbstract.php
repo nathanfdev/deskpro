@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,34 +31,58 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\Handler;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Numbers;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A custom field definition.
  *
- * @property int $display_order
+ * @property int                                 $display_order
+ * @property CustomDefAbstract|null              $parent
+ * @property CustomDefAbstract[]|ArrayCollection $children
+ *
+ * @method setParent(CustomDefAbstract $parent)
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
-    const HANDLER_CLASS_TEXT     = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
-    const HANDLER_CLASS_TEXTAREA = 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea';
-    const HANDLER_CLASS_CHOICE   = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
-    const HANDLER_CLASS_TOGGLE   = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle';
-    const HANDLER_CLASS_DATE     = 'Application\\DeskPRO\\CustomFields\\Handler\\Date';
-    const HANDLER_CLASS_DATETIME = 'Application\\DeskPRO\\CustomFields\\Handler\\Datetime';
-    const HANDLER_CLASS_DISPLAY  = 'Application\\DeskPRO\\CustomFields\\Handler\\Display';
-    const HANDLER_CLASS_HIDDEN   = 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden';
+    const HANDLER_CLASS_TEXT     = Handler\Text::class;
+    const HANDLER_CLASS_TEXTAREA = Handler\Textarea::class;
+    const HANDLER_CLASS_CHOICE   = Handler\Choice::class;
+    const HANDLER_CLASS_TOGGLE   = Handler\Toggle::class;
+    const HANDLER_CLASS_DATE     = Handler\Date::class;
+    const HANDLER_CLASS_DATETIME = Handler\DateTime::class;
+    const HANDLER_CLASS_DISPLAY  = Handler\Display::class;
+    const HANDLER_CLASS_HIDDEN   = Handler\Hidden::class;
+    const HANDLER_CLASS_DATA     = Handler\Data::class;
+
+    const TYPE_TEXT     = 'text';
+    const TYPE_TEXTAREA = 'textarea';
+    const TYPE_CHOICE   = 'choice';
+    const TYPE_TOGGLE   = 'toggle';
+    const TYPE_DATE     = 'date';
+    const TYPE_DATETIME = 'datetime';
+    const TYPE_DISPLAY  = 'display';
+    const TYPE_HIDDEN   = 'hidden';
+    const TYPE_DATA     = 'data';
 
     /**
      * The unique ID.
      *
      * @var int
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $id = null;
 
@@ -113,6 +137,11 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * The title.
      *
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
      */
     protected $title = '';
 
@@ -120,6 +149,9 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * The description.
      *
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $description = '';
 
@@ -135,32 +167,55 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
     /**
      * Options for the field.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * Can the field be viewed by the user?
      *
      * @var bool
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      */
     protected $is_user_enabled = true;
 
     /**
+     * True if field is enabled.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_enabled = true;
 
     /**
+     * Obviously it is field`s display order.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $display_order = 0;
 
     /**
+     * Default field value.
+     *
      * @var string
      */
     protected $default_value = null;
 
     /**
+     * Is this field associated with agents only.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_agent_field = false;
@@ -203,6 +258,13 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return 0;
     }
 
+    public function setDisplayOreder($int)
+    {
+        $this->setModelField('display_order', $int);
+
+        return $this;
+    }
+
     /**
      * Set title.
      *
@@ -220,31 +282,17 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * @return string
      */
-    public function getTitle()
-    {
-        return App::getTranslator()->getPhraseObject($this, 'title');
-    }
-
-    /**
-     * @return string
-     */
     public function getRealTitle()
     {
         return $this->title;
     }
 
     /**
-     * Set description.
-     *
-     * @param string $description
-     *
-     * @return $this
+     * @return string
      */
-    public function setDescription($description)
+    public function getTitle()
     {
-        $this->setModelField('description', $description);
-
-        return $this;
+        return App::getTranslator()->getPhraseObject($this, 'title');
     }
 
     /**
@@ -264,15 +312,166 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * Set description.
+     *
+     * @param string $description
+     *
+     * @return $this
+     */
+    public function setDescription($description)
+    {
+        $this->setModelField('description', $description);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function isUserEnabled()
+    {
+        return $this->is_user_enabled;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @return CustomDefAbstract[]|ArrayCollection
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @param CustomDefAbstract $parentChoice
+     *
+     * @return ArrayCollection
+     */
+    public function getSubChoices(CustomDefAbstract $parentChoice)
+    {
+        $subChoices = new ArrayCollection();
+        if ($this->children->contains($parentChoice)) {
+            foreach ($this->children as $child) {
+                if ($child->getOption('parent_id') === $parentChoice->getId()) {
+                    $subChoices->add($child);
+                }
+            }
+        }
+
+        return $subChoices;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasChildren()
+    {
+        return count($this->children) > 0;
+    }
+
+    /**
+     * @return CustomDefAbstract|null
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\Type("array")
+     *
+     * @return array
+     */
+    public function getChoices()
+    {
+        $map      = [];
+        $children = $this->getChildren();
+        foreach ($children as $c) {
+            $pid = (int) $c->getOption('parent_id', 0);
+            if (!isset($map[$pid])) {
+                $map[$pid] = [];
+            }
+
+            $map[$pid][$c->getId()] = $c;
+        }
+
+        $iter = function ($parent_id, $depth = 0) use ($map, &$iter) {
+            if (empty($map[$parent_id])) {
+                return [];
+            }
+
+            $level_choices = [];
+            /** @var CustomDefAbstract $c */
+            foreach ($map[$parent_id] as $c) {
+                $subs = $iter($c->getId(), $depth + 1);
+                $row  = [
+                    'id'            => $c->getId(),
+                    'title'         => $c->getTitle(),
+                    'is_selectable' => empty($subs),
+                ];
+
+                if ($subs) {
+                    $row['children'] = $subs;
+                }
+
+                $level_choices[] = $row;
+            }
+
+            return $level_choices;
+        };
+
+        return $iter(0);
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getChoiceIds()
+    {
+        $ids      = [];
+        $iterator = function (CustomDefAbstract $custom_def) use (&$ids, &$iterator) {
+            $children = $custom_def->getChildren();
+            foreach ($children as $child) {
+                if (count($child->getChildren()) > 0) {
+                    $iterator($child);
+                } else {
+                    $ids[] = $child->getId();
+                }
+            }
+        };
+
+        $iterator($this);
+
+        return $ids;
+    }
+
+    /**
      * Add a child to this field.
      *
      * @param CustomDefAbstract $def
+     *
+     * @return $this
      */
     public function addChild(CustomDefAbstract $def)
     {
-        $this->children->add($def);
-        $def['parent'] = $this;
-        $this->_onPropertyChanged('children', $this->children, $this->children);
+        if (!$this->children->contains($def)) {
+            $this->children->add($def);
+            $this->_onPropertyChanged('children', $this->children, $this->children);
+        }
+
+        if ($def->getParent() !== $this) {
+            $def['parent'] = $this;
+        }
+
+        return $this;
     }
 
     /**
@@ -325,8 +524,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
                 return $v;
             }
         }
-
-        return;
     }
 
     /**
@@ -389,26 +586,11 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Get an array of all IDs from this def and down.
-     *
-     * @return array
-     */
-    public function getAllChildIds()
-    {
-        $ids = array($this->id);
-        foreach ($this->children as $child) {
-            $ids = array_merge($ids, $child->getAllChildIds());
-        }
-
-        return $ids;
-    }
-
-    /**
      * @return array
      */
     public function getAllChildTitles()
     {
-        $titles = array();
+        $titles = [];
         foreach ($this->children as $child) {
             $titles[$child->getId()] = $child->getTitle();
         }
@@ -432,12 +614,37 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @return mixed
+     */
+    public function getCustomDataClass()
+    {
+        return str_replace('Def', 'Data', get_class($this));
+    }
+
+    /**
+     * @return CustomDataAbstract
+     */
+    public function createCustomData()
+    {
+        /* @var CustomDataAbstract $customData */
+        $className  = $this->getCustomDataClass();
+        $customData = new $className();
+        $customData->setRootField($this);
+
+        if (!$this->isChoiceType()) {
+            $customData->setField($this);
+        }
+
+        return $customData;
+    }
+
+    /**
      * Get the value of an option, or a default value if none is set.
      *
-     * @param  $name
+     * @param      $name
      * @param null $default
      *
-     * @return array|null
+     * @return mixed
      */
     public function getOption($name, $default = null)
     {
@@ -510,13 +717,134 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Is the field required?
+     * @param bool $isAgent
+     *
+     * @return mixed
+     */
+    public function isRequired($isAgent = false)
+    {
+        $option_name = ($isAgent ? 'agent_' : '').'required';
+
+        return (bool) $this->getOption($option_name, false);
+    }
+
+    /**
+     * @param bool $isAgent
+     *
+     * @return mixed
+     */
+    public function getMinLength($isAgent = false)
+    {
+        $option_name = ($isAgent ? 'agent_' : '').'min_length';
+
+        return $this->getOption($option_name, 0);
+    }
+
+    /**
+     * @param bool $isAgent
+     *
+     * @return mixed
+     */
+    public function getMaxLength($isAgent = false)
+    {
+        $option_name = ($isAgent ? 'agent_' : '').'max_length';
+
+        return $this->getOption($option_name, 0);
+    }
+
+    /**
+     * @param bool $isAgent
+     *
+     * @return mixed
+     */
+    public function getRegex($isAgent = false)
+    {
+        $option_name = ($isAgent ? 'agent_' : '').'regex';
+
+        return $this->getOption($option_name, null);
+    }
+
+    /**
+     * @param bool $isAgent
      *
      * @return bool
      */
-    public function isRequired()
+    public function isRegexRequired($isAgent = false)
     {
-        return $this->getOption('required', false);
+        $option_name = ($isAgent ? 'agent_' : '').'regex_required';
+
+        return $this->getOption($option_name, null);
+    }
+
+    public function getValidWeekDays()
+    {
+        return $this->getOption('date_valid_dow', null);
+    }
+
+    public function getDateMin()
+    {
+        $type = $this->getOption('date_valid_type', null);
+        switch ($type) {
+            case 'range':
+                $int = $this->getOption('date_valid_range1', null);
+
+                return $int === null ? null : (int) $int;
+            case 'date':
+                try {
+                    return new \DateTime($this->getOption('date_valid_date1'));
+                } catch (\Exception $e) {
+                    return;
+                }
+        }
+    }
+
+    /**
+     * @return string|void
+     */
+    public function getDateMinFormat()
+    {
+        $dateMin = $this->getDateMin();
+
+        if ($dateMin instanceof \DateTime) {
+            return $dateMin->format('c');
+        } elseif (is_int($dateMin)) {
+            return (new \DateTime('-'.$dateMin.' days'))->format('c');
+        }
+
+        return;
+    }
+
+    public function getDateMax()
+    {
+        $type = $this->getOption('date_valid_type', null);
+        switch ($type) {
+            case 'range':
+                $int = $this->getOption('date_valid_range2', null);
+
+                return $int === null ? null : (int) $int;
+            case 'date':
+                try {
+                    return new \DateTime($this->getOption('date_valid_date2'));
+                } catch (\Exception $e) {
+                    return;
+                }
+        }
+    }
+
+    /**
+     * @return string|void
+     */
+    public function getDateMaxFormat()
+    {
+        $dateMax = $this->getDateMax();
+
+        if ($dateMax instanceof  \DateTime) {
+            return $dateMax->format('c');
+        } elseif (is_int($dateMax)) {
+            return (new \DateTime('+'.$dateMax.' days'))->format('c');
+        }
+
+        return;
     }
 
     /**
@@ -578,14 +906,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @return bool
-     */
-    public function isUserEnabled()
-    {
-        return $this->is_user_enabled;
-    }
-
-    /**
      * Set default value.
      *
      * @param mixed $default_value
@@ -600,10 +920,40 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @return string
+     * @JMS\VirtualProperty()
+     *
+     * @return mixed
      */
     public function getDefaultValue()
     {
+        if ($this->isDateType()) {
+            $mode = $this->getOption('default_mode', false);
+            if ('date' == $mode) {
+                $date = new \DateTime($this->default_value);
+
+                return $date->format($this->getDateExpectedFormat());
+            } elseif ('current' == $mode) {
+                $date = new \DateTime('now');
+
+                return $date->format($this->getDateExpectedFormat());
+            } else {
+                return;
+            }
+        } elseif ($this->isMulti()) {
+            if ($this->default_value) {
+                $ids = explode(',', $this->default_value);
+                $ids = array_map(function ($id) {
+                    return (int) $id;
+                }, $ids);
+
+                return $ids;
+            }
+
+            return [];
+        } elseif ($this->isChoiceType()) {
+            return $this->default_value ? (int) $this->default_value : null;
+        }
+
         return $this->default_value;
     }
 
@@ -641,6 +991,86 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * Gets the widget type. This is the same as the type, except if this is a choice
+     * we return the real type of field (e.g., checkbox or radio) based on display options.
+     *
+     * @return string
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("string")
+     */
+    public function getWidgetType()
+    {
+        $name = $this->getTypeName();
+
+        if ($name === 'choice') {
+            if ($this->getOption('expanded')) {
+                $name = $this->getOption('multiple') ? 'checkbox' : 'radio';
+            } elseif ($this->getOption('multiple')) {
+                $name = 'multichoice';
+            }
+        }
+
+        return $name;
+    }
+
+    /**
+     * @param string $widgetType
+     *
+     * @return $this
+     */
+    public function setWidgetType($widgetType)
+    {
+        switch ($widgetType) {
+            case self::TYPE_TEXT:
+                $this->setHandlerClass(self::HANDLER_CLASS_TEXT);
+                break;
+            case self::TYPE_TEXTAREA:
+                $this->setHandlerClass(self::HANDLER_CLASS_TEXTAREA);
+                break;
+            case self::TYPE_TOGGLE:
+                $this->setHandlerClass(self::HANDLER_CLASS_TOGGLE);
+                break;
+            case self::TYPE_HIDDEN:
+                $this->setHandlerClass(self::HANDLER_CLASS_HIDDEN);
+                break;
+            case self::TYPE_DISPLAY:
+                $this->setHandlerClass(self::HANDLER_CLASS_DISPLAY);
+                break;
+            case self::TYPE_DATE:
+                $this->setHandlerClass(self::HANDLER_CLASS_DATE);
+                break;
+            case self::TYPE_DATETIME:
+                $this->setHandlerClass(self::HANDLER_CLASS_DATETIME);
+                break;
+            case self::TYPE_CHOICE:
+                $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
+                break;
+
+            // extended choice types
+            case 'multichoice':
+                $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
+                $this->setOption('multiple', true);
+                $this->setOption('expanded', false);
+                break;
+            case 'checkbox':
+                $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
+                $this->setOption('multiple', true);
+                $this->setOption('expanded', true);
+                break;
+            case 'radio':
+                $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
+                $this->setOption('expanded', true);
+                $this->setOption('multiple', false);
+                break;
+            default:
+                throw new \Exception("Unknown widget type `$widgetType`");
+        }
+
+        return $this;
+    }
+
+    /**
      * Fetch the search capabiltiies supported by the field.
      *
      * @return array
@@ -675,26 +1105,70 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public function isChoiceType()
     {
-        switch ($this->handler_class) {
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
-                return true;
+        return $this->handler_class === self::HANDLER_CLASS_CHOICE;
+    }
 
+    /**
+     * True if there can be multiple values for this type.
+     *
+     * @return bool
+     */
+    public function isMulti()
+    {
+        return $this->isChoiceType() && $this->getOption('multiple');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDateType()
+    {
+        return in_array($this->handler_class, [self::HANDLER_CLASS_DATE, self::HANDLER_CLASS_DATETIME], true);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDisplayType()
+    {
+        return $this->handler_class === self::HANDLER_CLASS_DISPLAY;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getDateExpectedFormat()
+    {
+        switch ($this->handler_class) {
+            case self::HANDLER_CLASS_DATE:
+                return 'Y-m-d';
+            case self::HANDLER_CLASS_DATETIME:
+                return 'Y-m-d H:i:s';
             default:
                 return false;
         }
     }
 
+    /**
+     * @return string
+     */
     public function getType()
     {
         return strtolower(substr($this->handler_class, strrpos($this->handler_class, '\\') + 1));
     }
 
     /**
-     * @param string $property
-     *
-     * @return string
+     * @return int
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -708,11 +1182,9 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @param string $property
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         if ($property == 'description') {
             return $this->description;
@@ -726,14 +1198,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data              = parent::toApiData($primary, $deep, $visited);
         $data['type_name'] = $this->getTypeName();
 
         if ($data['type_name'] == 'choice') {
-            $data['choices'] = array();
-            $has_children    = $map    = array();
+            $data['choices'] = [];
+            $has_children    = $map    = [];
 
             foreach ($this->children as $c) {
                 $map[$c['id']] = $c;
@@ -753,21 +1225,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 //                    $child = $parent;
 //                }
 
-                $data['choices'][] = array(
+                $data['choices'][] = [
                     'id'            => $c->id,
                     'title'         => $title,
                     'parent_id'     => $c->getOption('parent_id') ?: null,
                     'display_order' => $c->display_order,
-                );
+                    'disabled'      => isset($has_children[$c->id]),
+                ];
             }
-
-            $defaults = array();
-            foreach (explode(',', $data['default_value']) as $val) {
-                if (strlen($val)) {
-                    $defaults[] = (int) $val;
-                }
-            }
-            $data['default_value'] = $defaults;
         }
 
         if ($data['options']) {

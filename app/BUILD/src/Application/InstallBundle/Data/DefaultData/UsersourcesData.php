@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\Entity\Usersource;
@@ -57,7 +58,7 @@ class UsersourcesData extends AbstractDefaultData
     {
         $enabled = $this->getContainer()->getSetting('core.deskpro_source_enabled') ? 1 : 0;
 
-        $types = array('user', 'agent');
+        $types = ['user', 'agent'];
         foreach ($types as $type) {
             $deskProUsers                = new Usersource();
             $deskProUsers->type          = $type;
@@ -65,7 +66,7 @@ class UsersourcesData extends AbstractDefaultData
             $deskProUsers->is_enabled    = $enabled;
             $deskProUsers->display_order = -10; // ensure #1 order (initially!)
             $deskProUsers->title         = 'DeskPRO';
-            $deskProUsers->options       = array();
+            $deskProUsers->options       = [];
             $this->getEm()->persist($deskProUsers);
         }
 

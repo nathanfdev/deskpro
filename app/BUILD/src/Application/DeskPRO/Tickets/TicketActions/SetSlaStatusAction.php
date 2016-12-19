@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -51,9 +52,7 @@ class SetSlaStatusAction extends AbstractAction
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -68,7 +67,7 @@ class SetSlaStatusAction extends AbstractAction
                 return;
             }
 
-            $ticket_slas = array($ticket_sla);
+            $ticket_slas = [$ticket_sla];
         } else {
             $ticket_slas = $ticket->ticket_slas;
         }
@@ -79,15 +78,17 @@ class SetSlaStatusAction extends AbstractAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
-        return array(
-            array('action' => 'set_sla_status', 'sla_status' => $this->sla_status, 'sla_id' => $this->sla_id),
-        );
+        return [
+            [
+                'action'     => 'set_sla_status',
+                'sla_status' => $this->sla_status,
+                'sla_id'     => $this->sla_id,
+            ],
+        ];
     }
 
     /**
@@ -107,9 +108,7 @@ class SetSlaStatusAction extends AbstractAction
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -117,7 +116,7 @@ class SetSlaStatusAction extends AbstractAction
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {
@@ -140,14 +139,14 @@ class SetSlaStatusAction extends AbstractAction
         if ($this->sla_id) {
             $sla = App::getEntityRepository('DeskPRO:Sla')->find($this->sla_id);
 
-            return $tr->phrase('agent.tickets.set_sla_status_for_sla_action', array(
+            return $tr->phrase('agent.tickets.set_sla_status_for_sla_action', [
                 'sla_status' => $value,
                 'sla'        => $sla ? $sla->title : ('<error>Unknown #'.$this->sla_id.'</error>'),
-            ));
+            ]);
         } else {
-            return $tr->phrase('agent.tickets.set_sla_status_action', array(
+            return $tr->phrase('agent.tickets.set_sla_status_action', [
                 'sla_status' => $value,
-            ));
+            ]);
         }
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Translate
  */
+
 namespace Application\DeskPRO\Translate\Loader;
 
 use Orb\Util\Arrays;
@@ -40,16 +41,29 @@ use Orb\Util\Arrays;
  */
 class SystemLoader implements LoaderInterface
 {
+    private static $groupFileMap = [
+        'adm'     => 'admin.php',
+        'admin'   => 'admin.php',
+        'api'     => 'api.php',
+        'agent'   => 'agent.php',
+        'general' => 'general.php',
+        'portal'  => 'portal.php',
+        'user'    => 'portal.php',
+    ];
+
     /**
      * Array of filepath => array.
      *
      * @var array
      */
-    protected $loaded_files = array();
+    protected $loaded_files = [];
 
+    /**
+     * {@inheritdoc}
+     */
     public function load($groups, $language, array $loaded_phrases = null)
     {
-        $lang_packs = array();
+        $lang_packs = [];
 
         // Always read from the default because it has the core phrases
         $lang_packs[] = DP_ROOT.'/languages/default';
@@ -61,23 +75,23 @@ class SystemLoader implements LoaderInterface
         $lang_packs = array_unique($lang_packs);
         $lang_packs = Arrays::removeFalsey($lang_packs);
 
-        $phrases = array();
+        $phrases = [];
 
         foreach ($lang_packs as $path) {
             foreach ($groups as $group) {
-                $group_parts = explode('.', $group, 2);
+                $groupParts = explode('.', $group, 2);
 
-                // agent.something => agent/something.php
-                if (count($group_parts) == 2) {
-                    $file = $path.'/'.$group_parts[0].'/'.$group_parts[1].'.php';
-                // agent => agent/agent.php
-                } else {
-                    $file = $path.'/'.$group_parts[0].'/'.$group_parts[0].'.php';
+                // prevent incorrect phrase names
+                if (count($groupParts) < 2) {
+                    continue;
                 }
 
-                $file_phrases = $this->loadFile($file);
-                if ($file_phrases) {
-                    $phrases = array_merge($phrases, $file_phrases);
+                if (isset(self::$groupFileMap[$groupParts[0]])) {
+                    $file        = $path.'/'.self::$groupFileMap[$groupParts[0]];
+                    $filePhrases = $this->loadFile($file);
+                    if ($filePhrases && isset($filePhrases[$groupParts[0]][$groupParts[1]])) {
+                        $phrases = array_merge($phrases, $filePhrases[$groupParts[0]][$groupParts[1]]);
+                    }
                 }
             }
         }
@@ -97,14 +111,18 @@ class SystemLoader implements LoaderInterface
         }
 
         if (is_file($file)) {
-            $file_phrases = include $file;
-            if ($file_phrases && is_array($file_phrases)) {
-                $this->loaded_files[$file] = $file_phrases;
+            $filePhrases = include $file;
+            if ($filePhrases && is_array($filePhrases)) {
+                foreach ($filePhrases as $phraseName => $phraseTranslation) {
+                    $groupParts = explode('.', $phraseName, 3);
+
+                    $this->loaded_files[$file][$groupParts[0]][$groupParts[1]][$phraseName] = $phraseTranslation;
+                }
             }
         }
 
         if (!isset($this->loaded_files[$file])) {
-            $this->loaded_files[$file] = array();
+            $this->loaded_files[$file] = [];
         }
 
         return $this->loaded_files[$file];

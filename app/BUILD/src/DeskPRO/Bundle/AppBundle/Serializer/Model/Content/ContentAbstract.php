@@ -1,0 +1,215 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
+
+use Application\DeskPRO\Entity\ContentAbstract as ContentAbstractEntity;
+use JMS\Serializer\Annotation as JMS;
+
+/**
+ * Class ContentAbstract.
+ */
+abstract class ContentAbstract
+{
+    /**
+     * The unique ID.
+     *
+     * @JMS\Groups({"labels"})
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    protected $id = null;
+
+    /**
+     * Person created this content first time.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person = null;
+
+    /**
+     * Language content was written.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Language>")
+     *
+     * @var \Application\DeskPRO\Entity\Language
+     */
+    protected $language = null;
+
+    /**
+     * Content slug.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $slug;
+
+    /**
+     * Content title.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $title;
+
+    /**
+     * The main content for the item. This should be HTML!
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $content = '';
+
+    /**
+     * View counts.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    protected $viewCount = 0;
+
+    /**
+     * Total rating: This is a tally and must be updated when a rating is added.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    protected $totalRating = 0;
+
+    /**
+     * Number of user-visible comments: This is a count that must be updated when a comment is added.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    protected $numComments = 0;
+
+    /**
+     * Total rating.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    protected $numRatings = 0;
+
+    /**
+     * Status title.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $status;
+
+    /**
+     * Hidden status code.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $hiddenStatus = null;
+
+    /**
+     * DateTime when content was created.
+     *
+     * @JMS\Type("DateTime")
+     *
+     * @var \DateTime
+     */
+    protected $dateCreated;
+
+    /**
+     * DateTime when content was updated last time.
+     *
+     * @JMS\Type("DateTime")
+     *
+     * @var \DateTime
+     */
+    protected $dateUpdated;
+
+    /**
+     * Vote stats object, like {"up": 1, "down": 1}.
+     *
+     * @JMS\Type("array")
+     */
+    protected $vote_stats;
+
+    /**
+     * Revisions of this article.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\ArticleRevision>>")
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $revisions;
+
+    /**
+     * Constructor.
+     *
+     * @param ContentAbstractEntity $entity
+     */
+    public function __construct(ContentAbstractEntity $entity)
+    {
+        $this->id           = $entity->getId();
+        $this->person       = $entity->getPerson();
+        $this->language     = $entity->getLanguage();
+        $this->slug         = $entity->getSlug();
+        $this->title        = $entity->getTitle();
+        $this->content      = $entity->getRealContent();
+        $this->viewCount    = $entity->getViewCount();
+        $this->totalRating  = $entity->getTotalRating();
+        $this->numComments  = $entity->getNumComments();
+        $this->numRatings   = $entity->getNumRatings();
+        $this->status       = $entity->getStatus();
+        $this->hiddenStatus = $entity->getHiddenStatus();
+        $this->dateCreated  = $entity->getDateCreated();
+        $this->dateUpdated  = $entity->getDateUpdated();
+        $this->vote_stats   = $entity->getVoteStats();
+        $this->revisions    = $entity->getRevisions();
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+}

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,18 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Exception\ValidationException;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
-use Application\DeskPRO\Exception\ValidationException;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
+/**
+ * @ApiModes("all")
+ */
 class FeedbackCategoriesController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -50,9 +55,9 @@ class FeedbackCategoriesController extends AbstractController implements Protect
         return $multi;
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction()
     {
@@ -62,15 +67,15 @@ class FeedbackCategoriesController extends AbstractController implements Protect
         $feedback_categories = $this->container->getSystemService('feedback_categories');
 
         return $this->createApiResponse(
-            array(
+            [
                  'feedback_categories' => $feedback_categories->getAll(),
-            )
+            ]
         );
     }
 
-    ####################################################################################################################
-    # get
-    ####################################################################################################################
+    //###################################################################################################################
+    // get
+    //###################################################################################################################
 
     public function getAction($id)
     {
@@ -87,15 +92,15 @@ class FeedbackCategoriesController extends AbstractController implements Protect
         $returnedData = $this->getApiData($feedback_category);
 
         return $this->createApiResponse(
-            array(
+            [
                  'feedback_category' => $returnedData,
-            )
+            ]
         );
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
     public function saveAction($id)
     {
@@ -139,16 +144,16 @@ class FeedbackCategoriesController extends AbstractController implements Protect
         }
 
         return $this->createApiResponse(
-            array(
+            [
                  'success' => true,
                  'id'      => $feedback_category->getId(),
-            )
+            ]
         );
     }
 
-    ####################################################################################################################
-    # remove
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove
+    //###################################################################################################################
 
     public function removeAction($id)
     {
@@ -186,7 +191,7 @@ class FeedbackCategoriesController extends AbstractController implements Protect
             if (!$skip_moving) {
                 $this->db->executeUpdate(
                     'UPDATE custom_data_feedback SET field_id = ? WHERE field_id = ?',
-                    array($move_to, $old_id)
+                    [$move_to, $old_id]
                 );
             }
 
@@ -199,12 +204,12 @@ class FeedbackCategoriesController extends AbstractController implements Protect
             throw $e;
         }
 
-        return $this->createSuccessResponse(array('old_id' => $old_id));
+        return $this->createSuccessResponse(['old_id' => $old_id]);
     }
 
-    ####################################################################################################################
-    # save-display-order
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-display-order
+    //###################################################################################################################
 
     public function saveDisplayOrderAction()
     {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,17 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\Avatar\AvatarOwner;
+use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
+use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Entity\PersonList;
+use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Validator\Constraints\Callback;
@@ -47,15 +48,16 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 /**
  * Departments.
  *
- * @property string title
- * @property string $user_title
- * @property bool $is_tickets_enabled
- * @property bool $is_chat_enabled
- * @property int $display_order
- * @property Department $parent
- * @property Department $children
+ * @property string                       title
+ * @property string                       $user_title
+ * @property bool                         $is_tickets_enabled
+ * @property bool                         $is_chat_enabled
+ * @property int                          $display_order
+ * @property Department                   $parent
+ * @property Department[]|ArrayCollection $children
+ * @property Brand[]|ArrayCollection      $brands
  */
-class Department extends DomainObject implements HasPhraseName
+class Department extends DomainObject implements HasPhraseName, PersonList, AvatarOwner, Hierarchical
 {
     /**
      * @var int
@@ -68,7 +70,7 @@ class Department extends DomainObject implements HasPhraseName
     protected $parent = null;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $children = null;
 
@@ -85,17 +87,18 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @var bool
      */
-    protected $is_tickets_enabled = true;
+    protected $is_tickets_enabled = false;
 
     /**
      * @var bool
      */
-    protected $is_chat_enabled = true;
+    protected $is_chat_enabled = false;
 
     /**
      * @var null|array
      */
     protected $_usergroups = null;
+
     /**
      * @var null|array
      */
@@ -110,6 +113,21 @@ class Department extends DomainObject implements HasPhraseName
      * @var Blob
      */
     protected $avatar;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $brands;
+
+    /**
+     * @var ProjectMember[]|ArrayCollection
+     */
+    protected $project_members;
+
+    /**
+     * @var DepartmentPermission[]|ArrayCollection
+     */
+    protected $permissions;
 
     /**
      * @return Department
@@ -136,11 +154,12 @@ class Department extends DomainObject implements HasPhraseName
     }
 
     /**
-     *
+     * Constructor.
      */
     public function __construct()
     {
-        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children = new ArrayCollection();
+        $this->brands   = new ArrayCollection();
     }
 
     /**
@@ -149,6 +168,14 @@ class Department extends DomainObject implements HasPhraseName
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
     }
 
     /**
@@ -215,6 +242,22 @@ class Department extends DomainObject implements HasPhraseName
     }
 
     /**
+     * An array of all parents in this tree.
+     *
+     * @return Department[]
+     */
+    public function getAllParents()
+    {
+        $parents = [];
+        $d       = $this;
+        while ($d = $d->getParent()) {
+            $parents[] = $d;
+        }
+
+        return $parents;
+    }
+
+    /**
      * @return int
      */
     public function getParentId()
@@ -227,12 +270,24 @@ class Department extends DomainObject implements HasPhraseName
     }
 
     /**
+     * @param Department $parent
+     *
+     * @return $this
+     */
+    public function setParent(Department $parent = null)
+    {
+        $this->setModelField('parent', $parent);
+
+        return $this;
+    }
+
+    /**
      * @param $id
      */
     public function setParentId($id)
     {
         if ($id) {
-            $this->parent = App::getEntityRepository('DeskPRO:Department')->find($id);
+            $this->parent = App::getEntityRepository(self::class)->find($id);
         } else {
             $this->parent = null;
         }
@@ -262,7 +317,24 @@ class Department extends DomainObject implements HasPhraseName
      */
     public function setRealTitle($title)
     {
-        $this->title = $title;
+        $this->setModelField('title', $title);
+    }
+
+    /**
+     * @return ProjectMember[]|ArrayCollection
+     */
+    public function getProjectMembers()
+    {
+        return $this->project_members;
+    }
+
+    /**
+     * @param ProjectMember $member
+     */
+    public function addProjectMember(ProjectMember $member)
+    {
+        $this->project_members->add($member);
+        $this->setModelField('project_member', $member);
     }
 
     /**
@@ -335,13 +407,21 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * Get all children down the entire tree.
      *
-     * Note: Currently only two levels, so this is the same as getChildren()
-     *
-     * @return array
+     * @return array|Department[]
      */
     public function getAllChildren()
     {
-        return $this->getChildren();
+        $children = [];
+        $iterator = function (Department $department) use (&$children, &$iterator) {
+            foreach ($department->getChildren() as $child) {
+                $children[] = $child;
+                $iterator($child);
+            }
+        };
+
+        $iterator($this);
+
+        return $children;
     }
 
     /**
@@ -353,14 +433,17 @@ class Department extends DomainObject implements HasPhraseName
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object.
-     *
-     * @param string    $property  If supplied, the property on the object we want to translate.
-     * @param Translate $translate
-     *
-     * @return string
+     * @return bool
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function isLeaf()
+    {
+        return $this->children->count() === 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -369,24 +452,19 @@ class Department extends DomainObject implements HasPhraseName
         $phrase_name = 'obj_department.'.$this->id.'_'.$property;
 
         if ($property == 'user') {
-            return array(
+            return [
                 'obj_department.'.$this->id.'_user',
                 'obj_department.'.$this->id.'_title',
-            );
+            ];
         }
 
         return $phrase_name;
     }
 
     /**
-     * Get the default value phrase for the object.
-     *
-     * @param string    $property  If supplied, the property on the object we want to translate.
-     * @param Translate $translate
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         if ($property == 'full') {
             return $this->getRealTitle();
@@ -407,9 +485,128 @@ class Department extends DomainObject implements HasPhraseName
         return $this->getFullTitle();
     }
 
-    ############################################################################
-    # Validation Metadata
-    ############################################################################
+    /**
+     * @return Person[]|null
+     */
+    public function getPersonList()
+    {
+        // OMG this should be refactored somehow, but right now it works
+        if (!$this->_people) {
+
+            /** @var \Application\DeskPRO\EntityRepository\Department $repository */
+            $repository  = $this->getRepository();
+            $permissions = $repository->getPermissionsInfo($this);
+            $db          = App::getDb();
+            $ids         = [];
+            foreach ($permissions['usergroups'] as $usergroup) {
+                if ($usergroup['perm_name'] === 'full') {
+                    $ids[] = $usergroup['usergroup_id'];
+                }
+            }
+            foreach ($permissions['agentgroups'] as $usergroup) {
+                if ($usergroup['perm_name'] === 'full') {
+                    $ids[] = $usergroup['usergroup_id'];
+                }
+            }
+
+            if ($ids) {
+                $usergroups = implode(',', $ids);
+                $sql        = "SELECT DISTINCT(person_id) FROM person2usergroups WHERE usergroup_id IN ({$usergroups})";
+                $personIds  = $db->fetchColumn($sql);
+            } else {
+                $personIds = [];
+            }
+
+            foreach ($permissions['agents'] as $agent) {
+                if ($agent['perm_name'] === 'full') {
+                    $personIds[] = $agent['agent_id'];
+                }
+            }
+
+            $this->_people = App::getOrm()->getRepository(Person::class)->findBy(['id' => $personIds]);
+        }
+
+        return $this->_people;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getAvatarBlob()
+    {
+        return $this->avatar;
+    }
+
+    public function isChatEnabled()
+    {
+        return $this->is_chat_enabled;
+    }
+
+    public function isTicketsEnabled()
+    {
+        return $this->is_tickets_enabled;
+    }
+
+    /**
+     * @return Brand[]|ArrayCollection
+     */
+    public function getBrands()
+    {
+        return $this->brands;
+    }
+
+    /**
+     * @param array|ArrayCollection $brands
+     */
+    public function setBrands($brands)
+    {
+        $this->brands = $brands;
+        foreach ($this->brands as $brand) {
+            $brand->addDepartment($this);
+        }
+
+        $this->_onPropertyChanged('brands', null, $this->brands);
+    }
+
+    /**
+     * @param Brand $searchBrand
+     *
+     * @return bool
+     */
+    public function hasBrand(Brand $searchBrand)
+    {
+        return $this->brands->contains($searchBrand);
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function addBrand(Brand $brand)
+    {
+        if (!$this->brands->contains($brand)) {
+            $this->brands->add($brand);
+            $brand->addDepartment($this);
+
+            $this->_onPropertyChanged('brands', null, $this->brands);
+        }
+
+        return $this;
+    }
+
+    public function removeBrand(Brand $brand)
+    {
+        $this->brands->removeElement($brand);
+        $brand->removeDepartment($this);
+        $this->_onPropertyChanged('brands', null, $this->brands);
+
+        return $this;
+    }
+
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
 
     public function _validateParent(ExecutionContextInterface $context)
     {
@@ -425,32 +622,38 @@ class Department extends DomainObject implements HasPhraseName
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('title', new NotBlank());
-        $metadata->addConstraint(new Callback(array(
-            'methods' => array('_validateParent'),
-        )));
+        $metadata->addConstraint(new Callback([
+            'methods' => ['_validateParent'],
+        ]));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data               = parent::toApiData($primary, $deep, $visited);
         $data['user_title'] = $this->getRealUserTitle();
+        if (true || $deep) {
+            $data['brands'] = [];
+            foreach ($this->brands as $brand) {
+                $data['brands'][] = $brand->getId();
+            }
+        }
 
         if ($this->parent) {
             $data['title_full']       = $this->parent->title.' > '.$this->title;
             $data['parent_id']        = $this->parent->getId();
-            $data['parent_ids']       = array($this->parent->getId());
-            $data['title_parts']      = array($this->parent->title, $this->title);
-            $data['user_title_parts'] = array($this->parent->getUserTitle(), $this->getUserTitle());
+            $data['parent_ids']       = [$this->parent->getId()];
+            $data['title_parts']      = [$this->parent->title, $this->title];
+            $data['user_title_parts'] = [$this->parent->getUserTitle(), $this->getUserTitle()];
             $data['has_children']     = false;
         } else {
             $data['title_full']       = $this->title;
             $data['parent_id']        = null;
-            $data['parent_ids']       = array();
-            $data['title_parts']      = array($this->title);
-            $data['user_title_parts'] = array($this->getUserTitle());
+            $data['parent_ids']       = [];
+            $data['title_parts']      = [$this->title];
+            $data['user_title_parts'] = [$this->getUserTitle()];
             $data['has_children']     = count($this->children) != 0;
         }
 
@@ -471,125 +674,172 @@ class Department extends DomainObject implements HasPhraseName
         return $this->avatar->getThumbnailUrl($size);
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Department';
-        $metadata->setPrimaryTable(array('name' => 'departments'));
+        $metadata->customRepositoryClassName = DepartmentRepository::class;
+        $metadata->setPrimaryTable(['name' => 'departments']);
 
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'id',
-                 'type'       => 'integer',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'id',
-                 'id'         => true,
-            )
+            [
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'title',
-                 'type'       => 'string',
-                 'length'     => 255,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'title',
-            )
+            [
+                'fieldName'  => 'title',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'title',
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'user_title',
-                 'type'       => 'string',
-                 'length'     => 255,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'user_title',
-            )
+            [
+                'fieldName'  => 'user_title',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'user_title',
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'is_tickets_enabled',
-                 'type'       => 'boolean',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'is_tickets_enabled',
-            )
+            [
+                'fieldName'  => 'is_tickets_enabled',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_tickets_enabled',
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'is_chat_enabled',
-                 'type'       => 'boolean',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'is_chat_enabled',
-            )
+            [
+                'fieldName'  => 'is_chat_enabled',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_chat_enabled',
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'display_order',
-                 'type'       => 'integer',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'display_order',
-            )
+            [
+                'fieldName'  => 'display_order',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'display_order',
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
-            array(
-                 'fieldName'    => 'parent',
-                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
-                 'mappedBy'     => null,
-                 'inversedBy'   => 'children',
-                 'fetch'        => ClassMetadataInfo::FETCH_EAGER,
-                 'joinColumns'  => array(
-                     0 => array(
-                         'name'                 => 'parent_id',
-                         'referencedColumnName' => 'id',
-                         'nullable'             => true,
-                         'onDelete'             => 'cascade',
-                         'columnDefinition'     => null,
-                     ),
-                 ),
-            )
+            [
+                'fieldName'    => 'parent',
+                'targetEntity' => self::class,
+                'mappedBy'     => null,
+                'inversedBy'   => 'children',
+                'fetch'        => ClassMetadataInfo::FETCH_EAGER,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'parent_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+            ]
         );
         $metadata->mapOneToMany(
-            array(
-                 'fieldName'    => 'children',
-                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
-                 'mappedBy'     => 'parent',
-                 'orderBy'      => array('display_order' => 'ASC'),
-                 'indexBy'      => 'id',
-            )
+            [
+                'fieldName'    => 'children',
+                'targetEntity' => self::class,
+                'mappedBy'     => 'parent',
+                'orderBy'      => ['display_order' => 'ASC'],
+                'indexBy'      => 'id',
+            ]
         );
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'project_members',
+                'targetEntity' => ProjectMember::class,
+                'mappedBy'     => 'department',
+            ]
+        );
+
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'permissions',
+                'targetEntity' => DepartmentPermission::class,
+                'mappedBy'     => 'department',
+            ]
+        );
+
+        $metadata->mapManyToOne([
             'fieldName'    => 'avatar',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+            'targetEntity' => Blob::class,
             'mappedBy'     => null,
             'inversedBy'   => null,
             'fetch'        => ClassMetadataInfo::FETCH_EAGER,
-            'joinColumns'  => array(
-                0 => array(
+            'joinColumns'  => [
+                0 => [
                     'name'                 => 'avatar_blob_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => true,
                     'onDelete'             => 'cascade',
                     'columnDefinition'     => null,
-                ),
-            ),
+                ],
+            ],
             'dpApi' => true,
-        ));
+        ]);
+
+        $metadata->mapManyToMany(
+            [
+                'fieldName'    => 'brands',
+                'targetEntity' => Brand::class,
+                'cascade'      => [
+                    'persist',
+                    'merge',
+                ],
+                'mappedBy'  => 'departments',
+                'joinTable' => [
+                    'name'        => 'department_to_brand',
+                    'joinColumns' => [
+                        0 => [
+                            'name'                 => 'department_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => false,
+                            'onDelete'             => 'cascade',
+                        ],
+                    ],
+                    'inverseJoinColumns' => [
+                        0 => [
+                            'name'                 => 'brand_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => false,
+                            'onDelete'             => 'cascade',
+                        ],
+                    ],
+                ],
+            ]
+        );
     }
 }

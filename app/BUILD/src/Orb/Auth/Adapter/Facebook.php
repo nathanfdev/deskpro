@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Auth
  */
+
 namespace Orb\Auth\Adapter;
 
 use Application\DeskPRO\Log\Logger;
@@ -78,7 +79,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
     public function setDisplayContext($context)
     {
         $context = strtolower($context);
-        if (!in_array($context, array('page', 'popup'))) {
+        if (!in_array($context, ['page', 'popup'])) {
             throw new \InvalidArgumentException("Invalid display context `$context`");
         }
 
@@ -93,10 +94,10 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
     protected function authenticateInitialize(StateHandlerInterface $state)
     {
         $this->fb = new \Facebook(
-            array(
+            [
                 'appId'  => $this->app_id,
                 'secret' => $this->app_secret,
-            ),
+            ],
             $state
         );
 
@@ -130,12 +131,12 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
             return $this->_meToResult($me);
         }
 
-        $redirect_url = $this->fb->getLoginUrl(array(
+        $redirect_url = $this->fb->getLoginUrl([
             'redirect_uri' => $this->getCallbackUrl(),
             'display'      => $this->display,
             'req_perms'    => 'public_profile,email',
             'scope'        => 'public_profile,email',
-        ));
+        ]);
 
         if ($this->logger) {
             $this->logger->log(
@@ -144,7 +145,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
             );
         }
 
-        return new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
+        return new Result(Result::REQUIRES_REDIRECT, null, [Result::MSG_REDIRECT => $redirect_url]);
     }
 
     /**
@@ -155,10 +156,10 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
     protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
     {
         $this->fb = new \Facebook(
-            array(
+            [
                 'appId'  => $this->app_id,
                 'secret' => $this->app_secret,
-            ),
+            ],
             $state
         );
 
@@ -187,7 +188,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
                 $this->logger->log('No active FB session found. Failing.', Logger::DEBUG);
             }
 
-            return new Result(Result::FAILURE, null, array('error_code' => 'failed_session', 'error_message' => 'No active FB session'));
+            return new Result(Result::FAILURE, null, ['error_code' => 'failed_session', 'error_message' => 'No active FB session']);
         }
 
         if ($this->logger) {

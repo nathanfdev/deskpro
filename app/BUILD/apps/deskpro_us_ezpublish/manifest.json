@@ -1,0 +1,74 @@
+{
+	"package_name": "deskpro_us_ezpublish",
+	"is_native": true,
+	"title": "eZ Publish Authentication",
+	"description": "Enables user authentication against an eZ Publish site.",
+	"tags": ["usersources"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": false,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enabled?",
+			"description": "Enable this user source?",
+			"checkbox_label": "Yes",
+			"native_only": true
+		},
+		{
+			"name": "db_dsn",
+			"type": "text",
+			"label": "DSN",
+			"description": "Database DSN",
+			"native_only": true
+		},
+		{
+			"name": "db_username",
+			"type": "text",
+			"label": "DB Username",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "db_password",
+			"type": "text",
+			"label": "DB Password",
+			"description": "",
+			"native_only": true
+		},
+		{
+			"name": "auto_agent",
+			"type": "checkbox",
+			"label": "Auto Agent",
+			"checkbox_label": "Automatically create agents if they do not already exist",
+			"usersource_display": "agent",
+			"default_value": true
+		},
+		{
+			"name": "actions",
+			"type": "array"
+		},
+		{
+		  "name": "sync_enabled",
+		  "type": "checkbox",
+		  "usersource_display": "user",
+		  "label": "Enable Auto Sync",
+		  "checkbox_label": "Routinely sync user information from this usersource to DeskPRO",
+		  "default_value": false
+		},
+		{
+		  "name": "raw_info_filter",
+		  "type": "text",
+		  "label": "Filter",
+		  "description": "You can filter based on info provided by the usersource. <a href='https://support.deskpro.com/kb/articles/477' target='_blank'>Learn about this feature</a>",
+		  "is_required": false
+		}
+	]
+}

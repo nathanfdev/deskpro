@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,14 +29,37 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Entity\ApiToken;
-use DeskPRO\Kernel\License;
+use DpSys\License;
+use Symfony\Component\HttpFoundation\Response;
 
 class IndexController extends AbstractController
 {
+    public function redirectToAdminAction()
+    {
+        $to = str_replace("'", "\\'", $this->generateUrl('agent').'#admin:/');
+
+        $html = <<<HTML
+<html>
+<head>
+<script>
+var target = '{$to}';
+if (window.location.hash && window.location.hash.length) {
+    target += window.location.hash.substring(1).replace(/^\//, '');
+}
+window.location = target;
+</script>
+</head>
+</html>
+HTML;
+
+        return new Response($html);
+    }
+
     public function interfaceAction()
     {
         $token               = new ApiToken();
@@ -54,7 +77,7 @@ class IndexController extends AbstractController
             WHERE name LIKE 'inhelp.%'
         ");
 
-        $inhelp_states = array();
+        $inhelp_states = [];
         foreach ($help_states as $k => $v) {
             $k                 = preg_replace('#^inhelp\.#', '', $k);
             $inhelp_states[$k] = $v;
@@ -72,7 +95,7 @@ class IndexController extends AbstractController
             $this->settings->setSetting('admin_has_loaded', 1);
         }
 
-        return $this->render('AdminInterfaceBundle:Index:interface.html.twig', array(
+        return $this->render('AdminInterfaceBundle:Index:interface.html.twig', [
             'api_token'             => $token,
             'session'               => $this->session->getEntity(),
             'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
@@ -81,6 +104,6 @@ class IndexController extends AbstractController
             'redirect_license'      => defined('DP_BILLING_ERROR'),
             'license_server'        => rtrim(License::getSecureLicServer(), '/'),
             'is_first_load'         => $is_first_load,
-        ));
+        ]);
     }
 }

@@ -1,0 +1,21 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+.ui.basic.buttons .button,
+.ui.basic.button {
+  border: 1px solid @dp-greyscale-250;
+}
+
+.ui.buttons.state-buttons > .ui.button.active:not(.basic):not(.inverted), .ui.buttons.state-buttons:not(.basic):not(.inverted) > .button.active {
+    box-shadow: 0px 2px 0px @dp-greyscale-450;
+}
+
+.ui.basic.buttons .button:hover,
+.ui.basic.button:hover,
+.ui.basic.buttons .button:active,
+.ui.basic.button:active,
+.ui.basic.buttons .active.button,
+.ui.basic.active.button {
+  border-color: @dp-sonic-primary;
+}

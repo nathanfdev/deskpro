@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,8 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Auth\Adapter;
 
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Usersource\Adapter\EntityManagerAwareInterface;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Adapter\PluginAdapter;
@@ -42,7 +45,7 @@ use Orb\Log\Logger;
 /**
  * The Local adapter handles local logins using an email address or username and a password.
  */
-class Local extends PluginAdapter implements FormLoginInterface, Loggable
+class Local extends PluginAdapter implements FormLoginInterface, Loggable, EntityManagerAwareInterface
 {
     /**
      * Entity manager.
@@ -141,10 +144,10 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable
 
         $identity = new Identity(
             $person['id'],
-            array(
+            [
                 'email'           => $person->primary_email->email,
                 'email_confirmed' => true,
-            )
+            ]
         );
         $identity->setFriendlyIdentity($person->primary_email->email);
         $result = new Result(Result::SUCCESS, $identity);
@@ -168,5 +171,10 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable
     public function getLogger()
     {
         return $this->logger;
+    }
+
+    public function setEm(EntityManager $em)
+    {
+        $this->em = $em;
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,10 +31,13 @@
  *
  * @category Controller
  */
+
 namespace Application\DeskPRO\ResourceScanner;
 
 /**
  * Scans the filesystem for an array of all templates.
+ *
+ * NOTE: (July 2015): I don't know if this is actively used or not because we haven't started the admin UI for new-portal
  */
 class TemplateFiles
 {
@@ -74,13 +77,13 @@ class TemplateFiles
      */
     public function genTemplateMap()
     {
-        $paths = array(
+        $paths = [
             'AgentBundle' => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
             'DeskPRO'     => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
-            'UserBundle'  => DP_ROOT.'/src/Application/UserBundle/Resources/views',
-        );
+            'EmailBundle' => DP_ROOT.'/src/Application/EmailBundle/Resources/views',
+        ];
 
-        $tpl_info = array();
+        $tpl_info = [];
 
         foreach ($paths as $bundle => $dir) {
             $finder = new \Symfony\Component\Finder\Finder();
@@ -105,10 +108,10 @@ class TemplateFiles
                     continue;
                 }
 
-                $tpl_info[$tplname] = array(
+                $tpl_info[$tplname] = [
                     'path'         => $file->getRealPath(),
                     'last_updated' => 0,
-                );
+                ];
             }
         }
 
@@ -122,7 +125,7 @@ class TemplateFiles
     {
         $raw_map = $this->getTemplateMap();
 
-        $map = array();
+        $map = [];
 
         foreach ($raw_map as $k => $info) {
             if (strpos($k, 'UserBundle:') !== false || strpos($k, 'DeskPRO:custom_fields:') !== false) {
@@ -140,10 +143,10 @@ class TemplateFiles
     {
         $raw_map = $this->getTemplateMap();
 
-        $map = array();
+        $map = [];
 
         foreach ($raw_map as $k => $info) {
-            if (strpos($k, 'DeskPRO:emails_agent:') !== false || strpos($k, 'DeskPRO:emails_common:') !== false || strpos($k, 'DeskPRO:emails_user:') !== false) {
+            if (strpos($k, 'DeskPRO:emails_agent:') !== false || strpos($k, 'DeskPRO:emails_common:') !== false || strpos($k, 'DeskPRO:emails_user:') !== false || strpos($k, 'EmailBundle:') !== false) {
                 $map[$k] = $info;
             }
         }
@@ -158,7 +161,7 @@ class TemplateFiles
     {
         $raw_map = $this->getTemplateMap();
 
-        $map = array();
+        $map = [];
 
         foreach ($raw_map as $k => $info) {
             if (strpos($k, 'AdminInterfaceBundle:') !== false || strpos($k, 'AgentBundle:') !== false || strpos($k, 'DeskPRO:') !== false) {
@@ -178,7 +181,7 @@ class TemplateFiles
      */
     public function groupPrefixes(array $map)
     {
-        $grouped = array();
+        $grouped = [];
         foreach ($map as $k => $v) {
             preg_match('#^(.*?):(.*?):(.*?)$#', $k, $m);
             $bundle = $m[1];
@@ -188,10 +191,10 @@ class TemplateFiles
             }
 
             if (!isset($grouped[$bundle])) {
-                $grouped[$bundle] = array();
+                $grouped[$bundle] = [];
             }
             if (!isset($grouped[$bundle][$dir])) {
-                $grouped[$bundle][$dir] = array();
+                $grouped[$bundle][$dir] = [];
             }
 
             $grouped[$bundle][$dir][$k]              = $v;
@@ -209,7 +212,7 @@ class TemplateFiles
      */
     public function groupMap(array $map, array $custom_templates)
     {
-        $grouped = array();
+        $grouped = [];
 
         foreach ($map as $k => $v) {
             preg_match('#^(.*?):(.*?):(.*?)$#', $k, $m);
@@ -220,10 +223,10 @@ class TemplateFiles
             }
 
             if (!isset($grouped[$bundle])) {
-                $grouped[$bundle] = array();
+                $grouped[$bundle] = [];
             }
             if (!isset($grouped[$bundle][$dir])) {
-                $grouped[$bundle][$dir] = array('count_changed' => 0, 'count_outdated' => 0, 'templates' => array());
+                $grouped[$bundle][$dir] = ['count_changed' => 0, 'count_outdated' => 0, 'templates' => []];
             }
 
             $v['name']      = $k;

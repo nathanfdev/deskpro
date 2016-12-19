@@ -1,0 +1,77 @@
+.dpw-login-panels-footer {
+  width: 810px;
+  margin: 60px auto 0;
+  color: #cccdcc;
+  font-size: 12px;
+  position: relative;
+  line-height: 1em;
+  text-align: center;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    &:hover { color: #333; }
+  }
+
+  hr {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: #e6e6e6;
+    height: 1px;
+    width: 100%;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  > span {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .meta {
+    width: 200px;
+    text-align: center;
+    a { margin: 0 3px; }
+  }
+
+  .social-media {
+    width: 80px;
+    text-align: center;
+
+    a {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+  }
+
+  .deskpro-mark {
+    width: 60px;
+    height: 10px;
+    position: relative;
+    margin-top: -13px;
+
+    a { display: inline; }
+    a:hover, a:hover strong { color: #3d83c5; }
+
+    .logo {
+      display: block;
+      width: 27px;
+      height: 27px;
+      margin: 0 auto;
+      @include retina-image("../img/loading/footer-deskpro-logo", 27px 27px);
+      background: no-repeat center center;
+    }
+
+    .title {
+      position: absolute;
+      width: 200px;
+      left: -70px;
+      top: 40px;
+      text-align: center;
+      font-size: 11px;
+    }
+
+    strong { color: #969796; }
+  }
+}

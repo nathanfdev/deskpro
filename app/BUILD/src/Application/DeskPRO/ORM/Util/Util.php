@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,10 +31,11 @@
  *
  * @category ORM
  */
+
 namespace Application\DeskPRO\ORM\Util;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Tools\SchemaTool;
 
@@ -65,7 +66,7 @@ class Util
     }
 
     /**
-     * @param \Application\DeskPRO\ORM\EntityManager $em
+     * @param \Doctrine\ORM\EntityManager $em
      *
      * @return array
      */
@@ -79,7 +80,7 @@ class Util
         $tool     = new SchemaTool($em);
 
         $arr   = $tool->getUpdateSchemaSql($metadata, true);
-        $lines = array();
+        $lines = [];
         foreach ($arr as $a) {
             // Doctrine doesnt seem to detect this properly and always thinks this is needed
             if ($a != 'ALTER TABLE email_uids CHANGE id id VARCHAR(100) NOT NULL') {

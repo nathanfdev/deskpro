@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,30 +31,31 @@
  *
  * @category People
  */
+
 namespace Application\DeskPRO\People\AgentPermissions\Value;
 
 class ChatPermissions implements PermissionValueInterface
 {
-    /** @var bool  */
+    /** @var bool */
     public $use = false;
-    /** @var bool  */
+    /** @var bool */
     public $view_transcripts = false;
-    /** @var bool  */
+    /** @var bool */
     public $view_unassigned = false;
-    /** @var bool  */
+    /** @var bool */
     public $view_others = false;
-    /** @var bool  */
+    /** @var bool */
     public $delete = false;
-    /** @var bool  */
+    /** @var bool */
     public $create_labels = false;
 
     public function getNames()
     {
-        return array('use', 'view_transcripts', 'view_unassigned', 'view_others', 'delete', 'create_labels');
+        return ['use', 'view_transcripts', 'view_unassigned', 'view_others', 'delete', 'create_labels'];
     }
 
     public function getDestructiveNames()
     {
-        return array('delete');
+        return ['delete'];
     }
 }

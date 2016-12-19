@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -38,7 +39,7 @@ use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\EntityRepository\TicketTrigger as TicketTriggerRepository;
 use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
 {
@@ -77,15 +78,15 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
             return;
         }
 
-        #------------------------------
-        # For newreply we need to check if
-        # there were other non-reply actions
-        # for the second trigger loop
-        #------------------------------
+        //------------------------------
+        // For newreply we need to check if
+        // there were other non-reply actions
+        // for the second trigger loop
+        //------------------------------
 
         $has_nonreply_actions = false;
         if ($context->getEventType() == 'newreply') {
-            $exclude_types = array(
+            $exclude_types = [
                 'message'              => true,
                 'messages'             => true,
                 'waiting_times'        => true,
@@ -94,7 +95,7 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
                 'locked_by_agent'      => true,
                 'count_agent_replies'  => true,
                 'count_user_replies'   => true,
-            );
+            ];
             foreach ($ticket->getStateChangeRecorder()->getChangedFields() as $f) {
                 if (!isset($exclude_types[$f]) && strpos($f, 'date_') === false) {
                     $context->getLogger()->info(sprintf('[ExecTriggers] Found non-reply update to activate update#run_newreply triggers: %s', $f));
@@ -104,13 +105,15 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
             }
         }
 
-        #------------------------------
-        # Run through triggers
-        #------------------------------
+        //------------------------------
+        // Run through triggers
+        //------------------------------
 
         $triggers = $this->trigger_repos->getTriggersForEventType($context->getEventType());
 
-        $trigger_ids = array_map(function ($t) { return $t->id; }, is_array($triggers) ? $triggers : $triggers->toArray());
+        $trigger_ids = array_map(function ($t) {
+            return $t->id;
+        }, is_array($triggers) ? $triggers : $triggers->toArray());
         $context->getLogger()->info(sprintf('[ExecTriggers] Triggers for event %s: %s', $context->getEventType(), implode(', ', $trigger_ids)));
 
         $has_stop_signal = false;
@@ -125,20 +128,24 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
             $this->runTrigger($trigger, $ticket, $context);
         }
 
-        #------------------------------
-        # More triggers
-        # - If the event is newreply, then we need a second loop
-        # to run through update triggers that have the run_newreply option enabled
-        # (if we have other prop changes)
-        #------------------------------
+        //------------------------------
+        // More triggers
+        // - If the event is newreply, then we need a second loop
+        // to run through update triggers that have the run_newreply option enabled
+        // (if we have other prop changes)
+        //------------------------------
 
         if ($context->getEventType() == 'newreply' && $has_nonreply_actions && !$has_stop_signal) {
             $context->getLogger()->info('[Triggers] Running through update triggers that have run_newreply event flag');
             $alt_triggers = $this->trigger_repos->getTriggersForEventType('update');
             $alt_triggers = is_array($alt_triggers) ? $alt_triggers : $alt_triggers->toArray();
 
-            $alt_triggers = array_filter($alt_triggers, function ($t) { return $t->hasEventFlag(TicketTrigger::EVENT_FLAG_RUN_NEWREPLY); });
-            $alt_trigger_ids = array_map(function ($t) { return $t->id; }, $alt_triggers);
+            $alt_triggers = array_filter($alt_triggers, function ($t) {
+                return $t->hasEventFlag(TicketTrigger::EVENT_FLAG_RUN_NEWREPLY);
+            });
+            $alt_trigger_ids = array_map(function ($t) {
+                return $t->id;
+            }, $alt_triggers);
 
             $context->getLogger()->info(sprintf('[ExecTriggers] Triggers for event update#run_newreply: %s', 'update', implode(', ', $alt_trigger_ids)));
 
@@ -181,7 +188,7 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
             $is_method_match = false;
         }
         if (!$is_method_match) {
-            $context->getLogger()->info(sprintf('[ExecTriggers] Skip trigger #%s due to method mismatch: %s != (%s) %s', $trigger->id, $context->getEventMethod(), $context->getEventPerformer() ?: '', implode(', ', $mode_var ?: array('NONE'))));
+            $context->getLogger()->info(sprintf('[ExecTriggers] Skip trigger #%s due to method mismatch: %s != (%s) %s', $trigger->id, $context->getEventMethod(), $context->getEventPerformer() ?: '', implode(', ', $mode_var ?: ['NONE'])));
 
             return;
         }
@@ -193,13 +200,13 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
         $match = $trigger->terms->isTriggerMatch($ticket, $context);
 
         if ($match) {
-            $state->setCurrentChangeMetadata(array('trigger' => $trigger));
+            $state->setCurrentChangeMetadata(['trigger' => $trigger]);
 
             try {
                 $this->action_applicator->apply($trigger->actions, $ticket, $context);
             } catch (\Exception $e) {
-                $context->getLogger()->error(sprintf('[ExecTriggers] Exception in trigger #%d: [%s] %s', $trigger->id, $e->getCode(), $e->getMessage()), array('exception' => $e));
-                KernelErrorHandler::logException($e);
+                $context->getLogger()->error(sprintf('[ExecTriggers] Exception in trigger #%d: [%s] %s', $trigger->id, $e->getCode(), $e->getMessage()), ['exception' => $e]);
+                SystemErrorHandler::logException($e);
             }
 
             $context->getLogger()->info(sprintf('[ExecTriggers] Applied trigger #%s ', $trigger->id));

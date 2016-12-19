@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -103,7 +104,7 @@ class SmsAccount extends DomainObject
         $this->is_tested    = false;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
@@ -116,73 +117,102 @@ class SmsAccount extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\SmsAccount';
-        $metadata->setPrimaryTable(array('name' => 'sms_accounts'));
+        $metadata->setPrimaryTable(['name' => 'sms_accounts']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapField(
-            array(
-                'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true,
-                'precision' => 0, 'scale' => 0,
-            )
+            [
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+                'precision'  => 0,
+                'scale'      => 0,
+            ]
         );
         $metadata->mapField(
-            array(
-                'fieldName' => 'type', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0,
-                'nullable'  => false, 'columnName' => 'type',
-            )
+            [
+                'fieldName'  => 'type',
+                'type'       => 'string',
+                'length'     => 20,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'type',
+            ]
         );
         $metadata->mapField(
-            array(
-                'fieldName' => 'params', 'type' => 'array', 'columnName' => 'params', 'nullable' => true,
-            )
+            [
+                'fieldName'  => 'params',
+                'type'       => 'array',
+                'columnName' => 'params',
+                'nullable'   => true,
+            ]
         );
         $metadata->mapField(
-            array(
-                'fieldName' => 'identifier', 'type' => 'string', 'length' => 128, 'precision' => 0, 'scale' => 0,
-                'nullable'  => true, 'columnName' => 'identifier',
-            )
+            [
+                'fieldName'  => 'identifier',
+                'type'       => 'string',
+                'length'     => 128,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'identifier',
+            ]
         );
         $metadata->mapField(
-            array(
-                'fieldName' => 'is_enabled', 'type' => 'boolean', 'columnName' => 'is_enabled',
-            )
+            [
+                'fieldName'  => 'is_enabled',
+                'type'       => 'boolean',
+                'columnName' => 'is_enabled',
+            ]
         );
         $metadata->mapField(
-            array(
-                'fieldName' => 'is_connected', 'type' => 'boolean', 'columnName' => 'is_connected',
-            )
+            [
+                'fieldName'  => 'is_connected',
+                'type'       => 'boolean',
+                'columnName' => 'is_connected',
+            ]
         );
         $metadata->mapField(
-            array(
-                'fieldName' => 'is_tested', 'type' => 'boolean', 'columnName' => 'is_tested',
-            )
+            [
+                'fieldName'  => 'is_tested',
+                'type'       => 'boolean',
+                'columnName' => 'is_tested',
+            ]
         );
         $metadata->mapField(
-            array(
-                'fieldName' => 'test_code', 'type' => 'string', 'columnName' => 'test_code', 'nullable' => true,
-            )
+            [
+                'fieldName'  => 'test_code',
+                'type'       => 'string',
+                'columnName' => 'test_code',
+                'nullable'   => true,
+            ]
         );
         $metadata->mapOneToOne(
-            array(
+            [
                 'fieldName'     => 'phone_number',
                 'targetEntity'  => 'Application\\DeskPRO\\Entity\\PhoneNumber',
-                'cascade'       => array('all'),
+                'cascade'       => ['all'],
                 'orphanRemoval' => true,
-                'joinColumns'   => array(
-                    array(
-                        'name'     => 'phone_number_id', 'referencedColumnName' => 'id', 'nullable' => true,
-                        'onDelete' => 'SET NULL',
-                    ),
-                ),
-            )
+                'joinColumns'   => [
+                    [
+                        'name'                 => 'phone_number_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'SET NULL',
+                    ],
+                ],
+            ]
         );
     }
 }

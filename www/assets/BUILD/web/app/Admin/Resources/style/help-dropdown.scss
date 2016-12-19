@@ -1,0 +1,342 @@
+.help-dropdown {
+  width: 700px;
+  left: 300px;
+  z-index: 999;
+}
+
+
+.help-masthead {
+  background: #e3eaf0;
+  text-align: center;
+  padding-top: 25px;
+  padding-bottom: 25px;
+
+  a {
+    display: inline-block;
+    vertical-align: top;
+    color: #a3a8ad;
+    width: 160px;
+
+    .box {
+      width: 50px;
+      height: 50px;
+      background: #f9fbfc;
+      border-radius: 2px;
+      margin: 0 auto;
+      border: 1px solid #f9fbfc;
+    }
+
+    i {
+      font-size: 1.5em;
+      top: 15px;
+    }
+
+    span {
+      display: block;
+      font-size: 1.1em;
+      text-align: center;
+    }
+
+    .title {
+      margin-top: 10px;
+    }
+  }
+
+  a.active, a:hover {
+    color: #8d8d8d;
+
+    .box {
+      background: #fff;
+      border: 1px dashed #d6d6d6;
+    }
+  }
+
+  ul {
+    @extend %flat-list;
+
+    li {
+      display: inline-block;
+      position: relative;
+    }
+
+    li:after {
+      content: "";
+      display: inline-block;
+      width: 50px;
+      height: 1px;
+      position: absolute;
+      background: #ccd2d8;
+      top: 30px;
+      right: -27px;
+    }
+
+    .key-shortcuts {
+      &:after {
+        display: none;
+      }
+    }
+  }
+}
+
+
+.help-dropdown-content {
+  padding: 20px 15px;
+
+  h1 {
+    color: #a1a2a2;
+    margin-bottom: 5px;
+    font-weight: 300;
+  }
+
+  h2 {
+    font-size: 1.2em;
+  }
+
+  p {
+    color: #565656;
+  }
+
+  form {
+    margin-top: 15px;
+
+
+    [type="text"], textarea {
+
+      border: 1px solid #e4e4e4;
+      display: block;
+      width: 100%;
+      padding: 10px;
+      width: 75%;
+
+      @include placeholder {
+        opacity: 0.3;
+        font-style: italic;
+        color: #333;
+      }
+    }
+
+    [type="submit"], textarea, [type="text"] {
+      display: inline-block;
+      vertical-align: bottom;
+      margin-bottom: 10px;
+    }
+
+    [type="submit"] {
+      width: 20%;
+      margin-left: 1%;
+    }
+  }
+
+  .help-article-list {
+    margin-top: 20px;
+    h2 {
+      a {
+        margin-left: 10px;
+        font-size: 0.9em;
+        background: #dcddde;
+        color: #9e9f9f;
+        line-height: 1em;
+        padding: 4px 10px;
+        border-radius: 2px;
+      }
+    }
+
+    ul {
+      @extend %flat-list;
+      margin-top: 10px;
+
+      li {
+        padding: 5px;
+      }
+
+      a {
+        color: #878788;
+
+        &:before {
+          content: "";
+          display: inline-block;
+          width: 5px;
+          height: 5px;
+          border-radius: 10px;
+          background: #c2c3c4;
+          vertical-align: middle;
+          margin-right: 5px;
+          position: relative;
+          top: -2px;
+        }
+      }
+    }
+  }
+}
+
+
+.help-manuals {
+  text-align: center;
+
+  h1 {
+    display: block;
+    text-align: center;
+    margin: 35px 0px;
+    color: #b0b1b2;
+    font-size: 1.5em;
+    font-weight: 300;
+  }
+
+  .manual-link {
+    display: inline-block;
+    width: 25%;
+    color: #878788;
+    margin-left: 10px;
+    margin-right: 10px;
+
+    .manual-icon {
+      display: inline-block;
+      width: 80px;
+      height: 80px;
+      background: #fafbfb;
+      border-radius: 2px;
+      color: #c6c7c7;
+
+      i {
+        font-size: 3em;
+        top: 20px;
+      }
+    }
+
+    .manual-title {
+      display: block;
+      font-size: 1.4em;
+      margin-top: 10px;
+    }
+
+    .manual-page-count {
+      display: block;
+      font-size: 1em;
+      opacity: 0.5;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    a {
+      display: block;
+      border-radius: 2px;
+      line-height: 1em;
+      background: #4681b2;
+      color: #fff;
+      text-align: center;
+      padding: 7px;
+      margin-top: 5px;
+    }
+
+    a.download-pdf {
+      background: #d74733;
+    }
+  }
+
+  .link-to-all-downloads {
+    display: block;
+    padding: 15px;
+    text-align: center;
+
+    a {
+      font-size: 1.2em;
+      color: #6f6f70;
+      text-decoration: underline;
+
+      i {
+        margin-left: 3px;
+      }
+    }
+  }
+}
+
+
+.keyboard-shortcuts {
+  @extend .help-manuals;
+
+  ul {
+    @extend %flat-list;
+    display: inline-block;
+    width: 32%;
+    vertical-align: top;
+    text-align: left;
+  }
+  ul.first {
+    width: 28%;
+  }
+
+  ul.second {
+    width: 37%;
+  }
+
+  .keyboard-shortcuts-content {
+    .title {
+      display: block;
+      font-size: 1.2em;
+      font-weight : 400;
+      color: #545455;
+      padding: 10px 0px;
+    }
+  }
+
+}
+
+
+
+
+.tip-of-the-day {
+  text-align: center;
+  background: #424242;
+  font-size: 1.3em;
+  padding: 15px 10px;
+
+
+  h3 {
+    font-size: 0.9em;
+    opacity: 0.5;
+  }
+
+  .tip-content, .tip-controls {
+    display: inline-block;
+    vertical-align: middle;
+    color: #cecece;
+
+  }
+
+  .tip-content {
+    width: 85%;
+  }
+
+  .tip-controls {
+    width: 5%;
+    opacity: 0.5;
+    &:hover { opacity: 1; }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//

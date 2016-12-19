@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Data;
 
 use Doctrine\ORM\EntityManager;
@@ -71,11 +72,18 @@ class GenerateSchema
     protected $em;
 
     /**
-     * @param \Doctrine\ORM\EntityManager $em
+     * @var bool
      */
-    public function __construct(EntityManager $em)
+    protected $is_master_schema;
+
+    /**
+     * @param EntityManager $em
+     * @param bool          $is_master_schema
+     */
+    public function __construct(EntityManager $em, $is_master_schema = false)
     {
-        $this->em = $em;
+        $this->em               = $em;
+        $this->is_master_schema = $is_master_schema;
     }
 
     /**
@@ -127,12 +135,12 @@ class GenerateSchema
             return;
         }
 
-        $this->creates = array();
-        $this->alters  = array();
+        $this->creates = [];
+        $this->alters  = [];
 
-        #------------------------------
-        # Load SQL
-        #------------------------------
+        //------------------------------
+        // Load SQL
+        //------------------------------
 
         $em = $this->em;
         /** @var $metadata \Doctrine\ORM\Mapping\ClassMetadata[] */
@@ -141,11 +149,12 @@ class GenerateSchema
         $sm       = $this->em->getConnection()->getSchemaManager();
         $all_sql  = $tool->getCreateSchemaSql($metadata);
 
-        #------------------------------
-        # Non-entity tables
-        #------------------------------
+        //------------------------------
+        // Non-entity tables
+        //------------------------------
 
-        $all_sql[] = <<<SQL
+        if ($this->is_master_schema) {
+            $all_sql[] = <<<'SQL'
 CREATE TABLE `content_search` (
   `object_type` varchar(15) NOT NULL DEFAULT '',
   `object_id` int(11) NOT NULL,
@@ -154,18 +163,19 @@ CREATE TABLE `content_search` (
   FULLTEXT KEY `content` (`content`)
 ) ENGINE=MyISAM
 SQL;
+        }
 
-        #------------------------------
-        # Organise it
-        #------------------------------
+        //------------------------------
+        // Organise it
+        //------------------------------
 
         $xa = 0;
         $xc = 0;
         $xt = 0;
 
-        $php_creates  = array();
-        $php_alters   = array();
-        $php_triggers = array();
+        $php_creates  = [];
+        $php_alters   = [];
+        $php_triggers = [];
 
         foreach ($all_sql as $s) {
             $s = trim($s);
@@ -180,12 +190,12 @@ SQL;
 
             // Alter
             } elseif (preg_match('#^ALTER#', $s)) {
-                $s              = str_replace(array("\r\n", "\n"), ' ', $s);
+                $s              = str_replace(["\r\n", "\n"], ' ', $s);
                 $this->alters[] = $s;
 
             // Create
             } else {
-                $s = str_replace(array("\r\n", "\n"), ' ', $s);
+                $s = str_replace(["\r\n", "\n"], ' ', $s);
                 $s .= ' DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 
                 if (strpos($s, 'CREATE TABLE person2usergroups') !== false) {
@@ -208,14 +218,14 @@ SQL;
             ++$xa;
         }
 
-        #------------------------------
-        # Indexes and keys
-        #------------------------------
+        //------------------------------
+        // Indexes and keys
+        //------------------------------
 
-        $this->indexes = array();
-        $this->fks     = array();
-        $php_indexes   = array();
-        $php_fks       = array();
+        $this->indexes = [];
+        $this->fks     = [];
+        $php_indexes   = [];
+        $php_fks       = [];
 
         $schema = $tool->getSchemaFromMetadata($metadata);
         /** @var $tables \Doctrine\DBAL\Schema\Table[] */
@@ -223,8 +233,8 @@ SQL;
         foreach ($tables as $table) {
             $t = $table->getName();
 
-            $this->indexes[$t] = array();
-            $this->fks[$t]     = array();
+            $this->indexes[$t] = [];
+            $this->fks[$t]     = [];
 
             $indexes = $table->getIndexes();
             $fkeys   = $table->getForeignKeys();
@@ -257,9 +267,9 @@ SQL;
             }
         }
 
-        #------------------------------
-        # Create the PHP file
-        #------------------------------
+        //------------------------------
+        // Create the PHP file
+        //------------------------------
 
         $php = "<?php\n\n\$queries = array('create' => array(), 'alter' => array(), 'index' => array(), 'fk' => array(), 'trigger' => array());\n\n";
         $php .= implode("\n", $php_creates);
@@ -294,10 +304,10 @@ SQL;
      */
     public static function combineAlters(array $alters)
     {
-        $segments = array();
+        $segments = [];
 
         foreach ($alters as $sql) {
-            $sql = str_replace(array("\r\n", "\n", ' '), ' ', $sql);
+            $sql = str_replace(["\r\n", "\n", ' '], ' ', $sql);
             $sql = trim($sql, ' ;');
 
             $m = null;
@@ -309,13 +319,13 @@ SQL;
             $alter_seg = trim($m[2], ' ,');
 
             if (!isset($segments[$table])) {
-                $segments[$table] = array();
+                $segments[$table] = [];
             }
 
             $segments[$table][] = $alter_seg;
         }
 
-        $return = array();
+        $return = [];
         foreach ($segments as $table => $segs) {
             $return[] = 'ALTER TABLE '.$table.' '.implode(', ', $segs);
         }

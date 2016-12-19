@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Form\CustomField\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
@@ -37,28 +38,28 @@ class DateTimeFieldType extends CustomFieldTypeAbstract
 {
     protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('default_value', 'text', array('required' => false));
-        $builder->add('default_mode', 'text', array('required' => true));
-        $builder->add('required', 'checkbox', array('required' => false));
-        $builder->add('agent_required', 'checkbox', array('required' => false));
+        $builder->add('default_value', 'text', ['required' => false]);
+        $builder->add('default_mode', 'text', ['required' => true]);
+        $builder->add('required', 'checkbox', ['required' => false]);
+        $builder->add('agent_required', 'checkbox', ['required' => false]);
 
         $builder->add('date_valid_type', 'hidden');
-        $builder->add('date_valid_date1', 'text', array('required' => false));
-        $builder->add('date_valid_date2', 'text', array('required' => false));
-        $builder->add('date_valid_range1', 'text', array('required' => false));
-        $builder->add('date_valid_range2', 'text', array('required' => false));
-        $builder->add('date_valid_dow', 'choice', array(
+        $builder->add('date_valid_date1', 'text', ['required' => false]);
+        $builder->add('date_valid_date2', 'text', ['required' => false]);
+        $builder->add('date_valid_range1', 'text', ['required' => false]);
+        $builder->add('date_valid_range2', 'text', ['required' => false]);
+        $builder->add('date_valid_dow', 'choice', [
             'multiple' => true,
             'expanded' => true,
             'required' => false,
-            'choices'  => array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'),
-        ));
+            'choices'  => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        ]);
     }
 
     public function getDefaultOptions(array $options)
     {
-        return array(
+        return [
             'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DateTimeField',
-        );
+        ];
     }
 }

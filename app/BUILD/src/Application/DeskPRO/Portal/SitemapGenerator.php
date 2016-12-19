@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Portal;
 
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Publish\Structure as PublishStructure;
 use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 
 class SitemapGenerator
 {
@@ -68,7 +69,7 @@ class SitemapGenerator
      */
     protected $items = null;
 
-    public function __construct($base_url, EntityManager $em, Router $router)
+    public function __construct($base_url, EntityManager $em, RouterInterface $router)
     {
         $this->base_url = rtrim($base_url, '/');
         $this->em       = $em;
@@ -90,11 +91,11 @@ class SitemapGenerator
      */
     public function getXml()
     {
-        $xml   = array();
+        $xml   = [];
         $xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml[] = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
-        $attributes = array('loc', 'changefreq', 'lastmod', 'priority');
+        $attributes = ['loc', 'changefreq', 'lastmod', 'priority'];
 
         foreach ($this->getItems() as $item) {
             $xml[] = '<url>';
@@ -146,21 +147,21 @@ class SitemapGenerator
      */
     protected function getSiteItems()
     {
-        $items   = array();
-        $items[] = array(
-            'loc'        => $this->router->generate('user', array()),
+        $items   = [];
+        $items[] = [
+            'loc'        => $this->router->generate('portal_home', []),
             'changefreq' => 'daily',
-        );
+        ];
 
-        $items[] = array(
-            'loc'        => $this->router->generate('user_tickets_new', array()),
+        $items[] = [
+            'loc'        => $this->router->generate('portal_new_ticket', []),
             'changefreq' => 'monthly',
-        );
+        ];
 
-        $items[] = array(
-            'loc'        => $this->router->generate('user_feedback_new', array()),
-            'changefreq' => 'monthly',
-        );
+        $items[] = [
+            'loc'        => $this->router->generate('portal_feedback', []),
+            'changefreq' => 'daily',
+        ];
 
         return $items;
     }
@@ -172,45 +173,51 @@ class SitemapGenerator
     {
         $cat_ids = $this->structure->getArticleCategoryIds();
         if (!$cat_ids) {
-            return array();
+            return [];
         }
 
-        $items = array();
+        $items = [];
 
-        $items[] = array(
-            'loc'        => $this->router->generate('user_articles', array()),
+        $items[] = [
+            'loc'        => $this->router->generate('portal_kb', []),
             'changefreq' => 'daily',
-        );
+        ];
 
-        #------------------------------
-        # Categories
-        #------------------------------
+        //------------------------------
+        // Categories
+        //------------------------------
 
         $cats = $this->structure->getArticleCategories();
 
         foreach ($cats as $cat) {
-            $items[] = array(
-                'loc'        => $this->router->generate('user_articles', array('slug' => $cat->getUrlSlug())),
-                'changefreq' => 'daily',
-            );
+            if ($cat->getSlug()) {
+                $items[] = [
+                    'loc'        => $this->router->generate('portal_kb_browse', ['slug' => $cat->getSlug()]),
+                    'changefreq' => 'daily',
+                ];
+            }
         }
 
-        #------------------------------
-        # Articles
-        #------------------------------
+        //------------------------------
+        // Articles
+        //------------------------------
 
-        $articles = $this->em->createQuery("
+        $articles = $this->em->createQuery(
+            "
             SELECT PARTIAL art.{id,slug,title}
             FROM DeskPRO:Article art
             LEFT JOIN art.categories cat
             WHERE art.status = 'published' AND cat.id IN (?0)
-        ")->execute(array($cat_ids));
+        "
+        )->execute([$cat_ids]);
 
         foreach ($articles as $a) {
-            $items[] = array(
-                'loc'        => $this->router->generate('user_articles_article', array('slug' => $a->getUrlSlug())),
-                'changefreq' => 'weekly',
-            );
+            if ($a->getSlug()) {
+                $items[] = [
+                    'loc'        => $this->router->generate('portal_kb_view', ['slug' => $a->getSlug()]),
+                    'changefreq' => 'weekly',
+                ];
+            }
         }
 
         return $items;
@@ -223,45 +230,51 @@ class SitemapGenerator
     {
         $cat_ids = $this->structure->getNewsCategoryIds();
         if (!$cat_ids) {
-            return array();
+            return [];
         }
 
-        $items = array();
+        $items = [];
 
-        $items[] = array(
-            'loc'        => $this->router->generate('user_news', array()),
+        $items[] = [
+            'loc'        => $this->router->generate('portal_news', []),
             'changefreq' => 'daily',
-        );
+        ];
 
-        #------------------------------
-        # Categories
-        #------------------------------
+        //------------------------------
+        // Categories
+        //------------------------------
 
         $cats = $this->structure->getNewsCategories();
 
         foreach ($cats as $cat) {
-            $items[] = array(
-                'loc'        => $this->router->generate('user_news', array('slug' => $cat->getUrlSlug())),
-                'changefreq' => 'daily',
-            );
+            if ($cat->getSlug()) {
+                $items[] = [
+                    'loc'        => $this->router->generate('portal_news_browse', ['slug' => $cat->getSlug()]),
+                    'changefreq' => 'daily',
+                ];
+            }
         }
 
-        #------------------------------
-        # News
-        #------------------------------
+        //------------------------------
+        // News
+        //------------------------------
 
         if ($cat_ids) {
-            $news = $this->em->createQuery("
+            $news = $this->em->createQuery(
+                "
                 SELECT PARTIAL news.{id,slug,title}
                 FROM DeskPRO:News news
                 WHERE news.status = 'published' AND news.category IN (?0)
-            ")->execute(array($cat_ids));
+            "
+            )->execute([$cat_ids]);
 
             foreach ($news as $n) {
-                $items[] = array(
-                    'loc'        => $this->router->generate('user_news_view', array('slug' => $n->getUrlSlug())),
-                    'changefreq' => 'weekly',
-                );
+                if ($n->getSlug()) {
+                    $items[] = [
+                        'loc'        => $this->router->generate('portal_news_view', ['slug' => $n->getSlug()]),
+                        'changefreq' => 'weekly',
+                    ];
+                }
             }
         }
 
@@ -275,44 +288,50 @@ class SitemapGenerator
     {
         $cat_ids = $this->structure->getDownloadCategoryIds();
         if (!$cat_ids) {
-            return array();
+            return [];
         }
 
-        $items = array();
+        $items = [];
 
-        $items[] = array(
-            'loc'        => $this->router->generate('user_downloads', array()),
+        $items[] = [
+            'loc'        => $this->router->generate('portal_downloads', []),
             'changefreq' => 'daily',
-        );
+        ];
 
-        #------------------------------
-        # Categories
-        #------------------------------
+        //------------------------------
+        // Categories
+        //------------------------------
 
         $cats = $this->structure->getDownloadCategories();
 
         foreach ($cats as $cat) {
-            $items[] = array(
-                'loc'        => $this->router->generate('user_downloads', array('slug' => $cat->getUrlSlug())),
-                'changefreq' => 'daily',
-            );
+            if ($cat->getSlug()) {
+                $items[] = [
+                    'loc'        => $this->router->generate('portal_downloads_browse', ['slug' => $cat->getSlug()]),
+                    'changefreq' => 'daily',
+                ];
+            }
         }
 
-        #------------------------------
-        # Downloads
-        #------------------------------
+        //------------------------------
+        // Downloads
+        //------------------------------
 
-        $downloads = $this->em->createQuery("
+        $downloads = $this->em->createQuery(
+            "
             SELECT PARTIAL download.{id,slug,title}
             FROM DeskPRO:Download download
             WHERE download.status = 'published' AND download.category IN (?0)
-        ")->execute(array($cat_ids));
+        "
+        )->execute([$cat_ids]);
 
         foreach ($downloads as $d) {
-            $items[] = array(
-                'loc'        => $this->router->generate('user_downloads_file', array('slug' => $d->getUrlSlug())),
-                'changefreq' => 'weekly',
-            );
+            if ($d->getSlug()) {
+                $items[] = [
+                    'loc'        => $this->router->generate('portal_downloads_view', ['slug' => $d->getSlug()]),
+                    'changefreq' => 'weekly',
+                ];
+            }
         }
 
         return $items;
@@ -325,44 +344,35 @@ class SitemapGenerator
     {
         $cat_ids = $this->structure->getFeedbackCategoryIds();
         if (!$cat_ids) {
-            return array();
+            return [];
         }
 
-        $items = array();
+        $items = [];
 
-        $items[] = array(
-            'loc'        => $this->router->generate('user_feedback', array()),
+        $items[] = [
+            'loc'        => $this->router->generate('portal_feedback', []),
             'changefreq' => 'daily',
-        );
+        ];
 
-        #------------------------------
-        # Categories
-        #------------------------------
+        //------------------------------
+        // Downloads
+        //------------------------------
 
-        $cats = $this->structure->getFeedbackCategories();
-
-        foreach ($cats as $cat) {
-            $items[] = array(
-                'loc'        => $this->router->generate('user_feedback', array('slug' => $cat->getUrlSlug())),
-                'changefreq' => 'daily',
-            );
-        }
-
-        #------------------------------
-        # Downloads
-        #------------------------------
-
-        $feedback = $this->em->createQuery('
+        $feedback = $this->em->createQuery(
+            '
             SELECT PARTIAL feedback.{id,slug,title}
             FROM DeskPRO:Feedback feedback
             WHERE feedback.hidden_status IS NULL AND feedback.category IN (?0)
-        ')->execute(array($cat_ids));
+        '
+        )->execute([$cat_ids]);
 
         foreach ($feedback as $f) {
-            $items[] = array(
-                'loc'        => $this->router->generate('user_feedback_view', array('slug' => $f->getUrlSlug())),
-                'changefreq' => 'weekly',
-            );
+            if ($f->getSlug()) {
+                $items[] = [
+                    'loc'        => $this->router->generate('portal_feedback_view', ['slug' => $f->getSlug()]),
+                    'changefreq' => 'weekly',
+                ];
+            }
         }
 
         return $items;

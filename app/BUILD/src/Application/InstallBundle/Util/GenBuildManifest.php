@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,16 +36,16 @@ class GenBuildManifest
     /**
      * @var string
      */
-    private $builds_path;
+    private $buildsPath;
 
     /**
      * @var array
      */
-    private $add = array();
+    private $add = [];
 
-    public function __construct($builds_path, array $add = null)
+    public function __construct($buildsPath, array $add = null)
     {
-        $this->builds_path = $builds_path;
+        $this->buildsPath = $buildsPath;
         if ($add) {
             $this->add = $add;
         }
@@ -56,42 +56,61 @@ class GenBuildManifest
      */
     public function getBuildsArray()
     {
-        $builds_path = $this->builds_path;
+        $buildsPath = $this->buildsPath;
 
-        $finder = Finder::create()->in($builds_path)->files()->name('/^Build(\\d+)\.php$/');
+        $finder = Finder::create()->in($buildsPath)->files()->name('/^Build.*?(\\d+)(.*?)\.php$/');
+        $finder->sortByName();
+        $startIds = [];
 
-        $builds = array();
+        $builds = [];
 
         foreach ($finder as $file) {
             /* @var $file \SplFileInfo */
 
-            $build_id = Strings::extractRegexMatch('/^Build(\\d+)\.php$/', $file->getFilename());
-            if (!$build_id) {
+            $buildId = Strings::extractRegexMatch('/^Build.*?(\\d+)(.*?)\.php$/', $file->getFilename());
+            if (!$buildId) {
                 continue;
             }
 
-            $trim_path = str_replace(DP_ROOT, '', $file->getRealPath());
+            // if this dir is a build-pack, we read files sequentually but get the 'id'
+            // of the build based off of a start build ID.
+            // it allows the whole directory to be moved/renamed up/down the timeline easily (e.g, for big merges)
+            $d = dirname($file->getRealPath());
+            if (!isset($startIds[$d])) {
+                if (file_exists($d.'/build-pack.txt')) {
+                    $packinfo = Strings::parseEqualsLines(file_get_contents($d.'/build-pack.txt'));
+                    if ($packinfo['start_build_id']) {
+                        $startIds[$d] = $packinfo['start_build_id'];
+                    }
+                }
+            }
+
+            if (isset($startIds[$d])) {
+                $buildId = $startIds[$d]++;
+            }
+
+            $trimPath  = str_replace(DP_ROOT, '', $file->getRealPath());
             $classname = 'Application\\InstallBundle\\Upgrade\\Build\\'.str_replace('.php', '', $file->getBasename());
 
-            $builds[$build_id] = array(
-                'file'      => $trim_path,
+            $builds[$buildId] = [
+                'file'      => $trimPath,
                 'classname' => $classname,
-            );
+            ];
         }
 
         if ($this->add) {
             foreach ($this->add as $filepath) {
                 $file = new \SplFileInfo($filepath);
 
-                $build_id  = Strings::extractRegexMatch('/^Build(\\d+)\.php$/', $file->getFilename());
-                $trim_path = str_replace(DP_ROOT, '', $file->getRealPath());
+                $buildId   = Strings::extractRegexMatch('/^Build(\\d+)\.php$/', $file->getFilename());
+                $trimPath  = str_replace(DP_ROOT, '', $file->getRealPath());
                 $classname = 'Application\\InstallBundle\\Upgrade\\Build\\'.str_replace('.php', '', $file->getBasename());
 
-                if ($build_id) {
-                    $builds[$build_id] = array(
-                        'file'      => $trim_path,
+                if ($buildId) {
+                    $builds[$buildId] = [
+                        'file'      => $trimPath,
                         'classname' => $classname,
-                    );
+                    ];
                 }
             }
         }
@@ -108,6 +127,8 @@ class GenBuildManifest
     {
         $indent = '    ';
 
+        $year = date('Y');
+
         $header = <<<CODE
 <?php
 
@@ -115,7 +136,7 @@ class GenBuildManifest
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) $year, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -139,22 +160,21 @@ class GenBuildManifest
 
 CODE;
 
-        $file   = array();
-        $file[] = $header.PHP_EOL.'return array(';
+        $file   = [];
+        $file[] = $header.PHP_EOL.'return [';
 
-        $builds_array       = $this->getBuildsArray();
-        $builds_array_count = count($builds_array);
-        foreach ($builds_array as $build_id => $build_info) {
-            $row = $indent.$build_id.' => array('.PHP_EOL;
-            $row .= $indent.$indent."'file'      => '".$build_info['file']."',".PHP_EOL;
-            $row .= $indent.$indent."'classname' => '".$build_info['classname']."',".PHP_EOL;
-            $row .= $indent.')';
+        $buildsArray = $this->getBuildsArray();
+        foreach ($buildsArray as $buildId => $buildInfo) {
+            $row = $indent.$buildId.' => ['.PHP_EOL;
+            $row .= $indent.$indent."'file'      => '".$buildInfo['file']."',".PHP_EOL;
+            $row .= $indent.$indent."'classname' => '".$buildInfo['classname']."',".PHP_EOL;
+            $row .= $indent.']';
             $row .= ',';
 
             $file[] = $row;
         }
 
-        $file[] = ');'.PHP_EOL;
+        $file[] = '];'.PHP_EOL;
 
         $file = implode(PHP_EOL, $file);
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Queue;
 
 use Application\DeskPRO\BlobStorage\BlobStorageException;
 use Application\EmailBundle\Mail\RawTransport\RawTransportException;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailFailureEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailSuccessEvent;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
+use Doctrine\Common\Util\Debug;
 use Psr\Log\LoggerInterface;
 
 class QueueProc
@@ -42,6 +47,11 @@ class QueueProc
      * @var LoggerInterface
      */
     private $logger;
+
+    /**
+     * @var EventLogger
+     */
+    private $event_logger;
 
     /**
      * @var SourceMapperInterface
@@ -66,12 +76,18 @@ class QueueProc
      * @param SourceMapperInterface $source_mapper
      * @param SourceSender          $source_sender
      * @param LoggerInterface       $logger
+     * @param EventLogger           $event_logger
      */
-    public function __construct(SourceMapperInterface $source_mapper, SourceSender $source_sender, LoggerInterface $logger)
-    {
+    public function __construct(
+        SourceMapperInterface $source_mapper,
+        SourceSender $source_sender,
+        LoggerInterface $logger,
+        EventLogger $event_logger
+    ) {
         $this->logger        = $logger;
         $this->source_mapper = $source_mapper;
         $this->source_sender = $source_sender;
+        $this->event_logger  = $event_logger;
     }
 
     /**
@@ -118,7 +134,11 @@ class QueueProc
                 $this->logger->notice('Did not send any messages');
                 $this->source_mapper->markSourceError($r, 'no_send');
             }
+
+            $this->event_logger->log(new OutgoingEmailSuccessEvent($r['email_account_id'], $r['from_email']));
         } catch (RawTransportException $e) {
+            $this->event_logger->log(new OutgoingEmailFailureEvent($r['email_account_id'], $r['from_email'], $e));
+
             $this->logger->notice('Send failed');
             $next = $this->getNextRetry($r);
 

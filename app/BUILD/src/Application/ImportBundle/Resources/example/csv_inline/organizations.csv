@@ -1,2 +1,0 @@
-name,blob_path,file_name,content_type,importance,custom "Text field",custom "Radio button field",twitter,phone,fax,skype,website,city,country,address,post_code,state
-some organization,/deskpro/www/app/src/Application/ImportBundle/Resources/example/csv/organizations.csv,organizations.csv,csv,10,some text 1,Choice 1,twitter_acc_id,+447700900315,+12025550156,skype_username,http://site.com,London,UK,1st street,10587563456,CA

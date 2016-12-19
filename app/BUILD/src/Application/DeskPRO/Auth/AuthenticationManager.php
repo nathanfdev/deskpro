@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,14 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Auth;
 
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\Settings\Settings;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
@@ -102,14 +103,14 @@ class AuthenticationManager
      * @param UsersourceManager            $usersourceManager    system service
      * @param AuthSettings                 $authSettings         system service
      * @param UsersourceAuthAdapterFactory $auth_adapter_factory
-     * @param Settings                     $appSettings
+     * @param SettingsBag                  $appSettings
      * @param string                       $interface            this MUST be "user" or "agent"
      */
     public function __construct(
-        AuthSettings $authSettings,
-        UsersourceManager $usersourceManager,
+        AuthSettings                 $authSettings,
+        UsersourceManager            $usersourceManager,
         UsersourceAuthAdapterFactory $auth_adapter_factory,
-        Settings $appSettings,
+        SettingsBag                  $appSettings,
         $interface
     ) {
         $this->usersourceManager  = $usersourceManager;
@@ -194,9 +195,9 @@ class AuthenticationManager
      */
     public function authenticateFormLogin($identifier, $password)
     {
-        #------------------------------
-        # Auth usersources that accept local input
-        #------------------------------
+        //------------------------------
+        // Auth usersources that accept local input
+        //------------------------------
 
         $usersources = $this->getFormLoginUsersources();
         foreach ($usersources as $us) {
@@ -204,16 +205,16 @@ class AuthenticationManager
 
             if ($adapter instanceof FormLoginInterface) {
                 $adapter->setFormData(
-                    array(
+                    [
                         'username' => $identifier,
                         'password' => $password,
-                    )
+                    ]
                 );
 
                 try {
                     $result = $adapter->authenticate();
                 } catch (\Exception $e) {
-                    KernelErrorHandler::logException($e, false);
+                    SystemErrorHandler::logException($e, false);
                     $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
                     $GLOBALS['DP_AUTH_EXCEPTION']         = $e;
                     continue;
@@ -223,7 +224,7 @@ class AuthenticationManager
                     $login_processor = new LoginProcessor($us, $result->getIdentity());
                     $person          = $login_processor->getPerson();
 
-                    $identity     = new Identity($person->id, array('person' => $person));
+                    $identity     = new Identity($person->id, ['person' => $person]);
                     $result       = new Result(Result::SUCCESS, $identity);
                     $this->authBy = $us->source_type;
 
@@ -233,6 +234,14 @@ class AuthenticationManager
         }
 
         return new Result(Result::FAILURE_INVALID_CREDS);
+    }
+
+    /**
+     * @return UsersourceAuthAdapterFactory
+     */
+    public function getAuthAdapterFactory()
+    {
+        return $this->authAdapterFactory;
     }
 
     /**
@@ -304,6 +313,11 @@ class AuthenticationManager
         return $this->isDeskPROEnabled() && $this->appSettings->get('core.reg_enabled');
     }
 
+    public function isRememberMeEnabled()
+    {
+        return $this->appSettings->get('core.enable_user_rememberme');
+    }
+
     /**
      * Has at least one usersource that can redirect to "lost password".
      *
@@ -355,13 +369,13 @@ class AuthenticationManager
         // if no usersource has a visible capability
         return count(
                 $this->usersourcesForInterface->withCapability(
-                    array(
+                    [
                         UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,
                         UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN,
                         UsersourceInfo::CAPABILITY_FORM_LOGIN,
                         UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
                         UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB,
-                    )
+                    ]
 
                 )
             ) != 0

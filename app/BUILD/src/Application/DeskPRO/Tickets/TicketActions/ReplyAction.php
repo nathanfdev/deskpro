@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -46,7 +47,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     /** @var string|null */
     protected $reply_pos;
     /** @var array */
-    protected $attach_ids = array();
+    protected $attach_ids = [];
     /** @var Person */
     protected $person_context;
     /** @var bool */
@@ -54,7 +55,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     /** @var int|null */
     protected $person_id = null;
 
-    public function __construct($reply_text, array $attach_ids = array(), $reply_pos = null, $is_html = false, $person_id = null)
+    public function __construct($reply_text, array $attach_ids = [], $reply_pos = null, $is_html = false, $person_id = null)
     {
         $this->reply_text = $reply_text;
         $this->attach_ids = $attach_ids;
@@ -64,13 +65,16 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Person $person
+     * {@inheritdoc}
      */
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function checkPermission(Ticket $ticket, Person $person)
     {
         if (!$person->PermissionsManager->TicketChecker->canReply($ticket, 'reply')) {
@@ -81,9 +85,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -153,15 +155,19 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
-        return array(
-            array('action' => 'reply', 'reply_text' => $this->reply_text, 'attach_ids' => $this->attach_ids, 'is_html' => $this->is_html, 'person_id' => $this->person_id),
-        );
+        return [
+            [
+                'action'     => 'reply',
+                'reply_text' => $this->reply_text,
+                'attach_ids' => $this->attach_ids,
+                'is_html'    => $this->is_html,
+                'person_id'  => $this->person_id,
+            ],
+        ];
     }
 
     /**
@@ -193,9 +199,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -203,14 +207,14 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {
         $tr = App::getTranslator();
 
         if ($as_html) {
-            $flat = str_replace(array("\r\n", "\n"), ' ', $this->reply_text);
+            $flat = str_replace(["\r\n", "\n"], ' ', $this->reply_text);
             if (strlen($flat) > 80) {
                 $flat = substr($flat, 0, 80).'...';
             }
@@ -237,7 +241,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
                 return $ret;
             }
 
-            return $tr->phrase('agent.tickets.add_reply_x_action', array('desc' => $desc));
+            return $tr->phrase('agent.tickets.add_reply_x_action', ['desc' => $desc]);
         }
 
         return $tr->phrase('agent.tickets.add_reply_action');

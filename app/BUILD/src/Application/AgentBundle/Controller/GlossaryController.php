@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\AgentBundle\Controller;
+
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\GlossaryWord;
+use Application\DeskPRO\Entity\GlossaryWordDefinition;
 
 /**
  * Glossary listing and editing.
@@ -40,67 +41,76 @@ class GlossaryController extends AbstractController
     {
         $words = $this->in->getCleanValueArray('words', 'string');
 
-        $definition             = new \Application\DeskPRO\Entity\GlossaryWordDefinition();
-        $definition->definition = $this->in->getString('definition');
+        $brandId = $this->in->getUInt('brand_id');
+        /** @var Brand $brand */
+        $brand = $this->em->getRepository(Brand::class)->find($brandId);
+
+        $definition = new GlossaryWordDefinition();
+        $definition->setDefinition($this->in->getString('definition'));
         foreach ($words as $word) {
-            $definition->addWord($word);
+            $definition->addNewWord($word, $brand);
         }
 
-        if (!count($definition->words)) {
-            return $this->createJsonResponse(array('error' => 'no_word'));
+        if (!count($definition->getWords())) {
+            return $this->createJsonResponse(['error' => 'no_word']);
         }
 
         $this->em->persist($definition);
         $this->em->flush();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'definition_id' => $definition['id'],
             'words'         => $words,
             'definition'    => $definition['definition'],
-        ));
+        ]);
     }
 
     public function glossarySaveWordJsonAction($word_id)
     {
-        $word = $this->em->find('DeskPRO:GlossaryWord', $word_id);
-        if (!$word || !$word->definition) {
-            return $this->createJsonResponse(array('error' => 'not_found'));
+        /** @var GlossaryWord $word */
+        $word = $this->em->find(GlossaryWord::class, $word_id);
+        if (!$word || !$word->getDefinition()) {
+            return $this->createJsonResponse(['error' => 'not_found']);
         }
 
         $words = $this->in->getCleanValueArray('words', 'string');
         if (!$words) {
-            return $this->createJsonResponse(array('error' => 'no_word'));
+            return $this->createJsonResponse(['error' => 'no_word']);
         }
 
-        $definition = $word->definition;
+        $brandId = $this->in->getUInt('brand_id');
+        /** @var Brand $brand */
+        $brand = $this->em->getRepository(Brand::class)->find($brandId);
+
+        $definition = $word->getDefinition();
 
         $definition['definition'] = $this->in->getString('definition');
-        $definition->updateWords($words);
+        $definition->updateWords($words, $brand);
 
-        if (!count($definition->words)) {
-            return $this->createJsonResponse(array('error' => 'no_word'));
+        if (!count($definition->getWords())) {
+            return $this->createJsonResponse(['error' => 'no_word']);
         }
 
         $this->em->persist($definition);
         $this->em->flush();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'definition_id' => $definition['id'],
             'words'         => $words,
             'definition'    => $definition['definition'],
-        ));
+        ]);
     }
 
     public function glossaryDeleteWordJsonAction($word_id)
     {
-        $word = $this->em->find('DeskPRO:GlossaryWord', $word_id);
+        $word = $this->em->find(GlossaryWord::class, $word_id);
         if (!$word || !$word->definition) {
-            return $this->createJsonResponse(array('error' => 'not_found'));
+            return $this->createJsonResponse(['error' => 'not_found']);
         }
 
         $definition = $word->definition;
 
-        $words = array();
+        $words = [];
         foreach ($definition->words as $word) {
             $words[] = $word->word;
         }
@@ -108,39 +118,39 @@ class GlossaryController extends AbstractController
         $this->em->remove($definition);
         $this->em->flush();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'definition_id' => $definition['id'],
             'words'         => $words,
             'definition'    => $definition['definition'],
-        ));
+        ]);
     }
 
     public function glossaryWordJsonAction($word_id)
     {
-        $word = $this->em->find('DeskPRO:GlossaryWord', $word_id);
+        $word = $this->em->find(GlossaryWord::class, $word_id);
         if (!$word || !$word->definition) {
-            return $this->createJsonResponse(array('error' => 'not_found'));
+            return $this->createJsonResponse(['error' => 'not_found']);
         }
 
         $definition = $word->definition;
 
-        $words = array();
+        $words = [];
         foreach ($definition->words as $def_word) {
             $words[] = $def_word->word;
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'id'            => $word['id'],
             'definition_id' => $definition['id'],
             'words'         => $words,
             'definition'    => $definition['definition'],
-        ));
+        ]);
     }
 
     public function tipAction($word)
     {
         try {
-            $word = $this->em->getRepository('DeskPRO:GlossaryWord')->findOneByWord($word);
+            $word = $this->em->getRepository(GlossaryWord::class)->findOneByWord($word);
             $def  = $word->definition->definition;
         } catch (\Exception $e) {
             $def = '';

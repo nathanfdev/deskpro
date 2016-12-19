@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\Dpql;
@@ -82,7 +83,7 @@ class DateOffsetGroup extends AbstractFunc
             $ifSql = 'UNIX_TIMESTAMP('.$toPrepped->sql().') - UNIX_TIMESTAMP('.$fromPrepped->sql().')';
         }
 
-        $groups = array(
+        $groups = [
             900      => '0-15 minutes',
             1800     => '15-30 minutes',
             3600     => '30-60 minutes',
@@ -100,7 +101,7 @@ class DateOffsetGroup extends AbstractFunc
             15724800 => '3-6 months', // 181 days
             31536000 => '6-12 months', // 365 days
             63072000 => '1-2 years', // 365*2 days
-        );
+        ];
         krsort($groups);
 
         $maxSentinel = 630720000;
@@ -124,13 +125,13 @@ class DateOffsetGroup extends AbstractFunc
         $return = new Prepared($sql, $name, false, $renderer);
 
         $return->setGroupFill(function ($min, $max) use ($groups, $maxSentinel) {
-            $fills = array();
+            $fills = [];
             if ($max >= $maxSentinel) {
-                $fills[] = array($maxSentinel, $maxSentinel, $maxSentinel);
+                $fills[] = [$maxSentinel, $maxSentinel, $maxSentinel];
             }
             foreach ($groups as $groupMax => $null) {
                 if ($groupMax <= $max) {
-                    $fills[] = array($groupMax, $groupMax, $groupMax);
+                    $fills[] = [$groupMax, $groupMax, $groupMax];
                 }
             }
 

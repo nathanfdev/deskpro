@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,10 +31,11 @@
  *
  * @category Entities
  */
+
 namespace Application\LegacyApiBundle\Controller\Helper;
 
-use Application\LegacyApiBundle\Controller\AbstractController;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\LegacyApiBundle\Controller\AbstractController;
 use Orb\Util\Util;
 
 class CustomFieldHelper
@@ -68,7 +69,7 @@ class CustomFieldHelper
         $type_class  = 'Application\\LegacyApiBundle\\Form\\CustomField\\Type\\'.$basetype.'FieldType';
 
         if (!isset($form_data['choices_structure'])) {
-            $form_data['choices_structure'] = array();
+            $form_data['choices_structure'] = [];
         }
 
         $editfield = new $model_class($field);

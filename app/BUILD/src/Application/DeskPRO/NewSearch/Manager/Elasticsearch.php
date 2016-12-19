@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,13 +32,16 @@ use Application\DeskPRO\EntityRepository\Ticket;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Validator\StringEmail;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * Elasticsearch Search Manager.
  */
-class Elasticsearch extends ContainerAware implements SearchManagerInterface
+class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * The currently logged in person.
      *
@@ -51,7 +54,7 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
      *
      * @var array
      */
-    protected $objects = array(
+    protected $objects = [
         'article'           => 'DeskPRO:Article',
         'download'          => 'DeskPRO:Download',
         'feedback'          => 'DeskPRO:Feedback',
@@ -60,30 +63,30 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
         'person'            => 'DeskPRO:Person',
         'organization'      => 'DeskPRO:Organization',
         'chat_conversation' => 'DeskPRO:ChatConversation',
-    );
+    ];
 
     /**
      * Permission requirement.
      *
      * @var array
      */
-    protected $requiresPermission = array(
+    protected $requiresPermission = [
         'ticket',
-    );
+    ];
 
     /**
      * Search results.
      *
      * @var array
      */
-    protected $results = array();
+    protected $results = [];
 
     public function quickSearch($q, $sort = null, array $limit_types = null)
     {
-        $result_meta = array();
+        $result_meta = [];
         $people_top  = false;
 
-        if ($sort && !in_array($sort, array('score', 'date_active', 'date_created'))) {
+        if ($sort && !in_array($sort, ['score', 'date_active', 'date_created'])) {
             $sort = null;
         }
         if (!$sort) {
@@ -116,7 +119,7 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
                     }
                 } elseif (strlen($q) >= 3) {
                     $tickets = $ent_repos->searchTicketRef($q);
-                    $results = array();
+                    $results = [];
                     foreach ($tickets as $ticket) {
                         if ($this->person->PermissionsManager->TicketChecker->canView($ticket)) {
                             $results[] = $ticket;
@@ -151,9 +154,9 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
                 }
             }
 
-            $result = $repository->find($q, null, array(
+            $result = $repository->find($q, null, [
                 'sort_type' => $sort,
-            ));
+            ]);
             if ($result) {
                 $this->handleResult($object, $result);
             }
@@ -163,7 +166,7 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
             return Arrays::uniqueObjectArray($group);
         }, $this->results);
 
-        return array($this->results, $result_meta, $people_top);
+        return [$this->results, $result_meta, $people_top];
     }
 
     private function isAllowed($object)
@@ -183,11 +186,11 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
     private function handleResult($object, $result)
     {
         if (!isset($this->results[$object])) {
-            $this->results[$object] = array();
+            $this->results[$object] = [];
         }
 
         if (!is_array($result)) {
-            $result = array($result);
+            $result = [$result];
         }
 
         switch ($object) {

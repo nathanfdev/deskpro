@@ -1,0 +1,197 @@
+// SCCS files rendering too slow?
+// temporarily remove them from the @import list below and link them directly on the html (so running sass --watch ./ doesnt render the externaly linked files through styles.css but creates a new css file for it )
+
+// ATTENTION!
+// If you need some raw, but it had been commented,
+// PLEASE:
+// move it into agent-style.scss
+
+//@import "../fonts/font-awesome/css/font-awesome.min.css";
+
+// extras
+@import 'misc';
+// Dark background left sidebar
+
+// Filters etc
+@import 'sidebar-urgent-sliders';
+@import 'sidebar-hover-interactions';
+@import 'sidebar-labels';
+@import 'sidebar-flags';
+@import 'sidebar-collapsed';
+@import 'sidebar-apps';
+//@import 'control-bar'; // Filters, order by and so on in ListFrame
+
+//@import 'top-bar';
+//Basic structure, logo
+@import 'top-bar-search-form';
+// Search form (look in live-search.scss for the live results)
+//@import 'top-bar-user-options';
+// User options button & dropdown
+//@import 'top-bar-notifications';
+// -
+//@import 'top-bar-agent-ims';
+// Ims (avatar styles in the main top-bar.scss)
+@import 'top-bar-switches';
+// All the switches
+@import 'top-bar-dropdown';
+
+@import 'content';
+
+@import 'dropdowns';
+@import 'dropdown-im';
+@import 'dropdown-notifications';
+@import 'dropdown-incoming-chat';
+@import 'dropdown-incoming-call';
+@import 'dropdown-active-chat';
+// Ongoing chat with someone
+@import 'dropdown-chat';
+// Chat controls
+@import 'help-dropdown';
+// Help stuff
+@import 'select-dropdown';
+@import 'dropdown-workspace';
+
+//@import 'navigation-dropdowns';
+
+@import 'live-search';
+@import 'forms';
+@import 'sidebar-kb';
+@import 'dropdown-panels';
+
+@import 'setting-popups';
+@import 'settings-popup-signatures';
+@import 'settings-popup-avatar-crop';
+@import 'settings-popup-devices';
+@import 'settings-notifications';
+
+@import 'tickets';
+@import 'tickets-timeline';
+@import 'tickets-header';
+@import 'tickets-table-view';
+@import 'ticket-events';
+@import 'ticket-editing';
+@import 'cards';
+@import 'cards-task';
+@import 'kanban';
+@import 'task-calendar';
+@import 'calendar';
+
+@import 'ticket';
+@import 'ticket-view';
+@import 'tickets-table-view';
+
+@import 'right-panel';
+@import 'main-panel';
+// Container with sidebar for right side view (ticket or other)
+@import 'external-apps';
+
+@import 'reports';
+@import 'reports-editor';
+@import 'tooltips';
+@import 'stats';
+@import 'editor';
+// @import 'pagination';
+@import 'tip-panel';
+@import 'growl-notifications';
+
+@import '../global-widgets/radio';
+
+.checkbox {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  text-align: center;
+
+  i {
+    top: 1px;
+    transition: all 0.1s ease;
+    opacity: 0;
+    font-size: 10px;
+  }
+
+  &.checked {
+    i {
+      opacity: 1;
+    }
+  }
+}
+
+// Temp controls on top bar to resize the interface
+.checkbox-button {
+  text-decoration: none;
+  outline: none;
+
+  span {
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+.content, .sidebar, .app-bar {
+  overflow-y: scroll;
+}
+
+// To keep a set width sidebar with a full width content columns: float left and give the content container
+// padding-left equal to the full width of the sidebars.
+//   |   |         |              |
+//   | A | sidebar |   content    |
+//   |   |         |              |
+//   |   |         |              |
+//
+//    A(pp-bar) + sidebar = content padding-left
+//
+
+$app-width: 55px;
+$report-list-width: 555px;
+$content-width: $app-width + $sidebar-width;
+
+.app-bar-wrapper {
+  float: left;
+  width: $app-width;
+  background: #2b2f34;
+  position: relative;
+  z-index: 299;
+}
+
+.content-wrapper {
+  padding-left: $content-width;
+  position: relative;
+  transition: all 1s ease;
+}
+
+.report-wrapper {
+  padding-left: $app-width;
+}
+
+.report-list-wrapper {
+  float: left;
+  width: $report-list-width;
+}
+
+.stat-large-preview-wrapper {
+  padding-left: $app-width + $report-list-width;
+
+  div {
+    background: #fff;
+    border-left: 1px solid $global-border;
+    height: 2400px;
+  }
+}
+
+.wrapper {
+  @include clearfix;
+}
+
+.interface-controls {
+  padding: 8px;
+  display: inline-block;
+  vertical-align: top;
+  a {
+    color: rgba(0, 0, 0, 0.3);
+    font-size: 1.3em;
+    margin-right: 10px;
+  }
+}
+

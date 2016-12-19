@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,85 +31,103 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Labels\Label;
+use Application\DeskPRO\Entity\Labels\LabelsOwner;
+use Application\DeskPRO\Labels\LabelManager;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\AgentLinkRoute;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Feedback (feedback).
- *
- * @SWG\Model
+ * @PortalLinkRoute("portal_feedback_view", route_param_map={"slug":"slug"})
+ * @PortalLinkRoute("portal_feedback_view", route_param_map={"slug": "id"}, type="permalink")
+ * @PortalLinkRoute("portal_feedback_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
+ * @PortalLinkRoute("portal_feedback_vote_up",       route_param_map={"slug":"slug"}, type="vote_up")
+ * @PortalLinkRoute("portal_feedback_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
+ * @AgentLinkRoute("agent_feedback_view", route_param_map={"feedback_id": "id"})
  */
-class Feedback extends ContentAbstract implements HighlightableModelInterface
+class Feedback extends ContentAbstract implements HighlightableModelInterface, LabelsOwner
 {
-    const STATUS_NEW    = 'new';
+    const CONTENT_TYPE = 'feedback';
+
     const STATUS_ACTIVE = 'active';
     const STATUS_CLOSED = 'closed';
+
+    /**
+     * Not public (e.g., waiting for review). But agents see it.
+     */
     const STATUS_HIDDEN = 'hidden';
 
     /**
-     * @var \Application\DeskPRO\Entity\FeedbackStatusCategory
-     * @SWG\Property(name="status_category",type="FeedbackStatusCategory")
+     * Has this feedback been reviewed by an agent?
+     *
+     * @var bool
+     */
+    protected $is_reviewed = false;
+
+    /**
+     * Category the feedback belongs to.
+     *
+     * @var FeedbackStatusCategory
      */
     protected $status_category = null;
 
     /**
+     * Hidden status code.
+     *
      * @var string
-     * @SWG\Property(name="hidden_status",type="string")
      */
     protected $hidden_status = null;
 
     /**
-     * @var string
-     * @SWG\Property(name="validating",type="string")
-     */
-    protected $validating = null;
-
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     * @SWG\Property(name="category",type="array", items="$ref:FeedbackCategory")
+     * Category the feedback belongs to.
+     *
+     * @var FeedbackCategory
      */
     protected $category;
 
     /**
+     * Revisions of this feedback.
+     *
      * @var \Doctrine\Common\Collections\ArrayCollection
-     * @SWG\Property(name="revisions",type="array", items="$ref:FeedbackRevision")
      */
     protected $revisions;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     * @SWG\Property(name="comments",type="array", items="$ref:FeedbackComment")
-     */
-    protected $comments;
-
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     * @SWG\Property(name="labels",type="array", items="$ref:LabelFeedback")
+     * String array of labels associated with this news.
+     *
+     * @Assert\Valid()
+     * @AppAssert\UniqueCollection(property={"label"})
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection|LabelFeedback[]
      */
     protected $labels;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     * @SWG\Property(name="custom_data",type="array", items="$ref:CustomDataFeedback")
      */
     protected $custom_data;
 
     /**
-     * Popularity (see recalculatePopularity).
+     * Popularity.
+     *
+     * (see recalculatePopularity)
      *
      * @var string
-     * @SWG\Property(name="popularity",type="string")
      */
     protected $popularity = 0;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     * @SWG\Property(name="custom_data",type="array", items="$ref:FeedbackAttachment")
      */
     protected $attachments;
 
@@ -129,25 +147,26 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     {
         parent::__construct();
 
-        $this->_is_new = true;
-
+        $this->_is_new     = true;
         $this->comments    = new ArrayCollection();
         $this->custom_data = new ArrayCollection();
         $this->attachments = new ArrayCollection();
     }
 
     /**
-     * Set the validating status.
-     *
-     * @param string $validating
+     * {@inheritdoc}
      */
-    public function setValidating($validating)
+    public function isPublic()
     {
-        if (!$validating) {
-            $this->setModelField('validating', null);
-        } else {
-            $this->setModelField('validating', $validating);
-        }
+        return $this->status !== self::STATUS_HIDDEN;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalRating()
+    {
+        return $this->total_rating;
     }
 
     /**
@@ -180,6 +199,20 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->custom_data->add($data);
         $data['feedback'] = $this;
         $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+    }
+
+    /**
+     * @param CustomDataFeedback[] $data
+     */
+    public function setCustomData($data)
+    {
+        $this->custom_data = $data;
+        foreach ($data as $datum) {
+            /* @var CustomDataFeedback $datum */
+            $datum->feedback = $this;
+        }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
     }
 
     /**
@@ -240,11 +273,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
      */
     public function setCategory(FeedbackCategory $category = null)
     {
-        if ($category) {
-            $this->setModelField('category', $category);
-        } else {
-            $this->setModelField('category', null);
-        }
+        $this->setModelField('category', $category);
 
         return $this;
     }
@@ -256,23 +285,35 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $this;
     }
 
-    public function getLink($absolute = true)
-    {
-        $url = App::getRouter()->generate('user_feedback_view', array('slug' => $this->getUrlSlug()), $absolute);
-
-        return $url;
-    }
-
-    public function getPermalink($absolute = true)
-    {
-        $url = App::getRouter()->generate('user_feedback_view', array('slug' => $this->id), $absolute);
-
-        return $url;
-    }
-
     public function getCategoryName()
     {
         return $this->category->getFullTitle();
+    }
+
+    /**
+     * At the moment, there is only one custom_data set, this is just a quick way to access its value in twig.
+     */
+    public function getCustomDataSelection()
+    {
+        /* @var \Application\DeskPRO\Entity\CustomDataFeedback $data */
+        if (!$data = $this->custom_data->last()) {
+            return;
+        }
+
+        return $data->field->getChildById($data->getValue());
+    }
+
+    public function setIsReviewed($yesno)
+    {
+        $this->setModelField('is_reviewed', $yesno);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReviewed()
+    {
+        return $this->is_reviewed;
     }
 
     public function setStatus($status)
@@ -282,16 +323,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->_onPropertyChanged('status', $this->status, $status);
         $this->status = $status;
 
-        if ($status == 'approve') {
-            $status = self::STATUS_NEW;
-        }
-
         switch ($status) {
-            case self::STATUS_NEW:
-                $this['hidden_status']   = null;
-                $this['status_category'] = null;
-                break;
-
             case self::STATUS_ACTIVE:
             case self::STATUS_CLOSED:
                 $this['hidden_status'] = null;
@@ -305,6 +337,8 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         if ($this->status != 'hidden' && $last_status == 'hidden') {
             $this->date_published = new \DateTime();
         }
+
+        return $this;
     }
 
     public function setStatusCode($status_code)
@@ -317,18 +351,16 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         }
 
         switch ($status) {
-            case self::STATUS_NEW:
-                $this['status'] = $status;
-                break;
-
             case self::STATUS_ACTIVE:
             case self::STATUS_CLOSED:
                 $this['status'] = $status;
                 if ($sub_status) {
                     $status_cat = App::findEntity('DeskPRO:FeedbackStatusCategory', $sub_status);
                     $this->setModelField('status_category', $status_cat);
+                    $this->setModelField('date_updated', new \DateTime());
                 } else {
                     $this->setModelField('status_category', null);
+                    $this->setModelField('date_updated', new \DateTime());
                 }
                 break;
 
@@ -337,6 +369,24 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 $this['hidden_status'] = $sub_status;
                 break;
         }
+    }
+
+    /**
+     * Can this be seen in the user portal?
+     *
+     * @return bool
+     */
+    public function isVisibleOnPortal()
+    {
+        return self::STATUS_HIDDEN !== $this->status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     public function getStatusCode()
@@ -354,14 +404,9 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         }
     }
 
-    public function isValidating()
-    {
-        return ($this->hidden_status == self::HIDDEN_STATUS_VALIDATING);
-    }
-
     public function getCategoryPath()
     {
-        $path = array();
+        $path = [];
 
         $cat = $this->category;
 
@@ -393,11 +438,61 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @param LabelFeedback $label
+     * @param string $value
      *
-     * @return $this
+     * @return LabelFeedback
      */
-    public function addLabel(LabelFeedback $label)
+    public function addLabelByString($value)
+    {
+        if ($ret = $this->findLabelByString($value)) {
+            return $ret;
+        }
+        $label           = new LabelFeedback();
+        $label->label    = $value;
+        $label->feedback = $this;
+        $this->labels->add($label);
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $label;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return LabelFeedback|null
+     */
+    public function findLabelByString($value)
+    {
+        $x        = new LabelFeedback();
+        $x->label = $value;
+
+        foreach ($this->labels as $l) {
+            if ($l->label === $x->label) {
+                return $l;
+            }
+        }
+
+        return;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clearLabels()
+    {
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
+        }
+
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addLabel(Label $label)
     {
         $label['feedback'] = $this;
         $this->labels->add($label);
@@ -406,7 +501,20 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\LabelFeedback[]
+     * {@inheritdoc}
+     */
+    public function removeLabel(Label $label)
+    {
+        if ($this->labels->contains($label)) {
+            $this->labels->removeElement($label);
+            $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return LabelFeedback[]|ArrayCollection
      */
     public function getLabels()
     {
@@ -419,10 +527,34 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     public function getLabelManager()
     {
         if ($this->_label_manager === null) {
-            $this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelFeedback');
+            $this->_label_manager = new LabelManager($this, 'DeskPRO:LabelFeedback');
         }
 
         return $this->_label_manager;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getRevisions()
+    {
+        return $this->revisions;
+    }
+
+    /**
+     * @return ArrayCollection|CustomDataFeedback[]
+     */
+    public function getCustomData()
+    {
+        return $this->custom_data;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPopularity()
+    {
+        return $this->popularity;
     }
 
     /**
@@ -436,17 +568,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $attach->feedback = $this;
     }
 
-    public function _invalidatePageCache()
-    {
-        $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-        $cache->invalidateRegex('/_feedback(-|_)/');
-    }
-
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
-            $data['labels'] = array();
+            $data['labels'] = [];
             foreach ($this->labels as $label) {
                 $data['labels'][] = $label['label'];
             }
@@ -488,6 +614,23 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * @return FeedbackStatusCategory
+     */
+    public function getStatusCategory()
+    {
+        return $this->status_category;
+    }
+
+    /**
+     * @param FeedbackStatusCategory $status_category
+     */
+    public function setStatusCategory(FeedbackStatusCategory $status_category = null)
+    {
+        $this->setModelField('status_category', $status_category);
+        $this->setModelField('date_updated', new \DateTime());
+    }
+
+    /**
      * @param $field
      */
     public function removeCustomDataForField($field)
@@ -511,52 +654,371 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 }
             }
         }
-
-        if ($change) {
-            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
-        }
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    protected function addSlugHistory($old_slug)
+    {
+        $history = new FeedbackSlugHistory($this, $old_slug);
+        $this->slug_history->add($history);
+
+        return $history;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return Feedback $this
+     */
+    public function setHiddenStatus($value = null)
+    {
+        $last_hidden_status  = $this->hidden_status;
+        $this->hidden_status = $value;
+        $this->_onPropertyChanged('hidden_status', $last_hidden_status, $value);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHiddenStatus()
+    {
+        return $this->hidden_status;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isClosed()
+    {
+        return $this->status === static::STATUS_CLOSED;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Feedback';
-        $metadata->setPrimaryTable(array(
-            'name'    => 'feedback',
-            'indexes' => array(
-                'date_published_idx' => array('columns' => array(0 => 'date_published')),
-                'status_idx'         => array('columns' => array('status')),
-            ),
-        ));
-        $metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
+        $metadata->setPrimaryTable(
+            [
+                'name'    => 'feedback',
+                'indexes' => [
+                    'date_published_idx'    => ['columns' => [0 => 'date_published']],
+                    'date_updated_idx'      => ['columns' => ['date_updated']],
+                    'date_last_comment_idx' => ['columns' => ['date_last_comment']],
+                    'status_idx'            => ['columns' => ['status']],
+                ],
+            ]
+        );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'hidden_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hidden_status'));
-        $metadata->mapField(array('fieldName' => 'validating', 'type' => 'string', 'length' => 35, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'validating'));
-        $metadata->mapField(array('fieldName' => 'popularity', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'popularity'));
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'slug'));
-        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
-        $metadata->mapField(array('fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content'));
-        $metadata->mapField(array('fieldName' => 'view_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'view_count'));
-        $metadata->mapField(array('fieldName' => 'total_rating', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_rating'));
-        $metadata->mapField(array('fieldName' => 'num_comments', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_comments'));
-        $metadata->mapField(array('fieldName' => 'num_ratings', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_ratings'));
-        $metadata->mapField(array('fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapField(array('fieldName' => 'date_published', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_published'));
+        $metadata->mapField(
+            [
+                'fieldName'  => 'hidden_status',
+                'type'       => 'string',
+                'length'     => 15,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'hidden_status',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'is_reviewed',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_reviewed',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'popularity',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'popularity',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'slug',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'slug',
+                'unique'     => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'title',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'title',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'content',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'content',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'view_count',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'view_count',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'total_rating',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'total_rating',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'num_comments',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'num_comments',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'num_ratings',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'num_ratings',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'status',
+                'type'       => 'string',
+                'length'     => 15,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'status',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'date_created',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'date_created',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'date_published',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_published',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'date_updated',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_updated',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'date_last_comment',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_last_comment',
+            ]
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'status_category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackStatusCategory', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'status_category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
-        $metadata->mapManyToOne(array('fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'category_id', 'referencedColumnName' => 'id')), 'dpApi' => true));
-        $metadata->mapOneToMany(array('fieldName' => 'revisions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackRevision', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback'));
-        $metadata->mapOneToMany(array('fieldName' => 'comments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackComment', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback'));
-        $metadata->mapOneToMany(array('fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelFeedback', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback', 'orphanRemoval' => true));
-        $metadata->mapOneToMany(array('fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataFeedback', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback', 'orphanRemoval' => true, 'dpApi' => true));
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
-        $metadata->mapManyToOne(array('fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'dpApi' => true));
-        $metadata->mapOneToMany(array('fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback', 'dpApi' => true, 'dpApiDeep' => true, 'dpApiPrimary' => true));
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'status_category',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackStatusCategory',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'status_category_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'category',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [0 => ['name' => 'category_id', 'referencedColumnName' => 'id']],
+                'dpApi'        => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'revisions',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackRevision',
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'     => 'feedback',
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'comments',
+                'targetEntity' => FeedbackComment::class,
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'mappedBy'     => 'feedback',
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'labels',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\LabelFeedback',
+                'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'      => 'feedback',
+                'orphanRemoval' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'custom_data',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\CustomDataFeedback',
+                'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'      => 'feedback',
+                'orphanRemoval' => true,
+                'dpApi'         => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'person',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'person_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'language',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'language_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'attachments',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment',
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'     => 'feedback',
+                'dpApi'        => true,
+                'dpApiDeep'    => true,
+                'dpApiPrimary' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'slug_history',
+                'targetEntity' => 'Application\DeskPRO\Entity\FeedbackSlugHistory',
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'     => 'feedback',
+            ]
+        );
+    }
+
+    protected function getUpdateFields()
+    {
+        $fields = ['num_comments'];
+
+        return $fields;
     }
 }

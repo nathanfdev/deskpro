@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Cutter;
 
 use Application\DeskPRO\App;
+use DeskPRO\Component\Util\RegexUtils;
 use Orb\Util\Strings;
 
 /**
@@ -92,7 +94,7 @@ class ForwardCutter
     public static function subjectIsForward($subject)
     {
         // Prefixes for FW/FWD and in other langs too
-        return (bool) preg_match(self::getFwdSubjectRegex(), ltrim($subject));
+        return (bool) RegexUtils::safePregMatch(self::getFwdSubjectRegex(), ltrim($subject));
     }
 
     /**
@@ -104,7 +106,7 @@ class ForwardCutter
      */
     public static function cutSubjectForwardPrefix($subject)
     {
-        return trim(preg_replace(self::getFwdSubjectRegex(), '', trim($subject)));
+        return trim(RegexUtils::safePregReplace(self::getFwdSubjectRegex(), '', trim($subject)));
     }
 
     public function __construct($body, $is_html, $cutter)

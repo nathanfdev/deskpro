@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,19 +29,24 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketMacro;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
  * Simple ticket macros CRUD.
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/ticket_macros",
  * 	description="Operations about Ticket macros",
  * 	basePath="/api"
  * )
+ *
+ * @ApiModes("all")
  */
 class TicketMacrosController extends AbstractController implements ProtectedControllerInterface
 {
@@ -53,16 +58,16 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     /**
-     * @return Response;
+     * @return JsonResponse;
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_triggers",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get list of ticket macroses",
      * 		notes="",
@@ -74,29 +79,29 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
     {
         $macros = $this->em->getRepository('DeskPRO:TicketMacro')->getMacros();
 
-        $data = array();
+        $data = [];
 
         foreach ($macros as $macro) {
-            $row = array(
+            $row = [
                 'id'         => $macro->id,
                 'title'      => $macro->title,
                 'is_enabled' => $macro->is_enabled,
                 'is_global'  => $macro->is_global,
                 'person_id'  => $macro->person ? $macro->person->id : null,
                 'person'     => $macro->person ? $macro->person->toApiData(true) : null,
-            );
+            ];
 
             $data[] = $row;
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'macros' => $data,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # get
-    ####################################################################################################################
+    //###################################################################################################################
+    // get
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -105,27 +110,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * @return Response
-     *
-     *
-     * @SWG\Api(
-     * 	path="/ticket_layouts/{dep_id}",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get macros by ID",
-     * 		notes="",
-     *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="id",
-     *				description="Layout ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
+     * @return JsonResponse
      */
     public function getAction($id)
     {
@@ -136,14 +121,14 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
 
         $data = $this->getApiData($macro);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'macro' => $data,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -152,32 +137,32 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * @return Response
+     * @return JsonResponse
      *
      *
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_macros",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="PUT",
      * 		summary="Create new macros",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="title",
      *				description="Macros name",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="is_global",
      *				description="Mark/unmark macros as global",
      *				paramType="query",
      *				required=false,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="person_id",
      *				description="Set macros owner",
      *				paramType="query",
@@ -220,14 +205,14 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
         $this->em->persist($macro);
         $this->em->flush();
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'macro_id' => $macro->id,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # remove
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove
+    //###################################################################################################################
 
     /**
      * @param $id
@@ -236,27 +221,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * @return Response
-     *
-     *
-     * @SWG\Api(
-     * 	path="/ticket_macros/{id}",
-     * 	@SWG\Operation(
-     * 		method="DELETE",
-     * 		summary="Delete macros by ID",
-     * 		notes="",
-     *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="id",
-     *				description="Macros ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
+     * @return JsonResponse
      */
     public function removeAction($id)
     {
@@ -270,6 +235,6 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
         $this->em->remove($macro);
         $this->em->flush();
 
-        return $this->createSuccessResponse(array('old_id' => $old_id));
+        return $this->createSuccessResponse(['old_id' => $old_id]);
     }
 }

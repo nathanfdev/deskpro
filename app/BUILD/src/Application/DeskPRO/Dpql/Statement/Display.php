@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Statement;
 
 use Application\DeskPRO\App;
@@ -47,14 +48,14 @@ class Display
      *
      * @var array
      */
-    protected $_display = array('table');
+    protected $_display = ['table'];
 
     /**
      * List of expressions in SELECT clause.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
      */
-    protected $_select = array();
+    protected $_select = [];
 
     /**
      * Name of table to select from.
@@ -75,21 +76,26 @@ class Display
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
      */
-    protected $_splitBy = array();
+    protected $_splitBy = [];
 
     /**
      * GROUP BY clause expressions.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
      */
-    protected $_groupBy = array();
+    protected $_groupBy = [];
+
+    /**
+     * @var bool
+     */
+    protected $_withRollup = false;
 
     /**
      * ORDER BY clause expressions.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
      */
-    protected $_orderBy = array();
+    protected $_orderBy = [];
 
     /**
      * Number of rows to limit to. 0 or null for unlimited.
@@ -131,7 +137,7 @@ class Display
      *
      * @var array
      */
-    protected $_splitColumnMap = array();
+    protected $_splitColumnMap = [];
 
     /**
      * @var \Application\DeskPRO\Dpql\ResultHandler
@@ -143,7 +149,7 @@ class Display
      *
      * @var array
      */
-    protected $_fieldMap = array();
+    protected $_fieldMap = [];
 
     /**
      * Has this been prepared yet?
@@ -157,24 +163,24 @@ class Display
      *
      * @var \Closure[]
      */
-    protected $_groupFills = array();
+    protected $_groupFills = [];
 
     /**
      * Maps available tables (keys) to Doctrine entity names (values).
      *
      * @var array
      */
-    protected static $_tableEntityMap = array(
+    protected static $_tableEntityMap = [
         'agent_teams'                 => 'DeskPRO:AgentTeam',
         'articles'                    => 'DeskPRO:Article',
         'article_categories'          => 'DeskPRO:ArticleCategory',
         'article_attachments'         => 'DeskPRO:ArticleAttachment',
         'article_comments'            => 'DeskPRO:ArticleComment',
         'article_pending_create'      => 'DeskPRO:ArticlePendingCreate',
-        'auditlog'                    => 'DeskPRO:AuditLog',
         'ban_emails'                  => 'DeskPRO:BanEmail',
         'ban_ips'                     => 'DeskPRO:BanIp',
         'blobs'                       => 'DeskPRO:Blob',
+        'brands'                      => 'DeskPRO:Brand',
         'chat_conversations'          => 'DeskPRO:ChatConversation',
         'chat_messages'               => 'DeskPRO:ChatMessage',
         'custom_data_article'         => 'DeskPRO:CustomDataArticle',
@@ -193,6 +199,7 @@ class Display
         'custom_def_products'         => 'DeskPRO:CustomDefProduct',
         'custom_def_ticket'           => 'DeskPRO:CustomDefTicket',
         'custom_def_billing'          => 'DeskPRO:CustomDefBilling',
+        'custom_field_definition'     => 'DeskPRO:CustomFieldDefinition',
         'departments'                 => 'DeskPRO:Department',
         'downloads'                   => 'DeskPRO:Download',
         'download_categories'         => 'DeskPRO:DownloadCategory',
@@ -201,6 +208,7 @@ class Display
         'email_sources'               => 'DeskPRO:EmailSource',
         'feedback'                    => 'DeskPRO:Feedback',
         'feedback_attachments'        => 'DeskPRO:FeedbackAttachment',
+        'feedback_categories'         => 'DeskPRO:FeedbackCategory',
         'feedback_comments'           => 'DeskPRO:FeedbackComment',
         'glossary_words'              => 'DeskPRO:GlossaryWord',
         'glossary_word_definitions'   => 'DeskPRO:GlossaryWordDefinition',
@@ -241,7 +249,7 @@ class Display
         'ticket_categories'           => 'DeskPRO:TicketCategory',
         'ticket_escalation_logs'      => 'DeskPRO:TicketEscalationLog',
         'ticket_escalations'          => 'DeskPRO:TicketEscalation',
-        'ticket_filters'              => 'DeskPRO:TicketFilter',
+        'ticket_filters'              => 'DeskPRO:LegacyTicketFilter',
         'ticket_filter_subscriptions' => 'DeskPRO:TicketFilterSubscription',
         'ticket_layouts'              => 'DeskPRO:TicketLayout',
         'ticket_macros'               => 'DeskPRO:TicketMacro',
@@ -262,7 +270,12 @@ class Display
         'user_rules'                  => 'DeskPRO:UserRule',
         'usergroups'                  => 'DeskPRO:Usergroup',
         'usersources'                 => 'DeskPRO:Usersource',
-    );
+    ];
+
+    /**
+     * @var Dpql\SqlSelectContext
+     */
+    private $_sqlSelectContext;
 
     /**
      * @param array  $display Type of display (must not be empty)
@@ -275,8 +288,11 @@ class Display
         $this->setSelect($select);
         $this->setFrom($from);
 
-        $this->_sql           = new Dpql\SqlSelect();
-        $this->_resultHandler = new Dpql\ResultHandler();
+        $this->_sql              = new Dpql\SqlSelect();
+        $this->_resultHandler    = new Dpql\ResultHandler();
+        $this->_sqlSelectContext = new Dpql\SqlSelectContext($this->_resultHandler, [
+            new Dpql\Plugin\Hierarchy\HierarchyPlugin($this),
+        ]);
     }
 
     /**
@@ -325,13 +341,15 @@ class Display
                         }
                     }
 
-                    $queryResults = $db->executeQuery($sql->toSql())->fetchAll(\PDO::FETCH_NUM);
+                    $queryResults = $this->_sqlSelectContext->execute($sql);
                     $results->addSplitResults($this->_fillResults($queryResults), $splitResult);
                 }
             } else {
-                $queryResults = $db->executeQuery($this->_sql->toSql())->fetchAll(\PDO::FETCH_NUM);
+                $queryResults = $this->_sqlSelectContext->execute($this->_sql);
                 $results->setResults($this->_fillResults($queryResults));
             }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         } catch (\Exception $e) {
             throw new Exception('This DPQL statement generated an invalid MySQL query. Please try a different query.');
         }
@@ -352,7 +370,7 @@ class Display
         $first = reset($results);
         $last  = end($results);
 
-        $base = array();
+        $base = [];
         foreach ($this->_sql->getSelectFields() as $key => $sel) {
             $base[$key] = null;
         }
@@ -369,7 +387,7 @@ class Display
             $previousValue = null;
             $startRowValue = null;
             $startRow      = 0;
-            $rowSets       = array();
+            $rowSets       = [];
 
             foreach ($results as $rowKey => $row) {
                 if ($previousValue !== null) {
@@ -377,12 +395,12 @@ class Display
                         (!$ascending && ($row[$order] + 0) > $previousValue)
                     ) {
                         if ($rowKey - 1 > $startRow) {
-                            $rowSets[] = array(
+                            $rowSets[] = [
                                 'start'      => $startRow,
                                 'end'        => $rowKey - 1,
                                 'startValue' => $startRowValue,
                                 'endValue'   => $previousValue,
-                            );
+                            ];
                         }
                         $previousValue = null;
                     } else {
@@ -398,15 +416,15 @@ class Display
             }
 
             if ($startRow < $rowKey || !$rowSets) {
-                $rowSets[] = array(
+                $rowSets[] = [
                     'start'      => $startRow,
                     'end'        => $rowKey,
                     'startValue' => $startRowValue,
                     'endValue'   => $previousValue,
-                );
+                ];
             }
 
-            $newResults = array();
+            $newResults = [];
             $seenRow    = 0;
             foreach ($rowSets as $set) {
                 if ($set['start'] > $seenRow) {
@@ -519,39 +537,40 @@ class Display
      */
     public function getDpqlParts()
     {
-        $selectFields = array();
+        $selectFields = [];
         foreach ($this->_select as $field) {
-            $selectFields[] = $field->toDpql($this, 'select', array());
+            $selectFields[] = $field->toDpql($this, 'select', []);
         }
 
-        $splitFields = array();
+        $splitFields = [];
         foreach ($this->_splitBy as $field) {
-            $splitFields[] = $field->toDpql($this, 'split', array());
+            $splitFields[] = $field->toDpql($this, 'split', []);
         }
 
-        $groupFields = array();
+        $groupFields = [];
         foreach ($this->_groupBy as $field) {
-            $groupFields[] = $field->toDpql($this, 'group', array());
+            $groupFields[] = $field->toDpql($this, 'group', []);
         }
 
-        $orderFields = array();
+        $orderFields = [];
         foreach ($this->_orderBy as $field) {
-            $orderFields[] = $field->toDpql($this, 'order', array());
+            $orderFields[] = $field->toDpql($this, 'order', []);
         }
 
         $display = array_map('strtoupper', $this->_display);
 
-        return array(
-            'DISPLAY' => $display,
-            'SELECT'  => implode(', ', $selectFields),
-            'FROM'    => $this->_from,
-            'WHERE'   => ($this->_where ? $this->_where->toDpql($this, 'where', array()) : ''),
-            'SPLIT'   => implode(', ', $splitFields),
-            'GROUP'   => implode(', ', $groupFields),
-            'ORDER'   => implode(', ', $orderFields),
-            'LIMIT'   => $this->_limitAmount,
-            'OFFSET'  => $this->_limitOffset,
-        );
+        return [
+            'DISPLAY'     => $display,
+            'SELECT'      => implode(', ', $selectFields),
+            'FROM'        => $this->_from,
+            'WHERE'       => ($this->_where ? $this->_where->toDpql($this, 'where', []) : ''),
+            'SPLIT'       => implode(', ', $splitFields),
+            'GROUP'       => implode(', ', $groupFields),
+            'ORDER'       => implode(', ', $orderFields),
+            'LIMIT'       => $this->_limitAmount,
+            'OFFSET'      => $this->_limitOffset,
+            'WITH_ROLLUP' => $this->_withRollup,
+        ];
     }
 
     /**
@@ -614,7 +633,7 @@ class Display
                 $alias = false;
             }
 
-            $select = $field->prepare($this, 'select', array(), $sql, $this->_resultHandler);
+            $select = $field->prepare($this, 'select', [], $sql, $this->_resultHandler);
             $this->addPreparedSelectField($select, $alias);
         }
     }
@@ -639,7 +658,7 @@ class Display
     protected function _prepareWhere()
     {
         if ($this->_where) {
-            $where = $this->_where->prepare($this, 'where', array(), $this->_sql, $this->_resultHandler);
+            $where = $this->_where->prepare($this, 'where', [], $this->_sql, $this->_resultHandler);
             if ($where->hasValue()) {
                 $this->_sql->addCondition($where->sql());
             }
@@ -659,7 +678,7 @@ class Display
         $this->_splitSql = $splitSql;
 
         foreach ($this->_splitBy as $group) {
-            $groupBy = $group->prepare($this, 'split', array(), $this->_sql, $this->_resultHandler);
+            $groupBy = $group->prepare($this, 'split', [], $this->_sql, $this->_resultHandler);
             if ($groupBy->hasValue()) {
                 $splitSql->addGroupBy($groupBy->sql());
 
@@ -698,7 +717,7 @@ class Display
                 $alias = false;
             }
 
-            $groupBy = $group->prepare($this, 'group', array(), $sql, $this->_resultHandler);
+            $groupBy = $group->prepare($this, 'group', [], $sql, $this->_resultHandler);
             if ($groupBy->hasValue()) {
                 $printId = $this->addSqlSelectField($groupBy->printed(), $alias);
                 $sql->addGroupBy($groupBy->sql());
@@ -721,7 +740,10 @@ class Display
                 }
 
                 $resultTitle = ($alias !== false ? $alias : $groupBy->name());
-                $this->_resultHandler->addGroupYColumn($resultTitle, $groupId, $printId, $groupBy->renderer());
+                $renderer    = $groupBy->renderer() ?: function ($valueRenderer, $value, $row) {
+                    return array_key_exists('hierarchy_title', $row) ? $row['hierarchy_title'] : $value;
+                };
+                $this->_resultHandler->addGroupYColumn($resultTitle, $groupId, $printId, $renderer);
             }
         }
     }
@@ -759,7 +781,7 @@ class Display
                 $direction = false;
             }
 
-            $orderSql = $order->prepare($this, 'order', array(), $sql, $this->_resultHandler);
+            $orderSql = $order->prepare($this, 'order', [], $sql, $this->_resultHandler);
             if ($orderSql->hasValue()) {
                 $sql->addOrderBy($orderSql->ordered().$direction);
             }
@@ -781,12 +803,12 @@ class Display
             return false;
         }
 
-        $this->_groupFills[] = array(
+        $this->_groupFills[] = [
             'fill'  => $fill,
             'print' => $printId,
             'sql'   => $sqlId,
             'order' => $orderId,
-        );
+        ];
 
         return true;
     }
@@ -835,7 +857,19 @@ class Display
      */
     public function getFromEntityRepository()
     {
-        $table = strtolower($this->_from);
+        return self::getRepositoryByTable($this->_from);
+    }
+
+    /**
+     * @param $table
+     *
+     * @throws Exception
+     *
+     * @return bool|\Doctrine\ORM\EntityRepository
+     */
+    public static function getRepositoryByTable($table)
+    {
+        $table = strtolower($table);
         if (!isset(self::$_tableEntityMap[$table])) {
             return false;
         }
@@ -907,7 +941,7 @@ class Display
      */
     public function quoteDpqlString($string)
     {
-        $string = strtr($string, array('\\' => '\\\\', "'" => "\\'"));
+        $string = strtr($string, ['\\' => '\\\\', "'" => "\\'"]);
 
         return "'$string'";
     }
@@ -918,7 +952,7 @@ class Display
     public function setDisplay(array $display)
     {
         if (!$display) {
-            $display = array('table');
+            $display = ['table'];
         }
 
         $this->_display = array_unique($display);
@@ -1085,7 +1119,7 @@ class Display
      *
      * @return bool|string
      */
-    public static function renderQuery($renderer, $query, array $params = array(), &$error = false)
+    public static function renderQuery($renderer, $query, array $params = [], &$error = false)
     {
         @set_time_limit(0);
 
@@ -1136,11 +1170,12 @@ class Display
             return "DISPLAY $display"
                 ."\nSELECT $parts[select]"
                 ."\nFROM $parts[from]"
-                .(!empty($parts['where'])   ? "\nWHERE $parts[where]"        : '')
-                .(!empty($parts['splitBy']) ? "\nSPLIT BY $parts[splitBy]"   : '')
-                .(!empty($parts['groupBy']) ? "\nGROUP BY $parts[groupBy]"   : '')
-                .(!empty($parts['orderBy']) ? "\nORDER BY $parts[orderBy]"   : '')
-                .(!empty($parts['limit'])   ? "\nLIMIT $parts[limit]$offset" : '');
+                .(!empty($parts['where']) ? "\nWHERE $parts[where]" : '')
+                .(!empty($parts['splitBy']) ? "\nSPLIT BY $parts[splitBy]" : '')
+                .(!empty($parts['groupBy']) ? "\nGROUP BY $parts[groupBy]" : '')
+                .(!empty($parts['withRollup']) ? "\nWITH ROLLUP" : '')
+                .(!empty($parts['orderBy']) ? "\nORDER BY $parts[orderBy]" : '')
+                .(!empty($parts['limit']) ? "\nLIMIT $parts[limit]$offset" : '');
         }
     }
 
@@ -1152,5 +1187,31 @@ class Display
     public static function getTableEntityList()
     {
         return self::$_tableEntityMap;
+    }
+
+    /**
+     * @return Dpql\SqlSelectContext
+     */
+    public function getSqlSelectContext()
+    {
+        return $this->_sqlSelectContext;
+    }
+
+    /**
+     * @param bool $withRollup
+     */
+    public function setWithRollup($withRollup)
+    {
+        if ($this->_withRollup = $withRollup) {
+            $this->_resultHandler->addFlag(Dpql\ResultHandler::FLAG_WITH_ROLLUP);
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function withRollup()
+    {
+        return $this->_withRollup;
     }
 }

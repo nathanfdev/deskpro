@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,56 +31,21 @@
  *
  * @category Twig
  */
+
 namespace Application\DeskPRO\Twig\Loader;
 
 use Application\DeskPRO\App;
-use Symfony\Component\Config\FileLocatorInterface;
-use Symfony\Component\Templating\TemplateNameParserInterface;
 
 /**
  * This hybrid loader loads templates from the filesystem first, and then from the
  * database second if a style is being used and has templates that override it.
+ *
+ * NOTE: this has been changed because style entity was deleted
  */
 class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 {
-    /**
-     * @var \Application\DeskPRO\Entity\Style
-     */
-    protected $style = null;
-
-    /**
-     * @var array
-     */
-    protected $style_template_info = null;
-
-    /**
-     * @var null
-     */
-    protected $crashed_custom_templates = array();
-
-    public function __construct(FileLocatorInterface $locator, TemplateNameParserInterface $parser)
-    {
-        parent::__construct($locator, $parser);
-    }
-
-    protected function _initStyle()
-    {
-        // Already done
-        if ($this->style !== null) {
-            return;
-        }
-
-        if (!defined('DP_BUILDING')) {
-            $this->style               = App::getSystemService('style');
-            $this->style_template_info = App::getDb()->fetchAllKeyed('
-                SELECT id, name, UNIX_TIMESTAMP(date_updated) AS date_updated
-                FROM templates
-                WHERE style_id = ?
-            ', array($this->style['id']), 'name');
-        } else {
-            $this->style = new \Application\DeskPRO\Entity\Style();
-        }
-    }
+    protected $crashed_custom_templates = [];
+    protected $template_info            = [];
 
     public function markCustomTemplateAsCrashed($name)
     {
@@ -93,21 +58,12 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
             return false;
         }
 
-        $this->_initStyle();
-        if (isset($this->style_template_info[(string) $name])) {
-            return true;
-        }
-
-        return false;
+        $this->_initTemplates();
     }
 
     public function exists($name)
     {
-        if (parent::exists($name)) {
-            return true;
-        }
-
-        if ($this->dbHasTemplate($name)) {
+        if (isset($this->template_info[(string) $name])) {
             return true;
         }
 
@@ -116,13 +72,13 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 
     public function isFresh($name, $time)
     {
-        $this->_initStyle();
+        $this->_initTemplates();
 
         $str_name = (string) $name;
 
         // DB templates are always "fresh" because theyre compiled
         // as soon as they're saved
-        if (!isset($this->crashed_custom_templates[$str_name]) && isset($this->style_template_info[$str_name])) {
+        if (!isset($this->crashed_custom_templates[$str_name]) && isset($this->template_info[$str_name])) {
             return true;
         }
 
@@ -131,27 +87,28 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 
     public function getCacheKey($name)
     {
-        $this->_initStyle();
-
         return md5((string) $name);
     }
 
     public function getSource($name)
     {
-        $this->_initStyle();
+        $this->_initTemplates();
 
         $str_name = (string) $name;
-        if (!isset($this->crashed_custom_templates[$str_name]) && isset($this->style_template_info[$str_name])) {
-            return App::getDb()->fetchColumn('
+        if (!isset($this->crashed_custom_templates[$str_name]) && isset($this->template_info[$str_name])) {
+            return App::getDb()->fetchColumn(
+                '
                 SELECT template_code
                 FROM templates
                 WHERE id = ?
-            ', array($this->style_template_info[$name]['id']));
+            ',
+                [$this->template_info[$name]['id']]
+            );
         }
 
         $source = file_get_contents($this->findTemplate($name));
 
-        if (strpos($name, 'DeskPRO:emails_') !== false) {
+        if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'EmailBundle:') !== false) {
             $proc   = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
             $source = $proc->process($source, $str_name);
         }
@@ -159,15 +116,24 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
         return $source;
     }
 
-    protected function findTemplate($template)
+    protected function _initTemplates()
     {
-        $this->_initStyle();
+        if (!defined('DP_BUILDING') && empty($this->template_info)) {
+            $this->template_info = App::getDb()->fetchAllKeyed(
+                '
+                SELECT id, name, UNIX_TIMESTAMP(date_updated) AS date_updated
+                FROM templates
+            ',
+                'name'
+            );
+        }
+    }
+
+    protected function findTemplate($template, $thow = true)
+    {
+        $this->_initTemplates();
 
         $logicalName = (string) $template;
-
-        if (!isset($this->crashed_custom_templates[$logicalName]) && isset($this->style_template_info[$logicalName])) {
-            return false;
-        }
 
         if (strpos($logicalName, 'Apps:') === 0) {
             if (class_exists('Application\\DeskPRO\\App', false)) {
@@ -198,6 +164,6 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
             }
         }
 
-        return parent::findTemplate($template);
+        return parent::findTemplate($template, $thow);
     }
 }

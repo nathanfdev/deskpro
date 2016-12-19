@@ -1,11 +1,11 @@
 <?php
-define('PHP_CS_SRC_DIR', realpath(__DIR__ . '/../app'));
+define('PHP_CS_SRC_DIR', realpath(__DIR__ . '/../app/BUILD'));
 
 $header = <<< EOF
 DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
 a British company located in London, England.
 
-All source code and content Copyright (c) 2015, DeskPRO Ltd.
+All source code and content Copyright (c) 2016, DeskPRO Ltd.
 
 The license agreement under which this software is released
 can be found at https://www.deskpro.com/eula/
@@ -30,14 +30,10 @@ EOF;
 Symfony\CS\Fixer\Contrib\HeaderCommentFixer::setHeader($header);
 
 $finder = Symfony\CS\Finder\DefaultFinder::create()
-    ->exclude('docs')
-    ->exclude('sys/cache')
     ->exclude('vendor')
     ->exclude('vendor-src')
-    ->notName('StaticReflectionProperty_Real.php')
-    ->notName('UnprivateProxyFactory.php')
-    ->notName('UnprivateEntityManager.php')
-    ->notName('UnprivateUnitOfWork.php')
+    ->exclude('config_new')
+    ->exclude('opcache-gui.php')
     ->in(PHP_CS_SRC_DIR)
 ;
 
@@ -101,7 +97,8 @@ return Symfony\CS\Config\Config::create()
         'unused_use',
         'visibility',
         'whitespacy_lines',
-        'unused_use'
+        'unused_use',
+        'short_array_syntax',
     ))
     ->finder($finder)
 ;

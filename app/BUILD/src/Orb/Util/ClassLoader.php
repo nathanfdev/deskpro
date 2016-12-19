@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
 
 /**
@@ -44,7 +45,7 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
      *
      * @var array
      */
-    protected $class_map = array();
+    protected $class_map = [];
 
     /**
      * Maps a namespace to a callback that is called when it cant be loaded using
@@ -52,7 +53,7 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
      *
      * @var array
      */
-    protected $namespace_callback = array();
+    protected $namespace_callback = [];
 
     /**
      * Get the current class map.

@@ -40,10 +40,77 @@
 				<a class="btn btn-default" ng-class="{'active': isStateActive('.create') }" href="{{ ng_href('tickets.ticket_deps.gocreate') }}" dp-list-autoload autoload-priority="2"><i class="fa fa-plus"></i> New Department</a>
 			</div>
 
-			<div class="dp-empty-list-notice" ng-show="ListCtrl.deps.length == 1">
+			<div class="dp-empty-list-notice" ng-show="ListCtrl.depData.getLeafOptionsArray().length == 1">
 				<p>
 					{{ phrase('adm.departments.not_user_visible') }}
 				</p>
+			</div>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+			</nav>
+			<h3>{{ phrase('admin.departments.default_department_header') }}</h3>
+			<div class="dp-pane-help-box">
+				{{ phrase('admin.departments.default_department_hint') }}
+			</div>
+		</header>
+		<article>
+			<div style="padding-left: 15px; padding-bottom: 20px;" ng-if="ListCtrl.brandList.length > 1">
+				<h4>{{ phrase('admin.departments.default_department_brand_label') }}</h4>
+				<select
+						style="width: 200px"
+						ui-select2
+						ng-model="ListCtrl.brandId"
+				>
+					<option
+							ng-repeat="brand in ListCtrl.brandList"
+							ng-value="brand.id"
+							ng-selected = "ListCtrl.brandId == brand.id || (!ListCtrl.brandId && $index == 0)"
+					>
+						{{ ng_var('brand.name')}}
+
+					</option>
+				</select>
+			</div>
+
+
+			<div style="padding-left: 15px; padding-bottom: 20px;">
+				<h4>{{ phrase('admin.departments.default_department_for_agents_label') }}</h4>
+				<select
+						style="width: 200px"
+						ui-select2="ListCtrl.defaultDepartments[ListCtrl.brandId].agent"
+						ng-model="ListCtrl.defaultDepartments[ListCtrl.brandId].agent"
+						ng-change="ListCtrl.changeDefaultDepartment('agent')">
+					<option
+							ng-repeat="dep in ListCtrl.flattenedList"
+							value="{{ ng_var('dep.id') }}"
+							ng-selected="dep.id == ListCtrl.defaultDepartments[ListCtrl.brandId].agent"
+					>
+						{{ ng_var('dep.title') }}
+					</option>
+				</select>
+			</div>
+
+			<div style="padding-left: 15px; padding-bottom: 20px;">
+				<h4>{{ phrase('admin.departments.default_department_for_users_label') }}</h4>
+				<select
+						ui-select2="ListCtrl.defaultDepartments[ListCtrl.brandId].user"
+						style="width: 200px"
+						ng-model="ListCtrl.defaultDepartments[ListCtrl.brandId].user"
+						ng-change="ListCtrl.changeDefaultDepartment('user')">
+					<option
+							ng-repeat="dep in ListCtrl.flattenedList"
+							value="{{ ng_var('dep.id') }}"
+							ng-selected="dep.id == ListCtrl.defaultDepartments[ListCtrl.brandId].user"
+					>
+						{{ ng_var('dep.title')}}
+
+					</option>
+				</select>
 			</div>
 		</article>
 	</section>

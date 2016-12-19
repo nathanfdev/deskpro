@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,8 +38,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Twig\Extension\TemplatingExtension;
-use DeskPRO\Kernel\KernelErrorHandler;
-use Guzzle\Http\Client as HttpClient;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
 
@@ -83,21 +83,17 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
         $username    = $renderer->renderTicketTemplate($this->getActionOption('username') ?: '', $ticket, $context);
         $password    = $renderer->renderTicketTemplate($this->getActionOption('password') ?: '', $ticket, $context);
 
-        $http_client = new HttpClient($url, array(
-            'timeout' => $timeout,
-        ));
+        $http_client = new Client(['timeout' => $timeout]);
+        $method      = strtoupper($this->getActionOption('method')) ?: 'POST';
+        $options     = [];
 
         if ($headers) {
-            $headers = Strings::parseEqualsLines($headers, Strings::EQUALSLINES_DUPE_ADD_ARRAY, ':');
-        } else {
-            $headers = array();
+            $headers                          = Strings::parseEqualsLines($headers, Strings::EQUALSLINES_DUPE_ADD_ARRAY, ':');
+            $options[RequestOptions::HEADERS] = $headers;
         }
 
-        $method  = strtoupper($this->getActionOption('method')) ?: 'POST';
-        $request = new \Guzzle\Http\Message\EntityEnclosingRequest($method, $url, $headers);
-
         if ($method == 'POST' || $method == 'PUT') {
-            $data                    = array();
+            $data                    = [];
             $data['ticket']          = $ticket->toApiData();
             $data['person_context']  = $context->getPersonContext() ? $context->getPersonContext()->toApiData() : null;
             $data['event_performer'] = $context->getEventPerformer();
@@ -105,36 +101,34 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
             $data['event_method']    = $context->getEventMethod();
             $data['custom_data']     = $custom_data;
 
-            if ('json' === $this->getActionOption('payload_type')) {
-                $data                    = json_encode($data);
-                $headers['content-type'] = 'application/json';
-            } else {
-                $headers['content-type'] = 'application/x-www-form-urlencoded';
-            }
-            $request->setBody($data);
+            $format = 'json' === $this->getActionOption('payload_type')
+                ? RequestOptions::JSON
+                : RequestOptions::FORM_PARAMS;
+            $options[$format] = $data;
         }
 
         if ($username || $password) {
-            $request->setAuth($username ?: '', $password ?: '');
+            $options[RequestOptions::AUTH] = [$username, $password];
         }
 
         try {
-            $response = $http_client->send($request);
-            $data     = array(
+            $response = $http_client->request($method, $url, $options);
+            $data     = [
                 'url'     => $url,
                 'reason'  => $response->getReasonPhrase(),
                 'status'  => $response->getStatusCode(),
-                'content' => $response->getBody(true),
-            );
+                'content' => (string) $response->getBody(),
+            ];
             $ticket->getStateChangeRecorder()->recordData('webhook', $data);
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e, false, 'webhook_'.md5($this->getActionOption('url')));
-            $data = array(
+            $exception = new \Exception('Trigger WebHook failed: '.$e->getMessage(), 0, $e);
+            $this->getContainer()->get('dp_sys.alerts.event_logger')->log($exception);
+            $data = [
                 'url'     => $url,
                 'reason'  => $e->getMessage(),
                 'status'  => $e->getCode(),
                 'content' => null,
-            );
+            ];
             $ticket->getStateChangeRecorder()->recordData('webhook', $data);
         }
     }

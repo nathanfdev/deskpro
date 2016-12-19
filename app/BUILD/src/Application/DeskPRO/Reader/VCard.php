@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,14 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Reader;
 
 class VCard extends \File_IMC
 {
-    /** @var \Application\DeskPRO\ORM\EntityManager  */
+    /** @var \Doctrine\ORM\EntityManager */
     protected $em;
 
-    public function __construct(\Application\DeskPRO\ORM\EntityManager $em)
+    public function __construct(\Doctrine\ORM\EntityManager $em)
     {
         $this->em = $em;
     }
@@ -61,9 +62,9 @@ class VCard extends \File_IMC
 
         if (isset($fields['emails']) && is_array($fields['emails'])) {
             foreach ($fields['emails'] as $email) {
-                $emailExists = \Application\DeskPRO\Entity\PersonEmail::getRepository()->findOneBy(array(
+                $emailExists = \Application\DeskPRO\Entity\PersonEmail::getRepository()->findOneBy([
                     'email' => $email,
-                ));
+                ]);
 
                 if ($emailExists) {
                     continue;
@@ -118,7 +119,7 @@ class VCard extends \File_IMC
 
         $vcard = $parse->fromText($content);
 
-        $fields = array();
+        $fields = [];
 
         if (isset($vcard['VCARD'])) {
             //print_r($vcard['VCARD']); die;
@@ -143,28 +144,28 @@ class VCard extends \File_IMC
 
                 if (isset($vc['IMPP'])) {
                     //print_r($vc['IMPP']); die;
-                    $fields['instant_message'] = array();
+                    $fields['instant_message'] = [];
                     foreach ($vc['IMPP'] as $IM) {
                         if (isset($IM['value'])) {
                             $iMFields = explode(':', $IM['value'][0][0]);
 
                             if (isset($IM['param']['X-SERVICE-TYPE'][0]) && $IM['param']['X-SERVICE-TYPE'][0] == 'GoogleTalk') {
-                                $fields['instant_message'][] = array(
+                                $fields['instant_message'][] = [
                                     'username' => $iMFields[1],
                                     'service'  => 'gtalk',
                                     'comment'  => @$IM['param']['TYPE'][0],
-                                );
+                                ];
                             } elseif (isset($IM['param']['X-SERVICE-TYPE'][0])) {
-                                $fields['instant_message'][] = array(
+                                $fields['instant_message'][] = [
                                     'username' => $iMFields[1],
                                     'service'  => strtolower($IM['param']['X-SERVICE-TYPE'][0]),
                                     'comment'  => @$IM['param']['TYPE'][0],
-                                );
+                                ];
                             } else {
-                                $fields['instant_message'][] = array(
+                                $fields['instant_message'][] = [
                                     'username' => $iMFields[1],
                                     'service'  => $iMFields[0],
-                                );
+                                ];
                             }
                         }
                     }
@@ -172,7 +173,7 @@ class VCard extends \File_IMC
 
                 if (isset($vc['TEL'])) {
                     //print_r($vc['TEL']); die;
-                    $fields['phone'] = array();
+                    $fields['phone'] = [];
                     foreach ($vc['TEL'] as $TEL) {
                         if (isset($TEL['value'][0][0])) {
                             $countryCode = null;
@@ -195,24 +196,24 @@ class VCard extends \File_IMC
                                 $phoneNumber = $TEL['value'][0][0];
                             }
 
-                            $fields['phone'][] = array(
+                            $fields['phone'][] = [
                                 'comment'              => $comment,
                                 'country_calling_code' => $countryCode,
                                 'number'               => $phoneNumber,
                                 'type'                 => $type,
-                            );
+                            ];
                         }
                     }
                 }
 
                 if (isset($vc['URL']) && is_array($vc['URL'])) {
-                    $fields['website'] = array();
+                    $fields['website'] = [];
 
                     foreach ($vc['URL'] as $Url) {
                         if (isset($Url['value'][0][0])) {
-                            $fields['website'][] = array(
+                            $fields['website'][] = [
                                 'url' => $Url['value'][0][0],
-                            );
+                            ];
                         }
                     }
                 }
@@ -228,9 +229,9 @@ class VCard extends \File_IMC
 
     protected function _lookupOrganizationByName($name)
     {
-        return \Application\DeskPRO\Entity\Organization::getRepository()->findOneBy(array(
+        return \Application\DeskPRO\Entity\Organization::getRepository()->findOneBy([
             'name' => $name,
-        ));
+        ]);
     }
 
     protected function _checkMatchingContactAccounts(\Application\DeskPRO\Entity\PersonContactData $contactData, \Application\DeskPRO\Entity\Person $person)

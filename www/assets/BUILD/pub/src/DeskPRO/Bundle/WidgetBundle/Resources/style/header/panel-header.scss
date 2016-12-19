@@ -1,0 +1,68 @@
+.dpdesignportal-header {
+  position: relative;
+  border-bottom: 1px solid #e7e7e7;
+  height: 55px;
+  padding: 12px 65px 0 65px;
+  h1 { display: inline-block; vertical-align: middle; }
+  &.dpdesignportal-header-no-left {
+    padding-left: 10px;
+    .dpdesignportal-header-controls { border-left: 1px solid #e7e7e7; }
+  }
+  &.dpdesignportal-header-no-right { padding-right: 10px; }
+}
+
+.dpdesignportal-header-controls {
+  display: block;
+  font-size: 11px;
+  position: absolute;
+  top: 0;
+  color: #dadada;
+  width: 55px;
+  height: 55px;
+  text-align: center;
+  transition: all 0.3s ease;
+
+  i { top: 22px; transition: all 0.3s ease; }
+  i.fa-navicon { top: 20px; font-size: 1.4em; }
+  i.fa-minus { padding-top: 9px; }
+  &:hover i { color: #333; }
+  &.left {
+    left: 0;
+    border-right: 1px solid #e7e7e7;
+    border-left: 0;
+  }
+  &.right {
+    right: 0;
+    border-right: 0;
+    border-left: 1px solid #e7e7e7;
+  }
+}
+
+// Company logo & name
+.dpdesignportal-header-mark {
+  text-align: center;
+  width: 100%;
+
+  h1 {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-top: 7px;
+  }
+
+  .dpdesignportal-logo {
+    float: left;
+    margin-right: 5px;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+  }
+
+  img {
+    vertical-align: middle;
+    border-radius: 2px;
+    max-width: 60px;
+    max-height: 30px;
+  }
+}

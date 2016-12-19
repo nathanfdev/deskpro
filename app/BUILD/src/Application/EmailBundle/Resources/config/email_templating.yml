@@ -1,0 +1,78 @@
+services:
+  templating.email.twig:
+    class: Application\EmailBundle\Twig\Environment
+    arguments:
+      - "@templating.email.twig.loader"
+      - []
+
+  templating.email.template_set:
+    class: Application\EmailBundle\Templating\Templates\TemplateSet
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@templating.email.twig"
+
+  templating.email.twig.loader:
+    class: Application\EmailBundle\Twig\Loader\HybridLoader
+    arguments:
+      - "@templating.email.twig.file_locator"
+      - "@templating.email.twig.template_name_parser"
+
+  templating.email.twig.template_name_parser:
+    class: Application\EmailBundle\Templating\TemplateNameParser
+    arguments:
+      - "@kernel"
+
+  templating.email.twig.engine:
+    class: Application\EmailBundle\Twig\TwigEngine
+    arguments:
+      - "@templating.email.twig"
+      - "@templating.email.twig.template_name_parser"
+      - "@templating.email.twig.file_locator"
+
+  templating.email.engine:
+    class: Application\EmailBundle\Templating\Engine
+    arguments:
+      - "@service_container"
+      - ['templating.email.twig.engine']
+
+  templating.email.twig.templating_locator:
+    class: Application\EmailBundle\Templating\Loader\TemplateLocator
+    arguments:
+      - "@templating.email.twig.file_locator"
+
+  templating.email.twig.file_locator:
+    class: Application\EmailBundle\Templating\FileLocator
+    arguments:
+      - "@kernel"
+
+  templating.email.twig.cache_warmer:
+    class: Application\EmailBundle\Twig\CacheWarmer\TemplateCacheCacheWarmer
+    arguments:
+      - "@service_container"
+      - "@templating.finder"
+    tags:
+        - { name: kernel.cache_warmer }
+
+  #
+  # EXTENSIONS
+  # these apply only to email.templating.twig (note the different tag name)
+  #
+  templating.email.twig.extension.routing:
+    class: Application\EmailBundle\Twig\Extension\RoutingExtension
+    arguments: ["@router"]
+    tags:
+      - { name: email.templating.twig.extension  }
+  templating.email.twig.extension.assets:
+    class: Symfony\Bundle\TwigBundle\Extension\AssetsExtension
+    arguments: ["@service_container", "@?router.request_context"]
+    tags:
+      - { name: email.templating.twig.extension  }
+  templating.email.twig.extension.expression:
+    class: Symfony\Bridge\Twig\Extension\ExpressionExtension
+    tags:
+      - { name: email.templating.twig.extension  }
+  templating.email.twig.extension.templating:
+    class: Application\EmailBundle\Twig\Extension\TemplatingExtension
+    arguments: ["@service_container"]
+    tags:
+      - { name: email.templating.twig.extension  }

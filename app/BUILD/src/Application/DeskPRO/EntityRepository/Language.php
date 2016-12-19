@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -42,6 +43,21 @@ class Language extends AbstractEntityRepository
     protected $lang_titles = null;
     /** @var \Application\DeskPRO\Entity\Language|null */
     protected $default_lang = null;
+
+    public function countPortalLanguages()
+    {
+        return $this->_em->createQuery('SELECT COUNT(l) FROM DeskPRO:Language l WHERE l.has_user = true ORDER BY l.title ASC')->getSingleScalarResult();
+    }
+
+    public function getPortalLanguages()
+    {
+        return $this->_em->createQuery('SELECT l FROM DeskPRO:Language l WHERE l.has_user = true ORDER BY l.title ASC')->getResult();
+    }
+
+    public function getDefaultPortalLanguage()
+    {
+        return $this->_em->createQuery('SELECT COUNT(l) FROM DeskPRO:Language l WHERE l.has_user = true ORDER BY l.title ASC')->getSingleScalarResult();
+    }
 
     /**
      * @return array
@@ -61,7 +77,7 @@ class Language extends AbstractEntityRepository
             return $this->lang_titles;
         }
 
-        $ret = array();
+        $ret = [];
         foreach ((array) $for_ids as $id) {
             $ret[$id] = $this->lang_titles[$id];
         }
@@ -132,5 +148,24 @@ class Language extends AbstractEntityRepository
 				SELECT l FROM DeskPRO:Language l
 				WHERE l.sys_name = :title OR LOWER(l.title) = :title
 			')->setParameter('title', mb_strtolower(trim($title)))->getOneOrNullResult();
+    }
+
+    public function getForLangCode($lang_code)
+    {
+        if (!strlen($lang_code) == 2) {
+            $lang_code = substr($lang_code, 0, 2);
+        }
+
+        if ($lang_code == 'en') {
+            $lang_code = 'en_US';
+        }
+
+        if ($lang_code == 'es') {
+            $lang_code = 'ES_es';
+        }
+
+        $r = $this->findOneBy(['locale' => $lang_code]);
+
+        return $r;
     }
 }

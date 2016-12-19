@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -105,7 +106,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         }
 
         $context->getLogger()->debug("[AbstractEmailAction] Using template: $template");
-        if (!$this->getContainer()->getTemplating()->exists($template)) {
+        if (!$this->getContainer()->get('templating.email')->exists($template)) {
             $context->getLogger()->warn('[AbstractEmailAction] Template does not exist');
             throw new \InvalidArgumentException('invalid_template');
         }
@@ -122,9 +123,9 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
      */
     protected function getStandardEmailVars(Ticket $ticket, ExecutorContextInterface $context, $mode)
     {
-        #------------------------------
-        # Build up some type flags
-        #------------------------------
+        //------------------------------
+        // Build up some type flags
+        //------------------------------
 
         $state = $ticket->getStateChangeRecorder();
         if ($state->isNewTicket()) {
@@ -138,9 +139,9 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         $context->getLogger()->info("[AbstractEmailAction] Type: $type");
         $context->getLogger()->info(sprintf('[AbstractEmailAction] Performer: %s', $context->getEventPerformer()));
 
-        #------------------------------
-        # Set reply flags
-        #------------------------------
+        //------------------------------
+        // Set reply flags
+        //------------------------------
 
         $new_replies        = $state->getNewReplies();
         $is_new_ticket      = $state->isNewTicket();
@@ -160,20 +161,22 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
         // In user mode, never show notes
         if ($mode == 'user') {
-            $new_replies = array_filter($new_replies, function ($r) { return !$r->is_agent_note; });
+            $new_replies = array_filter($new_replies, function ($r) {
+                return !$r->is_agent_note;
+            });
             $ticket_logs = null;
 
-        // Agent mode - include ticket logs
+            // Agent mode - include ticket logs
         } else {
             $ticketlog_generator = new TicketLogGenerator($ticket, $context);
             $ticket_logs         = $ticketlog_generator->getLogEntries();
         }
 
-        #------------------------------
-        # Build map of mentions
-        #------------------------------
+        //------------------------------
+        // Build map of mentions
+        //------------------------------
 
-        $vars = array(
+        $vars = [
             'type'               => $type,
             'user_mode'          => $mode,
             'performer_type'     => $context->getEventPerformer(),
@@ -187,7 +190,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             'new_messages'       => $new_replies,
             'ticket_logs'        => $ticket_logs,
             'user_vars'          => $context->getUserVars(),
-        );
+        ];
 
         return $vars;
     }
@@ -243,16 +246,18 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
                     return $person->getDisplayNameUser();
                 }
             case 'helpdesk_name':
-                return $this->getContainer()->getSetting('core.deskpro_name');
+                /* Todo ensure we stacked the right brand here */
+                return $this->getContainer()->getBrandSetting('core.deskpro_name');
             case 'site_name':
-                return $this->getContainer()->getSetting('core.site_name');
+                /* Todo ensure we stacked the right brand here */
+                return $this->getContainer()->getBrandSetting('core.site_name');
             default:
                 try {
                     $name = $this->renderStringTemplate($name, $ticket, $context);
 
                     return trim(Strings::collapseWhitespace(Strings::removeLineBreaks($name)));
                 } catch (\Exception $e) {
-                    $context->getLogger()->warn('Invalid name pattern syntax: '.$name.'. Exception: '.$e->getMessage(), array('exception' => $e));
+                    $context->getLogger()->warn('Invalid name pattern syntax: '.$name.'. Exception: '.$e->getMessage(), ['exception' => $e]);
 
                     return '';
                 }
@@ -272,7 +277,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         /** @var TemplatingExtension $renderer */
         $renderer = $this->getContainer()->getTwig()->getExtension('deskpro_templating');
 
-        return $renderer->renderTicketTemplate($string, $ticket, $context, $extra_vars ?: array());
+        return $renderer->renderTicketTemplate($string, $ticket, $context, $extra_vars ?: []);
     }
 
     /**
@@ -284,7 +289,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
      */
     protected function processHeaders(array $raw_headers, Ticket $ticket, ExecutorContextInterface $context)
     {
-        $headers = array();
+        $headers = [];
         foreach ($raw_headers as $h) {
             if (empty($h['name'])) {
                 continue;
@@ -292,10 +297,10 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             if (empty($h['value'])) {
                 $h['value'] = '';
             }
-            $headers[] = array(
+            $headers[] = [
                 'name'  => $this->renderStringTemplate($h['name'], $ticket, $context),
                 'value' => $this->renderStringTemplate($h['value'], $ticket, $context),
-            );
+            ];
         }
 
         return $headers;

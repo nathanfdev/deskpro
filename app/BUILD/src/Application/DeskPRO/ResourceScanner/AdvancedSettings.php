@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Controller
  */
+
 namespace Application\DeskPRO\ResourceScanner;
 
 /**
@@ -42,7 +43,7 @@ class AdvancedSettings extends SettingFiles
     {
         $settings = parent::getAllSettings();
 
-        $accept_settings = array(
+        $accept_settings = [
             'agent.max_login_attempts',
             'agent.login_lockout_time',
             'agent.notify_self_login',
@@ -66,7 +67,6 @@ class AdvancedSettings extends SettingFiles
             'core_email.antiflood_newtickets_warn',
             'core_email.antiflood_newreplies',
             'core_email.antiflood_newreplies_warn',
-            'core_misc.cleanup_visitors',
             'core_misc.cleanup_login_logs',
             'core_misc.cleanup_gateway_sources',
             'core_misc.cleanup_gateway_sources_onlyclosed',
@@ -76,13 +76,13 @@ class AdvancedSettings extends SettingFiles
             'core_tickets.gateway_enable_subject_match',
             'core.agent_translate_debug',
             'core_email.enable_date_limit_rejection',
-        );
+        ];
 
         if (!defined('DPC_IS_CLOUD')) {
             $accept_settings[] = 'core.api_rate_limit';
         }
 
-        $ret = array();
+        $ret = [];
 
         foreach ($accept_settings as $k) {
             if (isset($settings[$k])) {

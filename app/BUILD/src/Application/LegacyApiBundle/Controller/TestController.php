@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,37 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * A Test API resource.
+ *
+ * @ApiModes("all")
  */
 class TestController extends AbstractController
 {
-    public function preAction($action, $arguments = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
         if ($action == 'testAction' || $action == 'aboutAction') {
             return;
         }
 
-        return parent::preAction($action, $arguments);
+        return parent::preActionHandler($request, $action, $arguments);
     }
 
     /**
      * This action simply returns a message to indicate that the API is working.
      *
-     * @depreciated
+     * @deprecated
      */
     public function testAction()
     {
         $request = $this->container->getRequest();
 
-        $api_url = App::getSetting('core.deskpro_url');
+        $api_url = $this->container->getBrandSetting('core.deskpro_url');
         $api_url .= 'index.php/';
 
         // If this call is secure, then we know https works and the client
@@ -65,11 +69,11 @@ class TestController extends AbstractController
             $api_url = preg_replace('#^http://#', 'https://', $api_url);
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'success'     => true,
             'api_version' => DP_BUILD_TIME,
             'api_url'     => $api_url,
-        ));
+        ]);
     }
 
     /**
@@ -80,8 +84,8 @@ class TestController extends AbstractController
     {
         $request = $this->container->getRequest();
 
-        $data                 = array();
-        $data['helpdesk_url'] = App::getSetting('core.deskpro_url');
+        $data                 = [];
+        $data['helpdesk_url'] = $this->container->getBrandSetting('core.deskpro_url');
         $data['helpdesk_url'] = str_replace('/index.php', '', $data['helpdesk_url']);
         $data['helpdesk_url'] = rtrim($data['helpdesk_url'], '/').'/';
 
@@ -111,6 +115,6 @@ class TestController extends AbstractController
     {
         $message = isset($_POST['message']) ? $_POST['message'] : 'Post works!';
 
-        return $this->createApiResponse(array('message' => $message));
+        return $this->createApiResponse(['message' => $message]);
     }
 }

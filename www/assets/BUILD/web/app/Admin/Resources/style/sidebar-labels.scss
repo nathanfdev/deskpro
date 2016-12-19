@@ -1,0 +1,39 @@
+.sidebar {
+  .sidebar-label-list {
+    padding: 0px 5px;
+  }
+
+
+  .item-label {
+    display: inline-block;
+    border-radius: 2px;
+    line-height: 1em;
+    padding: 4px 7px;
+    color: #a8a8a8;
+    font-weight: bold;
+    background: #fff;
+    border: 1px solid #dbdcdd;
+    margin-bottom: 5px;
+  }
+
+
+  .item-label:hover {
+    color: #868686;
+  }
+
+  .list-sidebar-label-view {
+    border-top: 1px solid #dcddde;
+    border-bottom: 1px solid #dcddde;
+    text-align: center;
+    margin: 5px 5px 10px 5px;
+
+    a {
+      display: inline-block;
+      padding: 5px;
+      color: #b0b1b2;
+
+      &:hover, &.active { color: #5b5b5b; }
+    }
+  }
+
+}

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,10 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
+
+use Composer\CaBundle\CaBundle;
 
 /**
  * A utility class for working with HTTP/Web related tasks such as cookies or sending headers.
@@ -53,7 +56,7 @@ class Web
      * HTML/Javascript to execute the redirect. Will exit the script
      * afterwards.
      *
-     * @param string $url The URL to redirect to.
+     * @param string $url The URL to redirect to
      */
     public static function redirect($url)
     {
@@ -74,7 +77,7 @@ class Web
     /**
      * Send an HTTP status code.
      *
-     * @param int $type One of the HTTP_STATUS_* constants.
+     * @param int $type One of the HTTP_STATUS_* constants
      *
      * @return bool True if sent, false if it couldnt be sent
      */
@@ -109,7 +112,7 @@ class Web
      */
     public function getAttachmentHeaders($filename, $is_inline = false, $mimetype = null, $filesize = null)
     {
-        $headers = array();
+        $headers = [];
 
         if (!$filename) {
             $filename = 'file';
@@ -231,7 +234,7 @@ class Web
      */
     public static function getUserIp()
     {
-        return (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '');
+        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
     }
 
     /**
@@ -250,7 +253,7 @@ class Web
             }
 
             if (!$alt_ip and isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ip_arr = array();
+                $ip_arr = [];
 
                 if (preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $ip_arr)) {
                     foreach ($ip_arr[0] as $ip) {
@@ -281,7 +284,7 @@ class Web
      */
     public static function getUserAgent()
     {
-        return (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
+        return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
     }
 
     /**
@@ -291,7 +294,7 @@ class Web
      */
     public static function getScriptReferrer()
     {
-        return (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
+        return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
     }
 
     /**
@@ -343,7 +346,7 @@ class Web
     /**
      * Look up a users country based off of their IP address. Returns null if no country could be found.
      *
-     * @param string $ip The IP address. Use null if you want to use the current users IP address.
+     * @param string $ip The IP address. Use null if you want to use the current users IP address
      *
      * @return string
      */
@@ -420,6 +423,28 @@ class Web
         return $ret;
     }
 
+    protected static function initCaCert($ch)
+    {
+        global $DP_ENV;
+
+        if ($DP_ENV->getConfig('settings.http_client.use_sys_ca_bundle')) {
+            return;
+        }
+
+        $cainfo = CaBundle::getBundledCaBundlePath();
+        if (defined('DP_ROOT') && file_exists($cainfo)) {
+            if (@curl_setopt($ch, CURLOPT_CAINFO, $cainfo)) {
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            } else {
+                error_log('Could not set DeskPRO CA Bundle');
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            }
+        } else {
+            error_log('Could not set DeskPRO CA Bundle');
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        }
+    }
+
     /**
      * Get the filesize of a file at a URL. Note: Requires remote file server to return
      * proper Content-Length header.
@@ -440,6 +465,7 @@ class Web
         @curl_setopt($ch, CURLOPT_HEADER, true);
         @curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        self::initCaCert($ch);
 
         $full_result = @curl_exec($ch);
         @curl_close($ch);
@@ -480,6 +506,7 @@ class Web
         @curl_setopt($ch, CURLOPT_HEADER, true);
         @curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        self::initCaCert($ch);
 
         $full_result = @curl_exec($ch);
         @curl_close($ch);
@@ -529,7 +556,7 @@ class Web
             $useragent = $_SERVER['HTTP_USER_AGENT'];
         }
 
-        $bot_strings = array(
+        $bot_strings = [
             'AdsBot-Google', 'Googlebot-Image', 'Googlebot-Mobile', 'Googlebot',
             'Yahoo! Slurp', 'Yahoo! Slurp China', 'Yahoo-MMCrawler',
             'Openbot',
@@ -541,7 +568,7 @@ class Web
             'Ask Jeeves/Teoma', 'Teoma',
             'Gigabot',
             'bingbot',
-        );
+        ];
 
         foreach ($bot_strings as $bot) {
             if (strpos($useragent, $bot) !== false) {

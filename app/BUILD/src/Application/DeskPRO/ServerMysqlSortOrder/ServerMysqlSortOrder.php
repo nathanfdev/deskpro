@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerMysqlSortOrder;
 
 use Application\DeskPRO\Settings\Settings;
@@ -68,12 +69,12 @@ class ServerMysqlSortOrder
      */
     public function toArray()
     {
-        $export_settings = array();
+        $export_settings = [];
 
         foreach (
-            array(
+            [
                 'db_collation',
-            ) as $s) {
+            ] as $s) {
             $export_settings[$s] = $this->$s;
         }
 
@@ -98,7 +99,6 @@ class ServerMysqlSortOrder
     public function save()
     {
         if ($this->isCollationValid($this->db_collation)) {
-
             // notice this is 'db_collation_change', not 'db_collation'
 
             $this->settings->setSetting('core.db_collation_change', $this->db_collation);
@@ -110,7 +110,7 @@ class ServerMysqlSortOrder
      */
     public function getCollationsTable()
     {
-        $collations = array(
+        $collations = [
             'utf8_general_ci'          => 'General Purpose (Default)',
             'utf8_unicode_ci'          => 'Unicode Default',
             'utf8_icelandic_ci'        => 'Icelandic',
@@ -133,7 +133,7 @@ class ServerMysqlSortOrder
             'utf8_hungarian_ci'        => 'Hungarian',
             'utf8_sinhala_ci'          => 'Sinhalese',
             'utf8_general_mysql500_ci' => 'General Purpose (MySQL 5.0)',
-        );
+        ];
 
         natcasesort($collations);
 
@@ -172,10 +172,10 @@ class ServerMysqlSortOrder
             if ($line && preg_match('/^\[(\d+)\|([a-z0-9_]+)]([a-z0-9_]+):(.*)$/si', $line, $match)) {
                 $status    = $match[3];
                 $collation = $match[2];
-                $data      = array(
+                $data      = [
                     'time'    => $match[1],
                     'message' => $match[4],
-                );
+                ];
             }
         }
 
@@ -198,11 +198,11 @@ class ServerMysqlSortOrder
                 break;
         }
 
-        return array(
+        return [
             'status'    => $status,
             'collation' => $collation,
             'data'      => $data,
             'message'   => $message,
-        );
+        ];
     }
 }

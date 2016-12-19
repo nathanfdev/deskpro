@@ -1,0 +1,279 @@
+.dpw-site-cover {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.dpw-site-cover.with-popup {
+  overflow-y: auto;
+  z-index: 1005;
+}
+
+.dpw--modal {
+  &::after {
+    clear: both;
+    content: "";
+    display: table;
+  }
+  width: 100%;// Some responsiveness (although content will break for now)
+  max-width: 950px;
+  min-width: 820px;
+  max-height: 600px;
+  min-height: 300px;
+  display: block;
+  background: $popup-background;
+  z-index: 999;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  color: $text-color;
+  // Place it in the middle of the screen
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 2px;
+  //* { line-height: 1.2em; }
+
+  // We absolute position the footer, so need some padding there to look good
+  padding-bottom: 76px;
+  // If we don't use a footer
+
+  &.no-footer {
+    padding-bottom: 0px;
+    .popup-footer {
+      padding-left: $popup-sidebar + 10px;
+    }
+  }
+
+  &.mini {
+    width: 500px;
+    min-width: auto;
+    height: auto;
+    min-height: auto;
+    header {
+      padding: 10px;
+    }
+
+    header .controls {
+      right: 7px;
+    }
+
+    .popup-footer {
+      text-align: center;
+      .popup-button {
+        margin: 0px 5px;
+      }
+    }
+
+    .mini-popup-content {
+      text-align: center;
+      margin-top: 20px;
+
+      i {
+        display: inline-block;
+        font-size: 20px;
+        opacity: 0.3;
+        margin: 20px 0px 10px 0px;
+      }
+
+      h1 {
+        opacity: 0.8;
+        font-size: 19px;
+        margin-bottom: 10px;
+      }
+
+      p {
+        opacity: 0.6;
+        line-height: 1.8em;
+      }
+    }
+  }
+
+  // Popup title
+  header {
+    text-transform: uppercase;
+    background: #4681b2;
+    padding: 20px 18px;
+    position: relative;
+    color: #fff;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+
+    h1 {
+      font-weight: 500;
+      font-size: 1.1em;
+    }
+
+    .controls {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      margin-top: -13px;
+
+      a {
+        display: inline-block;
+        width: 26px;
+        height: 26px;
+        font-size: 10px;
+        border-radius: 2px;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.1);
+        color: #fff;
+        padding-top: 8px;
+        i { opacity: 0.5; }
+        &:hover i { opacity: 1; }
+      }
+    }
+  }
+
+  // Text ober content;
+  .popup-blurb {
+    color: #6e6e6f;
+    padding-left: 5px;
+
+    h2 {
+      font-size: 1.2em;
+      margin-bottom: 5px;
+    }
+
+    p {
+      font-size: 0.95em;
+      color: inherit;
+    }
+  }
+
+  // Full width footer content
+  footer {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    background: #f5f6f7;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    .button { max-width: 300px; }
+  }
+
+  h2 {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+  }
+
+  // Buttons and stuff
+  input[type="text"], input[type="password"], .select, .button {
+    background: #f7f7f7;
+    border: 1px solid #d1d5da;
+    border-radius: 2px;
+    padding: $item-padding;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+  }
+
+  .button {
+    background: $top-bar-blue;
+    border: 1px solid $top-bar-blue;
+    text-align: center;
+    color: #fff;
+    font-weight: 400;
+  }
+
+  .button-secondary {
+    background: #e1e6eb;
+    border: 1px solid #cecece;
+    color: #757e86;
+  }
+
+  .button-dropdown {
+    display: inline-block;
+    background: #fff;
+    line-height: 1em;
+    padding: 8px 10px;
+    border-radius: 2px;
+    border: 1px solid #bdbdbd;
+    border-bottom: 2px solid #bdbdbd;
+    text-decoration: none;
+    margin-left: 5px;
+    margin-right: 5px;
+    min-width: 160px;
+    color: #aeafb0;
+
+    i {
+      float: right;
+    }
+  }
+
+  .button-short {
+    width: 49%;
+  }
+
+  .popup-footer {
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    padding-left: 10px;
+    background: #fff;
+    z-index: 299;
+    padding-bottom: 10px;
+    hr {
+      background: rgba(0, 0, 0, 0.1);
+      height: 1px;
+      margin: 0px;
+      margin-bottom: 10px;
+    }
+  }
+
+  .popup-button {
+    display: inline-block;
+    color: #fff;
+    background: #4681B2;
+    border: 1px solid #4681B2;
+    border-radius: 2px;
+    line-height: 1.2em;
+    padding: 7px 30px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 11px;
+    &.cancel {
+      background: none;
+      border: 1px solid #cecece;
+      color: #5b5a5a;
+    }
+  }
+
+  .popup-content {
+    &::after {
+      clear: both;
+      content: "";
+      display: table;
+    }
+    padding-left: $popup-sidebar + 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 57px;
+    position: relative;
+    min-height: 350px;
+
+    // Remove the padding from top & right side for popup content that needs to span the whole panel
+    // See notification settings for an example (the right side sidebar needs to be stuck to the right and top - and padding was messing with that)
+    // Don't forget to add a padding-top to the immediate content container so things remain aligned
+    &.no-border {
+      padding-top: 0px;
+      padding-right: 0px;
+      padding-bottom: 0px;
+    }
+
+    h1 {
+      font-weight: 500;
+      color: #737373;
+      margin: 10px 0px;
+    }
+  }
+}

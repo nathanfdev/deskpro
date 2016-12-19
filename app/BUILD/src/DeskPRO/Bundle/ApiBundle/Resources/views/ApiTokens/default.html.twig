@@ -1,0 +1,4 @@
+<script>sendPayload({{ {
+    token: token.getKeyString(),
+    person_id: token.person.id
+} | json_encode | raw }})</script>

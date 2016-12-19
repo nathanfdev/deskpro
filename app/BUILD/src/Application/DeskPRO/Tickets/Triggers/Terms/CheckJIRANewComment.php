@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -67,7 +68,7 @@ class CheckJIRANewComment extends AbstractTriggerTerm
         /** @var ChangeData $change */
         $change = $state->getCombinedChangeForField('jira.comment');
 
-        $data = $change ? $change->getData() : array();
+        $data = $change ? $change->getData() : [];
 
         if (!$data) {
             return 'not_isset' === $op;
@@ -77,7 +78,7 @@ class CheckJIRANewComment extends AbstractTriggerTerm
         }
         $comment = $data['body'];
 
-        $strings = array();
+        $strings = [];
 
         $strings[] = $comment;
         $strings[] = trim(preg_replace('#\s+#', ' ', strip_tags($comment)));

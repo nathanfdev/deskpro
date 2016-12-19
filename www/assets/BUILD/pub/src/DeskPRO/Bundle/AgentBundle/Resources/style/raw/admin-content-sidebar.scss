@@ -1,0 +1,115 @@
+.admin-content-sidebar {
+  width: 400px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+
+  // Buttons on the left sidebar
+  .sidebar-control {
+    display: inline-block;
+    padding: 6px 20px;
+    border-radius: 2px;
+    border: 1px solid #e5e5e5;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.75em;
+    font-weight: 600;
+    margin-top: 5px;
+    color: #a1a1a1;
+
+    &:hover {
+      color: #333;
+    }
+  }
+
+  .sidebar-control.major {
+    background: #3f82af;
+    border: 1px solid #2e6c94;
+    color: #fff;
+
+    &:hover {
+      background: #2e6c94;
+    }
+  }
+
+  .sidebar-content-wrapper {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  // Left sidebar item
+  .admin-content-sidebar-panel {
+    background: #fff;
+    border: 1px solid #dedede;
+    border-radius: 2px;
+    margin: 10px;
+    margin-bottom: 0px;
+
+    .sidebar-panel-control {
+      float: right;
+    }
+  }
+
+  .full-panel-link { text-decoration: none; }
+
+  // header for sidebar item
+  .admin-sidebar-header {
+    padding: 10px;
+    color: #6e6e6e;
+    background: #ededed;
+
+    h1 {
+      font-size: 0.85em;
+      display: inline;
+      text-transform: uppercase;
+      font-weight: bold;
+      color: inherit;
+
+      text-shadow: 1px 1px 0px #fff;
+    }
+
+    i { margin: 0px 5px 0px 5px }
+  }
+
+  // Actual lists
+  .admin-sidebar-content {
+    padding: 10px 0px;
+    position: relative;
+
+    li {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    li.active {
+      background: #d9e6ef;
+
+      .item {
+        color: #3f82af;
+      }
+    }
+
+    .item-options {
+      position: absolute;
+      right: 5px;
+
+      a {
+        color: #cacaca;
+        margin-left: 2px;
+        margin-right: 2px;
+      }
+      a:hover {
+        color: #333;
+      }
+    }
+  }
+
+
+
+  .chat-status {
+    margin-left: 3px;
+    position: relative;
+    top: -4px;
+    color: #2fcc90;
+  }
+}

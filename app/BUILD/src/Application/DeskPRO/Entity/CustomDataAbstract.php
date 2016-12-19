@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 /**
@@ -49,7 +50,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      *
      * @var int
      */
-    protected $id = null;
+    protected $id;
 
     /**
      * User numeric data.
@@ -86,6 +87,13 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     }
 
     /**
+     * @return int
+     */
+    public function getValue()
+    {
+        return (int) $this->value;
+    }
+    /**
      * @param string $input
      *
      * @return $this
@@ -98,22 +106,81 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     }
 
     /**
+     * @return string
+     */
+    public function getInput()
+    {
+        return $this->input;
+    }
+
+    /**
      * Get the value or input.
      *
      * @return mixed
      */
     public function getData()
     {
-        $type = !empty($this->field) ? $this->field->getTypeName() : 'text';
+        if (!$this->field) {
+            return '';
+        }
 
-        switch ($type) {
+        switch ($this->field->getTypeName()) {
             case 'toggle':
-            case 'date':
-            case 'datetime':
                 return $this->value;
             default:
                 return $this->value ? $this->value : $this->input;
         }
+    }
+
+    /**
+     * Value or input SQL select clause.
+     *
+     * This method is a translation of the $this->getData() method into SQL.
+     *
+     * @param string $data Data table alias
+     * @param string $def  Def table alias
+     *
+     * @return string
+     *
+     * @deprecated
+     */
+    public static function getDataSql($data = 'custom_data_ticket', $def = 'custom_def_ticket')
+    {
+        $toggleHandlerClass = CustomDefAbstract::HANDLER_CLASS_TOGGLE;
+
+        $sql = "
+            CASE
+                WHEN $def.handler_class = '$toggleHandlerClass' THEN $data.value
+                ELSE IF($data.value, $data.value, $data.input)
+            END
+        ";
+        $sql = str_replace("\n", ' ', $sql);
+        $sql = trim($sql);
+
+        return $sql;
+    }
+
+    /**
+     * Set the value or input (use the individual methods if you don't want auto detection).
+     *
+     * @param mixed $data
+     *
+     * @return $this
+     */
+    public function setData($data)
+    {
+        if (!$data) {
+            $this->setModelField('value', 0);
+            $this->setModelField('input', '');
+        } elseif ($this->field->getType() === CustomDefAbstract::TYPE_TOGGLE) {
+            $this->setModelField('value', (int) $data);
+        } elseif (is_int($data)) {
+            $this->setModelField('value', $data);
+        } else {
+            $this->setModelField('input', (string) $data);
+        }
+
+        return $this;
     }
 
     /**
@@ -127,17 +194,12 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
-        // record isn't useful without these, so always include them
-        if ($this->field) {
-            $data['field'] = $this->field->toApiData(false, false, $visited);
-        }
-        if ($this->root_field) {
-            $data['root_field'] = $this->root_field->toApiData(false, false, $visited);
-        }
+        $data['field']      = $this->field->toApiData(false, false, $visited);
+        $data['root_field'] = $this->root_field->toApiData(false, false, $visited);
 
         return $data;
     }
@@ -150,9 +212,14 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         return sprintf(
             '[#%s -- %s:%s] %s',
             $this->id ?: '?',
-            $this->field ? $this->field->id : '?',
-            $this->field ? $this->field->getTypeName() : 'unknown',
+            $this->field->id,
+            $this->field->getTypeName(),
             $this->getData()
         );
     }
+
+    /**
+     * @return mixed
+     */
+    abstract public function getOwner();
 }

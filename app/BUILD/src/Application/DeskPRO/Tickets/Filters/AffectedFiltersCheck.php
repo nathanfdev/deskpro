@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,18 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Filters;
 
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Component\Util\RegexUtils;
 use Monolog\Logger;
 use Orb\Util\Arrays;
 
+/**
+ * Class AffectedFiltersCheck.
+ */
 class AffectedFiltersCheck
 {
     /**
@@ -45,9 +51,9 @@ class AffectedFiltersCheck
     private $ticket;
 
     /**
-     * @var \Application\DeskPRO\Entity\TicketFilter[]
+     * @var array
      */
-    private $filters;
+    private $groupedByTermFilter;
 
     /**
      * @var Logger
@@ -65,12 +71,12 @@ class AffectedFiltersCheck
     private $field_versions;
 
     /**
-     * @var \Application\DeskPRO\Entity\TicketFilter[]
+     * @var \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     private $affected_filters;
 
     /**
-     * @var \Application\DeskPRO\Entity\TicketFilter[]
+     * @var \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     private $affected_filters_nochange;
 
@@ -80,15 +86,17 @@ class AffectedFiltersCheck
     private $has_run = false;
 
     /**
-     * @param Ticket                                     $ticket
-     * @param \Application\DeskPRO\Entity\TicketFilter[] $filters
-     * @param Logger                                     $logger
+     * Constructor.
+     *
+     * @param Ticket $ticket
+     * @param array  $groupedByTermFilters
+     * @param Logger $logger
      */
-    public function __construct(Ticket $ticket, array $filters, Logger $logger)
+    public function __construct(Ticket $ticket, array $groupedByTermFilters, Logger $logger)
     {
-        $this->ticket  = $ticket;
-        $this->filters = $filters;
-        $this->logger  = $logger;
+        $this->ticket              = $ticket;
+        $this->groupedByTermFilter = $groupedByTermFilters;
+        $this->logger              = $logger;
     }
 
     /**
@@ -101,29 +109,29 @@ class AffectedFiltersCheck
         }
         $this->has_run = true;
 
-        $this->logger->info(sprintf('[AffectedFilters] Checking %d filters', count($this->filters)));
+        $this->logger->info(sprintf('[AffectedFilters] Checking %d filters', count($this->groupedByTermFilter)));
 
         $state = $this->ticket->getStateChangeRecorder();
 
         $changed_fields = $state->getChangedFields();
 
-        $this->field_versions = array();
-        foreach ($changed_fields as $f) {
-            $version                  = $state->getStateVersionForChange($state->getLastChangeForField($f));
-            $this->field_versions[$f] = $version;
+        $this->field_versions = [];
+        foreach ($changed_fields as $filter) {
+            $version                       = $state->getStateVersionForChange($state->getLastChangeForField($filter));
+            $this->field_versions[$filter] = $version;
         }
 
         if ($this->prev_field_versions) {
-            $new_changed_fields = array();
+            $new_changed_fields = [];
             $with_new_check     = true;
 
-            foreach ($this->field_versions as $f => $v) {
-                if (!isset($this->prev_field_versions[$f]) || $this->prev_field_versions[$f] < $v) {
-                    $new_changed_fields[] = $f;
+            foreach ($this->field_versions as $filter => $v) {
+                if (!isset($this->prev_field_versions[$filter]) || $this->prev_field_versions[$filter] < $v) {
+                    $new_changed_fields[] = $filter;
                 }
             }
         } else {
-            $new_changed_fields = array();
+            $new_changed_fields = [];
             $with_new_check     = false;
         }
 
@@ -147,7 +155,12 @@ class AffectedFiltersCheck
                 case 'person': return 'ticket.person_id';
                 case 'agent_team': return 'ticket.agent_team_id';
                 case 'organization': return 'ticket.organization_id';
-                default: return "ticket.$field_name";
+                default:
+                    if ($fid = RegexUtils::getMatch('/^custom_data\.(\d+)$/', $field_name)) {
+                        return 'ticket.custom_data_ticket_'.$fid;
+                    } else {
+                        return "ticket.$field_name";
+                    }
             }
         }, $changed_fields);
 
@@ -165,16 +178,44 @@ class AffectedFiltersCheck
             $is_new_messages = true;
         }
 
-        $affected_filters          = array();
-        $affected_filters_nochange = array();
+        $affected_filters          = [];
+        $affected_filters_nochange = [];
 
-        foreach ($this->filters as $f) {
-            if ($is_new_messages || $is_hidden_change || $f->getSearcher()->hasAnyAffectedFields($changed_fields)) {
-                $affected_filters[] = $f;
+        /** @var Ticket $originalTicket */
+        $originalTicket = $this->ticket->getOriginalStateClone();
+        $newTicket      = $this->ticket;
+        $isNewTicket    = $state->isNewTicket();
+
+        foreach ($this->groupedByTermFilter as $filterGroup) {
+            $filter   = reset($filterGroup);
+            $searcher = LegacyTicketFilter::createSearcher($filter['sys_name'], $filter['terms']);
+
+            if ($is_new_messages || $is_hidden_change || $searcher->hasAnyAffectedFields($changed_fields)) {
+                if (!$searcher->needsPersonContext()) {
+                    // check filters w/o agent context
+                    // if base check is failed then no need to check it in the agent context
+                    $newMatch = false;
+                    $origMath = false;
+
+                    if (!$isNewTicket && $searcher->doesTicketMatch($originalTicket)) {
+                        $origMath = true;
+                    }
+                    if ($searcher->doesTicketMatch($newTicket)) {
+                        $newMatch = true;
+                    }
+
+                    if (!$origMath && !$newMatch) {
+                        $this->logger->debug(sprintf('[FilterChangeDetector] ----- Base check failed #%d -----', $filter['id']));
+                        continue;
+                    }
+                }
+
+                // collect affected filters
+                $affected_filters += $filterGroup;
 
                 // Do the same test again, but remove ones where previous state version
-                if ($with_new_check && !$f->getSearcher()->hasAnyAffectedFields($new_changed_fields)) {
-                    $affected_filters_nochange[] = $f;
+                if ($with_new_check && !$searcher->hasAnyAffectedFields($new_changed_fields)) {
+                    $affected_filters_nochange += $filterGroup;
                 }
             }
         }
@@ -223,7 +264,7 @@ class AffectedFiltersCheck
     /**
      * Get an array of filters that are affected by the changed fields.
      *
-     * @return \Application\DeskPRO\Entity\TicketFilter[]
+     * @return \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     public function getAffectedFilters()
     {
@@ -238,7 +279,7 @@ class AffectedFiltersCheck
      * Filters returned here can use the same result from any previous
      * run through the filter change detector.
      *
-     * @return \Application\DeskPRO\Entity\TicketFilter[]
+     * @return \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     public function getAffectedFiltersWithNoChanges()
     {
@@ -251,13 +292,13 @@ class AffectedFiltersCheck
      * Return only filters that are affected by new changes. This is the
      * difference from getAffectedFilters/getAffectedFiltersWithNoChanges.
      *
-     * @return \Application\DeskPRO\Entity\TicketFilter[]
+     * @return array
      */
     public function getNewAffectedFilters()
     {
         $this->_run();
         if (!$this->affected_filters) {
-            return array();
+            return [];
         } elseif (!$this->affected_filters_nochange) {
             return $this->affected_filters;
         }

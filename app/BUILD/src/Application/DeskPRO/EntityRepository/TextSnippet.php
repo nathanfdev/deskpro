@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,9 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use DeskPRO\Component\Util\ListUtils;
+use Doctrine\DBAL\Query\QueryBuilder;
+use Orb\Util\Arrays;
 
 class TextSnippet extends AbstractEntityRepository
 {
@@ -55,7 +58,7 @@ class TextSnippet extends AbstractEntityRepository
         $dql = '
             SELECT s, c
             FROM DeskPRO:TextSnippet s
-            LEFT JOIN s.category c
+            INNER JOIN s.category c
             WHERE
                 c.typename = ?1
                 AND (c.person = ?2 OR c.is_global = true)
@@ -67,7 +70,7 @@ class TextSnippet extends AbstractEntityRepository
             ->execute();
 
         if (!$coll) {
-            return array();
+            return [];
         }
 
         return $this->groupSnippetCollection($coll);
@@ -89,7 +92,7 @@ class TextSnippet extends AbstractEntityRepository
         $dql = '
             SELECT s, c
             FROM DeskPRO:TextSnippet s
-            LEFT JOIN s.category c
+            INNER JOIN s.category c
             WHERE
                 c.typename = ?1
                 AND (c.person = ?2 OR c.is_global = true)
@@ -114,100 +117,154 @@ class TextSnippet extends AbstractEntityRepository
         return $coll;
     }
 
-    public function filterSnippetsForAgent($search, $typename, PersonEntity $agent, $page = 1, $per_page = 250, $in_category = null, $language_id = null)
+    public function filterSnippetsForAgent($search, $typename, PersonEntity $agent = null, $page = 1, $perPage = 250, $filterCatIds = null, $filterLangIds = null)
     {
         /** @var Connection $conn */
         $conn = $this->getEntityManager()->getConnection();
 
-        // find proper categories
-        if (!$in_category) {
-            $dql = '
-                SELECT PARTIAL c.{id}
-                FROM DeskPRO:TextSnippetCategory c
-                WHERE c.typename = :typename AND (c.person = :person OR c.person IS NULL)
-            ';
+        if ($filterLangIds) {
+            $filterLangIds = (array) $filterLangIds;
+            $filterLangIds = array_map('intval', $filterLangIds);
+            $filterLangIds = Arrays::removeFalsey($filterLangIds);
+            if (!$filterLangIds) {
+                // bad input, should match nothing
+                $filterLangIds = [0];
+            }
+        }
 
-            $q = $this->getEntityManager()->createQuery($dql)->setParameters(array(
-                'typename' => $typename,
-                'person'   => $agent,
-            ));
+        if ($filterCatIds) {
+            $filterCatIds = (array) $filterCatIds;
+            $filterCatIds = array_map('intval', $filterCatIds);
+            $filterCatIds = Arrays::removeFalsey($filterCatIds);
+            if (!$filterCatIds) {
+                // bad input, should match nothing
+                $filterCatIds = [0];
+            }
+        }
 
-            $in_category = array();
-            foreach ($q->getArrayResult() as $row) {
-                $in_category[] = $row['id'];
-            };
+        if ($search) {
+            if (strlen($search) < 3) {
+                return [];
+            }
+
+            $qb = new QueryBuilder($conn);
+            $qb->select('DISTINCT(object_lang.ref_id)')
+               ->from('object_lang')
+               ->innerJoin('object_lang', 'text_snippets', 'ts', 'ts.id = object_lang.ref_id')
+               ->innerJoin('ts', 'text_snippet_categories', 'cat', 'cat.id = ts.category_id')
+               ->andWhere('cat.typename = :type')->setParameter('type', $typename);
+
+            if ($agent) {
+                $qb->andWhere('(cat.is_global OR cat.person_id = :personId)')->setParameter(':personId', $agent->getId());
+            }
+
+            if ($filterLangIds) {
+                $qb->andWhere('object_lang.language_id IN (:langIds)')
+                   ->setParameter(':langIds', (array) $filterLangIds, Connection::PARAM_INT_ARRAY);
+            }
+
+            $qb->andWhere('object_lang.ref_type = "text_snippets"')
+               ->andWhere('object_lang.value LIKE :search')->setParameter(':search', '%'.addcslashes($search, '%_\\').'%')
+               ->setMaxResults(250);
+
+            $matchingIds = $qb->execute()->fetchAll(\PDO::FETCH_COLUMN);
+
+            if (empty($matchingIds)) {
+                return [];
+            }
         } else {
-            $in_category = (array) $in_category;
+            $matchingIds = null;
         }
 
-        // find proper translations
-        $sql = sprintf('
-            select l1.ref_id, l1.language_id, l1.value as title, l2.value as snippet
-            from object_lang l1
-            join object_lang l2 on
-                l1.ref_type = "text_snippets"
-                and l2.ref_type = "text_snippets"
-                and l1.language_id = l2.language_id
-                and l1.prop_name = "title"
-                and l2.prop_name = "snippet"
-                and l1.ref_id = l2.ref_id
-            where l1.value like :title
-            limit %d, %d
-        ', --$page * $per_page, $per_page);
-        $params = array('title' => '%'.$search.'%');
-        if ($language_id) {
-            $sql .= ' and language_id = :language_id';
-            $params['language_id'] = $language_id;
-        }
-        $ids = array();
-        $map = array();
-        foreach ($conn->fetchAll($sql, $params) as $row) {
-            $map[$row['ref_id']][$row['language_id']] = array(
-                'title'   => $row['title'],
-                'snippet' => $row['snippet'],
-            );
-            $ids[] = $row['ref_id'];
+        $qb = new QueryBuilder($conn);
+        $qb->select('text_snippets.*')
+           ->from('text_snippets')
+           ->innerJoin('text_snippets', 'text_snippet_categories', 'cat', 'cat.id = text_snippets.category_id')
+           ->andWhere('cat.typename = :type')->setParameter('type', $typename);
+
+        if ($agent) {
+            $qb->andWhere('(cat.is_global OR cat.person_id = :personId)')->setParameter(':personId', $agent->getId());
         }
 
-        // find snippets
-        $sql = '
-            select * from text_snippets
-            where category_id in (:categories) and id in (:ids)
-        ';
-        $params   = array('categories' => $in_category, 'ids' => $ids);
-        $types    = array('categories' => Connection::PARAM_INT_ARRAY, 'ids' => Connection::PARAM_INT_ARRAY);
-        $snippets = $conn->fetchAll($sql, $params, $types);
+        if ($filterCatIds) {
+            $qb->andWhere('text_snippets.category_id IN (:catIds)')
+                ->setParameter('catIds', (array) $filterCatIds, Connection::PARAM_INT_ARRAY);
+        }
+        if ($filterLangIds) {
+            $qb->innerJoin('text_snippets', 'object_lang', 'l', '(l.ref_id = text_snippets.id AND l.ref_type = "text_snippets" AND l.language_id IN (:langIds))')
+               ->setParameter(':langIds', $filterLangIds, Connection::PARAM_INT_ARRAY);
+        }
+        if ($matchingIds) {
+            $qb->andWhere('text_snippets.id IN (:ids)')->setParameter(':ids', $matchingIds, Connection::PARAM_INT_ARRAY);
+        }
 
-        $langs = array();
+        $qb->setMaxResults($perPage);
+        $qb->setFirstResult(($page - 1) * $perPage);
+
+        $snippets = $qb->execute()->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (empty($snippets)) {
+            return [];
+        }
+
+        $snippetIds = ListUtils::map($snippets, function ($s) {
+            return $s['id'];
+        });
+
+        $langData = $conn->fetchAll("
+            SELECT language_id, ref_id, prop_name, value
+            FROM object_lang
+            WHERE ref_type = 'text_snippets' AND ref_id IN (?)
+        ", [$snippetIds], [Connection::PARAM_INT_ARRAY]);
+
+        $langDataMap = [];
+        foreach ($langData as $l) {
+            if (!isset($langDataMap[$l['ref_id']])) {
+                $langDataMap[$l['ref_id']] = [];
+            }
+            if (!isset($langDataMap[$l['ref_id']][$l['language_id']])) {
+                $langDataMap[$l['ref_id']][$l['language_id']] = ['title' => '', 'snippet' => ''];
+            }
+            $langDataMap[$l['ref_id']][$l['language_id']][$l['prop_name']] = $l['value'];
+        }
+
+        $langLocales = [];
         foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
-            $langs[$lang->getid()] = $lang->getLocale();
+            $langLocales[$lang->getId()] = $lang->getLocale();
         }
-        $res = array();
+
+        $res = [];
         foreach ($snippets as $snippet) {
-            if (!$translation = @$map[$snippet['id']]) {
+            if (!isset($langDataMap[$snippet['id']])) {
                 continue;
             }
 
-            $data = array(
+            $translation = $langDataMap[$snippet['id']];
+
+            $data = [
                 'id'            => $snippet['id'],
                 'shortcut_code' => $snippet['shortcut_code'],
                 'is_draft'      => (bool) $snippet['is_draft'],
                 'category_id'   => $snippet['category_id'],
-                'title'         => array(),
-                'snippet'       => array(),
-            );
+                'title'         => [],
+                'snippet'       => [],
+            ];
 
-            foreach ($translation as $lang_id => $values) {
-                $data['title'][] = array(
-                    'language_id' => $lang_id,
-                    'locale'      => $langs[$lang_id],
+            foreach ($translation as $langId => $values) {
+                if (empty($langLocales[$langId])) {
+                    // old records from a deleted lang
+                    continue;
+                }
+                $data['title'][] = [
+                    'language_id' => $langId,
+                    'locale'      => $langLocales[$langId],
                     'value'       => $values['title'],
-                );
-                $data['snippet'][] = array(
-                    'language_id' => $lang_id,
-                    'locale'      => $langs[$lang_id],
+                ];
+                $data['snippet'][] = [
+                    'language_id' => $langId,
+                    'locale'      => $langLocales[$langId],
                     'value'       => $values['snippet'],
-                );
+                ];
             }
 
             $res[] = $data;
@@ -229,11 +286,11 @@ class TextSnippet extends AbstractEntityRepository
         return App::getDb()->fetchColumn('
             SELECT COUNT(*)
             FROM text_snippets
-            LEFT JOIN text_snippet_categories ON (text_snippet_categories.id = text_snippets.category_id)
+            INNER JOIN text_snippet_categories ON (text_snippet_categories.id = text_snippets.category_id)
             WHERE
                 text_snippet_categories.typename = ?
                 AND (text_snippets.person_id = ? OR text_snippet_categories.is_global = 1)
-        ', array($typename, $agent->getId()));
+        ', [$typename, $agent->getId()]);
     }
 
     /**
@@ -245,11 +302,11 @@ class TextSnippet extends AbstractEntityRepository
      */
     public function groupSnippetCollection($collection)
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($collection as $snippet) {
             if (!isset($ret[$snippet->category['id']])) {
-                $ret[$snippet->category['id']] = array('category' => $snippet->category, 'snippets' => array());
+                $ret[$snippet->category['id']] = ['category' => $snippet->category, 'snippets' => []];
             }
 
             $ret[$snippet->category['id']]['snippets'][] = $snippet;

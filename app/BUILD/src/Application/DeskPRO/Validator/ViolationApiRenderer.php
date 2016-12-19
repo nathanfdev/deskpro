@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Validator;
 
 use Symfony\Component\Form\Form;
@@ -43,7 +44,7 @@ class ViolationApiRenderer
     /**
      * @var array
      */
-    private $aliases = array();
+    private $aliases = [];
 
     public function __construct()
     {
@@ -73,7 +74,7 @@ class ViolationApiRenderer
     {
         $parts = explode('\\', $classname);
         $alias = null;
-        $ends  = array();
+        $ends  = [];
         do {
             $part_string = implode('\\', $parts);
             if (isset($this->aliases[$part_string])) {
@@ -129,13 +130,13 @@ class ViolationApiRenderer
             $code = 'undefined';
         }
 
-        return array(
+        return [
             'field_id'  => $field_id,
             'prop_path' => $err->getPropertyPath(),
             'prop'      => $err->getPropertyPath(),
             'code'      => $code,
             'message'   => $message,
-        );
+        ];
     }
 
     /**
@@ -147,10 +148,10 @@ class ViolationApiRenderer
      */
     public function renderViolationList(ConstraintViolationList $list)
     {
-        $info = array(
-            'errors'      => array(),
-            'error_codes' => array(),
-        );
+        $info = [
+            'errors'      => [],
+            'error_codes' => [],
+        ];
 
         foreach ($list as $err) {
             $err_info              = $this->renderViolation($err);
@@ -171,10 +172,10 @@ class ViolationApiRenderer
      */
     public function renderCombinedViolationList(array $lists)
     {
-        $mega_list = array(
-            'errors'      => array(),
-            'error_codes' => array(),
-        );
+        $mega_list = [
+            'errors'      => [],
+            'error_codes' => [],
+        ];
 
         foreach ($lists as $prefix => $list) {
             $info = $this->renderViolationList($list);
@@ -201,7 +202,6 @@ class ViolationApiRenderer
     {
         $code    = null;
         $message = $err->getMessage();
-
         if (preg_match('#^\[([a-zA-Z0-9\-_\.]+)\](.*)$#', $message, $m)) {
             $message = trim($m[2]);
 
@@ -214,10 +214,10 @@ class ViolationApiRenderer
             $code = 'undefined:'.$err->getMessage();
         }
 
-        return array(
+        return [
             'code'    => $code,
             'message' => $message,
-        );
+        ];
     }
 
     /**
@@ -239,11 +239,11 @@ class ViolationApiRenderer
      */
     public function renderFormErrorList(Form $form, $parent_path = null)
     {
-        $info = array(
-            'errors'              => array(),
-            'error_codes'         => array(),
-            'error_codes_grouped' => array(),
-        );
+        $info = [
+            'errors'              => [],
+            'error_codes'         => [],
+            'error_codes_grouped' => [],
+        ];
 
         $name = $form->getName();
         $path = $parent_path ? $parent_path.'.' : '';
@@ -272,7 +272,7 @@ class ViolationApiRenderer
         }
 
         if (!isset($info['error_codes_grouped'][$path])) {
-            $info['error_codes_grouped'][$path] = array();
+            $info['error_codes_grouped'][$path] = [];
         }
         foreach ($info['errors'] as $err) {
             $info['error_codes_grouped'][$path][] = $err['code'];

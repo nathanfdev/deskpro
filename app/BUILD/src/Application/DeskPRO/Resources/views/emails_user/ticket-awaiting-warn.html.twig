@@ -4,4 +4,4 @@
 
 <br /><br />
 
-{{ phrase('user.emails.remind_unresolved', {helpdesk_name: app.setting('core.deskpro_name'), resolve_url: url_full('user_tickets_resolve', {'ticket_ref': ticket.ref})})|raw }}
+{{ phrase('user.emails.remind_unresolved', {helpdesk_name: brand_setting('core.deskpro_name'), resolve_url: portal_url(ticket, 'resolve')})|raw }}

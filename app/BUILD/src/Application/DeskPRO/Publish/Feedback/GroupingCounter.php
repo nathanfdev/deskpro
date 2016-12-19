@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Publish\Feedback;
 
 use Application\DeskPRO\App;
@@ -43,7 +44,7 @@ class GroupingCounter
     /** @var int|null */
     protected $this_person_id = null;
     /** @var array */
-    protected $terms = array();
+    protected $terms = [];
     /** @var array|null */
     protected $ids = null;
 
@@ -64,9 +65,9 @@ class GroupingCounter
      */
     public function getDisplayArray()
     {
-        #------------------------------
-        # Connect counts to titles
-        #------------------------------
+        //------------------------------
+        // Connect counts to titles
+        //------------------------------
 
         $display_elements = $this->getDisplayElementsArray();
         $titles1          = $display_elements['titles1'];
@@ -78,10 +79,10 @@ class GroupingCounter
             Arrays::unshiftAssoc($titles2, -1, 'TOTAL');
         }
 
-        $items = array();
+        $items = [];
 
-        $group1_has = array();
-        $group2_has = array();
+        $group1_has = [];
+        $group2_has = [];
 
         foreach ($titles1 as $field1_id => $field1_title) {
             if (!isset($counts[$field1_id])) {
@@ -92,13 +93,13 @@ class GroupingCounter
 
             $group1_has[] = $field1_id;
 
-            $row          = array();
+            $row          = [];
             $row['id']    = $field1_id;
             $row['title'] = $field1_title;
             $row['total'] = $countinfo['total'];
 
             if (!empty($countinfo['sub'])) {
-                $row['sub'] = array();
+                $row['sub'] = [];
                 foreach ($titles2 as $field2_id => $field2_title) {
                     if (!isset($countinfo['sub'][$field2_id])) {
                         continue;
@@ -107,7 +108,7 @@ class GroupingCounter
 
                     $group2_has[] = $field2_id;
 
-                    $row2          = array();
+                    $row2          = [];
                     $row2['id']    = $field2_id;
                     $row2['title'] = $field2_title;
                     $row2['total'] = !empty($countinfo2['total']) ? $countinfo2['total'] : 0;
@@ -119,31 +120,31 @@ class GroupingCounter
             $items[$field1_id] = $row;
         }
 
-        #------------------------------
-        # Now fetch hierarchy which might be used
-        #------------------------------
+        //------------------------------
+        // Now fetch hierarchy which might be used
+        //------------------------------
 
-        $group1_structure = array();
-        $group2_structure = array();
+        $group1_structure = [];
+        $group2_structure = [];
 
         $status_hierarchy = function () {
-            $titles = array(
-                'new'    => array('title' => 'New'),
-                'active' => array('title' => 'Active', 'children' => array()),
-                'closed' => array('title' => 'Closed', 'children' => array()),
-                'hidden' => array('title' => 'Hidden'),
-            );
+            $titles = [
+                'new'    => ['title' => 'New'],
+                'active' => ['title' => 'Active', 'children' => []],
+                'closed' => ['title' => 'Closed', 'children' => []],
+                'hidden' => ['title' => 'Hidden'],
+            ];
 
             $active_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
             $closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
             foreach ($active_status_cats as $cat) {
-                $titles['active.'.$cat['id']]                       = array('title' => $cat['title']);
-                $titles['active']['children']['active.'.$cat['id']] = array('title' => $cat['title']);
+                $titles['active.'.$cat['id']]                       = ['title' => $cat['title']];
+                $titles['active']['children']['active.'.$cat['id']] = ['title' => $cat['title']];
             }
             foreach ($closed_status_cats as $cat) {
-                $titles['closed.'.$cat['id']]                       = array('title' => $cat['title']);
-                $titles['closed']['children']['closed.'.$cat['id']] = array('title' => $cat['title']);
+                $titles['closed.'.$cat['id']]                       = ['title' => $cat['title']];
+                $titles['closed']['children']['closed.'.$cat['id']] = ['title' => $cat['title']];
             }
         };
 
@@ -158,7 +159,7 @@ class GroupingCounter
 
             default:
                 foreach ($titles1 as $id => $t) {
-                    $group1_structure[$id] = array('title' => $t);
+                    $group1_structure[$id] = ['title' => $t];
                 }
                 break;
         }
@@ -175,17 +176,17 @@ class GroupingCounter
 
                 default:
                     foreach ($titles2 as $id => $t) {
-                        $group2_structure[$id] = array('title' => $t);
+                        $group2_structure[$id] = ['title' => $t];
                     }
                     break;
             }
         }
 
-        return array(
+        return [
             'items'            => $items,
             'group1_structure' => $group1_structure,
             'group2_structure' => $group2_structure,
-        );
+        ];
     }
 
     /**
@@ -195,7 +196,7 @@ class GroupingCounter
      */
     public function sortDisplayArray(array &$display_array)
     {
-        uasort($display_array, array($this, '_sortDisplayArrayCallback'));
+        uasort($display_array, [$this, '_sortDisplayArrayCallback']);
     }
 
     public function _sortDisplayArrayCallback($a, $b)
@@ -239,10 +240,10 @@ class GroupingCounter
         }
         $select_fields[] = 'COUNT(*) AS total';
 
-        $where = "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status != 'validating')";
+        $where = "WHERE (feedback.status != 'hidden')";
         if (is_array($this->ids)) {
             if (empty($this->ids)) {
-                return array();
+                return [];
             }
 
             $where = 'WHERE feedback.id IN('.implode(',', $this->ids).')';
@@ -269,21 +270,20 @@ class GroupingCounter
     {
         $counts = $this->getCounts();
 
-        #------------------------------
-        # Get titles for each grouping, and sort into a keyed structure
-        #------------------------------
+        //------------------------------
+        // Get titles for each grouping, and sort into a keyed structure
+        //------------------------------
 
-        $ids1 = array();
+        $ids1 = [];
         if ($this->grouping2) {
-            $ids2 = array();
+            $ids2 = [];
         }
 
         // $counts_structure becomes:
         // array(field1 => array(total => xxx, sub => array(someid => 123, someid2 => 123 ...) )
 
-        $counts_structured = array();
+        $counts_structured = [];
         foreach ($counts as $count) {
-
             // Store ID's
             if ($count['field1'] !== null) {
                 $ids1[] = $count['field1'];
@@ -293,9 +293,9 @@ class GroupingCounter
                 $ids2[] = $count['field2'];
             }
 
-            #------------------------------
-            # Into structure
-            #------------------------------
+            //------------------------------
+            // Into structure
+            //------------------------------
 
             // Set ROLLUP's (totals) to -1
             if ($count['field1'] === null) {
@@ -307,9 +307,9 @@ class GroupingCounter
 
             // Init array keys
             if (!isset($counts_structured[$count['field1']])) {
-                $counts_structured[$count['field1']] = array('total' => $count['total']);
+                $counts_structured[$count['field1']] = ['total' => $count['total']];
                 if ($this->grouping2) {
-                    $counts_structured[$count['field1']]['sub'] = array();
+                    $counts_structured[$count['field1']]['sub'] = [];
                 }
             }
 
@@ -335,11 +335,11 @@ class GroupingCounter
             $titles2 = $this->getFieldTitles($this->grouping2, $ids2);
         }
 
-        return array(
+        return [
             'titles1' => $titles1,
             'titles2' => $titles2,
             'counts'  => $counts_structured,
-        );
+        ];
     }
 
     /**
@@ -363,12 +363,12 @@ class GroupingCounter
 
             case 'status':
 
-                $titles = array(
+                $titles = [
                     'new'    => 'New',
                     'active' => 'Active',
                     'closed' => 'Closed',
                     'hidden' => 'Hidden',
-                );
+                ];
 
                 $active_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
                 $closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
@@ -390,7 +390,7 @@ class GroupingCounter
                 if ($ids) {
                     $titles = array_combine($ids, $ids);
                 } else {
-                    $titles = array();
+                    $titles = [];
                 }
                 break;
         }
@@ -403,10 +403,14 @@ class GroupingCounter
      *
      * @param string $grouping1
      * @param string $grouping2
+     *
+     * @return $this
      */
     public function setGrouping($grouping1, $grouping2 = null)
     {
         $this->grouping1 = $grouping1 ? $grouping1 : 'category';
         $this->grouping2 = $grouping2;
+
+        return $this;
     }
 }

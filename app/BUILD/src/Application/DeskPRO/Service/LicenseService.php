@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,7 +32,9 @@
 
 namespace Application\DeskPRO\Service;
 
-use Guzzle\Http\Client as HttpClient;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\RequestOptions;
 
 class LicenseService
 {
@@ -44,7 +46,7 @@ class LicenseService
         static $latest = null;
 
         if ($latest === null) {
-            $latest = self::fetchServiceResult('check-latest-version.json', array('my_build' => DP_BUILD_TIME));
+            $latest = self::fetchServiceResult('check-latest-version.json', ['my_build' => DP_BUILD_TIME]);
         }
 
         return $latest;
@@ -67,9 +69,9 @@ class LicenseService
 
         if ($data === null) {
             try {
-                $data = self::fetchServiceResult('build/compare-version.json', array('my_build' => DP_BUILD_TIME));
+                $data = self::fetchServiceResult('build/compare-version.json', ['my_build' => DP_BUILD_TIME]);
             } catch (\Exception $e) {
-                $data = array();
+                $data = [];
             }
         }
 
@@ -92,9 +94,9 @@ class LicenseService
 
         if ($data === null) {
             try {
-                $data = self::fetchServiceResult('build/version-notices.json', array('my_build' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0));
+                $data = self::fetchServiceResult('build/version-notices.json', ['my_build' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0]);
             } catch (\Exception $e) {
-                $data = array();
+                $data = [];
             }
         }
 
@@ -108,20 +110,21 @@ class LicenseService
      */
     public static function getNews()
     {
-        $news = array();
+        $news = [];
 
         try {
-            $client = new HttpClient(\DeskPRO\Kernel\License::getSupportUrl(), array(
-                'ssl.certificate_authority' => false,
-            ));
-            $request  = $client->get('/news/2-product.rss');
-            $response = $request->send();
+            $client = new Client([
+                'base_uri'             => \DpSys\License::getSupportUrl(),
+                RequestOptions::VERIFY => false,
+            ]);
 
-            if (!$response->isSuccessful()) {
+            try {
+                $response = $client->get('/news/2-product.rss');
+            } catch (ClientException $e) {
                 return;
             }
 
-            $rss = @simplexml_load_string($response->getBody(true));
+            $rss = @simplexml_load_string((string) $response->getBody());
             unset($r);
 
             if (!$rss || empty($rss) || empty($rss->channel->item)) {
@@ -130,10 +133,10 @@ class LicenseService
 
             $x = 0;
             foreach ($rss->channel->item as $item) {
-                $news[] = array(
+                $news[] = [
                     'title' => (string) $item->title,
                     'link'  => (string) $item->link,
-                );
+                ];
                 if ($x++ > 5) {
                     break;
                 }
@@ -151,22 +154,17 @@ class LicenseService
      *
      * @return array
      */
-    public static function fetchServiceResult($endpoint, array $post_data = array())
+    public static function fetchServiceResult($endpoint, array $post_data = [])
     {
-        $url = \DeskPRO\Kernel\License::getSecureLicServer().'/api/'.ltrim($endpoint, '/');
-
         try {
-            $client = new HttpClient(\DeskPRO\Kernel\License::getSecureLicServer(), array(
-                'ssl.certificate_authority' => false,
-                'redirect.strict'           => true,
-            ));
-            $r = $client->post(
-                \DeskPRO\Kernel\License::getSecureLicServer().'/api/'.ltrim($endpoint, '/'),
-                null,
-                $post_data
-            );
-            $r->send();
-            $result = $r->getResponse()->getBody(true);
+            $client = new Client([
+                'base_uri'                      => \DpSys\License::getSecureLicServer(),
+                RequestOptions::VERIFY          => false,
+                RequestOptions::ALLOW_REDIRECTS => ['strict' => true],
+            ]);
+
+            $response = $client->post('/api/'.ltrim($endpoint, '/'), [RequestOptions::FORM_PARAMS => $post_data]);
+            $result   = (string) $response->getBody();
         } catch (\Exception $e) {
             $result = '';
         }

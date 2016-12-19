@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\App;
@@ -38,16 +39,21 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class AsseticManagerService
 {
-    public static function create(DeskproContainer $container, array $options = array())
+    public static function create(DeskproContainer $container, array $options = [])
     {
+        $package_manager = $container->get('assets.packages.factory');
+        $packages        = $package_manager->createPackages();
+
+        $app_env = $container->get('deskpro.app_env');
+
         $manager = new \Application\DeskPRO\Assetic\AsseticManager(
             App::getConfigFromFile('assets'),
-            realpath(DP_ROOT.'/../web'),
+            rtrim($app_env->getWwwRoot().$packages->getUrl('/', 'legacy_web'), '/'),
             'build'
         );
 
         if ($container->isScopeActive('request')) {
-            $manager->setAssetHelper($container->get('templating.helper.assets'));
+            $manager->setAssetHelper($container->get('assets.packages'));
         }
 
         return $manager;

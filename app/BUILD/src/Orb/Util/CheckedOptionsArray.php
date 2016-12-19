@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
 
 use Orb\Validator\Callback as CallbackValidator;
@@ -46,21 +47,21 @@ class CheckedOptionsArray extends OptionsArray
      *
      * @var array
      */
-    private $validators = array();
+    private $validators = [];
 
     /**
      * An array of the only valid names.
      *
      * @var array
      */
-    private $valid_names = array();
+    private $valid_names = [];
 
     /**
      * An array of required names.
      *
      * @var array
      */
-    private $required_names = array();
+    private $required_names = [];
 
     /**
      * Add required names. If you are also using valid names, required names are automatically
@@ -113,7 +114,7 @@ class CheckedOptionsArray extends OptionsArray
         $required_names = array_keys($this->required_names);
         $diff           = array_diff($required_names, array_keys($this->options));
         if ($diff) {
-            throw new CheckedOptionsException('Missing required options: '.implode(', ', $diff), array('required'), array('names' => $diff));
+            throw new CheckedOptionsException('Missing required options: '.implode(', ', $diff), ['required'], ['names' => $diff]);
         }
     }
 
@@ -142,7 +143,7 @@ class CheckedOptionsArray extends OptionsArray
     public function addCheckedOption($name, ValidatorInterface $validator)
     {
         if (!isset($this->validators[$name])) {
-            $this->validators[$name] = array();
+            $this->validators[$name] = [];
         }
 
         $this->validators[$name][] = $validator;
@@ -168,13 +169,13 @@ class CheckedOptionsArray extends OptionsArray
             }
 
             if ($ret === false) {
-                return array(array('invalid_value', array('expected_type' => 'callback')));
+                return [['invalid_value', ['expected_type' => 'callback']]];
             }
 
             return;
         };
 
-        $validator = new CallbackValidator(array('callback_function' => $fn));
+        $validator = new CallbackValidator(['callback_function' => $fn]);
         $this->addCheckedOption($name, $validator);
     }
 
@@ -187,13 +188,13 @@ class CheckedOptionsArray extends OptionsArray
     {
         $fn = function ($val) {
             if ($val === null) {
-                return array(array('null_value', array('expected_type' => 'not_null')));
+                return [['null_value', ['expected_type' => 'not_null']]];
             }
 
             return;
         };
 
-        $validator = new CallbackValidator(array('callback_function' => $fn));
+        $validator = new CallbackValidator(['callback_function' => $fn]);
         $this->addCheckedOption($name, $validator);
     }
 
@@ -212,14 +213,14 @@ class CheckedOptionsArray extends OptionsArray
             }
 
             if (!is_object($val)) {
-                return array(array('null_value', array('expected_type' => $type)));
+                return [['null_value', ['expected_type' => $type]]];
             }
             if (!($val instanceof $type)) {
-                return array(array('invalid_type', array('expected_type' => $type, 'got_type' => get_class($val))));
+                return [['invalid_type', ['expected_type' => $type, 'got_type' => get_class($val)]]];
             }
         };
 
-        $validator = new CallbackValidator(array('callback_function' => $fn));
+        $validator = new CallbackValidator(['callback_function' => $fn]);
 
         $this->addCheckedOption($name, $validator);
     }
@@ -233,7 +234,7 @@ class CheckedOptionsArray extends OptionsArray
     public function set($name, $value)
     {
         if ($this->valid_names && (!isset($this->valid_names[$name]) && !isset($this->required_names[$name]))) {
-            throw new CheckedOptionsException('Invalid option name: '.$name, array('invalid_name'), array('name' => $name));
+            throw new CheckedOptionsException('Invalid option name: '.$name, ['invalid_name'], ['name' => $name]);
         }
 
         if (isset($this->validators[$name])) {

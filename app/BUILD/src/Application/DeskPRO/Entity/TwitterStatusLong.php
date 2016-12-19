@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -65,7 +66,7 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
     protected $text;
 
     /**
-     * @var Boolean
+     * @var bool
      */
     protected $is_public = false;
 
@@ -75,7 +76,7 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
     protected $date_created;
 
     /**
-     * @var Boolean
+     * @var bool
      */
     protected $is_read = false;
 
@@ -110,9 +111,9 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
     public function setStatusId($id)
     {
         if ($id && $status = App::getOrm()->getRepository('DeskPRO:TwitterStatus')->find($id)) {
-            $this->status = $status;
+            $this->setModelField('status', $status);
         } else {
-            $this->status = null;
+            $this->setModelField('status', null);
         }
     }
 
@@ -126,40 +127,113 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @return Boolean
+     * @return bool
      */
     public function isPublic()
     {
-        return (Boolean) $this->is_public;
+        return (bool) $this->is_public;
     }
 
     /**
-     * @return Boolean
+     * @return bool
      */
     public function isRead()
     {
-        return (Boolean) $this->is_read;
+        return (bool) $this->is_read;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
-
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
-        $metadata->setPrimaryTable(array('name' => 'twitter_statuses_long'));
+        $metadata->setPrimaryTable(['name' => 'twitter_statuses_long']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'text', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'text'));
-        $metadata->mapField(array('fieldName' => 'is_public', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_public'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapField(array('fieldName' => 'is_read', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_read'));
-        $metadata->mapField(array('fieldName' => 'date_read', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_read'));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'text',
+            'type'       => 'string',
+            'length'     => 4000,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'text',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_public',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_public',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_created',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'date_created',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_read',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_read',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_read',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'date_read',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'status_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'for_user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'for_user_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapOneToOne([
+            'fieldName'    => 'status',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus',
+            'mappedBy'     => null,
+            'inversedBy'   => 'long',
+            'joinColumns'  => [
+                [
+                    'name'                 => 'status_id',
+                    'referencedColumnName' => 'id',
+                    'unique'               => false,
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'for_user',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'for_user_id',
+                    'referencedColumnName' => 'id',
+                    'unique'               => false,
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\Entity;
-use Orb\Util\Strings;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -59,6 +60,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
     {
         $this->setName('dp:agents');
         $this->addArgument('action', InputArgument::OPTIONAL, 'The action to perform: reset-password, make-admin, make-agent, make-billing, whitelist-ip', 'list');
+        $this->addOption('list', 'l', InputOption::VALUE_NONE, 'When a value is not specified as a CLI option, show a list of agents in the system for reference.');
         $this->addOption('value', 'u', InputOption::VALUE_REQUIRED, 'Optionally supply the value to set (for reset-password or whitelist-ip)', null);
         $this->addOption('agent-email', 'm', InputOption::VALUE_REQUIRED, 'Agent email address', null);
         $this->addOption('agent-id', 'd', InputOption::VALUE_REQUIRED, 'Agent ID', null);
@@ -81,6 +83,11 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
     private function askForAgent($caption, $require_agent = true)
     {
         $helper = $this->getHelper('dialog');
+
+        $caption = trim($caption);
+        if (strlen($caption) > 40) {
+            $caption .= "\n";
+        }
 
         $email = $helper->ask($this->output, "$caption> ", '');
         $agent = $this->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
@@ -131,6 +138,10 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
             return $agent;
         } else {
+            if ($this->input->getOption('list')) {
+                $this->listAction(true);
+            }
+
             return $this->askForAgent($caption, $require_agent);
         }
     }
@@ -172,27 +183,32 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
     }
 
     /**
+     * @param bool $asReference
+     *
      * @return int
      */
-    private function listAction()
+    private function listAction($asReference = false)
     {
         $agents = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->getAgents();
 
-        $table = array();
+        $table = new Table($this->output);
+        $table->setHeaders(['ID', 'Name', 'Email Address', 'Admin']);
 
         foreach ($agents as $a) {
-            $table[] = array(
+            $table->addRow([
                 $a->id,
                 $a->display_name,
                 $a->email_address,
                 $a->can_admin ? '*' : '',
-            );
+            ]);
         }
 
-        echo Strings::asciiTable($table, array('ID', 'Name', 'Email Address', 'Admin'));
-        echo "\n";
+        $table->render();
 
-        echo "Use this command with the --help option to see what other actions you can perform.\n";
+        if (!$asReference) {
+            echo "\n";
+            echo "Use this command with the --help option to see what other actions you can perform.\n";
+        }
 
         return 0;
     }

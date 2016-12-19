@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Doctrine\DBAL\Driver\PDOODBC;
 
 class AbstractDriver implements \Doctrine\DBAL\Driver
@@ -41,7 +42,7 @@ class AbstractDriver implements \Doctrine\DBAL\Driver
      *
      * @return \Doctrine\DBAL\Driver\Connection|Connection
      */
-    public function connect(array $params, $username = null, $password = null, array $driverOptions = array())
+    public function connect(array $params, $username = null, $password = null, array $driverOptions = [])
     {
         return new Connection(
             $this->_constructPdoDsn($params),
@@ -56,7 +57,7 @@ class AbstractDriver implements \Doctrine\DBAL\Driver
      *
      * @param array $params
      *
-     * @return string The DSN.
+     * @return string The DSN
      */
     private function _constructPdoDsn(array $params)
     {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\JobQueue;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Job;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * The worker is the heart of the JobQueue system, and sets the stage for the JobRouter to route the job
@@ -80,12 +81,12 @@ class JobWorker
      */
     public function work($max_time_in_seconds = 25)
     {
-        #------------------------------
-        # loop for a max N seconds
-        #------------------------------
-        //
+        //------------------------------
+        // loop for a max N seconds
+        //------------------------------
+
         // TODO: look much deeper into this algorithm. suspect it might be slowing down the WorkerProcess (cron).
-        //
+
         $workerStartTime = time();
         $workerEndTime   = $workerStartTime + $max_time_in_seconds;
         // if it can't find a job to execute, the loop ends
@@ -148,18 +149,18 @@ class JobWorker
                      date_next_try ASC
             LIMIT 1
             ',
-            array(
+            [
                 'this_worker_id'  => $this->workerId,
                 'reserved_status' => Job::STATUS_RESERVED,
                 'waiting_status'  => Job::STATUS_WAITING,
                 'date_now'        => new \DateTime(),
-            ),
-            array(
+            ],
+            [
                 'this_worker_id'  => 'string',
                 'reserved_status' => 'string',
                 'waiting_status'  => 'string',
                 'date_now'        => 'datetime',
-            )
+            ]
         );
 
         /*
@@ -172,14 +173,14 @@ class JobWorker
             WHERE worker_id = :this_worker_id
             AND status = :reserved_status
             ',
-            array(
+            [
                 'reserved_status' => Job::STATUS_RESERVED,
                 'this_worker_id'  => $this->workerId,
-            ),
-            array(
+            ],
+            [
                 'reserved_status' => 'string',
                 'this_worker_id'  => 'string',
-            )
+            ]
         );
 
         return $job ?: null;
@@ -210,7 +211,7 @@ class JobWorker
                 // router is supposed to handle all situations and catch all errors and never throw
                 // this is here to attempt to keep the queue moving in case of what should be next-to-impossible situations
                 // this will eventually do something other than return true
-                KernelErrorHandler::handleException($e, false);
+                SystemErrorHandler::logException($e, false);
 
                 return true;
             }
@@ -239,16 +240,16 @@ class JobWorker
                     num_tries = num_tries + 1
                 WHERE id = :job_id
                 ',
-                array(
+                [
                     'processing_status' => Job::STATUS_PROCESSING,
                     'date_now'          => new \DateTime(),
                     'job_id'            => $job['id'],
-                ),
-                array(
+                ],
+                [
                     'processing_status' => 'string',
                     'date_now'          => 'datetime',
                     'job_id'            => 'integer',
-                )
+                ]
             );
         }
     }
@@ -266,12 +267,12 @@ class JobWorker
             FROM jobs
             WHERE id = :job_id
             ',
-            array(
+            [
                 'job_id' => $id,
-            ),
-            array(
+            ],
+            [
                 'job_id' => 'integer',
-            )
+            ]
         );
     }
 

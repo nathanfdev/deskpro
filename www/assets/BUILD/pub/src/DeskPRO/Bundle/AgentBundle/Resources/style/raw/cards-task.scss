@@ -1,0 +1,114 @@
+.dpw--single-card-mark-done {// The check on the right
+  position: absolute;
+  right: -65px;
+  top: -1px; // To keep borders aligned
+  display: block;
+  width: 60px;
+  height: 54px;// Set with js to be equal to the card itself
+  background: #fff;
+  border: 1px solid #d5d5d5;
+  border-radius: 2px;
+  text-align: center;
+
+  i {
+    color: #dcdcdc;
+    font-size: 26px;
+    margin-top: 5px;
+  }
+
+  span {
+    display: block;
+    margin-top: 5px;
+    text-transform: uppercase;
+    font-size: 8px;
+    font-weight: bold;
+    color: darken(#dcdcdc, 10%);
+  }
+
+  &.dpw--single-card-mark-done-selected {
+    i { color: #62ad8c; }
+  }
+
+  &:hover, &.hovered {
+    background: #62ad8c;
+    border: 1px solid #62ad8c;
+
+    i, span { color: #fff; }
+  }
+
+  &.dpw--single-card-mark-done-minimized { // When the card is minimied, resize this box
+    height: 28px;
+
+    i {
+      font-size: 14px;
+      vertical-align: -1px;
+      padding-left: 2px;
+    }
+
+    span { display: inline-block; }
+  }
+
+  .saving {
+    opacity: 0;
+  }
+}
+
+// Left and right sides status colors
+$level-1: #fbf250;
+$level-2: #fbd944;
+$level-3: #fbcc3e;
+$level-4: #fbbf38;
+$level-5: #e58f3e;
+$level-6: #e17c3b;
+$level-7: #dc6837;
+$level-8: #d64a32;
+$level-9: #cf2d2d;
+$level-10: #ac2020;
+
+.dpw--card-status-bar {
+  width: 10px;
+  height: 20px;
+  border-radius: 2px;
+  position: absolute;
+  top: -1px;
+
+  &.dpw--status-bar-left {
+    border-left: 2px solid #cecece;
+    left: -1px;
+  }
+
+  &.dpw--status-bar-right {
+    border-right: 2px solid #cecece;
+    right: -1px;
+  }
+
+  &.dpw--status-bar-left.level-1 { border-left: 2px solid $level-1; }
+  &.dpw--status-bar-right.level-1 { border-right: 2px solid $level-1; }
+
+  &.dpw--status-bar-left.level-2 { border-left: 2px solid $level-2; }
+  &.dpw--status-bar-right.level-2 { border-right: 2px solid $level-2; }
+
+  &.dpw--status-bar-left.level-3 { border-left: 2px solid $level-3; }
+  &.dpw--status-bar-right.level-3 { border-right: 2px solid $level-3; }
+
+  &.dpw--status-bar-left.level-4 { border-left: 2px solid $level-4; }
+  &.dpw--status-bar-right.level-4 { border-right: 2px solid $level-4; }
+
+  &.dpw--status-bar-left.level-5 { border-left: 2px solid $level-5; }
+  &.dpw--status-bar-right.level-5 { border-right: 2px solid $level-5; }
+
+  &.dpw--status-bar-left.level-6 { border-left: 2px solid $level-6; }
+  &.dpw--status-bar-right.level-6 { border-right: 2px solid $level-6; }
+
+  &.dpw--status-bar-left.level-7 { border-left: 2px solid $level-7; }
+  &.dpw--status-bar-right.level-7 { border-right: 2px solid $level-7; }
+
+  &.dpw--status-bar-left.level-8 { border-left: 2px solid $level-8; }
+  &.dpw--status-bar-right.level-8 { border-right: 2px solid $level-8; }
+
+  &.dpw--status-bar-left.level-9 { border-left: 2px solid $level-9; }
+  &.dpw--status-bar-right.level-9 { border-right: 2px solid $level-9; }
+
+  &.dpw--status-bar-left.level-10 { border-left: 2px solid $level-10; }
+  &.dpw--status-bar-right.level-10 { border-right: 2px solid $level-10; }
+}

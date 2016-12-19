@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -59,7 +60,7 @@ class PersonActivity extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
-    protected $details = array();
+    protected $details = [];
 
     /**
      * @var \DateTime
@@ -90,25 +91,38 @@ class PersonActivity extends \Application\DeskPRO\Domain\DomainObject
         $this['person'] = $person;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * @return array
+     */
+    public function toDbArray()
+    {
+        return [
+            'id'           => $this->id,
+            'action_type'  => $this->action_type,
+            'details'      => serialize($this->details ?: []),
+            'date_created' => $this->date_created->format('Y-m-d H:i:s'),
+        ];
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonActivity';
         $metadata->setPrimaryTable(
-            array(
+            [
                 'name'    => 'person_activity',
-                'indexes' => array(
-                    'date_created_idx' => array('columns' => array('date_created')),
-                ),
-            )
+                'indexes' => [
+                    'date_created_idx' => ['columns' => ['date_created']],
+                ],
+            ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -116,10 +130,10 @@ class PersonActivity extends \Application\DeskPRO\Domain\DomainObject
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'action_type',
                 'type'       => 'string',
                 'length'     => 255,
@@ -127,47 +141,47 @@ class PersonActivity extends \Application\DeskPRO\Domain\DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'action_type',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'details',
                 'type'       => 'array',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'details',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'date_created',
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'date_created',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'person',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'mappedBy'     => null,
-                'cascade'      => array('persist'),
+                'cascade'      => ['persist'],
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
     }
 }

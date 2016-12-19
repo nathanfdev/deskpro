@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,10 +31,16 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 class TicketWorkflow extends AbstractEntityRepository
 {
+    public function countAll()
+    {
+        return $this->_em->createQuery('SELECT count(w) FROM DeskPRO:TicketWorkflow w')->getSingleScalarResult();
+    }
+
     public function getAll()
     {
         $works = $this->getEntityManager()->createQuery('
@@ -58,7 +64,7 @@ class TicketWorkflow extends AbstractEntityRepository
             ')->execute();
         }
 
-        $ret = array();
+        $ret = [];
         foreach ($works as $w) {
             $ret[$w->getId()] = $w->getTitle();
         }

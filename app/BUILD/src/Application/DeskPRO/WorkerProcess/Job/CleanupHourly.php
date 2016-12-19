@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\DBAL\Connection;
+use Symfony\Component\Finder\Finder;
 
 class CleanupHourly extends AbstractJob
 {
@@ -48,7 +49,6 @@ class CleanupHourly extends AbstractJob
     {
         $this->_cleanupDrafts();
         $this->_cleanupSessions();
-        $this->_cleanupVisitors();
         $this->_cleanupChatBlobs();
         $this->_cleanupTempAttachments();
         $this->_cleanupTempData();
@@ -57,98 +57,56 @@ class CleanupHourly extends AbstractJob
         $this->_cleanupEmailProcessLogs();
         $this->_cleanupEmailSources();
         $this->_cleanupTicketManagerLogs();
+        $this->_cleanupSavedForms();
+        $this->_cleanHttpCacheDirs();
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     private function _cleanupDrafts()
     {
         $datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.drafts_lifetime'));
-        $num      = App::getDb()->executeUpdate('DELETE FROM drafts WHERE date_created < ?', array($datetime));
+        $num      = App::getDb()->executeUpdate('DELETE FROM drafts WHERE date_created < ?', [$datetime]);
 
         if ($num) {
             $this->logStatus("Cleaned up $num drafts");
         }
 
         $datetime = date('Y-m-d H:i:s', time() - 28800);
-        $num      = App::getDb()->executeUpdate("DELETE FROM article_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+        $num      = App::getDb()->executeUpdate("DELETE FROM article_comments WHERE status = 'temp' AND date_created < ?", [$datetime]);
         if ($num) {
             $this->logStatus("Cleaned up $num temp article comments");
         }
 
-        $num = App::getDb()->executeUpdate("DELETE FROM download_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+        $num = App::getDb()->executeUpdate("DELETE FROM download_comments WHERE status = 'temp' AND date_created < ?", [$datetime]);
         if ($num) {
             $this->logStatus("Cleaned up $num temp download comments");
         }
 
-        $num = App::getDb()->executeUpdate("DELETE FROM feedback_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+        $num = App::getDb()->executeUpdate("DELETE FROM feedback_comments WHERE status = 'temp' AND date_created < ?", [$datetime]);
         if ($num) {
             $this->logStatus("Cleaned up $num temp feedback comments");
         }
 
-        $num = App::getDb()->executeUpdate("DELETE FROM news_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+        $num = App::getDb()->executeUpdate("DELETE FROM news_comments WHERE status = 'temp' AND date_created < ?", [$datetime]);
         if ($num) {
             $this->logStatus("Cleaned up $num temp news comments");
         }
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     private function _cleanupSessions()
     {
         $datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
-        $num      = App::getDb()->executeUpdate('DELETE FROM sessions WHERE date_last < ?', array($datetime));
+        $num      = App::getDb()->executeUpdate('DELETE FROM sessions WHERE date_last < ?', [$datetime]);
 
         if ($num) {
             $this->logStatus("Cleaned up $num stale sessions");
         }
     }
 
-    ####################################################################################################################
-
-    private function _cleanupVisitors()
-    {
-        $datesnip  = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_time'));
-        $datesnip2 = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_bogus_time'));
-
-        // old
-        $ids = App::getDb()->fetchAllCol('
-            SELECT id
-            FROM visitors
-            WHERE date_last < ?
-            LIMIT 1500
-        ', array($datesnip));
-
-        // bogus
-        $ids = array_merge($ids, App::getDb()->fetchAllCol('
-            SELECT id
-            FROM visitors
-            WHERE
-                date_last < ?
-                AND (
-                    visitors.hint_hidden = 1
-                    OR visitors.last_track_id IS NULL
-                )
-        ', array($datesnip2)));
-
-        $ids = array_unique($ids);
-
-        if ($ids) {
-            $batch_ids = array_chunk($ids, 50);
-            foreach ($batch_ids as $ids) {
-                $num = App::getDb()->executeUpdate('
-                    DELETE FROM visitors
-                    WHERE id IN (?)
-                ', array($ids), array(Connection::PARAM_INT_ARRAY));
-
-                if ($num) {
-                    $this->logStatus("Cleaned up $num stale visitors");
-                }
-            }
-        }
-    }
-
-    ####################################################################################################################
+    //###################################################################################################################
 
     private function _cleanupChatBlobs()
     {
@@ -160,7 +118,7 @@ class CleanupHourly extends AbstractJob
         }
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     private function _cleanupTempAttachments()
     {
@@ -171,7 +129,7 @@ class CleanupHourly extends AbstractJob
             FROM blobs
             WHERE is_temp = 1 AND date_created < ?
             LIMIT 1000
-        ', array($datetime));
+        ', [$datetime]);
 
         $num = 0;
         foreach ($blob_ids as $blob_id) {
@@ -190,7 +148,7 @@ class CleanupHourly extends AbstractJob
         }
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     private function _cleanupTempData()
     {
@@ -199,14 +157,14 @@ class CleanupHourly extends AbstractJob
         $num = App::getDb()->executeUpdate('
             DELETE FROM tmp_data
             WHERE date_expire < ?
-        ', array($datetime));
+        ', [$datetime]);
 
         if ($num) {
             $this->logStatus("Cleaned up $num stale user temp data entries");
         }
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     private function _cleanupPrefs()
     {
@@ -215,14 +173,14 @@ class CleanupHourly extends AbstractJob
         $num = App::getDb()->executeUpdate('
             DELETE FROM people_prefs
             WHERE date_expire < ?
-        ', array($datetime));
+        ', [$datetime]);
 
         if ($num) {
             $this->logStatus("Cleaned up $num stale user preference entries");
         }
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     private function _cleanupEmailSources()
     {
@@ -236,7 +194,7 @@ class CleanupHourly extends AbstractJob
                 WHERE email_sources.date_created < ? AND email_sources.status = 'complete'
                 ORDER BY email_sources.id ASC
                 LIMIT 500
-            ", array($timesnip));
+            ", [$timesnip]);
 
             $count = $this->_deleteBlobsBatch($blob_ids);
 
@@ -253,7 +211,7 @@ class CleanupHourly extends AbstractJob
                 WHERE email_sources.date_created < ? AND email_sources.status = 'error'
                 ORDER BY email_sources.id ASC
                 LIMIT 500
-            ", array($timesnip));
+            ", [$timesnip]);
 
             $count = $this->_deleteBlobsBatch($blob_ids);
 
@@ -270,7 +228,7 @@ class CleanupHourly extends AbstractJob
                 WHERE email_sources.date_created < ? AND email_sources.status = 'rejected'
                 ORDER BY email_sources.id ASC
                 LIMIT 500
-            ", array($timesnip));
+            ", [$timesnip]);
 
             $count = $this->_deleteBlobsBatch($blob_ids);
 
@@ -280,7 +238,7 @@ class CleanupHourly extends AbstractJob
         }
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     private function _cleanupSendmailSources()
     {
@@ -294,7 +252,7 @@ class CleanupHourly extends AbstractJob
                 WHERE sendmail_sources.date_created < ? AND sendmail_sources.status = 'complete'
                 ORDER BY sendmail_sources.id ASC
                 LIMIT 500
-            ", array($timesnip));
+            ", [$timesnip]);
 
             $count = $this->_deleteBlobsBatch($blob_ids);
 
@@ -311,7 +269,7 @@ class CleanupHourly extends AbstractJob
                 WHERE sendmail_sources.date_created < ? AND sendmail_sources.status IN ('error', 'aborted')
                 ORDER BY sendmail_sources.id ASC
                 LIMIT 500
-            ", array($timesnip));
+            ", [$timesnip]);
 
             $count = $this->_deleteBlobsBatch($blob_ids);
 
@@ -321,7 +279,62 @@ class CleanupHourly extends AbstractJob
         }
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
+
+    private function _cleanHttpCacheDirs()
+    {
+        // don't run on cloud
+        if (!defined('DPC_IS_CLOUD')) {
+            // find the cache dir
+            if (defined('DP_CACHE_DIR')) {
+                $cache_dir = DP_CACHE_DIR;
+            } else {
+                $cache_dir = DP_ROOT.'/sys/cache';
+            }
+
+            // gather the http_cache dirs from dev and prod
+            $environment_dirs = [];
+            $environments     = ['dev', 'prod'];
+            foreach ($environments as $env) {
+                $dir = $cache_dir.'/portal/'.$env.'/http_cache';
+                if (is_dir($dir)) {
+                    $environment_dirs[] = $dir;
+                }
+            }
+
+            if (count($environment_dirs) > 0) {
+                // delete all files that were last modified more than 7 days ago
+                $file_finder = new Finder();
+                $file_finder->files()->in($environment_dirs)->date('before 7 days ago');
+                foreach ($file_finder as $deletable_file) {
+                    unlink($deletable_file);
+                }
+
+                // delete all empty directories
+                // do this 3 times because the depth of empty directories can be up to 3, and many won't be empty on first pass
+                for ($i = 0; $i < 3; ++$i) {
+                    $dir_finder = new Finder();
+                    $dir_finder->directories()->in($environment_dirs);
+
+                    /* @var \Symfony\Component\Finder\SplFileInfo $dir_name */
+                    $maybe_delete_dirs = [];
+                    foreach ($dir_finder as $dir_name) {
+                        // cannot delete here, as it might mess up the $finder iterator
+                        $maybe_delete_dirs[] = $dir_name->getRealPath();
+                    }
+
+                    foreach ($maybe_delete_dirs as $dir) {
+                        $iterator = new \FilesystemIterator($dir);
+                        if (!$iterator->valid()) {
+                            rmdir($dir);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //###################################################################################################################
 
     private function _cleanupEmailProcessLogs()
     {
@@ -340,7 +353,7 @@ class CleanupHourly extends AbstractJob
                 WHERE email_sources.date_created < ? AND email_sources.log_blob_id IS NOT NULL
                 ORDER BY email_sources.date_created DESC
                 LIMIT 500
-            ', array($timesnip));
+            ', [$timesnip]);
 
             if ($blob_ids) {
                 $count += $this->_deleteBlobsBatch($blob_ids);
@@ -354,7 +367,7 @@ class CleanupHourly extends AbstractJob
         }
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
 
     private function _cleanupTicketManagerLogs()
     {
@@ -375,7 +388,7 @@ class CleanupHourly extends AbstractJob
                 WHERE ticket_proc_log.date_created < ? AND ticket_proc_log.blob_id IS NOT NULL
                 ORDER BY ticket_proc_log.date_created DESC
                 LIMIT 500
-            ', array($timesnip));
+            ', [$timesnip]);
 
             if ($blob_ids) {
                 $count += $this->_deleteBlobsBatch($blob_ids);
@@ -389,7 +402,19 @@ class CleanupHourly extends AbstractJob
         }
     }
 
-    ####################################################################################################################
+    //###################################################################################################################
+
+    private function _cleanupSavedForms()
+    {
+        $datetime = date('Y-m-d H:i:s', time());
+        $count    = App::getDb()->executeUpdate('DELETE FROM saved_forms WHERE date_expires < ?', [$datetime]);
+
+        if ($count) {
+            $this->logStatus("Cleaned up $count old saved forms");
+        }
+    }
+
+    //###################################################################################################################
 
     /**
      * @param array $blob_ids
@@ -406,7 +431,7 @@ class CleanupHourly extends AbstractJob
             SELECT *
             FROM blobs
             WHERE id IN (?)
-        ', array($blob_ids), array(\Doctrine\DBAL\Connection::PARAM_INT_ARRAY));
+        ', [$blob_ids], [\Doctrine\DBAL\Connection::PARAM_INT_ARRAY]);
 
         if (!$blobs_info) {
             return 0;

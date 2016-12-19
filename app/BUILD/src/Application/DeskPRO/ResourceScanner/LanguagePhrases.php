@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Controller
  */
+
 namespace Application\DeskPRO\ResourceScanner;
 
 class LanguagePhrases
@@ -51,85 +52,40 @@ class LanguagePhrases
 
     public function getGroups()
     {
-        $groups = array();
+        $groups = [];
+
+        $groupToReal = [
+            'adm'     => 'admin',
+            'admin'   => 'admin',
+            'api'     => 'api',
+            'agent'   => 'agent',
+            'general' => 'general',
+            'portal'  => 'portal',
+            'user'    => 'portal',
+        ];
 
         $lang_dir = dir($this->lang_root);
-        while (($dir_name = $lang_dir->read()) !== false) {
-            if ($dir_name == '.' || $dir_name == '..' || $dir_name == 'export') {
+        while (($file = $lang_dir->read()) != false) {
+            if ($file == '.' || $file == '..' || $file == 'export' || !is_file($lang_dir->path.'/'.$file)) {
                 continue;
             }
 
-            $dir_path = $lang_dir->path.DIRECTORY_SEPARATOR.$dir_name;
-            if (!is_dir($dir_path)) {
-                continue;
-            }
+            $phrases = require $lang_dir->path.'/'.$file;
 
-            $dir = dir($dir_path);
+            foreach ($phrases as $phraseId => $x) {
+                $parts       = explode('.', $phraseId);
+                $realGroupId = $groupToReal[$parts[0]];
+                $file        = isset($parts[2]) ? $parts[1] : $realGroupId;
 
-            while (($file = $dir->read()) != false) {
-                if ($file == '.' || $file == '..' || $file == 'export') {
-                    continue;
+                if (!isset($groups[$realGroupId])) {
+                    $groups[$realGroupId] = [];
                 }
-
-                if (!isset($groups[$dir_name])) {
-                    $groups[$dir_name] = array();
+                if (!in_array($file, $groups[$realGroupId])) {
+                    $groups[$realGroupId][] = $file;
                 }
-                $groups[$dir_name][] = str_replace('.php', '', $file);
             }
         }
 
         return $groups;
-    }
-
-    public function getAllUserPhrases()
-    {
-        $groups = $this->getGroups();
-        $groups = $groups['user'];
-
-        $phrases = array();
-        foreach ($groups as $group) {
-            $phrases = array_merge($phrases, $this->getGroupPhrases('user.'.$group));
-        }
-
-        return $phrases;
-    }
-
-    public function getGroupPhrases($group)
-    {
-        $file     = str_replace('.', DIRECTORY_SEPARATOR, $group).'.php';
-        $filepath = $this->lang_root.DIRECTORY_SEPARATOR.$file;
-
-        if (!file_exists($filepath)) {
-            return array();
-        }
-
-        return include $filepath;
-    }
-
-    public function getMasterPhrase($phrase_id)
-    {
-        $path        = DP_ROOT.'/languages/default';
-        $group_parts = explode('.', $phrase_id, 3);
-
-        if (count($group_parts) == 3) {
-            $file = $path.'/'.$group_parts[0].'/'.$group_parts[1].'.php';
-        } else {
-            $file = $path.'/'.$group_parts[0].'/'.$group_parts[0].'.php';
-        }
-
-        if (!is_file($file) || !isset($file_phrases[$phrase_id])) {
-            return '';
-        }
-
-        $file_phrases = include $file;
-
-        return $file_phrases[$phrase_id];
-    }
-
-    public function generatePhraseHash($phrase)
-    {
-        $phrase = preg_replace('#\s#', '', $phrase);
-
-        return sha1($phrase);
     }
 }

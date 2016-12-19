@@ -1,0 +1,101 @@
+.anytime-picker {
+  display: none;
+  position: relative;
+  border: 1px solid #4681b2;
+  z-index: 2000;
+  background-color: #eef1f3;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.25s ease-in-out;
+  width: 208px;
+  white-space: normal;
+
+  .anytime-picker__header {
+    background-color: #fff;
+    border-bottom: 1px solid #d6d8da;
+    padding: 5px;
+  }
+
+  .anytime-picker__button--prev, .anytime-picker__button--next {
+    border: 1px solid #eef1f3;
+    background-color: #fff;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    color: #9a9a9a;
+    font-weight: bold;
+    font-size: 11px;
+  }
+
+  .anytime-picker__dates {
+    padding: 5px;
+
+    .anytime-picker__date {
+      border: 1px solid #eef1f3;
+      background-color: #fff;
+      -webkit-border-radius: 0;
+      -moz-border-radius: 0;
+      border-radius: 0;
+
+      &:focus {
+        outline: 0;
+      }
+    }
+
+    .anytime-picker__date--selected {
+      background-color: #4681b2;
+      color: #fff;
+    }
+  }
+
+  .anytime-picker__day-name {
+    text-transform: uppercase;
+    color: #9a9a9a;
+    font-weight: bold;
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .anytime-picker__button--done {
+    background-color: #62ad8c;
+    color: #fff;
+    border-radius: 2px;
+    border: 0;
+    padding: 5px 10px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.9em;
+
+    &:hover {
+      background-color: darken(#62ad8c, 10%);
+    }
+  }
+
+  .anytime-picker__button--clear {
+    background-color: #fff;
+    border-radius: 4px;
+    border: 0;
+    padding: 5px 10px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    margin-left: 5px;
+  }
+
+  .anytime-picker__time, .anytime-picker__footer {
+    padding: 5px;
+  }
+}
+
+.anytime-picker--is-visible {
+  display: block;
+}
+
+.anytime-picker__dates {
+  width: 200px;
+}
+
+.anytime-picker__dates > * {
+  box-sizing: border-box;
+  width: 14.28%;
+  display: inline-block;
+}

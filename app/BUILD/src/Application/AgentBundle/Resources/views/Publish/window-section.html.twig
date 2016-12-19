@@ -23,20 +23,20 @@
 						</div>
 					</li>
 				{% endif %}
-				{% if counts.validating_content %}
-					<li class="is-nav-item auto-load-route" data-route="listpane:{{ path('agent_publish_validatingcontent') }}">
-						<div class="item">
-							<h3>{{ phrase('agent.publish.content_to_validate') }}</h3>
-							<em class="counter list-counter" id="publish_validating_count">{{ counts.validating_content|default(0) }}</em>
-						</div>
-					</li>
-				{% endif %}
 				<li class="is-nav-item" data-route="listpane:{{ path('agent_kb_pending') }}">
 					<div class="item">
 						<h3>{{ phrase('agent.publish.pending_articles') }}</h3>
 						<em class="counter list-counter" id="kb_pending_count">{{ counts.pending|default(0) }}</em>
 					</div>
 				</li>
+				{% if counts.pending_approval and app.user.hasPerm('agent_publish.validate')%}
+					<li class="is-nav-item" data-route="listpane:{{ path('agent_public_pending_approval', {'type': 'mine'}) }}">
+						<div class="item">
+							<h3>{{ phrase('agent.publish.pending_approval_content') }}</h3>
+							<em class="counter list-counter" id="publish_drafts_count">{{ counts.pending_approval }}</em>
+						</div>
+					</li>
+				{% endif %}
 				{% if counts.drafts %}
 				<li class="is-nav-item" data-route="listpane:{{ path('agent_public_drafts', {'type': 'mine'}) }}">
 					<div class="item">
@@ -57,7 +57,21 @@
 		</article>
 	</section>
 
-	{% if app.getSetting('core.apps_kb') %}
+	{% if (brands|length) > 1 %}
+		<section>
+			<select class="dp-select-widget-simple brand_id" name="brand_id" id="publish_brand_id" style="width: 100%">
+				{% for brand in brands %}
+					<option value="{{ brand.id }}" {% if selected_brand_id == brand.id %}selected="selected"{% endif %}>
+						{{ brand.name }}
+					</option>
+				{% endfor %}
+			</select>
+		</section>
+	{% else %}
+		<input type="hidden" name="brand_id" id="publish_brand_id" value="{{ brands[0].id }}" />
+	{% endif %}
+
+	{% if app_settings['core.apps_kb'] %}
 		<section class="pane-section dp-collapsible dp-collapsible-open" id="publish_section_kb">
 			<header>
 				<h1>
@@ -69,7 +83,7 @@
 				<ul class="nav-list nav-list-small nav-list-tree">
 					{% include 'AgentBundle:Publish:kb-cat-list.html.twig' with {'cats': kb_cats, 'counts': kb_cats_counts, 'depth': 0 } %}
 					<li class="new-cat-trigger new-cat">
-						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'article'}) }}">
+						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'article', brand_id: selected_brand_id}) }}">
 							<i class="icon-folder-close-alt"></i>
 							<h3>{{ phrase('agent.publish.add_new_category') }}</h3>
 						</div>
@@ -85,7 +99,7 @@
 					</nav>
 					<ul class="nav-list nav-list-small nav-list-tree">
 						<li class="is-nav-item">
-							<div class="item" data-route="listpane:{{ path('agent_kb_list', {pending_translate: 1}) }}">
+							<div class="item" data-route="listpane:{{ path('agent_kb_list', {pending_translate: 1, brand_id: selected_brand_id}) }}">
 								<i class="dp-toggle-icon click-through icon-caret-right"></i>
 								<h3>{{ phrase('agent.publish.untranslated_articles') }}</h3>
 								<em class="counter list-counter">{{ kb_translate_queue[0] }}</em>
@@ -93,7 +107,7 @@
 							<ul class="nav-list nav-list-small indented" style="display: none;">
 								{% for lang_id, count in kb_translate_queue if lang_id > 0 and count > 0 %}
 									<li class="is-nav-item">
-										<div class="item" data-route="listpane:{{ path('agent_kb_list', {pending_translate: 1, language_id: lang_id}) }}">
+										<div class="item" data-route="listpane:{{ path('agent_kb_list', {pending_translate: 1, brand_id: selected_brand_id, language_id: lang_id}) }}">
 											<h3>{{ app.languages.get(lang_id).title }}</h3>
 											<em class="counter list-counter">{{ count }}</em>
 										</div>
@@ -107,7 +121,7 @@
 		</section>
 	{% endif%}
 
-	{% if app.getSetting('core.apps_news') %}
+	{% if app_settings['core.apps_news'] %}
 		<section class="pane-section dp-collapsible" id="publish_section_news">
 			<header>
 				<h1>
@@ -119,7 +133,7 @@
 				<ul class="nav-list nav-list-small nav-list-tree">
 					{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': news_cats, 'counts': news_cats_counts, 'depth': 0 } %}
 					<li class="new-cat-trigger new-cat">
-						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'news'}) }}">
+						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'news', brand_id: selected_brand_id}) }}">
 							<i class="icon-folder-close-alt"></i>
 							<h3>{{ phrase('agent.publish.add_new_category') }}</h3>
 						</div>
@@ -129,7 +143,7 @@
 		</section>
 	{% endif %}
 
-	{% if app.getSetting('core.apps_downloads') %}
+	{% if app_settings['core.apps_downloads'] %}
 		<section class="pane-section dp-collapsible" id="publish_section_downloads">
 			<header>
 				<h1>
@@ -141,7 +155,7 @@
 				<ul class="nav-list nav-list-small nav-list-tree">
 					{% include 'AgentBundle:Publish:downloads-cat-list.html.twig' with {'cats': download_cats, 'counts': download_cats_counts, 'depth': 0 } %}
 					<li class="new-cat-trigger new-cat">
-						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'download'}) }}">
+						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'download', brand_id: selected_brand_id}) }}">
 							<i class="icon-folder-close-alt"></i>
 							<h3>{{ phrase('agent.publish.add_new_category') }}</h3>
 						</div>
@@ -161,26 +175,26 @@
 		<article>
 			<ul class="nav-list nav-list-small nav-list-tree">
 				<li class="is-nav-item">
-					<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'all'}) }}">
+					<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {type: 'all', brandId: selected_brand_id}) }}">
 						<i class="dp-toggle-icon click-through icon-caret-right"></i>
 						<h3>{{ phrase('agent.publish.all_comments') }}</h3>
 						<em class="counter list-counter" id="publish_all_comments_count">{{ counts.comments.all|default(0) }}</em>
 					</div>
 					<ul class="nav-list nav-list-small indented" style="display: none;">
 						<li class="is-nav-item" {% if not counts.comments.articles  %}style="display: none;"{% endif %}>
-							<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'articles'}) }}">
+							<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {type: 'articles', brandId: selected_brand_id}) }}">
 								<h3>{{ phrase('agent.publish.article_comments') }}</h3>
 								<em class="counter list-counter" id="publish_articles_comments_count">{{ counts.comments.articles|default(0) }}</em>
 							</div>
 						</li>
 						<li class="is-nav-item" {% if not counts.comments.news %}style="display: none;"{% endif %}>
-							<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'news'}) }}">
+							<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {type: 'news', brandId: selected_brand_id}) }}">
 								<h3>{{ phrase('agent.publish.news_comments') }}</h3>
 								<em class="counter list-counter" id="publish_news_comments_count">{{ counts.comments.news|default(0) }}</em>
 							</div>
 						</li>
 						<li class="is-nav-item" {% if not counts.comments.downloads %}style="display: none;"{% endif %}>
-							<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {'type': 'downloads'}) }}">
+							<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {type: 'downloads', brandId: selected_brand_id}) }}">
 								<h3>{{ phrase('agent.publish.download_comments') }}</h3>
 								<em class="counter list-counter" id="publish_downloads_comments_count">{{ counts.comments.downloads|default(0) }}</em>
 							</div>

@@ -1,8 +1,15 @@
 {% for f in custom_fields %}
 	{% if f.hasValue %}
-		<dt class="type-labels">{{ f.title }}</dt>
-		<dd>
-			{{ render_custom_field(f) }}
-		</dd>
+	<dt class="type-labels">{{ f.title }}</dt>
+	<dd>
+		{{ render_custom_field(f) }}
+	</dd>
 	{% endif %}
+{% endfor %}
+
+{% for f in custom_fields_definitions %}
+	<dt class="type-labels">{{ form_label(f) }}</dt>
+	<dd>
+		{{ render_custom_field(f) }}
+	</dd>
 {% endfor %}

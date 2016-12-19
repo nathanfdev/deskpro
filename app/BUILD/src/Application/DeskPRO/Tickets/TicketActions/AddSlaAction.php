@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -40,7 +41,7 @@ use Application\DeskPRO\Entity\Ticket;
 class AddSlaAction extends AbstractAction
 {
     /** @var array */
-    protected $sla_ids = array();
+    protected $sla_ids = [];
 
     public function __construct($sla_id)
     {
@@ -48,9 +49,7 @@ class AddSlaAction extends AbstractAction
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -67,15 +66,13 @@ class AddSlaAction extends AbstractAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
-        return array(
-            array('action' => 'add_sla', 'sla_ids' => $this->sla_ids),
-        );
+        return [
+            ['action' => 'add_sla', 'sla_ids' => $this->sla_ids],
+        ];
     }
 
     /**
@@ -87,9 +84,7 @@ class AddSlaAction extends AbstractAction
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -100,14 +95,14 @@ class AddSlaAction extends AbstractAction
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {
         $tr   = App::getTranslator();
         $slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
 
-        $titles = array();
+        $titles = [];
         foreach ($slas as $sla) {
             $titles[$sla->id] = $as_html ? htmlspecialchars($sla->title) : $sla->title;
         }
@@ -118,6 +113,6 @@ class AddSlaAction extends AbstractAction
             }
         }
 
-        return $tr->phrase('agent.tickets.add_sla_action', array('sla' => $titles ? implode(', ', $titles) : '[unknown]'));
+        return $tr->phrase('agent.tickets.add_sla_action', ['sla' => $titles ? implode(', ', $titles) : '[unknown]']);
     }
 }

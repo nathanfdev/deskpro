@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
@@ -49,19 +50,20 @@ class DateTime extends Date
         }
 
         if (!$value) {
-            return array();
+            return [];
         }
 
-        $date = \DateTime::createFromFormat($this->getFormat(), $value, App::getCurrentPerson()->getDateTimezone());
+        $person = App::getCurrentPerson();
+        $date   = \DateTime::createFromFormat($this->getFormat(), $value, $person ? $person->getDateTimezone() : new \DateTimeZone('UTC'));
         if (!$date) {
-            return array();
+            return [];
         }
 
         $date = \Orb\Util\Dates::convertToUtcDateTime($date);
 
-        return array(
-            array($this->field_def['id'], 'value', $date->getTimestamp()),
-        );
+        return [
+            [$this->field_def['id'], 'value', $date->getTimestamp()],
+        ];
     }
 
     protected function getFormat()
@@ -74,7 +76,7 @@ class DateTime extends Date
         $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
 
         if ($data && !is_scalar($data)) {
-            return $this->makeErrorArray(array('date_invalid'));
+            return $this->makeErrorArray(['date_invalid']);
         }
 
         // Timestamp value
@@ -82,38 +84,38 @@ class DateTime extends Date
             $data = date($this->getFormat(), $data);
         }
 
-        #------------------------------
-        # Validate options
-        #------------------------------
+        //------------------------------
+        // Validate options
+        //------------------------------
 
         $opt_prefix = '';
         if ($context == self::CONTEXT_AGENT) {
             $opt_prefix = 'agent_';
         }
 
-        $options = array();
-        foreach (array('required') as $k) {
+        $options = [];
+        foreach (['required'] as $k) {
             $options[$k] = $this->field_def->getOption($opt_prefix.$k);
         }
 
         if ($options['required']) {
             if (!$data) {
-                return $this->makeErrorArray(array('required'));
+                return $this->makeErrorArray(['required']);
             }
         }
 
         if ($data) {
             $date = \DateTime::createFromFormat($this->getFormat(), $data, App::getCurrentPerson()->getDateTimezone());
             if (!$date) {
-                return $this->makeErrorArray(array('date_invalid'));
+                return $this->makeErrorArray(['date_invalid']);
             }
         } else {
-            return array();
+            return [];
         }
 
-        #------------------------------
-        # Validate ranges
-        #------------------------------
+        //------------------------------
+        // Validate ranges
+        //------------------------------
 
         try {
             $admin_tz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
@@ -129,7 +131,7 @@ class DateTime extends Date
         // Days of week
         if ($valid_dow = $this->field_def->getOption('date_valid_dow')) {
             if (!in_array($dow, $valid_dow)) {
-                return $this->makeErrorArray(array('date_invalid_dow'));
+                return $this->makeErrorArray(['date_invalid_dow']);
             }
         }
 
@@ -143,7 +145,7 @@ class DateTime extends Date
                 $d1->setTime(0, 0, 0);
 
                 if ($date_admin < $d1) {
-                    return $this->makeErrorArray(array('date_invalid_range'));
+                    return $this->makeErrorArray(['date_invalid_range']);
                 }
             }
             if ($d2) {
@@ -151,7 +153,7 @@ class DateTime extends Date
                 $d2->setTime(23, 59, 59);
 
                 if ($date_admin > $d2) {
-                    return $this->makeErrorArray(array('date_invalid_range'));
+                    return $this->makeErrorArray(['date_invalid_range']);
                 }
             }
 
@@ -176,11 +178,11 @@ class DateTime extends Date
             $d2->setTime(23, 59, 59);
 
             if ($date_admin < $d1 || $date_admin > $d2) {
-                return $this->makeErrorArray(array('date_invalid_range'));
+                return $this->makeErrorArray(['date_invalid_range']);
             }
         }
 
-        return array();
+        return [];
     }
 
     public function getSearchCriteriaForm($data = null)
@@ -210,7 +212,7 @@ class DateTime extends Date
             $this->getFormFieldName(),
             new DateTimeType(),
             $setData,
-            array('required' => false)
+            ['required' => false]
         )->getForm();
     }
 }

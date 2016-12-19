@@ -152,7 +152,7 @@
 										<option value="address2">Address Line 2</option>
 										<option value="city">City</option>
 										<option value="state">State</option>
-										<option value="post_code">Post Code</option>
+										<option value="zip">Post Code</option>
 										<option value="country">Country</option>
 									</optgroup>
 									<optgroup label="Custom Fields">
@@ -163,14 +163,6 @@
 										<option value="new_custom">New Custom Field</option>
 									</optgroup>
 								</select>
-								<span ng-if="importSettings.showExtraMappings.organization[$index]">
-									<label>
-										<input type="checkbox"
-											   ng-model="importSettings.additionalMappings[$index].create_auto" value="1"
-											   checked="checked">
-										Create if does not exist
-									</label>
-								</span>
 								<span ng-if="importSettings.showExtraMappings.phone[$index]">
 									<select
 										ui-select2

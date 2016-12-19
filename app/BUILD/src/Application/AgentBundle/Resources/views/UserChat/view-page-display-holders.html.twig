@@ -13,7 +13,7 @@
 <table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table{% if errors|length %} error{% endif %}">
 	{# Custom fields#}
 	{% for f in custom_fields %}
-		<tbody class="chat_field_{{f.id}} custom-field item" data-field-type="chat_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}" style="display:none">
+		<tbody class="chat_field_{{f.id}} custom-field item" data-field-type="chat_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}">
 			<tr class="mode-display">
 				<th width="120">
 					<span class="custom-field edit-trigger chat_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>

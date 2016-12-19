@@ -1,0 +1,519 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
+
+use Application\DeskPRO\Entity\CustomDataAbstract;
+use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Form\FormField;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DpDateType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
+/**
+ * Class CustomDataType.
+ */
+class CustomDataType extends AbstractType
+{
+    /**
+     * @var ValidatorInterface
+     */
+    protected $validator;
+
+    /**
+     * Constructor.
+     *
+     * @param ValidatorInterface $validator
+     */
+    public function __construct(ValidatorInterface $validator)
+    {
+        $this->validator = $validator;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        foreach ($form->all() as $child) {
+            // set it to the first child's label
+            if (!$view->vars['help']) {
+                $option = $child->getConfig()->getOption('help');
+                if ($option) {
+                    $view->vars['help'] = $option;
+                }
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onGenerateFields']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onTransformToCustomData'], -1);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onValidateData'], -1);
+
+        if ($options['inline']) {
+            $builder->addEventSubscriber(new InlineCustomDataListener());
+        }
+    }
+
+    /**
+     * Generate form fields.
+     *
+     * @param FormEvent $event
+     */
+    public function onGenerateFields(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+
+        /** @var CustomDefAbstract $customDef */
+        $customDef = $config->getOption('custom_def');
+        $field     = $this->createCustomField($customDef, $config->getOption('inline'));
+
+        // custom fields are implemented as a compound type
+        // and this label is for the 'data' attribute, whereas
+        // the real label will be on the parent form which is adding the field
+        $options = array_merge($field->getOptions(), [
+            'label'          => false,
+            'help'           => false,
+            'error_bubbling' => true,
+            'mapped'         => false,
+        ]);
+
+        // child field is not mapped so the form tries to get data from the options
+        // so we should pass stored value via its options
+        $options['data'] = $this->getFormData($event->getData() ?: new ArrayCollection(), $customDef);
+        $form->add('data', $field->getType(), $options);
+    }
+
+    /**
+     * Transforms form data to modified custom data collection.
+     *
+     * @param FormEvent $event
+     */
+    public function onTransformToCustomData(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+
+        /** @var CustomDefAbstract $customDef */
+        $customDef = $config->getOption('custom_def');
+
+        /* @var CustomDataAbstract[]|ArrayCollection $allCustomData */
+        $allCustomData = $form->getData() ?: new ArrayCollection();
+        $customDefData = $this->filterCustomDefData($allCustomData, $customDef);
+
+        if ($customDef->isChoiceType()) {
+            $data = $form->get('data')->getData();
+            $data = is_array($data) ? $data : ($data ? [$data] : []);
+            $data = array_map(function (CustomDefAbstract $choiceCustomDef) {
+                return $choiceCustomDef->getId();
+            }, $data);
+
+            $exist = $customDefData
+                ->map(function (CustomDataAbstract $custom_data) {
+                    return $custom_data->field->getId();
+                })
+                ->toArray()
+            ;
+
+            // remove deleted items
+            foreach ($customDefData as $customData) {
+                if (!in_array($customData->field->getId(), $data)) {
+                    $customDefData->removeElement($customData);
+                }
+            }
+
+            // add new items
+            foreach ($data as $fieldId) {
+                if (!in_array($fieldId, $exist)) {
+                    $customData = $customDef->createCustomData();
+                    $customData->setValue(1);
+                    $customData->setField($customDef->getChildById($fieldId));
+
+                    $customDefData->add($customData);
+                }
+            }
+        } else {
+            $data = $form->get('data')->getData();
+
+            if ($customDefData->count()) {
+                $customData = $customDefData->first();
+                $customData->setData($data);
+            } else {
+                $customData = $customDef->createCustomData();
+                $customData->setData($data);
+
+                $customDefData->add($customData);
+            }
+        }
+
+        // Set reference to custom def field.
+        foreach ($customDefData as $customData) {
+            $customData->root_field = $customDef;
+
+            if (!$customDef->isChoiceType()) {
+                // for simple custom data field = root field
+                $customData->field = $customDef;
+            }
+        }
+
+        // Merge custom def data with existing owner custom data collection.
+        foreach ($customDefData as $customData) {
+            if (!$allCustomData->contains($customData)) {
+                $allCustomData->add($customData);
+            }
+        }
+        foreach ($allCustomData as $customData) {
+            if ($customData->root_field === $customDef && !$customDefData->contains($customData)) {
+                $allCustomData->removeElement($customData);
+            }
+        }
+
+        $event->setData(clone $allCustomData);
+    }
+
+    /**
+     * We need to map errors to the custom data form.
+     *
+     * Because we have single custom data collection for all custom def fields we need to get validation errors from
+     * unmapped field. So validate the data manually via another validator to keep custom data mapped.
+     *
+     * @param FormEvent $event
+     */
+    public function onValidateData(FormEvent $event)
+    {
+        $form    = $event->getForm();
+        $options = $form->getConfig()->getOptions();
+
+        if (!$form->isSubmitted()) {
+            return;
+        }
+
+        /** @var CustomDefAbstract $customDef */
+        $customDef = $options['custom_def'];
+        $context   = $options['agent_interface'] ? 'agent' : 'user';
+
+        if ($context === 'agent' && $customDef->getOption('agent_validation_resolve')) {
+            $ticket = $options['ticket'];
+            if ($ticket instanceof Ticket && !$ticket->isResolved()) {
+                return;
+            }
+        }
+
+        $violations = $this->validator->validate($form->getData(), new AppAssert\CustomField\CustomData([
+            'context'    => $context,
+            'custom_def' => $customDef,
+            'target'     => AppAssert\CustomField\CustomData::TARGET_FIELD,
+        ]));
+
+        foreach ($violations as $violation) {
+            $form->addError(new FormError(
+                $violation->getMessage(),
+                $violation->getMessageTemplate(),
+                $violation->getParameters(),
+                $violation->getPlural(),
+                $violation
+            ));
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setDefaults([
+                'label' => function (Options $options) {
+                    $noLabelTypes = [CustomDefAbstract::TYPE_HIDDEN, CustomDefAbstract::TYPE_DISPLAY];
+                    if (in_array($options['custom_def']->getType(), $noLabelTypes)) {
+                        return false;
+                    }
+
+                    return $options['custom_def']->getTitle();
+                },
+                'help' => function (Options $options) {
+                    return $options['custom_def']->getDescription();
+                },
+                'fully_hidden' => function (Options $options) {
+                    return $options['custom_def']->getType() === CustomDefAbstract::TYPE_HIDDEN;
+                },
+                'required' => function (Options $options) {
+                    return $options['custom_def']->isRequired($options['agent_interface'])
+                        || $options['custom_def']->isRegexRequired($options['agent_interface']);
+                },
+                'inline'         => false,
+                'error_bubbling' => false,
+                'ticket'         => false,
+            ])
+            ->setRequired([
+                'custom_def',
+                'agent_interface',
+            ])
+            ->setAllowedTypes('custom_def', CustomDefAbstract::class)
+            ->setAllowedTypes('agent_interface', 'bool')
+            ->setAllowedTypes('inline', 'bool')
+            ->setAllowedTypes('ticket', ['bool', Ticket::class])
+        ;
+    }
+
+    /**
+     * Prepare form data from custom def data collection.
+     *
+     * @param ArrayCollection   $customData
+     * @param CustomDefAbstract $customDef
+     *
+     * @return mixed
+     */
+    protected function getFormData($customData, CustomDefAbstract $customDef)
+    {
+        $allCustomData = $customData ?: new ArrayCollection();
+        $customDefData = $this->filterCustomDefData($allCustomData, $customDef);
+
+        $formFieldData = null;
+        if ($customDefData->count()) {
+            $formFieldData = $customDefData->first()->getData();
+            if ($customDef->isChoiceType()) {
+                $formFieldData = $customDefData
+                    ->map(function (CustomDataAbstract $custom_data) {
+                        return $custom_data->getFieldId();
+                    })
+                    ->toArray()
+                ;
+
+                if (!$customDef->isMulti()) {
+                    $formFieldData = reset($formFieldData);
+                }
+            } elseif ($customDef->isDateType()) {
+                // cast to null
+                if (!$formFieldData) {
+                    $formFieldData = null;
+                }
+            }
+        }
+
+        return $formFieldData;
+    }
+
+    /**
+     * Filter custom def data from custom data collection.
+     *
+     * @param Collection        $allCustomData
+     * @param CustomDefAbstract $customDef
+     *
+     * @return CustomDataAbstract[]|ArrayCollection
+     */
+    protected function filterCustomDefData(Collection $allCustomData, CustomDefAbstract $customDef)
+    {
+        $customDefData = $allCustomData->filter(function (CustomDataAbstract $custom_data) use ($customDef) {
+            return $custom_data->root_field === $customDef && null !== $custom_data->field;
+        });
+
+        if (!$customDefData->count()) {
+            if (!$customDef->isChoiceType()) {
+                $defaultValue = $customDef->getDefaultValue();
+
+                // datetime default value stored as string, convert to timestamp
+                if ($customDef->isDateType()) {
+                    if ($defaultValue) {
+                        try {
+                            $defaultValue = (new \DateTime($defaultValue))->getTimestamp();
+                        } catch (\Exception $e) {
+                            $defaultValue = null;
+                        }
+                    }
+                }
+
+                if ($defaultValue) {
+                    $defaultCustomData = $customDef->createCustomData();
+                    $defaultCustomData
+                        ->setField($customDef)
+                        ->setRootField($customDef)
+                        ->setData($defaultValue)
+                    ;
+
+                    $customDefData->add($defaultCustomData);
+                }
+            } else {
+                $defaultIds = (array) $customDef->getDefaultValue();
+                foreach ($defaultIds as $defaultId) {
+                    $choiceDef = $customDef->getChildById($defaultId);
+                    if (!$choiceDef) {
+                        continue;
+                    }
+
+                    $defaultCustomData = $customDef->createCustomData();
+                    $defaultCustomData
+                        ->setField($choiceDef)
+                        ->setRootField($customDef)
+                        ->setValue(1)
+                    ;
+
+                    $customDefData->add($defaultCustomData);
+                }
+            }
+        }
+
+        return $customDefData;
+    }
+
+    /**
+     * @param CustomDefAbstract $def
+     * @param bool              $isInline
+     *
+     * @return FormField
+     */
+    private function createCustomField(CustomDefAbstract $def, $isInline = false)
+    {
+        switch ($def->getType()) {
+            case CustomDefAbstract::TYPE_DATA:
+            case CustomDefAbstract::TYPE_TEXT:
+                return new FormField(TextType::class, [
+                    'help' => $def->getRealDescription(),
+                ]);
+
+            case CustomDefAbstract::TYPE_TEXTAREA:
+                return new FormField(TextareaType::class, [
+                    'help' => $def->getRealDescription(),
+                ]);
+
+            case CustomDefAbstract::TYPE_TOGGLE:
+                if ($isInline) {
+                    return new FormField(ApiBooleanType::class);
+                }
+
+                $options = [
+                    'checkbox_label' => $def->getOption('label_text') ?: '',
+                    'force_boolean'  => true,
+                    'help'           => $def->getRealDescription(),
+                ];
+
+                return new FormField(SingleCheckboxType::class, $options);
+
+            case CustomDefAbstract::TYPE_DISPLAY:
+                $options = [
+                    'html'  => $def->getOption('html'),
+                    'data'  => '',
+                    'label' => false,
+                    'help'  => $def->getRealDescription(),
+                ];
+
+                return new FormField(DisplayHtmlType::class, $options);
+
+            case CustomDefAbstract::TYPE_CHOICE:
+                $options = [
+                    'expanded'     => (bool) $def->getOption('expanded'),
+                    'multiple'     => (bool) $def->getOption('multiple'),
+                    'custom_field' => $def,
+                    'help'         => $def->getRealDescription(),
+                ];
+
+                return new FormField(CustomFieldChoiceType::class, $options);
+
+            case CustomDefAbstract::TYPE_DATE:
+                if ($isInline) {
+                    $options = [
+                        'input'  => 'timestamp',
+                        'widget' => 'single_text',
+                    ];
+                } else {
+                    $options = [
+                        'input'    => 'timestamp',
+                        'widget'   => 'choice',
+                        'weekdays' => $def->getOption('date_valid_dow'),
+                        'min_date' => $def->getDateMinFormat(),
+                        'max_date' => $def->getDateMaxFormat(),
+                        'help'     => $def->getRealDescription(),
+                    ];
+                }
+
+                return new FormField(DpDateType::class, $options);
+
+            case CustomDefAbstract::TYPE_DATETIME:
+                if ($isInline) {
+                    $options = [
+                        'input'  => 'timestamp',
+                        'widget' => 'single_text',
+                    ];
+
+                    return new FormField(DateTimeType::class, $options);
+                } else {
+                    $options = [
+                        'input'    => 'timestamp',
+                        'widget'   => 'choice',
+                        'format'   => 'Y-m-d H:i',
+                        'weekdays' => $def->getOption('date_valid_dow'),
+                        'min_date' => $def->getDateMinFormat(),
+                        'max_date' => $def->getDateMaxFormat(),
+                        'help'     => $def->getRealDescription(),
+                    ];
+
+                    return new FormField(DateTimeType::class, $options);
+                }
+
+            case CustomDefAbstract::TYPE_HIDDEN:
+                $options = [
+                    'auto_fill'          => false,
+                    'hidden'             => true,
+                    'label'              => false,
+                    'help'               => false,
+                    'cookie_param_name'  => $def->getOption('cookie_name'),
+                    'request_param_name' => $def->getOption('param_name'),
+                ];
+
+                return new FormField(DpHiddenType::class, $options);
+
+            default:
+                throw new \InvalidArgumentException("Invalid field #{$def->getId()}. Cannot find handler for type \"{$def->getType()}\".");
+        }
+    }
+}

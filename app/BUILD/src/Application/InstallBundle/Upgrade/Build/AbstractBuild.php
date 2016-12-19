@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\SchemaHelper;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Monolog\NullLogger;
+use DeskPRO\Component\Util\MapUtils;
+use Doctrine\DBAL\Connection;
+use DpRun\LowUtil;
+use Orb\Data\ContentTypes;
+use Orb\Util\Strings;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Process;
 
@@ -187,7 +193,10 @@ abstract class AbstractBuild
     }
 
     /**
-     * @param $sql
+     * @param string $sql
+     * @param bool   $ignore_err
+     *
+     * @throws \Exception
      */
     public function execMutateSql($sql, $ignore_err = false)
     {
@@ -204,9 +213,67 @@ abstract class AbstractBuild
     }
 
     /**
+     * Execute a DB query.
+     *
+     * @param string $connName The connection to use
+     * @param string $sql      The query to execute
+     *
+     * @throws \Exception
+     */
+    public function execDbQuery($connName, $sql)
+    {
+        $db = $this->container->get('doctrine')->getConnection($connName);
+
+        $sql = preg_replace('#^\s*#m', '', $sql);
+        try {
+            $db->exec($sql);
+        } catch (\Exception $e) {
+            $this->logger->info('SQL['.$connName.']: '.$sql);
+            $this->logger->info('Error: '.$e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * @param string $connName
+     *
+     * @return \Application\DeskPRO\DBAL\Connection
+     */
+    public function getDbConnection($connName = 'default')
+    {
+        return $this->container->get('doctrine')->getConnection($connName);
+    }
+
+    /**
+     * Execute a DB query but catch and return any exceptions.
+     * Returns exception on error, null on success.
+     *
+     * @param string $connName The connection to use
+     * @param string $sql      The query to execute
+     *
+     * @return null|\Exception
+     */
+    public function execDbQueryQuiet($connName, $sql)
+    {
+        $db = $this->container->get('doctrine')->getConnection($connName);
+
+        $sql = preg_replace('#^\s*#m', '', $sql);
+        try {
+            $db->exec($sql);
+
+            return;
+        } catch (\Exception $e) {
+            $this->logger->info('SQL['.$connName.']: '.$sql);
+            $this->logger->info('Error: '.$e->getMessage());
+
+            return $e;
+        }
+    }
+
+    /**
      * Executes an ALTER command that can potentially be slow.
      *
-     * If 'online_schema_upgrade' is true on config.php,
+     * If 'online_schema_upgrade' is true on config.upgrader.php,
      * then this will use the 'pt-online-schema-change' command.
      *
      * If the alter is not likely to be slow, it's often better to use the normal
@@ -223,58 +290,75 @@ abstract class AbstractBuild
      *
      * @see http://www.percona.com/doc/percona-toolkit/2.2/pt-online-schema-change.html
      *
-     * To enable pt-online-schema-change, add this line to /config.php:
-     *  $DP_CONFIG['online_schema_upgrade'] = '/usr/bin/pt-online-schema-change';
-     * Change the path accordingly.
+     * To enable pt-online-schema-change, add this line to /config/config.upgrader.php:
+     *  $CONFIG['online_schema_upgrade'] = '/usr/bin/pt-online-schema-change';
+     * Change the path accordingly
      *
      * @param string $table The table to alter
-     * @param string $alter The alter query, without the 'ALTER TABLE' part.
-     * @param bool   $smart Only do slow if the table has more than 20,000 records
+     * @param string $alter The alter query, without the 'ALTER TABLE' part
+     * @param string $smart Only do slow if the table has more than 20,000 records
      */
     public function execSlowAlterTable($table, $alter, $smart = true)
     {
+        $env                = $this->container->get('deskpro.app_env');
+        $use_online_upgrade = $env->getConfig('upgrader.online_schema_upgrade');
+        $use_online_upgrade = str_replace('%dp.app_dir%', $env->getAppDir(), $use_online_upgrade);
+
         $do_smart = true;
-        if ($smart) {
-            $count = $this->container->getDb()->fetchColumn("SELECT COUNT(*) FROM `$table` LIMIT 20000");
-            if ($count < 20000) {
-                $do_smart = false;
+        if (!$use_online_upgrade) {
+            $do_smart = false;
+        } else {
+            if ($smart) {
+                $count = $this->container->getDb()->fetchColumn("SELECT COUNT(*) FROM `$table` LIMIT 20000");
+                if ($count < 10000) {
+                    $do_smart = false;
+                }
             }
         }
 
-        if ($do_smart && dp_get_config('online_schema_upgrade')) {
+        if ($do_smart && $use_online_upgrade) {
             $logger = $this->logger;
             $logger->info('Using online_schema_update');
 
-            if (dp_get_config('online_schema_upgrade') === true) {
+            if ($use_online_upgrade === true) {
                 $tool = 'pt-online-schema-change';
-            } elseif (is_string(dp_get_config('online_schema_upgrade')) && is_executable(dp_get_config('online_schema_upgrade'))) {
-                $tool = dp_get_config('online_schema_upgrade');
+            } elseif (is_string($use_online_upgrade) && is_executable($use_online_upgrade)) {
+                $tool = $use_online_upgrade;
             } else {
                 throw new \RuntimeException('Unknown path to pt-online-schema-change');
             }
 
             $logger->info("Tool path: $tool");
 
-            $cmd_base = '{tool} --alter {query} --alter-foreign-keys-method auto --no-version-check --host {db_host} --database {db_name} --user {db_user} --password {db_pass} --port {db_port} {mode_param} {dsn}';
+            // FKs have leading underscores if the tool has run on the table before.
+            // The leading underscores are toggled on/off, each time the tool is run
+            // Se also the README in vendor-src/pt-online-schema-change/README.md
+            $alter = preg_replace_callback('#DROP\s+FOREIGN\s+KEY\s+(?P<underscore>_?)(?P<fkname>[a-zA-Z0-9_]+)#i', function (array $m) {
+                if ($m['underscore']) {
+                    return 'DROP FOREIGN KEY '.$m['fkname'];
+                } else {
+                    return 'DROP FOREIGN KEY _'.$m['fkname'];
+                }
+            }, $alter);
 
-            $port   = '';
-            $dbhost = DP_DATABASE_HOST;
-            $m      = null;
-            if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
-                $dbhost = $m[1];
-                $port   = $m[2];
-            }
+            $cmd_base = '{tool} --alter {query} --alter-foreign-keys-method drop_swap --no-version-check --recursion-method none --host {db_host} --database {db_name} --user {db_user} --password {db_pass} --port {db_port} {mode_param} {dsn}';
 
-            $params = array(
+            $dbinfo = LowUtil::getMysqlInfoFromConfigArray($env->getConfig('database'));
+
+            $port   = $dbinfo['port'];
+            $dbhost = $dbinfo['host'];
+            $dbname = $dbinfo['dbname'];
+
+            $params = [
                 '{tool}'    => $tool,
                 '{query}'   => escapeshellarg($alter),
                 '{db_host}' => escapeshellarg($dbhost),
                 '{db_port}' => escapeshellarg($port ?: 3306),
-                '{db_name}' => escapeshellarg(DP_DATABASE_NAME),
-                '{db_user}' => escapeshellarg(@$GLOBALS['DP_CONFIG']['online_schema_upgrade_user'] ?: DP_DATABASE_USER),
-                '{db_pass}' => escapeshellarg(@$GLOBALS['DP_CONFIG']['online_schema_upgrade_password'] ?: DP_DATABASE_PASSWORD),
+                '{db_name}' => escapeshellarg($dbname),
+                '{db_user}' => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_user') ?: $dbinfo['user']),
+                '{db_pass}' => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_password') ?: $dbinfo['password']),
                 '{dsn}'     => "t=$table",
-            );
+            ];
 
             $params_test                 = $params;
             $params_test['{mode_param}'] = '--dry-run --print';
@@ -287,7 +371,7 @@ abstract class AbstractBuild
             $logger->info('BEGIN: LIVE');
             $logger->debug('Command: '.str_replace($params['{db_pass}'], '***', $cmd_exec));
             $proc = new Process($cmd_exec, DP_ROOT);
-            $proc->setTimeout(600);
+            $proc->setTimeout(43200);
             $proc->run(function ($type, $data) use ($logger) {
                 $logger->info(sprintf("\t%s\n", str_replace("\n", "\n\t", trim($data))));
             });
@@ -300,7 +384,32 @@ abstract class AbstractBuild
             }
         } else {
             $sql = "ALTER TABLE `$table` $alter";
+            $this->execMutateSql('SET FOREIGN_KEY_CHECKS = 0');
             $this->execMutateSql($sql);
+            $this->execMutateSql('SET FOREIGN_KEY_CHECKS = 1');
+        }
+    }
+
+    /**
+     * The same as execSlowAlterTable except we ignore most errors.
+     *
+     * The only time we throw an exception is if the table doesn't exist anymore.
+     * This is very edge-casey to do with using pt-online-schema-change with the drop_swap
+     * method where the rename failed.
+     *
+     * @param string $table
+     * @param string $alter
+     * @param bool   $smart
+     */
+    public function execSlowAlterTableQuiet($table, $alter, $smart = true)
+    {
+        try {
+            $this->execSlowAlterTable($table, $alter, $smart);
+        } catch (\Exception $e) {
+            // check the table still exists
+            // If this throws, it will propagate up
+            $db = $this->container->get('doctrine')->getConnection('default');
+            $db->fetchColumn("SELECT 'val' AS test FROM `$table` LIMIT 1");
         }
     }
 
@@ -312,10 +421,10 @@ abstract class AbstractBuild
      */
     public function saveStatus($key, $val)
     {
-        $this->container->getDb()->replace('import_datastore', array(
+        $this->container->getDb()->replace('import_datastore', [
             'typename' => 'up.'.$this->getBuildId().'.'.$key,
             'data'     => $val,
-        ));
+        ]);
     }
 
     /**
@@ -330,48 +439,13 @@ abstract class AbstractBuild
             SELECT data
             FROM import_datastore
             WHERE typename = ?
-        ', array('up.'.$this->getBuildId().'.'.$key));
+        ', ['up.'.$this->getBuildId().'.'.$key]);
 
         if (!$val) {
             return $default;
         }
 
         return $val[0];
-    }
-
-    public function recompileCustomTemplates()
-    {
-        $templates = $this->container->getDb()->fetchAll('
-            SELECT id, name, template_code
-            FROM templates
-        ');
-
-        $twig = $this->container->get('twig');
-
-        foreach ($templates as $tpl) {
-            $name         = $tpl['name'];
-            $compile_code = $tpl['template_code'];
-
-            try {
-                if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'DeskPRO:custom_emails_') !== false) {
-                    $proc         = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
-                    $compile_code = $proc->process($compile_code, $name);
-                }
-
-                $compile_code = preg_replace('#\{%\s*include\s+(.*?)\s*%\}#', '{% include $1 ignore missing %}', $compile_code);
-                $compiled     = $twig->compileSource($compile_code, $name);
-
-                $this->container->getDb()->update('templates', array(
-                    'template_compiled' => $compiled,
-                ), array('id' => $tpl['id']));
-            } catch (\Exception $e) {
-                @file_put_contents(
-                    dp_get_backup_dir().DIRECTORY_SEPARATOR.'tpl-backup-'.str_replace(':', '_', $tpl['name']),
-                    $tpl['template_code']
-                );
-                $this->container->getDb()->delete('templates', array('id' => $tpl['id']));
-            }
-        }
     }
 
     public function getDefaultCollation()
@@ -402,6 +476,14 @@ abstract class AbstractBuild
     }
 
     /**
+     * @return string
+     */
+    public function getBackupDir()
+    {
+        return $this->container->get('deskpro.app_env')->getUserBackupsDir();
+    }
+
+    /**
      * @return SchemaHelper
      */
     public function getSchemaHelper()
@@ -413,5 +495,173 @@ abstract class AbstractBuild
         $this->schema_helper = new SchemaHelper($this->container->getDb());
 
         return $this->schema_helper;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    public function readSetting($name)
+    {
+        $db = $this->container->getDb();
+
+        return $db->fetchColumn('SELECT value FROM settings WHERE name = ?', [$name]);
+    }
+
+    /**
+     * @param string[] $names
+     *
+     * @return array
+     */
+    public function readMultiSetting(array $names)
+    {
+        $db = $this->container->getDb();
+
+        return $db->fetchAllKeyValue('
+            SELECT name, value
+            FROM settings
+            WHERE name IN (?)
+        ', [$names], [Connection::PARAM_STR_ARRAY]);
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function saveSetting($name, $value)
+    {
+        $this->saveMultiSettings([$name => $value]);
+    }
+
+    /**
+     * @param array $settings
+     */
+    public function saveMultiSettings(array $settings)
+    {
+        $names = array_keys($settings);
+
+        $settings_batch = MapUtils::mapToList($settings, function ($name, $val) {
+            return ['name' => $name, 'value' => $val];
+        });
+
+        $db = $this->container->getDb();
+        $db->deleteIn('settings', $names, 'name');
+        $db->batchInsert('settings', $settings_batch);
+    }
+
+    /**
+     * This is an upgrade-safe method of reading blobs.
+     *
+     * @param string $blobId
+     *
+     * @return null|string String data on success or null if the blob doesnt exist or couldnt be read
+     */
+    public function downloadBlob($blobId)
+    {
+        $db = $this->getDbConnection('default');
+
+        $blob = $db->fetchAll('
+            SELECT id, file_url, storage_loc, save_path, filesize
+            FROM blob
+            WHERE id = ?
+        ', [$blobId]);
+
+        if (!$blob) {
+            return;
+        }
+
+        if (!empty($blob['file_url'])) {
+            $data = @file_get_contents($blob['file_url']);
+            if ($data === false || (empty($data) && $blob['filesize'])) {
+                return;
+            } else {
+                return $data;
+            }
+        }
+
+        switch ($blob['storage_loc']) {
+            case 'db':
+                return implode('', $db->fetchAllCol('SELECT data FROM blobs_storage WHERE blob_id = ? ORDER BY id ASC', [$blobId]));
+                break;
+            case 'fs':
+                /* \DpRun\DpEnv */
+                global $DP_ENV;
+                $path = $DP_ENV->getUserFilesDir().'/'.$blob['save_path'];
+
+                if (!file_exists($path)) {
+                    return;
+                }
+
+                return file_get_contents($path);
+                break;
+            default:
+                // we cant handle anything else
+                return;
+        }
+    }
+
+    /**
+     * This is an upgrade-safe method of saving blobs.
+     *
+     * It always uploads blobs to the database, the is currently no way to
+     * upload to any other adapter.
+     *
+     * @param string      $data
+     * @param string      $filename
+     * @param string|null $contentType
+     *
+     * @throws \Exception
+     *
+     * @return int Blob ID
+     */
+    public function saveBlob($data, $filename, $contentType = null)
+    {
+        static $maxPacketSize;
+
+        $db = $this->getDbConnection('default');
+
+        if ($maxPacketSize === null) {
+            $result        = $db->fetchAssoc("SHOW variables LIKE 'max_allowed_packet'");
+            $maxPacketSize = $result['Value'] ?: 5242880;
+        }
+
+        $filesize = strlen($data);
+        $db->beginTransaction();
+
+        if (!$contentType) {
+            $contentType = ContentTypes::getContentTypeFromFilename($filename) ?: 'application/octet-stream';
+        }
+
+        $db->insert('blobs', [
+            'storage_loc'  => 'db',
+            'filename'     => $filename,
+            'filesize'     => $filesize,
+            'content_type' => $contentType,
+            'blob_hash'    => md5($data),
+            'date_created' => date('Y-m-d H:i:s'),
+        ]);
+        $blobId = $db->lastInsertId();
+
+        $batch    = (int) (($blobId - 1) / 1000) + 1;
+        $authcode = $blobId.Strings::random(15, Strings::CHARS_KEY_ALPHA).'0';
+        $path     = $batch.'/'.$authcode;
+
+        $db->update('blobs', [
+            'authcode'  => $authcode,
+            'save_path' => $path,
+        ], ['id' => $blobId]);
+
+        $data = str_split($data, $maxPacketSize / 2);
+        foreach ($data as $part) {
+            $db->insert('blobs_storage', [
+                'blob_id' => $blobId,
+                'data'    => $part,
+            ]);
+        }
+
+        $db->commit();
+
+        return $blobId;
     }
 }

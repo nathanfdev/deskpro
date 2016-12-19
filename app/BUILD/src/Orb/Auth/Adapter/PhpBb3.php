@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Orb\Auth\Adapter;
 
 class PhpBb3 extends DbTable
@@ -50,20 +51,20 @@ class PhpBb3 extends DbTable
 
     protected function isValidPassword(array $userinfo, $password_input)
     {
-        $data = array(
+        $data = [
             'key'      => $this->options->get(self::OPT_CHECK_SERVICE_KEY) ?: 'dp_login_check',
             'username' => $this->set_username,
             'password' => $this->set_password,
-        );
+        ];
 
-        $context = stream_context_create(array(
-            'http' => array(
+        $context = stream_context_create([
+            'http' => [
                 'timeout' => 10,
                 'method'  => 'POST',
                 'header'  => 'Content-type: application/x-www-form-urlencoded',
                 'content' => http_build_query($data, null, '&'),
-            ),
-        ));
+            ],
+        ]);
 
         $result = @file_get_contents($this->options->get(self::OPT_CHECK_SERVICE_URL), null, $context);
 

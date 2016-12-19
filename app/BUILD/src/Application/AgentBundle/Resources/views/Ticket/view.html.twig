@@ -51,8 +51,6 @@ pageMeta.isDeleted = {% if ticket.hidden_status == 'deleted' %}true{% else %}fal
 pageMeta.isArchived = {% if ticket.status == 'archived' %}true{% else %}false{% endif %};
 pageMeta.isSpam = {% if ticket.hidden_status == 'spam' %}true{% else %}false{% endif %};
 pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
-
-pageMeta.agentMap = {{ agent_map|json_encode|raw }};
 pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'true' : 'false' }};
 pageMeta.lang = {{ {
 	'find_ticket': phrase('agent.tickets.find_ticket'),
@@ -127,7 +125,7 @@ pageMeta.lang = {{ {
 	<div class="row title first" id="{{ baseId }}_layout_header_first">
 		<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="10" nowrap="nowrap">
 			<div class="id-number" id="{{ baseId }}_idref_switch">
-				<span id="{{ baseId }}_id_num" title="Ticket ID">
+				<span id="{{ baseId }}_id_num" title="{{ phrase('agent.general.ticket_id') }}">
 					<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.id }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="icon-paste"></i></span></span>
 					{{ phrase('agent.general.id') }}: {{ ticket.id }}
 				</span>
@@ -136,7 +134,21 @@ pageMeta.lang = {{ {
 					{{ phrase('agent.general.id') }}: {{ ticket.ref }}
 				</span>
 			</div>
-		</td><td>
+		</td>
+		{% if brands|length > 1 %}
+		<td width="10">
+			<div class="id-number">
+				<span id="{{baseId}}_brandname" title="{{ phrase('agent.general.brand') }}">
+					{% if not ticket.brand.hasLogo() %}
+						{{ ticket.brand.name }}
+					{% else %}
+						<span id="{{ baseId }}_brand_icon" {% if not ticket.brand.hasLogo() %}style="display: none;"{% endif %} title="{{ ticket.brand.name }}"><img src="{{ ticket.brand.getLogoUrl(22) }}"/></span>
+					{% endif %}
+				</span>
+			</div>
+		</td>
+		{% endif %}
+		<td>
 			<h1>
 				<span id="{{baseId}}_showname">{{ ticket.subject }}</span>
 				<span id="{{baseId}}_editname" style="display: none"><input type="text" placeholder="Enter subject" name="name" value="{{ ticket.subject }}" /></span>
@@ -402,7 +414,7 @@ pageMeta.lang = {{ {
 						{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
 							<option {% if app.user.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ app.user.getPictureUrl(20) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>
 						{% endif %}
-						{% for agent in agents %}
+						{% for agent in app.getAgentData().getAgentAvatarList() %}
 							{% if agent.id != app.user.id and (ticket_perms.modify_assign_agent or ticket.agent.id == agent.id) %}
 								<option {% if agent.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
 							{% endif %}
@@ -424,7 +436,7 @@ pageMeta.lang = {{ {
                                   data-team="{{ app.user.agent.primaryTeam.id }}">
 								&middot;
 								<a class="assign-self-link">
-                                    {% if 1 == app.user.agent.teams|length %}
+                                    {% if 1 == app.user.teams|length %}
 									    {{ phrase('agent.general.assign_to_my_team') }}
                                     {% else %}
                                         {{ phrase('agent.general.assign_to_primary_team') }}
@@ -444,9 +456,9 @@ pageMeta.lang = {{ {
 							<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>{{ phrase('agent.general.none') }}</option>
 						{% endif %}
 
-						{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
+						{% if app.user.getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
 						<optgroup label="{{ phrase('agent.general.your_teams') }}">
-                            {% set teams = app.user.getAgent().getTeams() %}
+                            {% set teams = app.user.getTeams() %}
                             {% for team in agent_teams %}
                                 {% if team in teams %}
 								<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
@@ -456,7 +468,7 @@ pageMeta.lang = {{ {
 						{% endif %}
 
 						{% for team in agent_teams %}
-							{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getAgent().getTeamIds() %}
+							{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getTeamIds() %}
 								<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
 							{% endif %}
 						{% endfor %}
@@ -486,7 +498,7 @@ pageMeta.lang = {{ {
 					<div class="new-follower" id="{{ baseId }}_followers_sel_wrap">
 						<select id="{{ baseId }}_followers_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 							<option value="0">{{ phrase('agent.general.select_agent') }}</option>
-							{% for agent in agents %}
+							{% for agent in app.getAgentData().getAgentAvatarList() %}
 								<option data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}" data-icon-small="{{ agent.getPictureUrl(15) }}">{{ agent.display_name }}</option>
 							{% endfor %}
 						</select>
@@ -641,7 +653,7 @@ pageMeta.lang = {{ {
 			<ul>
 				<li data-list-type="messages" class="on" data-tab-for="#{{baseId}}_messages_wrap">{{ phrase('agent.tickets.messages') }}</li>
 				<li class="logs" data-list-type="log" data-tab-for="#{{baseId}}_logs_wrap">{{ phrase('agent.tickets.full_log') }}</li>
-				{% if app.getSetting('core.tickets.enable_feedback') and app.getSetting('core.tickets.feedback_agents_read') and ticket.date_feedback_rating %}
+				{% if app.getSetting('core_tickets.enable_feedback') and app.getSetting('core_tickets.feedback_agents_read') and ticket.date_feedback_rating %}
 					<li data-list-type="feedback" data-tab-for="#{{baseId}}_messages_wrap">
 						{{ phrase('agent.tickets.ticket_feedback') }} <span class="feedback-rating feedback-{{ ticket.feedback_rating_type }}">{% if ticket.feedback_rating == 1 %}☺{% elseif ticket.feedback_rating == -1 %}☹{% else %}&mdash;{% endif %}</span>
 					</li>

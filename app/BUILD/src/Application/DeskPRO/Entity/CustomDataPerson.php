@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,8 +31,10 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\CustomDataPerson as CustomDataPersonEntityRepository;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -50,12 +52,12 @@ class CustomDataPerson extends CustomDataAbstract
     /**
      * @var \Application\DeskPRO\Entity\CustomDefPerson
      */
-    protected $field = null;
+    protected $field;
 
     /**
      * @var \Application\DeskPRO\Entity\CustomDefPerson
      */
-    protected $root_field = null;
+    protected $root_field;
 
     /**
      * Set related person entity.
@@ -107,26 +109,41 @@ class CustomDataPerson extends CustomDataAbstract
         return $this;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * {@inheritdoc}
+     *
+     * @return Person
+     */
+    public function getOwner()
+    {
+        return $this->person;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDataPerson';
+        $metadata->customRepositoryClassName = CustomDataPersonEntityRepository::class;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
-            array(
-                'name'    => 'custom_data_person',
-                'indexes' => array(
-                    'obj_id_idx'   => array('columns' => array(0 => 'person_id')),
-                    'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'person_id')),
-                ),
-            )
+            [
+                'name'              => 'custom_data_person',
+                'uniqueConstraints' => [
+                    'unique_idx' => [
+                        'columns' => [
+                            'field_id',
+                            'person_id',
+                            'root_field_id',
+                        ],
+                    ],
+                ],
+            ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -134,82 +151,82 @@ class CustomDataPerson extends CustomDataAbstract
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'value',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'value',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'input',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'input',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'person',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'targetEntity' => Person::class,
                 'inversedBy'   => 'custom_data',
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefPerson',
-                'joinColumns'  => array(
-                    0 => array(
+                'targetEntity' => CustomDefPerson::class,
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'root_field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefPerson',
-                'joinColumns'  => array(
-                    0 => array(
+                'targetEntity' => CustomDefPerson::class,
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'root_field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
 
-        $events = array(
+        $events = [
             Events::prePersist,
             Events::postPersist,
             Events::preUpdate,
             Events::postUpdate,
-        );
+        ];
         foreach ($events as $event) {
             $metadata->addEntityListener(
                 $event,

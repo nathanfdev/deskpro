@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,15 +31,14 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Usersource;
 
 use Application\DeskPRO\Entity\Usersource;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
 
 class UsersourceTester
 {
@@ -122,7 +121,7 @@ class UsersourceTester
             $log .= "\n\n";
             $log .= $e->getMessage();
             $log .= "\n\n";
-            $log .= KernelErrorHandler::formatBacktrace($e->getTrace(), true);
+            $log .= SystemErrorHandler::formatBacktrace($e->getTrace(), true);
             $this->log      = $log;
             $this->is_valid = false;
 
@@ -160,10 +159,10 @@ class UsersourceTester
             $adapter->setLogger($logger);
         }
 
-        $adapter->setFormData(array(
+        $adapter->setFormData([
             'username' => $username,
             'password' => $password,
-        ));
+        ]);
         $result = $adapter->authenticate();
 
         $time = microtime(true) - $start;
@@ -173,28 +172,10 @@ class UsersourceTester
 
         if ($result && $result->isValid() && $result->getIdentity()) {
             $result_raw = "DATA RECORD:\n=======================================================\n";
-            $raw_data   = Arrays::mapRecursive($result->getIdentity()->getRawData(), function ($v) {
-                if (is_int($v) || is_float($v) || ctype_digit($v) || is_bool($v) || is_null($v) || ctype_print($v)) {
-                    return $v;
-                } else {
-                    return Strings::utf8_bad_strip($v);
-                }
-            });
-            $result_raw .= print_r($raw_data, true);
+            $result_raw .= print_r($result->getIdentity()->getRawData(), true);
         } else {
             $result_raw = 'No Identity';
         }
-
-        $clean = $result_raw;
-        if (!$clean) {
-            $result_raw = Strings::utf8_bad_strip($result_raw);
-            $clean      = @htmlspecialchars($result_raw, \ENT_QUOTES, 'ISO-8895-1');
-            if (!$clean) {
-                $clean = '[Data contains invalid characters]';
-            }
-        }
-
-        $result_raw = $clean;
 
         $this->log      = $log;
         $this->raw_data = $result_raw;

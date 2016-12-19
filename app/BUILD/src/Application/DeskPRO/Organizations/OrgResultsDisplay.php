@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Organizations;
 
 use Application\DeskPRO\App;
@@ -117,7 +118,7 @@ class OrgResultsDisplay
         }
 
         if (!$this->orgs_count) {
-            $this->all_labels = array();
+            $this->all_labels = [];
 
             return $this->all_labels;
         }
@@ -128,7 +129,7 @@ class OrgResultsDisplay
             SELECT organization_id, label
             FROM labels_organizations
             WHERE organization_id IN ($org_ids)
-        ", array(), 'organization_id', null, 'label');
+        ", [], 'organization_id', null, 'label');
 
         return $this->all_labels;
     }
@@ -144,7 +145,7 @@ class OrgResultsDisplay
     {
         $this->getAllLabels();
 
-        return empty($this->all_labels[$org->id]) ? array() : $this->all_labels[$org->id];
+        return empty($this->all_labels[$org->id]) ? [] : $this->all_labels[$org->id];
     }
 
     /**
@@ -175,7 +176,7 @@ class OrgResultsDisplay
             FROM people
             WHERE organization_id IN(?) AND is_deleted = 0
             GROUP BY organization_id
-        ', array($this->org_ids), array(Connection::PARAM_INT_ARRAY));
+        ', [$this->org_ids], [Connection::PARAM_INT_ARRAY]);
 
         return $this->org_member_counts;
     }
@@ -198,7 +199,7 @@ class OrgResultsDisplay
     {
         $this->getAllFieldsData();
 
-        return isset($this->all_fields_data[$org->getId()]) ? $this->all_fields_data[$org->getId()] : array();
+        return isset($this->all_fields_data[$org->getId()]) ? $this->all_fields_data[$org->getId()] : [];
     }
 
     public function getAllFieldsData()
@@ -212,13 +213,13 @@ class OrgResultsDisplay
             LEFT JOIN d.field def
             LEFT JOIN d.root_field root_def
             WHERE d.organization IN (?0)
-        ')->execute(array(array_values($this->org_ids)));
+        ')->execute([array_values($this->org_ids)]);
 
-        $this->all_fields_data = array();
+        $this->all_fields_data = [];
         foreach ($data as $d) {
             $tid = $d->organization['id'];
             if (!isset($this->all_fields_data[$tid])) {
-                $this->all_fields_data[$tid] = array();
+                $this->all_fields_data[$tid] = [];
             }
 
             $this->all_fields_data[$tid][] = $d;

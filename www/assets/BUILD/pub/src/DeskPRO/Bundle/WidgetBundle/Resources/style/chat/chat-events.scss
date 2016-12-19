@@ -1,0 +1,131 @@
+.dpdesignportal-event {
+  color: #b3b3b3;
+  font-weight: 700;
+  font-size: 11px;
+  margin: 3px 0;
+  line-height: 18px;
+  width: 100%;
+
+  .dpdesignportal-event-content {
+    @extend %clearfix;
+    position: relative;
+    margin-left: 5px;
+    padding-right: 65px;
+  }
+
+  hr {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    height: 1px;
+    background: #ededed;
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 100%;
+    z-index: 298;
+  }
+
+  .dpdesignportal-event-title-avatar-container {
+    display: inline-block;
+
+    .dpdesignportal-message-avatar-relation {
+      margin: 0px -3px;
+      i {
+        font-size: 14px;
+        top: -6px;
+      }
+    }
+  }
+
+  .dpdesignportal-message-avatar {
+    position: relative;
+    z-index: 299;
+    display: inline-block;
+    vertical-align: middle;
+    top: -2px;
+    margin-right: 5px;
+    &.agent-left { opacity: 0.5; }
+
+    .dpdesignportal-message-avatar-meta {
+      width: 12px;
+      height: 12px;
+      border-radius: 19px;
+      background: #4681b2;
+      color: #fff;
+      text-align: center;
+      font-size: 8px;
+      position: absolute;
+      right: -5px;
+      top: 50%;
+      margin-top: -6px;
+      i { top: -1px; }
+      &.negative { background: #656565; }
+    }
+  }
+
+  span.dpdesignportal-event-title {
+    display: inline-block;
+    position: relative;
+    z-index: 299;
+    background: #fff;
+    padding-right: 5px;
+  }
+
+  .dpdesignportal-event-time {
+    position: absolute;
+    right: 0px;
+    top: 1px;
+    font-size: 10px;
+    padding-right: 10px;
+    padding-left: 5px;
+    z-index: 299;
+    background: #fff;
+  }
+}
+
+// Droping a file in the panel
+.dpdesignportal-content-file-drop-active-container {
+  position: relative;
+  background: red;
+  width: 100%;
+  margin: 0 auto;
+
+  .dpdesignportal-content-file-drop-active {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 700px;
+    width: 100%;
+    background: rgba(243, 243, 243, 0.8);
+    border-radius: 2px;
+    text-align: center;
+    border: 1px solid #e8e8e8;
+    padding-top: 65%;
+    z-index: 500;
+
+    .dpdesignportal-content-file-drop-mark {
+      display: block;
+      color: #bcbcbc;
+      border: 1px dashed #cccccc;
+      background: #ededed;
+      width: 70px;
+      height: 70px;
+      font-size: 17px;
+      border-radius: 4px;
+      margin: 0 auto 15px;
+      box-shadow: 0 0 70px rgba(0, 0, 0, 0.2);
+      i { top: 25px; }
+    }
+
+    p {
+      line-height: 1.8em;
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: bold;
+      color: #919191;
+      span { display: block; }
+    }
+
+  }
+}

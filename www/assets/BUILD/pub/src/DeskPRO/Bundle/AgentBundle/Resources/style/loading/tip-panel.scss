@@ -1,0 +1,93 @@
+.deskpro-tip {
+  text-align: center;
+  background: #fff;
+  max-width: 800px;
+  position: fixed;
+  bottom: 30px;
+  margin-left: 20px;
+  margin-right: 20px;
+  box-shadow: 0 0 70px rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+
+  .deskpro-loading-tip-controls {
+    font-size: 28px;
+    a {
+      position: absolute;
+      color: #e5e5e5;
+      text-decoration: none;
+      top: 45%;
+    }
+
+    a:hover { color: #333; }
+    .back { left: 25px; }
+    .forward { right: 25px; }
+  }
+
+  .deskpro-loading-tip-icon {
+    color: #e1e1e1;
+    font-size: 30px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    padding: 0;
+    line-height: 1em;
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0 0 13px;
+    color: #8c8c8c;
+  }
+
+  p {
+    margin: 0;
+    line-height: 20px;
+    color: #b5b5b5;
+    display: block;
+    padding: 0 100px;
+  }
+}
+
+
+
+.blank-panel-tip {
+  text-align: center;
+  background: #f7f7f7;
+  padding: 20px 40px 15px;
+  border-bottom: 2px solid #e2e2e2;
+  border-radius: 2px;
+  position: relative;
+  margin-top: 20px;
+  width: 100%;
+
+  h1 {
+    line-height: 1em;
+    padding: 0;
+    color: #929292;
+    margin: 0 0 7px;
+    font-size: 15px;
+    font-weight: 400;
+  }
+
+  p {
+    line-height: 1.7em;
+    padding: 0;
+    margin: 0;
+    color: #b0b0b0;
+    display: inline-block;
+    max-width: 700px;
+  }
+
+  a.another-tip {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #4681b2;
+    opacity: 0.5;
+    text-decoration: none;
+    font-size: 11px;
+
+    &:hover { opacity: 1; }
+  }
+}

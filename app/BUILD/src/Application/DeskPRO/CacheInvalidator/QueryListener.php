@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,20 +29,21 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CacheInvalidator;
 
 use Application\DeskPRO\App;
 
 class QueryListener
 {
-    /** @var bool  */
+    /** @var bool */
     protected $is_executing = false;
     /** @var array */
-    protected $updates = array();
+    protected $updates = [];
 
     public function __construct()
     {
-        \DpShutdown::add(array($this, 'sendUpdatesQuiet'));
+        \DpShutdown::add([$this, 'sendUpdatesQuiet']);
     }
 
     public function sendUpdatesQuiet()
@@ -60,7 +61,7 @@ class QueryListener
         }
 
         $updates       = array_flip($this->updates);
-        $this->updates = array();
+        $this->updates = [];
 
         $this->is_executing = true;
 

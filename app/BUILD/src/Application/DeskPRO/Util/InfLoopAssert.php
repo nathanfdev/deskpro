@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,7 +28,7 @@
 
 namespace Application\DeskPRO\Util;
 
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Simple util that counts iterations in a loop and will log an exception
@@ -36,7 +36,7 @@ use DeskPRO\Kernel\KernelErrorHandler;
  */
 class InfLoopAssert
 {
-    private static $counters = array();
+    private static $counters = [];
 
     /**
      * @param mixed $id
@@ -46,7 +46,7 @@ class InfLoopAssert
     private static function getId($id)
     {
         if (is_array($id)) {
-            $parts = array();
+            $parts = [];
             foreach ($id as $p) {
                 $parts[] = self::getId($id);
             }
@@ -98,7 +98,7 @@ class InfLoopAssert
                 throw $e;
             }
 
-            KernelErrorHandler::logException($e, true, "inf_loop_$id");
+            SystemErrorHandler::logException($e, true, "inf_loop_$id");
 
             return false;
         }

@@ -1,0 +1,189 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Language;
+
+use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
+use Application\DeskPRO\NewSettings\SettingsResolver;
+use Application\DeskPRO\Translate\SystemLanguage;
+
+/**
+ * The LanguageStack is a way of managing changes in the "active" Language during runtime. It works similar to a stack
+ * to allow
+ * pushing into and popping out of language contexts during runtime. However, it keeps an internal state of the constructed
+ * Languages so that each Language only need be created once during a single request, even if you pop in
+ * and out of different languages multiple times.
+ *
+ * This allows us to operate in the context of a given language and quickly revert back to the old language context
+ * without caring about how that is done.
+ *
+ * Ex. use in a service that depends on this stack
+ *    public function mailMarketingPromo(Language $aUsersLanguage)
+ *    {
+ *         $this->languageStack->push($aUsersLanguage)
+ *         $language = $this->brandStack->getActive()
+ *         $this->languageStack->pop() // revert the stack so that our service doesn't interrupt others
+ *     }
+ *
+ * Any service / controller that wants to work with a language should simply depend on this
+ * LanguageStack and use getActive(). Pop in an out of different languages as necessary.
+ */
+class LanguageStack
+{
+    /**
+     * @var array
+     * @var Language[] an array of constructed languages keyed by language entity id
+     */
+    private $languages;
+
+    /**
+     * @var SettingsResolver
+     */
+    private $settings_resolver;
+
+    /**
+     * @var \Application\DeskPRO\EntityRepository\Language
+     */
+    private $language_repo;
+
+    /**
+     * only stores the reference for quick access in the case of multiple calls to getDefaultLanguage(), do not
+     * use this prop directly.
+     *
+     * @var \Application\DeskPRO\Entity\Language|null
+     */
+    private $default_language;
+
+    public function __construct(SettingsResolver $settings_resolver, LanguageRepo $language_repo)
+    {
+        $this->stack             = [];
+        $this->languages         = [];
+        $this->settings_resolver = $settings_resolver;
+        $this->language_repo     = $language_repo;
+    }
+
+    /**
+     * Gives you the active BrandContainer.
+     *
+     * @return Language
+     */
+    public function getActive()
+    {
+        $language_id = end($this->stack);
+
+        if (false !== $language_id) {
+            return $this->languages[$language_id];
+        }
+
+        return;
+    }
+
+    /**
+     * Get the active languge from the stack. If the stack is empty, return the default.
+     *
+     * @return Language
+     */
+    public function getActiveOrDefault()
+    {
+        return $this->getActive() ?: $this->getDefaultLanguage();
+    }
+
+    public function getStack()
+    {
+        return $this->stack;
+    }
+
+    /**
+     * Pushes the Brand into the stack, so that the language's container is now active.
+     *
+     * @param Language $language
+     *
+     * @return Language
+     */
+    public function push(Language $language)
+    {
+        $language_id = $language->getId();
+
+        array_push($this->stack, $language_id);
+
+        if (!array_key_exists($language_id, $this->languages)) {
+            $this->languages[$language_id] = $language;
+        }
+
+        return $this->getActive();
+    }
+
+    /**
+     * A common use case is to switch to the default language (routing for ex.) quickly. This is a convenience method.
+     *
+     * @return Language
+     */
+    public function pushDefault()
+    {
+        return $this->push($this->getDefaultLanguage());
+    }
+
+    /**
+     * Reverts pops the state, making the previous language container active.
+     */
+    public function pop()
+    {
+        array_pop($this->stack);
+    }
+
+    /**
+     * Can find the default system language. You should use the stack directly, but if nothing is on the stack
+     * and you need to find the set default language, use this.
+     *
+     * @return Language
+     */
+    public function getDefaultLanguage()
+    {
+        if ($this->default_language) {
+            return $this->default_language;
+        }
+
+        $lang = null;
+        if ($id = $this->settings_resolver->getGlobalSettings()->get('core.default_language_id')) {
+            if ($lang = $this->language_repo->find($id)) {
+                return $this->default_language = $lang;
+            }
+        }
+
+        if ($lang = $this->language_repo->find(1)) {
+            return $this->default_language = $lang;
+        }
+
+        return SystemLanguage::getInstance();
+    }
+}

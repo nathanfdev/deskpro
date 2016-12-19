@@ -1,12 +1,15 @@
 <dp:subject>{{ phrase('user.email_subjects.register-welcome') }}</dp:subject>
 {{ phrase('user.emails.greeting') }}
 
-<br /><br />
+<br/><br/>
 
-{{ phrase('user.emails.register-welcome') }}<br/>
-<a href="{{ url_full('user') }}">{{ url_full('user') }}</a>
-
-{% if not person.is_agent_confirmed %}
-	<br /><br />
-	{{ phrase('user.emails.register-agent-validation') }}
+{% if verify_url is null %}
+	{{ phrase('user.emails.register-welcome') }}<br/>
+	{% if portal_url is not defined %}
+		{% set portal_url = url_full('portal_home') %}
+	{% endif %}
+	<a href="{{ portal_url }}">{{ portal_url }}</a>
+{% else %}
+	{{ phrase('user.emails.register-confirm') }}<br/>
+	<a href="{{ verify_url }}">{{ verify_url }}</a>
 {% endif %}

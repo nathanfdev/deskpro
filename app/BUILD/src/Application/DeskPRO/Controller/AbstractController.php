@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,10 +31,12 @@
  *
  * @category Controller
  */
+
 namespace Application\DeskPRO\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\AuthInterfaceSettings;
+use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -51,7 +53,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Controller\Controller
 {
-    protected $_services = array();
+    protected $_services = [];
 
     public function __get($prop)
     {
@@ -60,28 +62,18 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         }
 
         switch ($prop) {
-            case 'em': $service       = $this->get('doctrine.orm.entity_manager');break;
-            case 'db': $service       = $this->get('database_connection');break;
-            case 'in': $service       = $this->get('deskpro.core.input_reader');break;
-            case 'cleaner': $service  = $this->get('deskpro.core.input_cleaner');break;
-            case 'settings': $service = $this->get('deskpro.core.settings');break;
-            case 'session': $service  = $this->get('session');break;
-            case 'tpl': $service      = $this->get('templating');break;
+            case 'em': $service       = $this->get('doctrine.orm.entity_manager'); break;
+            case 'db': $service       = $this->get('database_connection'); break;
+            case 'in': $service       = $this->get('deskpro.core.input_reader'); break;
+            case 'cleaner': $service  = $this->get('deskpro.core.input_cleaner'); break;
+            case 'settings': $service = $this->get('deskpro.core.settings'); break;
+            case 'session': $service  = $this->get('session'); break;
+            case 'tpl': $service      = $this->get('templating'); break;
             default:
                 throw new \InvalidArgumentException("Unknown property {$prop}");
         }
 
         return $this->_services[$prop] = $service;
-    }
-
-    /**
-     * Is this a POST request?
-     *
-     * @return bool
-     */
-    public function isPostRequest()
-    {
-        return ($this->get('request')->getMethod() == 'POST');
     }
 
     /**
@@ -154,7 +146,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             $hash = md5($hash.serialize($_GET + $_POST));
         }
 
-        $used = $this->session->get('consumed_tokens', array());
+        $used = $this->session->get('consumed_tokens', []);
         if (in_array($hash, $used)) {
             return false;
         }
@@ -230,7 +222,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
      *
      * When the at sign is used, the bundle and optionally the sub-directory can be inferred from the calling controller.
      *
-     * @list.html.twig will get SomeBundle:MyController:list.html.
+     * @ list.html.twig will get SomeBundle:MyController:list.html.
      *
      * @param string                                     $view
      * @param array                                      $parameters
@@ -238,7 +230,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function render($view, array $parameters = array(), Response $response = null)
+    public function render($view, array $parameters = [], Response $response = null)
     {
         if ($view[0] == '@') {
             $m = null;
@@ -311,7 +303,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
         if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
             if ($sso_result->isRedirectRequired()) {
-                if (!$return = $this->request->getReturnParam()) {
+                if (!$return = LegacyRequestUtils::readReturnParam($this->request)) {
                     try {
                         $return = $this->generateUrl(
                             $this->request->attributes->get('_route'),

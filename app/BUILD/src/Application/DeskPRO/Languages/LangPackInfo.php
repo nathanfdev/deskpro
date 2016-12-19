@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,11 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\Languages;
 
+/**
+ * Class LangPackInfo.
+ */
 class LangPackInfo
 {
     /**
@@ -43,15 +43,13 @@ class LangPackInfo
      */
     protected $manifest;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->langs_dir = DP_ROOT.'/languages';
-
-        $this->manifest = include $this->langs_dir.'/manifest.php';
-
-        if (dp_get_config('debug.lang_manifest')) {
-            $this->manifest = array_merge($this->manifest, dp_get_config('debug.lang_manifest'));
-        }
+        $this->manifest  = include $this->langs_dir.'/manifest.php';
     }
 
     /**
@@ -78,6 +76,14 @@ class LangPackInfo
     public function hasLang($id)
     {
         return isset($this->manifest[$id]);
+    }
+
+    /**
+     * @return array
+     */
+    public function getManifest()
+    {
+        return $this->manifest;
     }
 
     /**
@@ -126,13 +132,13 @@ class LangPackInfo
      */
     public function getLangTitles($local = false)
     {
-        $ret = array();
+        $ret = [];
 
         if ($local) {
             foreach ($this->manifest as $id => $info) {
                 $lang_file = $this->langs_dir."/$id/user/lang.php";
 
-                $lang = array();
+                $lang = [];
                 if (is_file($lang_file)) {
                     $lang = require $lang_file;
                 }
@@ -157,7 +163,7 @@ class LangPackInfo
      */
     public function getDefaultSections()
     {
-        return array('user', 'agent');
+        return ['user', 'agent'];
     }
 
     /**
@@ -170,9 +176,10 @@ class LangPackInfo
     public function getDefaultCategories($section)
     {
         switch ($section) {
-            case 'user':  return array('chat', 'defaults', 'downloads', 'emails', 'email_subjects', 'error', 'feedback', 'general', 'knowledgebase', 'lang', 'news', 'portal', 'profile', 'tickets', 'time', 'widget');
-            case 'agent': return array('chat', 'chrome', 'deal', 'defaults', 'emails', 'feedback', 'general', 'interface', 'login', 'media', 'organizations', 'people', 'publish', 'report', 'search', 'settings', 'snippets', 'tasks', 'tickets', 'time', 'twitter', 'userchat', 'usertrack');
-            case 'admin': return array('agents', 'api', 'banning', 'billing', 'custom_fields', 'departments', 'designer', 'emailtpl_desc', 'feedback', 'gateway', 'general', 'languages', 'license', 'logs', 'menu', 'plugins', 'portal', 'products', 'server', 'settings', 'setup', 'templates', 'tickets', 'twitter', 'user_groups', 'user_registration', 'user_rules');
+            case 'user':   return ['chat', 'defaults', 'downloads', 'emails', 'email_subjects', 'error', 'feedback', 'general', 'knowledgebase', 'lang', 'news', 'portal', 'profile', 'tickets', 'time', 'widget'];
+            case 'portal': return ['account', 'articles', 'chat', 'downloads', 'email_subjects', 'emails', 'error', 'feedback', 'flashes', 'forms', 'general', 'news', 'sidebar', 'tickets'];
+            case 'agent':  return ['chat', 'chrome', 'deal', 'defaults', 'emails', 'feedback', 'general', 'interface', 'login', 'media', 'organizations', 'people', 'publish', 'report', 'search', 'settings', 'snippets', 'tasks', 'tickets', 'time', 'twitter', 'userchat', 'usertrack'];
+            case 'admin':  return ['agents', 'api', 'banning', 'billing', 'custom_fields', 'departments', 'designer', 'emailtpl_desc', 'feedback', 'gateway', 'general', 'languages', 'license', 'logs', 'menu', 'plugins', 'portal', 'products', 'server', 'settings', 'setup', 'templates', 'tickets', 'twitter', 'user_groups', 'user_registration', 'user_rules'];
         }
 
         throw new \InvalidArgumentException("Invalid section $section");

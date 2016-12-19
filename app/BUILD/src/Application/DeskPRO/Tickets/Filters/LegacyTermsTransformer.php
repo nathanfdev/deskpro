@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
@@ -50,7 +51,7 @@ use Orb\Util\Util;
  * but ran out of time because it affects so many things: ticket searching, escalations, filters.
  *
  * The admin interface is built up around the idea of the new system though, it's how it accepts and processes
- * forms for filters and escalations. So we need this transformer to convert new-style into old-style and visaversa.
+ * forms for filters and escalations. So we need this transformer to convert new-style into old-style and vice versa.
  */
 class LegacyTermsTransformer
 {
@@ -65,7 +66,7 @@ class LegacyTermsTransformer
      */
     public function toLegacyTerms(FilterTerms $terms)
     {
-        $legacy_terms = array();
+        $legacy_terms = [];
 
         $all_terms = $terms->getTerms();
 
@@ -77,7 +78,7 @@ class LegacyTermsTransformer
             }
 
             if (isset($t['type'])) {
-                $t = array($t);
+                $t = [$t];
             }
 
             $legacy_terms = array_merge($legacy_terms, $t);
@@ -93,7 +94,7 @@ class LegacyTermsTransformer
      */
     private function _termToLegacyTerms($term)
     {
-        $legacy_terms = array();
+        $legacy_terms = [];
 
         if ($term instanceof FilterTermComposite) {
             foreach ($term->getAll() as $subterm) {
@@ -110,317 +111,324 @@ class LegacyTermsTransformer
 
         switch (Util::getBaseClassname($term)) {
             case 'FilterAgent':
-                return array(
+                return [
                     'type'    => 'agent',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('agent' => $options['agent_ids']),
-                );
+                    'options' => ['agent' => $options['agent_ids']],
+                ];
 
             case 'FilterAgentParticipant':
-                return array(
+                return [
                     'type'    => 'participant',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('agent' => $options['agent_ids']),
-                );
+                    'options' => ['agent' => $options['agent_ids']],
+                ];
 
             case 'FilterAgentTeam':
-                return array(
+                return [
                     'type'    => 'agent_team',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('agent_team' => $options['team_ids']),
-                );
+                    'options' => ['agent_team' => $options['team_ids']],
+                ];
 
             case 'FilterCategory':
-                return array(
+                return [
                     'type'    => 'category',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('category' => $options['category_ids']),
-                );
+                    'options' => ['category' => $options['category_ids']],
+                ];
+
+            case 'FilterBrand':
+                return [
+                    'type'    => 'brand',
+                    'op'      => $term->getTermOperator(),
+                    'options' => ['brand' => $options['brand_ids']],
+                ];
 
             case 'FilterDepartment':
-                return array(
+                return [
                     'type'    => 'department',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('department' => $options['department_ids']),
-                );
+                    'options' => ['department' => $options['department_ids']],
+                ];
 
             case 'FilterHoldStatus':
-                return array(
+                return [
                     'type'    => 'is_hold',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('is_hold' => $options['is_hold']),
-                );
+                    'options' => ['is_hold' => $options['is_hold']],
+                ];
 
             case 'FilterLabels':
                 $labels = DeskPROUtil::labelsArrayFromString($options['labels']);
 
-                return array(
+                return [
                     'type'    => 'label',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('label' => $labels),
-                );
+                    'options' => ['label' => $labels],
+                ];
 
             case 'FilterLanguage':
-                return array(
+                return [
                     'type'    => 'language',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('language' => $options['language_ids']),
-                );
+                    'options' => ['language' => $options['language_ids']],
+                ];
 
             case 'FilterOrgEmailDomain':
-                return array(
+                return [
                     'type'    => 'org_email_domain',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('email_domain' => $options['domain']),
-                );
+                    'options' => ['email_domain' => $options['domain']],
+                ];
 
             case 'FilterOrgId':
-                return array(
+                return [
                     'type'    => 'organization',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('organization' => implode(',', (array) @$options['id'] ?: array())),
-                );
+                    'options' => ['organization' => implode(',', (array) @$options['id'] ?: [])],
+                ];
 
             case 'FilterOrgLabels':
                 $labels = DeskPROUtil::labelsArrayFromString($options['labels']);
 
-                return array(
+                return [
                     'type'    => 'org_label',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('labels' => $labels),
-                );
+                    'options' => ['labels' => $labels],
+                ];
 
             case 'FilterPriority':
-                return array(
+                return [
                     'type'    => 'priority',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('priority' => $options['priority_ids']),
-                );
+                    'options' => ['priority' => $options['priority_ids']],
+                ];
 
             case 'FilterProduct':
-                return array(
+                return [
                     'type'    => 'product',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('product' => $options['product_ids']),
-                );
+                    'options' => ['product' => $options['product_ids']],
+                ];
 
             case 'FilterStatus':
-                return array(
+                return [
                     'type'    => 'status',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('status' => $options['status']),
-                );
+                    'options' => ['status' => $options['status']],
+                ];
 
             case 'FilterSubject':
-                return array(
+                return [
                     'type'    => 'subject',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('subject' => $options['subject']),
-                );
+                    'options' => ['subject' => $options['subject']],
+                ];
 
             case 'FilterFeedbackRating':
-                return array(
+                return [
                     'type'    => 'feedback_rating',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('rating' => $options['rating']),
-                );
+                    'options' => ['rating' => $options['rating']],
+                ];
 
             case 'FilterUrgency':
-                return array(
+                return [
                     'type'    => 'urgency',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('num' => $options['urgency']),
-                );
+                    'options' => ['num' => $options['urgency']],
+                ];
 
             case 'FilterUserEmailAddress':
                 if ($options['email'][0] == '@') {
-                    return array(
+                    return [
                         'type'    => 'person_email_domain',
                         'op'      => $term->getTermOperator(),
-                        'options' => array('email_domain' => substr($options['email'], 1)),
-                    );
+                        'options' => ['email_domain' => substr($options['email'], 1)],
+                    ];
                 } else {
-                    return array(
+                    return [
                         'type'    => 'person_email',
                         'op'      => $term->getTermOperator(),
-                        'options' => array('email' => $options['email']),
-                    );
+                        'options' => ['email' => $options['email']],
+                    ];
                 }
 
             case 'FilterUserGroups':
-                return array(
+                return [
                     'type'    => 'person_usergroup',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('usergroup' => $options['group_ids']),
-                );
+                    'options' => ['usergroup' => $options['group_ids']],
+                ];
 
             case 'FilterUserLabels':
                 $labels = DeskPROUtil::labelsArrayFromString($options['labels']);
 
-                return array(
+                return [
                     'type'    => 'person_label',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('labels' => $labels),
-                );
+                    'options' => ['labels' => $labels],
+                ];
 
             case 'FilterWorkflow':
-                return array(
+                return [
                     'type'    => 'workflow',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('workflow' => $options['workflow_ids']),
-                );
+                    'options' => ['workflow' => $options['workflow_ids']],
+                ];
 
             case 'FilterEmailAccount':
-                return array(
+                return [
                     'type'    => 'email_account',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('email_account_ids' => $options['email_account_ids']),
-                );
+                    'options' => ['email_account_ids' => $options['email_account_ids']],
+                ];
 
             case 'FilterSlaStatus':
-                return array(
+                return [
                     'type'    => 'sla_status',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterSla':
-                return array(
+                return [
                     'type'    => 'sla',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterUserContactPhone':
-                return array(
+                return [
                     'type'    => 'person_contact_phone',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterUserContactAddress':
-                return array(
+                return [
                     'type'    => 'person_contact_address',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterUserContactIm':
-                return array(
+                return [
                     'type'    => 'person_contact_im',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterOrgContactPhone':
-                return array(
+                return [
                     'type'    => 'org_contact_phone',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterOrgContactAddress':
-                return array(
+                return [
                     'type'    => 'org_contact_address',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterOrgContactIm':
-                return array(
+                return [
                     'type'    => 'org_contact_im',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterDateCreated':
-                return array(
+                return [
                     'type'    => 'date_created',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterDateResolved':
-                return array(
+                return [
                     'type'    => 'date_resolved',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterDateArchived':
-                return array(
+                return [
                     'type'    => 'date_archived',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterDateLastAgentReply':
-                return array(
+                return [
                     'type'    => 'date_last_agent_reply',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterDateLastUserReply':
-                return array(
+                return [
                     'type'    => 'date_last_user_reply',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterUserDateCreated':
-                return array(
+                return [
                     'type'    => 'person_date_created',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterCreationSystem':
-                return array(
+                return [
                     'type'    => 'creation_system',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterOrgName':
-                return array(
+                return [
                     'type'    => 'org_name',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterOrgDateCreated':
-                return array(
+                return [
                     'type'    => 'org_date_created',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
-                );
+                ];
 
             case 'FilterUserWaiting':
                 $t = $term->getTermOptions();
                 $t = $t['time'];
 
-                return array(
+                return [
                     'type'    => 'user_waiting',
                     'op'      => $term->getTermOperator(),
-                    'options' => array(
+                    'options' => [
                         'waiting_time'      => $t[0],
                         'waiting_time_unit' => $t[1],
-                    ),
-                );
+                    ],
+                ];
 
             case 'FilterTotalUserWaiting':
                 $t = $term->getTermOptions();
                 $t = $t['time'];
 
-                return array(
+                return [
                     'type'    => 'total_user_waiting',
                     'op'      => $term->getTermOperator(),
-                    'options' => array(
+                    'options' => [
                         'waiting_time'      => $t[0],
                         'waiting_time_unit' => $t[1],
-                    ),
-                );
+                    ],
+                ];
 
             case 'FilterTicketField':
                 return $this->filterFieldToLegacyOptions($term, 'ticket');
@@ -488,176 +496,183 @@ class LegacyTermsTransformer
 
         switch ($type_name) {
             case 'subject':
-                return new Terms\FilterSubject($op, array(
+                return new Terms\FilterSubject($op, [
                     'subject' => @$options['subject'] ?: '',
-                ));
+                ]);
 
             case 'department':
-                $ids = @$options['department'] ?: array();
+                $ids = @$options['department'] ?: [];
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = [$ids];
                 }
 
-                return new Terms\FilterDepartment($op, array(
+                return new Terms\FilterDepartment($op, [
                     'department_ids' => $ids,
-                ));
+                ]);
 
             case 'agent':
-                $ids = @$options['agent'] ?: array();
+                $ids = @$options['agent'] ?: [];
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = [$ids];
                 }
 
-                return new Terms\FilterAgent($op, array(
+                return new Terms\FilterAgent($op, [
                     'agent_ids' => $ids,
-                ));
+                ]);
 
             case 'agent_team':
-                $ids = @$options['agent_team'] ?: array();
+                $ids = @$options['agent_team'] ?: [];
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = [$ids];
                 }
 
-                return new Terms\FilterAgentTeam($op, array(
+                return new Terms\FilterAgentTeam($op, [
                     'team_ids' => $ids,
-                ));
+                ]);
 
             case 'participant':
-                $ids = @$options['agent'] ?: array();
+                $ids = @$options['agent'] ?: [];
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = [$ids];
                 }
 
-                return new Terms\FilterAgentParticipant($op, array(
+                return new Terms\FilterAgentParticipant($op, [
                     'agent_ids' => $ids,
-                ));
+                ]);
 
             case 'label':
-                $labels = @$options['label'] ?: array();
-                if (!is_array($labels)) {
-                    $labels = array($labels);
+                if (isset($options['labels'])) {
+                    $labels = $options['labels'];
+                } elseif (isset($options['label'])) {
+                    $labels = $options['label'];
+                } else {
+                    $labels = [];
                 }
 
-                return new Terms\FilterLabels($op, array(
+                if (!is_array($labels)) {
+                    $labels = [$labels];
+                }
+
+                return new Terms\FilterLabels($op, [
                     'labels' => $labels,
-                ));
+                ]);
 
             case 'status':
-                $status = @$options['status'] ?: array();
+                $status = @$options['status'] ?: [];
                 if (!is_array($status)) {
-                    $status = array($status);
+                    $status = [$status];
                 }
 
-                return new Terms\FilterStatus($op, array(
+                return new Terms\FilterStatus($op, [
                     'status' => $status,
-                ));
+                ]);
 
             case 'is_hold':
-                return new Terms\FilterHoldStatus($op, array(
+                return new Terms\FilterHoldStatus($op, [
                     'is_hold' => (bool) ($options['is_hold'] ?: false),
-                ));
+                ]);
 
             case 'organization':
-                $ids = @$options['organization'] ?: array();
+                $ids = @$options['organization'] ?: [];
                 if (!is_array($ids)) {
                     $ids = explode(',', $ids);
                 }
 
-                return new Terms\FilterOrgId($op, array(
+                return new Terms\FilterOrgId($op, [
                     'id' => $ids,
-                ));
+                ]);
 
             case 'product':
-                $ids = @$options['product'] ?: array();
+                $ids = @$options['product'] ?: [];
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = [$ids];
                 }
 
-                return new Terms\FilterProduct($op, array(
+                return new Terms\FilterProduct($op, [
                     'product_ids' => $ids,
-                ));
+                ]);
 
             case 'category':
-                $ids = @$options['category'] ?: array();
+                $ids = @$options['category'] ?: [];
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = [$ids];
                 }
 
-                return new Terms\FilterCategory($op, array(
+                return new Terms\FilterCategory($op, [
                     'category_ids' => $ids,
-                ));
+                ]);
 
             case 'urgency':
                 $urgency = @$options['num'] ?: 0;
 
-                return new Terms\FilterUrgency($op, array(
+                return new Terms\FilterUrgency($op, [
                     'urgency' => $urgency,
-                ));
+                ]);
 
             case 'priority':
-                $ids = @$options['priority'] ?: array();
+                $ids = @$options['priority'] ?: [];
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = [$ids];
                 }
 
-                return new Terms\FilterPriority($op, array(
+                return new Terms\FilterPriority($op, [
                     'priority_ids' => $ids,
-                ));
+                ]);
 
             case 'workflow':
-                $ids = @$options['workflow'] ?: array();
+                $ids = @$options['workflow'] ?: [];
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = [$ids];
                 }
 
-                return new Terms\FilterWorkflow($op, array(
+                return new Terms\FilterWorkflow($op, [
                     'workflow_ids' => $ids,
-                ));
+                ]);
 
             case 'email_account':
-                $ids = @$options['email_account_ids'] ?: array();
+                $ids = @$options['email_account_ids'] ?: [];
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = [$ids];
                 }
 
-                return new Terms\FilterEmailAccount($op, array(
+                return new Terms\FilterEmailAccount($op, [
                     'email_account_ids' => $ids,
-                ));
+                ]);
 
             case 'language':
-                $ids = @$options['language'] ?: array();
+                $ids = @$options['language'] ?: [];
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = [$ids];
                 }
 
-                return new Terms\FilterLanguage($op, array(
+                return new Terms\FilterLanguage($op, [
                     'language_ids' => $ids,
-                ));
+                ]);
 
             case 'sla':
-                return new Terms\FilterSla($op, array('sla_id' => @$options['sla_id'] ?: array()));
+                return new Terms\FilterSla($op, ['sla_id' => @$options['sla_id'] ?: []]);
 
             case 'sla_status':
-                return new Terms\FilterSlaStatus($op, array(
+                return new Terms\FilterSlaStatus($op, [
                     'sla_id'     => @$options['sla_id'] ?: 0,
                     'sla_status' => @$options['sla_status'] ?: '',
-                ));
+                ]);
 
             case 'user_waiting':
-                return new Terms\FilterUserWaiting($op, array(
-                    'time' => array(
+                return new Terms\FilterUserWaiting($op, [
+                    'time' => [
                         @$options['waiting_time'] ?: 1,
                         @$options['waiting_time_unit'] ?: 'days',
-                    ),
-                ));
+                    ],
+                ]);
 
             case 'total_user_waiting':
-                return new Terms\FilterTotalUserWaiting($op, array(
-                    'time' => array(
+                return new Terms\FilterTotalUserWaiting($op, [
+                    'time' => [
                         @$options['waiting_time'] ?: 1,
                         @$options['waiting_time_unit'] ?: 'days',
-                    ),
-                ));
+                    ],
+                ]);
 
             case 'date_created':
                 return new Terms\FilterDateCreated($op, $options);
@@ -675,80 +690,80 @@ class LegacyTermsTransformer
                 return new Terms\FilterDateLastUserReply($op, $options);
 
             case 'creation_system':
-                return new Terms\FilterCreationSystem($op, array('creation_system' => @$options['creation_system']));
+                return new Terms\FilterCreationSystem($op, ['creation_system' => @$options['creation_system']]);
 
             case 'person_name':
-                return new Terms\FilterUserName($op, array(
+                return new Terms\FilterUserName($op, [
                     'name' => @$options['name'] ?: '',
-                ));
+                ]);
 
             case 'person_email':
-                return new Terms\FilterUserEmailAddress($op, array(
+                return new Terms\FilterUserEmailAddress($op, [
                     'email' => @$options['email'] ?: '',
-                ));
+                ]);
 
             case 'person_email_domain':
-                return new Terms\FilterUserEmailAddress($op, array(
+                return new Terms\FilterUserEmailAddress($op, [
                     'email' => '@'.(@$options['email_domain'] ?: ''),
-                ));
+                ]);
 
             case 'person_organization':
-                $ids = @$options['organization'] ?: array();
+                $ids = @$options['organization'] ?: [];
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = [$ids];
                 }
 
-                return new Terms\FilterOrgId($op, array(
+                return new Terms\FilterOrgId($op, [
                     'org_ids' => $ids,
-                ));
+                ]);
 
             case 'person_usergroup':
-                $ids = @$options['usergroup'] ?: array();
+                $ids = @$options['usergroup'] ?: [];
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = [$ids];
                 }
 
-                return new Terms\FilterUserGroups($op, array(
+                return new Terms\FilterUserGroups($op, [
                     'group_ids' => $ids,
-                ));
+                ]);
 
             case 'person_username':
-                return new Terms\FilterUserName($op, array(
+                return new Terms\FilterUserName($op, [
                     'name' => @$options['name'] ?: '',
-                ));
+                ]);
 
             case 'person_id':
-                $ids = @$options['person'] ?: array();
+                $ids = @$options['person'] ?: [];
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = [$ids];
                 }
 
-                return new Terms\FilterUserId($op, array(
+                return new Terms\FilterUserId($op, [
                     'user_ids' => $ids,
-                ));
+                ]);
 
             case 'person_language':
-                $ids = @$options['language'] ?: array();
+                $ids = @$options['language'] ?: [];
                 if (!is_array($ids)) {
-                    $ids = array($ids);
+                    $ids = [$ids];
                 }
 
-                return new Terms\FilterUserLanguage($op, array(
+                return new Terms\FilterUserLanguage($op, [
                     'language_ids' => $ids,
-                ));
+                ]);
 
             case 'person_date_created':
                 return new Terms\FilterUserDateCreated($op, $options);
 
             case 'person_label':
-                $labels = @$options['labels'] ?: array();
+                $labels = @$options['labels'] ?: [];
                 if (!is_array($labels)) {
-                    $labels = array($labels);
+                    $labels = [$labels];
                 }
 
-                return new Terms\FilterUserLabels($op, array(
+                return new Terms\FilterUserLabels($op, [
                     'labels' => $labels,
-                ));
+                ]);
 
             case 'person_contact_phone':
                 return new Terms\FilterUserContactPhone($op, $options);
@@ -766,19 +781,19 @@ class LegacyTermsTransformer
                 return new Terms\FilterOrgDateCreated($op, $options);
 
             case 'org_email_domain':
-                return new Terms\FilterOrgEmailDomain($op, array(
+                return new Terms\FilterOrgEmailDomain($op, [
                     'domain' => @$options['email_domain'] ?: '',
-                ));
+                ]);
 
             case 'org_label':
-                $labels = @$options['labels'] ?: array();
+                $labels = @$options['labels'] ?: [];
                 if (!is_array($labels)) {
-                    $labels = array($labels);
+                    $labels = [$labels];
                 }
 
-                return new Terms\FilterOrgLabels($op, array(
+                return new Terms\FilterOrgLabels($op, [
                     'labels' => $labels,
-                ));
+                ]);
 
             case 'org_contact_phone':
                 return new Terms\FilterOrgContactPhone($op, $options);
@@ -806,6 +821,14 @@ class LegacyTermsTransformer
 
             case 'feedback_rating':
                 return new Terms\FilterFeedbackRating($op, $options);
+
+            case 'brand':
+                $ids = @$options['brand'] ?: [];
+                if (!is_array($ids)) {
+                    $ids = [$ids];
+                }
+
+                return new Terms\FilterBrand($op, ['brand_ids' => $ids]);
         }
 
         return;
@@ -817,7 +840,7 @@ class LegacyTermsTransformer
             $new_opts             = $options;
             $new_opts['field_id'] = $type_id;
         } else {
-            $new_opts             = array();
+            $new_opts             = [];
             $new_opts['field_id'] = $type_id;
             $new_opts['value']    = @$options['custom_fields']['field_'.$type_id];
         }
@@ -832,21 +855,21 @@ class LegacyTermsTransformer
         $fid     = $options['field_id'];
 
         if ($options->has('date1') || $options->has('date2') || $options->has('date1_relative') || $options->has('date2_relative')) {
-            return array(
+            return [
                 'type'    => "{$type}_field[{$fid}]",
                 'op'      => $term->getTermOperator(),
                 'options' => $options->all(),
-            );
+            ];
         } else {
-            return array(
+            return [
                 'type'    => "{$type}_field[{$fid}]",
                 'op'      => $term->getTermOperator(),
-                'options' => array(
-                    'custom_fields' => array(
+                'options' => [
+                    'custom_fields' => [
                         'field_'.$fid => $options->get('value'),
-                    ),
-                ),
-            );
+                    ],
+                ],
+            ];
         }
     }
 }

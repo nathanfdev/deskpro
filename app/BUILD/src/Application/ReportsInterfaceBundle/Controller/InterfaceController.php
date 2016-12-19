@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\ReportsInterfaceBundle\Controller;
 
 use Application\DeskPRO\Translate\JsExporter;
@@ -36,9 +37,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class InterfaceController extends AbstractController
 {
-    ####################################################################################################################
-    # load-view
-    ####################################################################################################################
+    //###################################################################################################################
+    // load-view
+    //###################################################################################################################
 
     public function loadViewAction($view_name)
     {
@@ -80,13 +81,13 @@ class InterfaceController extends AbstractController
         return $this->createResponse($rendered);
     }
 
-    ####################################################################################################################
-    # multi-load-view
-    ####################################################################################################################
+    //###################################################################################################################
+    // multi-load-view
+    //###################################################################################################################
 
     public function multiLoadViewAction()
     {
-        $views = array();
+        $views = [];
 
         foreach ($this->in->getCleanValueArray('views', 'string', 'discard') as $view_name) {
             $id        = $view_name;
@@ -99,19 +100,19 @@ class InterfaceController extends AbstractController
                 $rendered = $this->renderView("ReportsInterfaceBundle:$view_name");
             }
 
-            $views[] = array(
+            $views[] = [
                 'id'       => $id,
                 'template' => "ReportsInterfaceBundle:$view_name",
                 'source'   => $rendered,
-            );
+            ];
         }
 
         return $this->createJsonResponse($views);
     }
 
-    ####################################################################################################################
-    # load-lang
-    ####################################################################################################################
+    //###################################################################################################################
+    // load-lang
+    //###################################################################################################################
 
     public function loadLangAction($_format)
     {
@@ -129,13 +130,13 @@ class InterfaceController extends AbstractController
             $res = new Response(
                 $js_exporter->exportToJsFile($varname, $get_phrases),
                 200,
-                array('Content-Type' => 'text/javascript')
+                ['Content-Type' => 'text/javascript']
             );
         } else {
             $res = new Response(
                 $js_exporter->exportToJson($get_phrases),
                 200,
-                array('Content-Type' => 'application/json')
+                ['Content-Type' => 'application/json']
             );
         }
 

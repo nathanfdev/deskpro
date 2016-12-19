@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,14 +29,20 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\People\AgentPermissions\AgentPermissions;
 use Application\DeskPRO\People\AgentPermissions\GroupDbPersister;
 use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
+/**
+ * @ApiModes("all")
+ */
 class TasksController extends AbstractController implements ProtectedControllerInterface
 {
     const KEY_ENABLED  = 'core.apps_tasks';
@@ -53,11 +59,11 @@ class TasksController extends AbstractController implements ProtectedControllerI
     /**
      * get tasks settings.
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function settingsAction()
     {
-        $agents = array();
+        $agents = [];
 
         foreach ($this->container->getAgentData()->getAgents() as $agent) {
             $agent_data          = $agent->toApiData();
@@ -74,25 +80,27 @@ class TasksController extends AbstractController implements ProtectedControllerI
             ')->execute();
 
         $groups = $this->getApiData($ugs);
-        $ids    = array_map(function ($g) { return $g['id']; }, $groups);
+        $ids    = array_map(function ($g) {
+            return $g['id'];
+        }, $groups);
 
         $loader = new GroupsDbLoader($ids, $this->em);
         foreach ($groups as &$group) {
             $group['perms'] = $loader->getGroupPermissions($group['id'])->toArray();
             if ($group['sys_name'] == 'agent_all_perms' || $group['sys_name'] == 'agent_all_safe_perms') {
                 if (!isset($group['perms']['tasks'])) {
-                    $group['perms']['tasks'] = array();
+                    $group['perms']['tasks'] = [];
                 }
                 $group['perms']['tasks']['use'] = true;
             }
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'enabled'          => $this->settings->get(self::KEY_ENABLED, 0),
             self::KEY_REMINDER => $this->settings->get(self::KEY_REMINDER, '09:00'),
             'agents'           => $agents,
             'groups'           => $groups,
-        ));
+        ]);
     }
 
     /**

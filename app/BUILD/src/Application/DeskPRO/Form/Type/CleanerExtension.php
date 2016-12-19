@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,15 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Form\Type;
 
 use Orb\Input\Cleaner\Cleaner;
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CleanerExtension extends AbstractTypeExtension
 {
@@ -53,7 +55,7 @@ class CleanerExtension extends AbstractTypeExtension
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'), 128); // high priority
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], -1);
     }
 
     public function onPreSubmit(FormEvent $event)
@@ -68,7 +70,11 @@ class CleanerExtension extends AbstractTypeExtension
 
     protected function cleanData($raw_data, FormInterface $form)
     {
-        $clean_data = array();
+        $clean_data = [];
+
+        if (empty($raw_data)) {
+            return [];
+        }
 
         foreach ($raw_data as $form_name => $data) {
             // some fields, like _token, don't actually exist on form, but used by validator.
@@ -80,12 +86,6 @@ class CleanerExtension extends AbstractTypeExtension
                 // "filter_clean" will disable cleaning for all of its children, so make sure
                 // the option is only set to false if it represents an isolated group of data.
                 if ($child_form->getConfig()->getOption('filter_clean', true)) {
-                    $form_type = $child_form->getConfig()->getType()->getName();
-                    if ('password' === $form_type) {
-                        $clean_data[$form_name] = $data;
-                        continue; // ignore password type fields
-                    }
-
                     if (is_array($data)) {
                         $cleaned = $this->cleanData($data, $child_form);
                     } elseif (is_string($data)) {
@@ -108,23 +108,20 @@ class CleanerExtension extends AbstractTypeExtension
         return $clean_data;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        parent::setDefaultOptions($resolver);
+        parent::configureOptions($resolver);
 
-        $resolver->setDefaults(
-            array(
+        $resolver
+            ->setDefaults([
                 'filter_clean' => true,
-            )
-        )->setAllowedTypes(
-            array(
-                'filter_clean' => 'bool',
-            )
-        );
+            ])
+            ->setAllowedTypes('filter_clean', 'bool')
+        ;
     }
 
     public function getExtendedType()
     {
-        return 'form';
+        return FormType::class;
     }
 }

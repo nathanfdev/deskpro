@@ -1,0 +1,133 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AuditBundle\Log;
+
+use DeskPRO\Bundle\AuditBundle\Entity\AuditLog as AuditLogEntity;
+use DeskPRO\Bundle\AuditBundle\Storage\StorageInterface;
+use DeskPRO\Bundle\AuditBundle\Storage\TransformerInterface;
+
+/**
+ * Class AuditLogService.
+ */
+class AuditLogService
+{
+    /**
+     * @var StorageInterface
+     */
+    private $storage;
+
+    /**
+     * @var TransformerInterface
+     */
+    private $transformer;
+
+    /**
+     * @var AuditLogHelper
+     */
+    private $helper;
+
+    const PERIOD_1_DAY    = '1 DAY';
+    const PERIOD_1_WEEK   = '7 DAYS';
+    const PERIOD_1_MONTH  = '30 DAYS';
+    const PERIOD_3_MONTHS = '3 MONTHS';
+    const PERIOD_6_MONTHS = '6 MONTHS';
+    const PERIOD_1_YEAR   = '1 YEAR';
+
+    /**
+     * AuditLogService constructor.
+     *
+     * @param StorageInterface     $storage
+     * @param TransformerInterface $transformer
+     * @param AuditLogHelper       $helper
+     */
+    public function __construct(StorageInterface $storage, TransformerInterface $transformer, AuditLogHelper $helper)
+    {
+        $this->storage     = $storage;
+        $this->transformer = $transformer;
+        $this->helper      = $helper;
+    }
+
+    /**
+     * @param AuditLog $log
+     *
+     * @return AuditLogEntity
+     */
+    public function write(AuditLog $log)
+    {
+        if ($log->getId()) {
+            $concreteLog = $this->storage->find($log->getId());
+            $concreteLog = $this->transformer->updateLog($concreteLog, $log);
+        } else {
+            $concreteLog = $this->transformer->transform($log);
+        }
+        $this->storage->write($concreteLog);
+        $log->setId($concreteLog->getId());
+
+        return $concreteLog;
+    }
+
+    /**
+     * @param $id
+     *
+     * @return AuditLog
+     */
+    public function getLog($id)
+    {
+        $concreteLog = $this->storage->find($id);
+
+        return $this->transformer->reverseTransform($concreteLog);
+    }
+
+    /**
+     * @param $offset
+     * @param $limit
+     *
+     * @return AuditLog
+     */
+    public function read($offset, $limit)
+    {
+        $concreteLogs = $this->storage->read($offset, $limit);
+
+        return $this->transformer->reverseTransformCollection($concreteLogs);
+    }
+
+    /**
+     * @param null $period
+     */
+    public function delete($period = null)
+    {
+        if ($period) {
+            $this->storage->deleteByPeriod($period);
+        } else {
+            $this->storage->deleteAll();
+        }
+
+        return;
+    }
+}

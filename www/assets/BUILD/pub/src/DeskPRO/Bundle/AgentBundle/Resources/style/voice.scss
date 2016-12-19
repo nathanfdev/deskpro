@@ -1,0 +1,890 @@
+$voice-green-border-color: #47BF61;
+
+.voice-header {
+  background: #4696dc;
+  color: $dp-greyscale-50;
+  height: 26px;
+  padding: 4px 10px;
+  font-family: 'Open Sans';
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.voice-profile {
+  width: 360px;
+  font-family: 'Open Sans';
+
+  .voice-profile-status {
+    padding: 20px 20px 0;
+
+    .Select-control {
+      border-radius: 0;
+      height: 60px;
+    }
+
+    .Select-option, .Select-value {
+      height: 60px;
+      line-height: 60px;
+      padding: 0 10px;
+      font-weight: 400;
+      font-size: 18px;
+      color: $dp-greyscale-850;
+
+      svg {
+        margin-left: 15px;
+        margin-top: 20px;
+        width: 24px;
+        height: 24px;
+        float: left;
+      }
+
+      .voice-profile-status-label {
+        margin-left: 20px;
+      }
+    }
+
+    .Select-input {
+      height: 60px;
+      line-height: 60px;
+    }
+
+    h2 {
+      font-weight: 600;
+      font-size: 14px;
+      color: $dp-greyscale-850;
+      margin-bottom: 10px;
+    }
+
+    .voice-profile-status-checkboxes {
+      padding: 20px 15px 0 25px;
+
+      .voice-profile-status-checkbox {
+        padding-bottom: 20px;
+
+        .ui.checkbox {
+          float: right;
+
+          label {
+            padding: 0;
+          }
+        }
+
+        svg {
+          width: 24px;
+          height: 24px;
+          float: left;
+        }
+
+        .voice-profile-status-checkbox-title {
+          margin-left: 20px;
+        }
+      }
+    }
+
+    .voice-profile-status-empty-checkboxes {
+      margin-bottom: 30px;
+    }
+  }
+
+  .voice-profile-menu {
+    .voice-profile-menu-item {
+      border-top: 1px solid #E6E6E6;
+      height: 50px;
+      padding: 15px 20px;
+      font-weight: 400;
+      font-size: 14px;
+      color: $dp-greyscale-850;
+      cursor: pointer;
+
+      i {
+        margin-right: 18px;
+        font-weight: 400;
+        font-size: 14px;
+        color: $dp-greyscale-350;
+      }
+
+      &:hover {
+        color: $dp-sonic-primary;
+        background-color: $dp-morning-sky;
+
+        i {
+          color: $dp-sonic-primary;
+        }
+      }
+    }
+  }
+}
+
+.voice-menu-popup {
+  .voice-menu {
+    width: 360px;
+    font-family: 'Open Sans';
+
+    .tab-menu {
+      margin: 0;
+      padding: 0;
+
+      .item {
+        height: 50px;
+        display: inline-block;
+        width: 50%;
+        padding: 15px 20px;
+        font-weight: 600;
+        font-size: 12px;
+        color: $dp-greyscale-850;
+
+        i {
+          margin-right: 5px;
+        }
+
+        &:not(.active) {
+          color: $dp-greyscale-450;
+          background-color: $dp-greyscale-150;
+          cursor: pointer;
+          border: 1px solid #E6E6E6;
+          border-top: 0;
+
+          &:first-child {
+            border-left: 0;
+          }
+
+          &:last-child {
+            border-right: 0;
+          }
+        }
+      }
+    }
+
+    .tab {
+      .accordion {
+        &:first-child {
+          .title {
+            border-top: 0;
+          }
+        }
+
+        .title {
+          i {
+            margin: 10px;
+          }
+
+          &:not(.active) {
+            i {
+              color: $dp-greyscale-350;
+            }
+          }
+        }
+
+        .content {
+          background-color: $dp-greyscale-150;
+          padding: 0;
+          margin: 0;
+
+          .volume {
+            padding: 10px;
+            height: 52px;
+
+            .range {
+              margin-top: 4px;
+            }
+          }
+
+          .call-forward {
+            .field {
+              margin: 20px;
+
+              label {
+                font-weight: 400;
+                font-size: 14px;
+                color: $dp-greyscale-850;
+              }
+            }
+          }
+        }
+      }
+
+      .dialpad {
+        margin: 20px;
+
+        label {
+          font-weight: 600;
+          font-size: 16px;
+          color: $dp-greyscale-850;
+        }
+
+        .Select-control {
+          border-radius: 0;
+        }
+
+        .Select-option, .Select-value, .Select-input, .Select-placeholder {
+          height: 40px;
+          line-height: 40px;
+          font-weight: 400;
+          font-size: 16px;
+          color: $dp-greyscale-850;
+          padding: 0 0 0 10px;
+
+          i {
+            margin-right: 10px;
+          }
+
+          .target {
+            margin-left: 10px;
+            color: $dp-greyscale-350;
+          }
+        }
+
+        .Select-input {
+          input {
+            border: 0;
+          }
+        }
+
+        .voice-dialpad-input {
+          width: 100%;
+          height: 60px;
+          font-weight: 600;
+          font-size: 24px;
+          color: $dp-greyscale-850;
+          background-color: $dp-greyscale-150;
+          border: 1px solid $dp-greyscale-250;
+        }
+
+        .voice-dialpad-grid {
+          td {
+            margin: 0;
+            padding: 0;
+          }
+        }
+
+        .call-button {
+          width: 100%;
+        }
+      }
+
+      .incoming-call {
+        text-align: center;
+
+        .avatar {
+          position: relative;
+          margin: auto;
+          width: 60px;
+          height: 60px;
+          border-radius: 30px;
+          background-color: #FFFFFF;
+          overflow: hidden;
+
+          i {
+            margin-top: 10px;
+            color: $dp-greyscale-450;
+            font-size: 55px
+          }
+
+          > .user-photo {
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 30px;
+            border: 5px solid #FFFFFF;
+
+            .text {
+              margin: -5px;
+              font-size: 24px;
+            }
+          }
+        }
+
+        .call-from {
+          background-color: #F3FFF5;
+          border-bottom: 1px solid $voice-green-border-color;
+
+          .call-from-number {
+            font-weight: 600;
+            font-size: 18px;
+            color: $dp-greyscale-850;
+          }
+
+          .call-from-name {
+            margin-top: 15px;
+            font-weight: 400;
+            font-size: 16px;
+            color:$dp-greyscale-850;
+          }
+
+          .call-from-email, .call-from-group {
+            margin-top: 10px;
+            font-weight: 400;
+            font-size: 12px;
+            color:$dp-greyscale-850;
+          }
+
+          .call-waiting-time {
+            margin-top: 10px;
+            font-weight: 400;
+            font-size: 12px;
+            color:$dp-emerald-primary;
+          }
+
+          .avatar {
+            margin-top: 15px;
+          }
+        }
+
+        .call-to {
+          .call-to-name {
+            font-weight: 600;
+            font-size: 22px;
+            color:$dp-greyscale-850;
+
+            i {
+              margin-right: 10px;
+            }
+          }
+
+          .agents-available, .users-in-queue {
+            margin-top: 15px;
+            font-weight: 400;
+            font-size: 12px;
+            color: $dp-greyscale-850;
+          }
+
+          .avatar {
+            margin-bottom: 20px;
+          }
+        }
+
+        .call-from, .call-to {
+          padding: 40px;
+        }
+
+        .buttons {
+          padding: 30px;
+
+          .call-button {
+            margin-right: 25px;
+            width: 190px;
+
+            .waiting-time {
+              margin-left: 10px;
+              font-weight: 400;
+              font-size: 12px;
+              color: $dp-greyscale-50;
+            }
+          }
+
+          .ignore-button {
+            font-weight: 600;
+            font-size: 16px;
+            color: $dp-greyscale-850;
+
+            i {
+              margin-right: 10px;
+              color: #D4145A;
+              font-size: 20px;
+            }
+          }
+        }
+
+        .incoming-call-type {
+          position: relative;
+
+          > div {
+            position: absolute;
+            top: -12px;
+            width: 100%;
+
+            span {
+              padding: 3px 10px;
+              background-color: $voice-green-border-color;
+              font-weight: 400;
+              font-size: 12px;
+              color: $dp-greyscale-50;
+            }
+          }
+        }
+      }
+    }
+
+    .call-button {
+      margin-bottom: 10px;
+      height: 50px;
+      font-weight: 600;
+      font-size: 16px;
+      color: $dp-greyscale-50;
+      border: 0;
+
+      i {
+        font-size: 20px;
+      }
+    }
+  }
+
+  &.ui.popup.green {
+    border-color: $voice-green-border-color;
+
+    &:before {
+      background-color: $voice-green-border-color !important;
+    }
+
+    .voice-header {
+      background-color: $voice-green-border-color;
+    }
+  }
+}
+
+.voice-controls {
+  margin: 10px;
+  padding: 20px;
+  font-family: 'Open Sans';
+  font-weight: 600;
+  font-size: 16px;
+  color: $dp-greyscale-850;
+  background-color: #FFFFFF;
+  border: 1px solid #CACECE;
+  border-radius: 5px;
+
+  i.fa {
+    font-size: 18px;
+  }
+
+  .voice-controls-title {
+    line-height: 40px;
+
+    i {
+      margin-right: 5px;
+      color: #CACECE;
+    }
+  }
+
+  &.busy {
+    border-color: #FBB03B;
+
+    .voice-controls-title {
+      i {
+        color: #FBB03B;
+      }
+    }
+
+    .redial-button {
+      float: right;
+    }
+  }
+
+  &.active {
+    border-color: #47BF61;
+
+    .voice-controls-title {
+      i {
+        color: #47BF61;
+      }
+    }
+
+    .voice-controls-recording {
+      margin: 0 20px;
+
+      i {
+        color: #D4145A;
+        margin-right: 5px;
+      }
+    }
+
+    button {
+      margin-right: 10px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      &.caret-button {
+        padding-right: 10px;
+
+        .caret {
+          margin: 0 0 0 10px !important;
+        }
+      }
+    }
+
+    &.hold {
+      border-color: #D4145A;
+    }
+
+    &.hold, &.ended {
+      .voice-controls-title, .voice-controls-recording {
+        opacity: 0.45;
+      }
+    }
+  }
+}
+
+.voice-ticket-add-list, .voice-ticket-transfer-list {
+  font-family: 'Open Sans';
+  width: 360px;
+  background-color: #FFFFFF;
+  border: 1px solid $dp-sonic-primary;
+  margin-top: 10px;
+
+  .transfer-list-search {
+    margin: 20px;
+    width: 320px;
+
+    input {
+      border-radius: 0;
+      width: 100%;
+    }
+
+    .icon {
+      left: inherit !important;
+    }
+  }
+
+  .voice-ticket-list-buttons {
+    height: 60px;
+
+    .voice-list-button {
+      text-align: center;
+      display: inline-block;
+      background-color: #FFFFFF;
+      border-top: 1px solid $dp-greyscale-250;
+      color: $dp-greyscale-850;
+      height: 60px;
+      width: 50%;
+      cursor: pointer;
+      float: left;
+      padding: 15px 15px 15px 25px;
+
+      &:hover {
+        color: $dp-sonic-primary;
+        background-color: $dp-morning-sky;
+
+        i {
+          color: $dp-sonic-primary;
+        }
+      }
+
+      &.disabled {
+        color: $dp-greyscale-350;
+        cursor: default;
+
+        &:hover {
+          color: $dp-greyscale-350;
+          background-color: #FFFFFF;
+        }
+      }
+
+      &:first-child {
+        border-right: 1px solid $dp-greyscale-250;
+      }
+
+      .voice-list-button-item-title {
+        font-weight: 600;
+        font-size: 16px;
+        position: relative;
+
+        i {
+          font-size: 20px;
+          position: absolute;
+          left: -30px;
+          top: 0;
+          color: $dp-greyscale-350;
+        }
+
+        .voice-list-button-item-help {
+          font-size: 11px;
+          position: absolute;
+          top: 20px;
+          left: 0;
+          font-weight: normal;
+          text-align: left;
+          width: 120px;
+          color: $dp-greyscale-350;
+        }
+      }
+    }
+  }
+
+  .voice-agent-list {
+    max-height: 250px;
+    margin: 20px 0;
+
+    .voice-agent-list-item {
+      padding: 0 20px 10px;
+      cursor: pointer;
+
+      .agent-name {
+        font-weight: 400;
+        font-size: 16px;
+        color: $dp-greyscale-850;
+      }
+
+      .agent-participant {
+        margin-left: 10px;
+        font-size: 12px;
+        color: $dp-greyscale-450;
+      }
+
+      .avatar {
+        display: inline-block;
+        position: relative;
+        margin-right: 10px;
+        margin-bottom: -5px;
+        width: 24px;
+        height: 24px;
+        border-radius: 12px;
+        background-color: #FFFFFF;
+        overflow: hidden;
+
+        i {
+          margin-top: 10px;
+          color: $dp-greyscale-450;
+          font-size: 55px
+        }
+
+        > .user-photo {
+          position: absolute;
+          left: 0;
+          top: 0;
+          border-radius: 12px;
+          color: #FFFFFF;
+        }
+      }
+
+      &.active {
+        color: $dp-sonic-primary;
+        background-color: $dp-morning-sky;
+      }
+
+      &.participant {
+        cursor: default;
+      }
+    }
+  }
+
+  .voice-transfer-status {
+    padding: 20px;
+
+    .voice-transfer-status-title {
+      font-weight: 400;
+      font-size: 16px;
+      color: $dp-greyscale-850;
+    }
+
+    .voice-transfer-status-timer {
+      font-weight: 400;
+      font-size: 14px;
+      color: $dp-greyscale-850;
+      float: right;
+    }
+
+    .voice-transfer-status-target {
+      margin-top: 20px;
+
+      .target-name {
+        font-weight: 400;
+        font-size: 16px;
+        color: $dp-greyscale-850;
+      }
+
+      .avatar {
+        display: inline-block;
+        position: relative;
+        margin-right: 10px;
+        margin-bottom: -5px;
+        width: 24px;
+        height: 24px;
+        border-radius: 12px;
+        background-color: #FFFFFF;
+        overflow: hidden;
+
+        i {
+          margin-top: 10px;
+          color: $dp-greyscale-450;
+          font-size: 55px
+        }
+
+        > .user-photo {
+          position: absolute;
+          left: 0;
+          top: 0;
+          border-radius: 12px;
+          color: #FFFFFF;
+        }
+      }
+    }
+  }
+
+  .voice-transfer-status-buttons {
+    padding: 20px;
+    border-top: 1px solid $dp-greyscale-250;
+
+    button {
+      &:first-child {
+        margin-right: 20px;
+      }
+
+      .remove {
+        color: #D4145A;
+      }
+    }
+  }
+}
+
+.voice-ticket-transfer-list {
+  .tab-menu {
+    width: 100%;
+
+    .item {
+      display: inline-block;
+      width: 33.3%;
+      height: 50px;
+      text-align: center;
+      border-top: 1px solid $dp-greyscale-250;
+      padding-top: 15px;
+      color: $dp-greyscale-850;
+
+      i {
+        margin-right: 5px;
+      }
+
+      &:not(.active) {
+        color: $dp-greyscale-450;
+        background-color: $dp-greyscale-150;
+        cursor: pointer;
+        border: 1px solid $dp-greyscale-250;
+
+        &:first-child {
+          border-left: 0;
+        }
+
+        &:last-child {
+          border-right: 0;
+        }
+      }
+    }
+  }
+
+  .voice-dialpad-input {
+    margin: 20px 20px 0;
+    width: 320px;
+    height: 60px;
+    font-weight: 600;
+    font-size: 24px;
+    color: $dp-greyscale-850;
+    background-color: $dp-greyscale-150;
+    border: 1px solid $dp-greyscale-250;
+  }
+
+  .voice-queue-list {
+    .queue-item {
+      cursor: pointer;
+
+      &.active {
+        color: $dp-sonic-primary;
+        background-color: $dp-morning-sky;
+      }
+    }
+  }
+}
+
+.voice-ticket-add-list {
+  .online-agents-header {
+    margin: 0 20px;
+    font-weight: 600;
+    font-size: 12px;
+    color: $dp-greyscale-850;
+
+    i {
+      margin-right: 10px;
+    }
+  }
+}
+
+.voice-queue-list {
+  max-height: 250px;
+
+  .queue-item {
+    padding: 20px;
+    border-bottom: 1px solid #E6E6E6;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    .checkbox {
+      float: right;
+      margin-right: -7px;
+    }
+
+    .queue-name {
+      font-weight: 400;
+      font-size: 16px;
+      color:$dp-greyscale-850;
+      margin-bottom: 10px;
+    }
+
+    .queue-agents, .queue-users {
+      font-weight: 400;
+      font-size: 14px;
+      color: $dp-greyscale-850;
+      margin-bottom: 10px;
+    }
+
+    .avatar {
+      display: inline-block;
+      position: relative;
+      margin-left: 10px;
+      margin-bottom: -5px;
+      width: 20px;
+      height: 20px;
+      border-radius: 10px;
+      background-color: #FFFFFF;
+      overflow: hidden;
+
+      i {
+        margin-top: 10px;
+        color: $dp-greyscale-450;
+        font-size: 55px
+      }
+
+      > .user-photo {
+        position: absolute;
+        left: 0;
+        top: 0;
+        border-radius: 10px;
+      }
+    }
+  }
+
+  .empty-message {
+    text-align: center;
+    margin: 10px;
+  }
+}
+
+.voice-dialpad-grid {
+  width: inherit;
+  margin: 20px auto;
+  border-collapse: collapse;
+
+  tbody, tr {
+    border: 0;
+  }
+
+  td {
+    margin: 0;
+    padding: 0;
+    border: 1px solid $dp-greyscale-250;
+  }
+
+  button {
+    width: 105px;
+    height: 60px;
+    font-weight: 600;
+    font-size: 18px;
+    color: $dp-greyscale-850;
+    background-color: $dp-greyscale-250;
+    background: -webkit-linear-gradient(180deg, rgba(255, 255, 255, 1) 14.79%, rgba(253, 253, 253, 0.48) 64.28%, rgba(246, 246, 246, 0.29) 82.1%, rgba(235, 235, 235, 0.16) 94.77%, rgba(227, 227, 227, 0.1) 100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 14.79%, rgba(253, 253, 253, 0.48) 64.28%, rgba(246, 246, 246, 0.29) 82.1%, rgba(235, 235, 235, 0.16) 94.77%, rgba(227, 227, 227, 0.1) 100%);
+    border: 0;
+  }
+}

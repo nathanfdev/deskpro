@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\People\PermissionLoader;
 
 use Application\DeskPRO\App;
@@ -46,14 +47,14 @@ abstract class BasicCategoryPermission extends AbstractLoader
      *
      * @var array
      */
-    protected $allowed_cats = array();
+    protected $allowed_cats = [];
 
     /**
      * An array of disallowed categories.
      *
      * @var array
      */
-    protected $disallowed_cats = array();
+    protected $disallowed_cats = [];
 
     abstract protected function getCategoryEntity();
 
@@ -122,9 +123,9 @@ abstract class BasicCategoryPermission extends AbstractLoader
     public function getSmallestSet()
     {
         if (count($this->disallowed_cats) > count($this->allowed_cats)) {
-            return array('type' => 'allowed', 'ids' => $this->allowed_cats);
+            return ['type' => 'allowed', 'ids' => $this->allowed_cats];
         } else {
-            return array('type' => 'disallowed', 'ids' => $this->diallowed_cats);
+            return ['type' => 'disallowed', 'ids' => $this->diallowed_cats];
         }
     }
 
@@ -135,10 +136,10 @@ abstract class BasicCategoryPermission extends AbstractLoader
      */
     protected function serializeData()
     {
-        return array(
+        return [
             'allowed_cats'    => $this->allowed_cats,
             'disallowed_cats' => $this->disallowed_cats,
-        );
+        ];
     }
 
     /**

@@ -8,7 +8,7 @@
 		<td class="dp-td-heading">{{ phrase('agent.general.id') }}</td>
 		<td>{{ ticket.id }}</td>
 	</tr>
-	{% if app.getSetting('core.tickets.use_ref') %}
+	{% if app.getSetting('core_tickets.use_ref') %}
 		<tr>
 			<td class="dp-td-heading">{{ phrase('agent.general.ref') }}</td>
 			<td>{{ ticket.ref }}</td>

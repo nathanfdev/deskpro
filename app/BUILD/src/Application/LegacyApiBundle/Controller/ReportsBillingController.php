@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+
+/**
+ * @ApiModes("all")
+ */
 class ReportsBillingController extends AbstractController
 {
-    ####################################################################################################################
-    # get report
-    ####################################################################################################################
+    //###################################################################################################################
+    // get report
+    //###################################################################################################################
 
     public function getAction($id)
     {
@@ -52,9 +58,9 @@ class ReportsBillingController extends AbstractController
         $rendered_result = $reports_billing->getRenderedResult($id);
 
         return $this->createApiResponse(
-            array(
+            [
                  'rendered_result' => $rendered_result,
-            )
+            ]
         );
     }
 }

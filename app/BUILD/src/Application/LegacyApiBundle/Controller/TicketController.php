@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,25 +32,28 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\Entity\CustomDataBilling;
 use Application\DeskPRO\Entity\Ticket as Ticket;
-use Application\DeskPRO\HttpFoundation\Request;
+use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
-use DeskPRO\Kernel\KernelErrorHandler;
+use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Doctrine\Common\Collections\ArrayCollection;
+use DpSys\LowError\SystemErrorHandler;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * @SWG\Resource(
- * 	resourcePath="/tickets",
- * 	description="Operations about Tickets",
- * 	basePath="/api"
- * )
+ * @ApiModes("all")
  */
 class TicketController extends AbstractController implements ProtectedControllerInterface
 {
@@ -66,190 +69,10 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Creates a new Ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="person_id",
-     *				description="ID of person to create ticket for.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="person_email",
-     *				description="If no person_id is given, the ticket is created for a person with this email. If no person is found with this email, one is created.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="person_name",
-     *				description="If a person is being created, use this as their name.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     * 			@SWG\Parameter(
-     *				name="overwrite_person_name",
-     *				description="Set person_name even if the person already exists. This will overwrite a persons name with the one provided in person_name.",
-     *				paramType="query",
-     *				required=false,
-     *				type="boolean	"
-     *			),
-     *			@SWG\Parameter(
-     *				name="person_organization",
-     *				description="If a person is being created, user this as their organization. If no organization is found with this name, one is created.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="person_organization_position",
-     *				description="If a person is being created and they belong to an organization, select this as their position.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="subject",
-     *				description="Subject of the ticket.",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="message",
-     *				description="First message of the ticket.",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="message_as_agent",
-     *				description="If true, the message is considered to be written by the API agent rather than the ticket owner. Defaults to false.",
-     *				paramType="query",
-     *				required=false,
-     *				type="boolean"
-     *			),
-     *			@SWG\Parameter(
-     *				name="message_is_html",
-     *				description="If true, the message parameter is treated as HTML.",
-     *				paramType="query",
-     *				required=false,
-     *				type="boolean"
-     *			),
-     *			@SWG\Parameter(
-     *				name="agent_id",
-     *				description="Agent assigned to the ticket. Defaults to unassigned.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="agent_team_id",
-     *				description="Agent team the ticket belongs to.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="attach[]",
-     *				description="If you wish to upload a file with the ticket, you may send the request as multipart/form-data with the file data going to this parameter.",
-     *				paramType="form",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="attach_id[]",
-     *				description="The ID of an already uploaded file to include with the ticket.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="category_id",
-     *				description="Category the ticket is in.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="department_id",
-     *				description="Department the ticket is in. If not specified, uses the default ticket department.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="field[]",
-     *				description="Value for the specified field.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="label[]",
-     *				description="Label to apply to the ticket.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="language_id",
-     *				description="Language the ticket is in.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="priority_id",
-     *				description="Priority of the ticket.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="product_id",
-     *				description="Product the ticket relates to.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="status",
-     *				description="Status the ticket is in. Possible values are awaiting_user, awaiting_agent, archived, hidden, resolved. Defaults to awaiting_agent.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="sla_id[]",
-     *				description="Adds the SLA to the ticket. Can only add SLAs that agents may manually add.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="urgency",
-     *				description="Urgency of the ticket (1-10).",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="workflow_id",
-     *				description="Workflow for the ticket.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			)
-     *		)
-     * 	)
-     * )
+     * @throws \Exception
+     * @throws \Throwable
+     *
+     * @return Response
      */
     public function newTicketAction()
     {
@@ -257,27 +80,27 @@ class TicketController extends AbstractController implements ProtectedController
             throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
-        $errors = array();
+        $errors = [];
 
         $person = false;
         $org    = false;
 
         $subject = $this->in->getString('subject');
         if ($subject === '') {
-            $errors['subject'] = array('required_field', 'subject missing or empty');
+            $errors['subject'] = ['required_field', 'subject missing or empty'];
         }
 
         $message_text = $this->in->getString('message');
         if ($message_text === '') {
-            $errors['message'] = array('required_field', 'message missing or empty');
+            $errors['message'] = ['required_field', 'message missing or empty'];
         }
 
         if ($this->in->checkIsset('agent_id')) {
-            $agentId = $this->in->getUint('agent_id');
+            $agentId = $this->in->getUInt('agent_id');
             if ($agentId) {
                 $agent = $this->em->getRepository('DeskPRO:Person')->findOneById($agentId);
                 if (!$agent || !$agent->is_agent) {
-                    $errors['agent_id'] = array('invalid_argument', 'Not an agent');
+                    $errors['agent_id'] = ['invalid_argument', 'Not an agent'];
                 }
             }
         } else {
@@ -287,25 +110,25 @@ class TicketController extends AbstractController implements ProtectedController
         $ticket_manager = $this->container->getTicketManager();
         $ticket         = $ticket_manager->createTicket();
 
-        if ($id = $this->in->getUint('department_id')) {
+        if ($id = $this->in->getUInt('department_id')) {
             $ticket->setDepartmentId($id);
         }
-        if ($id = $this->in->getUint('category_id')) {
+        if ($id = $this->in->getUInt('category_id')) {
             $ticket->setCategoryId($id);
         }
-        if ($id = $this->in->getUint('agent_team_id')) {
+        if ($id = $this->in->getUInt('agent_team_id')) {
             $ticket->setAgentTeamId($id);
         }
-        if ($id = $this->in->getUint('product_id')) {
+        if ($id = $this->in->getUInt('product_id')) {
             $ticket->setProductId($id);
         }
-        if ($id = $this->in->getUint('priority_id')) {
+        if ($id = $this->in->getUInt('priority_id')) {
             $ticket->setPriorityId($id);
         }
-        if ($id = $this->in->getUint('workflow_id')) {
+        if ($id = $this->in->getUInt('workflow_id')) {
             $ticket->setWorkflowId($id);
         }
-        if ($id = $this->in->getUint('urgency')) {
+        if ($id = $this->in->getUInt('urgency')) {
             $ticket->setUrgency($id);
         }
 
@@ -336,13 +159,13 @@ class TicketController extends AbstractController implements ProtectedController
         if ($this->in->checkIsset('person_id')) {
             $person = $this->em->getRepository('DeskPRO:Person')->findOneById($this->in->getInt('person_id'));
             if (!$person) {
-                $errors['person_id'] = array('invalid_person', 'Invalid person ID');
+                $errors['person_id'] = ['invalid_person', 'Invalid person ID'];
             }
         } elseif ($this->in->checkIsset('person_email')) {
             $email = $this->in->getString('person_email');
 
             if (!\Orb\Validator\StringEmail::isValueValid($email) || !App::getSystemService('email_address_validator')->isValidUserEmail($email)) {
-                $errors['person_email'] = array('invalid_email', 'Invalid email address');
+                $errors['person_email'] = ['invalid_email', 'Invalid email address'];
             } else {
                 $person_processor                  = new PersonFromEmailProcessor();
                 $person_processor->creation_system = 'web.api';
@@ -373,14 +196,14 @@ class TicketController extends AbstractController implements ProtectedController
                 }
             }
         } else {
-            $errors['person_id'] = array('required_field', 'person_id or person_email missing');
+            $errors['person_id'] = ['required_field', 'person_id or person_email missing'];
         }
 
         if ($errors) {
             return $this->createApiMultipleErrorResponse($errors);
         }
 
-        if ($id = $this->in->getUint('language_id')) {
+        if ($id = $this->in->getUInt('language_id')) {
             $ticket->setLanguageId($id);
         } else {
             $ticket->language = $person->getRealLanguage();
@@ -462,52 +285,26 @@ class TicketController extends AbstractController implements ProtectedController
 
         if (App::getDb()->isTransactionActive()) {
             $e = new \RuntimeException('WARNING: Unclosed transaction');
-            KernelErrorHandler::logException($e, false, 'unclosed_trans_api');
+            SystemErrorHandler::logException($e, false, 'unclosed_trans_api');
             while (App::getDb()->isTransactionActive()) {
                 App::getDb()->commit();
             }
         }
 
         return $this->createApiCreateResponse(
-            array('ticket_id' => $ticket->id),
-            $this->generateUrl('api_tickets_ticket', array('ticket_id' => $ticket->id), true)
+            ['ticket_id' => $ticket->id],
+            $this->generateUrl(
+                'api_tickets_ticket',
+                ['ticket_id' => $ticket->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets a Ticket by Ticket ID.",
-     * 		notes="Information about the ticket by Ticket ID.",
-     *		type="Ticket",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="with_messages",
-     *				description="True to fetch message data with the ticket",
-     *				paramType="query",
-     *				required=false,
-     *				type="boolean"
-     *			),
-     *			@SWG\Parameter(
-     *				name="with_loaded_linked_tickets",
-     *				description="True to load linked ticket data (otherwise, just the IDs are returned)",
-     *				paramType="query",
-     *				required=false,
-     *				type="boolean"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function getTicketAction($ticket_id)
     {
@@ -519,25 +316,26 @@ class TicketController extends AbstractController implements ProtectedController
             $data['flag'] = $ticket_flagged;
         }
 
-        $data = array('ticket' => $data);
+        $data = ['ticket' => $data];
 
         if ($this->in->getBool('with_messages')) {
             $ticket_display = new TicketDisplay($ticket, $this->person);
 
-            $messages = $this->em->getRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket, array(
+            $messages = $this->em->getRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket, [
                 'with_notes' => true,
                 'limit'      => 10,
                 'order'      => 'DESC',
-            ));
+            ]);
 
-            $data['messages'] = array();
+            $data['messages'] = [];
             foreach ($messages as $m) {
+                /* @var TicketMessage $m */
                 $msg_data            = $m->toApiData(true);
                 $msg_data['message'] = $m->procInlineAttach($msg_data['message']);
 
                 $attach = $ticket_display->getMessageAttachments($m, false);
                 if ($attach) {
-                    $msg_data['attachments'] = array();
+                    $msg_data['attachments'] = [];
                     foreach ($attach as $a) {
                         $msg_data['attachments'][] = $a->toApiData(true);
                     }
@@ -547,23 +345,26 @@ class TicketController extends AbstractController implements ProtectedController
             }
         }
 
-        #------------------------------
-        # Linked tickets
-        #------------------------------
+        //------------------------------
+        // Linked tickets
+        //------------------------------
 
-        $linked_tickets = array(
+        $linked_tickets = [
             'parent'   => null,
-            'siblings' => array(),
-            'children' => array(),
+            'siblings' => [],
+            'children' => [],
             'count'    => 0,
-        );
+        ];
+
+        /** @var TicketRepository $ticket_repo */
+        $ticket_repo = $this->em->getRepository('DeskPRO:Ticket');
 
         if ($ticket->parent_ticket && $ticket->parent_ticket->status != 'hidden' && $this->checkPerm($ticket->parent_ticket, 'view')) {
             $linked_tickets['parent'] = $ticket->parent_ticket;
 
             // Find siblings
             $linked_tickets['siblings'] = $this->permCheckArray(
-                $this->em->getRepository('DeskPRO:Ticket')->getLinkedTickets($ticket->parent_ticket),
+                $ticket_repo->getLinkedTickets($ticket->parent_ticket),
                 'view'
             );
             $linked_tickets['siblings'] = array_filter($linked_tickets['siblings'], function ($t) use ($ticket) {
@@ -576,29 +377,33 @@ class TicketController extends AbstractController implements ProtectedController
         }
 
         $linked_tickets['children'] = $this->permCheckArray(
-            $this->em->getRepository('DeskPRO:Ticket')->getLinkedTickets($ticket),
+            $ticket_repo->getLinkedTickets($ticket),
             'view'
         );
 
-        $linked_tickets['count'] = array_sum(array(
+        $linked_tickets['count'] = array_sum([
             $linked_tickets['parent'] ? 1 : 0,
             count($linked_tickets['siblings']),
             count($linked_tickets['children']),
-        ));
+        ]);
 
         if ($this->in->getBool('with_loaded_linked_tickets')) {
             if ($linked_tickets['parent']) {
                 $linked_tickets['parent'] = $linked_tickets['parent']->toApiData(false, true);
             }
-            foreach (array('siblings', 'children') as $k) {
-                $linked_tickets[$k] = array_map(function ($t) { return $t->toApiData(false, true); }, $linked_tickets[$k]);
+            foreach (['siblings', 'children'] as $k) {
+                $linked_tickets[$k] = array_map(function ($t) {
+                    return $t->toApiData(false, true);
+                }, $linked_tickets[$k]);
             }
         } else {
             if ($linked_tickets['parent']) {
                 $linked_tickets['parent'] = $linked_tickets['parent']->getId();
             }
-            foreach (array('siblings', 'children') as $k) {
-                $linked_tickets[$k] = array_map(function ($t) { return $t->getId(); }, $linked_tickets[$k]);
+            foreach (['siblings', 'children'] as $k) {
+                $linked_tickets[$k] = array_map(function ($t) {
+                    return $t->getId();
+                }, $linked_tickets[$k]);
             }
         }
 
@@ -606,10 +411,10 @@ class TicketController extends AbstractController implements ProtectedController
 
         // Full data so we can re-construct an edit-type form
         if ($this->in->getBool('with_display_options')) {
-            $display_options = array();
+            $display_options = [];
 
             $all_deps    = $this->container->getDataService('Department')->getRootNodes();
-            $ticket_deps = array();
+            $ticket_deps = [];
             foreach ($all_deps as $d) {
                 if ($d->is_tickets_enabled) {
                     $ticket_deps[] = $d;
@@ -683,126 +488,17 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Updates a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="person_id",
-     *				description="ID of person to create ticket for.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="subject",
-     *				description="A new subject for the ticket.",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="agent_id",
-     *				description="Agent assigned to the ticket. Defaults to unassigned.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="agent_team_id",
-     *				description="Agent team the ticket belongs to.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="attach[]",
-     *				description="If you wish to upload a file with the ticket, you may send the request as multipart/form-data with the file data going to this parameter.",
-     *				paramType="form",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="category_id",
-     *				description="Category the ticket is in.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="department_id",
-     *				description="Department the ticket is in. If not specified, uses the default ticket department.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="field[]",
-     *				description="Value for the specified field.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="language_id",
-     *				description="Language the ticket is in.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="priority_id",
-     *				description="Priority of the ticket.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="product_id",
-     *				description="Product the ticket relates to.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="status",
-     *				description="Status the ticket is in. Possible values are awaiting_user, awaiting_agent, closed, hidden, resolved. Defaults to awaiting_agent.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="urgency",
-     *				description="Urgency of the ticket (1-10).",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="workflow_id",
-     *				description="Workflow for the ticket.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="flag",
-     *				description="Sets the color of the flag for the this ticket for the API user. Use none to remove the flag.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			)
-     *		)
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function postTicketAction($ticket_id)
     {
         $ticket = $this->_getTicketOr404($ticket_id, 'edit');
 
-        $fields = array(
+        $fields = [
             'department_id' => 'Uint',
             'language_id'   => 'Uint',
             'category_id'   => 'Uint',
@@ -815,20 +511,20 @@ class TicketController extends AbstractController implements ProtectedController
             'is_hold'       => 'Bool',
             'flag'          => 'string',
             'urgency'       => 'Uint',
-        );
+        ];
 
         $editor = App::getApi('tickets')->getTicketEditor($ticket);
         $editor->setPersonContext($this->person);
 
-        $errors = array();
+        $errors = [];
 
         foreach ($fields as $field => $cleanType) {
             if ($this->in->checkIsset($field)) {
                 $value = $this->in->{'get'.$cleanType}($field);
                 try {
-                    $editor->applyActions(array($field => $value));
+                    $editor->applyActions([$field => $value]);
                 } catch (\InvalidArgumentException $e) {
-                    $errors[$field] = array("invalid_argument.$field", $e->getMessage());
+                    $errors[$field] = ["invalid_argument.$field", $e->getMessage()];
                 }
             }
         }
@@ -838,7 +534,7 @@ class TicketController extends AbstractController implements ProtectedController
             $ticket->subject = $subject;
         }
 
-        $person_id = $this->in->getUint('person_id');
+        $person_id = $this->in->getUInt('person_id');
         if ($person_id) {
             $ticket->setPersonId($person_id);
         }
@@ -881,23 +577,12 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}",
-     * 	@SWG\Operation(
-     * 		method="DELETE",
-     * 		summary="DELETEs a Ticket by Ticket ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be deleted.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function deleteTicketAction($ticket_id)
     {
@@ -916,21 +601,21 @@ class TicketController extends AbstractController implements ProtectedController
             throw $e;
         }
 
-        $this->db->insert('tickets_deleted', array(
+        $this->db->insert('tickets_deleted', [
             'ticket_id'     => $ticket->id,
             'by_person_id'  => $this->person->id,
             'new_ticket_id' => 0,
             'reason'        => $this->in->getString('reason'),
             'date_created'  => date('Y-m-d H:i:s'),
-        ));
+        ]);
 
         if ($this->in->getBool('ban')) {
             foreach ($ticket->person->emails as $email) {
                 $email_addy = strtolower($email->email);
-                App::getDb()->replace('ban_emails', array(
+                App::getDb()->replace('ban_emails', [
                     'banned_email' => $email_addy,
                     'is_pattern'   => 0,
-                ));
+                ]);
             }
         }
 
@@ -938,23 +623,12 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/undelete",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Undeletes a Ticket by Ticket ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be undeleted.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function undeleteTicketAction($ticket_id)
     {
@@ -975,23 +649,9 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/logs",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets all logs in a Ticket by Ticket ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function getTicketLogsAction($ticket_id)
     {
@@ -1006,55 +666,30 @@ class TicketController extends AbstractController implements ProtectedController
             }
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'logs' => $this->getApiData($ticket_logs),
-        ));
+        ]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/messages",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets all messages in a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function getTicketMessagesAction($ticket_id)
     {
         $ticket = $this->_getTicketOr404($ticket_id);
 
-        return $this->createApiResponse(array('messages' => $this->getApiData($ticket->messages)));
+        return $this->createApiResponse(['messages' => $this->getApiData($ticket->messages)]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/messages/{message_id}",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets the specific message",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     * @param int $message_id
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return Response
      */
     public function getTicketMessageAction($ticket_id, $message_id)
     {
@@ -1064,33 +699,22 @@ class TicketController extends AbstractController implements ProtectedController
             SELECT m
             FROM DeskPRO:TicketMessage m
             WHERE m.ticket = ?0 AND m.id = ?1
-        ')->setParameters(array($ticket, $message_id))->setMaxResults(1)->getOneOrNullResult();
+        ')->setParameters([$ticket, $message_id])->setMaxResults(1)->getOneOrNullResult();
 
         if (!$message) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Message $message_id not found in $ticket_id");
         }
 
-        return $this->createApiResponse(array('message' => $message->toApiData()));
+        return $this->createApiResponse(['message' => $message->toApiData()]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/messages/{message_id}/details",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets a specific message's details",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     * @param int $message_id
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return Response
      */
     public function getTicketMessageDetailsAction($ticket_id, $message_id)
     {
@@ -1100,7 +724,7 @@ class TicketController extends AbstractController implements ProtectedController
             SELECT m
             FROM DeskPRO:TicketMessage m
             WHERE m.ticket = ?0 AND m.id = ?1
-        ')->setParameters(array($ticket, $message_id))->setMaxResults(1)->getOneOrNullResult();
+        ')->setParameters([$ticket, $message_id])->setMaxResults(1)->getOneOrNullResult();
 
         if (!$message) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Message $message_id not found in $ticket_id");
@@ -1117,87 +741,19 @@ class TicketController extends AbstractController implements ProtectedController
             $email_log = null;
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'unformatted'  => $message->message_text,
             'email_source' => $message->email_source ? $message->email_source->raw_source : null,
             'email_log'    => $email_log,
-        ));
+        ]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/messages",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Replies to a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="message",
-     *				description="Message reply text.",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="attach[]",
-     *				description="If you wish to upload a file with the ticket, you may send the request as multipart/form-data with the file data going to this parameter.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="attach_id[]",
-     *				description="The ID of an already uploaded file to include with the ticket.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="is_note",
-     *				description="If true, sets the reply as a note, rather than a public reply. Defaults to false.",
-     *				paramType="query",
-     *				required=false,
-     *				type="boolean"
-     *			),
-     *			@SWG\Parameter(
-     *				name="message_as_agent",
-     *				description="If true, the message is considered to be written by the API agent rather than the ticket owner. Defaults to false.",
-     *				paramType="query",
-     *				required=false,
-     *				type="boolean"
-     *			),
-     *			@SWG\Parameter(
-     *				name="message_is_html",
-     *				description="If true, the message parameter is treated as HTML.",
-     *				paramType="query",
-     *				required=false,
-     *				type="boolean"
-     *			),
-     *			@SWG\Parameter(
-     *				name="suppress_user_notify",
-     *				description="If true, suppresses user notification of the reply. Defaults to false.",
-     *				paramType="query",
-     *				required=false,
-     *				type="boolean"
-     *			),
-     *			@SWG\Parameter(
-     *				name="person_id",
-     *				description="Message author",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function replyTicketAction($ticket_id)
     {
@@ -1219,14 +775,14 @@ class TicketController extends AbstractController implements ProtectedController
             $message['person'] = ($this->in->getBool('message_as_agent') ? $this->person : $ticket->person);
         }
 
-        $message['ip_address']      = dp_get_user_ip_address();
+        $message['ip_address']      = $this->getRequest()->getClientIp();
         $message['creation_system'] = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
 
         if ($this->in->getBool('dp_is_mobile')) {
             $message['creation_system'] = \Application\DeskPRO\Entity\TicketMessage::CREATED_MOBILE_AGENT;
         }
 
-        $notify_agent_ids = array();
+        $notify_agent_ids = [];
 
         if ($this->in->getBool('message_is_html')) {
             $message_text     = \Orb\Util\Strings::trimHtml($this->in->getHtmlCore('message'));
@@ -1246,10 +802,10 @@ class TicketController extends AbstractController implements ProtectedController
         }
 
         if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
-            return $this->createApiResponse(array(
+            return $this->createApiResponse([
                 'dupe_message' => true,
                 'message_id'   => $dupe_message['id'],
-            ));
+            ]);
         }
 
         $message_blobs = $this->_readTicketMessageAttachments();
@@ -1285,8 +841,8 @@ class TicketController extends AbstractController implements ProtectedController
             $agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
             $agent_chat->disableOfflineEmailAlert(); // we'll handle offline notifs as part of normal notifications
 
-            $notify_chat  = array();
-            $notify_email = array();
+            $notify_chat  = [];
+            $notify_email = [];
 
             $notify_agent_ids = array_unique($notify_agent_ids);
             foreach ($notify_agent_ids as $agent_id) {
@@ -1313,8 +869,12 @@ class TicketController extends AbstractController implements ProtectedController
         }
 
         return $this->createApiCreateResponse(
-            array('message_id' => $message->id),
-            $this->generateUrl('api_tickets_ticket_message', array('ticket_id' => $ticket->id, 'message_id' => $message->id), true)
+            ['message_id' => $message->id],
+            $this->generateUrl(
+                'api_tickets_ticket_message',
+                ['ticket_id' => $ticket->id, 'message_id' => $message->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1322,11 +882,11 @@ class TicketController extends AbstractController implements ProtectedController
     {
         $attachments = $this->request->files->get('attach');
         if (!is_array($attachments)) {
-            $attachments = array($attachments);
+            $attachments = [$attachments];
         }
         $accept = $this->container->getAttachmentAccepter();
 
-        $blobs = array();
+        $blobs = [];
 
         foreach ($attachments as $file) {
             $error = $accept->getError($file, 'agent');
@@ -1361,23 +921,9 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/claim",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Assigns a ticket to the API user",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function claimTicketAction($ticket_id)
     {
@@ -1391,37 +937,11 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/split",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary=" Splits messages from a ticket into a new one.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="message_ids[]",
-     *				description="ID of a message to split. Specify this parameter multiple times to split multiple messages.",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *			),
-     *			@SWG\Parameter(
-     *				name="subject",
-     *				description="subject of the new ticket",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function splitTicketAction($ticket_id)
     {
@@ -1443,38 +963,20 @@ class TicketController extends AbstractController implements ProtectedController
 
         $this->em->flush();
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'success'            => true,
             'ticket_id'          => $new_ticket ? $new_ticket['id'] : null,
             'old_ticket_deleted' => $split->wasOldTicketDeleted(),
-        ));
+        ]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/merge/{merge_ticket_id}",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Merges the two tickets",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be merged with.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="merge_ticket_id",
-     *				description="ID of the Ticket that needs to be merged.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     * @param int $merge_ticket_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function mergeTicketAction($ticket_id, $merge_ticket_id)
     {
@@ -1483,7 +985,7 @@ class TicketController extends AbstractController implements ProtectedController
 
         try {
             $this->em->beginTransaction();
-            $merge = new \Application\DeskPRO\Tickets\TicketMerge\TicketMerge($this->person, $ticket, $other_ticket);
+            $merge = new TicketMerge($this->person, $ticket, $other_ticket);
             $merge->merge();
             $this->em->commit();
         } catch (\Exception $e) {
@@ -1496,37 +998,10 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/link/{link_ticket_id}",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Links two tickets",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be linked with.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="link_ticket_id",
-     *				description="ID of the Ticket that needs to be linked.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="is_parent",
-     *				description="Make the second the parent ticket",
-     *				paramType="path",
-     *				required=false,
-     *				type="boolean"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     * @param int $link_ticket_id
+     *
+     * @return Response
      */
     public function linkTicketAction($ticket_id, $link_ticket_id)
     {
@@ -1543,23 +1018,12 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/spam",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Marks a ticket as spam.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be marked spam.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function spamTicketAction($ticket_id)
     {
@@ -1579,10 +1043,10 @@ class TicketController extends AbstractController implements ProtectedController
         if ($this->in->getBool('ban')) {
             foreach ($ticket->person->emails as $email) {
                 $email_addy = strtolower($email->email);
-                App::getDb()->replace('ban_emails', array(
+                App::getDb()->replace('ban_emails', [
                     'banned_email' => $email_addy,
                     'is_pattern'   => 0,
-                ));
+                ]);
             }
         }
 
@@ -1590,23 +1054,12 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/unspam",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Removes spam indicator from a ticket",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be unspamed.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function unspamTicketAction($ticket_id)
     {
@@ -1627,23 +1080,9 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/lock",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Locks a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be locked",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function lockTicketAction($ticket_id)
     {
@@ -1661,23 +1100,9 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/unlock",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="unLocks a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be unlocked",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function unlockTicketAction($ticket_id)
     {
@@ -1693,23 +1118,9 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/tasks",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets the tasks for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be searched for Tasks",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function getTicketTasksAction($ticket_id)
     {
@@ -1717,27 +1128,13 @@ class TicketController extends AbstractController implements ProtectedController
 
         $tasks = $this->em->getRepository('DeskPRO:Task')->findLinkedTicketTasks($ticket, $this->person);
 
-        return $this->createApiResponse(array('tasks' => $this->getApiData($tasks)));
+        return $this->createApiResponse(['tasks' => $this->getApiData($tasks)]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/tasks",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Create a task for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket where the task needs to be created.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function postTicketTasksAction($ticket_id)
     {
@@ -1762,29 +1159,19 @@ class TicketController extends AbstractController implements ProtectedController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $task->id),
-            $this->generateUrl('api_tasks_task', array('task_id' => $task->id), true)
+            ['id' => $task->id],
+            $this->generateUrl(
+                'api_tasks_task',
+                ['task_id' => $task->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/ticket/{ticket_id}/billing-charges",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets billing charges for a Ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function getTicketBillingChargesAction($ticket_id)
     {
@@ -1800,59 +1187,24 @@ class TicketController extends AbstractController implements ProtectedController
             $charge_amount += $charge->amount;
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'total_charge_time'   => $time,
             'total_charge_amount' => $charge_amount,
             'total'               => count($charges),
             'charges'             => $this->getApiData($charges),
-        ));
+        ]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/ticket/{ticket_id}/billing-charges",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Gets billing charges for a Ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="time",
-     *				description="Time in seconds to bill. Required if there is no amount.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="amount",
-     *				description="Amount (in admin-specified currency) to bill. Required if there is no time.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="comment",
-     *				description="Comment or reason for the charge.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function postTicketBillingChargesAction($ticket_id)
     {
         $ticket = $this->_getTicketOr404($ticket_id);
 
-        $time   = $this->in->getUint('time');
+        $time   = $this->in->getUInt('time');
         $amount = $this->in->getUFloat('amount');
 
         if (!$time && !$amount) {
@@ -1870,7 +1222,7 @@ class TicketController extends AbstractController implements ProtectedController
         $this->em->flush();
 
         if ($comment = $this->in->getString('comment')) {
-            if ($field = $this->em->getRepository('DeskPRO:CustomDefBilling')->findOneBy(array('title' => 'Comment'))) {
+            if ($field = $this->em->getRepository('DeskPRO:CustomDefBilling')->findOneBy(['title' => 'Comment'])) {
                 $data = new CustomDataBilling();
                 $data->setField($field);
                 $data->setRootField($field);
@@ -1883,36 +1235,20 @@ class TicketController extends AbstractController implements ProtectedController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $charge->id),
-            $this->generateUrl('api_tickets_ticket_billing_charge', array('ticket_id' => $ticket->id, 'charge_id' => $charge->id), true)
+            ['id' => $charge->id],
+            $this->generateUrl(
+                'api_tickets_ticket_billing_charge',
+                ['ticket_id' => $ticket->id, 'charge_id' => $charge->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/ticket/{ticket_id}/billing-charges/{charge_id}",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Determines if a charge exists for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="charge_id",
-     *				description="ID of the Charge that needs to be checked.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     * @param int $charge_id
+     *
+     * @return Response
      */
     public function getTicketBillingChargeAction($ticket_id, $charge_id)
     {
@@ -1927,34 +1263,14 @@ class TicketController extends AbstractController implements ProtectedController
             }
         }
 
-        return $this->createApiResponse(array('exists' => (bool) $charge));
+        return $this->createApiResponse(['exists' => (bool) $charge]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/ticket/{ticket_id}/billing-charges/{charge_id}",
-     * 	@SWG\Operation(
-     * 		method="DELETE",
-     * 		summary="Deletes a charge for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the Ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="charge_id",
-     *				description="ID of the Charge that needs to be deleted.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     * @param int $charge_id
+     *
+     * @return Response
      */
     public function deleteTicketBillingChargeAction($ticket_id, $charge_id)
     {
@@ -1973,64 +1289,29 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/slas",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets a list of automatically applied SLAs for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function getTicketSlasAction($ticket_id)
     {
         $ticket = $this->_getTicketOr404($ticket_id);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'ticket_slas' => $this->getApiData($ticket->ticket_slas),
-        ));
+        ]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/slas",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Adds an SLA to the automatically applied SLAs for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="sla_id",
-     *				description="ID of SLA to add.",
-     *				paramType="query",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function postTicketSlasAction($ticket_id)
     {
         $ticket = $this->_getTicketOr404($ticket_id, 'modify_slas');
 
-        $sla_id = $this->in->getUint('sla_id');
+        $sla_id = $this->in->getUInt('sla_id');
         $sla    = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
         if (!$sla) {
             return $this->createApiErrorResponse('invalid_argument.sla_id', 'SLA not found');
@@ -2044,36 +1325,20 @@ class TicketController extends AbstractController implements ProtectedController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $ticket_sla->id),
-            $this->generateUrl('api_tickets_ticket_sla', array('ticket_id' => $ticket->id, 'ticket_sla_id' => $ticket_sla->id), true)
+            ['id' => $ticket_sla->id],
+            $this->generateUrl(
+                'api_tickets_ticket_sla',
+                ['ticket_id' => $ticket->id, 'ticket_sla_id' => $ticket_sla->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/slas/{sla_id}",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Determines if a ticket SLA exists for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="sla_id",
-     *				description="ID of the SLA that needs to be checked.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     * @param int $ticket_sla_id
+     *
+     * @return Response
      */
     public function getTicketSlaAction($ticket_id, $ticket_sla_id)
     {
@@ -2088,34 +1353,14 @@ class TicketController extends AbstractController implements ProtectedController
             }
         }
 
-        return $this->createApiResponse(array('exists' => $exists));
+        return $this->createApiResponse(['exists' => $exists]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/slas/{sla_id}",
-     * 	@SWG\Operation(
-     * 		method="DELETE",
-     * 		summary="Deletes a ticket SLA for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="sla_id",
-     *				description="ID of the SLA that needs to be deleted.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     * @param int $ticket_sla_id
+     *
+     * @return Response
      */
     public function deleteTicketSlaAction($ticket_id, $ticket_sla_id)
     {
@@ -2138,71 +1383,34 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/participants",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets the participants in a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function getParticipantsAction($ticket_id)
     {
         $ticket = $this->_getTicketOr404($ticket_id);
 
-        return $this->createApiResponse(array('participants' => $this->getApiData($ticket->participants)));
+        return $this->createApiResponse(['participants' => $this->getApiData($ticket->participants)]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/participants",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Adds a participant to a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="person_id",
-     *				description="ID of the person to add to the ticket.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="email",
-     *				description="Email address of the person to add to the ticket. If no person can be found with this email, one will be created.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function postParticipantsAction($ticket_id)
     {
         $ticket = $this->_getTicketOr404($ticket_id, 'modify_cc');
 
         $person = null;
-        if ($this->in->getUint('person_id')) {
-            $person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
+        if ($this->in->getUInt('person_id')) {
+            $person = $this->em->find('DeskPRO:Person', $this->in->getUInt('person_id'));
         } elseif ($email_address = $this->in->getString('email')) {
             if (!\Orb\Validator\StringEmail::isValueValid($email_address) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($email_address)) {
                 return $this->createApiErrorResponse('invalid_email', 'Invalid email address');
@@ -2228,8 +1436,12 @@ class TicketController extends AbstractController implements ProtectedController
 
         if ($person->id && $ticket->hasParticipantPerson($person)) {
             return $this->createApiCreateResponse(
-                array('person_id' => $person->id),
-                $this->generateUrl('api_tickets_ticket_participant', array('ticket_id' => $ticket->id, 'person_id' => $person->id), true)
+                ['person_id' => $person->id],
+                $this->generateUrl(
+                    'api_tickets_ticket_participant',
+                    ['ticket_id' => $ticket->id, 'person_id' => $person->id],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                )
             );
         }
 
@@ -2255,36 +1467,25 @@ class TicketController extends AbstractController implements ProtectedController
         }
 
         return $this->createApiCreateResponse(
-            array('person_id' => $part->person->id),
-            $this->generateUrl('api_tickets_ticket_participant', array('ticket_id' => $ticket->id, 'person_id' => $part->person->id), true)
+            ['person_id' => $part->person->id],
+            $this->generateUrl(
+                'api_tickets_ticket_participant',
+                ['ticket_id' => $ticket->id, 'person_id' => $part->person->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/participants/{participant_id}",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Determines if a person is participating in a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="participant_id",
-     *				description="ID of the Person that needs to be checked.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     * @param int $person_id
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Response
      */
     public function getParticipantAction($ticket_id, $person_id)
     {
@@ -2292,47 +1493,33 @@ class TicketController extends AbstractController implements ProtectedController
         $person = $this->em->find('DeskPRO:Person', $person_id);
 
         if (!$person) {
-            return $this->createApiResponse(array('exists' => false));
+            return $this->createApiResponse(['exists' => false]);
         }
 
         $part = $this->em->createQuery('
             SELECT part
             FROM DeskPRO:TicketParticipant part
             WHERE part.ticket = ?0 AND part.person = ?1
-        ')->setParameters(array($ticket, $person))->setMaxResults(1)->getOneOrNullResult();
+        ')->setParameters([$ticket, $person])->setMaxResults(1)->getOneOrNullResult();
 
         if (!$part) {
-            return $this->createApiResponse(array('exists' => false));
+            return $this->createApiResponse(['exists' => false]);
         }
 
-        return $this->createApiResponse(array('exists' => true));
+        return $this->createApiResponse(['exists' => true]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/participants/{participant_id}",
-     * 	@SWG\Operation(
-     * 		method="DELETE",
-     * 		summary="Removes a participant from a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="participant_id",
-     *				description="ID of the Person that needs to be removed.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     * @param int $person_id
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function deleteParticipantAction($ticket_id, $person_id)
     {
@@ -2347,7 +1534,7 @@ class TicketController extends AbstractController implements ProtectedController
             SELECT part
             FROM DeskPRO:TicketParticipant part
             WHERE part.ticket = ?0 AND part.person = ?1
-        ')->setParameters(array($ticket, $person))->setMaxResults(1)->getOneOrNullResult();
+        ')->setParameters([$ticket, $person])->setMaxResults(1)->getOneOrNullResult();
 
         if (!$part) {
             return $this->createSuccessResponse();
@@ -2368,56 +1555,21 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/labels",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets the labels for a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function getLabelsAction($ticket_id)
     {
         $ticket = $this->_getTicketOr404($ticket_id);
 
-        return $this->createApiResponse(array('labels' => $this->getApiData($ticket->labels)));
+        return $this->createApiResponse(['labels' => $this->getApiData($ticket->labels)]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/labels",
-     * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Adds a label to a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="label",
-     *				description="Label to add.",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     *
+     * @return Response
      */
     public function postLabelsAction($ticket_id)
     {
@@ -2433,73 +1585,37 @@ class TicketController extends AbstractController implements ProtectedController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('label' => $label),
-            $this->generateUrl('api_tickets_ticket_label', array('ticket_id' => $ticket->id, 'label' => $label), true)
+            ['label' => $label],
+            $this->generateUrl(
+                'api_tickets_ticket_label',
+                ['ticket_id' => $ticket->id, 'label' => $label],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/labels/{label}",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Determines if the ticket has the label.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="label",
-     *				description="label to check",
-     *				paramType="path",
-     *				required=true,
-     *				type="string"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     * @param int $label
+     *
+     * @return Response
      */
     public function getLabelAction($ticket_id, $label)
     {
         $ticket = $this->_getTicketOr404($ticket_id);
 
         if ($ticket->getLabelManager()->hasLabel($label)) {
-            return $this->createApiResponse(array('exists' => true));
+            return $this->createApiResponse(['exists' => true]);
         } else {
-            return $this->createApiResponse(array('exists' => false));
+            return $this->createApiResponse(['exists' => false]);
         }
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/{ticket_id}/labels/{label}",
-     * 	@SWG\Operation(
-     * 		method="DELETE",
-     * 		summary="Removes a label from a ticket.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="ticket_id",
-     *				description="ID of the ticket that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			@SWG\Parameter(
-     *				name="label",
-     *				description="label that needs to deleted.",
-     *				paramType="path",
-     *				required=true,
-     *				type="string"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="Ticket not found")
-     * 	)
-     * )
+     * @param int $ticket_id
+     * @param int $label
+     *
+     * @return Response
      */
     public function deleteLabelAction($ticket_id, $label)
     {
@@ -2513,30 +1629,18 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/fields",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets available custom ticket fields."
-     * 	)
-     * )
+     * @return Response
      */
     public function getFieldsAction()
     {
         $field_manager = $this->container->getSystemService('ticket_fields_manager');
         $fields        = $field_manager->getFields();
 
-        return $this->createApiResponse(array('fields' => $this->getApiData($fields)));
+        return $this->createApiResponse(['fields' => $this->getApiData($fields)]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/departments",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets available ticket departments."
-     * 	)
-     * )
+     * @return Response
      */
     public function getDepartmentsAction()
     {
@@ -2548,49 +1652,31 @@ class TicketController extends AbstractController implements ProtectedController
             }
         }
 
-        return $this->createApiResponse(array('departments' => $departments));
+        return $this->createApiResponse(['departments' => $departments]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/products",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets available ticket products."
-     * 	)
-     * )
+     * @return Response
      */
     public function getProductsAction()
     {
         $products = $this->em->getRepository('DeskPRO:Product')->getFlatHierarchy();
 
-        return $this->createApiResponse(array('products' => $products));
+        return $this->createApiResponse(['products' => $products]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/categories",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets available ticket categories."
-     * 	)
-     * )
+     * @return Response
      */
     public function getCategoriesAction()
     {
         $categories = $this->em->getRepository('DeskPRO:TicketCategory')->getFlatHierarchy();
 
-        return $this->createApiResponse(array('categories' => $categories));
+        return $this->createApiResponse(['categories' => $categories]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/priorities",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets available ticket priorities."
-     * 	)
-     * )
+     * @return Response
      */
     public function getPrioritiesAction()
     {
@@ -2600,17 +1686,11 @@ class TicketController extends AbstractController implements ProtectedController
             ORDER BY p.priority
         ')->execute();
 
-        return $this->createApiResponse(array('priorities' => $this->getApiData($priorities)));
+        return $this->createApiResponse(['priorities' => $this->getApiData($priorities)]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/workflows",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets available ticket workflows."
-     * 	)
-     * )
+     * @return Response
      */
     public function getWorkflowsAction()
     {
@@ -2620,43 +1700,23 @@ class TicketController extends AbstractController implements ProtectedController
             ORDER BY w.display_order
         ')->execute();
 
-        return $this->createApiResponse(array('workflows' => $this->getApiData($workflows)));
+        return $this->createApiResponse(['workflows' => $this->getApiData($workflows)]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/slas",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets available ticket SLAs."
-     * 	)
-     * )
+     * @return Response
      */
     public function getSlasAction()
     {
         $slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
 
-        return $this->createApiResponse(array('slas' => $this->getApiData($slas)));
+        return $this->createApiResponse(['slas' => $this->getApiData($slas)]);
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/slas/{sla_id}",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets an SLA.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="sla_id",
-     *				description="ID of the SLA that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="There is no SLA with ID")
-     * 	)
-     * )
+     * @param int $sla_id
+     *
+     * @return Response
      */
     public function getSlaAction($sla_id)
     {
@@ -2665,7 +1725,7 @@ class TicketController extends AbstractController implements ProtectedController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no SLA with ID $sla_id");
         }
 
-        return $this->createApiResponse(array('sla' => $sla->toApiData()));
+        return $this->createApiResponse(['sla' => $sla->toApiData()]);
     }
 
     /**
@@ -2680,7 +1740,7 @@ class TicketController extends AbstractController implements ProtectedController
         $q = $this->em->createQuery('SELECT t FROM DeskPRO:Ticket t WHERE t.id = ?0');
         $q->setFetchMode('DeskPRO:Person', 'person', 'EAGER');
         $q->setFetchMode('DeskPRO:Person', 'agent', 'EAGER');
-        $q->setParameters(array($id));
+        $q->setParameters([$id]);
 
         $ticket = $q->getOneOrNullResult();
 
@@ -2722,12 +1782,12 @@ class TicketController extends AbstractController implements ProtectedController
     /**
      * @param $ticket_id
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function updateTicketDatesAction($ticket_id, Request $request)
     {
         $fields = json_decode($request->getContent(), 1);
-        $vals   = array();
+        $vals   = [];
 
         foreach ($fields as $k => $v) {
             $v      = 0 === strpos($k, 'date_') ? date('Y-m-d H:i:s', strtotime($v)) : (int) $v;

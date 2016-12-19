@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
@@ -47,17 +48,17 @@ class DownloadResults
     /**
      * @var array
      */
-    protected $download_ids = array();
+    protected $download_ids = [];
 
     /**
      * @var array
      */
-    protected $order_by = null;
+    protected $orderBy = null;
 
     /**
      * @var \Application\DeskPRO\Entity\ResultCache
      */
-    protected $result_cache;
+    protected $resultCache;
 
     /**
      * $options can have:
@@ -70,32 +71,58 @@ class DownloadResults
      *
      * @return \Application\AgentBundle\Controller\Helper\DownloadResults
      */
-    public static function newFromRequest($controller, array $options = array())
+    public static function newFromRequest($controller, array $options = [])
     {
-        $result_cache = false;
+        $resultCache = false;
+
+        if (!$orderBy = $controller->in->getString('order_by')) {
+            $orderBy = $controller->person->getPref('agent.ui.download-filter-order-by.0');
+        }
+
         if ($controller->in->getUint('cache_id')) {
-            $result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($controller->in->getUint('cache_id'));
-            if ($result_cache['person_id'] != $controller->person['id']) {
-                $result_cache = false;
+            $repo        = $caches        = App::getEntityRepository(ResultCache::class);
+            $resultCache = $repo->find($controller->in->getUint('cache_id'));
+            if (
+                $resultCache['person_id'] != $controller->person['id']
+                // the right way to compare is to use whole criteria, but right now downloads are not using it
+                // more then this it need to be refactored at all, cause result_cache is almost useless, you can't fetch
+                // it without additional checks
+                || $resultCache['criteria']['order_by'] != $orderBy
+            ) {
+                $resultCache = false;
+            }
+
+            if (!$resultCache) {
+                $caches = $repo->findBy(['person' => $controller->person, 'results_type' => 'download']);
+                foreach ($caches as $cache) {
+                    if (
+                        isset($cache['extra']['category_id'])
+                        && $cache['criteria']['order_by'] === $orderBy
+                        && $cache['extra']['category_id'] === $options['category']['id']
+                    ) {
+                        $resultCache = $cache;
+                        break;
+                    }
+                }
             }
         }
 
-        #------------------------------
-        # If there's no result set, we're running it for the first time
-        #------------------------------
+        //------------------------------
+        // If there's no result set, we're running it for the first time
+        //------------------------------
 
-        if (!$result_cache) {
+        if (!$resultCache) {
             $term_rules = RuleBuilder::newTermsBuilder();
 
             if (isset($options['category'])) {
-                $terms = array(
-                    array('type' => 'category_specific', 'op' => 'is', 'options' => array('category' => $options['category']['id'])),
-                    array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
-                );
+                $terms = [
+                    ['type' => 'category_specific', 'op' => 'is', 'options' => ['category' => $options['category']['id']]],
+                    ['type' => 'agent_list', 'op' => 'is', 'options' => 1],
+                ];
             } elseif (isset($options['show_all'])) {
-                $terms = array(
-                    array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
-                );
+                $terms = [
+                    ['type' => 'agent_list', 'op' => 'is', 'options' => 1],
+                ];
             } else {
                 $form_terms = $controller->in->getCleanValueArray('terms', 'raw', 'string');
                 $form_terms = Arrays::removeFalsey($form_terms);
@@ -108,54 +135,53 @@ class DownloadResults
                 $searcher->addTerm($term['type'], $term['op'], $term['options']);
             }
 
-            $order_by = $controller->in->getString('order_by');
-            if (!$order_by) {
-                $order_by = $controller->person->getPref('agent.ui.download-filter-order-by.0');
-            }
-
-            if ($order_by) {
-                $searcher->setOrderByCode($order_by);
+            if ($orderBy) {
+                $searcher->setOrderByCode($orderBy);
             } elseif (!empty($options['default_order_by'])) {
                 $searcher->setOrderByCode($options['default_order_by']);
             } else {
-                $order_by = 'downloads.date_created:desc';
-                $searcher->setOrderByCode($order_by);
+                $orderBy = 'downloads.date_created:desc';
+                $searcher->setOrderByCode($orderBy);
             }
 
             $results = $searcher->getMatches();
 
-            $result_cache                = new ResultCache();
-            $result_cache['person']      = $controller->person;
-            $result_cache['criteria']    = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
-            $result_cache['extra']       = array('summary' => $searcher->getSummary());
-            $result_cache['results']     = $results;
-            $result_cache['num_results'] = count($results);
+            $resultCache             = new ResultCache();
+            $resultCache['person']   = $controller->person;
+            $resultCache['criteria'] = ['terms' => $searcher->getTerms(), 'order_by' => $orderBy];
+            $resultCache['extra']    = [
+                'summary'     => $searcher->getSummary(),
+                'category_id' => $options['category']['id'],
+            ];
+            $resultCache['results']      = $results;
+            $resultCache['num_results']  = count($results);
+            $resultCache['results_type'] = 'download';
 
-            $controller->em->persist($result_cache);
+            $controller->em->persist($resultCache);
             $controller->em->flush();
         }
 
-        return new self($controller, $result_cache);
+        return new self($controller, $resultCache);
     }
 
     /**
      * @return \Application\AgentBundle\Controller\Helper\DownloadResults
      */
-    public static function newFromResultCache($controller, ResultCache $result_cache)
+    public static function newFromResultCache($controller, ResultCache $resultCache)
     {
         $helper = new self($controller);
-        $helper->setDownloadIds($result_cache['results']);
+        $helper->setDownloadIds($resultCache['results']);
 
         return $helper;
     }
 
-    public function __construct($controller, ResultCache $result_cache = null)
+    public function __construct($controller, ResultCache $resultCache = null)
     {
         $this->controller = $controller;
 
-        if ($result_cache) {
-            $this->result_cache = $result_cache;
-            $this->setDownloadIds($result_cache['results']);
+        if ($resultCache) {
+            $this->result_cache = $resultCache;
+            $this->setDownloadIds($resultCache['results']);
         }
     }
 
@@ -201,7 +227,7 @@ class DownloadResults
         $page_download_ids = Arrays::getPageChunk($download_ids, $page, $per_page);
         $downloads_raw     = App::getEntityRepository('DeskPRO:Download')->getByResultIds($page_download_ids);
 
-        $downloads = array();
+        $downloads = [];
         foreach ($download_ids as $tid) {
             if (isset($downloads_raw[$tid])) {
                 $downloads[$tid] = $downloads_raw[$tid];

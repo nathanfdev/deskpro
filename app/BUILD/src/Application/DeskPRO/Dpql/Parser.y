@@ -90,7 +90,7 @@ trailing_semicolon ::= .
 
 
 display_query ::= display_clause(A) select_clause(B) from_clause(C) where_clause(D)
-	split_clause(E) group_clause(F) order_clause(G) limit_clause(H) .
+	split_clause(E) group_clause(F) with_rollup_clause(ROLLUP) order_clause(G) limit_clause(H) .
 {
 	$res = new Statement\Display(A, B, C);
 
@@ -112,10 +112,12 @@ display_query ::= display_clause(A) select_clause(B) from_clause(C) where_clause
 			$res->setLimitOffset(H['offset']);
 		}
 	}
+	if (ROLLUP) {
+	    $res->setWithRollup(true);
+	}
 
 	$this->_result = $res;
 }
-
 
 
 display_clause(res) ::= DISPLAY display_type(A) display_type_option(B).
@@ -293,6 +295,14 @@ group_expression(res) ::= expression(A) alias_optional(B) .
 		res = A;
 	}
 }
+
+
+
+with_rollup_clause(res) ::= WITH ROLLUP .
+{
+    res = true;
+}
+with_rollup_clause(res) ::= .
 
 
 
@@ -485,12 +495,12 @@ expression(res) ::= COLUMN(A) .
 
 expression(res) ::= LITERAL(A) .
 {
-	res = new Statement\Part\String(A);
+	res = new Statement\Part\StringPart(A);
 }
 
 expression(res) ::= QUOTED(A) .
 {
-	res = new Statement\Part\String($this->processQuoted(A));
+	res = new Statement\Part\StringPart($this->processQuoted(A));
 }
 
 expression(res) ::= PLACEHOLDER(A) .

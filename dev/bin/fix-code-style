@@ -1,8 +1,43 @@
 #!/usr/bin/env php
 <?php
-define('PHP_CS_FIXER', realpath(__DIR__ . '/../../app/vendor/bin/php-cs-fixer'));
+define('PHP_CS_FIXER', realpath(__DIR__ . '/../../app/BUILD/vendor/bin/php-cs-fixer'));
 define('PHP_CS_CONFIG_GIT', realpath(__DIR__ . '/../.php_cs_git'));
 define('PHP_CS_CONFIG_FULL', realpath(__DIR__ . '/../.php_cs'));
+
+/**
+ * we should run php-cs without xdebug so probably the best way is to run it with custom config
+ * gonna gather all extensions and just skip xdebug
+ * and do so if and only if xdebug extension is loaded
+ */
+$zend_extensions = get_loaded_extensions(true);
+$xdebug_loaded = array_reduce($zend_extensions, function($loaded, $current) {return stripos($current, 'xdebug') !== false;}, false);
+$options_string = '';
+
+if($xdebug_loaded) {
+    $extensions = array_merge(get_loaded_extensions(), $zend_extensions);
+    $extensions = array_filter($extensions, function($extension) {
+        switch(true) {
+            case (stripos($extension, 'xdebug') !== false):
+                return false;
+            // should exclude mysql extensions, cause they need to be sorted. Since we just trying to check code - it's not
+            // necessary to load it
+            case (stripos($extension, 'mysql') !== false):
+                return false;
+            default:
+                return true;
+        }
+    }
+    );
+    $options = [];
+    $extdir = ini_get('extension_dir');
+    foreach($extensions as $extension) {
+        $extension_full_name = $extension.'.so';
+        if(file_exists($extdir.DIRECTORY_SEPARATOR.$extension_full_name)) {
+            $options[] = '-d extension='.$extension_full_name;
+        }
+    }
+    $options_string = ' --no-php-ini '.implode(' ', $options);
+}
 
 // parse args
 $dry_run = false;
@@ -22,7 +57,7 @@ $outputs = null;
 $return_status = null;
 $config_file = ($full_run ? PHP_CS_CONFIG_FULL : PHP_CS_CONFIG_GIT);
 
-$cmd = PHP_CS_FIXER . ' --verbose --config-file="' . $config_file . '" fix';
+$cmd = sprintf('/usr/bin/env php %s %s --verbose --config-file="%s" fix ', $options_string, PHP_CS_FIXER, $config_file);
 
 // are we running in verbose mode?
 if ($dry_run) {
@@ -37,3 +72,4 @@ if (0 !== $return_status) {
     exit($return_status);
 }
 echo PHP_EOL.PHP_EOL.'Well done. No code style changes necessary.' . PHP_EOL;
+exit(0);

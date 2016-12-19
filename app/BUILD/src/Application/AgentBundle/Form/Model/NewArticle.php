@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
@@ -52,9 +53,9 @@ class NewArticle
     /** @var string */
     public $slug;
     /** @var array */
-    public $labels = array();
+    public $labels = [];
     /** @var array */
-    public $attach = array();
+    public $attach = [];
 
     /** @var Article */
     protected $_article;
@@ -80,13 +81,13 @@ class NewArticle
         $article->setStatusCode($this->status);
 
         if ($article->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {
-            $article->setStatusCode('hidden.validating');
+            $article->setStatusCode('hidden.unpublished');
         }
 
         $article->title = $this->title;
 
         $article->content = $this->_person_context->hasPerm('agent_publish.can_insert_html')
-            ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', array('noclean' => true))
+            ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', ['noclean' => true])
             : App::$container->getInputCleaner()->clean($this->content ?: '', 'html');
 
         $lang = null;

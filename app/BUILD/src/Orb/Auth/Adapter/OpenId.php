@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Auth
  */
+
 namespace Orb\Auth\Adapter;
 
 use Orb\Auth\Result;
@@ -64,18 +65,18 @@ class OpenId extends AbstractCallbackAdatper
         $openid            = new \LightOpenID();
         $openid->identity  = $this->openid_identifier;
         $openid->returnUrl = $this->getCallbackUrl();
-        $openid->optional  = array(
+        $openid->optional  = [
             'namePerson/friendly', 'contact/email', 'namePerson',
             'birthDate', 'person/gender', 'contact/country/home',
             'pref/language', 'pref/timezone',
-        );
+        ];
 
         try {
-            $result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $openid->authUrl()));
+            $result = new Result(Result::REQUIRES_REDIRECT, null, [Result::MSG_REDIRECT => $openid->authUrl()]);
 
             return $result;
         } catch (\ErrorException $e) {
-            $result = new Result(Result::FAILURE_EXCEPTION, null, array(Result::MSG_EXCEPTION => $e));
+            $result = new Result(Result::FAILURE_EXCEPTION, null, [Result::MSG_EXCEPTION => $e]);
 
             return $result;
         }
@@ -86,20 +87,20 @@ class OpenId extends AbstractCallbackAdatper
         $openid = new \LightOpenID();
 
         if (!$openid->validate()) {
-            return new Result(Result::FAILURE, null, array('error_code' => 'invalid_validate', 'error_message' => 'Could not validate'));
+            return new Result(Result::FAILURE, null, ['error_code' => 'invalid_validate', 'error_message' => 'Could not validate']);
         }
 
         $attributes = $openid->getAttributes();
-        $userinfo   = array(
-            'nickname' => !empty($attributes['namePerson/friendly'])   ? $attributes['namePerson/friendly']    : null,
-            'email'    => !empty($attributes['email'])                 ? $attributes['email']                  : null,
-            'fullname' => !empty($attributes['namePerson'])            ? $attributes['namePerson']             : null,
-            'birthday' => !empty($attributes['birthDate'])             ? $attributes['birthDate']              : null,
-            'gender'   => !empty($attributes['person/gender'])         ? $attributes['person/gender']          : null,
-            'country'  => !empty($attributes['contact/country/home'])  ? $attributes['contact/country/home']   : null,
-            'language' => !empty($attributes['pref/language'])         ? $attributes['pref/language']          : null,
-            'timezone' => !empty($attributes['pref/timezone'])         ? $attributes['pref/timezone']          : null,
-        );
+        $userinfo   = [
+            'nickname' => !empty($attributes['namePerson/friendly']) ? $attributes['namePerson/friendly'] : null,
+            'email'    => !empty($attributes['email']) ? $attributes['email'] : null,
+            'fullname' => !empty($attributes['namePerson']) ? $attributes['namePerson'] : null,
+            'birthday' => !empty($attributes['birthDate']) ? $attributes['birthDate'] : null,
+            'gender'   => !empty($attributes['person/gender']) ? $attributes['person/gender'] : null,
+            'country'  => !empty($attributes['contact/country/home']) ? $attributes['contact/country/home'] : null,
+            'language' => !empty($attributes['pref/language']) ? $attributes['pref/language'] : null,
+            'timezone' => !empty($attributes['pref/timezone']) ? $attributes['pref/timezone'] : null,
+        ];
         $userinfo = Arrays::removeFalsey($userinfo);
 
         $identity = new \Orb\Auth\Identity($openid->identity, $userinfo);

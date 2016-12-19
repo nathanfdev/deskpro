@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
@@ -39,7 +40,7 @@ use Application\DeskPRO\Form\Type\CriteriaFilterField\DateType;
  */
 class Date extends HandlerAbstract
 {
-    public function renderHtml($data = null, array $template_vars = array())
+    public function renderHtml($data = null, array $template_vars = [])
     {
         if ($data === null) {
             return '';
@@ -54,7 +55,7 @@ class Date extends HandlerAbstract
         return parent::renderText($data, $template_vars);
     }
 
-    public function renderText($data = null, array $template_vars = array())
+    public function renderText($data = null, array $template_vars = [])
     {
         if ($data === null) {
             return '';
@@ -79,19 +80,19 @@ class Date extends HandlerAbstract
         }
 
         if (!$value) {
-            return array();
+            return [];
         }
 
         $date = \DateTime::createFromFormat('Y-m-d', $value, App::getCurrentPerson()->getDateTimezone());
         if (!$date) {
-            return array();
+            return [];
         }
 
         $date = \Orb\Util\Dates::convertToUtcDateTime($date);
 
-        return array(
-            array($this->field_def['id'], 'value', $date->getTimestamp()),
-        );
+        return [
+            [$this->field_def['id'], 'value', $date->getTimestamp()],
+        ];
     }
 
     public function getFormField($data = null)
@@ -151,7 +152,7 @@ class Date extends HandlerAbstract
             $this->getFormFieldName(),
             new DateType(),
             $setData,
-            array('required' => false)
+            ['required' => false]
         )->getForm();
     }
 
@@ -160,7 +161,7 @@ class Date extends HandlerAbstract
         $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
 
         if ($data && !is_scalar($data)) {
-            return $this->makeErrorArray(array('date_invalid'));
+            return $this->makeErrorArray(['date_invalid']);
         }
 
         // Timestamp value
@@ -168,36 +169,36 @@ class Date extends HandlerAbstract
             $data = date($this->getFormat(), $data);
         }
 
-        #------------------------------
-        # Validate options
-        #------------------------------
+        //------------------------------
+        // Validate options
+        //------------------------------
 
         $opt_prefix = '';
         if ($context == self::CONTEXT_AGENT) {
             $opt_prefix = 'agent_';
         }
 
-        $options = array();
-        foreach (array('required') as $k) {
+        $options = [];
+        foreach (['required'] as $k) {
             $options[$k] = $this->field_def->getOption($opt_prefix.$k);
         }
 
         if ($options['required']) {
             if (!$data) {
-                return $this->makeErrorArray(array('required'));
+                return $this->makeErrorArray(['required']);
             }
         }
 
         if ($data) {
             $date = \DateTime::createFromFormat($this->getFormat(), $data);
             if (!$date) {
-                return $this->makeErrorArray(array('date_invalid'));
+                return $this->makeErrorArray(['date_invalid']);
             }
         }
 
-        #------------------------------
-        # Validate ranges
-        #------------------------------
+        //------------------------------
+        // Validate ranges
+        //------------------------------
 
         if ($data) {
             try {
@@ -214,13 +215,13 @@ class Date extends HandlerAbstract
             // Days of week
             if ($valid_dow = $this->field_def->getOption('date_valid_dow')) {
                 if (!in_array($dow, $valid_dow)) {
-                    return $this->makeErrorArray(array('date_invalid_dow'));
+                    return $this->makeErrorArray(['date_invalid_dow']);
                 }
             }
 
             // Specific date ranges
             if ($this->field_def->getOption('date_valid_type') == 'date') {
-                $d1 = $this->field_def->getOption('date_valid_range1');
+                $d1 = $this->field_def->getOption('date_valid_date1');
                 $d2 = $this->field_def->getOption('date_valid_date2');
 
                 if ($d1) {
@@ -228,7 +229,7 @@ class Date extends HandlerAbstract
                     $d1->setTime(0, 0, 0);
 
                     if ($date_admin < $d1) {
-                        return $this->makeErrorArray(array('date_invalid_range'));
+                        return $this->makeErrorArray(['date_invalid_range']);
                     }
                 }
                 if ($d2) {
@@ -236,7 +237,7 @@ class Date extends HandlerAbstract
                     $d2->setTime(23, 59, 59);
 
                     if ($date_admin > $d2) {
-                        return $this->makeErrorArray(array('date_invalid_range'));
+                        return $this->makeErrorArray(['date_invalid_range']);
                     }
                 }
 
@@ -261,17 +262,17 @@ class Date extends HandlerAbstract
                 $d2->setTime(23, 59, 59);
 
                 if ($date_admin < $d1 || $date_admin > $d2) {
-                    return $this->makeErrorArray(array('date_invalid_range'));
+                    return $this->makeErrorArray(['date_invalid_range']);
                 }
             }
         }
 
-        return array();
+        return [];
     }
 
     public function getSearchCapabilities()
     {
-        return array('lte', 'gte', 'between');
+        return ['lte', 'gte', 'between'];
     }
 
     public function getSearchType()

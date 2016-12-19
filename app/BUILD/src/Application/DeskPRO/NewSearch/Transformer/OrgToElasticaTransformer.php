@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,12 +39,9 @@ use Orb\Util\Arrays;
 class OrgToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform.
+     * {@inheritdoc}
      *
      * @param Organization $object
-     * @param array        $fields
-     *
-     * @return Document
      */
     public function transform($object, array $fields)
     {
@@ -54,7 +51,7 @@ class OrgToElasticaTransformer implements ModelToElasticaTransformerInterface
 
         $document->set('name', $object->name);
 
-        $email_domains = array();
+        $email_domains = [];
         foreach ($object->email_domains as $d) {
             $email_domains[] = $d->domain;
         }
@@ -64,7 +61,9 @@ class OrgToElasticaTransformer implements ModelToElasticaTransformerInterface
         }
 
         if ($object->labels) {
-            $labels = Arrays::map(function ($l) { return $l->label; }, $object->labels);
+            $labels = Arrays::map(function ($l) {
+                return $l->label;
+            }, $object->labels);
             $document->set('labels', $labels);
         }
 

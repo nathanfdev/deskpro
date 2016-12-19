@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -57,19 +58,17 @@ class StatusAction extends AbstractAction implements PermissionableAction
 
     public function setStatus($status)
     {
-        if (!in_array($status, array(
+        if (!in_array($status, [
             'awaiting_agent', 'awaiting_user', 'resolved', 'archived',
-            'hidden.spam', 'hidden.validating', 'hidden.deleted',
-        ))) {
+            'hidden.spam', 'hidden.deleted',
+        ])) {
             throw new \InvalidArgumentException("Invalid status `$status`");
         }
         $this->status = $status;
     }
 
     /**
-     * True to stop processing actions after this one.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function checkPermission(Ticket $ticket, Person $person)
     {
@@ -95,9 +94,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -137,7 +134,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
                         new_ticket_id = VALUES(new_ticket_id),
                         reason = VALUES(reason),
                         old_ptac = VALUES(old_ptac)
-                ", array($ticket->getId(), $delete_person->getId(), gmdate('Y-m-d H:i:s'), $ticket->auth));
+                ", [$ticket->getId(), $delete_person->getId(), gmdate('Y-m-d H:i:s'), $ticket->auth]);
             }
 
             App::getOrm()->persist($ticket);
@@ -149,19 +146,17 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
         if ($ticket->getStatusCode() == $this->status) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('action' => 'status', 'status' => $this->status),
-        );
+        return [
+            ['action' => 'status', 'status' => $this->status],
+        ];
     }
 
     /**
@@ -175,9 +170,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -185,12 +178,12 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {
         $tr = App::getTranslator();
 
-        return $tr->phrase('admin.tickets.set_status_to_x', array('status' => $tr->phrase('agent.tickets.status_'.str_replace('.', '_', $this->status))));
+        return $tr->phrase('admin.tickets.set_status_to_x', ['status' => $tr->phrase('agent.tickets.status_'.str_replace('.', '_', $this->status))]);
     }
 }

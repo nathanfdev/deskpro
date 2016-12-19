@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * Orb.
  */
+
 namespace Orb\Doctrine\Common\Cache;
 
 use Doctrine\DBAL\Connection;
@@ -55,14 +56,14 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
      *
      * @var array
      */
-    protected $loaded = array();
+    protected $loaded = [];
 
     /**
      * Array of prefixes we've prelaoded.
      *
      * @var array
      */
-    protected $loaded_prefixes = array();
+    protected $loaded_prefixes = [];
 
     /**
      * @var bool
@@ -168,15 +169,15 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
                 SELECT id, data
                 FROM cache
                 WHERE id IN ($keys_in) AND (date_expire IS NULL OR date_expire > ?)
-            ", array($date));
+            ", [$date]);
         } catch (\Exception $e) {
-            $records = array();
+            $records = [];
             if (!$this->silence_exceptions) {
                 throw $e;
             }
         }
 
-        $got_keys = array();
+        $got_keys = [];
         foreach ($records as $rec) {
             $got_keys[$rec['id']];
             $this->loaded[$rec['id']] = $rec['data'];
@@ -216,9 +217,9 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
                 SELECT id, data
                 FROM cache
                 WHERE id LIKE ? AND (date_expire IS NULL OR date_expire > ?)
-            ', array($prefix_like, $date));
+            ', [$prefix_like, $date]);
         } catch (\Exception $e) {
-            $records = array();
+            $records = [];
             if (!$this->silence_exceptions) {
                 throw $e;
             }
@@ -243,7 +244,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
             $this->db->fetchAll('
                 DELETE FROM cache
                 WHERE id LIKE ?
-            ', array($prefix_like));
+            ', [$prefix_like]);
         } catch (\Exception $e) {
             if (!$this->silence_exceptions) {
                 throw $e;
@@ -260,9 +261,9 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     /**
      * Fetches an entry from the cache.
      *
-     * @param string $id cache id The id of the cache entry to fetch.
+     * @param string $id cache id The id of the cache entry to fetch
      *
-     * @return string The cached data or FALSE, if no cache entry exists for the given id.
+     * @return string The cached data or FALSE, if no cache entry exists for the given id
      */
     public function fetch($id)
     {
@@ -295,7 +296,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
                     SELECT data
                     FROM cache
                     WHERE id = ? AND (date_expire IS NULL OR date_expire > ?)
-                ', array($prefix_id, $date));
+                ', [$prefix_id, $date]);
             } catch (\Exception $e) {
                 $record = null;
                 if (!$this->silence_exceptions) {
@@ -323,9 +324,9 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     /**
      * Test if an entry exists in the cache.
      *
-     * @param string $id cache id The cache id of the entry to check for.
+     * @param string $id cache id The cache id of the entry to check for
      *
-     * @return bool TRUE if a cache entry exists for the given cache id, FALSE otherwise.
+     * @return bool TRUE if a cache entry exists for the given cache id, FALSE otherwise
      */
     public function contains($id)
     {
@@ -333,11 +334,10 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 
         // If it exists in the array we know for sure if its set or not
         if (array_key_exists($prefix_id, $this->loaded)) {
-            return ($this->loaded[$prefix_id] !== null);
+            return $this->loaded[$prefix_id] !== null;
 
         // Otherwise we have to do a query to fetch it
         } else {
-
             // Try to see if it matches one of the laoded prefixes
             foreach ($this->loaded_prefixes as $prefix) {
                 // If its found but it didnt match above, then we know it wasnt loaded
@@ -349,18 +349,18 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
             }
 
             // Fetch it into local storage now with fetch()
-            return ($this->fetch($id) !== false);
+            return $this->fetch($id) !== false;
         }
     }
 
     /**
      * Puts data into the cache.
      *
-     * @param string $id       The cache id.
-     * @param string $data     The cache entry/data.
-     * @param int    $lifeTime The lifetime. If != 0, sets a specific lifetime for this cache entry (0 => infinite lifeTime).
+     * @param string $id       The cache id
+     * @param string $data     The cache entry/data
+     * @param int    $lifeTime The lifetime. If != 0, sets a specific lifetime for this cache entry (0 => infinite lifeTime)
      *
-     * @return bool TRUE if the entry was successfully stored in the cache, FALSE otherwise.
+     * @return bool TRUE if the entry was successfully stored in the cache, FALSE otherwise
      */
     public function save($id, $data, $lifeTime = 0)
     {
@@ -378,7 +378,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         try {
             $this->db->executeUpdate('
                 REPLACE INTO cache SET id = ?, data = ?, date_expire = ?
-            ', array($prefix_id, $data, $date));
+            ', [$prefix_id, $data, $date]);
         } catch (\Exception $e) {
             if (!$this->silence_exceptions) {
                 throw $e;
@@ -395,7 +395,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
      *
      * @param string $id cache id
      *
-     * @return bool TRUE if the cache entry was successfully deleted, FALSE otherwise.
+     * @return bool TRUE if the cache entry was successfully deleted, FALSE otherwise
      */
     public function delete($id)
     {
@@ -405,7 +405,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
             $this->db->executeUpdate('
                 DELETE FROM cache
                 WHERE id = ?
-            ', array($prefix_id));
+            ', [$prefix_id]);
         } catch (\Exception $e) {
             if (!$this->silence_exceptions) {
                 throw $e;
@@ -428,7 +428,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
             $this->db->executeUpdate('
                 DELETE FROM cache
                 WHERE id LIKE ?
-            ', array($prefix_like));
+            ', [$prefix_like]);
         } catch (\Exception $e) {
             if (!$this->silence_exceptions) {
                 throw $e;
@@ -440,8 +440,6 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         }
     }
 
-    /**
-     */
     public function getStats()
     {
         return;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,13 @@
  *
  * @category Install
  */
+
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 
 class TicketLayoutData extends AbstractDefaultData
 {
@@ -49,12 +51,18 @@ class TicketLayoutData extends AbstractDefaultData
             $ticket_layout->user_layout  = new Layout();
             $ticket_layout->agent_layout = new Layout();
 
-            foreach (array('department', 'subject', 'message') as $field) {
+            foreach ([
+                FormFields::PERSON,
+                FormFields::DEPARTMENT,
+                FormFields::SUBJECT,
+                FormFields::MESSAGE,
+                FormFields::ATTACHMENTS,
+            ] as $field) {
                 $ticket_layout->user_layout->add(new LayoutField($field));
                 $ticket_layout->agent_layout->add(new LayoutField($field));
             }
 
-            $ticket_layout->user_layout->add(new LayoutField('attach'));
+            $ticket_layout->user_layout->add(new LayoutField(FormFields::ATTACHMENTS));
 
             $this->getEm()->persist($ticket_layout);
             $this->getEm()->flush();
@@ -65,7 +73,7 @@ class TicketLayoutData extends AbstractDefaultData
     {
         $exists = $this->getDb()->fetchColumn('SELECT id FROM ticket_layouts WHERE department_id IS NULL');
         if ($exists) {
-            $this->getDb()->delete('ticket_layouts', array('id' => $exists));
+            $this->getDb()->delete('ticket_layouts', ['id' => $exists]);
         }
         $this->runInstall();
     }

@@ -1,0 +1,142 @@
+services:
+
+    # these services are portal specific, and most of the classes that they reference
+    # can be migrated to the PortalBundle/Security directory because they can't really
+    # be used in a general sense, outside of the portal.
+
+    security.authentication.success_handler:
+            class:  DeskPRO\Bundle\AppBundle\Security\Handler\AuthenticationSuccessHandler
+            arguments:  ["@security.http_utils", {}]
+            calls:
+                - [ setContainer, [ "@service_container" ] ]
+            tags:
+                - { name: 'monolog.logger', channel: 'security' }
+
+    security.authentication.logout_handler:
+            class:  DeskPRO\Bundle\AppBundle\Security\Handler\LogoutHandler
+            arguments:
+                - "@doctrine.orm.default_entity_manager"
+                - "@security.http_utils"
+
+    security.authentication.failure_handler:
+        class: DeskPRO\Bundle\AppBundle\Security\Handler\AuthenticationFailureHandler
+        arguments:
+          - "@http_kernel"
+          - "@security.http_utils"
+          - {}
+          - "@logger"
+          - "@portal_email_sender"
+          - "@doctrine.dbal.default_connection"
+          - "@person_repository"
+          - "@anti_abuse"
+        tags:
+            - { name: 'monolog.logger', channel: 'security' }
+
+    dp_security.form_login.provider:
+        class: DeskPRO\Bundle\AppBundle\Security\Authentication\Provider\DpFormLoginProvider
+        arguments:
+          - "@dp_authentication_manager.user"
+          - "@dp_person_user_provider"
+          - "@session"
+          - "@dp_sys.alerts.event_logger"
+
+    dp_security.legacy_remember_me.provider:
+      class: DeskPRO\Bundle\AppBundle\Security\Authentication\Provider\LegacyRememberMeProvider
+      arguments:
+        - "@dp_person_user_provider"
+        - "@session"
+
+    dp_security.agent_impersonate.provider:
+        class: DeskPRO\Bundle\AppBundle\Security\Authentication\Provider\AgentImpersonateProvider
+        arguments:
+          - "@dp_authentication_manager.user"
+          - "@dp_person_user_provider"
+          - "@session"
+          - "@doctrine.orm.default_entity_manager"
+
+    dp_security.transfer_session.provider:
+        class: DeskPRO\Bundle\AppBundle\Security\Authentication\Provider\TransferSessionAuthProvider
+        arguments:
+          - "@dp_authentication_manager.user"
+          - "@dp_person_user_provider"
+          - "@session"
+          - "@doctrine.orm.default_entity_manager"
+
+    dp_security.form_login.listener:
+        class: DeskPRO\Bundle\AppBundle\Security\Firewall\DpAuthListener
+        parent: security.authentication.listener.abstract
+        abstract: true
+        calls:
+            - [ setContainer, ["@service_container"] ]
+
+    dp_security.transfer_session.listener:
+        class: DeskPRO\Bundle\AppBundle\Security\Firewall\DpTransferSessionAuthListener
+        parent: security.authentication.listener.abstract
+        abstract: true
+
+    dp_security.sso_listener:
+        class: DeskPRO\Bundle\AppBundle\Security\EventListener\SsoListener
+        arguments:
+          - "@security.authorization_checker"
+          - "@dp_authentication_manager.user"
+          - "@logger"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    ###############
+    # VOTERS
+    ###############
+
+    use_section.voter:
+        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter
+        arguments: ["@service_container"]
+        tags:
+            - { name: security.voter }
+
+    tickets.voter:
+        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter
+        arguments: ["@service_container"]
+        tags:
+            - { name: security.voter }
+
+    chat.voter:
+        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ChatVoter
+        arguments: ["@service_container"]
+        tags:
+            - { name: security.voter }
+
+    profile.voter:
+        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ProfileVoter
+        arguments: ["@service_container"]
+        tags:
+            - { name: security.voter }
+
+    content_subscriptions.voter:
+        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter
+        arguments: ["@service_container"]
+        tags:
+            - { name: security.voter }
+
+    content_ratings.voter:
+        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter
+        arguments: ["@service_container"]
+        tags:
+            - { name: security.voter }
+
+    content_comment.voter:
+        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter
+        arguments: ["@service_container"]
+        tags:
+            - { name: security.voter }
+
+    content_access.voter:
+        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentAccessVoter
+        arguments: ["@service_container"]
+        tags:
+            - { name: security.voter }
+
+    share_content.voter:
+        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ShareContentVoter
+        arguments: ["@service_container"]
+        tags:
+            - { name: security.voter }

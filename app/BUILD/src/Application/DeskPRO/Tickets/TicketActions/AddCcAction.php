@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -60,7 +61,7 @@ class AddCcAction extends AbstractAction
             $add_emails = Arrays::func($add_emails, 'trim');
         }
 
-        $valid = array();
+        $valid = [];
         foreach ($add_emails as $email) {
             if (StringEmail::isValueValid($email)) {
                 $valid[] = $email;
@@ -81,7 +82,7 @@ class AddCcAction extends AbstractAction
             return $this->add_people;
         }
 
-        $this->add_people = array();
+        $this->add_people = [];
 
         foreach ($this->add_emails as $email) {
             $person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
@@ -95,7 +96,7 @@ class AddCcAction extends AbstractAction
 
                 $eml        = new EmailAddress();
                 $eml->email = $email;
-                $person     = $person_processor->createPerson($eml, false);
+                $person     = $person_processor->createPerson($eml);
 
                 if ($person) {
                     $this->add_people[$person->getId()] = $person;
@@ -107,9 +108,7 @@ class AddCcAction extends AbstractAction
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -120,19 +119,17 @@ class AddCcAction extends AbstractAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
-        $actions = array();
+        $actions = [];
 
         foreach ($this->getPeople() as $pid => $person) {
-            $actions[] = array(
+            $actions[] = [
                 'action'    => 'add_participant',
                 'person_id' => $pid,
-            );
+            ];
         }
 
         return $actions;
@@ -147,9 +144,7 @@ class AddCcAction extends AbstractAction
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -163,7 +158,7 @@ class AddCcAction extends AbstractAction
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {

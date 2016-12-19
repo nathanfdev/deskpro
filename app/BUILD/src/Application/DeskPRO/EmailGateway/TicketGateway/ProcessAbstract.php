@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category EmailGateway
  */
+
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
@@ -69,17 +70,17 @@ abstract class ProcessAbstract
      *
      * @var \Application\DeskPRO\Entity\Blob[]
      */
-    protected $processed_blobs_cid = array();
+    protected $processed_blobs_cid = [];
 
     /**
      * @var array
      */
-    protected $inline_blobs = array();
+    protected $inline_blobs = [];
 
     /**
      * @var array
      */
-    protected $dupe_inline_blobs = array();
+    protected $dupe_inline_blobs = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Person
@@ -211,7 +212,7 @@ abstract class ProcessAbstract
                 }
 
                 $db->beginTransaction();
-                $cc_person = $person_processor->createPerson($cc, true);
+                $cc_person = $person_processor->createPerson($cc);
                 $this->logMessage("Added cc: $cc_email (Person {$cc_person->id})");
                 $db->commit();
             }
@@ -246,7 +247,7 @@ abstract class ProcessAbstract
         if ($this->processed_blobs !== null) {
             return $this->processed_blobs;
         }
-        $this->processed_blobs = array();
+        $this->processed_blobs = [];
 
         $accept = App::$container->getAttachmentAccepter();
         $r_set  = $accept->getRestrictionSet($this->person->is_agent ? 'emails.agent' : 'emails.user');
@@ -256,10 +257,10 @@ abstract class ProcessAbstract
                 continue;
             }
 
-            $props = array(
+            $props = [
                 'size' => strlen($attach->getFileContents()),
                 'ext'  => Strings::getExtension($attach->getFileName()),
-            );
+            ];
 
             $error = $r_set->getErrorForProperties($props);
             if ($error) {
@@ -292,10 +293,10 @@ abstract class ProcessAbstract
      */
     public function replaceInlineAttachTokens($body, InlineImageTokens $inline_images)
     {
-        $exist_inline_blobs = array();
+        $exist_inline_blobs = [];
 
         if (isset($this->ticket)) {
-            $blob_hashes = array();
+            $blob_hashes = [];
 
             foreach ($this->processed_blobs as $blob) {
                 $blob_hashes[] = $blob->blob_hash;
@@ -307,7 +308,7 @@ abstract class ProcessAbstract
                     FROM DeskPRO:TicketAttachment a
                     LEFT JOIN a.blob b
                     WHERE a.ticket = ?0 AND b.blob_hash IN (?1)
-                ')->execute(array($this->ticket, $blob_hashes));
+                ')->execute([$this->ticket, $blob_hashes]);
 
                 foreach ($exist_attach as $a) {
                     $exist_inline_blobs[$a->blob->blob_hash] = $a->blob;

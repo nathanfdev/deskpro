@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,10 +31,14 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\TicketLayout;
 
 use Orb\Util\OptionsArray;
 
+/**
+ * Class LayoutField.
+ */
 class LayoutField implements \Serializable
 {
     const VIEW_ALWAYS = 'always';
@@ -180,6 +184,9 @@ class LayoutField implements \Serializable
     }
 
     /**
+     * If it's a custom data definition, this is the corrosponding ID in the DB.
+     * Static fields like "department" or "subject" return null here.
+     *
      * @return int|null
      */
     public function getFieldId()
@@ -237,6 +244,14 @@ class LayoutField implements \Serializable
     public function isVisibleOnView()
     {
         return $this->on_viewticket;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOnViewticketMode()
+    {
+        return $this->on_viewticket_mode;
     }
 
     /**
@@ -326,12 +341,12 @@ class LayoutField implements \Serializable
      */
     public function exportToArray()
     {
-        $data = array();
+        $data = [];
 
         $data['version']    = 1;
         $data['field_type'] = $this->field_type;
         $data['field_id']   = $this->field_id;
-        $data['options']    = array();
+        $data['options']    = [];
 
         if ($this->criteria) {
             $data['options']['criteria'] = $this->criteria->exportToArray();
@@ -339,12 +354,12 @@ class LayoutField implements \Serializable
             $data['options']['criteria'] = null;
         }
 
-        foreach (array(
+        foreach ([
             'on_newticket',
             'on_viewticket',
             'on_viewticket_mode',
             'on_editticket',
-        ) as $prop) {
+                 ] as $prop) {
             $data['options'][$prop] = $this->$prop;
         }
 

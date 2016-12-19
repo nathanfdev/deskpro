@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -39,6 +40,14 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Custom ticket data.
+ *
+ * @property int $id
+ * @property \Application\DeskPRO\Entity\CustomFieldDefinition $definition
+ * @property \Application\DeskPRO\Entity\CustomFieldDefinition $root_definition
+ * @property int $owner_id
+ * @property int $value
+ * @property string|mixed $input
+ * @property DomainObject $owner
  */
 class CustomFieldData extends DomainObject
 {
@@ -65,27 +74,88 @@ class CustomFieldData extends DomainObject
     /**
      * @var int
      */
-    protected $value;
+    protected $value = 0;
 
     /**
-     * @var input
+     * @var string|mixed input
      */
-    protected $input;
+    protected $input = '';
 
     /**
      * @var DomainObject
      */
     protected $owner;
 
-    public function __construct()
+    /**
+     * @param CustomFieldDefinition $definition
+     *
+     * @return $this
+     */
+    public function setDefinition($definition)
     {
-        $this->value = 0;
-        $this->input = '';
+        $this->setModelField('definition', $definition);
+
+        return $this;
     }
 
+    /**
+     * @return CustomFieldDefinition
+     */
+    public function getDefinition()
+    {
+        return $this->definition;
+    }
+
+    /**
+     * @param CustomFieldDefinition $root_definition
+     *
+     * @return $this
+     */
+    public function setRootDefinition($root_definition)
+    {
+        $this->setModelField('root_definition', $root_definition);
+
+        return $this;
+    }
+
+    /**
+     * @return CustomFieldDefinition
+     */
+    public function getRootDefinition()
+    {
+        return $this->root_definition;
+    }
+
+    /**
+     * @param $data
+     */
+    public function setData($data)
+    {
+        if (is_int($data)) {
+            $this->setModelField('value', $data);
+        } else {
+            $this->setModelField('input', (string) $data);
+        }
+    }
+
+    /**
+     * @return mixed|string
+     */
     public function getData()
     {
         return $this->value ?: $this->input;
+    }
+
+    /**
+     * @param DomainObject $owner
+     *
+     * @return $this
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+
+        return $this;
     }
 
     public function preFlush()
@@ -98,75 +168,80 @@ class CustomFieldData extends DomainObject
         }
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'              => 'custom_field_data',
-            'uniqueConstraints' => array(
-                'unique_idx' => array('columns' => array('owner_id', 'definition_id')),
-            ),
-        ));
+            'uniqueConstraints' => [
+                'unique_idx' => [
+                    'columns' => [
+                        'owner_id',
+                        'definition_id',
+                    ],
+                ],
+            ],
+        ]);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomFieldData';
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->addLifecycleCallback('preFlush', 'preFlush');
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'id',
             'type'       => 'integer',
             'nullable'   => false,
             'columnName' => 'id',
             'id'         => true,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'owner_id',
             'type'       => 'integer',
             'nullable'   => false,
             'columnName' => 'owner_id',
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'definition',
             'targetEntity' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
-            'joinColumns'  => array(
-                array(
+            'joinColumns'  => [
+                [
                     'name'                 => 'definition_id',
                     'referencedColumnName' => 'id',
                     'onDelete'             => 'cascade',
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'root_definition',
             'targetEntity' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
-            'joinColumns'  => array(
-                array(
+            'joinColumns'  => [
+                [
                     'name'                 => 'root_definition_id',
                     'referencedColumnName' => 'id',
                     'onDelete'             => 'cascade',
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'value',
             'type'       => 'integer',
             'nullable'   => false,
             'columnName' => 'value',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'input',
             'type'       => 'text',
             'nullable'   => false,
             'columnName' => 'input',
-        ));
+        ]);
     }
 }

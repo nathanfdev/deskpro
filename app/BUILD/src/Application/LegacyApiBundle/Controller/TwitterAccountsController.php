@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,18 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\TwitterAccounts\Form\Type\TwitterAccountType;
 use Application\DeskPRO\TwitterAccounts\TwitterAccountEdit;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
+/**
+ * @ApiModes("all")
+ */
 class TwitterAccountsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -46,9 +51,9 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction()
     {
@@ -57,14 +62,14 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
          */
         $twitter_accounts = $this->container->getSystemService('twitter_accounts');
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'twitter_accounts' => $twitter_accounts->getAllWithUserAsArray(),
-        ));
+        ]);
     }
 
-    ###################################################################################################################
-    # get
-    ####################################################################################################################
+    //##################################################################################################################
+    // get
+    //###################################################################################################################
 
     public function getAction($id)
     {
@@ -81,14 +86,14 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
         $returnedData               = $twitter_account;
         $returnedData['all_agents'] = $twitter_accounts->getAllAgents();
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'twitter_account' => $returnedData,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
     public function saveAction($id)
     {
@@ -110,7 +115,7 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 
         $twitter_account_edit = new TwitterAccountEdit($twitter_account);
 
-        $form = $this->createForm(new TwitterAccountType(), $twitter_account_edit, array('cascade_validation' => true));
+        $form = $this->createForm(new TwitterAccountType(), $twitter_account_edit, ['cascade_validation' => true]);
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'twitter_account'), true);
 
         if ($form->isValid()) {
@@ -119,15 +124,15 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
             throw ValidationException::create($this->getFormValidationErrorsString($form));
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'success' => true,
             'id'      => $twitter_account->id,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # remove
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove
+    //###################################################################################################################
 
     public function removeAction($id)
     {
@@ -154,6 +159,6 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
             throw $e;
         }
 
-        return $this->createSuccessResponse(array('old_id' => $old_id));
+        return $this->createSuccessResponse(['old_id' => $old_id]);
     }
 }

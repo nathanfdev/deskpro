@@ -1,0 +1,28 @@
+services:
+
+  person_repository:
+    class: Application\DeskPRO\EntityRepository\Person
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
+    arguments: ['DeskPRO:Person']
+
+  ban_email_repository:
+    class: Application\DeskPRO\EntityRepository\BanEmail
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
+    arguments: ['DeskPRO:BanEmail']
+
+  blob_repository:
+    class: Application\DeskPRO\EntityRepository\Blob
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
+    arguments: ['DeskPRO:Blob']
+
+
+  brand_repository:
+    class: Application\DeskPRO\EntityRepository\Brand
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
+    arguments: ['DeskPRO:Brand']
+
+
+  template_repository:
+    class: Application\DeskPRO\EntityRepository\Template
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
+    arguments: ['DeskPRO:Template']

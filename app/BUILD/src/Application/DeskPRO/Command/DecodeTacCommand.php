@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Commands
  */
+
 namespace Application\DeskPRO\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,9 +42,9 @@ class DecodeTacCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 {
     protected function configure()
     {
-        $this->setDefinition(array(
+        $this->setDefinition([
             new InputArgument('tac', InputArgument::REQUIRED, 'The TAC or PTAC to decode. These are the codes that usually begin with TAC- or PTAC- or TICKET- in email headers.'),
-        ))->setName('dp:decode-tac');
+        ])->setName('dp:decode-tac');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

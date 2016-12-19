@@ -1,0 +1,59 @@
+services:
+
+  deskpro.api.request_auth:
+    class: Application\LegacyApiBundle\Request\RequestAuth
+    scope: request
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@request"
+
+  api_view_representation_factory:
+    class: DeskPRO\Bundle\ApiBundle\View\ApiViewRepresentationFactory
+
+  jsonp_format_listener:
+    class: DeskPRO\Bundle\ApiBundle\EventListener\JsonpFormatListener
+    tags:
+      - { name: kernel.event_subscriber }
+
+  json_body_listener:
+    class: DeskPRO\Bundle\ApiBundle\EventListener\JsonBodyListener
+    arguments: ["@router"]
+    tags:
+      - { name: kernel.event_subscriber }
+
+  json_headers_response_listener:
+    class: DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener
+    arguments:
+      - "@serializer"
+      - "@settings_resolver"
+    tags:
+    - { name: 'kernel.event_subscriber' }
+
+  follow_redirect_listener:
+    class: DeskPRO\Bundle\ApiBundle\EventListener\FollowLocationListener
+    tags:
+    - { name: 'kernel.event_subscriber' }
+
+  api_url_inflector:
+    class: DeskPRO\Bundle\ApiBundle\Util\UrlInflector
+
+  api_error_listener:
+    class: DeskPRO\Bundle\ApiBundle\EventListener\ApiExceptionListener
+    tags:
+    - { name: kernel.event_subscriber }
+
+  job.scheduler:
+    class: Application\DeskPRO\JobQueue\JobScheduler
+    arguments:
+      - "@doctrine.orm.entity_manager"
+
+  job.queue:
+    class: Application\DeskPRO\JobQueue\JobQueue
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@job.scheduler"
+
+  api_client_info:
+    class: DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo
+    factory: [DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo, createFromRequestStack]
+    arguments: ["@request_stack"]

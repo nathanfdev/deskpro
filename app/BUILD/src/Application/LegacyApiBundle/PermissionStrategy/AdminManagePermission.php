@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,17 +31,18 @@
  *
  * @category Entities
  */
+
 namespace Application\LegacyApiBundle\PermissionStrategy;
 
-use Application\LegacyApiBundle\ApiUser;
 use Application\DeskPRO\Entity\ApiKey;
+use Application\LegacyApiBundle\ApiUser;
 
 /**
  * The AdminManage permission is applied to APIs that:
  * - Have an admin user logged in (eg they have a session tied to their key)
  * - Their API key has a 'admin_manage' flag.
  */
-class AdminManagePermission implements PermissionStrategyInterface
+class AdminManagePermission implements PremissionStrategyInterface
 {
     /**
      * {@inheritdoc}

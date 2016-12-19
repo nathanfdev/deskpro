@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -75,6 +76,7 @@ class TicketTrigger extends DomainObject
     const MODE_FORM   = 'form';
     const MODE_EMAIL  = 'email';
     const MODE_API    = 'api';
+    const MODE_MOBILE = 'mobile';
 
     /**
      * @var int
@@ -122,24 +124,24 @@ class TicketTrigger extends DomainObject
     protected $event_trigger;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $event_flags = array();
+    protected $event_flags = [];
 
     /**
      * @var array
      */
-    protected $by_agent_mode = array();
+    protected $by_agent_mode = [];
 
     /**
      * @var array
      */
-    protected $by_user_mode = array();
+    protected $by_user_mode = [];
 
     /**
      * @var array
      */
-    protected $by_app_mode = array();
+    protected $by_app_mode = [];
 
     /**
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
@@ -160,6 +162,9 @@ class TicketTrigger extends DomainObject
      */
     protected $run_order = 0;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->terms   = new TriggerTerms();
@@ -180,7 +185,7 @@ class TicketTrigger extends DomainObject
     public function setByAgentMode($modes)
     {
         if (!$modes) {
-            $this->setModelField('by_agent_mode', array());
+            $this->setModelField('by_agent_mode', []);
         } else {
             if (!is_array($modes)) {
                 $modes = explode(',', $modes);
@@ -199,7 +204,7 @@ class TicketTrigger extends DomainObject
     public function setByUserMode($modes)
     {
         if (!$modes) {
-            $this->setModelField('by_user_mode', array());
+            $this->setModelField('by_user_mode', []);
         } else {
             if (!is_array($modes)) {
                 $modes = explode(',', $modes);
@@ -218,7 +223,7 @@ class TicketTrigger extends DomainObject
     public function setByAppMode($modes)
     {
         if (!$modes) {
-            $this->setModelField('by_app_mode', array());
+            $this->setModelField('by_app_mode', []);
         } else {
             if (!is_array($modes)) {
                 $modes = explode(',', $modes);
@@ -312,11 +317,11 @@ class TicketTrigger extends DomainObject
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data                             = parent::toApiData($primary, $deep, $visited);
-        $data['department']               = $this->department ? array('id' => $this->department->id, 'title' => $this->department->title, 'title_full' => $this->department->getFullTitle()) : null;
-        $data['email_account']            = $this->email_account ? array('id' => $this->email_account->id, 'address' => $this->email_account->address) : null;
+        $data['department']               = $this->department ? ['id' => $this->department->id, 'title' => $this->department->title, 'title_full' => $this->department->getFullTitle()] : null;
+        $data['email_account']            = $this->email_account ? ['id' => $this->email_account->id, 'address' => $this->email_account->address] : null;
         $data['by_agent_mode']            = $this->by_agent_mode;
         $data['by_user_mode']             = $this->by_user_mode;
         $data['by_app_mode']              = $this->by_app_mode;
@@ -329,9 +334,9 @@ class TicketTrigger extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -340,118 +345,122 @@ class TicketTrigger extends DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'ticket_triggers',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'id'         => true,
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'title',
             'fieldName'  => 'title',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'event_trigger',
             'fieldName'  => 'event_trigger',
             'type'       => 'string',
             'length'     => 50,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'event_flags',
             'fieldName'  => 'event_flags',
             'type'       => 'simple_array',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'by_agent_mode',
             'fieldName'  => 'by_agent_mode',
             'type'       => 'simple_array',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'by_user_mode',
             'fieldName'  => 'by_user_mode',
             'type'       => 'simple_array',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'by_app_mode',
             'fieldName'  => 'by_app_mode',
             'type'       => 'simple_array',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'is_enabled',
             'fieldName'  => 'is_enabled',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'is_hidden',
             'fieldName'  => 'is_hidden',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'is_editable',
             'fieldName'  => 'is_editable',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'sys_name',
             'fieldName'  => 'sys_name',
             'type'       => 'string',
             'length'     => 150,
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'terms',
             'fieldName'  => 'terms',
             'type'       => 'dp_json_obj',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'actions',
             'fieldName'  => 'actions',
             'type'       => 'dp_json_obj',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'run_order',
             'fieldName'  => 'run_order',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'department',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
-            'joinColumns'  => array(array(
-                'name'                 => 'department_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-            )),
-        ));
-        $metadata->mapManyToOne(array(
+            'joinColumns'  => [
+                [
+                    'name'                 => 'department_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'CASCADE',
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'email_account',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount',
-            'joinColumns'  => array(array(
-                'name'                 => 'email_account_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'email_account_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'CASCADE',
+                ],
+            ],
+        ]);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -86,12 +87,12 @@ class TicketEscalation extends DomainObject
     /**
      * @var array
      */
-    protected $terms = array();
+    protected $terms = [];
 
     /**
      * @var array
      */
-    protected $terms_any = array();
+    protected $terms_any = [];
 
     /**
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
@@ -157,7 +158,7 @@ class TicketEscalation extends DomainObject
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data              = parent::toApiData($primary, $deep, $visited);
         $data['terms']     = $this->terms;
@@ -183,9 +184,9 @@ class TicketEscalation extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -194,78 +195,78 @@ class TicketEscalation extends DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'ticket_escalations',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'id'         => true,
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'title',
             'fieldName'  => 'title',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'event_trigger',
             'fieldName'  => 'event_trigger',
             'type'       => 'string',
             'length'     => 50,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'event_trigger_time',
             'fieldName'  => 'event_trigger_time',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'is_enabled',
             'fieldName'  => 'is_enabled',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'terms',
             'fieldName'  => 'terms',
             'type'       => 'json_array',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'terms_any',
             'fieldName'  => 'terms_any',
             'type'       => 'json_array',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'actions',
             'fieldName'  => 'actions',
             'type'       => 'dp_json_obj',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_created',
             'columnName' => 'date_created',
             'type'       => 'datetime',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_last_run',
             'columnName' => 'date_last_run',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'sys_name',
             'columnName' => 'sys_name',
             'type'       => 'string',
             'nullable'   => true,
-        ));
+        ]);
     }
 }

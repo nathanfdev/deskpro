@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql;
 
 /**
@@ -42,7 +43,7 @@ class SqlSelect
      *
      * @var array
      */
-    protected $_fields = array();
+    protected $_fields = [];
 
     /**
      * Name of table for the FROM clause. This must be a table name
@@ -58,28 +59,28 @@ class SqlSelect
      *
      * @var array
      */
-    protected $_joins = array();
+    protected $_joins = [];
 
     /**
      * List of conditions for the WHERE clause. These will be joined by ANDs.
      *
      * @var array
      */
-    protected $_conditions = array();
+    protected $_conditions = [];
 
     /**
      * List of expressions/fields for the GROUP BY clause. Joined by commas.
      *
      * @var array
      */
-    protected $_groupBy = array();
+    protected $_groupBy = [];
 
     /**
      * List of expressions/fields for the ORDER BY clause. Joined by commas.
      *
      * @var array
      */
-    protected $_orderBy = array();
+    protected $_orderBy = [];
 
     /**
      * The amount of rows to fetch. If null or 0, rows will not be limited.

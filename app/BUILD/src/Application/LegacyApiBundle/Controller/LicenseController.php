@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,15 +29,20 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Service\LicenseService;
-use DeskPRO\Kernel\License;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DpSys\License;
 use Orb\Util\Dates;
 use Orb\Validator\StringEmail;
 
+/**
+ * @ApiModes("all")
+ */
 class LicenseController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -48,9 +53,9 @@ class LicenseController extends AbstractController implements ProtectedControlle
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # get-license
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-license
+    //###################################################################################################################
 
     public function getLicenseAction()
     {
@@ -68,7 +73,7 @@ class LicenseController extends AbstractController implements ProtectedControlle
             }
         }
 
-        $lic_info = array(
+        $lic_info = [
             'licenseId'   => $lic->getLicenseId(),
             'org'         => $lic->get('org') ?: null,
             'expireDate'  => $lic->getExpireDate() ? $lic->getExpireDate()->format($this->settings->get('core.date_full')) : null,
@@ -77,23 +82,23 @@ class LicenseController extends AbstractController implements ProtectedControlle
             'isDemo'      => $lic->isDemo() ? true : false,
             'maxAgents'   => $lic->getMaxAgents(),
             'licenseCode' => $lic->getLicenseCode(),
-        );
+        ];
 
         $active_agents = $this->container->getDb()->fetchColumn('
             SELECT COUNT(*)
             FROM people
             WHERE is_agent = 1 AND is_deleted = 0
         ');
-        $limits = array(
+        $limits = [
             'max_agents'    => $lic->getMaxAgents() ?: -1,
             'count_agents'  => $active_agents,
             'remain_agents' => $lic->getMaxAgents() ? max(0, $lic->getMaxAgents() - $active_agents) : -1,
-        );
+        ];
 
         $ma_token = TmpData::create(
-            'ma_login', array(
+            'ma_login', [
                 'email_address' => $this->person->getPrimaryEmailAddress(),
-            ), '+1 hour'
+            ], '+1 hour'
         );
         $this->em->persist($ma_token);
         $this->em->flush($ma_token);
@@ -108,8 +113,8 @@ class LicenseController extends AbstractController implements ProtectedControlle
             $custom_billing_frame = DP_MA_SERVER_SECURE.'/cloud/start/'.$this->settings->get('custom_cloud_billing_siteid').'/'.$code;
             if (defined('DP_CLOUD_LIC_URL')) {
                 $custom_billing_frame = str_replace(
-                    array('{SITE_ID}', '{SITE_AUTH}'),
-                    array($this->settings->get('custom_cloud_billing_siteid'), $code),
+                    ['{SITE_ID}', '{SITE_AUTH}'],
+                    [$this->settings->get('custom_cloud_billing_siteid'), $code],
                     DP_CLOUD_LIC_URL
                 );
             }
@@ -117,19 +122,19 @@ class LicenseController extends AbstractController implements ProtectedControlle
             $custom_billing_frame = null;
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'license'              => $lic_info,
             'limits'               => $limits,
             'lic_set_callback'     => License::getSecureLicServer().'/api/license/set-license.json',
             'ma_token'             => $ma_token->toApiData(),
             'ma_login_url'         => $ma_login_url,
             'custom_billing_frame' => $custom_billing_frame,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # set-license
-    ####################################################################################################################
+    //###################################################################################################################
+    // set-license
+    //###################################################################################################################
 
     public function setLicenseAction()
     {
@@ -149,14 +154,14 @@ class LicenseController extends AbstractController implements ProtectedControlle
             throw $e;
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'success' => true,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # download-keyfile
-    ####################################################################################################################
+    //###################################################################################################################
+    // download-keyfile
+    //###################################################################################################################
 
     public function downloadKeyfileAction($_format = 'txt')
     {
@@ -165,7 +170,7 @@ class LicenseController extends AbstractController implements ProtectedControlle
             $email_address = $this->person->getPrimaryEmailAddress();
         }
 
-        $install_data                          = array();
+        $install_data                          = [];
         $install_data['install_key']           = $this->settings->get('core.install_key');
         $install_data['install_token']         = $this->settings->get('core.install_token');
         $install_data['request_email_address'] = $this->person->getPrimaryEmailAddress();
@@ -192,18 +197,18 @@ FILE;
 
             return $res;
         } else {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'filename'     => 'deskpro-keyfile.txt',
                 'filesize'     => strlen($file),
                 'content_type' => 'plain/text',
                 'data'         => $file,
-            ));
+            ]);
         }
     }
 
-    ####################################################################################################################
-    # send-support-request
-    ####################################################################################################################
+    //###################################################################################################################
+    // send-support-request
+    //###################################################################################################################
 
     public function sendSupportRequestAction()
     {
@@ -226,63 +231,62 @@ FILE;
         }
     }
 
-    ####################################################################################################################
-    # get-version-info
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-version-info
+    //###################################################################################################################
 
     public function getVersionInfoAction()
     {
-        return $this->createJsonResponse(array(
-            'build'          => DP_BUILD_TIME,
-            'build_name'     => defined('DP_BUILD_NUM') && DP_BUILD_NUM ? DP_BUILD_NUM : 'DEV',
-            'build_num_base' => defined('DP_BUILD_NUM_BASE') ? DP_BUILD_NUM_BASE : 0,
-            'build_num_rev'  => defined('DP_BUILD_NUM_REV') ? DP_BUILD_NUM_REV : 0,
-        ));
+        $appEnv = $this->get('deskpro.app_env');
+
+        return $this->createJsonResponse([
+            'build_id'   => $appEnv->getBuildId(),
+            'build_name' => $appEnv->getVersionName(),
+        ]);
     }
 
-    ####################################################################################################################
-    # get-latest-version
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-latest-version
+    //###################################################################################################################
 
     public function getLatestVersionAction()
     {
-        global $DP_CONFIG;
+        try {
+            $instanceReader = $this->getContainer()->get('dp.updater.instance_reader');
+            $distroLoader   = $this->getContainer()->get('dp.updater.distro.manifest_loader');
+            $releases       = $distroLoader->loadReleases();
 
-        if (isset($DP_CONFIG['debug']['disable_version_check'])) {
-            $version_info = null;
-        } else {
-            try {
-                $version_info = LicenseService::compareVersion();
-            } catch (\Exception $e) {
-                $version_info = null;
-            }
+            $instanceStatus = $instanceReader->getInstanceStatus($releases);
+
+            $versionInfo = [
+                'count_behind' => $instanceStatus->isOutdated() ? max(1, $instanceStatus->getNumBetween()) : 0,
+                'days_old'     => $instanceStatus->isOutdated() ? max(1, $instanceStatus->getDaysOld()) : 0,
+                'build_id'     => $instanceStatus->getLatestRelease()->getId(),
+                'build_name'   => $instanceStatus->getLatestRelease()->getName(),
+            ];
+        } catch (\Exception $e) {
+            $versionInfo = null;
         }
 
-        return $this->createJsonResponse(array(
-            'version_info' => $version_info,
-        ));
+        return $this->createJsonResponse([
+            'version_info' => $versionInfo,
+        ]);
     }
 
-    ####################################################################################################################
-    # get-news
-    ####################################################################################################################
+    //###################################################################################################################
+    // get-news
+    //###################################################################################################################
 
     public function getNewsAction()
     {
-        global $DP_CONFIG;
-
-        if (isset($DP_CONFIG['debug']['disable_version_check'])) {
+        try {
+            $news = LicenseService::getNews();
+        } catch (\Exception $e) {
             $news = null;
-        } else {
-            try {
-                $news = LicenseService::getNews();
-            } catch (\Exception $e) {
-                $news = null;
-            }
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'news' => $news,
-        ));
+        ]);
     }
 }

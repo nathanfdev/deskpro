@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,101 +31,159 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Searcher\TicketSearch;
 
 class TicketSla extends AbstractEntityRepository
 {
-    public function getTicketSlaCountsForAgentInterface(array $slas, $filter = 'all', Entity\Person $person_context = null)
+    public function getCachedTicketSlaCountsForAgentInterface(array $slas, $filter, Entity\Person $person_context)
     {
-        if (!$slas) {
-            return array();
+        if (!count($slas)) {
+            return [];
         }
 
-        if (!$person_context) {
-            $person_context = App::getCurrentPerson();
+        if (!App::$container->getSetting('enable_cached_sla_counts')) {
+            return $this->getTicketSlaCountsForAgentInterface($slas, $filter, $person_context);
         }
 
-        if (!$person_context->is_agent) {
-            throw new \InvalidArgumentException('Person must be an agent');
-        }
+        /** @var \Application\DeskPRO\DBAL\Connection $db */
+        $db = $this->_em->getConnection();
 
-        $where_perm = array();
+        $values = $db->fetchAllKeyValue("
+            SELECT name, value_array
+            FROM people_prefs
+            WHERE person_id = ? AND name LIKE 'ticket_sla_counts.%'
+        ", [$person_context->getId()]);
 
-        if ($disallowed = $person_context->getHelperManager()->callName('getdisalloweddepartments', array())) {
-            $where_perm[] = 'tickets.department_id NOT IN ('.implode(',', $disallowed).')';
-        }
+        $results  = [];
+        $calcSlas = [];
 
-        if (!$person_context->hasPerm('agent_tickets.view_unassigned')) {
-            $where_perm[] = 'tickets.agent_id IS NOT NULL';
-        }
+        foreach ($slas as $sla) {
+            $cacheId = 'ticket_sla_counts.'.$sla->getId();
 
-        if (!$person_context->hasPerm('agent_tickets.view_others')) {
-            $part   = array();
-            $part[] = "tickets.agent_id = {$person_context['id']}";
-
-            if ($teams = $person_context->getHelperManager()->callName('getagentteamids', array())) {
-                $part[] = 'tickets.agent_team_id IN ('.implode(',', $teams).')';
+            if (isset($values[$cacheId])) {
+                $r = @unserialize($values[$cacheId]);
+            } else {
+                $r = null;
             }
 
-            $where_perm[] = '('.implode(' OR ', $part).')';
+            if ($r) {
+                $results[$sla->getId()] = $r;
+            } else {
+                $calcSlas[] = $sla;
+            }
         }
 
-        if (!$where_perm) {
-            $where_perm[] = '1';
+        if ($calcSlas) {
+            $calcResults = $this->getTicketSlaCountsForAgentInterface($calcSlas, $filter, $person_context);
+            $inserts     = [];
+            $expire      = date('Y-m-d H:i:s', time() + 900);
+
+            if ($calcResults) {
+                foreach ($calcResults as $slaId => $slaRes) {
+                    $results[$slaId] = $slaRes;
+                }
+
+                foreach ($calcResults as $slaId => $calcRes) {
+                    $inserts[] = [
+                        'person_id'   => $person_context->getId(),
+                        'name'        => "ticket_sla_counts.{$slaId}",
+                        'value_str'   => null,
+                        'value_array' => serialize($calcRes),
+                        'date_expire' => $expire,
+                    ];
+                }
+
+                if ($inserts) {
+                    $db->batchInsert('people_prefs', $inserts, true);
+                }
+            }
         }
 
-        $where = '(('.implode(' AND ', $where_perm).') OR (';
+        return $results;
+    }
 
-        $where .= "tickets.agent_id = {$person_context['id']} OR ";
-        if ($teams = $person_context->getHelperManager()->callName('getagentteamids', array())) {
-            $where .= 'tickets.agent_team_id IN ('.implode(',', $teams).') OR ';
+    public function getTicketSlaCountsForAgentInterface(array $slas, $filter, Entity\Person $person_context)
+    {
+        $s = new TicketSearch();
+        if ($person_context) {
+            $s->setPersonContext($person_context);
+        }
+        $s->setOrderByCode('ticket.id:desc');
+        $s->addRawSelect('ts.sla_id, ts.sla_status');
+        $s->addRawJoin('INNER JOIN ticket_slas AS ts ON (ts.ticket_id = tickets.id)');
+
+        $slaQueries = $queryParams = $queryTypes = [];
+
+        $ids = [];
+        foreach ($slas as $sla) {
+            $id    = (int) $sla->id;
+            $ids[] = $id;
+            // first map sla types to ids
+            $queryParams[$sla->sla_type][] = $id;
         }
 
-        $where .= 'tickets_participants_perm.person_id IS NOT NULL))';
+        if (isset($queryParams['waiting_time'])) {
+            $slaQueries[] = '(ts.sla_id IN ('.implode(',', $queryParams['waiting_time']).') AND tickets.status = "awaiting_agent")';
+        }
+        if (isset($queryParams['first_response'])) {
+            $slaQueries[] = '(ts.sla_id IN ('.implode(',', $queryParams['first_response']).') AND tickets.status = "awaiting_agent")';
+        }
+        if (isset($queryParams['resolution'])) {
+            $slaQueries[] = '(ts.sla_id IN ('.implode(',', $queryParams['resolution']).') AND tickets.status IN ("awaiting_agent", "awaiting_user"))';
+        }
+
+        $where = '
+            ts.is_completed = 0
+            AND
+            ts.sla_id IN ('.implode(',', $ids).')
+            AND 
+            ('.implode(' OR ', $slaQueries).')
+        ';
+
+        $s->addRawWhere($where);
+        $s->addRawWhere("tickets.status IN ('awaiting_user', 'awaiting_agent')");
 
         switch ($filter) {
             case 'agent':
-                $where .= " AND tickets.agent_id = {$person_context['id']}";
+                if (!$person_context) {
+                    return $this->formatResults($ids, []);
+                }
+                $s->addTerm(TicketSearch::TERM_AGENT, TicketSearch::OP_IS, $person_context->getId());
                 break;
 
             case 'team':
-                if ($teams = $person_context->getHelperManager()->callName('getagentteamids', array())) {
-                    $where .= ' AND tickets.agent_team_id IN ('.implode(',', $teams).')';
-                } else {
-                    $where .= ' AND 0';
+                if (!$person_context) {
+                    return $this->formatResults($ids, []);
                 }
+                $teams = $person_context->getHelperManager()->callName('getagentteamids', []);
+                if (!$teams) {
+                    return $this->formatResults($ids, []);
+                }
+                $s->addTerm(TicketSearch::TERM_AGENT_TEAM, TicketSearch::OP_IS, $teams);
                 break;
         }
 
-        $where .= ' AND ticket_slas.is_completed = 0';
-        $where .= " AND ((slas.sla_type = 'waiting_time' AND tickets.status = 'awaiting_agent') OR (slas.sla_type = 'first_response' AND tickets.status = 'awaiting_agent') OR (slas.sla_type = 'resolution' AND tickets.status IN ('awaiting_agent', 'awaiting_user')))";
+        $sql = 'SELECT sla_id, sla_status, COUNT(*) AS count FROM ('.$s->getSql().') AS r GROUP BY sla_id, sla_status';
 
-        $ids = array();
-        foreach ($slas as $sla) {
-            $ids[] = $sla->id;
-        }
+        $conn    = App::getDbRead('search.filter.tickets');
+        $results = $conn->fetchAll($sql);
 
-        $where .= ' AND ticket_slas.sla_id IN ('.implode(',', $ids).')';
+        return $this->formatResults($ids, $results);
+    }
 
-        $results = $this->getEntityManager()->getConnection()->fetchAll("
-            SELECT ticket_slas.sla_id, ticket_slas.sla_status, COUNT(*) AS count
-            FROM ticket_slas
-            INNER JOIN slas ON (ticket_slas.sla_id = slas.id)
-            INNER JOIN tickets ON (ticket_slas.ticket_id = tickets.id)
-            LEFT JOIN tickets_participants AS tickets_participants_perm ON (tickets_participants_perm.ticket_id = tickets.id AND tickets_participants_perm.person_id = {$person_context->id})
-            WHERE $where
-            GROUP BY  ticket_slas.sla_id, ticket_slas.sla_status
-        ");
-
-        $output = array();
+    protected function formatResults(array $ids, array $results)
+    {
+        $output = [];
         foreach ($ids as $id) {
-            $output[$id] = array('ok' => 0, 'warning' => 0, 'fail' => 0);
+            $output[$id] = ['ok' => 0, 'warning' => 0, 'fail' => 0];
         }
         foreach ($results as $result) {
-            $output[$result['sla_id']][$result['sla_status']] = $result['count'];
+            $output[$result['sla_id']][$result['sla_status']] += $result['count'];
         }
 
         return $output;
@@ -145,7 +203,7 @@ class TicketSla extends AbstractEntityRepository
             WHERE ts.is_completed = 0
                 AND ts.sla_status IN ($statuses)
                 AND ts.$date_field < ?0
-        ")->setMaxResults($limit)->execute(array(new \DateTime('now', new \DateTimeZone('UTC'))));
+        ")->setMaxResults($limit)->execute([new \DateTime('now', new \DateTimeZone('UTC'))]);
     }
 
     public function getTicketSlaAdminGraphData()
@@ -175,15 +233,15 @@ class TicketSla extends AbstractEntityRepository
         $month = $dt->format('n');
         $year  = $dt->format('Y');
 
-        $graphs = array(
+        $graphs = [
             'today'      => $today,
-            'yesterday'  => array($yesterday, $today - 1),
+            'yesterday'  => [$yesterday, $today - 1],
             'this_week'  => $week_start,
             'this_month' => gmmktime(0, 0, 0, $month, 1, $year),
             'this_year'  => gmmktime(0, 0, 0, 1, 1, $year),
-        );
+        ];
 
-        $output = array();
+        $output = [];
         foreach ($graphs as $title => $start) {
             if (is_array($start)) {
                 list($start, $end) = $start;
@@ -192,11 +250,11 @@ class TicketSla extends AbstractEntityRepository
             }
             $data = $this->getTicketSlaStatusData($start, $end);
             if ($data) {
-                $output[$title] = array(
-                    'ok'      => array('title' => 'OK', 'count' => 0, 'id' => 'ok', 'color' => '#abf3ae'),
-                    'warning' => array('title' => 'Warning', 'count' => 0, 'id' => 'warning', 'color' => '#F7BC1F'),
-                    'fail'    => array('title' => 'Failed', 'count' => 0, 'id' => 'count', 'color' => '#de5949'),
-                );
+                $output[$title] = [
+                    'ok'      => ['title' => 'OK', 'count' => 0, 'id' => 'ok', 'color' => '#abf3ae'],
+                    'warning' => ['title' => 'Warning', 'count' => 0, 'id' => 'warning', 'color' => '#F7BC1F'],
+                    'fail'    => ['title' => 'Failed', 'count' => 0, 'id' => 'count', 'color' => '#de5949'],
+                ];
                 foreach ($data as $status => $count) {
                     $output[$title][$status]['count'] = $count;
                 }
@@ -220,6 +278,6 @@ class TicketSla extends AbstractEntityRepository
             INNER JOIN tickets ON (ticket_slas.ticket_id = tickets.id)
             WHERE tickets.date_created >= ? AND tickets.date_created <= ?
             GROUP BY ticket_slas.sla_status
-        ', array(gmdate('Y-m-d H:i:s', $start), gmdate('Y-m-d H:i:s', $end)));
+        ', [gmdate('Y-m-d H:i:s', $start), gmdate('Y-m-d H:i:s', $end)]);
     }
 }

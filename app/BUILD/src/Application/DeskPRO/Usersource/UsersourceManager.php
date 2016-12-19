@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Usersource;
 
 use Application\DeskPRO\App;
@@ -106,7 +107,6 @@ class UsersourceManager
             if ($adapter instanceof IdentityFinderInterface) {
                 try {
                     if ($identity = $adapter->findIdentityByInput($input)) {
-
                         // if the usersource can return a person directly, return that now
                         if ($identity instanceof Person) {
                             return $identity;
@@ -164,7 +164,7 @@ class UsersourceManager
      */
     public function getUsersourcesOfType($type)
     {
-        $ret = array();
+        $ret = [];
 
         $type = strtolower($type);
 
@@ -188,7 +188,7 @@ class UsersourceManager
      */
     public function getWithCapability($capability)
     {
-        $ret = array();
+        $ret = [];
         foreach ($this->getUsersources() as $us) {
             if ($us->getAdapter()->isCapable($capability)) {
                 $ret[] = $us;
@@ -203,7 +203,7 @@ class UsersourceManager
      *
      * @deprecated this shouldn't be used anymore, try to eliminate it form the codebase and use twig extension instead
      */
-    public function renderView(Usersource $usersource, $type, array $params = array())
+    public function renderView(Usersource $usersource, $type, array $params = [])
     {
         $params['usersource'] = $usersource;
 

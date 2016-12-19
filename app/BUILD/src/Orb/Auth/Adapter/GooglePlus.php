@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Auth
  */
+
 namespace Orb\Auth\Adapter;
 
 use Orb\Auth\Identity;
@@ -63,23 +64,19 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
     }
 
     /**
-     * Initialize the auth process by setting state, and returning a redirect result.
-     *
-     * @return \Orb\Auth\Result
+     * {@inheritdoc}
      */
     protected function authenticateInitialize(StateHandlerInterface $state)
     {
         $client = $this->createClient();
 
-        $result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $client->createAuthUrl()));
+        $result = new Result(Result::REQUIRES_REDIRECT, null, [Result::MSG_REDIRECT => $client->createAuthUrl()]);
 
         return $result;
     }
 
     /**
-     * Process the callback and return a final result.
-     *
-     * @return \Orb\Auth\Result
+     * {@inheritdoc}
      */
     protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
     {
@@ -89,43 +86,43 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
             $client->authenticate($_GET['code']);
 
             if ($access_token = $client->getAccessToken()) {
-                $attrs = $client->verifyIdToken()->getAttributes();
+                $attrs = $client->verifyIdToken();
 
-                if ($this->domain && !Urls::verifyEmailDomain($attrs['payload']['email'], $this->domain)) {
+                if ($this->domain && !Urls::verifyEmailDomain($attrs['email'], $this->domain)) {
                     return new Result(
                         Result::FAILURE, null,
-                        array(
+                        [
                             'error_code'    => 'invalid_argument',
                             'error_message' => 'email does not match specified domain',
-                        )
+                        ]
                     );
                 }
 
-                if (empty($attrs['payload']) || empty($attrs['payload']['sub'])) {
+                if (empty($attrs['sub'])) {
                     throw new \Exception('Google API payload was changed.');
                 }
 
                 $identity = new Identity(
-                    $attrs['payload']['sub'],
-                    array(
-                        'email'          => $attrs['payload']['email'],
-                        'email_verified' => $attrs['payload']['email_verified'],
-                        'sub'            => $attrs['payload']['sub'],
-                    )
+                    $attrs['sub'],
+                    [
+                        'email'          => $attrs['email'],
+                        'email_verified' => $attrs['email_verified'],
+                        'sub'            => $attrs['sub'],
+                    ]
                 );
-                $identity->setFriendlyIdentity($attrs['payload']['email']);
+                $identity->setFriendlyIdentity($attrs['email']);
 
                 return new Result(Result::SUCCESS, $identity);
             } else {
                 return new Result(
                     Result::FAILURE, null,
-                    array('error_code' => 'invalid_argument', 'error_message' => 'no code provided')
+                    ['error_code' => 'invalid_argument', 'error_message' => 'no code provided']
                 );
             }
         }
 
         return new Result(
-            Result::FAILURE, null, array('error_code' => 'invalid_argument', 'error_message' => 'no code provided')
+            Result::FAILURE, null, ['error_code' => 'invalid_argument', 'error_message' => 'no code provided']
         );
     }
 
@@ -144,12 +141,12 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getExtraDetails()
     {
-        return array(
+        return [
             'callback_url' => $this->getCallbackUrl(),
-        );
+        ];
     }
 }

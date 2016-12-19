@@ -1,0 +1,88 @@
+services:
+
+  validator.primary_key_exists:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExistsValidator
+    arguments:
+      - "@doctrine.dbal.default_connection"
+    tags:
+      - { name: validator.constraint_validator, alias: 'primary_key_exists_validator' }
+
+  validator.free_email:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\FreeEmailValidator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: validator.constraint_validator, alias: 'free_email_validator' }
+
+  validator.leaf_department_validator:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\LeafDepartmentValidator
+    arguments:
+      - "@=service('doctrine.orm.default_entity_manager').getRepository('DeskPRO:Department')"
+    tags:
+      - { name: validator.constraint_validator, alias: 'leaf_department_validator' }
+
+  validator.not_system_email:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\NotSystemEmailValidator
+    arguments:
+      - "@email.email_account_manager"
+    tags:
+      - { name: validator.constraint_validator, alias: 'not_system_email_validator' }
+
+  validator.not_banned_email:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\NotBannedEmailValidator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: validator.constraint_validator, alias: 'not_banned_email_validator' }
+
+  validator.dp_password:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPasswordValidator
+    arguments:
+      - "@deskpro_password_policy_validator"
+    tags:
+      - { name: validator.constraint_validator, alias: 'dp_password' }
+
+  validator.dp_auth:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\DpAuthValidator
+    arguments:
+      - "@dp_authentication_manager.agent"
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: validator.constraint_validator, alias: 'dp_auth_validator' }
+
+  validator.ticket_layout:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\TicketLayoutValidator
+    arguments:
+      - "@custom_field_manager"
+      - "@ticket_layout_factory"
+      - "@form_hierarchy_generator"
+      - "@ticket_field_settings"
+    tags:
+      - { name: validator.constraint_validator, alias: 'dp_ticket_layout' }
+
+  validator.ticket_dupe:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\TicketDupeValidator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: validator.constraint_validator }
+
+  validator.ticket_dupe_message:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\TicketDupeMessageValidator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: validator.constraint_validator }
+
+  deskpro.validator.valid_recaptcha:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidRecaptcha2Validator
+    arguments: ["@brand_stack", "@request_stack"]
+    tags:
+      - { name: validator.constraint_validator }
+
+  validator.voice_account:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Voice\VoiceAccountValidator
+    arguments:
+      - "@twilio_adapter"
+    tags:
+      - { name: validator.constraint_validator }

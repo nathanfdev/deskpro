@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,19 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\TmpData as TmpDataEntity;
 
 class TmpData extends AbstractEntityRepository
 {
+    /**
+     * @param      $code
+     * @param null $type
+     *
+     * @return null|\Application\DeskPRO\Entity\TmpData
+     */
     public function getByCode($code, $type = null)
     {
         $info = TmpDataEntity::getPartsFromCode($code);
@@ -66,7 +73,7 @@ class TmpData extends AbstractEntityRepository
     public function getByName($name, $expired = null)
     {
         $q      = 'select t from DeskPRO:TmpData t where t.name = :name ';
-        $params = array('name' => $name);
+        $params = ['name' => $name];
 
         if (true === $expired) {
             $q .= 'and t.date_expire <= :date';
@@ -93,8 +100,8 @@ class TmpData extends AbstractEntityRepository
         }
         $this->getEntityManager()->getConnection()->executeQuery(
             sprintf('delete from %s where name = :name and id != :id', $this->getTableName()),
-            array('name' => $data['name'], 'id' => $data['id']),
-            array(\PDO::PARAM_STR, \PDO::PARAM_INT)
+            ['name' => $data['name'], 'id' => $data['id']],
+            [\PDO::PARAM_STR, \PDO::PARAM_INT]
         );
     }
 
@@ -112,7 +119,7 @@ class TmpData extends AbstractEntityRepository
 
         return (int) $this->getEntityManager()->getConnection()->executeQuery(
             sprintf('select count(*) from %s where name = :name and date_created > :date', $this->getTableName()),
-            array('name' => $name, 'date' => date('Y-m-d H:i:s', $time))
+            ['name' => $name, 'date' => date('Y-m-d H:i:s', $time)]
         )->fetchColumn();
     }
 }

@@ -1,77 +1,104 @@
 <!DOCTYPE html>
-<html ng-app id="upgrader" ng-init="
-        not_user = {{ not_user ? 'true' : 'false' }};
-    ">
+<html ng-app id="upgrader" ng-init="not_user = {{ not_user ? 'true' : 'false' }};">
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
-	<title>{{ phrase('adm.general.deskpro_admin_interface') }}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
 
-	<!--[if lte IE 8]>
-	<script type="text/javascript">window.location = '/{{ path('user')|ltrim('/') }}index.php?_sys=message&ie8_admin';</script>
-	<![endif]-->
+    <link rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-16x16.png', 'appsrc_assets') }}" />
+    <link rel="icon"
+          type="image/png"
+          sizes="24x24"
+          href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-24x24.png', 'appsrc_assets') }}" />
+    <link rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-32x32.png', 'appsrc_assets') }}" />
+    <link rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-64x64.png', 'appsrc_assets') }}" />
+    <link rel="icon"
+          type="image/png"
+          sizes="96x96"
+          href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-96x96.png', 'appsrc_assets') }}" />
 
-	<link rel="stylesheet" href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}"/>
-	<link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/admin-style.css') }}"/>
-	<style>
-		.footer-alert {
-			display: none;
-		}
-		.done-load .footer-alert {
-			display: block;
-		}
-	</style>
+    <title>{{ phrase('adm.general.deskpro_admin_interface') }}</title>
+
+    <!--[if lte IE 8]>
+    <script type="text/javascript">
+        window.location = '/{{ path('user')|ltrim('/') }}index.php?_sys=message&ie8_admin';
+    </script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/admin-style.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/icons-style.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/admin2-style.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/semantic.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/new-admin.css') }}"/>
+    <style>
+        .footer-alert {
+            display: none;
+        }
+
+        .done-load .footer-alert {
+            display: block;
+        }
+    </style>
 </head>
 <body>
 
-<table class="layout_table" width="100%" height="100%" cellspacing="0" cellpadding="0">
-	<tr>
-		<td width="100%" height="100%" align="center" valign="center">
-			<div ng-view class="main_content"></div>
+    <table class="layout_table" width="100%" height="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td width="100%" height="100%" align="center" valign="center">
+                <div ng-view class="main_content"></div>
 
-			<div class="footer-alert">
-				<div class="alert alert-info" style="margin: 25px auto 0 auto; max-width: 800px; text-align: center;">
-					<p>
-						Need help or have questions? Contact us at <a href="mailto:support@deskpro.com">support@deskpro.com</a>
-						or visit our helpdesk at <a href="https://support.deskpro.com/" target="_blank">support.deskpro.com</a>.
-					</p>
-				</div>
-			</div>
-		</td>
-	</tr>
-</table>
+                <div class="footer-alert">
+                    <div class="alert alert-info"
+                         style="margin: 25px auto 0 auto; max-width: 800px; text-align: center;">
+                        <p>
+                            Need help or have questions? Contact us at <a href="mailto:support@deskpro.com">support@deskpro.com</a>
+                            or visit our helpdesk at <a href="https://support.deskpro.com/" target="_blank">support.deskpro.com</a>.
+                        </p>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
 
-{{ ng_tpl('AdminInterfaceBundle:Start:home.html.twig') }}
-{{ ng_tpl('AdminInterfaceBundle:Start:get-demo-modal.html.twig') }}
-{{ ng_tpl('AdminInterfaceBundle:Start:cron.html.twig') }}
-{{ ng_tpl('AdminInterfaceBundle:Start:email.html.twig') }}
-{{ ng_tpl('AdminInterfaceBundle:Start:license.html.twig') }}
-{{ ng_tpl('AdminInterfaceBundle:Start:finish.html.twig') }}
-{{ ng_tpl('AdminInterfaceBundle:TicketAccounts:test-account-modal.html.twig') }}
-{{ ng_tpl('AdminInterfaceBundle:TicketAccounts:test-outgoing-modal.html.twig') }}
+    {{ ng_tpl('AdminInterfaceBundle:Start:home.html.twig') }}
+    {{ ng_tpl('AdminInterfaceBundle:Start:get-demo-modal.html.twig') }}
+    {{ ng_tpl('AdminInterfaceBundle:Start:email.html.twig') }}
+    {{ ng_tpl('AdminInterfaceBundle:Start:license.html.twig') }}
+    {{ ng_tpl('AdminInterfaceBundle:Start:finish.html.twig') }}
+    {{ ng_tpl('AdminInterfaceBundle:TicketAccounts:test-account-modal.html.twig') }}
+    {{ ng_tpl('AdminInterfaceBundle:TicketAccounts:test-outgoing-modal.html.twig') }}
 
-<script type="text/javascript">
-window.DP_ASSET_URL      = '{{ asset('') }}';
-window.DP_BASE_URL       = '/{{ path('user')|ltrim('/') }}';
-window.DP_BASE_API_URL   = '/{{ path('user')|ltrim('/') }}api';
-window.DP_BASE_ADMIN_URL = '/{{ path('admin')|trim('/') }}';
-window.DP_API_TOKEN      = '{{ api_token.getKeyString() }}';
-window.DP_SESSION_ID     = '{{ session.session_code }}';
-window.DP_REQUEST_TOKEN  = '{{ initial_request_token }}';
-window.DP_PERSON_ID      = {{ app.user.id }};
-window.DP_PERSON_EMAIL   = '{{ app.user.getPrimaryEmailAddress() }}';
-window.DP_PERSON_LANG_ID = {{ app.user.language.id }};
-window.DP_IS_DEBUG       = {% if app.isDebug() %}true{% else %}false{% endif %};
-window.DP_IS_TESTING     = {% if app.isTesting() %}true{% else %}false{% endif %};
-window.DP_USE_RJS_BUILD  = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
-window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
-</script>
+    <script type="text/javascript">
+        window.DP_ASSET_URL      = '{{ asset('') }}';
+        window.DP_BASE_URL       = '/{{ path('user')|ltrim('/') }}';
+        window.DP_BASE_API_URL   = '/{{ path('user')|ltrim('/') }}api';
+        window.DP_BASE_ADMIN_URL = '/{{ path('admin')|trim('/') }}';
+        window.DP_API_TOKEN      = '{{ api_token.getKeyString() }}';
+        window.DP_SESSION_ID     = '{{ session.session_code }}';
+        window.DP_REQUEST_TOKEN  = '{{ initial_request_token }}';
+        window.DP_PERSON_ID      = {{ app.user.id }};
+        window.DP_PERSON_EMAIL   = '{{ app.user.getPrimaryEmailAddress() }}';
+        window.DP_PERSON_LANG_ID = {{ app.user.language.id }};
+        window.DP_IS_DEBUG       = {% if app.isDebug() %}true{% else %}false{% endif %};
+        window.DP_IS_TESTING     = {% if app.isTesting() %}true{% else %}false{% endif %};
+        window.DP_USE_RJS_BUILD  = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
+        window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
+    </script>
 
-<script type="text/javascript">
-	window.name = "NG_DEFER_BOOTSTRAP!";
-	window.DP_INTERFACE_LOADER = 'AdminStartLoad';
-</script>
-<script	type="text/javascript" data-main="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
+    <script type="text/javascript">
+        window.name                = "NG_DEFER_BOOTSTRAP!";
+        window.DP_INTERFACE_LOADER = 'AdminStartLoad';
+    </script>
+    <script	type="text/javascript" data-main="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
 </body>
 </html>

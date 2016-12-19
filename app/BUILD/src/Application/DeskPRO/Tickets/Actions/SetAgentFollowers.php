@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Person;
@@ -80,13 +81,13 @@ class SetAgentFollowers extends AbstractContainerAwareAction implements ActionIn
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        #--------------------
-        # Add followers
-        #--------------------
+        //--------------------
+        // Add followers
+        //--------------------
 
         if ($add_agent_ids = $this->getActionOption('add_agent_ids')) {
             if (!is_array($add_agent_ids)) {
-                $add_agent_ids = array($add_agent_ids);
+                $add_agent_ids = [$add_agent_ids];
             }
             foreach ($add_agent_ids as $agent_id) {
                 if (!$agent = $this->resolveAgent($context, $agent_id)) {
@@ -99,13 +100,13 @@ class SetAgentFollowers extends AbstractContainerAwareAction implements ActionIn
             }
         }
 
-        #--------------------
-        # Remove followers
-        #--------------------
+        //--------------------
+        // Remove followers
+        //--------------------
 
         if ($remove_agent_ids = $this->getActionOption('remove_agent_ids')) {
             if (!is_array($remove_agent_ids)) {
-                $remove_agent_ids = array($remove_agent_ids);
+                $remove_agent_ids = [$remove_agent_ids];
             }
             foreach ($remove_agent_ids as $agent_id) {
                 if (!$agent = $this->resolveAgent($context, $agent_id)) {
@@ -123,10 +124,10 @@ class SetAgentFollowers extends AbstractContainerAwareAction implements ActionIn
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
         if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'cc')) {
-            return array('cc');
+            return ['cc'];
         }
 
-        return array();
+        return [];
     }
 
     /**

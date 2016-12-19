@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
@@ -58,8 +59,8 @@ class ChatAvailableCheck
         }
 
         $online_time = 0;
-        if (file_exists(dp_get_data_dir().'/chat_is_available.trigger')) {
-            $online_time = file_get_contents(dp_get_data_dir().'/chat_is_available.trigger');
+        if (file_exists(App::$container->getParameter('dp.user.cache_dir').'/chat_is_available.trigger')) {
+            $online_time = file_get_contents(App::$container->getParameter('dp.user.cache_dir').'/chat_is_available.trigger');
         }
 
         self::$available_time = (int) $online_time;
@@ -73,8 +74,8 @@ class ChatAvailableCheck
     private static function getAvailableTimeCloud()
     {
         // Cached files
-        $trigger_file      = dp_get_data_dir().'/chat_is_available.cloud.trigger';
-        $trigger_file_time = dp_get_data_dir().'/chat_is_available.cloud.time';
+        $trigger_file      = App::$container->getParameter('dp.user.cache_dir').'/chat_is_available.cloud.trigger';
+        $trigger_file_time = App::$container->getParameter('dp.user.cache_dir').'/chat_is_available.cloud.time';
 
         if (file_exists($trigger_file) && file_exists($trigger_file_time)) {
             $time = intval(@file_get_contents($trigger_file_time));
@@ -93,7 +94,7 @@ class ChatAvailableCheck
                 ORDER BY sessions.id DESC
                 LIMIT 1
             ";
-            $sql_params = array(date('Y-m-d H:i:s', time() - 20));
+            $sql_params = [date('Y-m-d H:i:s', time() - 20)];
 
             // Set during serve_dp.php, the low-level chat script
             if (isset($GLOBALS['DP_DB_PDO'])) {

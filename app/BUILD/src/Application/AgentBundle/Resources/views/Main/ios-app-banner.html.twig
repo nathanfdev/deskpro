@@ -1,0 +1,47 @@
+<meta id="iosAppBanner" name="apple-itunes-app" content="app-id=1050912818">
+<script type="text/javascript">
+if (document.addEventListener) {
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var hash;
+
+        if (window.DP_RETURN_TO) {
+            hash = window.DP_RETURN_TO;
+        } else if (window.location.hash) {
+            hash = window.location.hash + '';
+        }
+
+        if (!hash) {
+            return;
+        }
+
+        var re    = /\b([tou])\.o:(\d+)/;
+        var match = hash.match(re);
+        var $el   = $('#iosAppBanner');
+        var path  = '';
+
+        console.log(hash);
+        console.log(match);
+
+        if (match) {
+            path = 'app-argument=';
+
+            switch (match[1]) {
+                case 't':
+                    path += '/?type=ticket&id=' + match[2];
+                    break;
+                case 'p':
+                case 'u':
+                    path += '/?type=person&id=' + match[2];
+                    break;
+                case 'o':
+                    path += '/?type=organization&id=' + match[2];
+                    break;
+                default:
+                    path += '/';
+            }
+
+            $el.attr('content', $el.attr('content') + ', ' + path);
+        }
+    });
+}
+</script>

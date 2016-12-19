@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,28 +36,21 @@ use Elastica\Util as ElasticaUtil;
  */
 class PersonRepository extends AbstractRepository implements WithLabelsInterface
 {
-    /**
-     * Fields to be highlighted.
-     *
-     * @var array
-     */
-    protected $highlightFields = array(
-        'name'   => array('fragment_size' => 100),
-        'emails' => array('fragment_size' => 100, 'number_of_fragments' => 1),
-    );
+    protected $highlightFields = [
+        'name'   => ['fragment_size' => 100],
+        'emails' => ['fragment_size' => 100, 'number_of_fragments' => 1],
+    ];
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     protected function getQueryFields()
     {
-        return array('name', 'first_name', 'last_name', 'emails', 'phone_numbers');
+        return ['name', 'first_name', 'last_name', 'emails', 'email_domains', 'phone_numbers'];
     }
 
     /**
-     * @param $q
-     *
-     * @return Query\MultiMatch
+     * {@inheritdoc}
      */
     protected function getQueryString($q)
     {
@@ -68,5 +61,19 @@ class PersonRepository extends AbstractRepository implements WithLabelsInterface
         $multi_match->setOperator('AND');
 
         return $multi_match;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getFilters(array $options = [])
+    {
+        $mainFilter = new Query\BoolQuery();
+
+        if (isset($options['is_agent'])) {
+            $mainFilter->addMust(new Query\Term(['is_agent' => (bool) $options['is_agent']]));
+        }
+
+        return $mainFilter->toArray();
     }
 }

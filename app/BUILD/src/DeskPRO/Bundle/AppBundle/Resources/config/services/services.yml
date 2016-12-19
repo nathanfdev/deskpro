@@ -1,0 +1,122 @@
+services:
+
+  visitor_identification_provider:
+    class: DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider
+    arguments: ["@request_stack", "@logger"]
+
+  session.handler.dbal:
+    class: DeskPRO\Bundle\AppBundle\Session\DbalSessionHandler
+    arguments:
+      - "@doctrine.dbal.default_connection"
+      - "%portal.session.name%"
+      - "@visitor_identification_provider"
+      - "@security.token_storage"
+
+  brand_aware_settings_resolver:
+    class: DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver
+    arguments: ["@settings_resolver", "@doctrine.orm.default_entity_manager", "@?brand_stack"]
+
+  widget_settings_resolver:
+    class: DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver
+    arguments:
+      - "@brand_aware_settings_resolver"
+      - "@doctrine.orm.entity_manager"
+      - "@assets.packages"
+      - "@router"
+      - "@security.token_storage"
+      - "@portal_permissions_manager"
+      - "@portal_mode_storage"
+      - "@=service('request_stack').getCurrentRequest().getBasePath()"
+
+  captcha_settings_resolver:
+    class: DeskPRO\Bundle\AppBundle\Settings\CaptchaSettingsResolver
+    arguments: ["@brand_aware_settings_resolver"]
+
+  portal_settings_resolver:
+    class: DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver
+    arguments: ["@brand_aware_settings_resolver"]
+
+  discover_settings_resolver:
+    class: DeskPRO\Bundle\AppBundle\Settings\DiscoverSettingsResolver
+    arguments: ["@brand_aware_settings_resolver"]
+
+  agent_client_info_settings_resolver:
+    class: DeskPRO\Bundle\AppBundle\Settings\AgentClientInfoSettingsResolver
+    arguments: ["@brand_aware_settings_resolver", "@security.token_storage", "@doctrine.orm.default_entity_manager"]
+
+  usersource_settings_resolver:
+    class: DeskPRO\Bundle\AppBundle\Settings\UsersourceSettingsResolver
+    arguments: ["@=service('service_container').getSystemService('usersource_manager')", "@brand_aware_settings_resolver"]
+
+  updater_settings_resolver:
+    class: DeskPRO\Bundle\AppBundle\Settings\UpdaterSettingsResolver
+    arguments: ["@brand_aware_settings_resolver", "@deskpro.app_env", "@router"]
+
+  user_rule_processor:
+    class: Application\DeskPRO\People\UserRuleProcessor
+    arguments: ["@doctrine.orm.default_entity_manager"]
+
+  blob.storage:
+    class: Application\DeskPRO\BlobStorage\DeskproBlobStorage
+    factory: [Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService, create]
+    arguments: ["@service_container"]
+
+  deskpro_password_policy_validator:
+    class: Application\DeskPRO\People\PasswordPolicyValidator
+    factory: [Application\DeskPRO\DependencyInjection\SystemServices\PasswordPolicyValidatorService, create]
+    arguments: ["@service_container"]
+
+  avatar_resolver:
+    class: DeskPRO\Bundle\AppBundle\Content\AvatarResolver
+    #todo #portal second param here needs to be setting for gravatar
+    arguments: ["@router.default", "@doctrine.orm.default_entity_manager", true]
+
+  agent_data:
+    class: DeskPRO\Bundle\AppBundle\Agent\AgentData
+    arguments: ["@avatar_resolver", "@doctrine.orm.default_entity_manager"]
+
+  doctrine_association_manager:
+    class: DeskPRO\Component\DoctrineAssociation\DoctrineAssociationManager
+    arguments: ["@doctrine.orm.default_entity_manager"]
+
+  dp.app.settings_manager:
+    class: DeskPRO\Bundle\AppBundle\Settings\SettingsManager
+    arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
+
+  attachment_accepter:
+    class: Application\DeskPRO\Attachments\AcceptAttachment
+    factory: [Application\DeskPRO\DependencyInjection\SystemServices\AttachmentAccepterService, create]
+    arguments: ["@service_container"]
+
+  api_controllers_finder:
+    class: DeskPRO\Bundle\AppBundle\Util\ApiControllersFinder
+
+  twig_template_renderer:
+    class: DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer
+    arguments: ["@twig"]
+
+  pdf_renderer:
+    class: DeskPRO\Component\Pdf\mPdfRenderer
+    arguments: ["@brand_stack"]
+
+  widget_loader_code_renderer:
+    class: DeskPRO\Bundle\AppBundle\Templating\WidgetLoader
+    arguments: ["@deskpro.app_env", "@widget_settings_resolver", "@serializer"]
+
+  app.environment:
+    class: DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService
+    arguments: ["@request_stack"]
+
+  portal_mode_factory:
+    class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory
+
+  portal_mode_storage:
+    class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage
+
+  dp.jira:
+    class: Application\DeskPRO\Service\JIRA
+    arguments: ["@service_container"]
+
+  twilio_adapter:
+    class: DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter
+    arguments: ["@doctrine.orm.entity_manager"]

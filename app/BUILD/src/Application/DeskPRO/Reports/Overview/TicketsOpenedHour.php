@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
@@ -112,7 +113,7 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
 
             case 'weekday':
                 // Sunday is start of week in MySQL, hence weird indexes
-                $titles = array(
+                $titles = [
                     0 => 'Monday',
                     1 => 'Tuesday',
                     2 => 'Wednesday',
@@ -120,12 +121,12 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
                     4 => 'Friday',
                     5 => 'Saturday',
                     6 => 'Sunday',
-                );
+                ];
                 break;
 
             case 'day':
                 $days   = Dates::daysInMonth($this->date_start->format('n'), $this->date_start->format('Y'));
-                $titles = array();
+                $titles = [];
                 foreach (range(1, $days) as $d) {
                     $titles[$d] = $d.Numbers::ordinalSuffix($d);
                 }
@@ -133,7 +134,7 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
                 break;
 
             case 'month':
-                $titles = array(
+                $titles = [
                     1  => 'Jan',
                     2  => 'Feb',
                     3  => 'Mar',
@@ -146,7 +147,7 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
                     10 => 'Oct',
                     11 => 'Nov',
                     12 => 'Dec',
-                );
+                ];
                 break;
 
             default:

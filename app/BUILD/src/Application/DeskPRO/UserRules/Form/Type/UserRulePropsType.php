@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\UserRules\Form\Type;
 
+use Application\DeskPRO\Entity\UserRule;
 use Application\DeskPRO\UserRules\Form\DataTransformer\EmailPatternsDataTransformer;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserRulePropsType extends AbstractType
 {
@@ -51,26 +53,26 @@ class UserRulePropsType extends AbstractType
         $builder->add(
             'add_usergroup',
             'entity',
-            array(
-                 'class'         => 'DeskPRO:Usergroup',
-                 'required'      => false,
-                 'multiple'      => false,
-                 'property'      => 'title',
-                 'query_builder' => function (EntityRepository $er) {
-                     return $er->createQueryBuilder('u')->where(
-                         'u.is_agent_group = 0 AND u.sys_name IS NULL'
-                     );
-                 },
-            )
+            [
+                'class'         => 'DeskPRO:Usergroup',
+                'required'      => false,
+                'multiple'      => false,
+                'property'      => 'title',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('u')->where(
+                        'u.is_agent_group = 0 AND u.sys_name IS NULL'
+                    );
+                },
+            ]
         );
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
-                 'data_class' => 'Application\\DeskPRO\\Entity\\UserRule',
-            )
+            [
+                'data_class' => UserRule::class,
+            ]
         );
     }
 

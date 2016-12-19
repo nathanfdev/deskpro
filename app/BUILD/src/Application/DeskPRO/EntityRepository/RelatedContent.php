@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,10 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\Entity\Article as ArticleEntity;
+use Application\DeskPRO\Entity\Download as DownloadEntity;
+use Application\DeskPRO\Entity\News as NewsEntity;
+
 /**
  * RelatedContent.
  *
@@ -36,4 +40,30 @@ namespace Application\DeskPRO\EntityRepository;
  */
 class RelatedContent extends AbstractEntityRepository
 {
+    public function findRelatedArticles(ArticleEntity $article)
+    {
+        return $this->findBy([
+            'object_type'     => 'articles',
+            'rel_object_type' => 'articles',
+            'object_id'       => $article->getId(),
+        ]);
+    }
+
+    public function findRelatedNewsPosts(NewsEntity $post)
+    {
+        return $this->findBy([
+            'object_type'     => 'news',
+            'rel_object_type' => 'news',
+            'object_id'       => $post->getId(),
+        ]);
+    }
+
+    public function findRelatedFiles(DownloadEntity $download)
+    {
+        return $this->findBy([
+            'object_type'     => 'downloads',
+            'rel_object_type' => 'downloads',
+            'object_id'       => $download->getId(),
+        ]);
+    }
 }

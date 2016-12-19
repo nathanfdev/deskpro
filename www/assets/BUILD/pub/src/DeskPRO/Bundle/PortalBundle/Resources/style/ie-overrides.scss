@@ -1,0 +1,22 @@
+// Special rules for special IE go here
+.search-and-ticket {
+  .search-or-ticket {
+    span {
+      display: none !important;
+    }
+  }
+}
+
+
+
+
+
+.search-and-ticket {
+
+  .expanded-search-results {
+
+    .search-result-collection-loading, .search-result-collection-empty {
+      // height: 100px;
+    }
+  }
+}

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Templating\Templates\TemplateSet;
 
 class Build1400056732 extends AbstractBuild
 {
@@ -40,32 +40,28 @@ class Build1400056732 extends AbstractBuild
     {
         $db = $this->container->getDb();
 
-        $set = new TemplateSet(
-            $this->container->getEm(),
-            $this->container->get('twig'),
-            $this->container->getSystemService('style')
-        );
+        $set = $this->container->get('templating.email.template_set');
 
-        #------------------------------
-        # Rename templates
-        #------------------------------
+        //------------------------------
+        // Rename templates
+        //------------------------------
 
         $this->out('Renaming templates');
 
-        $replacements = array(
+        $replacements = [
             'DeskPRO:emails_user:new-reply-agent.html.twig' => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
             'DeskPRO:emails_user:new-reply-user.html.twig'  => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
             'DeskPRO:emails_user:new-ticket.html.twig'      => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
-        );
+        ];
 
         foreach ($replacements as $oldname => $newname) {
             $this->out("Rename $oldname -> $newname");
-            $db->update('templates', array('name' => $newname), array('name' => $oldname));
+            $db->update('templates', ['name' => $newname], ['name' => $oldname]);
         }
 
-        #------------------------------
-        # Rename custom
-        #------------------------------
+        //------------------------------
+        // Rename custom
+        //------------------------------
 
         $this->out('Renaming custom templates');
 
@@ -73,24 +69,24 @@ class Build1400056732 extends AbstractBuild
 
         foreach ($custom_names as $id => $name) {
             $new_name = preg_replace('#^DeskPRO:emails_(user|agent):custom_(.*?)\.html\.twig$#', 'DeskPRO:emails_custom:$1_$2.html.twig', $name);
-            $db->update('templates', array('name' => $new_name), array('id' => $id));
+            $db->update('templates', ['name' => $new_name], ['id' => $id]);
         }
 
-        #------------------------------
-        # Copy old default templates into custom ones
-        #------------------------------
+        //------------------------------
+        // Copy old default templates into custom ones
+        //------------------------------
 
         $this->out('Copying old default templates into custom template');
 
-        $copy_list = array(
-            'DeskPRO:emails_user:ticket-autoclose-warn.html.twig' => array(
+        $copy_list = [
+            'DeskPRO:emails_user:ticket-autoclose-warn.html.twig' => [
                 'file'     => DP_ROOT.'/src/Application/DeskPRO/Resources/views/emails_user/ticket-autoclose-warn.html.twig',
                 'new_name' => 'DeskPRO:emails_custom:user_autoclose_warn.html.twig',
-            ),
-        );
+            ],
+        ];
 
         foreach ($copy_list as $old_name => $info) {
-            $db->delete('templates', array('name' => $old_name));
+            $db->delete('templates', ['name' => $old_name]);
             $this->out("Saving $old_name to {$info['new_name']}");
 
             try {
@@ -107,18 +103,18 @@ class Build1400056732 extends AbstractBuild
             }
         }
 
-        #------------------------------
-        # Recompile templates
-        #------------------------------
+        //------------------------------
+        // Recompile templates
+        //------------------------------
 
         $this->out('Re-compiling custom templates');
 
         $tids        = $db->fetchAllCol('SELECT id FROM templates');
-        $failed      = array();
-        $failed_data = array();
+        $failed      = [];
+        $failed_data = [];
 
         foreach ($tids as $id) {
-            $info = $db->fetchAssoc('SELECT name, template_code FROM templates WHERE id = ?', array($id));
+            $info = $db->fetchAssoc('SELECT name, template_code FROM templates WHERE id = ?', [$id]);
             $this->out("Re-compiling {$info['name']}");
 
             try {
@@ -138,12 +134,12 @@ class Build1400056732 extends AbstractBuild
 
         if ($failed) {
             $this->saveUpgradeData('201404', 'bad-templates', $failed_data);
-            $db->executeUpdate('DELETE FROM templates WHERE id IN (?)', array($failed), array(Connection::PARAM_INT_ARRAY));
+            $db->executeUpdate('DELETE FROM templates WHERE id IN (?)', [$failed], [Connection::PARAM_INT_ARRAY]);
         }
 
-        #------------------------------
-        # Process template names in actions
-        #------------------------------
+        //------------------------------
+        // Process template names in actions
+        //------------------------------
 
         $proc_actions = function ($actions) use ($copy_list) {
             $actions = @json_decode($actions, true);
@@ -175,13 +171,13 @@ class Build1400056732 extends AbstractBuild
         foreach ($db->fetchAll('SELECT id, actions FROM ticket_triggers') as $x) {
             $actions = $proc_actions($x['actions']);
             if ($actions) {
-                $db->update('ticket_triggers', array('actions' => $actions), array('id' => $x['id']));
+                $db->update('ticket_triggers', ['actions' => $actions], ['id' => $x['id']]);
             }
         }
         foreach ($db->fetchAll('SELECT id, actions FROM ticket_escalations') as $x) {
             $actions = $proc_actions($x['actions']);
             if ($actions) {
-                $db->update('ticket_escalations', array('actions' => $actions), array('id' => $x['id']));
+                $db->update('ticket_escalations', ['actions' => $actions], ['id' => $x['id']]);
             }
         }
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,20 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class BlobsController.
+ *
+ * @ApiModes("all")
+ */
 class BlobsController extends AbstractController
 {
     /**
@@ -76,9 +83,9 @@ class BlobsController extends AbstractController
 
         $blob = $accept->accept($file, true);
 
-        return $this->createApiCreateResponse(array(
+        return $this->createApiCreateResponse([
             'blob' => $blob->toApiData(),
-        ), $this->generateUrl('api'));
+        ], $this->generateUrl('api'));
     }
 
     /**
@@ -100,9 +107,9 @@ class BlobsController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'blob' => $blob->toApiData(),
-        ));
+        ]);
     }
 
     /**

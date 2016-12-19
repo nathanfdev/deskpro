@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -53,20 +54,24 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
         $this->flag = $flag;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setExecutionContext($context)
     {
         $this->execution_context = $context;
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -91,15 +96,13 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
-        return array(
-            array('action' => 'flag', 'color' => $this->flag),
-        );
+        return [
+            ['action' => 'flag', 'color' => $this->flag],
+        ];
     }
 
     /**
@@ -113,9 +116,7 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -123,7 +124,7 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {
@@ -132,7 +133,7 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
         if (!$this->flag) {
             return $tr->phrase('agent.tickets.unset_flag_action');
         } else {
-            return $tr->phrase('agent.tickets.set_flag_to_action', array('flag' => $this->flag));
+            return $tr->phrase('agent.tickets.set_flag_to_action', ['flag' => $this->flag]);
         }
     }
 }

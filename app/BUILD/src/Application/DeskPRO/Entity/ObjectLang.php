@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,13 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -46,31 +48,43 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $ref;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $ref_type;
 
     /**
+     * Note: Don't validate this property because it will be set up in the doctrine lifecycle callback.
+     *
      * @var string
      */
     protected $ref_id;
 
     /**
      * @var Language
+     *
+     * @Assert\NotNull()
      */
     protected $language;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $prop_name;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $value = '';
 
@@ -121,17 +135,37 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         return $ol;
     }
 
+    public function setLanguage(Language $lang = null)
+    {
+        $this->setModelField('language', $lang);
+
+        return $this;
+    }
+
+    public function setValue($value)
+    {
+        $this->setModelField('value', $value);
+
+        return $this;
+    }
+
     /**
      * @param object $object
+     *
+     * @return $this
      */
     public function setObject($object)
     {
         $this->_set_object = $object;
         $this->setRef($object->getObjectRef());
+
+        return $this;
     }
 
     /**
      * @param string $ref
+     *
+     * @return $this
      */
     public function setRef($ref)
     {
@@ -145,14 +179,28 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
             $this->setModelField('ref_type', null);
             $this->setModelField('ref_id', null);
         }
+
+        return $this;
     }
 
     /**
      * @param string $prop_name
+     *
+     * @return $this
      */
     public function setPropName($prop_name)
     {
         $this->setModelField('prop_name', strtolower($prop_name));
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPropName()
+    {
+        return $this->prop_name;
     }
 
     /**
@@ -163,6 +211,14 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         return $this->value;
     }
 
+    /**
+     * @return Language
+     */
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
     public function _resetRefCode()
     {
         if ($this->_set_object) {
@@ -171,31 +227,114 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array(
-            'name'    => 'object_lang',
-            'indexes' => array(
-                'prop_ref_type' => array('columns' => array('ref_type', 'ref_id')),
-            ),
-            'uniqueConstraints' => array(
-                'prop_ref' => array('columns' => array('ref', 'prop_name', 'language_id')),
-            ),
-        ));
+        $metadata->setPrimaryTable(
+            [
+                'name'    => 'object_lang',
+                'indexes' => [
+                    'prop_ref_type' => [
+                        'columns' => [
+                            'ref_type',
+                            'ref_id',
+                        ],
+                    ],
+                ],
+                'uniqueConstraints' => [
+                    'prop_ref' => [
+                        'columns' => [
+                            'ref',
+                            'prop_name',
+                            'language_id',
+                        ],
+                    ],
+                ],
+            ]
+        );
         $metadata->addLifecycleCallback('_resetRefCode', 'prePersist');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'ref', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref'));
-        $metadata->mapField(array('fieldName' => 'ref_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ref_type'));
-        $metadata->mapField(array('fieldName' => 'ref_id', 'type' => 'integer', 'nullable' => true, 'columnName' => 'ref_id'));
-        $metadata->mapField(array('fieldName' => 'prop_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'prop_name'));
-        $metadata->mapField(array('fieldName' => 'value', 'type' => 'text', 'nullable' => false, 'columnName' => 'value'));
+        $metadata->mapField(
+            [
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'ref',
+                'type'       => 'string',
+                'length'     => 200,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'ref',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'ref_type',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'ref_type',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'ref_id',
+                'type'       => 'integer',
+                'nullable'   => true,
+                'columnName' => 'ref_id',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'prop_name',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'prop_name',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'value',
+                'type'       => 'text',
+                'nullable'   => false,
+                'columnName' => 'value',
+            ]
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'language',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'language_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+            ]
+        );
     }
 }

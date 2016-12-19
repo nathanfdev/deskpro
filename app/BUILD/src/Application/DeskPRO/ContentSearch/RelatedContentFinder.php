@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\ContentSearch;
 
 use Application\DeskPRO\App;
@@ -59,7 +60,7 @@ class RelatedContentFinder
     protected $related_entities;
 
     /**
-     * @param \Application\DeskPRO\Entity\Person $person Person context to run the search from. Affects permissions.
+     * @param \Application\DeskPRO\Entity\Person $person Person context to run the search from. Affects permissions
      * @param mixed                              $entity The entity we want to fetch related stuff for
      */
     public function __construct(Person $person, $entity)
@@ -87,7 +88,7 @@ class RelatedContentFinder
             return $this->related_records;
         }
 
-        $this->related_records = array();
+        $this->related_records = [];
 
         $rels = App::getDb()->fetchAll('
             SELECT object_type, object_id
@@ -99,11 +100,11 @@ class RelatedContentFinder
             SELECT rel_object_type AS object_type, rel_object_id AS object_id
             FROM related_content
             WHERE related_content.object_type = ? AND related_content.object_id = ?
-        ', array($this->entity_type, $this->entity->getId(), $this->entity_type, $this->entity->getId()));
+        ', [$this->entity_type, $this->entity->getId(), $this->entity_type, $this->entity->getId()]);
 
         foreach ($rels as $rel) {
             if (!isset($this->related_records[$rel['object_type']])) {
-                $this->related_records[$rel['object_type']] = array();
+                $this->related_records[$rel['object_type']] = [];
             }
 
             $this->related_records[$rel['object_type']][] = $rel['object_id'];
@@ -127,7 +128,7 @@ class RelatedContentFinder
             return $this->related_entities;
         }
 
-        $this->related_entities = array();
+        $this->related_entities = [];
 
         foreach ($this->getRelatedRecords() as $type => $rels) {
             $rels = array_unique($rels);

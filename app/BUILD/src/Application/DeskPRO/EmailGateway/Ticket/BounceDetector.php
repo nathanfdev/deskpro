@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Orb\Util\Strings;
@@ -79,7 +80,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
                         $this->logger->logDebug("Checking attach #$k {$attach->file_name} for PTAC");
                     }
 
-                    $headers = array();
+                    $headers = [];
 
                     $fp = @fopen($attach->tmp_file, 'r');
                     if (!$fp) {
@@ -160,7 +161,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
                 WHERE tickets.status IN ('awaiting_user', 'awaiting_agent', 'resolved') AND people_emails.email = ?
                 ORDER BY tickets.id DESC
                 LIMIT 50
-            ", array($email));
+            ", [$email]);
 
             if ($this->original_subject) {
                 foreach ($ticket_subjects as $tid => $subj) {

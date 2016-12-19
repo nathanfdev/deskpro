@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\App;
@@ -80,7 +81,7 @@ class DataInitializer
 
     public function run()
     {
-        $this->container->getDb()->replace('settings', array('name' => 'core.admin_upgrade_notice', 'value' => DP_BUILD_TIME));
+        $this->container->getDb()->replace('settings', ['name' => 'core.admin_upgrade_notice', 'value' => DP_BUILD_TIME]);
 
         $this->runSearchIndex();
         $this->runInitPerms();
@@ -95,42 +96,39 @@ class DataInitializer
             return;
         }
 
-        // By default everyone can see the default categories
-        $this->container->getDb()->insert('article_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
-        $this->container->getDb()->insert('news_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
-        $this->container->getDb()->insert('download_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
-        $this->container->getDb()->insert('feedback_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
-
         // Initial agent has access to all deps
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'is_active' => 1, 'person_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'is_active' => 1, 'person_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'is_active' => 1, 'person_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'is_active' => 1, 'person_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', ['department_id' => 1, 'is_active' => 1, 'person_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1]);
+        $this->container->getDb()->insert('department_permissions', ['department_id' => 2, 'is_active' => 1, 'person_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1]);
+        $this->container->getDb()->insert('department_permissions', ['department_id' => 3, 'is_active' => 1, 'person_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1]);
+        $this->container->getDb()->insert('department_permissions', ['department_id' => 4, 'is_active' => 1, 'person_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1]);
 
         // The everyone group has access to all deps too
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', ['department_id' => 1, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1]);
+        $this->container->getDb()->insert('department_permissions', ['department_id' => 2, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1]);
+        $this->container->getDb()->insert('department_permissions', ['department_id' => 3, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1]);
+        $this->container->getDb()->insert('department_permissions', ['department_id' => 4, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1]);
 
         // The registered group has access to all deps too
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'chat', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', ['department_id' => 1, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'tickets', 'name' => 'full', 'value' => 1]);
+        $this->container->getDb()->insert('department_permissions', ['department_id' => 2, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'tickets', 'name' => 'full', 'value' => 1]);
+        $this->container->getDb()->insert('department_permissions', ['department_id' => 3, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'chat', 'name' => 'full', 'value' => 1]);
+        $this->container->getDb()->insert('department_permissions', ['department_id' => 4, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'chat', 'name' => 'full', 'value' => 1]);
     }
 
     public function runSearchIndex()
     {
+        if (defined('DP_TESTS_RUNNING')) {
+            return;
+        }
         if ($this->is_import) {
             return;
         }
-        $types = array(
-            array('article',   'articles',  'DeskPRO:Article'),
-            array('download',  'downloads', 'DeskPRO:Download'),
-            array('feedback',  'feedback',  'DeskPRO:Feedback'),
-            array('news',      'news',      'DeskPRO:News'),
-        );
+        $types = [
+            ['article',   'articles',  'DeskPRO:Article'],
+            ['download',  'downloads', 'DeskPRO:Download'],
+            ['feedback',  'feedback',  'DeskPRO:Feedback'],
+            ['news',      'news',      'DeskPRO:News'],
+        ];
 
         foreach ($types as $t) {
             list($content_type, $table, $entity) = $t;
@@ -157,25 +155,25 @@ class DataInitializer
             return;
         }
 
-        for ($i = 1; $i <= 5; ++$i) {
-            $this->container->getDb()->insert('ticket_filter_subscriptions', array(
-                'filter_id'             => $i,
-                'person_id'             => $agent->id,
-                'email_created'         => 1,
-                'email_new'             => 1,
-                'email_user_activity'   => 1,
-                'email_agent_activity'  => 1,
-                'email_agent_note'      => 1,
-                'email_property_change' => 1,
-                'alert_created'         => 1,
-                'alert_new'             => 1,
-                'alert_user_activity'   => 1,
-                'alert_agent_activity'  => 1,
-                'alert_property_change' => 1,
-            ));
-        }
+//        for ($i = 1; $i <= 5; $i++) {
+//            $this->container->getDb()->insert('ticket_filter_subscriptions', array(
+//                'filter_id'             => $i,
+//                'person_id'             => $agent->id,
+//                'email_created'         => 1,
+//                'email_new'             => 1,
+//                'email_user_activity'   => 1,
+//                'email_agent_activity'  => 1,
+//                'email_agent_note'      => 1,
+//                'email_property_change' => 1,
+//                'alert_created'         => 1,
+//                'alert_new'             => 1,
+//                'alert_user_activity'   => 1,
+//                'alert_agent_activity'  => 1,
+//                'alert_property_change' => 1,
+//            ));
+//        }
 
-        $prefs                                = array();
+        $prefs                                = [];
         $prefs['chat_message.email']          = 1;
         $prefs['login_attempt_fail.email']    = 1;
         $prefs['task_assign_self.email']      = 1;
@@ -210,12 +208,12 @@ class DataInitializer
         $prefs['new_comment_validate.alert']  = 1;
 
         foreach ($prefs as $p => $v) {
-            $this->container->getDb()->insert('people_prefs', array(
+            $this->container->getDb()->insert('people_prefs', [
                 'person_id'   => $agent->id,
                 'name'        => 'agent_notif.'.$p,
                 'value_str'   => $v,
                 'value_array' => 'N;',
-            ));
+            ]);
         }
     }
 
@@ -236,11 +234,11 @@ class DataInitializer
 
         $user = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail('support@deskpro.com');
         if (!$user) {
-            $user = Person::newContactPerson(array(
+            $user = Person::newContactPerson([
                 'name'         => 'Christopher Padfield',
                 'email'        => 'support@deskpro.com',
                 'is_confirmed' => true,
-            ));
+            ]);
             $user->getPrimaryEmail()->is_validated = true;
             App::getOrm()->persist($user);
         }

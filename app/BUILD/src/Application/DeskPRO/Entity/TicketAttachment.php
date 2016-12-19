@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,56 +31,95 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Ticket attachments.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
-class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
+class TicketAttachment extends DomainObject
 {
     /**
+     * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
-    protected $id = null;
+    protected $id;
 
     /**
-     * @var \Application\DeskPRO\Entity\Ticket
+     * Ticket this attachment belongs to.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Ticket>")
+     *
+     * @var Ticket
      */
     protected $ticket;
 
     /**
      * Who created the attachment.
      *
-     * @var \Application\DeskPRO\Entity\Person
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
      */
     protected $person;
 
     /**
-     * @var \Application\DeskPRO\Entity\Blob
+     * Actual attachment.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     *
+     * @Assert\Valid()
+     *
+     * @var Blob
      */
     protected $blob;
 
     /**
-     * @var \Application\DeskPRO\Entity\TicketMessage
+     * Message - holder of this attachment.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\TicketMessage>")
+     *
+     * @Assert\NotBlank()
+     *
+     * @var TicketMessage
      */
-    protected $message = null;
+    protected $message;
 
     /**
+     * True if this attachmen just a note.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_agent_note = false;
 
     /**
+     * Is this attachment is embed in message.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_inline = false;
-
-    public function __construct()
-    {
-    }
 
     /**
      * @return int
@@ -97,7 +136,7 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
      *
      * @return $this
      */
-    public function setPerson(Person $person)
+    public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
 
@@ -119,16 +158,6 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Returns blob entity.
-     *
-     * @return Blob
-     */
-    public function getBlob()
-    {
-        return $this->blob;
-    }
-
-    /**
      * @param $message
      */
     public function setMessage($message)
@@ -141,6 +170,18 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    /**
+     * @param bool $isInline
+     *
+     * @return $this
+     */
+    public function setIsInline($isInline)
+    {
+        $this->setModelField('is_inline', $isInline);
+
+        return $this;
+    }
+
     public function prePersist()
     {
         if (!$this->message->ticket) {
@@ -151,21 +192,61 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
         $this->message->ticket->has_attachments = true;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getBlob()
+    {
+        return $this->blob;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInline()
+    {
+        return $this->is_inline;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAgentNote()
+    {
+        return $this->is_agent_note;
+    }
+
+    /**
+     * @return TicketMessage
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketAttachment';
-        $metadata->setPrimaryTable(array('name' => 'tickets_attachments'));
+        $metadata->setPrimaryTable(['name' => 'tickets_attachments']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
         $metadata->addLifecycleCallback('prePersist', 'prePersist');
 
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -173,95 +254,95 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'is_agent_note',
                 'type'       => 'boolean',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'is_agent_note',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'is_inline',
                 'type'       => 'boolean',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'is_inline',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'ticket',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
                 'mappedBy'     => null,
-                'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'inversedBy'   => 'attachments',
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'ticket_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'person',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'set null',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'blob',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'blob_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'message',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage',
                 'inversedBy'   => 'attachments',
-                'joinColumns'  => array(
-                    array(
+                'joinColumns'  => [
+                    [
                         'name'                 => 'message_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
     }
 }

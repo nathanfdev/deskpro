@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -78,13 +78,13 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     protected function initOptions()
     {
         $this->options = new \Orb\Util\OptionsArray(
-            array(
+            [
                 'sso_url'           => '',
                 'slo_url'           => '',
                 'cert_fingerprint'  => '',
                 'name_id_format'    => '',
                 'login_custom_text' => '',
-            )
+            ]
         );
     }
 
@@ -93,34 +93,34 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
      */
     protected function getSamlSettings()
     {
-        $settings = array(
-            'sp' => array(
+        $settings = [
+            'sp' => [
                 'entityId'                 => $this->getMetadataXmlUrl(),
-                'assertionConsumerService' => array(
+                'assertionConsumerService' => [
                     'url' => $this->getCallbackUrl(),
-                ),
-                'singleLogoutService' => array(
+                ],
+                'singleLogoutService' => [
                     'url' => $this->getSingleLogoutServiceUrl(),
-                ),
+                ],
                 'NameIDFormat' => $this->options['name_id_format'] ?: \OneLogin_Saml2_Constants::NAMEID_PERSISTENT,
-            ),
-            'idp' => array(
+            ],
+            'idp' => [
                 'entityId'            => $this->options['issuer_id'],
-                'singleSignOnService' => array(
+                'singleSignOnService' => [
                     'url' => $this->options['sso_url'],
-                ),
-                'singleLogoutService' => array(
+                ],
+                'singleLogoutService' => [
                     'url' => $this->options['slo_url'],
-                ),
+                ],
                 'x509cert'        => $this->options['cert'] ?: null,
                 'certFingerprint' => $this->options['cert_fingerprint'] ?: null,
-            ),
-        );
+            ],
+        ];
 
         if ($this->options['sign_authn_request']) {
-            $settings['security'] = array(
+            $settings['security'] = [
                 'authnRequestsSigned' => true,
-            );
+            ];
 
             $settings['sp']['privateKey'] = $this->options['sp_private_key'];
             $settings['sp']['x509cert']   = $this->options['sp_public_x509'];
@@ -148,7 +148,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         } catch (\Exception $e) {
             return new Result(
                 Result::FAILURE_EXCEPTION, null,
-                array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e)
+                ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]
             );
         }
     }
@@ -156,7 +156,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     /**
      * {@inheritdoc}
      */
-    public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller)
+    public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller = null)
     {
         if ($this->logger) {
             $this->logger->log(
@@ -172,7 +172,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         } catch (\Exception $e) {
             return new Result(
                 Result::FAILURE_EXCEPTION, null,
-                array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e)
+                ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]
             );
         }
     }
@@ -197,7 +197,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         } catch (\Exception $e) {
             return new Result(
                 Result::FAILURE_EXCEPTION, null,
-                array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e)
+                ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]
             );
         }
     }
@@ -226,7 +226,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         } catch (\Exception $e) {
             return new Result(
                 Result::FAILURE_EXCEPTION, null,
-                array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e)
+                ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]
             );
         }
 
@@ -246,7 +246,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                 }
             }
 
-            return new Result(Result::FAILURE, null, array('saml_errors' => $errors));
+            return new Result(Result::FAILURE, null, ['saml_errors' => $errors]);
         }
 
         $attrs = $saml->getAttributes();
@@ -262,7 +262,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         if (is_array($attrs)) {
             $user_info = $attrs;
         } else {
-            $user_info = array();
+            $user_info = [];
         }
 
         $user_info['email']      = Arrays::reachForFirstValueInKey($attrs, 'email');
@@ -319,7 +319,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 
         $logoutRequest = new \OneLogin_Saml2_LogoutRequest($saml_settings);
         $samlRequest   = $logoutRequest->getRequest();
-        $parameters    = array('SAMLRequest' => $samlRequest);
+        $parameters    = ['SAMLRequest' => $samlRequest];
         $url           = \OneLogin_Saml2_Utils::redirect($sloUrl, $parameters, true);
 
         return trim($url) ?: $this->backupLogoutUrl;
@@ -339,10 +339,10 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
      */
     public function getIframeTemplateParams($is_first_page_load)
     {
-        return array(
+        return [
             'iframe_url' => $this->getCallbackUrl(),
             'render'     => true,
-        );
+        ];
     }
 
     /**
@@ -424,7 +424,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
             $custom_xml = $this->options->get('custom_metadata_xml');
         }
 
-        return SamlMetadataBuilder::builder($sp, false, false, null, null, array(), array(), array(), $custom_xml);
+        return SamlMetadataBuilder::builder($sp, false, false, null, null, [], [], [], $custom_xml);
     }
 
     /**
@@ -438,11 +438,11 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
             $xml_text = 'SP Metadata not yet available. Please fill out SSO URL and Issuer Metadata (a.k.a IdP EntityID) settings and save.';
         }
 
-        return array(
+        return [
             'consumer_url'  => $this->getCallbackUrl(),
             'metadata_url'  => $this->getMetadataXmlUrl(),
             'metadata_text' => $xml_text,
             'slo_url'       => $this->getSingleLogoutServiceUrl(),
-        );
+        ];
     }
 }

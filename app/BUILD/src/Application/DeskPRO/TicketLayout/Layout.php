@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,26 +31,38 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\TicketLayout;
 
 use Application\DeskPRO\Entity\Ticket;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Types\JsonObjectSerializable;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
+/**
+ * Class Layout.
+ *
+ * @JMS\ExclusionPolicy("all")
+ */
 class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializable
 {
     /**
+     * Fields describing this layout.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     *
      * @var LayoutField[]
      */
-    private $fields = array();
+    private $fields = [];
 
     /**
      * @param array $fields
      */
     public function setAll(array $fields)
     {
-        $this->fields = array();
+        $this->fields = [];
         foreach ($fields as $f) {
             $this->add($f);
         }
@@ -77,7 +89,9 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 
     /**
      * @param LayoutField $field
-     * @param string      $before_field Field ID of a field to insert the field before. If not specified, the field is added to the end.
+     * @param string      $before_field Field ID of a field to insert the field before. If not specified, the field is added to the end
+     *
+     * @return $this
      */
     public function add(LayoutField $field, $before_field = null)
     {
@@ -88,12 +102,12 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 
         $did_add = false;
         if ($before_field) {
-            $pos = Arrays::findKey($this->fields, function ($v) use ($before_field) {
+            $pos = Arrays::findKey($this->fields, function (LayoutField $v) use ($before_field) {
                 return $v->getId() == $before_field;
             });
             if ($pos !== null) {
                 $all_fields   = $this->fields;
-                $this->fields = array();
+                $this->fields = [];
                 foreach ($all_fields as $k => $v) {
                     if ($k == $before_field) {
                         $did_add           = true;
@@ -108,6 +122,46 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         if (!$did_add) {
             $this->fields[$id] = $field;
         }
+
+        return $this;
+    }
+
+    /**
+     * @param string $id
+     * @param string $toId
+     * @param bool   $append
+     *
+     * @return $this
+     */
+    public function moveField($id, $toId, $append = true)
+    {
+        if (isset($this->fields[$id]) && isset($this->fields[$toId])) {
+            $moveField = $this->fields[$id];
+            unset($this->fields[$id]);
+
+            $oldFields    = $this->fields;
+            $this->fields = [];
+
+            foreach ($oldFields as $k => $field) {
+                // prepend field
+                if (!$append) {
+                    if ($field->getId() === $toId) {
+                        $this->fields[$id] = $moveField;
+                    }
+                }
+
+                $this->fields[$k] = $field;
+
+                // append field
+                if ($append) {
+                    if ($field->getId() === $toId) {
+                        $this->fields[$id] = $moveField;
+                    }
+                }
+            }
+        }
+
+        return $this;
     }
 
     /**
@@ -207,7 +261,7 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         $js = "(function () {\n";
         $js .= "\tvar fields = [\n";
 
-        $fields_js = array();
+        $fields_js = [];
         foreach ($this->fields as $field) {
             if ($field->hasCriteria()) {
                 $check_fn = trim(Strings::modifyLines($field->compileJsCheck(), "\t\t\t\t"));
@@ -233,7 +287,7 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         $js .= "\treturn {\n";
         $js .= "\t\tgetMatchingFields: function (ticket) {\n";
         $js .= "\t\t\tvar match = [];\n";
-        $js .= "\t\t\tfor(var i = 0; i < fields.length; i++) { if (fields[i].checkFn(ticket)) match.push(fields[i]); }\n";
+        $js .= "\t\t\tfor(var i = 0; i < fields.length; i++) { if (fields[i].checkFn === null || fields[i].checkFn(ticket)) match.push(fields[i]); }\n";
         $js .= "\t\t\treturn match;\n";
         $js .= "\t\t},\n";
         $js .= "\t\tgetFields: function () {\n";
@@ -251,10 +305,10 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
      */
     public function exportToArray()
     {
-        $data = array();
+        $data = [];
 
         $data['version'] = 1;
-        $data['fields']  = array();
+        $data['fields']  = [];
         foreach ($this->fields as $f) {
             $data['fields'][] = $f->exportToArray();
         }
@@ -327,7 +381,7 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
      */
     public function getIdsOfFieldType($type)
     {
-        $ret = array();
+        $ret = [];
         foreach ($this->fields as $field) {
             if ($type === $field->getFieldType()) {
                 $ret[] = $field->getFieldId();

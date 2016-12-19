@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Entity\TicketTrigger;
@@ -43,7 +44,7 @@ use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Application\InstallBundle\Data\DefaultData\TriggerData;
 use Application\InstallBundle\Upgrade\Build\Helper201405\TriggerActionConverter;
 use Application\InstallBundle\Upgrade\Build\Helper201405\TriggerTermConverter;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 
 class Build1400056733 extends AbstractBuild
@@ -77,7 +78,7 @@ class Build1400056733 extends AbstractBuild
             $this->execMutateSql('ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL');
             $this->execMutateSql('ALTER TABLE departments ADD CONSTRAINT FK_16AEB8D43B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE');
             $this->execMutateSql('CREATE INDEX IDX_16AEB8D43B50817B ON departments (avatar_blob_id)');
-            $this->container->getDb()->insertIgnore('install_data', array('build' => '1411577850', 'name' => 'did_pre_alter', 'data' => '1'));
+            $this->container->getDb()->insertIgnore('install_data', ['build' => '1411577850', 'name' => 'did_pre_alter', 'data' => '1']);
         }
 
         $this->out('Upgrading triggers');
@@ -86,9 +87,9 @@ class Build1400056733 extends AbstractBuild
         $db = $this->container->getDb();
         $db->executeUpdate('DELETE FROM ticket_triggers');
 
-        #------------------------------
-        # Install new default triggers
-        #------------------------------
+        //------------------------------
+        // Install new default triggers
+        //------------------------------
 
         $this->out('Installing default triggers');
         $trigger_data = new TriggerData($this->container, new NullLogger());
@@ -105,21 +106,21 @@ class Build1400056733 extends AbstractBuild
 
         $this->out('Processing old triggers ...');
 
-        #------------------------------
-        # Install default triggers for deps
-        #------------------------------
+        //------------------------------
+        // Install default triggers for deps
+        //------------------------------
 
         $email_accounts = $em->getRepository('DeskPRO:EmailAccount')->findAll();
         $email_accounts = Arrays::keyFromData($email_accounts, 'id');
 
-        $deps = $em->getRepository('DeskPRO:Department')->findBy(array('is_tickets_enabled' => true));
+        $deps = $em->getRepository('DeskPRO:Department')->findBy(['is_tickets_enabled' => true]);
         $deps = Arrays::keyFromData($deps, 'id');
 
         $old_deps = $this->getUpgradeData('201404', 'departments');
         if ($old_deps) {
             $old_deps = Arrays::keyFromData($old_deps, 'id');
         } else {
-            $old_deps = array();
+            $old_deps = [];
         }
 
         foreach ($deps as $dep) {
@@ -136,19 +137,19 @@ class Build1400056733 extends AbstractBuild
             $trigger                = new TicketTrigger();
             $trigger->department    = $dep;
             $trigger->event_trigger = 'newticket';
-            $trigger->by_agent_mode = array('api', 'web');
-            $trigger->by_user_mode  = array('api', 'form', 'portal', 'widget');
+            $trigger->by_agent_mode = ['api', 'web'];
+            $trigger->by_user_mode  = ['api', 'form', 'portal', 'widget'];
             $trigger->title         = 'New Ticket';
             $trigger->is_enabled    = true;
             $trigger->run_order     = -100;
 
             $term_sets = new TriggerTerms();
             $terms_all = new TriggerTermComposite();
-            $terms_all->add(new CheckDepartment('is', array('department_ids' => array($dep->id))));
+            $terms_all->add(new CheckDepartment('is', ['department_ids' => [$dep->id]]));
             $term_sets->addTerm($terms_all);
 
             $actions_set = new TriggerActions();
-            $actions_set->addAction(new SetEmailAccount(array('email_account_id' => $map_id)));
+            $actions_set->addAction(new SetEmailAccount(['email_account_id' => $map_id]));
 
             $trigger->terms   = $term_sets;
             $trigger->actions = $actions_set;
@@ -157,15 +158,15 @@ class Build1400056733 extends AbstractBuild
             $em->flush($trigger);
         }
 
-        #------------------------------
-        # Install default triggers for email accounts
-        #------------------------------
+        //------------------------------
+        // Install default triggers for email accounts
+        //------------------------------
 
         $old_accounts = $this->getUpgradeData('201404', 'email_gateways');
         if ($old_accounts) {
             $old_accounts = Arrays::keyFromData($old_accounts, 'id');
         } else {
-            $old_accounts = array();
+            $old_accounts = [];
         }
 
         foreach ($email_accounts as $acc) {
@@ -182,19 +183,19 @@ class Build1400056733 extends AbstractBuild
             $trigger                = new TicketTrigger();
             $trigger->email_account = $acc;
             $trigger->event_trigger = 'newticket';
-            $trigger->by_agent_mode = array('email');
-            $trigger->by_user_mode  = array('email');
+            $trigger->by_agent_mode = ['email'];
+            $trigger->by_user_mode  = ['email'];
             $trigger->title         = 'New Ticket';
             $trigger->is_enabled    = true;
             $trigger->run_order     = -100;
 
             $term_sets = new TriggerTerms();
             $terms_all = new TriggerTermComposite();
-            $terms_all->add(new CheckEmailAccount('is', array('email_account_ids' => array($acc->id))));
+            $terms_all->add(new CheckEmailAccount('is', ['email_account_ids' => [$acc->id]]));
             $term_sets->addTerm($terms_all);
 
             $actions_set = new TriggerActions();
-            $actions_set->addAction(new SetDepartment(array('department_id' => $map_id)));
+            $actions_set->addAction(new SetDepartment(['department_id' => $map_id]));
 
             $trigger->terms   = $term_sets;
             $trigger->actions = $actions_set;
@@ -203,23 +204,23 @@ class Build1400056733 extends AbstractBuild
             $em->flush($trigger);
         }
 
-        #------------------------------
-        # Init helpers
-        #------------------------------
+        //------------------------------
+        // Init helpers
+        //------------------------------
 
-        $gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
-        $mappings         = array(
+        $gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: [];
+        $mappings         = [
             'gateway_address_to_email_account' => $gateway_addr_map,
-        );
+        ];
 
         $this->term_converter   = new TriggerTermConverter($mappings);
         $this->action_converter = new TriggerActionConverter($mappings);
 
-        #------------------------------
-        # Process old triggers
-        #------------------------------
+        //------------------------------
+        // Process old triggers
+        //------------------------------
 
-        $old_triggers = $this->getUpgradeData('201404', 'ticket_triggers') ?: array();
+        $old_triggers = $this->getUpgradeData('201404', 'ticket_triggers') ?: [];
 
         foreach ($old_triggers as $trigger) {
             $this->out("Processing #{$trigger['id']} {$trigger['sys_name']} {$trigger['title']} ...");
@@ -227,7 +228,7 @@ class Build1400056733 extends AbstractBuild
                 $new_trigger = $this->processTrigger($trigger);
             } catch (\Exception $e) {
                 // log for error reporting
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
                 continue;
             }
             if ($new_trigger) {
@@ -259,36 +260,36 @@ class Build1400056733 extends AbstractBuild
             }
             switch ($old_trigger['sys_name']) {
                 case 'email_validation.email':
-                    $this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_requirevalid'));
+                    $this->container->getDb()->update('ticket_triggers', ['is_enabled' => true], ['sys_name' => 'default_newticket_requirevalid']);
                     break;
                 case 'newticket_confirm.email_user':
-                    $this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_userautoreply'));
+                    $this->container->getDb()->update('ticket_triggers', ['is_enabled' => true], ['sys_name' => 'default_newticket_userautoreply']);
                     break;
                 case 'newticket_confirm.web_user':
-                    $this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_userautoreply'));
+                    $this->container->getDb()->update('ticket_triggers', ['is_enabled' => true], ['sys_name' => 'default_newticket_userautoreply']);
                     break;
                 case 'email_validation.web':
-                    $this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_requirevalid'));
+                    $this->container->getDb()->update('ticket_triggers', ['is_enabled' => true], ['sys_name' => 'default_newticket_requirevalid']);
                     break;
                 case 'email_validation.widget':
-                    $this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newticket_requirevalid'));
+                    $this->container->getDb()->update('ticket_triggers', ['is_enabled' => true], ['sys_name' => 'default_newticket_requirevalid']);
                     break;
                 case 'response.reply_confirm':
-                    $this->container->getDb()->update('ticket_triggers', array('is_enabled' => true), array('sys_name' => 'default_newreply_userautoreply'));
+                    $this->container->getDb()->update('ticket_triggers', ['is_enabled' => true], ['sys_name' => 'default_newreply_userautoreply']);
                     break;
             }
 
             return;
         }
 
-        $old_trigger['terms']     = @unserialize($old_trigger['terms']) ?: array();
-        $old_trigger['terms_any'] = @unserialize($old_trigger['terms_any']) ?: array();
-        $old_trigger['actions']   = @unserialize($old_trigger['actions']) ?: array();
+        $old_trigger['terms']     = @unserialize($old_trigger['terms']) ?: [];
+        $old_trigger['terms_any'] = @unserialize($old_trigger['terms_any']) ?: [];
+        $old_trigger['actions']   = @unserialize($old_trigger['actions']) ?: [];
 
         $trigger = new TicketTrigger();
 
         $replytype = false;
-        foreach (array($old_trigger['terms'], $old_trigger['terms_any']) as $terms) {
+        foreach ([$old_trigger['terms'], $old_trigger['terms_any']] as $terms) {
             foreach ($terms as $t) {
                 if ($t['type'] == 'new_reply_user' || $t['type'] == 'new_reply_agent' || $t['type'] == 'new_reply_note') {
                     $replytype = true;
@@ -300,49 +301,49 @@ class Build1400056733 extends AbstractBuild
         switch ($old_trigger['event_trigger']) {
             case 'new.email.user':
                 $trigger->event_trigger = 'newticket';
-                $trigger->by_user_mode  = array('email');
+                $trigger->by_user_mode  = ['email'];
                 break;
             case 'new.web.user':
                 $trigger->event_trigger = 'newticket';
-                $trigger->by_user_mode  = array('portal', 'widget', 'form');
+                $trigger->by_user_mode  = ['portal', 'widget', 'form'];
                 break;
             case 'new.web.user.portal':
                 $trigger->event_trigger = 'newticket';
-                $trigger->by_user_mode  = array('portal');
+                $trigger->by_user_mode  = ['portal'];
                 break;
             case 'new.web.user.embed':
                 $trigger->event_trigger = 'newticket';
-                $trigger->by_user_mode  = array('form');
+                $trigger->by_user_mode  = ['form'];
                 break;
             case 'new.web.user.widget':
                 $trigger->event_trigger = 'newticket';
-                $trigger->by_user_mode  = array('widget');
+                $trigger->by_user_mode  = ['widget'];
                 break;
             case 'new.email.agent':
                 $trigger->event_trigger = 'newticket';
-                $trigger->by_agent_mode = array('email');
+                $trigger->by_agent_mode = ['email'];
                 break;
             case 'new.web.agent.portal':
                 $trigger->event_trigger = 'newticket';
-                $trigger->by_agent_mode = array('web');
+                $trigger->by_agent_mode = ['web'];
                 break;
             case 'new.web.api':
                 $trigger->event_trigger = 'newticket';
-                $trigger->by_agent_mode = array('api');
-                $trigger->by_user_mode  = array('api');
+                $trigger->by_agent_mode = ['api'];
+                $trigger->by_user_mode  = ['api'];
                 break;
             case 'update.agent':
                 $trigger->event_trigger = $replytype ? 'newreply' : 'update';
-                $trigger->by_agent_mode = array('web', 'email');
+                $trigger->by_agent_mode = ['web', 'email'];
                 break;
             case 'update.user':
                 $trigger->event_trigger = $replytype ? 'newreply' : 'update';
-                $trigger->by_user_mode  = array('portal', 'email', 'api');
+                $trigger->by_user_mode  = ['portal', 'email', 'api'];
                 break;
             case 'update.api':
                 $trigger->event_trigger = $replytype ? 'newreply' : 'update';
-                $trigger->by_agent_mode = array('api');
-                $trigger->by_user_mode  = array('api');
+                $trigger->by_agent_mode = ['api'];
+                $trigger->by_user_mode  = ['api'];
                 break;
             case 'new':
                 // 'new' is used by sla triggers
@@ -352,9 +353,9 @@ class Build1400056733 extends AbstractBuild
                 throw new \InvalidArgumentException("Unknown event trigger: {$old_trigger['event_trigger']}");
         }
 
-        #------------------------------
-        # Update terms
-        #------------------------------
+        //------------------------------
+        // Update terms
+        //------------------------------
 
         $is_incomplete = false;
 
@@ -412,9 +413,9 @@ class Build1400056733 extends AbstractBuild
             $term_sets->addTerm($terms_all);
         }
 
-        #------------------------------
-        # Update actions
-        #------------------------------
+        //------------------------------
+        // Update actions
+        //------------------------------
 
         $actions_set = new TriggerActions();
 
@@ -440,9 +441,9 @@ class Build1400056733 extends AbstractBuild
             return;
         }
 
-        #------------------------------
-        # Create trigger object
-        #------------------------------
+        //------------------------------
+        // Create trigger object
+        //------------------------------
 
         $trigger->title = $old_trigger['title'] ?: 'Trigger '.$old_trigger['id'];
         if ($is_incomplete) {

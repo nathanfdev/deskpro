@@ -8,11 +8,6 @@ pageMeta.obj_code = 'article_{{ article.id }}';
 
 pageMeta.permalink = '{{ article.permalink }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_kb_ajax_labels_save', {'article_id': article.id}) }}';
-
-{% if article.hidden_status == 'validating' %}
-pageMeta.isValidating = true;
-{% endif %}
-
 pageMeta.glossaryWords = {{ glossary_words|json_encode|raw }};
 
 pageMeta.canEdit   = {% if not perms.can_edit %}false{% else %}true{% endif %};
@@ -30,20 +25,32 @@ pageMeta.baseId = '{{ baseId }}';
 	{{ phrase('agent.general.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.undelete') }}</button>
 </div>
 
-{% if article.status_code == "hidden.validating" %}
-	{% include 'AgentBundle:Publish:view-approve-header.html.twig' %}
-{% endif %}
-
 <header class="page-header">
 	<h4 class="id-number">#{{ article.id }}</h4>
-	<div style="float:left; padding-left: 8px;">
-		<select id="{{ baseId }}_status">
-			<option {% if article.status == 'published' %}selected="selected"{% endif %} value="published">{{ phrase('agent.publish.status_published') }}</option>
-			<option {% if article.getStatusCode() == 'hidden.unpublished' %}selected="selected"{% endif %} value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
-			<option {% if article.status == 'archived' %}selected="selected"{% endif %} value="archived">{{ phrase('agent.publish.status_archived') }}</option>
-			<option {% if article.getStatusCode() == 'hidden.draft' %}selected="selected"{% endif %} value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
-		</select>
-	</div>
+		<div style="float:left; padding-left: 8px;">
+			<select id="{{ baseId }}_status">
+				{% if app.user.hasPerm('agent_publish.validate') %}
+					<option {% if article.status == 'published' %}selected="selected"{% endif %} value="published">
+						{{ phrase('agent.publish.status_published') }}
+					</option>
+					<option {% if article.getStatusCode() == 'hidden.unpublished' %}selected="selected"{% endif %} value="hidden.unpublished">
+						{{ phrase('agent.publish.status_hidden_unpublished') }}
+					</option>
+					<option {% if article.status == 'archived' %}selected="selected"{% endif %} value="archived">
+						{{ phrase('agent.publish.status_archived') }}
+					</option>
+				{% endif %}
+				{% if app.user.hasPerm('agent_publish.validate') or app.user.getId() == article.person.getId() %}
+					<option {% if article.getStatusCode() == 'hidden.draft' %}selected="selected"{% endif %} value="hidden.draft">
+						{{ phrase('agent.publish.status_hidden_draft') }}
+					</option>
+				{% endif %}
+				<option {% if article.getStatusCode() == 'hidden.pending' %}selected="selected"{% endif %} value="hidden.pending">
+					{{ phrase('agent.publish.status_hidden_pending') }}
+				</option>
+			</select>
+		</div>
+
 	<h1>
 		<span id="{{baseId}}_showname">{{ article.real_title }}</span>
 		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ article.real_title }}" /></span>

@@ -30,7 +30,24 @@ pageMeta.person_id = 0;
 pageMeta.baseId = '{{ baseId }}';
 </script>
 <div class="userchat-page">
-
+{% macro agents_list(agents, title, assigned_agent_id, me) %}
+	{% if agents is not empty %}
+		<li>
+			<label>{{ title }}</label>
+			<div class="bound-fade"></div>
+		</li>
+		{% for agent in agents %}
+			{% if agent.id != me and agent %}
+				<li {% if assigned_agent_id == agent.id %}class="on"{% endif %}>
+					<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" {% if assigned_agent_idid == agent.id %}checked="checked"{% endif %} />
+					<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+					<div class="bound-fade"></div>
+				</li>
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+{% endmacro %}
+{% import _self as self %}
 <header class="page-header">
 	<table cellspacing="titleline-layout" width="100%"><tr>
 		<td class="item"><h4 class="id-number">#{{ convo.id }}</h4></td>
@@ -98,7 +115,7 @@ pageMeta.baseId = '{{ baseId }}';
                                 {% if convo.person %}
                                     <a class="user-link clean-white as-popover preload" data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box;">
                                         <span style="background-image: url('{{ convo.person.getPictureUrl(20) }}');">
-                                            {{ convo.person.display_name }}
+                                            {{ convo.person_name ?: convo.person.display_name }}
                                             <span class="email"><b class="pemail-{{convo.person.id}}" data-hide="@parent">{{ convo.person.email_address }}</b></span>
                                         </span>
                                     </a>
@@ -199,9 +216,6 @@ pageMeta.baseId = '{{ baseId }}';
 		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs" id="{{ baseId }}_main_tabs_nav"><ul>
 			<li data-tab-for="#{{baseId}}_chat">{{ phrase('agent.general.chat') }}</li>
 			<li data-tab-for="#{{ baseId }}_fields_display_main_wrap" id="{{ baseId }}_fields_display_main_wrap_tab" class="is-fields-tab">{{ phrase('agent.general.fields') }}</li>
-			{% if convo.visitor %}
-				<li data-tab-for="#{{baseId}}_session">{{ phrase('agent.userchat.visitor_info') }}</li>
-			{% endif %}
 			{% if convo.status == 'open' or block %}
 				<li data-tab-for="#{{baseId}}_block">{% if block %}{{ phrase('agent.userchat.user_is_blocked') }}{% else %}{{ phrase('agent.userchat.block_user') }}{% endif %}</li>
 			{% endif %}
@@ -250,8 +264,8 @@ pageMeta.baseId = '{{ baseId }}';
 						{% else %}
 							<div class="message-content">
 								<div class="avatar tipped" title="{{ message.getAuthorName() }}"><img src="{{ message.getAuthorPictureUrl(25) }}" /></div>
-								<div class="chatRecieve">
-									<div class="chatMsgRecieve">
+								<div class="chatReceive">
+									<div class="chatMsgReceive">
 										{% if message.is_html %}
 											{{message.content|raw}}
 										{% else %}
@@ -276,8 +290,8 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 				<div class="row user-typing" style="display: none" id="{{baseId}}_user_typing">
 					<div class="message-content">
-						<div class="chatRecieve">
-							<div class="chatMsgRecieve">
+						<div class="chatReceive">
+							<div class="chatMsgReceive">
 								<label>{{ phrase('agent.chat.user_typing') }}: </label>
 								<div class="prop-msg"></div>
 								<span class="bubbleRight"></span>
@@ -287,11 +301,16 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 			</div>
 			<div class="chatreply" id="{{baseId}}_replybox" style="{% if convo.status == 'ended' and convo.ended_by != 'timeout' %}display: none{% endif %};">
-				<div class="input-wrap">
+				<div class="input-wrap" style="{% if not has_joined %}display: none{% endif %}">
 					<textarea placeholder="" id="{{baseId}}_replybox_txt" name="message"></textarea>
 					<input type="hidden" id="{{baseId}}_is_html_reply" name="is_html_reply" value="0" />
 					<div class="drop-file-zone drop-file-zone-rte chat"><h1>{{ phrase('agent.general.drop_here_to_insert_image') }}</h1></div>
 				</div>
+				{% if not has_joined %}
+					<div class="agent-join">
+						<button class="clean-white small join-convo">{{ phrase('agent.chat.join_chat') }}</button>
+					</div>
+				{% endif %}
 			</div>
 		</article>
 		<article id="{{baseId}}_fields_display_main_wrap" style="display: none;">
@@ -299,54 +318,6 @@ pageMeta.baseId = '{{ baseId }}';
 				{% include 'AgentBundle:UserChat:view-page-display-holders.html.twig' %}
 			</div>
 		</article>
-		{% if convo.visitor %}
-			<article id="{{baseId}}_session" style="display: none;">
-				<div class="data-display-table-wrap">
-					<table cellspacing="0" cellpadding="0" width="100%" class="data-display-table">
-						<tbody>
-							<tr>
-								<th>{{ phrase('agent.general.ip_address') }}:</th>
-								<td>
-									{{ convo.visitor.last_track.ip_address }}
-								</td>
-							</tr>
-							<tr>
-								<th>{{ phrase('agent.general.user_agent') }}:</th>
-								<td>
-									{{ convo.visitor.last_track.user_agent }}
-								</td>
-							</tr>
-							{% if convo.session %}
-								<tr>
-									<th>{{ phrase('agent.usertrack.session_start_time') }}:</th>
-									<td>{{ convo.session.date_last|date('fulltime') }}</td>
-								</tr>
-							{% endif %}
-							{% if convo.visitor.visit_track %}
-								<tr>
-									<th>{{ phrase('agent.usertrack.session_landing_page') }}:</th>
-									<td>{{ convo.visitor.visit_track.page_url }}</td>
-								</tr>
-							{% endif %}
-							<tr>
-								<th>{{ phrase('agent.usertrack.initial_visit_time') }}:</th>
-								<td>
-									{{ convo.visitor.date_last|date('fulltime') }}
-								</td>
-							</tr>
-							{% if convo.visitor.initial_track %}
-							<tr>
-								<th>{{ phrase('agent.usertrack.initial_landing_page') }}:</th>
-								<td>
-									{{ convo.visitor.initial_track.page_url }}
-								</td>
-							</tr>
-							{% endif %}
-						</tbody>
-					</table>
-				</div>
-			</article>
-		{% endif %}
 		{% if convo.status == 'open' or block %}
 			<article id="{{baseId}}_block" style="direction: none; padding: 15px;">
 				{% if block %}
@@ -394,16 +365,9 @@ pageMeta.baseId = '{{ baseId }}';
 					<input type="radio" name="{{baseId}}_agent" value="0" {% if not convo.agent %}checked="checked"{% endif %}  />
 					<label><span class="agent-pic agent-label-0">{{ phrase('agent.general.unassigned') }}</span></label>
 				</li>
-
-				{% for agent in agents %}
-				{% if agent.id != app.user.id %}
-				<li {% if convo.agent.id == agent.id %}class="on"{% endif %}>
-					<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" {% if convo.agent.id == agent.id %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
-					<div class="bound-fade"></div>
-				</li>
-				{% endif %}
-				{% endfor %}
+				{{ self.agents_list(available_for_chat_agents, 'Available for chat', convo.agent.id, app.user.id) }}
+				{{ self.agents_list(online_agents, 'Online', convo.agent.id, app.user.id) }}
+				{{ self.agents_list(offline_agents, 'Offline', convo.agent.id, app.user.id) }}
 			</ul>
 		</section>
 	</div>
@@ -419,16 +383,9 @@ pageMeta.baseId = '{{ baseId }}';
 					<input type="checkbox" name="{{bsaeId}}_part" value="{{ app.user.id }}" {% if app.user.id in participant_ids and convo.agent.id != app.user.id %}checked="checked"{% endif %} />
 					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.general.me') }}</span></label>
 				</li>
-
-				{% for agent in agents %}
-				{% if agent.id != app.user.id %}
-				<li {% if convo.participants[agent.id] and convo.agent.id != agent.id %}class="on"{% endif %}>
-					<input type="checkbox" name="{{bsaeId}}_part" value="{{ agent.id }}" {% if convo.participants[agent.id] and convo.agent.id != agent.id %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-part-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
-					<div class="bound-fade"></div>
-				</li>
-				{% endif %}
-				{% endfor %}
+				{{ self.agents_list(available_for_chat_agents, 'Available for chat', convo.agent.id, app.user.id) }}
+				{{ self.agents_list(online_agents, 'Online', convo.agent.id, app.user.id) }}
+				{{ self.agents_list(offline_agents, 'Offline', convo.agent.id, app.user.id) }}
 			</ul>
 		</section>
 	</div>

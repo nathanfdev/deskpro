@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Orb\Util;
 
 class CompositeCaller
@@ -36,17 +37,17 @@ class CompositeCaller
     /**
      * @var array
      */
-    private $_objects = array();
+    private $_objects = [];
 
     /**
      * @var array
      */
-    private $_object_to_tag = array();
+    private $_object_to_tag = [];
 
     /**
      * @var array
      */
-    private $_tag_to_objects = array();
+    private $_tag_to_objects = [];
 
     /**
      * Add an object to the composite collection.
@@ -61,7 +62,7 @@ class CompositeCaller
 
         if ($tag !== null) {
             if (!isset($this->_tag_to_objects[$tag])) {
-                $this->_tag_to_objects[$tag] = array();
+                $this->_tag_to_objects[$tag] = [];
             }
             $this->_tag_to_objects[$tag][$id] = $object;
             $this->_object_to_tag[$id]        = $tag;
@@ -102,7 +103,7 @@ class CompositeCaller
                 return $this->_tag_to_objects[$for_tag];
             }
 
-            return array();
+            return [];
         }
 
         return $this->_objects;
@@ -147,7 +148,7 @@ class CompositeCaller
             unset($this->_object_to_tag[$id]);
         }
 
-        $this->_tag_to_objects = array();
+        $this->_tag_to_objects = [];
     }
 
     /**
@@ -166,11 +167,11 @@ class CompositeCaller
     {
         $objects = $this->getObjects($for_tag);
 
-        $ret_vals = array();
+        $ret_vals = [];
         foreach ($objects as $obj) {
             $exception = null;
             try {
-                $ret = call_user_func_array(array($obj, $method), $args);
+                $ret = call_user_func_array([$obj, $method], $args);
             } catch (\Exception $e) {
                 if (!$collect_exceptions) {
                     throw $e;
@@ -179,11 +180,11 @@ class CompositeCaller
                 $exception = $e;
                 $ret       = null;
             }
-            $ret_vals[] = array(
+            $ret_vals[] = [
                 'object'    => $obj,
                 'return'    => $ret,
                 'exception' => $exception,
-            );
+            ];
         }
 
         return $ret_vals;

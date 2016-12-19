@@ -1,7 +1,5 @@
 {% extends 'AgentBundle::list-pane-layout.html.twig' %}
-{% block dp_declare %}
-	{{ set_tplvar('baseId', el_uid()) }}
-{% endblock %}
+{% set tplvars = { baseId: el_uid() } %}
 
 {######################################################################################################################}
 {# METADATA #}
@@ -29,7 +27,7 @@
 	{% if results|length %}
 
 	<section class="feedback-simple-list list-listing">
-		<section class="search-reuslts page-set" data-page="{{ page }}">
+		<section class="search-results page-set" data-page="{{ page }}">
 			{% for news in results %}
 				<article
 					class="row-item news news-{{news.id}} related-is-linkable"

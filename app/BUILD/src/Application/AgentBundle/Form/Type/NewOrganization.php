@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -38,28 +39,29 @@ class NewOrganization extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array('required' => false));
+        $builder->add('name', 'text', ['required' => false]);
 
-        $builder->add('labels', 'collection', array(
+        $builder->add('labels', 'collection', [
             'type'         => 'text',
             'required'     => false,
             'allow_add'    => true,
             'allow_delete' => true,
-        ));
+        ]);
 
-        $builder->add('usergroup_ids', 'collection', array(
+        $builder->add('usergroup_ids', 'collection', [
             'type'         => 'text',
             'required'     => false,
             'allow_add'    => true,
             'allow_delete' => true,
-        ));
+        ]);
     }
 
     public function getDefaultOptions(array $options)
     {
-        return array(
-            'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewOrganization',
-        );
+        return [
+            'data_class'      => 'Application\\AgentBundle\\Form\\Model\\NewOrganization',
+            'csrf_protection' => false,
+        ];
     }
 
     public function getName()

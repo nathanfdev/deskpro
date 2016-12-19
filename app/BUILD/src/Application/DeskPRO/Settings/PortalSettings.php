@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,8 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Settings;
 
+/**
+ * Class PortalSettings.
+ *
+ * @deprecated
+ */
 class PortalSettings
 {
     /**
@@ -57,11 +63,6 @@ class PortalSettings
     /** @var bool */
     public $always_show_captcha;
 
-    /** @var bool */
-    public $feedback_notify_comments;
-    /** @var bool */
-    public $kb_subscriptions;
-
     /**
      * @param Settings $settings
      */
@@ -84,12 +85,11 @@ class PortalSettings
         $this->show_ratings     = (int) $this->settings->get('user.show_ratings');
         $this->publish_comments = (bool) $this->settings->get('user.publish_comments');
 
+        // TODO these captcha changes were redone see settings.php 'captcha' section
+
         $this->register_captcha    = (bool) $this->settings->get('user.register_captcha');
         $this->publish_captcha     = (bool) $this->settings->get('user.publish_captcha');
         $this->always_show_captcha = (bool) $this->settings->get('user.always_show_captcha');
-
-        $this->feedback_notify_comments = (bool) $this->settings->get('user.feedback_notify_comments');
-        $this->kb_subscriptions         = (bool) $this->settings->get('user.kb_subscriptions');
     }
 
     /**
@@ -97,18 +97,16 @@ class PortalSettings
      */
     public function toArray()
     {
-        $export_settings = array(
-            'portal_enabled'           => $this->portal_enabled,
-            'favicon_blob_id'          => $this->favicon_blob_id,
-            'favicon_blob_url'         => $this->favicon_blob_url,
-            'show_ratings'             => $this->show_ratings,
-            'publish_comments'         => $this->publish_comments,
-            'register_captcha'         => $this->register_captcha,
-            'publish_captcha'          => $this->publish_captcha,
-            'always_show_captcha'      => $this->always_show_captcha,
-            'feedback_notify_comments' => $this->feedback_notify_comments,
-            'kb_subscriptions'         => $this->kb_subscriptions,
-        );
+        $export_settings = [
+            'portal_enabled'      => $this->portal_enabled,
+            'favicon_blob_id'     => $this->favicon_blob_id,
+            'favicon_blob_url'    => $this->favicon_blob_url,
+            'show_ratings'        => $this->show_ratings,
+            'publish_comments'    => $this->publish_comments,
+            'register_captcha'    => $this->register_captcha,
+            'publish_captcha'     => $this->publish_captcha,
+            'always_show_captcha' => $this->always_show_captcha,
+        ];
 
         return $export_settings;
     }
@@ -140,10 +138,10 @@ class PortalSettings
             $this->settings->setSetting('core.favicon_blob_url', null);
         }
 
-        foreach (array(
+        foreach ([
             'publish_comments', 'register_captcha', 'publish_captcha',
-            'always_show_captcha', 'feedback_notify_comments', 'kb_subscriptions',
-        ) as $p) {
+            'always_show_captcha',
+        ] as $p) {
             $this->settings->setSetting("user.$p", (bool) $this->$p);
         }
     }

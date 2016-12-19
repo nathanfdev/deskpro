@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Auth;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DependencyInjection\SystemServices\AgentCheckerService;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Usersource\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
 use Orb\Util\Arrays;
@@ -94,18 +98,20 @@ class LoginProcessor
     }
 
     /**
+     * @param string $use_email_address if there is no email found in the usersource data, then use this one
+     *
      * @return Person
      */
-    public function getPerson()
+    public function getPerson($use_email_address = null)
     {
         if ($this->person !== null) {
             return $this->person;
         }
 
-        #------------------------------
-        # Figure if we have an existing Person mapped, or if its
-        # a new Person
-        #------------------------------
+        //------------------------------
+        // Figure if we have an existing Person mapped, or if its
+        // a new Person
+        //------------------------------
 
         $em = App::getOrm();
         /** @var \Application\DeskPRO\EntityRepository\PersonUsersourceAssoc $assoc_repos */
@@ -122,9 +128,9 @@ class LoginProcessor
         $mapped_fields = Arrays::removeEmptyString($mapped_fields);
         $mapped_fields = new OptionsArray($mapped_fields);
 
-        #------------------------------
-        # If we dont have one yet, we're have to create the assoc and maybe a new user too
-        #------------------------------
+        //------------------------------
+        // If we dont have one yet, we're have to create the assoc and maybe a new user too
+        //------------------------------
 
         if (!$this->assoc) {
             $this->person = null;
@@ -132,11 +138,15 @@ class LoginProcessor
             // If we can trust the email address and there already exists a person
             // with this email address, then we can just link the accounts now
             $set_email = false;
-            if ($mapped_fields->has('email') && $mapped_fields->get('email_confirmed')) {
-                $set_email = $mapped_fields->get('email');
+            // I removed the "email_confirmed" requirement below; after new validation rules, all emails from a usersource are considered valid
+            if ($mapped_fields->has('email') || $use_email_address) {
+                $set_email = $mapped_fields->get('email', $use_email_address);
                 $email     = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($mapped_fields->get('email'));
+                /** @var \Application\DeskPRO\Entity\PersonEmail $email */
                 if ($email) {
-                    $this->person = $email->person;
+                    // always validate emails sent from a usersource
+                    $email->is_validated = true;
+                    $this->person        = $email->person;
                 }
             }
 
@@ -147,8 +157,14 @@ class LoginProcessor
             }
 
             if (!$this->person) {
-                $this->new_person              = true;
-                $this->person                  = new Person();
+                if (!$set_email) {
+                    $em->rollback();
+                    // we are making a new person, and no email was sent in. this is not possible. throw an exception:
+                    throw new UsersourceNoEmailException('The account you are trying to use is invalid because it is missing an email address.');
+                }
+                $this->new_person = true;
+                $this->person     = new Person();
+                 // always validate people sent from a usersource
                 $this->person->is_user         = true;
                 $this->person->creation_system = 'web.usersource';
             }
@@ -160,6 +176,10 @@ class LoginProcessor
 
             if ($set_email && !$this->person->findEmailAddress($set_email)) {
                 $email_obj = $this->person->addEmailAddressString($set_email);
+                // always validate emails sent from a usersource
+                if ($this_email = $this->person->findEmailAddress($set_email)) {
+                    $this_email->is_validated = true;
+                }
                 $this->persist($em, $email_obj);
                 $this->flush($em);
             }
@@ -174,9 +194,9 @@ class LoginProcessor
             $this->persist($em, $this->assoc);
             $this->flush($em);
 
-        #------------------------------
-        # The assoc exists
-        #------------------------------
+        //------------------------------
+        // The assoc exists
+        //------------------------------
         } else {
             $this->person = $this->assoc['person'];
 
@@ -198,6 +218,8 @@ class LoginProcessor
                     if (!$email) {
                         $email_obj = $this->person->addEmailAddressString($mapped_fields->get('email'));
                         $this->persist($em, $email_obj);
+                        // always validate emails sent from a usersource
+                        $email_obj->is_validated     = true;
                         $this->person->primary_email = $email_obj;
                         $this->persist($em, $this->person);
                         $this->flush($em);
@@ -207,7 +229,7 @@ class LoginProcessor
         }
 
         // Update custom field data
-        App::getSystemService('person_fields_manager')->copyUsersourceData(
+        App::$container->getPersonFieldManager()->copyUsersourceData(
             $this->person,
             $this->identity,
             $this->usersource
@@ -216,10 +238,14 @@ class LoginProcessor
         $this->person['is_user'] = true;
         $this->person->setLastLoginAt();
 
-        self::tryUsergroupPromotion($this->usersource, $this->person);
+        self::tryUsergroupPromotion($this->usersource, $this->person, $this->identity->getRawData());
         if (self::tryAutoAgent($this->usersource, $this->person)) {
             $this->sendAgentWelcomeEmail();
         }
+
+        // any user who logs in via a usersource is automatically considered to be a user and confirmed
+        $this->person->is_confirmed = true;
+        $this->person->is_user      = true;
 
         $this->persist($em, $this->person);
         $this->persist($em, $this->assoc);
@@ -265,10 +291,10 @@ class LoginProcessor
                 $message->setToPerson($this->person);
                 $message->setTemplate(
                     'DeskPRO:emails_agent:agent-welcome-usersource.html.twig',
-                    array(
+                    [
                         'agent'      => $this->person,
                         'usersource' => $this->usersource,
-                    )
+                    ]
                 );
                 $attach = \Swift_Attachment::fromPath(
                     DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf',
@@ -286,7 +312,7 @@ class LoginProcessor
      */
     protected function updatePersonName($mapped_fields)
     {
-        foreach (array('first_name', 'last_name', 'name') as $k) {
+        foreach (['first_name', 'last_name', 'name'] as $k) {
             if ($mapped_fields->has($k)) {
                 $this->person[$k] = $mapped_fields->get($k);
             }
@@ -304,6 +330,13 @@ class LoginProcessor
         if ($mapped_fields->has('twitter')) {
             $twitter = $mapped_fields->get('twitter');
 
+            // its possible that this is a new user that is not yet persisted. do this so query below runs ok.
+            if (!$this->person->id) {
+                $em = App::getOrm();
+                $em->persist($this->person);
+                $em->flush();
+            }
+
             App::getDb()->executeUpdate('
                     INSERT INTO people_twitter_users
                         (person_id, twitter_user_id, screen_name, is_verified, oauth_token, oauth_token_secret)
@@ -314,7 +347,7 @@ class LoginProcessor
                         is_verified = 1,
                         oauth_token = VALUES(oauth_token),
                         oauth_token_secret = VALUES(oauth_token_secret)
-                ', array($this->person->id, $twitter['user_id'], $twitter['screen_name'], $twitter['oauth_token'], $twitter['oauth_token_secret']));
+                ', [$this->person->id, $twitter['user_id'], $twitter['screen_name'], $twitter['oauth_token'], $twitter['oauth_token_secret']]);
 
             $has_account = false;
             foreach ($this->person->getContactData('twitter') as $twitter_details) {
@@ -353,11 +386,11 @@ class LoginProcessor
                 @fwrite($fp, $mapped_fields->get('picture_data'));
                 @fclose($fp);
 
-                $mime_map = array(
-                    IMAGETYPE_GIF  => array('gif', 'image/gif'),
-                    IMAGETYPE_JPEG => array('jpg', 'image/jpeg'),
-                    IMAGETYPE_PNG  => array('png', 'image/png'),
-                );
+                $mime_map = [
+                    IMAGETYPE_GIF  => ['gif', 'image/gif'],
+                    IMAGETYPE_JPEG => ['jpg', 'image/jpeg'],
+                    IMAGETYPE_PNG  => ['png', 'image/png'],
+                ];
                 $image_info = getimagesize($filename);
                 if ($image_info && $image_info[0] && $image_info[1] && isset($mime_map[$image_info[2]])) {
                     $mime = $mime_map[$image_info[2]];
@@ -405,8 +438,12 @@ class LoginProcessor
      */
     public static function tryAutoAgent(Usersource $usersource, Person $person)
     {
-        if (Usersource::TYPE_AGENT == $usersource->type && $usersource->auto_agent) {
+        if (Usersource::TYPE_AGENT === $usersource->type
+            && $usersource->auto_agent
+            && !$person->isAgent()
+        ) {
             $agentChecker = App::getSystemService('agent_checker');
+            /** @var $agentChecker AgentCheckerService */
             if ($agentChecker->addAgentSeat($person)) {
                 $person['is_agent']  = true;
                 $person['can_agent'] = true;
@@ -418,16 +455,15 @@ class LoginProcessor
         return false;
     }
 
-    public static function tryUsergroupPromotion(Usersource $usersource, Person $person)
+    public static function tryUsergroupPromotion(Usersource $usersource, Person $person, $raw_info)
     {
-        if ($usersource->type == Usersource::TYPE_AGENT) {
-            if ($usersource->agent_permission_group) {
-                $person->addUsergroup($usersource->agent_permission_group);
-            }
-        } elseif ($usersource->type == Usersource::TYPE_USER) {
-            if ($usersource->user_permission_group) {
-                $person->addUsergroup($usersource->user_permission_group);
-            }
+        if ($usersource->type === Usersource::TYPE_AGENT && !$usersource->auto_agent) {
+            return;
+        }
+
+        foreach ($usersource->actions as $action) {
+            /* @var $action AbstractAction */
+            $action->handle(App::$container, $person, $raw_info);
         }
     }
 }

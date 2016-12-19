@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 class TwitterAccountSearch extends AbstractEntityRepository
@@ -41,7 +42,7 @@ class TwitterAccountSearch extends AbstractEntityRepository
             SELECT s
             FROM DeskPRO:TwitterAccountSearch s
             WHERE s.term = ?0 AND s.account = ?1
-        ')->setParameters(array($term, $account))->getOneOrNullResult();
+        ')->setParameters([$term, $account])->getOneOrNullResult();
     }
 
     public function getExistingSearchStatus(\Application\DeskPRO\Entity\TwitterAccountSearch $search, \Application\DeskPRO\Entity\TwitterAccountStatus $account_status)
@@ -50,6 +51,6 @@ class TwitterAccountSearch extends AbstractEntityRepository
             SELECT s
             FROM DeskPRO:TwitterAccountSearchStatus s
             WHERE s.search = ?0 AND s.account_status = ?1
-        ')->setParameters(array($search, $account_status))->getOneOrNullResult();
+        ')->setParameters([$search, $account_status])->getOneOrNullResult();
     }
 }

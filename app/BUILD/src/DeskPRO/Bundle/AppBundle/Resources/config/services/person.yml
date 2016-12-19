@@ -1,0 +1,6 @@
+services:
+
+  person.creation_system.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Person\CreationSystemListener
+    tags:
+      - { name: kernel.event_subscriber }

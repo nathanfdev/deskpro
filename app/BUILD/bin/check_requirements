@@ -1,0 +1,205 @@
+#!/usr/bin/env php
+<?php
+
+use DpSys\SoftwareRequirements\Requirement;
+
+########################################################################################################################
+# Init
+########################################################################################################################
+
+/** @var \DpSys\SoftwareRequirements\DeskproRequirements $checker */
+$checker = require __DIR__.'/../sys/SoftwareRequirements/load_checker.php';
+
+if (in_array('--encode-output', $_SERVER['argv'])) {
+    echo str_repeat('-', 25) . 'BEGIN' . str_repeat('-', 25) . PHP_EOL;
+    echo base64_encode(serialize($checker));
+    echo PHP_EOL;
+    echo str_repeat('-', 25) . 'END' . str_repeat('-', 25) . PHP_EOL;
+    exit;
+}
+
+if (in_array('--encode-json-array', $_SERVER['argv'])) {
+    $data = array(
+        'failed_requirements'    => array(),
+        'failed_recommendations' => array()
+    );
+
+    /** @var \DpSys\SoftwareRequirements\Requirement  $req */
+    foreach($checker->getFailedRequirements() as $req) {
+        $data['failed_requirements'][] = array(
+            'description' => $req->getTestMessage(),
+            'help' => $req->getHelpText(),
+        );
+    }
+
+    /** @var \DpSys\SoftwareRequirements\Requirement  $req */
+    foreach($checker->getFailedRecommendations() as $req) {
+        $data['failed_recommendations'][] = array(
+            'description' => $req->getTestMessage(),
+            'help' => $req->getHelpText(),
+        );
+    }
+
+    echo str_repeat('-', 25) . 'BEGIN' . str_repeat('-', 25) . PHP_EOL;
+    if (defined('JSON_PRETTY_PRINT')) {
+        echo json_encode($data, \JSON_PRETTY_PRINT);
+    } else {
+        echo json_encode($data);
+    }
+    echo PHP_EOL;
+    echo str_repeat('-', 25) . 'END' . str_repeat('-', 25) . PHP_EOL;
+    exit;
+}
+
+########################################################################################################################
+# Results
+########################################################################################################################
+
+$lineSize = 70;
+$iniPath = $checker->getPhpIniConfigPath();
+
+echo_title('DeskPRO Requirements Checker');
+
+echo '> PHP is using the following php.ini file:'.PHP_EOL;
+if ($iniPath) {
+    echo_style('green', '  '.$iniPath);
+} else {
+    echo_style('warning', '  WARNING: No configuration file (php.ini) used by PHP!');
+}
+
+echo PHP_EOL.PHP_EOL;
+
+echo '> Checking requirements:'.PHP_EOL.'  ';
+
+$messages = array();
+foreach ($checker->getRequirements() as $req) {
+    /** @var $req Requirement */
+    if ($helpText = get_error_message($req, $lineSize)) {
+        echo_style('red', 'E');
+        $messages['error'][] = $helpText;
+    } else {
+        echo_style('green', '.');
+    }
+}
+
+$checkPassed = empty($messages['error']);
+
+foreach ($checker->getRecommendations() as $req) {
+    if ($helpText = get_error_message($req, $lineSize)) {
+        echo_style('yellow', 'W');
+        $messages['warning'][] = $helpText;
+    } else {
+        echo_style('green', '.');
+    }
+}
+
+if ($checkPassed) {
+    echo_block('success', 'OK', 'Your system is ready to run DeskPRO');
+} else {
+    echo_block('error', 'ERROR', 'Your system is not ready to run DeskPRO');
+
+    echo_title('Fix the following mandatory requirements', 'red');
+
+    foreach ($messages['error'] as $helpText) {
+        echo ' * '.$helpText.PHP_EOL;
+    }
+}
+
+if (!empty($messages['warning'])) {
+    echo_title('Optional recommendations to improve your setup', 'yellow');
+
+    foreach ($messages['warning'] as $helpText) {
+        echo ' * '.$helpText.PHP_EOL;
+    }
+}
+
+echo PHP_EOL;
+echo_style('title', 'Note');
+echo '  The command line console could use a different php.ini file'.PHP_EOL;
+echo_style('title', '~~~~');
+echo '  than the one used with your web server. To be on the'.PHP_EOL;
+echo '      safe side, please check the requirements from '.PHP_EOL;
+echo '      your web server using this URL:' . PHP_EOL;
+echo '      ';
+$authFile = __DIR__.'/../../../var/cache/server_info_auth.txt';
+if (is_file($authFile)) {
+    $auth = '?auth=' . trim(file_get_contents($authFile));
+} else {
+    $auth = '';
+}
+echo_style('yellow', 'http://your-deskpro-url/__serverinfo/check_requirements'.$auth);
+echo PHP_EOL;
+echo PHP_EOL;
+
+exit($checkPassed ? 0 : 1);
+
+########################################################################################################################
+# Lib
+########################################################################################################################
+
+function get_error_message(Requirement $requirement, $lineSize)
+{
+    if ($requirement->isFulfilled()) {
+        return;
+    }
+
+    $errorMessage = wordwrap($requirement->getTestMessage(), $lineSize - 3, PHP_EOL.'   ').PHP_EOL;
+    $errorMessage .= '   > '.wordwrap($requirement->getHelpText(), $lineSize - 5, PHP_EOL.'   > ').PHP_EOL;
+
+    return $errorMessage;
+}
+
+function echo_title($title, $style = null)
+{
+    $style = $style ?: 'title';
+
+    echo PHP_EOL;
+    echo_style($style, $title.PHP_EOL);
+    echo_style($style, str_repeat('~', strlen($title)).PHP_EOL);
+    echo PHP_EOL;
+}
+
+function echo_style($style, $message)
+{
+    // ANSI color codes
+    $styles = array(
+        'reset' => "\033[0m",
+        'red' => "\033[31m",
+        'green' => "\033[32m",
+        'yellow' => "\033[33m",
+        'error' => "\033[37;41m",
+        'success' => "\033[37;42m",
+        'title' => "\033[34m",
+    );
+    $supports = has_color_support();
+
+    echo($supports ? $styles[$style] : '').$message.($supports ? $styles['reset'] : '');
+}
+
+function echo_block($style, $title, $message)
+{
+    $message = ' '.trim($message).' ';
+    $width = strlen($message);
+
+    echo PHP_EOL.PHP_EOL;
+
+    echo_style($style, str_repeat(' ', $width).PHP_EOL);
+    echo_style($style, str_pad(' ['.$title.']', $width, ' ', STR_PAD_RIGHT).PHP_EOL);
+    echo_style($style, str_pad($message, $width, ' ', STR_PAD_RIGHT).PHP_EOL);
+    echo_style($style, str_repeat(' ', $width).PHP_EOL);
+}
+
+function has_color_support()
+{
+    static $support;
+
+    if (null === $support) {
+        if (DIRECTORY_SEPARATOR == '\\') {
+            $support = false !== getenv('ANSICON') || 'ON' === getenv('ConEmuANSI');
+        } else {
+            $support = function_exists('posix_isatty') && @posix_isatty(STDOUT);
+        }
+    }
+
+    return $support;
+}

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Auth
  */
+
 namespace Orb\Auth;
 
 /**
@@ -63,13 +64,13 @@ class Identity implements \ArrayAccess
      *
      * @var array
      */
-    protected $raw_userinfo = array();
+    protected $raw_userinfo = [];
 
     /**
      * @param mixed $identity
      * @param array $raw_userinfo
      */
-    public function __construct($identity, array $raw_userinfo = array())
+    public function __construct($identity, array $raw_userinfo = [])
     {
         $this->identity     = $identity;
         $this->raw_userinfo = $raw_userinfo;

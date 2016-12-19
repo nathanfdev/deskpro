@@ -1,0 +1,143 @@
+// @ToDo Need we move below variable set into variables.scss?
+$fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
+$flagsImagePath: "../../../../../../node_modules/intl-tel-input/build/img/";
+$flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
+$tablet: new-breakpoint(max-width 960px 6);
+$mobile: new-breakpoint(max-width 640px 6);
+
+@import "../../../../../../node_modules/bourbon/app/assets/stylesheets/bourbon";
+@import "../../../../../../node_modules/bourbon-neat/app/assets/stylesheets/neat";
+@import "../../../../../../node_modules/font-awesome/scss/font-awesome";
+@import "../../../../../../node_modules/intl-tel-input/src/css/intlTelInput";
+@import "../../../../../../node_modules/cropper/src/scss/cropper";
+@import '../../../../../../node_modules/flag-icon-css/sass/flag-icon';
+
+@import "normalize.css";
+@import 'variables';
+
+@import "loading/login", "loading/tip-panel";
+@import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/timer", "global-widgets/pagination", "global-widgets/control-bar", "global-widgets/radio", "global-widgets/cards", "global-widgets/fonts", "global-widgets/checkbox";
+@import "global-widgets/popup", "global-widgets/avatar", "global-widgets/major-buttons";
+@import "global-widgets/window/scrollbar", "global-widgets/window/app-bar", "global-widgets/window/main-panel";
+@import "global-widgets/window/sidebar/_index";
+@import "global-widgets/window/top-bar/_index";
+@import "global-widgets/navigation-dropdown/navigation-dropdowns";
+@import "global-widgets/im-container";
+@import "global-widgets/settings-popup/setting-popups";
+@import "global-widgets/workspace/dropdown-workspace";
+@import "global-widgets/datepicker";
+@import "global-widgets/modal";
+@import "global-widgets/select-dropdown";
+@import "global-widgets/choice-list";
+@import "global-widgets/notification";
+@import "animation";
+@import "calendar";
+@import "list-view/table";
+@import "list-view/kanban";
+@import "raw/growl-notifications";
+//@import "raw/styles";
+
+@import "chrome/positioning";
+@import "chrome/tabpane";
+@import "cards/_index";
+
+body {
+  font-family: $font-stack;
+}
+
+a {
+  color: $link-color;
+}
+
+h1, h2, h3, h4, h5 {
+  margin:      0;
+  padding:     0;
+  font-weight: 500;
+}
+
+h1 {
+  font-size: 1.3em;
+}
+
+hr {
+  display:    block;
+  width:      100%;
+  border:     0;
+  margin:     0;
+  height:     1px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+$app-width: 55px;
+$report-list-width: 555px;
+$content-width: $app-width + $sidebar-width;
+
+.app-bar-wrapper {
+  float:      left;
+  width:      $app-width;
+  background: #2b2f34;
+  position:   relative;
+  z-index:    299;
+}
+
+.disc {
+  position:       relative;
+  display:        inline-block;
+  width:          4px;
+  height:         4px;
+  border-radius:  19px;
+  background:     #999999;
+  margin-left:    4px;
+  margin-right:   4px;
+  vertical-align: middle;
+}
+
+.tag {
+  display:       inline-block;
+  background:    #56bb70;
+  color:         #fff;
+  padding:       0 3px;
+  border-radius: 2px;
+  font-size:     0.85em;
+  font-weight:   700;
+  margin-right:  2px;
+}
+
+.fa {
+  position: relative;
+}
+
+.hidden {
+  display: none;
+}
+
+.cutted {
+  overflow:      hidden;
+  text-overflow: ellipsis;
+}
+
+.section-list-title {
+  i {
+    vertical-align: middle;
+  }
+
+  div {
+    vertical-align: middle;
+    display:        inline-block;
+    width:          145px;
+  }
+}
+
+.p-5 {
+  padding: 5px;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.overflow-ellipsis {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

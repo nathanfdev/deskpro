@@ -1,0 +1,53 @@
+.dpw-item-label {
+  line-height: 1em;
+  display: inline-block;
+  background: #dcddde;
+  padding: 4px 6px 6px 6px;
+  border-radius: 2px;
+  color: #424242;
+  font-size: 11px;
+  text-decoration: none;
+  margin-bottom: 4px;
+  margin-right: 3px;
+
+  .fa-times {
+    color: #b0b1b2;
+    font-size: 10px;
+    margin-right: 3px;
+  }
+
+  &:hover .fa { color: #333; }
+}
+
+ul.dpw-label-list li:last-child a.dpw-item-label { margin-bottom: 0; }
+
+.dpw-label-pile {
+  > ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: block;
+
+    > li { display: inline-block; }
+  }
+}
+
+.dpw-label-long-list {
+  border: 1px solid #ececec;
+  padding: 5px;
+
+  .dpw-label-list-content {
+    margin-top: 5px;
+    max-height: 150px;
+    overflow-y: scroll;
+
+    > ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: block;
+
+      > li { display: block; }
+    }
+  }
+}

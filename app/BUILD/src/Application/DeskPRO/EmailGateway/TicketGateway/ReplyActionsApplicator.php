@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use DeskPRO\Kernel\KernelErrorHandler;
+use Application\DeskPRO\Labels\LabelManager;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
 
@@ -134,7 +136,9 @@ class ReplyActionsApplicator implements Loggable
 
             case 'labels':
                 foreach ($param as $l) {
-                    $ticket->addLabelByString($l);
+                    if ($label = LabelManager::normalizeLabel($l)) {
+                        $ticket->addLabelByString($l);
+                    }
                 }
                 break;
 
@@ -160,7 +164,7 @@ class ReplyActionsApplicator implements Loggable
 
             case 'ticket_fields':
                 $fm                = $this->container->getTicketFieldManager();
-                $custom_field_data = array();
+                $custom_field_data = [];
                 foreach ($param as $field_id => $field_value) {
                     $custom_field_data['field_'.$field_id] = $field_value;
                 }
@@ -172,7 +176,7 @@ class ReplyActionsApplicator implements Loggable
 
             default:
                 $e = new \InvalidArgumentException("Unknown reply action {$id}");
-                KernelErrorHandler::logException($e, true, 'reply_action_'.$id);
+                SystemErrorHandler::logException($e, true, 'reply_action_'.$id);
         }
     }
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Mail\RawTransport;
 
 /**
@@ -59,7 +60,7 @@ class RawSmtpTransport implements RawTransportInterface
         $sent = 0;
 
         if ($failed === null) {
-            $failed = array();
+            $failed = [];
         }
 
         try {
@@ -85,12 +86,12 @@ class RawSmtpTransport implements RawTransportInterface
      */
     private function _doMail($from, array $to, $raw_fp, array &$failed)
     {
-        $this->tr->executeCommand(sprintf("MAIL FROM: <%s>\r\n", $from), array(250));
+        $this->tr->executeCommand(sprintf("MAIL FROM: <%s>\r\n", $from), [250]);
         $sent = 0;
 
         foreach ($to as $addy) {
             try {
-                $this->tr->executeCommand(sprintf("RCPT TO: <%s>\r\n", $addy), array(250, 251, 252));
+                $this->tr->executeCommand(sprintf("RCPT TO: <%s>\r\n", $addy), [250, 251, 252]);
                 ++$sent;
             } catch (\Swift_TransportException $e) {
                 $failed[] = $addy;
@@ -98,20 +99,24 @@ class RawSmtpTransport implements RawTransportInterface
         }
 
         if ($sent) {
-            $this->tr->executeCommand("DATA\r\n", array(354));
+            $this->tr->executeCommand("DATA\r\n", [354]);
 
             $buf = $this->tr->getBuffer();
-            $buf->setWriteTranslations(array("\r\n." => "\r\n.."));
+            $buf->setWriteTranslations(["\r\n." => "\r\n.."]);
 
             rewind($raw_fp);
             while (!feof($raw_fp)) {
-                $buf->write(fread($raw_fp, 4096));
+                $chunk = fread($raw_fp, 4096);
+
+                if ($chunk !== false && $chunk !== '') {
+                    $buf->write($chunk);
+                }
             }
 
             $buf->flushBuffers();
 
-            $buf->setWriteTranslations(array());
-            $this->tr->executeCommand("\r\n.\r\n", array(250));
+            $buf->setWriteTranslations([]);
+            $this->tr->executeCommand("\r\n.\r\n", [250]);
         } else {
             $this->tr->reset();
 

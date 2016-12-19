@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,17 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Email addresses attached to a person. This is a separate entity because emails are
@@ -47,27 +52,53 @@ use Orb\Util\Strings;
  * @property Person $person
  * @property string $email
  * @property string $email_domain
- * @property bool $is_own_validated
  * @property bool $is_validated
  * @property string $comment
  * @property \DateTime $date_created
+ * @property \DateTime $date_validated
+ *
+ * @AppAssert\Person\Email\FreeEmail()
+ * @AppAssert\Person\Email\NotSystemEmail()
+ * @AppAssert\Person\Email\NotBannedEmail()
+ *
+ * @JMS\ExclusionPolicy("all")
  */
-class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
+class PersonEmail extends DomainObject
 {
     /**
      * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
      */
     protected $id = null;
 
     /**
+     * Person owner of email.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person;
 
     /**
+     * @var Person This is used by setPerson() method to store the previous value needed for validation.
+     *             Not a mapped property;
+     */
+    private $prevPerson;
+
+    /**
      * The email address.
+     *
+     * @Assert\NotBlank()
+     * @Assert\Email(strict="true")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -76,26 +107,22 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The email address domain.
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $email_domain;
 
     /**
-     * @var bool
-     */
-    protected $is_validated = true;
-
-    /**
-     * True if this email has been manually validated. $is_validated above
-     * is true just when the email is valid and ready to use. e.g, if email validation
-     * was disabled, then the email would have been created is_validated=true.
+     * True if validation passed.
      *
-     * So you can check this value if you need to know if the email was ever validated
-     * by the user or not.
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      *
      * @var bool
      */
-    protected $is_own_validated = false;
+    protected $is_validated = false;
 
     /**
      * A comment or description of the email address. For example, "work" or "home.".
@@ -105,8 +132,10 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
     protected $comment = '';
 
     /**
-     * The original time the email was created. If validation is requried, this will be the time
-     * that PersonEmailValidating record was created before this one.
+     * The original time the email was created.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
      *
      * @var \DateTime
      */
@@ -134,6 +163,15 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
     public function getId()
     {
         return $this->id;
+    }
+
+    public function isPrimary()
+    {
+        if (!$this->person) {
+            return false;
+        }
+
+        return $this->person->primary_email === $this;
     }
 
     public function getEmailDomain()
@@ -207,17 +245,13 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setEmail($email)
     {
-        if ($email) {
-            if (!strpos($email, '@')) {
-                throw new \InvalidArgumentException('Email address is invalid');
-            }
+        $email_domain = null;
 
-            $this->setModelField('email', strtolower($email));
+        if ($email && strpos($email, '@')) {
             list(, $email_domain) = explode('@', $email, 2);
-        } else {
-            $email = null;
         }
 
+        $this->setModelField('email', strtolower($email));
         $this->setModelField('email_domain', $email_domain);
 
         return $this;
@@ -253,12 +287,35 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setPerson(Person $person)
     {
+        $this->prevPerson = $this->person;
+
         $this->setModelField('person', $person);
         if ($person->is_agent) {
             $this->setIsValidated(true);
         }
 
         return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getPrevPersonId()
+    {
+        return $this->prevPerson ? $this->prevPerson->getId() : null;
+    }
+
+    public function getPersonId()
+    {
+        return $this->person ? $this->person->getId() : null;
     }
 
     public function _postPersist()
@@ -275,41 +332,127 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
     {
         // Email address should be validated by the time we get here,
         // this is a failsafe check
+        if (defined('DP_TESTS_RUNNING')) {
+            return;
+        }
+
         if (App::$container->getEmailAccountManager()->findAccountForEmailAddress($this->email)) {
             throw new \RuntimeException("`{$this->email}`` is an a gateway account address");
         }
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonEmail';
 
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'people_emails',
-            'indexes' => array(
-                'email_domain_idx' => array('columns' => array('email_domain')),
-            ),
-            'uniqueConstraints' => array(
-                'email_idx' => array('columns' => array('email')),
-            ),
-        ));
+            'indexes' => [
+                'email_domain_idx' => ['columns' => ['email_domain']],
+            ],
+            'uniqueConstraints' => [
+                'email_idx' => ['columns' => ['email']],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->addLifecycleCallback('_postPersist', 'postPersist');
         $metadata->addLifecycleCallback('_verifyEmailAddress', 'prePersist');
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email'));
-        $metadata->mapField(array('fieldName' => 'email_domain', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_domain'));
-        $metadata->mapField(array('fieldName' => 'is_own_validated', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_own_validated'));
-        $metadata->mapField(array('fieldName' => 'is_validated', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_validated'));
-        $metadata->mapField(array('fieldName' => 'comment', 'type' => 'text', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'comment'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapField(array('fieldName' => 'date_validated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_validated'));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'email',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'email',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'email_domain',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'email_domain',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_validated',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_validated',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'comment',
+            'type'       => 'text',
+            'length'     => 100,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'comment',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_created',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'date_created',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_validated',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'date_validated',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => 'emails', 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne([
+            'fieldName'    => 'person',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => 'emails',
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValidated()
+    {
+        return $this->is_validated;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString()
+    {
+        return $this->email;
     }
 }

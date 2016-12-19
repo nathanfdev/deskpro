@@ -1,0 +1,26 @@
+<phpunit bootstrap="bootstrap_minimal.php" backupGlobals="false">
+    <testsuites>
+        <testsuite name="DeskPRO">
+            <directory>phpunit</directory>
+            <exclude>phpunit/DpTest/DeskPRO/Bundle/AppBundle/TermEngine</exclude>
+            <exclude>phpunit/DpTest/DeskPRO/Bundle/PortalBundle</exclude>
+        </testsuite>
+        <testsuite name="DeskPRO-TermEngine">
+            <directory>phpunit/DpTest/DeskPRO/Bundle/AppBundle/TermEngine</directory>
+        </testsuite>
+        <testsuite name="DeskPRO-Portal">
+            <directory>phpunit/DpTest/DeskPRO/Bundle/PortalBundle</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../src/DeskPRO/Bundle/AppBundle/</directory>
+            <directory suffix=".php">../src/DeskPRO/Bundle/PortalBundle/</directory>
+            <directory suffix=".php">../src/DeskPRO/Bundle/ApiBundle/</directory>
+            <directory suffix=".php">../src/Application/DeskPRO/Brand/</directory>
+            <directory suffix=".php">../src/Application/DeskPRO/Cache/</directory>
+            <directory suffix=".php">../src/Application/DeskPRO/NewSettings/</directory>
+            <directory suffix=".php">../src/Application/DeskPRO/Sms/</directory>
+        </whitelist>
+    </filter>
+</phpunit>

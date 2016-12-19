@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\Attachments\AcceptAttachment;
@@ -48,8 +49,8 @@ class AttachmentAccepterService
 
         $effective_max_size = EnvUtil::getEffectiveMaxUploadSize();
 
-        foreach (array('', 'emails.') as $prefix) {
-            foreach (array('agent', 'user') as $type) {
+        foreach (['', 'emails.'] as $prefix) {
+            foreach (['agent', 'user'] as $type) {
                 $res = new \Application\DeskPRO\Attachments\RestrictionSet();
 
                 $max_size = $container->getSetting('core.'.$prefix.'attach_'.$type.'_maxsize');

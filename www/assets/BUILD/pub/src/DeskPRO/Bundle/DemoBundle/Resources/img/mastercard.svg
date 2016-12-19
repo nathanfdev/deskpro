@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 17" enable-background="new 0 0 27 17">
+ <g id="Master_5_" transform="translate(-1.000000, 0.000000)">
+  <path id="Rectangle-1_13_" d="M25.6,0.4c-1.3,0-15.1,0-22.8,0C2.2,0.4,1.5,1,1.5,1.7v13c0,1.3,0.7,1.9,2,1.9
+		c7.3,0,20.8,0,22.1,0s2-0.6,2-1.9V2.3C27.5,1,26.9,0.4,25.6,0.4z" fill="#265697"/>
+ </g>
+ <circle cx="18" cy="8.6" r="6.8" fill="#efbd41"/>
+ <circle cx="8.9" cy="8.6" r="6.8" fill="#ce413a"/>
+</svg>

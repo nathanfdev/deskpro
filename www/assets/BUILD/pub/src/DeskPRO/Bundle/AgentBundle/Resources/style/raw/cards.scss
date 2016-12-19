@@ -1,0 +1,996 @@
+// Basic Card Styles
+
+// Left and right sides status colors
+$level-1: #fbf250;
+$level-2: #fbd944;
+$level-3: #fbcc3e;
+$level-4: #fbbf38;
+$level-5: #e58f3e;
+$level-6: #e17c3b;
+$level-7: #dc6837;
+$level-8: #d64a32;
+$level-9: #cf2d2d;
+$level-10: #ac2020;
+
+.card-status-bar {
+  width: 10px;
+  height: 100%;
+  border-radius: 2px;
+  position: absolute;
+  top: -1px;
+
+  &.status-bar-left {
+    border-left: 2px solid #cecece;
+    left: -1px;
+  }
+
+  &.status-bar-right {
+    border-right: 2px solid #cecece;
+    right: -1px;
+  }
+
+  &.status-bar-left.level-1 {
+    border-left: 2px solid $level-1;
+  }
+  &.status-bar-right.level-1 {
+    border-right: 2px solid $level-1;
+  }
+
+  &.status-bar-left.level-2 {
+    border-left: 2px solid $level-2;
+  }
+  &.status-bar-right.level-2 {
+    border-right: 2px solid $level-2;
+  }
+
+  &.status-bar-left.level-3 {
+    border-left: 2px solid $level-3;
+  }
+  &.status-bar-right.level-3 {
+    border-right: 2px solid $level-3;
+  }
+
+  &.status-bar-left.level-4 {
+    border-left: 2px solid $level-4;
+  }
+  &.status-bar-right.level-4 {
+    border-right: 2px solid $level-4;
+  }
+
+  &.status-bar-left.level-5 {
+    border-left: 2px solid $level-5;
+  }
+  &.status-bar-right.level-5 {
+    border-right: 2px solid $level-5;
+  }
+
+  &.status-bar-left.level-6 {
+    border-left: 2px solid $level-6;
+  }
+  &.status-bar-right.level-6 {
+    border-right: 2px solid $level-6;
+  }
+
+  &.status-bar-left.level-7 {
+    border-left: 2px solid $level-7;
+  }
+  &.status-bar-right.level-7 {
+    border-right: 2px solid $level-7;
+  }
+
+  &.status-bar-left.level-8 {
+    border-left: 2px solid $level-8;
+  }
+  &.status-bar-right.level-8 {
+    border-right: 2px solid $level-8;
+  }
+
+  &.status-bar-left.level-9 {
+    border-left: 2px solid $level-9;
+  }
+  &.status-bar-right.level-9 {
+    border-right: 2px solid $level-9;
+  }
+
+  &.status-bar-left.level-10 {
+    border-left: 2px solid $level-10;
+  }
+  &.status-bar-right.level-10 {
+    border-right: 2px solid $level-10;
+  }
+}
+
+.divider {
+  padding: 7px;
+
+  h1 {
+    text-align: center;
+    z-index: 10;
+    font-size: 1.0em;
+    color: #C0C0C0;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    span {
+      background-color: #f8f8f8;
+      display: inline-block;
+      padding: 0 5px;
+      position: relative;
+      z-index: 10;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  hr {
+    position: relative;
+    top: 8px;
+    z-index: 5;
+  }
+}
+
+.card-add {
+  padding: 5px 12px;
+  color: #aeaeae;
+  font-size: 12px;
+
+  a {
+    color: #62ad8c;
+  }
+}
+
+// Main card structure
+.card {
+  background: #fff;
+  border: 1px solid #d5d5d5;
+  border-radius: 2px;
+  margin: 5px 5px 5px 10px;
+  padding: 5px 5px 5px 10px;
+  position: relative;
+  transition: border 0.5s ease;
+  cursor: pointer;
+
+  // Card hover changes
+  &:hover {
+    border: 1px solid #4681b2;
+    h1 {
+      color: #4681b2;
+    }
+    .card-status-bar {
+      transition: all 0.5s ease;
+      opacity: 0;
+    }
+  }
+
+  .card-line {
+    margin-bottom: 3px;
+  }
+  // Generic rows for cards
+
+  input {
+    padding: 2px;
+  }
+
+  // Card title
+  h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 0.95em;
+    display: inline-block;
+    width: 200px;
+    vertical-align: middle;
+    white-space: nowrap; // Cut off too long text
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .inline-form {
+    display: inline-block;
+  }
+
+  // A box to the left of the title with stuff (star icon, feedback etc)
+  .line-box {
+    display: inline-block;
+    vertical-align: middle;
+    width: 18px;
+    text-align: center;
+    position: relative;
+  }
+
+  // Usually inside .line-box
+  .fa-star {
+    font-size: 0.8em;
+    top: 1px;
+    color: #62ad8c;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .fa-star.grey {
+    color: #cecece;
+  }
+
+  // The checkbox on the card
+  .card-checkbox {
+    position: absolute;
+    top: 2px;
+    left: -8px;
+
+    span {
+      width: 15px;
+      height: 15px;
+      display: inline-block;
+      border: 1px solid #e2e5e8;
+      border-radius: 2px;
+      background: #fff;
+      color: #62ad8c;
+      font-size: 9px;
+      margin-top: 5px;
+
+      i {
+        opacity: 1;
+        font-size: 9px;
+        color: #62ad8c;
+      }
+    }
+  }
+
+  .card-checkbox-large {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    z-index: 499;
+
+    .checkbox {
+      width: 40px;
+      height: 40px;
+      background: #ffffff;
+      border: 1px solid #d5d5d5;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+      i {
+        margin-top: 7px;
+        font-size: 1.5em;
+        color: #e9e9e9;
+      }
+    }
+
+    .checkbox.checked {
+      * {
+        opacity: 1;
+      }
+      background: #62ad8c;
+      border: 1px solid #62ad8c;
+      i {
+        color: #fff;
+      }
+    }
+
+  }
+
+  // Status icon under the checkbox
+  .card-status {
+    position: absolute;
+    top: 28px;
+    left: -8px;
+    width: 15px;
+    height: 15px;
+    background: #9d9d9d;
+    color: #fff;
+    font-weight: bold;
+    font-size: 9px;
+    text-align: center;
+    border-radius: 2px;
+    padding-top: 2px;
+  }
+
+  .card-status
+    // Container for labels on title
+  .ticket-label-box {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 5px;
+    position: relative;
+    top: 2px;
+  }
+
+  // inherits from tickets.scss
+  .ticket-label {
+    line-height: 1em;
+    padding: 4px 5px;
+  }
+
+  // If we need the first line of text from a ticket
+  .ticket-intro {
+    background: #f8f8f8;
+    border: 1px solid #e8e8e8;
+    margin-top: 6px;
+    padding-top: 3px;
+    padding-bottom: 1px;
+  }
+
+  // Top right corner holder for avatars etc
+  .top-right-box {
+    float: right;
+    margin-top: 1px;
+
+    .chat-avatar, .ticket-department {
+      margin-left: 3px;
+    }
+
+    .text {
+      // if we need a title next to an icon
+      font-size: 0.85em;
+      color: #bfbfbf;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
+  // Sla content or last action time
+  .ticket-timer {
+    float: right;
+    margin-top: 4px;
+  }
+
+  .chat-avatar {
+    // Usual sizing overwrites on chat avatars
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  // If we need assigned to, created time etc on the last line
+  .ticket-extras {
+    .chat-avatar {
+      margin-left: 3px;
+      margin-right: 3px;
+      position: relative;
+      top: -2px;
+    }
+  }
+
+  // Generic department avatar
+  .ticket-department {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+  }
+  // Someone's details
+  .person {
+    display: inline-block;
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .agent {
+    // Usually in .person
+    color: #898989;
+    margin-right: 3px;
+    font-size: 0.9em;
+  }
+
+  .email {
+    // Usually in .person
+    color: #bfbfbf;
+    font-size: 0.9em;
+  }
+
+  .assignment {
+    float: right;
+  }
+}
+
+.due-date-field {
+  width: 0;
+  border: none;
+  background-color: #fff;
+  color: #fff;
+}
+
+.overdue, .overdue i {
+  color: #ff5228 !important;
+}
+
+.due-editor {
+  display: block;
+  font-size: 11px;
+
+  input.due-date {
+    width: 160px;
+    font-size: 11px;
+    display: inline-block;
+  }
+
+  button.due-button {
+    display: inline-block;
+    padding: 3px;
+    font-size: 11px;
+    color: #868686;
+    border: 1px solid #868686;
+    background-color: #fff;
+  }
+}
+
+.task-list-frame .placeholder {
+  display: none;
+  height: 10px;
+  width: 100%;
+  background-color: #ccc;
+
+  &.is-over {
+    display: block;
+  }
+}
+
+// Ticket Specific
+
+// Feedback specific
+.line-box.card-feedback-mark {
+  // This overwrites .line-box
+  background: #f2f2f3;
+  border-radius: 2px;
+  width: 34px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  color: #62ad8c;
+  margin-right: 2px;
+  line-height: 1em;
+
+  .fa {
+    font-size: 12px;
+    top: 0;
+    left: 1px;
+  }
+
+  .feedback-count {
+    margin-left: 3px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+}
+
+// Task Specific
+// Line of task info (due/label/linekd items etc)
+.task-properties {
+  font-size: 0.85em;
+  color: #868686;
+  margin-top: 6px;
+
+  i {
+    color: #c7c7c7;
+    margin-right: 3px;
+  }
+
+  .disc {
+    background: #dbdbdb;
+    margin: 0 6px;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  > div {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1em;
+  }
+}
+
+.list-group-hover {
+  background-color: #ffc;
+}
+
+// Right side task properties
+.task-extras {
+  font-size: 0.85em;
+  font-weight: bold;
+  float: right;
+  margin-top: 2px;
+  color: #868686;
+
+  .disc {
+    background: #c7c7c7;
+  }
+
+  > div {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 0.9em;
+  }
+
+  i {
+    margin-left: 3px;
+    color: #c7c7c7;
+  }
+
+  .subtask-count {
+    display: inline;
+  }
+}
+
+.condensed-task-list {
+  width: 100%;
+  font-size: 12px;
+  border-collapse: collapse;
+
+  th {
+    padding: 5px;
+    text-align: left;
+    color: #999;
+
+    &.clickable-column {
+      cursor: pointer;
+    }
+  }
+
+  tr.is-over {
+    border-bottom: 3px solid #ccc;
+  }
+
+  td {
+    padding: 5px;
+    color: #868686;
+    border-top: 1px solid #E0E0E0;
+    border-left: 1px solid #E0E0E0;
+
+    .checkbox {
+      width: 15px;
+      height: 15px;
+      display: inline-block;
+      border: 1px solid #e2e5e8;
+      border-radius: 2px;
+      background: #fff;
+      color: #e1e1e3;
+      font-size: 9px;
+      margin-right: 5px;
+      vertical-align: 2px;
+
+      i {
+        color: #62ad8c;
+
+        &.selected {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .divider {
+    color: #868686;
+
+    td {
+      border: 1px solid #F8F8F8;
+    }
+
+    span {
+      background-color: #F8F8F8;
+      padding: 3px 5px;
+      margin-left: 10px;
+      position: relative;
+      z-index: 10;
+    }
+  }
+}
+
+// Tasks
+// For tasks, we turn it into a button/action
+.line-box.card-task-mark {
+  width: auto;
+  font-weight: bold;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 10px;
+  background: #62ad8c;
+  border-radius: 2px;
+  line-height: 1em;
+  padding: 3px 4px;
+  margin-right: 5px;
+}
+
+.line-box.card-task-mark:hover {
+  background: darken(#62ad8c, 10%);
+}
+
+.line-box.card-task-mark.offset {
+  margin-left: -18px;
+}
+
+// For second line mark as done button thats aligned with the checkbox
+
+.task-card.bulk-editing {
+  * {
+    opacity: 0.6;
+  }
+
+  .card-checkbox-large {
+    opacity: 1;
+    * {
+      opacity: 1;
+    }
+  }
+}
+
+.task-card.bulk-editing.selected {
+  * {
+    opacity: 1;
+  }
+}
+
+.task-card.task-card-completed {
+  h1 {
+    color: #cecece;
+    text-decoration: line-through;
+  }
+
+  .editing h1 {
+    text-decoration: none;
+  }
+
+  .card-task-mark {
+    background: #f0f0f0;
+    color: #c9c9c9;
+  }
+
+  .task-properties {
+    color: #cecece;
+  }
+
+  .task-details-button {
+    color: #c9c9c9;
+    background-color: #fff;
+    border: 1px solid #c9c9c9;
+    font-size: 0.6em;
+    border-radius: 3px;
+    text-transform: uppercase;
+    vertical-align: -1px;
+
+    &:focus {
+      outline: 0;
+    }
+
+    i {
+      font-size: 1.2em;
+    }
+  }
+}
+
+// Card interactions
+
+// Moving a card
+.card.moving {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 99999;
+  -moz-transform: rotate(-3deg);
+  -webkit-transform: rotate(-3deg);
+  -o-transform: rotate(-3deg);
+  -ms-transform: rotate(-3deg);
+  transform: rotate(-3deg);
+}
+
+.card.moved {
+  background: #ebebeb;
+  border: 1px dashed #dadada;
+  height: 60px;
+}
+
+.card.move-target {
+  background: #dfdfdf;
+  border: 1px solid #dfdfdf;
+  height: 30px;
+
+  &:hover {
+    background: #d9d9d9;
+    border: 1px solid #d9d9d9;
+  }
+}
+
+.anytime-picker {
+  display: none;
+  position: absolute;
+  border: 1px solid #4681b2;
+  z-index: 2000;
+  background-color: #eef1f3;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.25s ease-in-out;
+  width: 208px;
+  //left: 0 !important; It's impossible because we use this style in different places. So, for this property we must create separate class
+
+  .anytime-picker__header {
+    background-color: #fff;
+    border-bottom: 1px solid #d6d8da;
+    padding: 5px;
+  }
+
+  .anytime-picker__button--prev, .anytime-picker__button--next {
+    border: 1px solid #eef1f3;
+    background-color: #fff;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    color: #9a9a9a;
+    font-weight: bold;
+    font-size: 11px;
+  }
+
+  .anytime-picker__dates {
+    padding: 5px;
+
+    .anytime-picker__date {
+      border: 1px solid #eef1f3;
+      background-color: #fff;
+      -webkit-border-radius: 0;
+      -moz-border-radius: 0;
+      border-radius: 0;
+
+      &:focus {
+        outline: 0;
+      }
+    }
+
+    .anytime-picker__date--selected {
+      background-color: #4681b2;
+      color: #fff;
+    }
+  }
+
+  .anytime-picker__day-name {
+    text-transform: uppercase;
+    color: #9a9a9a;
+    font-weight: bold;
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .anytime-picker__button--done {
+    background-color: #62ad8c;
+    color: #fff;
+    border-radius: 2px;
+    border: 0;
+    padding: 5px 10px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.9em;
+
+    &:hover {
+      background-color: darken(#62ad8c, 10%);
+    }
+  }
+
+  .anytime-picker__button--clear {
+    background-color: #fff;
+    border-radius: 4px;
+    border: 0;
+    padding: 5px 10px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    margin-left: 5px;
+  }
+
+  .anytime-picker__time, .anytime-picker__footer {
+    padding: 5px;
+  }
+}
+
+.anytime-picker--is-visible {
+  display: block;
+}
+
+.anytime-picker__dates {
+  width: 200px;
+}
+
+.anytime-picker__dates > * {
+  box-sizing: border-box;
+  width: 14.28%;
+  display: inline-block;
+}
+
+.dpmw--single-card {
+  // Single card
+  background: #fff;
+  border: 1px solid #d5d5d5;
+  border-radius: 2px;
+  margin: 5px 10px;
+  padding: 6px 5px 7px 14px;
+  position: relative;
+  transition: border 0.5s ease;
+  cursor: pointer;
+
+  &.dpmw--single-task-card {
+    margin-left: 12px;
+    margin-right: 68px;
+    // max-width: 350px;
+  }
+
+  &.dpmw--single-card.minimized {
+    padding: 3px 5px 3px 14px;
+  }
+  // Resize the minimized cards
+  a {
+    color: inherit;
+  }
+}
+
+.dpmw--single-card:hover {
+  border: 1px solid #4681b2;
+  h1 {
+    color: #4681b2;
+  }
+  .dpw--card-status-bar {
+    transition: all 0.5s ease;
+    opacity: 0;
+  }
+}
+
+.dpw--card-line {
+  margin-bottom: 6px;
+
+  &:last-child {
+    margin-bottom: 2px;
+  }
+
+  &:after {
+    // Clearfix
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  .dpw--card-line-left {
+    // overflow: hidden;
+    // white-space: nowrap;// Cut off too long text
+    // overflow: hidden;
+    // text-overflow: ellipsis;
+  }
+
+  .dpw--card-line-right {
+    float: right;
+    text-align: right;
+  }
+
+  .dpw--card-disc {
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    background: #dbdbdb;
+    border-radius: 19px;
+    margin-left: 8px;
+    margin-right: 7px;
+    position: relative;
+    top: -3px;
+  }
+}
+
+// Small items (text & icon)
+.dpwd--card-line-item {
+  display: inline-block;
+  font-size: 11px;
+  color: #868686;
+
+  i {
+    color: #c7c7c7;
+    position: relative;
+    margin-left: 2px;
+    margin-right: 2px;
+  }
+
+  i.fa-calendar-o {
+    top: -1px;
+  }
+}
+
+.dpw--card-expand {
+  a {
+    display: inline-block;
+    border: 1px solid #d5d5d5;
+    border-radius: 2px;
+    line-height: 1em;
+    padding: 2px 4px;
+    font-size: 8px;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #a4a4a4;
+    font-weight: bold;
+    position: relative;
+    top: 2px;
+
+    i {
+      margin-left: 2px;
+    }
+  }
+
+  a:hover {
+    background: #d5d5d5;
+    color: #333;
+  }
+}
+
+.dpwd--card-title {
+  display: block;
+
+  h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    font-weight: normal;
+    display: block;
+    vertical-align: middle;
+    white-space: nowrap; // Cut off too long text
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &.dpwd--card-title.strikethrough {
+    h1 {
+      text-decoration: line-through;
+      color: #aeaeae;
+    }
+  }
+
+  input {
+    padding: 2px;
+
+    &.error {
+      border: 1px solid #ff0000;
+    }
+  }
+}
+
+.dpwd--card-assigned {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.dpm--card-checkbox {
+  display: block;
+  width: 17px;
+  height: 17px;
+  position: absolute;
+  left: -9px;
+  top: 5px;
+  background: #fff;
+  border: 1px solid #d5d5d5;
+  border-radius: 2px;
+  text-align: center;
+
+  i {
+    font-size: 10px;
+    color: #d5d5d5;
+    position: relative;
+    top: 2px;
+  }
+}
+
+// Reposition the checkbox on minimized cards
+.dpmw--single-card.minimized {
+  .dpmw--card-checkbox {
+    top: 3px;
+  }
+}
+
+.moving {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 9999999;
+  -moz-transform: rotate(-3deg);
+  -webkit-transform: rotate(-3deg);
+  -o-transform: rotate(-3deg);
+  -ms-transform: rotate(-3deg);
+  transform: rotate(-3deg);
+}
+
+.floating {
+  width: 370px;
+  z-index: 999;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

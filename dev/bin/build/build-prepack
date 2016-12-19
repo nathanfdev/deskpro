@@ -1,0 +1,257 @@
+#!/bin/bash
+
+if [[ $# -ne 1 ]]; then
+    echo "ERROR: This script expects exactly 1 argument (got $#)"
+    exit 1
+fi
+
+DP_DIR=$1
+
+if [ ! -d $DP_DIR/app/BUILD ]; then
+    echo "ERROR: This script expects the path to a DeskPRO directory. The path specified seems to be invalid."
+    exit 1
+fi
+
+DIR_ROOT=$DP_DIR
+DP_APP_DIR=$DP_DIR/app
+DIR_VENDOR=$DIR_ROOT/app/BUILD/vendor
+DIR_WEB_BOWER=$DIR_ROOT/www/assets/BUILD/web/bower_components
+DIR_WEB_NODE=$DIR_ROOT/www/assets/BUILD/web/node_modules
+
+########################################################################################################################
+# Reinstall only prod deps
+########################################################################################################################
+
+cp $DP_DIR/app/BUILD/vendor/zendframework/zend-ldap/src/Node.php $DP_DIR/app/BUILD/tmp-Node.php
+
+# re-install composer deps
+cd $DP_DIR/app/BUILD
+rm -rf vendor/
+composer install --no-dev --ignore-platform-reqs -o --prefer-dist --no-scripts
+
+rm $DP_DIR/app/BUILD/vendor/zendframework/zend-ldap/src/Node.php
+mv $DP_DIR/app/BUILD/tmp-Node.php $DP_DIR/app/BUILD/vendor/zendframework/zend-ldap/src/Node.php
+
+# re-install npm deps
+cd $DP_DIR/www/assets/BUILD/pub
+rm -rf node_modules/
+npm install --production
+
+########################################################################################################################
+# Cleanup for distro
+########################################################################################################################
+
+cd $DIR_ROOT
+
+rm -rf dev/
+rm README.md
+
+find . -type d \( \
+    -name ".git" \
+\) -exec rm -rf {} \;
+
+find . -type f \( \
+    -name ".gitignore" -o -name ".gitmodules" -o -name ".gitattributes" -o -name ".gitkeep" -o -name ".editorconfig" \
+    -o -name ".php_cs" -o -name ".php_cs.cache" -o -name ".eslintignore" \
+\) -exec rm -rf {} \;
+
+rm -rf $DP_DIR/app/BUILD/.phan
+
+# prod doesnt need tests, and tests/bin contain symlinks which
+# can mess up the archive anyway
+rm -rf $DP_DIR/app/BUILD/tests
+
+########################################################################################################################
+# Cleanup web vendors
+########################################################################################################################
+
+# need this because we need it in the interface
+mkdir $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp
+mv $DIR_ROOT/www/assets/BUILD/web/node_modules/Select2 $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp/Select2
+mv $DIR_ROOT/www/assets/BUILD/web/node_modules/angular-ui-select2 $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp/angular-ui-select2
+mv $DIR_ROOT/www/assets/BUILD/web/node_modules/semantic-ui-less $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp/semantic-ui-less
+mv $DIR_ROOT/www/assets/BUILD/web/node_modules/clipboard $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp/clipboard
+
+# dont need the rest of web/ node_modules at all
+rm -rf $DIR_ROOT/www/assets/BUILD/web/node_modules
+
+mv $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp $DIR_ROOT/www/assets/BUILD/web/node_modules
+
+########################################################################################################################
+# General cleanup
+########################################################################################################################
+
+cd $DIR_ROOT/app/BUILD/vendor
+
+clean_dirs=("$DIR_ROOT/app/BUILD/vendor" "$DIR_ROOT/app/BUILD/vendor-src" "$DIR_ROOT/www/assets/BUILD/pub/node_modules" "$DIR_ROOT/www/assets/BUILD/web/bower_components" "$DIR_ROOT/www/assets/BUILD/web/node_modules")
+
+for dir in "${clean_dirs[@]}"
+do
+    cd $dir
+
+	find . -type d \( \
+        -name '.git' \
+    \) -exec rm -rf {} \;
+
+    find . -type f \( \
+        -name '.gitignore' -o -name '.gitmodules' -o -name '.gitattributes' -o -name '.gitkeep' -o -name '.editorconfig' \
+        -o -name '.travis.yml' -o -name '.coveralls.yml' -o -name '.scrutinizer.yml' -o -name 'composer.json' \
+        -o -name 'composer.lock' -o -name 'build.xml' -o -name 'build.properties' -o -name 'build.properties.dev' \
+        -o -name 'package.xml' -o -name 'package.json' -o -name 'bower.json' -o -name '.bower.json' -o -name 'gulpfile.js' -o -name 'phar-stub.php' -o -iname 'Gruntfile.js' -o -name 'phpdoc.dist.xml' -o -name 'phpdoc.ini.dist' -o -name 'phpunit.functional.xml.dist' \
+        -o -iname 'Makefile' -o -name 'Rakefile' -o -name 'phpunit.xsd' -o -name 'phpunit.bat' -o -name 'phpunit.xml.dist' -o -iname 'CHANGELOG' -o -iname 'CHANGELOG.md' \
+        -o -name 'build.gradle' -o -name 'gradlew' -o -name 'Gemfile*' -o -name '.npmignore' -o -name 'jshint.json' -o -name 'tests.js' -o -name 'component.json' -o -name 'jshintrc' -o -name 'karma.conf.js' \
+        -o -iname 'CHANGELOG*' -o -name 'CHANGES*' -o -iname 'CONTRIBUTING*' -o -iname 'CONTRIBUTORS*' -o -name 'AUTHORS*' \
+        -o -iname 'NOTICE.md' -o -iname 'README' -o -iname 'README.*' -o -name 'VERSION*' \
+        -o -name 'UPGRADE*' -o -name 'UPGRADING*' \
+        -o -name 'Dockerfile' -o -name 'docker-compose.yml' \
+        -o -iname 'Rakefile' -o -iname 'Gemfile' -o -iname 'Vagrantfile' \
+    \) -exec rm -rf {} \;
+
+    find . -type d \( \
+        -name 'test' -o -name 'tests' -o -name 'Tests' -o -name '__tests__' -o -name 'test-suite' -o -name 'doc' -o -name 'docs' -o -name 'bench' \
+        -o -name 'spec' -o -name 'examples' -o -name 'example' \
+    \) -exec rm -rf {} \;
+done
+
+rm -rf $DIR_ROOT/app/BUILD/vendor/swiftmailer/swiftmailer/notes
+rm -rf $DIR_ROOT/app/BUILD/vendor/aws/aws-sdk-php/src/build
+rm -rf $DIR_ROOT/app/BUILD/vendor/guzzle/guzzle/phing
+rm -rf $DIR_ROOT/app/BUILD/vendor/vendor/bugsnag/bugsnag/build
+rm -f $DIR_ROOT/app/BUILD/vendor/firebase/php-jwt/composer.phar
+
+########################################################################################################################
+# Remove potentially bad files from assets
+########################################################################################################################
+
+clean_dirs=("$DIR_ROOT/www/assets/BUILD/pub/node_modules" "$DIR_ROOT/www/assets/BUILD/web/bower_components" "$DIR_ROOT/www/assets/BUILD/web/node_modules")
+
+for dir in "${clean_dirs[@]}"
+do
+    cd $dir
+
+    find . -type f \( \
+        -name '*.php' \
+        -o -name '*.sh' \
+        -o -name '*.bat' \
+    \) -exec rm -rf {} \;
+done
+
+########################################################################################################################
+# Legacy web file cleanup
+########################################################################################################################
+
+cd $DIR_WEB_BOWER/ace-builds
+rm -rf demo/ kitchen-sink/ src/ src-min/ src-noconflict/ textarea/
+rm -rf editor.html kitchen-sink-req.html kitchen-sink.html scrollable-page.html
+
+cd $DIR_WEB_BOWER/angular
+rm -rf angular-csp.css angular.min.js.gzip README.md
+
+cd $DIR_WEB_BOWER/angular-grid
+rm -rf config/ lib/ plugins/ scripts/ src/ test/ workbench/
+rm -rf conf.js
+
+cd $DIR_WEB_BOWER/angular-slider
+rm -rf src/
+
+cd $DIR_WEB_BOWER/angular-ui-router
+rm -rf config/ lib/ release/doc sample/ src/ test/
+
+cd $DIR_WEB_BOWER/angular-ui-select2
+rm -rf docs/ test/
+
+cd $DIR_WEB_BOWER/animate.css
+rm -rf source/
+
+cd $DIR_WEB_BOWER/bootstrap
+rm -rf _includes/ _layouts/ dist/ docs-assets/ examples/
+rm -rf _config.yml about.html browserstack.json css.html customize.html DOCS-LICENSE getting-started.html index.html javascript.html
+
+cd $DIR_WEB_BOWER/font-awesome
+rm -rf scss/ src/
+rm -rf _config.yml
+
+cd $DIR_WEB_BOWER/jquery
+rm -rf jquery-migrate.js jquery-migrate.min.js
+
+cd $DIR_WEB_BOWER/jquery-ui
+mv ui/minified/jquery-ui.min.js /tmp/jquery-ui.min.js
+mv ui/minified/i18n/jquery-ui-i18n.min.js /tmp/jquery-ui-i18n.min.js
+rm -rf ui/minified/*.js
+rm -rf ui/minified/i18n/*.js
+rm -rf ui/*.js
+rm -rf ui/i18n
+mv /tmp/jquery-ui-i18n.min.js ui/minified/i18n/jquery-ui-i18n.min.js
+mv /tmp/jquery-ui.min.js ui/minified/jquery-ui.min.js
+
+cd $DIR_WEB_BOWER/jquery-ui/themes
+rm -rf black-tie/ blitzer/ cupertino/ dark-hive/ dot-luv/ eggplant/ excite-bike/ flick/ hot-sneaks/ humanity/ le-frog/ mint-choc/ overcast/ pepper-grinder/ redmond/ smoothness/ south-street/ start/ sunny/ swanky-purse/ trontastic/ ui-darkness/ vader/
+
+cd $DIR_WEB_BOWER/requirejs
+rm -rf dist/
+rm -rf index.html tasks.txt testBaseUrl.js
+
+cd $DIR_WEB_BOWER/stacktrace
+rm -rf gradle/ test
+rm -rf stacktrace-bookmarklet.js
+
+cd $DIR_WEB_BOWER/underscore
+rm -rf docs/ test/
+rm -rf favicon.ico index.html
+
+cd $DIR_WEB_BOWER/ng-clip
+rm -rf example
+
+########################################################################################################################
+# Remove some node_modules that we dont need because they are compiled
+########################################################################################################################
+
+cd $DIR_ROOT/www/assets/BUILD/pub/node_modules
+
+find . -type d -maxdepth 1 ! \( \
+        -name '.' -o -name '..' \
+        -o -name 'bourbon' \
+        -o -name 'bourbon-neat' \
+        -o -name 'bi-app-sass' \
+        -o -name 'html5shiv' \
+        -o -name 'font-awesome' \
+        -o -name 'hover.css' \
+\) -exec rm -rf {} \;
+
+########################################################################################################################
+# Make sure cleaned files arent in checksum file
+########################################################################################################################
+
+$DP_DIR/bin/console dpdev:gen:integrity-map --clean-missing
+
+########################################################################################################################
+# Cleanup logs and other stuff generated during build
+########################################################################################################################
+
+cd $DIR_ROOT
+rm -rf $DP_DIR/var/logs/*
+rm -rf $DP_DIR/var/kernel_cache/BUILD/dev
+rm -rf $DP_DIR/var/kernel_cache/BUILD/test
+
+########################################################################################################################
+# Set permissions
+########################################################################################################################
+
+cd $DP_DIR
+find . -type d -print0 | xargs -0 chmod 755
+find . -type f -not -path "*/bin/*" -print0 | xargs -0 chmod 644
+
+chmod -R 0777 var/
+chmod -R 0777 backups/
+chmod -R 0777 attachments/
+
+########################################################################################################################
+# If we wrote the active build version, move it from BUILD to that version
+########################################################################################################################
+
+if [ -f $DP_DIR/app/BUILD/sys/config/build-num.txt ]; then
+    DP_VER=`cat $DP_DIR/app/BUILD/sys/config/build-num.txt`
+    mv $DP_DIR/app/BUILD $DP_DIR/app/$DP_VER
+    mv $DP_DIR/www/assets/BUILD $DP_DIR/www/assets/$DP_VER
+    mv $DP_DIR/var/kernel_cache/BUILD $DP_DIR/var/kernel_cache/$DP_VER
+fi

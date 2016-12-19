@@ -1,0 +1,21 @@
+#!/bin/bash
+
+DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
+
+rm -rf $DIR_ROOT/app/BUILD/vendor
+rm -rf $DIR_ROOT/www/BUILD/web/app-build
+rm -rf $DIR_ROOT/www/BUILD/web/loader-build
+rm -rf $DIR_ROOT/www/BUILD/web/bower_components
+rm -rf $DIR_ROOT/www/BUILD/web/node_modules
+rm -rf $DIR_ROOT/www/BUILD/pub/node_modules
+rm -rf $DIR_ROOT/www/BUILD/pub/build
+
+find $DIR_ROOT/var/ -type d -print0 | xargs -0 chmod 777
+
+rm -rf $DIR_ROOT/var/cache/*/
+rm -rf $DIR_ROOT/var/kernel_cache/*/
+rm -rf $DIR_ROOT/var/tmp/*/
+
+find $DIR_ROOT/var/ -type d -print0 | xargs -0 chmod 777
+
+rm -f $DIR_ROOT/www/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js

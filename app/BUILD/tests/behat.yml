@@ -1,0 +1,211 @@
+# ----------------------------------------------------------------------------------------------------------------------
+# READ ME
+# ----------------------------------------------------------------------------------------------------------------------
+#
+# 1) To pass the base_url option to mink you can use BEHAT_PARAMS environment variable:
+#    export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"base_url":"http://dev.dpnew.devput.com:8080/"}}}'
+#
+# ----------------------------------------------------------------------------------------------------------------------
+
+api:
+    suites:
+        api:
+            paths:
+                - %paths.base%/features/api
+                - %paths.base%/features/term-engine
+            contexts:
+                - DpBehat\DataSetContext:
+                    dataset_manager: @dataset_manager
+                - Behat\MinkExtension\Context\MinkContext
+                - DpBehat\Api\JsonContext
+                - DpBehat\HooksContext
+                - DpBehat\Api\RestContext
+                - DpBehat\Api\AuthContext
+                - DpBehat\Api\BrandContext
+                - DpBehat\TermEngine\TermEngineBehatContext
+                - DpBehat\Api\PeopleContext
+                - DpBehat\Api\AgentsContext
+                - DpBehat\PermissionContext
+                - DpBehat\Api\ModesAndTagsContext
+                - DpBehat\Api\ApiLogContext
+                - DpBehat\Api\ApiLimitsContext
+                - DpBehat\Api\NotificationsContext
+                - DpBehat\Portal\GenericContext
+                - DpBehat\System\Alerts\IncidentsContext
+                - DpBehat\TicketLogsContext
+                - DpBehat\Data\DataContext
+                - DpBehat\Data\PeopleContext
+                - DpBehat\Data\CustomDataContext
+                - DpBehat\Data\TicketLayoutContext
+                - DpBehat\Data\OrganizationContext
+                - DpBehat\Data\BlobContext
+                - DpBehat\Data\LabelContext
+                - DpBehat\BrandSettingContext
+    extensions:
+        Sanpi\Behatch\Extension: ~
+        Behat\MinkExtension:
+            default_session: default
+            sessions:
+                default:
+                    symfony2: ~
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: features/bootstrap/boot.php
+                path: ../sys/Kernel/ApiKernel.php
+                class: DpSys\Kernel\ApiKernel
+                env: test
+                debug: false
+system-api:
+    suites:
+        api:
+            paths:
+                - %paths.base%/features/system-api
+            contexts:
+                - DpBehat\DataSetContext:
+                    dataset_manager: @dataset_manager
+                - Behat\MinkExtension\Context\MinkContext
+                - DpBehat\HooksContext
+                - DpBehat\Api\JsonContext
+                - DpBehat\Api\RestContext
+                - DpBehat\Api\AuthContext
+                - DpBehat\Data\PeopleContext
+                - DpBehat\System\Alerts\IncidentsContext
+    extensions:
+        Sanpi\Behatch\Extension: ~
+        Behat\MinkExtension:
+            default_session: default
+            sessions:
+                default:
+                    symfony2: ~
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: features/bootstrap/boot.php
+                path: ../sys/Kernel/ApiKernel.php
+                class: DpSys\Kernel\ApiKernel
+                env: test
+                debug: false
+
+install:
+    suites:
+        install:
+            paths:
+                - %paths.base%/features/install
+            contexts:
+                - Behat\MinkExtension\Context\MinkContext
+                - DpBehat\E2E\E2EContext
+                - DpBehat\Install\ServerInfoContext
+    extensions:
+        Behat\MinkExtension:
+            default_session: default
+            sessions:
+                default:
+                    goutte: ~
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: features/bootstrap/boot.php
+                path: ../sys/Kernel/InstallKernel.php
+                class: DpSys\Kernel\InstallKernel
+                env: test
+                debug: false
+
+portal:
+    suites:
+        portal:
+            paths:
+                - %paths.base%/features/portal
+            contexts:
+                - DpBehat\Portal\MinkContext
+                - DpBehat\HooksContext
+                - DpBehat\Portal\TestsContext
+                - DpBehat\Portal\RefsContext
+                - DpBehat\Api\JsonContext
+                - DpBehat\Api\RestContext
+                - DpBehat\Api\BrandContext
+                - DpBehat\LanguageContext
+                - DpBehat\Portal\PortalModeContext
+                - DpBehat\Portal\PortalBrandThemeContext
+                - DpBehat\Portal\AuthContext
+                - DpBehat\Portal\RouterContext
+                - DpBehat\Portal\TicketsContext
+                - DpBehat\Portal\ContentContext
+                - DpBehat\Portal\GenericContext
+                - DpBehat\Portal\FormContext
+                - DpBehat\Portal\TicketContext
+                - DpBehat\Http\HttpContext
+                - DpBehat\DataSetContext:
+                    dataset_manager: @dataset_manager
+                - DpBehat\Portal\Api\AuthContext
+                - DpBehat\Portal\Api\ChatContext
+                - DpBehat\Portal\Api\SettingsContext
+                - DpBehat\Portal\PortalDesigner\AssetsContext
+                - DpBehat\System\AntiAbuse\AntiAbuseContext
+                - DpBehat\Data\DataContext
+                - DpBehat\Data\PeopleContext
+                - DpBehat\Data\CustomDataContext
+                - DpBehat\Data\TicketLayoutContext
+                - DpBehat\PermissionContext
+                - DpBehat\BrandSettingContext
+    extensions:
+        Sanpi\Behatch\Extension: ~
+        Behat\MinkExtension:
+            default_session: default
+            sessions:
+                default:
+                    symfony2: ~
+                goutte:
+                    goutte: ~
+
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: features/bootstrap/boot.php
+                path: ../sys/Kernel/PortalKernel.php
+                class: DpSys\Kernel\PortalKernel
+                env: test
+                debug: false
+        SensioLabs\Behat\PageObjectExtension:
+            namespaces:
+                page: DpBehat\Portal\Page
+                element: DpBehat\Portal\Page\Element
+            factory:
+                page_parameters:
+                    base_url: /
+
+production:
+    suites:
+        production:
+            paths:
+                - %paths.base%/features/production
+            contexts:
+                - Behat\MinkExtension\Context\MinkContext
+                - DpBehat\Api\JsonContext
+                - DpBehat\Api\RestContext
+                - DpBehat\Portal\AuthContext
+                - DpBehat\Data\PeopleContext
+                - DpBehat\Http\HttpContext
+                - DpBehat\System\Alerts\EventsContext
+                - DpBehat\ProductionModeContext
+                - DpBehat\System\AntiAbuse\AntiAbuseContext
+                - DpBehat\Install\ServerInfoContext
+                - DpBehat\DataSetContext:
+                    dataset_manager: @dataset_manager
+    extensions:
+        Sanpi\Behatch\Extension: ~
+        Behat\MinkExtension:
+            default_session: default
+            sessions:
+                default:
+                    goutte: ~
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: features/bootstrap/boot.php
+                path: ../sys/Kernel/ApiKernel.php
+                class: DpSys\Kernel\ApiKernel
+                env: test
+                debug: false
+        SensioLabs\Behat\PageObjectExtension:
+            namespaces:
+                page: DpBehat\Portal\Page
+                element: DpBehat\Portal\Page\Element
+            factory:
+                page_parameters:
+                    base_url: /

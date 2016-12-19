@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,15 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository\Helper;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Util\Arrays;
@@ -92,11 +96,11 @@ class CategoryHierarchy
     /**
      * @var array
      */
-    protected $_cat_ids = array();
+    protected $_cat_ids = [];
     /**
      * @var array
      */
-    protected $_cat_parent_map = array();
+    protected $_cat_parent_map = [];
 
     public function __construct(EntityManager $em, AbstractEntityRepository $repos, $entity_name, ClassMetadata $class, $cache_tag = null)
     {
@@ -116,16 +120,20 @@ class CategoryHierarchy
     /**
      * Get all root node ids.
      *
+     * @param int $brandId
+     *
      * @return array
      */
-    public function getRootNodeIds()
+    public function getRootNodeIds($brandId = 0)
     {
         $this->getInHierarchy();
 
-        $root_ids = array();
+        $root_ids = [];
 
         foreach ($this->_cat_hierarchy as $c) {
-            $root_ids[] = $c['id'];
+            if (!$brandId || $brandId == $c['brand_id']) {
+                $root_ids[] = $c['id'];
+            }
         }
 
         return $root_ids;
@@ -134,14 +142,16 @@ class CategoryHierarchy
     /**
      * Get all root nodes.
      *
+     * @param int $brandId
+     *
      * @return array
      */
-    public function getRootNodes()
+    public function getRootNodes($brandId = 0)
     {
-        $root_ids = $this->getRootNodeIds();
+        $root_ids = $this->getRootNodeIds($brandId);
 
         if (!$root_ids) {
-            return array();
+            return [];
         }
 
         return $this->repos->getByIds($root_ids, true);
@@ -161,6 +171,10 @@ class CategoryHierarchy
 
     /**
      * Get a plain hierarchy array.
+     *
+     * @param bool $reset
+     *
+     * @return array|null
      */
     public function getInHierarchy($reset = false)
     {
@@ -171,50 +185,28 @@ class CategoryHierarchy
         if (is_array($reset)) {
             $cats = $reset;
         } else {
-            if ($this->em->getUnitOfWork()->isAddedPreloadedEntity($this->entity_name)) {
-                $this->em->getUnitOfWork()->preloadEntitySet($this->entity_name);
-                $cats        = array();
-                $select_keys = array('id', 'parent_id', 'title', 'display_order');
-                if ($this->table_name == 'departments') {
-                    $select_keys = array('id', 'parent_id', 'title', 'user_title', 'display_order');
-                }
-                foreach ($this->repos->getIdentityHelper()->findAll() as $c) {
-                    $id        = $c->getId();
-                    $cats[$id] = array();
-                    foreach ($select_keys as $k) {
-                        if ($k == 'id') {
-                            $cats[$id]['id'] = $id;
-                        } elseif ($k == 'parent_id') {
-                            $cats[$id][$k] = $c->parent ? $c->parent->getId() : 0;
-                        } else {
-                            $cats[$id][$k] = $c[$k];
-                        }
-                    }
-                }
-
-                uasort($cats, function ($a, $b) {
-                    if ($a['display_order'] == $b['display_order']) {
-                        return 0;
-                    }
-
-                    return $a['display_order'] < $b['display_order'] ? -1 : 1;
-                });
-            } else {
-                $select = 'id, parent_id, title';
-                if ($this->table_name == 'departments') {
-                    $select = 'id, parent_id, title, user_title';
-                }
-
-                $cats = $this->em->getConnection()->fetchAllKeyed("
-                    SELECT $select
-                    FROM {$this->table_name}
-                    ORDER BY display_order ASC, id ASC
-                ", array(), 'id');
+            $select = 'id, parent_id, title';
+            if ($this->table_name == 'departments') {
+                $select = 'id, parent_id, title, user_title';
             }
+            if (in_array($this->table_name, ['article_categories', 'download_categories', 'news_categories'])) {
+                $select = 'id, parent_id, title, brand_id';
+            }
+
+            $cats = $this->em->getConnection()->fetchAllKeyed("
+                SELECT $select
+                FROM {$this->table_name}
+                ORDER BY display_order ASC, id ASC
+            ", [], 'id');
         }
 
-        $this->_cat_ids = array();
+        $this->_cat_ids = [];
         foreach ($cats as &$c) {
+            foreach (['id', 'parent_id', 'brand_id'] as $k) {
+                if (!empty($c[$k])) {
+                    $c[$k] = (int) $c[$k];
+                }
+            }
             $c['url_slug'] = $c['id'].'-'.Strings::slugifyTitle($c['title']);
 
             if (!isset($c['user_title']) || !$c['user_title']) {
@@ -261,7 +253,7 @@ class CategoryHierarchy
             $for_ids = $this->_cat_ids;
         }
 
-        $ret = array();
+        $ret = [];
         foreach ($for_ids as $id) {
             if (isset($this->_cat_names[$id])) {
                 $ret[$id] = $this->_cats[$id]['title'];
@@ -283,12 +275,12 @@ class CategoryHierarchy
             $sep = ' > ';
         }
 
-        return $this->_getFullNames(array(), $this->getInHierarchy(), $sep, $include_tops);
+        return $this->_getFullNames([], $this->getInHierarchy(), $sep, $include_tops);
     }
 
     protected function _getFullNames($basenames, $cats, $sep, $include_tops)
     {
-        $names = array();
+        $names = [];
 
         foreach ($cats as $k => $cat) {
             $name   = $basenames;
@@ -326,7 +318,7 @@ class CategoryHierarchy
      */
     public function getPathIds($category)
     {
-        $ids = array();
+        $ids = [];
 
         $cat_id = is_object($category) ? $category->getId() : $category;
 
@@ -352,7 +344,7 @@ class CategoryHierarchy
         $ids = $this->getPathIds($category);
 
         if (!$ids) {
-            return array();
+            return [];
         }
 
         return $this->repos->getByIds($ids, true);
@@ -376,10 +368,10 @@ class CategoryHierarchy
         }
 
         $cat_id    = is_object($category) ? $category->getId() : $category;
-        $child_ids = array();
+        $child_ids = [];
 
         if (!isset($this->_cat_hierarchy_flat[$cat_id])) {
-            return array();
+            return [];
         }
 
         $start = false;
@@ -420,7 +412,7 @@ class CategoryHierarchy
     {
         $ids = $this->getChildrenIds($category, $direct);
         if (!$ids) {
-            return array();
+            return [];
         }
 
         return $this->repos->getByIds($ids, true);
@@ -505,17 +497,37 @@ class CategoryHierarchy
         $usergroup_ids[] = App::$container->getUserGroups()->getEveryoneGroup()->id;
 
         if (!$usergroup_ids) {
-            return array();
+            return [];
         }
 
-        $conn    = App::getDb();
-        $tbl     = $conn->quoteIdentifier($permission_table_name);
-        $cat_ids = $conn->fetchAllCol("
-            SELECT category_id
-            FROM {$tbl}
-            WHERE usergroup_id IN (?)
-            GROUP BY category_id
-        ", array($usergroup_ids), array(Connection::PARAM_INT_ARRAY));
+        $conn = App::getDb();
+        $qb   = $conn->createQueryBuilder();
+
+        $tbl = $conn->quoteIdentifier($permission_table_name);
+        $qb->select('category_id');
+        $qb->from($tbl, 't');
+        $qb->andWhere($qb->expr()->in('usergroup_id', $usergroup_ids));
+        $qb->groupBy('category_id');
+
+        $brandRelatedCategories = [
+            ArticleCategory::class,
+            DownloadCategory::class,
+            NewsCategory::class,
+        ];
+
+        if (in_array($this->class->name, $brandRelatedCategories)) {
+            /** @var BrandStack $brandStack */
+            $brandStack = App::get('brand_stack');
+
+            $currentBrand = $brandStack->getActive()->getBrand();
+
+            $table_name = $this->repos->getTableName();
+
+            $qb->innerJoin('t', $table_name, 'c', 'c.id = t.category_id');
+            $qb->andWhere($qb->expr()->eq('c.brand_id', $currentBrand->getId()));
+        }
+
+        $cat_ids = $conn->fetchAllCol($qb->getSQL());
 
         return $cat_ids;
     }

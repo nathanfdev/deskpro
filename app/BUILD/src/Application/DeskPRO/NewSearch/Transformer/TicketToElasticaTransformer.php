@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,12 +28,12 @@
 
 namespace Application\DeskPRO\NewSearch\Transformer;
 
+use Application\DeskPRO\ApacheTika\ClientManager as ApacheTikaManager;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
-use Application\DeskPRO\ApacheTika\ClientManager as ApacheTikaManager;
 
 /**
  * Ticket To Elastica Transformer.
@@ -45,7 +45,7 @@ use Application\DeskPRO\ApacheTika\ClientManager as ApacheTikaManager;
 class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * @var ApacheTikaManager $apache_tika
+     * @var ApacheTikaManager
      */
     private $apache_tika;
 
@@ -65,7 +65,7 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
         $this->apache_tika = $apache_tika;
     }
 
-        /**
+    /**
      * Transform.
      *
      * @param Ticket $object
@@ -81,6 +81,7 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
 
         $document->set('subject', $object->getSubject());
         $document->set('ref', $object->getRef());
+        $document->set('brand', $object->getBrandId());
         $document->set('department', $object->getDepartmentId());
         $document->set('agent', $object->getAgentId());
         $document->set('agent_team', $object->getAgentTeamId());
@@ -99,23 +100,23 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
         }
 
         if ($object->labels) {
-            $labels = Arrays::map(function ($l) { return $l->label; }, $object->labels);
+            $labels = Arrays::map(function ($l) {
+                return $l->label;
+            }, $object->labels);
             $document->set('labels', $labels);
         } else {
-            $document->set('labels', array());
+            $document->set('labels', []);
         }
 
-
-        $messages = array();
+        $messages = [];
         foreach ($object->getMessages() as $message) {
             $messages[] = $message->getMessage();
         }
 
         $document->set('messages', $messages);
-
         $document->set('date_created', $object->date_created->format('Y-m-d H:i:s'));
 
-        $dates = array($object->date_created, $object->date_status, $object->date_last_agent_reply, $object->date_last_user_reply);
+        $dates = [$object->date_created, $object->date_status, $object->date_last_agent_reply, $object->date_last_user_reply];
         $dates = Arrays::removeFalsey($dates);
         $d     = max($dates);
         $document->set('date_active', $d->format('Y-m-d H:i:s'));
@@ -125,15 +126,15 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
             if ($object->has_attachments) {
                 try {
                     /** @var \Application\DeskPRO\ApacheTika\ClientManager $client */
-                    $client         = $this->getApacheTika()->getClient();
+                    $client = $this->getApacheTika()->getClient();
                     /** @var TicketAttachment $attachment */
                     foreach ($object->getAttachments() as $attachment) {
                         $blob = $attachment->getBlob();
                         if (!$blob->isImage()) {
-                            $attachments[] = array(
+                            $attachments[] = [
                                 'filename' => $blob->getFilenameSafe(),
                                 'content'  => $client->getText($blob->getDownloadUrl(true)),
-                            );
+                            ];
                         }
                     }
                 } catch (\Exception $e) {

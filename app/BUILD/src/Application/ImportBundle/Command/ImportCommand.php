@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,67 +28,77 @@
 
 namespace Application\ImportBundle\Command;
 
-use Application\ImportBundle\Generator;
-use Psr\Log\LoggerInterface;
-use RuntimeException;
+use DeskPRO\ImporterTools\Helpers\WriteHelper;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Import command
- * Read and parse an external data and import it to database.
- *
- * Class ImportCommand
+ * Class ImportCommand.
  */
-class ImportCommand extends AbstractGenerateCommand
+class ImportCommand extends AbstractImporterCommand
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('dp:import:run');
-        $this->setHelp('Executes the importer.');
-
         parent::configure();
+
+        $this
+            ->setName('import')
+            ->setHelp('Gets data from the external source.')
+            ->addArgument('file', InputArgument::REQUIRED, 'Exporter script name')
+        ;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function doExecute(Generator\GeneratorConfig $config, LoggerInterface $logger, InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO);
-        $generator = $this->createGenerator($config, $logger);
+        $this->setLoggerHandlers($input, $output);
 
-        $this->createAndSetProgressBar($generator, $input, $output);
-        $this->generate($generator, $output);
-    }
+        $appEnv   = $this->getContainer()->get('deskpro.app_env');
+        $filename = $input->getArgument('file');
+        $basePath = realpath($appEnv->getDpRoot().'/bin/deskpro-importer-tools');
+        if (!$basePath) {
+            $basePath = realpath($appEnv->getDpRoot().'/bin/deskpro-importer-tools-master');
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function checkConfiguration(Generator\GeneratorConfig $config)
-    {
-        if ($config->needInputPath() && !$config->getInputPath()) {
-            throw new RuntimeException('Input path must be specified');
+        // register importer inc files in autoload
+        $importerAutoload = $basePath.'/inc/autoload.php';
+        if (!file_exists($importerAutoload)) {
+            throw new \Exception('Unable to locate importer tools autoload');
         }
-        if ($config->isBatchExporter() && !$config->getOutputPath() && !$config->getInputPath()) {
-            switch ($config->getExporterType()) {
-                case Generator\Exporter\ExporterInterface::TYPE_ZENDESK:
-                case Generator\Exporter\ExporterInterface::TYPE_OS_TICKET:
-                case Generator\Exporter\ExporterInterface::TYPE_DESKPRO:
-                    throw new RuntimeException(sprintf(
-                        'Output path must be specified for batch exporter `%s`',
-                        $config->getExporterType()
-                    ));
-                case Generator\Exporter\ExporterInterface::TYPE_JSON:
-                case Generator\Exporter\ExporterInterface::TYPE_CSV:
-                    throw new RuntimeException(sprintf(
-                        'Input path must be specified for batch exporter `%s`',
-                        $config->getExporterType()
-                    ));
-            }
+
+        require_once $importerAutoload;
+
+        // resolve importer script
+        if ($filename === 'custom') {
+            $script = $basePath.'/custom/custom.php';
+        } else {
+            $script = $basePath.'/importers/'.$filename.'/'.$filename.'.php';
         }
+
+        if (!file_exists($script)) {
+            throw new \Exception("File $script not found");
+        }
+
+        global $DP_CONTAINER;
+        $DP_CONTAINER = $this->getContainer();
+
+        $writer = WriteHelper::getHelper();
+        $writer->setOutputPath($this->getImporterDefaultOutputPath());
+
+        // register the script lib files in autoload
+        $scriptLibPath = dirname($script);
+        if (file_exists($scriptLibPath.'/lib/autoload.php')) {
+            require_once $scriptLibPath.'/lib/autoload.php';
+        } elseif (file_exists($scriptLibPath.'/lib/vendor/autoload.php')) {
+            require_once $scriptLibPath.'/lib/vendor/autoload.php';
+        }
+
+        require_once $script;
     }
 }

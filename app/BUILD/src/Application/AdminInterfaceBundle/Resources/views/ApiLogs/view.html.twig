@@ -1,0 +1,172 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+
+{% block editpane_content %}
+
+    <section class="dp-paneblock dp-editpane">
+
+        <nav class="dp-blocktabs responsive">
+            <ul>
+                <li><a href="{{ ng_href('apps.api_keys.logs') }}"><i class="fa fa-table"></i> {{ phrase('adm.api_logs.title') }}</a></li>
+                <li><a href="#"><i class="fa fa-eye"></i>{{ phrase('adm.api_logs.single_title') }}{{ ng_var('ViewCtrl.model.id') }}</a></li>
+            </ul>
+        </nav>
+        <article>
+            <div class="panel panel-fill indent">
+                <div class="panel-body">
+                    <div class="alert alert-warning" ng-show="ViewCtrl.model.is_request_truncated">{{ phrase('admin.api_logs.request_was_too_big') }}</div>
+                    <div class="alert alert-warning" ng-show="ViewCtrl.model.is_response_truncated">{{ phrase('admin.api_logs.response_was_too_big') }}</div>
+                    <div class="form-group" ng-show="!ViewCtrl.model.is_request_truncated">
+                        <div class="col-lg-12 indent">
+                            <div class="pull-left">
+                                <button class="btn btn-primary" ng-click="ViewCtrl.replay()">
+                                    {{ phrase('adm.api_logs.replay_it') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-3">
+                            <h4>{{ phrase('adm.api_logs.request_id') }}</h4>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="pull-left">
+                                {{ ng_var('ViewCtrl.model.request_id') }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-3">
+                            <h4>{{ phrase('adm.api_logs.start_date_time') }}</h4>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="pull-left">
+                                {{ ng_var('ViewCtrl.model.start_date_time') }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-3">
+                            <h4>{{ phrase('adm.api_logs.time_taken') }}</h4>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="pull-left">
+                                {{ ng_var('ViewCtrl.model.end_time - ViewCtrl.model.start_time') }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-3">
+                            <h4>{{ phrase('adm.api_logs.requested_uri') }}</h4>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="pull-left">
+                                {{ ng_var('ViewCtrl.model.requested_uri') }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-3">
+                            <h4>{{ phrase('adm.api_logs.request_method') }}</h4>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="pull-left">
+                                {{ ng_var('ViewCtrl.model.method') }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-3">
+                            <h4>{{ phrase('adm.api_logs.response_status') }}</h4>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="pull-left">
+                                {{ ng_var('ViewCtrl.model.status') }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-3">
+                            <h4>{{ phrase('adm.api_logs.mode') }}</h4>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="pull-left">
+                                {{ ng_var('ViewCtrl.model.mode') }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-3">
+                            <h4>{{ phrase('adm.api_logs.credentials') }}</h4>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="pull-left">
+                                {{ ng_var('ViewCtrl.model.credentials') }}
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <div class="col-lg-3">
+                            <h4>{{ phrase('adm.api_logs.request_data') }}</h4>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="pull-left">
+                                <pre style="max-width: 700px;"><!--
+                                 -->{{ ng_var('ViewCtrl.getRequestData()') }}
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-3">
+                            <h4>{{ phrase('adm.api_logs.response_data') }}</h4>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="pull-left">
+                                <pre style="max-width: 700px;"><!--
+                                 -->{{ ng_var('ViewCtrl.getResponseData()') }}
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-3">
+                            <h4>{{ phrase('adm.api_logs.start_time') }}</h4>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="pull-left">
+                                {{ ng_var('ViewCtrl.model.start_time') }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-3">
+                            <h4>{{ phrase('adm.api_logs.end_time') }}</h4>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="pull-left">
+                                {{ ng_var('ViewCtrl.model.end_time') }}
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </article>
+    </section>
+    {{ ng_tpl('AdminInterfaceBundle:ApiLogs:replay-modal.html.twig') }}
+{% endblock %}

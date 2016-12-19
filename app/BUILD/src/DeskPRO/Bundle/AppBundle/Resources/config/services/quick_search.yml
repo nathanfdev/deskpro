@@ -1,0 +1,64 @@
+services:
+
+  quick_search:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearch
+    arguments:
+      - "@quick_search.event_dispatcher"
+
+  quick_search.event_dispatcher:
+    class: Symfony\Component\EventDispatcher\EventDispatcher
+
+  quick_search.listener.query_id:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\QueryListener
+    tags:
+      - { name: quick_search.event_subscriber }
+
+  quick_search.listener.ticket_ref:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\TicketRefListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: quick_search.event_subscriber }
+
+  quick_search.listener.usersource:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\UsersourceListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: quick_search.event_subscriber }
+
+  quick_search.listener.elastica_search:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\ElasticSearchListener
+    arguments:
+      - "@fos_elastica.manager"
+      - "@settings_resolver"
+      - "@dp_sys.alerts.event_logger"
+    tags:
+      - { name: quick_search.event_subscriber }
+
+  quick_search.listener.doctrine_search:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\DoctrineSearchListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@settings_resolver"
+    tags:
+      - { name: quick_search.event_subscriber }
+
+  quick_search.listener.load_listener:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\LoadListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: quick_search.event_subscriber }
+
+  quick_search.listener.permission_listener:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\PermissionListener
+    arguments:
+      - "@security.authorization_checker"
+    tags:
+      - { name: quick_search.event_subscriber }
+
+  quick_search.listener.sort_listener:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\SortListener
+    tags:
+      - { name: quick_search.event_subscriber }

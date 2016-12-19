@@ -1,0 +1,305 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+<div class="content-wrapper new-style">
+    <section class="content setup">
+
+        <h1><i class="fa fa-cog"></i> {{ phrase('admin.setup.user_interface') }}</h1>
+
+        <form>
+            <div>
+                {##########################################################################################################}
+                {# WEBSITE #}
+                {##########################################################################################################}
+
+                <div class="content-section" ng-if="brand.id != default_brand.id">
+                    <h2 class="with-divider form-header"><span>{{ phrase('admin.setup.website_settings') }}</span></h2>
+
+                    <div class="row">
+                        <div class="bucket-third">
+                            <div class="inline-input">
+                                <label>{{ phrase('admin.setup.website_name') }}:</label>
+                                <input type="text" placeholder="{{ phrase('admin.setup.website_name') }}" ng-model="Ctrl.settings.site_name" />
+                            </div>
+                        </div>
+
+                        <div class="bucket-two-thirds">
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.website_name_help') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="bucket-third">
+                            <div class="inline-input">
+                                <label>{{ phrase('admin.setup.website_url') }}:</label>
+                                <input type="text" placeholder="{{ phrase('admin.setup.website_url') }}" ng-model="Ctrl.settings.site_url" />
+                            </div>
+                        </div>
+
+                        <div class="bucket-two-thirds">
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.website_url_help') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End .content-section -->
+
+                {##########################################################################################################}
+                {# HELPDESK #}
+                {##########################################################################################################}
+
+                <div class="content-section">
+                    <h2 class="with-divider form-header"><span>{{ phrase('admin.setup.helpdesk_settings') }}</span></h2>
+
+                    <div class="row">
+                        <div class="bucket-third">
+                            <div class="inline-input">
+                                <label>{{ phrase('admin.setup.brand_name') }}:</label>
+                                <input id="helpdesk_name" type="text" placeholder="{{ phrase('admin.setup.helpdesk_name') }}" ng-model="Ctrl.settings.brand_name" />
+                            </div>
+                        </div>
+
+                        <div class="bucket-two-thirds">
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.brand_name_help') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-if="brand.id != default_brand.id">
+                        <div class="bucket-third">
+                            <div class="inline-input">
+                                <label>{{ phrase('admin.setup.helpdesk_name') }}:</label>
+                                <input id="helpdesk_name" type="text" placeholder="{{ phrase('admin.setup.helpdesk_name') }}" ng-model="Ctrl.settings.deskpro_name" />
+                            </div>
+                        </div>
+
+                        <div class="bucket-two-thirds">
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.helpdesk_name_help') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-if="brand.id != default_brand.id">
+                        <div class="bucket-third">
+                            <div class="inline-input">
+                                <label>{{ phrase('admin.setup.helpdesk_url') }}:</label>
+                                <input id="helpdesk_url" type="text" placeholder="{{ phrase('admin.setup.helpdesk_url') }}" ng-model="Ctrl.settings.deskpro_url" />
+                            </div>
+                        </div>
+
+                        <div class="bucket-two-thirds">
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.helpdesk_url_help') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-show="brand_id != 'new' && brand.id != default_brand.id">
+                        <div class="bucket-third">
+                            <div class="inline-input">
+                                <label>{{ phrase('admin.setup.view_brand') }}:</label>
+                                <a class="btn btn-primary" href="/brand-{{ ng_var('brand_id') }}" target="_blank">Portal</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if app.isCloud() %}
+                        <div style="margin-top: 5px; margin-left: 170px; background: #d8edf6; padding: 8px; width: 500px;">
+                            <p>
+                                <strong>Important</strong>: You must edit your DNS to create a <code>CNAME</code> record to <code>{{ constant('DPC_SITE_DOMAIN') }}</code>
+                            </p>
+                            <p>
+                                For more information, refer to <a href="http://support.deskpro.com/kb/articles/79-using-a-custom-domain-name" target="_blank">this DeskPRO knowledgebase article</a>.
+                            </p>
+                        </div>
+                    {% endif %}
+                </div><!-- End .content-section -->
+            </div>
+
+            {##########################################################################################################}
+            {# PORTAL MODE #}
+            {##########################################################################################################}
+
+            <div class="content-section">
+                <h2 class="with-divider">
+                    <span>{{ phrase('admin.setup.helpdesk_portal') }}</span>
+                </h2>
+
+                <div>
+                    <input type="checkbox" ng-model="Ctrl.settings.iface_portal" style="margin:0;" />
+                    <span ng-click="Ctrl.settings.iface_portal = !Ctrl.settings.iface_portal" style="cursor: pointer">
+                        {{ phrase('admin.setup.enable_portal') }}
+                        &mdash;
+                        {{ phrase('admin.setup.enable_portal_help') }}
+                    </span>
+                </div>
+
+                <div ng-hide="Ctrl.settings.iface_portal" style="margin: 10px; background: #FFC7A6; padding: 10px;">
+                    {{ phrase('admin.setup.portal_disabled') }}
+                </div>
+
+                <div class="select-portal-mode" ng-show="Ctrl.settings.iface_portal">
+                    <span class="or"><span class="text">{{ phrase('admin.setup.portal_mode_separator') }}</span></span>
+
+                    <a ng-class="{'selected': Ctrl.settings.portal_mode == 'publish'}" ng-click="Ctrl.setPortalMode('publish')" style="width: 320px;">
+                        <span class="title">
+                            <span class="icon" ng-show="Ctrl.settings.portal_mode == 'publish'"><i class="fa fa-check"></i></span>
+                            {{ phrase('admin.setup.portal_ticket_publish_mode') }}
+                        </span>
+                        <p>{{ phrase('admin.setup.portal_ticket_publish_mode_help') }}</p>
+                    </a>
+
+                    <a ng-class="{'selected': Ctrl.settings.portal_mode == 'tickets'}" ng-click="Ctrl.setPortalMode('tickets')" style="width: 320px;">
+                        <span class="title">
+                            <span class="icon" ng-show="Ctrl.settings.portal_mode == 'tickets'"><i class="fa fa-check"></i></span>
+                            {{ phrase('admin.setup.portal_ticket_only_mode') }}
+                        </span>
+                        <p>{{ phrase('admin.setup.portal_ticket_only_mode_help') }}</p>
+                    </a>
+                </div>
+            </div><!-- End .content-section -->
+
+            {##########################################################################################################}
+            {# PORTAL FEATURES #}
+            {##########################################################################################################}
+
+            <div class="content-section" ng-hide="Ctrl.settings.portal_mode != 'publish' || !Ctrl.settings.iface_portal">
+                <h2 class="with-divider"><span>{{ phrase('admin.setup.portal_sections') }}</span></h2>
+                <div class="apps-list">
+
+                    <div class="col-half">
+                        <div ng-class="{'widget-preview': Ctrl.settings.apps_kb, 'widget-preview-disabled': !Ctrl.settings.apps_kb}">
+                            <div class="widget-header">
+                                <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_kb" />
+                                <span class="title">{{ phrase('admin.setup.portal_section_knowledgebase') }}</span>
+                                <a class="control" href="{{ ng_href('portal.kb_settings') }}">{{ phrase('admin.setup.portal_section_manage') }} <i class="fa fa-cog"></i></a>
+                            </div>
+                            <div class="widget-image">
+                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-kb.png') }}" alt="phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_knowledgebase') }}">
+                            </div>
+
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.portal_section_knowledgebase_help') }}</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-half omega">
+                        <div ng-class="{'widget-preview': Ctrl.settings.apps_downloads, 'widget-preview-disabled': !Ctrl.settings.apps_downloads}">
+                            <div class="widget-header">
+                                <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_downloads" />
+                                <span class="title">{{ phrase('admin.setup.portal_section_downloads') }}</span>
+                                <a class="control" href="{{ ng_href('portal.downloads_settings') }}">{{ phrase('admin.setup.portal_section_manage') }}  <i class="fa fa-cog"></i></a>
+                            </div>
+                            <div class="widget-image">
+                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-downloads.png') }}" alt="{{ phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_downloads') }}">
+                            </div>
+
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.portal_section_downloads_help') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-half">
+                        <div ng-class="{'widget-preview': Ctrl.settings.apps_news, 'widget-preview-disabled': !Ctrl.settings.apps_news}">
+                            <div class="widget-header">
+                                <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_news" />
+                                <span class="title">{{ phrase('admin.setup.portal_section_news') }}</span>
+                                <a class="control" href="{{ ng_href('portal.news_settings') }}">{{ phrase('admin.setup.portal_section_manage') }}  <i class="fa fa-cog"></i></a>
+                            </div>
+                            <div class="widget-image">
+                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-news.png') }}" alt="phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_news') }}">
+                            </div>
+
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.portal_section_news_help') }}</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-half omega">
+                        <div ng-class="{'widget-preview': Ctrl.settings.apps_feedback, 'widget-preview-disabled': !Ctrl.settings.apps_feedback}">
+                            <div class="widget-header">
+                                <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_feedback" />
+                                <span class="title">{{ phrase('admin.setup.portal_section_feedback') }}</span>
+                                <a class="control" href="{{ ng_href('portal.feedback_settings') }}">{{ phrase('admin.setup.portal_section_manage') }}  <i class="fa fa-cog"></i></a>
+                            </div>
+                            <div class="widget-image">
+                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-feedback.png') }}" alt="phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_feedback') }}">
+                            </div>
+
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.portal_section_feedback_help') }}</p>
+
+                                <p>{{ phrase('admin.setup.feedback_note') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div><!-- End .content-section -->
+
+            {##################################################################################################}
+
+            <div class="content-section" ng-hide="Ctrl.settings.portal_mode != 'publish' || !Ctrl.settings.iface_portal">
+                <h2 class="with-divider form-header"><span>{{ phrase('admin.setup.push_content_settings') }}</span></h2>
+
+                <article class="form-horizontal dp-form">
+                    <div class="panel panel-innertable">
+                        <div class="form-group">
+                            <div class="col-lg-12">
+                                <div class="inner-group" dp-error-class="form_props.show_ratings">
+                                    <label>
+                                        <input type="checkbox" ng-model="Ctrl.settings.show_ratings" />
+                                        <h4>{{ phrase('admin.setup.show_rating_publicly') }}</h4>
+                                    </label>
+                                    <div ng-show="show_ratings_opt">
+                                        Show ratings publicly in the portal after there have been
+                                        <input type="number" name="show_ratings" class="form-control" ng-model="Ctrl.settings.show_ratings_min_votes"
+                                               style="width: 80px;" required min="0" /> votes.
+                                    </div>
+                                </div>
+                                <div class="inner-group">
+                                    <label>
+                                        <input type="checkbox" ng-model="Ctrl.settings.publish_comments" />
+                                        <h4>{{ phrase('admin.setup.show_enable_comments') }}</h4>
+                                    </label>
+								<span class="help-block">
+									{{ phrase('admin.setup.show_enable_comments_help') }}
+								</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            {##########################################################################################################}
+
+            <div class="form-footer">
+                <hr>
+                <div dp-hide-spinning="saving">
+                    <button ng-if="brand_id == 'new'" type="submit" ng-click="Ctrl.createBrand()">{{ phrase('admin.portal.create_brand') }}</button>
+                    <button ng-show="brand_id != 'new'" type="submit" ng-click="Ctrl.saveSettings()">{{ phrase('admin.general.save_settings') }}</button>
+                    <button ng-show="brand_id != 'new'" ng-disabled="brand_id == default_brand.id" ng-click="Ctrl.deleteBrand()">{{ phrase('admin.setup.delete_brand') }}</button>
+                </div>
+                <div dp-show-spinning="saving">
+                    <i class="spinner-flat"></i>
+                </div>
+            </div>
+
+        </form>
+    </section>
+</div><!-- End content wrapper -->
+{% endblock %}

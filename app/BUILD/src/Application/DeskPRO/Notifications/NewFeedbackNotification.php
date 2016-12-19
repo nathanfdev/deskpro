@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Notifications;
 
 use Application\DeskPRO\Entity\ClientMessage;
@@ -50,7 +51,7 @@ class NewFeedbackNotification extends AbstractAgentNotification
 
     public function shouldSendBrowserNotification(Person $person)
     {
-        if ($this->feedback->getStatusCode() == 'hidden.validating' && $person->getPref('agent_notif.new_feedback_validate.alert')) {
+        if ($this->feedback->status == 'hidden' && $person->getPref('agent_notif.new_feedback_validate.alert')) {
             return true;
         } elseif ($this->feedback->status != 'hidden' && $person->getPref('agent_notif.new_feedback.alert')) {
             return true;
@@ -61,7 +62,7 @@ class NewFeedbackNotification extends AbstractAgentNotification
 
     public function shouldSendEmailNotification(Person $person)
     {
-        if ($this->feedback->getStatusCode() == 'hidden.validating' && $person->getPref('agent_notif.new_feedback_validate.email')) {
+        if ($this->feedback->status == 'hidden' && $person->getPref('agent_notif.new_feedback_validate.email')) {
             return true;
         } elseif ($this->feedback->status != 'hidden' && $person->getPref('agent_notif.new_feedback.email')) {
             return true;
@@ -72,15 +73,15 @@ class NewFeedbackNotification extends AbstractAgentNotification
 
     public function send()
     {
-        $this->sendBrowserNotifications('AgentBundle:Feedback:alert-new-feedback.html.twig', array('feedback' => $this->feedback, 'notify_data' => array('notify_type' => 'new_feedback')));
-        $this->sendEmailNotifications('DeskPRO:emails_agent:new-feedback.html.twig', array('feedback' => $this->feedback));
+        $this->sendBrowserNotifications('AgentBundle:Feedback:alert-new-feedback.html.twig', ['feedback' => $this->feedback, 'notify_data' => ['notify_type' => 'new_feedback']]);
+        $this->sendEmailNotifications('DeskPRO:emails_agent:new-feedback.html.twig', ['feedback' => $this->feedback]);
 
         $cm = new ClientMessage();
-        $cm->fromArray(array(
+        $cm->fromArray([
             'channel'           => 'agent.ui.new-feedback',
             'feedback_id'       => $this->feedback->getId(),
             'created_by_client' => 'sys',
-        ));
+        ]);
         $this->em->persist($cm);
         $this->em->flush();
     }

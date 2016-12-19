@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
@@ -66,7 +67,7 @@ class RunnerExecSource
     /**
      * @var array
      */
-    private $from_headers = array('from');
+    private $from_headers = ['from'];
 
     /**
      * @param EmailSource         $source
@@ -121,18 +122,21 @@ class RunnerExecSource
         } catch (\Exception $e) {
             $this->logger->logDebug('Exception while decoding: '.$e->getMessage());
 
-            return array(
+            return [
                 'status'     => 'rejected',
                 'error_code' => 'message_missing',
-            );
+            ];
         }
 
-        #------------------------------
-        # Save proper header values
-        #------------------------------
+        //------------------------------
+        // Save proper header values
+        //------------------------------
 
         if ($h = $reader->getHeader('To')) {
             $this->source->header_to = implode(', ', $h->getAllParts());
+        }
+        if ($h = $reader->getHeader('Cc')) {
+            $this->source->header_cc = implode(', ', $h->getAllParts());
         }
         if ($h = $reader->getHeader('Subject')) {
             $this->source->header_subject = implode(', ', $h->getAllParts());
@@ -147,11 +151,11 @@ class RunnerExecSource
             $this->source->from_email = '';
         }
 
-        #------------------------------
-        # Output debug TO
-        #------------------------------
+        //------------------------------
+        // Output debug TO
+        //------------------------------
 
-        $to = array();
+        $to = [];
         foreach ($reader->getToAddresses() as $x) {
             $to[] = $x->getEmail();
         }
@@ -162,9 +166,9 @@ class RunnerExecSource
         $subj = substr($reader->getSubject()->getSubject(), 0, 40);
         $this->logger->logDebug("[Message] To: $to :: From: $from :: Subject: $subj");
 
-        #------------------------------
-        # Output debug FROM
-        #------------------------------
+        //------------------------------
+        // Output debug FROM
+        //------------------------------
 
         $from_headers = $this->from_headers;
         if ($from_headers) {
@@ -174,9 +178,9 @@ class RunnerExecSource
             $this->logger->logDebug(sprintf('[Message] Using From: %s', $from));
         }
 
-        #------------------------------
-        # Run preprocessor
-        #------------------------------
+        //------------------------------
+        // Run preprocessor
+        //------------------------------
 
         $this->logger->logDebug('Running preprocessor');
         $result = $this->runPreProcessor();
@@ -189,9 +193,9 @@ class RunnerExecSource
 
         $this->logger->logDebug('--> Preprocessor OKAY');
 
-        #------------------------------
-        # Run email processor
-        #------------------------------
+        //------------------------------
+        // Run email processor
+        //------------------------------
 
         $this->logger->logDebug('Running email processor');
         $result = $this->runEmailProcessor();
@@ -213,18 +217,18 @@ class RunnerExecSource
      */
     private function runPreProcessor()
     {
-        $pre_processor = new PreProcessor($this->account, $this->getReader(), array('logger' => $this->logger));
+        $pre_processor = new PreProcessor($this->account, $this->getReader(), ['logger' => $this->logger]);
         $pre_processor->run();
 
         if ($pre_processor->isValid()) {
-            return array(
+            return [
                 'status' => 'okay',
-            );
+            ];
         } else {
-            return array(
+            return [
                 'status'     => $pre_processor->getErrorType() ?: 'error',
                 'error_code' => $pre_processor->getErrorCode(),
-            );
+            ];
         }
     }
 
@@ -236,29 +240,29 @@ class RunnerExecSource
         $proc = $this->account_manager->getEmailProcessor(
             $this->account,
             $this->getReader(),
-            array('logger' => $this->logger)
+            ['logger' => $this->logger, 'email_source' => $this->source]
         );
         if (!$proc) {
-            return array(
+            return [
                 'status'     => 'rejected',
                 'error_code' => 'invalid_address',
-            );
+            ];
         }
 
         $proc->run();
 
         if ($proc->isValid()) {
-            return array(
+            return [
                 'status'              => 'okay',
                 'created_object_type' => $proc->getCreatedObjectType(),
                 'created_object_id'   => $proc->getCreatedObjectId(),
                 'created_object_info' => $proc->getCreatedObjectInfo(),
-            );
+            ];
         } else {
-            return array(
+            return [
                 'status'     => $proc->getErrorType() ?: 'error',
                 'error_code' => $proc->getErrorCode(),
-            );
+            ];
         }
     }
 }

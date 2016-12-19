@@ -1,0 +1,15 @@
+imports:
+  - { resource: portal_config_dev.yml }
+
+framework:
+    test: ~
+    profiler: { only_exceptions: false }
+    session:
+        storage_id: session.storage.mock_file
+    router:
+        resource: "%kernel.root_dir%/config/portal/portal_routing_dev.yml"
+        strict_requirements: true
+
+web_profiler:
+    toolbar: false
+    intercept_redirects: false

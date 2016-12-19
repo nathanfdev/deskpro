@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Composer\CaBundle\CaBundle;
 
 class WidgetController extends AbstractController
 {
@@ -59,8 +61,14 @@ class WidgetController extends AbstractController
             return $this->createResponse('Bad url', 400);
         }
 
-        $ch = curl_init($url);
-        if ($this->isPostRequest()) {
+        $ch     = curl_init($url);
+        $cainfo = CaBundle::getBundledCaBundlePath();
+        if (file_exists($cainfo)) {
+            @curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            @curl_setopt($ch, CURLOPT_CAINFO, $cainfo);
+        }
+        @curl_setopt($ch, CURLOPT_CAINFO, $cainfo);
+        if ($this->getRequest()->getMethod() === 'POST') {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents('php://input'));
         }
@@ -71,7 +79,7 @@ class WidgetController extends AbstractController
         }
 
         if (!empty($_SERVER['CONTENT_TYPE'])) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: '.$_SERVER['CONTENT_TYPE']));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: '.$_SERVER['CONTENT_TYPE']]);
         }
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -122,7 +130,7 @@ class WidgetController extends AbstractController
         if ($person['id']) {
             foreach ($this->in->getCleanValueArray('prefs', 'raw', 'string') as $pref_name => $value) {
                 $pref_name = $pref_prefix.$pref_name;
-                $pref      = $this->em->getRepository('DeskPRO:PersonPref')->find(array('person_id' => $this->person['id'], 'name' => $pref_name));
+                $pref      = $this->em->getRepository('DeskPRO:PersonPref')->find(['person_id' => $this->person['id'], 'name' => $pref_name]);
                 if (!$pref) {
                     $pref         = new Entity\PersonPref();
                     $pref['name'] = $pref_name;
@@ -143,8 +151,8 @@ class WidgetController extends AbstractController
             }
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
-        ));
+        ]);
     }
 }

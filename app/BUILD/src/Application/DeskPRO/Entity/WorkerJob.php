@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Log\Logger;
@@ -81,7 +82,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * The most feedbackl interval for this task to run.
@@ -222,7 +223,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
      *
      * @return \Application\DeskPRO\WorkerProcess\Job\AbstractJob
      */
-    public function createJobObj(Logger $logger, array $options = array())
+    public function createJobObj(Logger $logger, array $options = [])
     {
         $classname = $this->job_class;
 
@@ -250,17 +251,17 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
         return false;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\WorkerJob';
-        $metadata->setPrimaryTable(array('name' => 'worker_jobs'));
+        $metadata->setPrimaryTable(['name' => 'worker_jobs']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'id',
             'type'       => 'string',
             'length'     => 50,
@@ -270,8 +271,8 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
             'columnName' => 'id',
             'id'         => true,
             'dpApi'      => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'worker_group',
             'type'       => 'string',
             'length'     => 50,
@@ -280,8 +281,8 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
             'nullable'   => true,
             'columnName' => 'worker_group',
             'dpApi'      => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'title',
             'type'       => 'string',
             'length'     => 100,
@@ -290,8 +291,8 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
             'nullable'   => false,
             'columnName' => 'title',
             'dpApi'      => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'description',
             'type'       => 'string',
             'length'     => 255,
@@ -300,8 +301,8 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
             'nullable'   => false,
             'columnName' => 'description',
             'dpApi'      => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'job_class',
             'type'       => 'string',
             'length'     => 100,
@@ -310,8 +311,8 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
             'nullable'   => false,
             'columnName' => 'job_class',
             'dpApi'      => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'options',
             'type'       => 'array',
             'precision'  => 0,
@@ -319,8 +320,8 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
             'nullable'   => true,
             'columnName' => 'data',
             'dpApi'      => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'interval',
             'type'       => 'integer',
             'precision'  => 0,
@@ -328,8 +329,8 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
             'nullable'   => false,
             'columnName' => 'run_interval',
             'dpApi'      => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'last_run_date',
             'type'       => 'datetime',
             'precision'  => 0,
@@ -337,8 +338,8 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
             'nullable'   => true,
             'columnName' => 'last_run_date',
             'dpApi'      => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'last_start_date',
             'type'       => 'datetime',
             'precision'  => 0,
@@ -346,6 +347,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
             'nullable'   => true,
             'columnName' => 'last_start_date',
             'dpApi'      => true,
-        ));
+        ]);
     }
 }

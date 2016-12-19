@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,8 +31,10 @@
  *
  * @category Types
  */
+
 namespace Application\DeskPRO\DBAL\Types;
 
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\ObjectType;
 use Doctrine\DBAL\Types\Type;
@@ -59,15 +61,17 @@ class DpObjectType extends ObjectType
 
             return $val;
         } catch (ConversionException $e) {
-            $errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-            \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($errinfo);
-
-            return array();
+            return [];
         }
     }
 
     public function getName()
     {
         return Type::OBJECT;
+    }
+
+    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    {
+        return true;
     }
 }

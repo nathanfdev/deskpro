@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Auth
  */
+
 namespace Orb\Auth;
 
 /**
@@ -81,7 +82,7 @@ class Result
      *
      * @var array
      */
-    protected $_messages = array();
+    protected $_messages = [];
 
     /**
      * The identity returned if the auth was success.
@@ -105,7 +106,7 @@ class Result
      * @param \Orb\Auth\Identity $identity If successful, the user identity
      * @param array              $messages Messages of why the login failed, or any additional info
      */
-    public function __construct($code, \Orb\Auth\Identity $identity = null, array $messages = array())
+    public function __construct($code, \Orb\Auth\Identity $identity = null, array $messages = [])
     {
         $this->_code     = $code;
         $this->_identity = $identity;
@@ -154,7 +155,7 @@ class Result
     public function getIdentity()
     {
         if ($this->_identity === null) {
-            throw new \UnexpectedValueException('No identity was set, the login failred');
+            throw new \UnexpectedValueException('No identity was set, the login failed');
         }
 
         return $this->_identity;

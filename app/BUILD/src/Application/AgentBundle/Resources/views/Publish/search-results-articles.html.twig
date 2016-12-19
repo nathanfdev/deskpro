@@ -1,7 +1,5 @@
 {% extends 'AgentBundle::list-pane-layout.html.twig' %}
-{% block dp_declare %}
-	{{ set_tplvar('baseId', el_uid()) }}
-{% endblock %}
+{% set tplvars = { baseId: el_uid() } %}
 
 {######################################################################################################################}
 {# METADATA #}
@@ -30,7 +28,7 @@
 	{% if results|length %}
 
 	<section class="kb-simple-list list-listing">
-		<section class="search-reuslts page-set" data-page="{{ page }}">
+		<section class="search-results page-set" data-page="{{ page }}">
 			{% for article in results %}
 				<article
 					class="row-item article article-{{article.id}} articles-{{article.id}} related-is-linkable"
@@ -51,10 +49,11 @@
 						</div>
 						<div class="top-row-right visible-content-link-control">
 							<div class="bound-fade"></div>
-							<span class="tipped insert-content-link" title="Insert a link to this article" data-link="{{ article.getLink() }}" data-link-title="{{ article.getTitle() }}"></span>
+							<span class="tipped insert-content-link" title="Insert a link to this article" data-link="{{ portal_url(article) }}" data-link-title="{{ article.getTitle() }}"></span>
 						</div>
 						<div class="top-row-right visible-ticket-controls">
 							<div class="bound-fade"></div>
+							<span class="tipped insert-content-link" title="Insert a link to this article" data-link="{{ portal_url(article) }}" data-link-title="{{ article.getTitle() }}"></span>
 							<a href="javascript:" class="tipped kb-insert-link" title="{{ phrase('agent.general.insert_link') }}" data-article-id="{{ article.id }}"></a>
 							<a href="javascript:" class="tipped kb-insert-content" title="{{ phrase('agent.general.insert_content') }}" data-article-id="{{ article.id }}"></a>
 						</div>

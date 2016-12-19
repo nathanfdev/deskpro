@@ -1,0 +1,203 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
+
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Entity\TaskList;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType as CoreDateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+/**
+ * Class TaskType.
+ */
+class TaskType extends AbstractType
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('title', TextType::class, [
+                'description' => 'the task title',
+            ])
+            ->add('is_done', ApiBooleanType::class, [
+                'description' => 'the task status',
+                'required'    => false,
+            ])
+            ->add('percent_complete', IntegerType::class, [
+                'required'    => false,
+                'description' => 'the percentage of the task complete',
+            ])
+            ->add('task_type', ChoiceType::class, [
+                'description'       => 'the type of task',
+                'required'          => false,
+                'empty_data'        => Task::TYPE_TASK,
+                'choices_as_values' => true,
+                'choices'           => [
+                    Task::TYPE_TASK,
+                    Task::TYPE_EVENT,
+                ],
+            ])
+            ->add('date_due', CoreDateTimeType::class, [
+                'required'    => false,
+                'widget'      => 'single_text',
+                'description' => 'the task due date',
+            ])
+            ->add('date_done', CoreDateTimeType::class, [
+                'required'    => false,
+                'widget'      => 'single_text',
+                'description' => 'the task done date',
+            ])
+            ->add('date_event_start', CoreDateTimeType::class, [
+                'required'    => false,
+                'description' => 'the event start datetime',
+            ])
+            ->add('date_event_end', CoreDateTimeType::class, [
+                'required'    => false,
+                'description' => 'the event end datetime',
+            ])
+            ->add('visibility', ChoiceType::class, [
+                'required'          => false,
+                'description'       => 'the task visibility',
+                'empty_data'        => Task::VISIBILITY_PRIVATE,
+                'choices_as_values' => true,
+                'choices'           => [
+                    Task::VISIBILITY_PUBLIC,
+                    Task::VISIBILITY_PROJECT,
+                    Task::VISIBILITY_PRIVATE,
+                ],
+            ])
+            ->add('urgency', IntegerType::class, [
+                'required'    => false,
+                'empty_data'  => '5',
+                'description' => 'the task urgency',
+            ])
+            ->add('display_order', IntegerType::class, [
+                'required'    => false,
+                'description' => 'the task position in a list',
+            ])
+            ->add('project', EntityType::class, [
+                'class'        => TaskProject::class,
+                'choice_label' => 'title',
+            ])
+            ->add('list', EntityType::class, [
+                'class'        => TaskList::class,
+                'choice_label' => 'title',
+            ])
+            ->add('labels', LabelsCollectionType::class, [
+                'labels_class'   => LabelTask::class,
+                'labels_owner'   => $builder->getData(),
+                'owner_property' => 'task',
+            ])
+            ->add('departments', EntityType::class, [
+                'class'    => Department::class,
+                'multiple' => true,
+                'required' => false,
+            ])
+            ->add('teams', EntityType::class, [
+                'class'    => AgentTeam::class,
+                'multiple' => true,
+                'required' => false,
+            ])
+            ->add('agents', EntityType::class, [
+                'class'    => Person::class,
+                'multiple' => true,
+                'required' => false,
+            ])
+            ->add('linked_tickets', EntityType::class, [
+                'class'        => Ticket::class,
+                'multiple'     => true,
+                'required'     => false,
+                'by_reference' => false,
+            ])
+            ->add('linked_articles', EntityType::class, [
+                'class'        => Article::class,
+                'multiple'     => true,
+                'required'     => false,
+                'by_reference' => false,
+            ])
+            ->add('linked_chats', EntityType::class, [
+                'class'        => ChatConversation::class,
+                'multiple'     => true,
+                'required'     => false,
+                'by_reference' => false,
+            ])
+        ;
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelatedData'], 100);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setRequired('person')
+            ->setDefaults([
+                'data_class' => Task::class,
+            ])
+            ->setAllowedTypes('person', Person::class)
+        ;
+    }
+
+    /**
+     * Set related data for new task.
+     *
+     * @param FormEvent $event
+     */
+    public function onSetRelatedData(FormEvent $event)
+    {
+        $data   = $event->getData();
+        $config = $event->getForm()->getConfig();
+
+        if ($data instanceof Task && !$data->getId()) {
+            $data->setCreator($config->getOption('person'));
+        }
+    }
+}

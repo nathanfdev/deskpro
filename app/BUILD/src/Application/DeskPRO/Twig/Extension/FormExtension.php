@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Twig\Extension;
 
 use Symfony\Component\Form\Exception\FormException;
@@ -36,9 +37,9 @@ use Symfony\Component\Form\FormView;
 
 class FormExtension extends \Symfony\Bridge\Twig\Extension\FormExtension
 {
-    public function __construct(array $resources = array())
+    public function __construct(array $resources = [])
     {
-        $set_resources = array();
+        $set_resources = [];
         foreach ($resources as $r) {
             if ($r != 'form_div_layout.html.twig') {
                 $set_resources[] = $r;
@@ -48,9 +49,9 @@ class FormExtension extends \Symfony\Bridge\Twig\Extension\FormExtension
         parent::__construct($set_resources);
     }
 
-    protected function render(FormView $view, $section, array $variables = array())
+    protected function render(FormView $view, $section, array $variables = [])
     {
-        $mainTemplate = in_array($section, array('widget', 'row'));
+        $mainTemplate = in_array($section, ['widget', 'row']);
 
         if (null === $this->template) {
             $this->template = reset($this->resources);
@@ -71,10 +72,10 @@ class FormExtension extends \Symfony\Bridge\Twig\Extension\FormExtension
             $types                      = $view->get('types');
             $types[]                    = $custom;
             $typeIndex                  = count($types) - 1;
-            $this->varStack[$rendering] = array(
+            $this->varStack[$rendering] = [
                 'variables' => array_replace_recursive($view->all(), $variables),
                 'types'     => $types,
-            );
+            ];
         }
 
         do {

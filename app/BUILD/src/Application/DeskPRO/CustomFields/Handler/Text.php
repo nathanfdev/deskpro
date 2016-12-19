@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Orb\Util\Strings;
@@ -50,9 +51,9 @@ class Text extends HandlerAbstract
             $value = implode(' ', $value);
         }
 
-        return array(
-            array($this->field_def['id'], 'input', $value),
-        );
+        return [
+            [$this->field_def['id'], 'input', $value],
+        ];
     }
 
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
@@ -60,20 +61,20 @@ class Text extends HandlerAbstract
         $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
 
         if (!is_scalar($data)) {
-            return $this->makeErrorArray(array('invalid_input'));
+            return $this->makeErrorArray(['invalid_input']);
         }
 
-        #------------------------------
-        # Validate options
-        #------------------------------
+        //------------------------------
+        // Validate options
+        //------------------------------
 
         $opt_prefix = '';
         if ($context == self::CONTEXT_AGENT) {
             $opt_prefix = 'agent_';
         }
 
-        $options = array();
-        foreach (array('required', 'min_length', 'max_length', 'regex') as $k) {
+        $options = [];
+        foreach (['required', 'min_length', 'max_length', 'regex', 'regex_required'] as $k) {
             $options[$k] = $this->field_def->getOption($opt_prefix.$k);
         }
 
@@ -82,35 +83,41 @@ class Text extends HandlerAbstract
 
             if ($options['min_length'] && $len < $options['min_length']) {
                 if ($options['min_length'] == 1) {
-                    return $this->makeErrorArray(array('required'));
+                    return $this->makeErrorArray(['required']);
                 } else {
-                    return $this->makeErrorArray(array('min_length'));
+                    return $this->makeErrorArray(['min_length']);
                 }
             }
 
             if ($options['max_length'] && $len > $options['max_length']) {
-                return $this->makeErrorArray(array('max_length'));
+                return $this->makeErrorArray(['max_length']);
             }
         }
 
         if ($options['regex']) {
+            if ($options['regex_required']) {
+                if (!Strings::utf8_strlen($data)) {
+                    return $this->makeErrorArray(['required']);
+                }
+            }
+
             $regex = Strings::getInputRegexPattern($options['regex']);
-            if ($regex && !preg_match($regex, $data)) {
-                return $this->makeErrorArray(array('regex_fail'));
+            if ($regex && $data && !preg_match($regex, $data)) {
+                return $this->makeErrorArray(['regex_fail']);
             }
         }
 
-        return array();
+        return [];
     }
 
     public function getSearchCapabilities()
     {
-        return array('is', 'not', 'contains', 'notcontains');
+        return ['is', 'not', 'contains', 'notcontains'];
     }
 
     public function getFilterCapabilities()
     {
-        return array('is', 'not');
+        return ['is', 'not'];
     }
 
     public function getSearchType()

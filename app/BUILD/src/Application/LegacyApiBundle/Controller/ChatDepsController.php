@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,17 +29,24 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Departments\ChatDepartmentEdit;
 use Application\DeskPRO\Departments\ChatDepartmentEditor;
 use Application\DeskPRO\Departments\Form\Type\ChatDepartmentType;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Exception\ValidationException;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
+/**
+ * Class ChatDepsController.
+ *
+ * @ApiModes("all")
+ */
 class ChatDepsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -54,13 +61,16 @@ class ChatDepsController extends AbstractController implements ProtectedControll
         return $multi;
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function listAction()
     {
-        $data = array();
+        $data = [];
 
         $chat_deps  = $this->container->getSystemService('chat_departments');
         $flat_array = $chat_deps->getFlatArray();
@@ -69,7 +79,7 @@ class ChatDepsController extends AbstractController implements ProtectedControll
         $with_perms = $this->in->getBool('with_perms');
 
         if ($with_perms) {
-            $perms = array();
+            $perms = [];
 
             /** @var \Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService $ug */
             $ug = $this->container->getDataService('Usergroup');
@@ -82,22 +92,22 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 
             foreach ($all_perms as $p) {
                 if (!isset($perms[$p['department_id']])) {
-                    $perms[$p['department_id']] = array('agentgroups' => array(), 'usergroups' => array(), 'users' => array());
+                    $perms[$p['department_id']] = ['agentgroups' => [], 'usergroups' => [], 'users' => []];
                 }
 
                 if ($p['usergroup_id']) {
                     if ($ug->getAgentGroup($p['usergroup_id'])) {
-                        $perms[$p['department_id']]['agentgroups'][] = array('id' => (int) $p['usergroup_id'], 'name' => $p['name']);
+                        $perms[$p['department_id']]['agentgroups'][] = ['id' => (int) $p['usergroup_id'], 'name' => $p['name']];
                     } else {
-                        $perms[$p['department_id']]['usergroups'][] = array('id' => (int) $p['usergroup_id'], 'name' => $p['name']);
+                        $perms[$p['department_id']]['usergroups'][] = ['id' => (int) $p['usergroup_id'], 'name' => $p['name']];
                     }
                 } else {
-                    $perms[$p['department_id']]['users'][] = array('id' => (int) $p['person_id'], 'name' => $p['name']);
+                    $perms[$p['department_id']]['users'][] = ['id' => (int) $p['person_id'], 'name' => $p['name']];
                 }
             }
         }
 
-        $deps = array();
+        $deps = [];
 
         foreach ($flat_array as $row) {
             $r          = $row['object']->toApiData(true, false);
@@ -107,14 +117,14 @@ class ChatDepsController extends AbstractController implements ProtectedControll
                 if (isset($perms[$r['id']])) {
                     $r['permissions'] = $perms[$r['id']];
                 } else {
-                    $r['permissions'] = array();
+                    $r['permissions'] = [];
                 }
 
                 if (!isset($r['permissions']['agentgroups'])) {
-                    $r['permissions']['agentgroups'] = array();
+                    $r['permissions']['agentgroups'] = [];
                 }
-                $r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_perms')->id, 'name' => 'full');
-                $r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'name' => 'full');
+                $r['permissions']['agentgroups'][] = ['id' => $ag->getSysGroup('agent_all_perms')->id, 'name' => 'full'];
+                $r['permissions']['agentgroups'][] = ['id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'name' => 'full'];
             }
 
             $deps[] = $r;
@@ -125,10 +135,15 @@ class ChatDepsController extends AbstractController implements ProtectedControll
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # get
-    ####################################################################################################################
+    //###################################################################################################################
+    // get
+    //###################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function getAction($id)
     {
         /*
@@ -141,21 +156,28 @@ class ChatDepsController extends AbstractController implements ProtectedControll
             throw $this->createNotFoundException();
         }
 
-        $data                = array();
+        $data                = [];
         $data['department']  = $this->getApiData($dep);
         $data['permissions'] = $chat_deps->getPermissionsInfo($dep);
 
         $ag                                   = $this->container->getAgentGroups();
-        $data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full');
-        $data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full');
+        $data['permissions']['agentgroups'][] = ['usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full'];
+        $data['permissions']['agentgroups'][] = ['usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full'];
 
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @throws ValidationException
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function saveAction($id)
     {
         if ($id) {
@@ -177,9 +199,9 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 
         $chat_edit = new ChatDepartmentEdit($dep);
 
-        $form = $this->createForm(new ChatDepartmentType(), $chat_edit, array('cascade_validation' => true));
+        $form = $this->createForm(new ChatDepartmentType(), $chat_edit, ['cascade_validation' => true]);
 
-        $form->submit($this->deleteExtraDataFromRequest($form, $postData, array('department', 'permissions')), true);
+        $form->submit($this->deleteExtraDataFromRequest($form, $postData, ['department', 'permissions']), true);
 
         if ($form->isValid()) {
             $chat_edit->save($this->em);
@@ -194,17 +216,25 @@ class ChatDepsController extends AbstractController implements ProtectedControll
         }
 
         return $this->createApiResponse(
-            array(
+            [
                  'success' => true,
                  'id'      => $dep->id,
-            )
+            ]
         );
     }
 
-    ####################################################################################################################
-    # remove
-    ####################################################################################################################
+    //###################################################################################################################
+    // remove
+    //###################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @throws ValidationException
+     * @throws \Exception
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function removeAction($id)
     {
         /*
@@ -226,13 +256,16 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 
         $old_id = $editor->removeDepartment($dep, $move_to_dep);
 
-        return $this->createSuccessResponse(array('old_id' => $old_id));
+        return $this->createSuccessResponse(['old_id' => $old_id]);
     }
 
-    ####################################################################################################################
-    # save-display-order
-    ####################################################################################################################
+    //###################################################################################################################
+    // save-display-order
+    //###################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function saveDisplayOrderAction()
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');

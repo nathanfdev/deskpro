@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,18 +31,24 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets;
 
-use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
+use DpSys\LowError\SystemErrorHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\DpStrings;
@@ -50,10 +56,13 @@ use Orb\Util\Strings;
 use Orb\Util\Util as OrbUtil;
 use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 
+/**
+ * Class TicketManager.
+ */
 class TicketManager
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
@@ -85,9 +94,11 @@ class TicketManager
     /**
      * @var array
      */
-    private $auto_vars = array();
+    private $auto_vars = [];
 
     /**
+     * Constructor.
+     *
      * @param DeskproContainer $container
      */
     public function __construct(DeskproContainer $container)
@@ -97,15 +108,22 @@ class TicketManager
         $this->db           = $container->getDb();
         $this->blob_storage = $container->getBlobStorage();
 
-        $this->save_actions      = array();
-        $this->post_save_actions = array();
+        /** @var \Application\DeskPRO\EntityRepository\Organization $organizationRepo */
+        $organizationRepo = $this->em->getRepository(Organization::class);
+        /** @var \Application\DeskPRO\EntityRepository\Brand $brandRepo */
+        $brandRepo = $this->em->getRepository(Brand::class);
+        /** @var \Application\DeskPRO\EntityRepository\TicketTrigger $ticketTriggerRepo */
+        $ticketTriggerRepo = $this->em->getRepository(TicketTrigger::class);
+
+        $this->save_actions      = [];
+        $this->post_save_actions = [];
 
         $this->save_actions[] = new TicketSaveActions\VerifyCreationSystem();
         $this->save_actions[] = new TicketSaveActions\VerifyRef($container->getRefGenerator());
-        $this->save_actions[] = new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository('DeskPRO:Organization'));
-        $this->save_actions[] = new TicketSaveActions\VerifyAgent($container->getAgentData());
+        $this->save_actions[] = new TicketSaveActions\VerifyOrgManagers($organizationRepo);
+        $this->save_actions[] = new TicketSaveActions\VerifyAgent();
         $this->save_actions[] = new TicketSaveActions\DetectAutoresponders(
-            $container->getEm(),
+            $this->em,
             $container->getSetting('core_email.antiflood_newtickets'),
             $container->getSetting('core_email.antiflood_newtickets_time'),
             $container->getSetting('core_email.antiflood_newreplies'),
@@ -113,14 +131,21 @@ class TicketManager
         );
 
         $this->post_save_actions[] = new TicketSaveActions\SaveContextualFields($container->getCustomFieldManager());
-        $this->post_save_actions[] = new TicketSaveActions\ExecTriggers($container->getEm()->getRepository('DeskPRO:TicketTrigger'), new ActionApplicator($container));
-        $this->post_save_actions[] = new TicketSaveActions\VerifyDepartment($container->getTicketDepartments());
+        $this->post_save_actions[] = new TicketSaveActions\ExecTriggers($ticketTriggerRepo, new ActionApplicator($container));
+        $this->post_save_actions[] = new TicketSaveActions\VerifyBrand(
+            $brandRepo,
+            $container->getSetting('portal.default_brand')
+        );
+        $this->post_save_actions[] = new TicketSaveActions\VerifyDepartment(
+            $container->getTicketDepartments(),
+            $container->get('brand_form_helper')
+        );
         $this->post_save_actions[] = new TicketSaveActions\SetActionTimes();
-        $this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm(), new SlaClientMessageSender($container->getDb()));
-        $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($container->getEm(), new ActionApplicator($container));
-        $this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($container->getEm());
+        $this->post_save_actions[] = new TicketSaveActions\ApplySlas($this->em->getRepository(Sla::class)->getAutoSlas(), $this->em, new SlaClientMessageSender($this->db));
+        $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($this->em, new ActionApplicator($container));
+        $this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($this->em);
         $this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container);
-        $this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($container->getAgentData()->getIds(), $container->getDb());
+        $this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($this->db);
 
         $this->setAutoContextVar('custom_field_manager', $container->getCustomFieldManager());
     }
@@ -130,7 +155,7 @@ class TicketManager
      */
     public function clearAutoContextVars()
     {
-        $this->auto_vars = array();
+        $this->auto_vars = [];
     }
 
     /**
@@ -188,9 +213,9 @@ class TicketManager
         // This will cause less locking if we are outside of a transaction
         $ref_gen = $this->container->getRefGenerator();
         try {
-            $ticket->ref = $ref_gen->generateReference('DeskPRO:Ticket');
+            $ticket->ref = $ref_gen->generateReference(Ticket::class);
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
             $ref         = DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.DpStrings::random(4, Strings::CHARS_NUM).'-'.DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.date('ymd');
             $ticket->ref = $ref;
         }
@@ -213,7 +238,7 @@ class TicketManager
      */
     public function getTicket($id)
     {
-        $ticket = $this->em->find('DeskPRO:Ticket', $id);
+        $ticket = $this->em->find(Ticket::class, $id);
         if ($ticket) {
             $ticket->disableAutoTicketProcess();
         }
@@ -276,6 +301,10 @@ class TicketManager
         return $ret;
     }
 
+    /**
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     */
     private function doSaveTicket(Ticket $ticket, ExecutorContextInterface $context)
     {
         // Noop is sometimes used when we need to save a ticket and have appropriate client-messages
@@ -285,7 +314,7 @@ class TicketManager
         $is_trivial_change = $ticket->getStateChangeRecorder()->isTrivialChangeSet();
 
         $time_start = microtime(true);
-        $context->getLogger()->info(sprintf('########## START SAVE TICKET -- %s ##########', $ticket->id ? $ticket->id : 'newticket'));
+        $context->getLogger()->info(sprintf('########## START SAVE TICKET -- %s ##########', $ticket->getId() ? $ticket->getId() : 'newticket'));
 
         $context->getLogger()->debug(sprintf('EventType: %s', $context->getEventType()));
         $context->getLogger()->debug(sprintf('EventMethod: %s', $context->getEventMethod()));
@@ -298,12 +327,13 @@ class TicketManager
             $is_noop = true;
         }
 
-        if ($context->getPersonContext()) {
+        $contextPerson = $context->getPersonContext();
+        if ($contextPerson) {
             $context->getLogger()->debug(sprintf(
                 'PersonContext: <Person:%d> %s %s',
-                $context->getPersonContext()->id,
-                $context->getPersonContext()->getDisplayName(),
-                $context->getPersonContext()->getPrimaryEmailAddress()
+                $contextPerson->getId(),
+                $contextPerson->getDisplayName(),
+                $contextPerson->getPrimaryEmailAddress()
             ));
         } else {
             $context->getLogger()->debug('PersonContext: NULL');
@@ -311,9 +341,9 @@ class TicketManager
 
         $this->em->persist($ticket);
 
-        #----------------------------------------
-        # Set the creation system
-        #----------------------------------------
+        //----------------------------------------
+        // Set the creation system
+        //----------------------------------------
 
         foreach ($this->save_actions as $action) {
             $context->getLogger()->info(sprintf('[TicketManager:saveaction] %s', OrbUtil::getBaseClassname($action)));
@@ -321,7 +351,7 @@ class TicketManager
                 try {
                     $action->processTicket($ticket, $context);
                 } catch (\Exception $e) {
-                    KernelErrorHandler::logException($e);
+                    SystemErrorHandler::logException($e);
                     $context->getLogger()->error(sprintf('[%s] Exception: %s', OrbUtil::getBaseClassname($action), $e->getMessage()));
                 }
             } else {
@@ -329,7 +359,7 @@ class TicketManager
             }
         }
 
-        if (!$is_noop && !$ticket->ticket_hash) {
+        if (!$is_noop && !$ticket->getTicketHash()) {
             $ticket->recomputeHash();
         }
 
@@ -343,7 +373,7 @@ class TicketManager
                 try {
                     $action->processTicket($ticket, $context);
                 } catch (\Exception $e) {
-                    KernelErrorHandler::logException($e);
+                    SystemErrorHandler::logException($e);
                     $context->getLogger()->error(sprintf('[%s] Exception: %s', OrbUtil::getBaseClassname($action), $e->getMessage()));
                 }
             } else {
@@ -354,43 +384,50 @@ class TicketManager
         }
 
         if (!$is_noop) {
-            $logs = $context->getVars()->get('ticket_logs', array());
+            $logs = $context->getVars()->get('ticket_logs', []);
 
-            $agent_alert_action = new SendAgentAlert(array(
-                'agent_ids'   => array('notify_list'),
+            $agent_alert_action = new SendAgentAlert([
+                'agent_ids'   => ['notify_list'],
                 'ticket_logs' => $logs,
-            ));
+            ]);
             $agent_alert_action->setContainer($this->container);
             $agent_alert_action->applyAction($ticket, $context);
         }
 
         if (!$is_trivial_change) {
-            $this->db->insert('client_messages', array(
+            $data = [
+                'ticket_id'      => $ticket->getId(),
+                'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
+                'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
+            ];
+
+            $this->container->get('event_dispatcher')->dispatch(
+                TicketUpdatedEvent::EVENT_NAME,
+                new TicketUpdatedEvent($ticket->getId(), $data)
+            );
+
+            $this->db->insert('client_messages', [
                 'channel'      => 'agent.ticket-updated',
                 'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize(array(
-                    'ticket_id'       => $ticket->getId(),
-                    'changed_fields'  => $ticket->getStateChangeRecorder()->getChangedFields(),
-                    'via_person'      => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
-                    'is_via_replybox' => $context->getVars()->get('is_via_replybox', false),
-                )),
-            ));
+                'data'         => serialize($data),
+            ]);
         }
 
         if ($ticket->getStateChangeRecorder()->hasChangedField('locked_by_agent')) {
-            $this->db->insert('client_messages', array(
+            $lockedByAgent = $ticket->getLockedByAgent();
+            $this->db->insert('client_messages', [
                 'channel'      => 'agent-notification.tickets.locked-status',
                 'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize(array(
+                'data'         => serialize([
                     'ticket_id'      => $ticket->getId(),
-                    'is_locked'      => (bool) $ticket->locked_by_agent,
-                    'locked_by'      => $ticket->locked_by_agent ? $ticket->locked_by_agent->id : null,
-                    'locked_by_name' => $ticket->locked_by_agent ? $ticket->locked_by_agent->getDisplayName() : null,
+                    'is_locked'      => (bool) $lockedByAgent,
+                    'locked_by'      => $lockedByAgent ? $lockedByAgent->getId() : null,
+                    'locked_by_name' => $lockedByAgent ? $lockedByAgent->getDisplayName() : null,
                     'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
-                )),
-            ));
+                ]),
+            ]);
         }
 
         if (!$is_noop) {
@@ -400,7 +437,7 @@ class TicketManager
                     try {
                         $search_updater->update();
                     } catch (\Exception $e) {
-                        KernelErrorHandler::logException($e);
+                        SystemErrorHandler::logException($e);
                     }
                 }, null, 'db_done_trans_commit'
             );
@@ -408,11 +445,11 @@ class TicketManager
 
         $this->em->flush();
 
-        #----------------------------------------
-        # Done
-        #----------------------------------------
+        //----------------------------------------
+        // Done
+        //----------------------------------------
 
-        $context->getLogger()->info(sprintf('########## END SAVE TICKET -- %s -- %.4fs ##########', $ticket->id ?: 0, microtime(true) - $time_start));
+        $context->getLogger()->info(sprintf('########## END SAVE TICKET -- %s -- %.4fs ##########', $ticket->getId() ?: 0, microtime(true) - $time_start));
 
         if (!$is_noop && $ticket->getStatusCode() != 'hidden.deleted' && $context->getLogger() instanceof DpLogger) {
             $log_text = $context->getLogger()->getSavedMessages();
@@ -422,22 +459,22 @@ class TicketManager
                         $log_text,
                         'ticket-manager.'.date('Y-m-d.H-i-s').'.'.Strings::random(4, Strings::CHARS_ALPHA_IU).'.log',
                         'plain/text',
-                        array('tag' => 'logs.ticket_proc_log')
+                        ['tag' => 'logs.ticket_proc_log']
                     );
                 } catch (\Exception $e) {
                     $blob = null;
-                    KernelErrorHandler::logException($e);
+                    SystemErrorHandler::logException($e);
                 }
 
                 if ($blob) {
                     try {
-                        $this->db->insert('ticket_proc_log', array(
-                            'ticket_id'    => $ticket->id,
-                            'blob_id'      => $blob->id,
+                        $this->db->insert('ticket_proc_log', [
+                            'ticket_id'    => $ticket->getId(),
+                            'blob_id'      => $blob->getId(),
                             'date_created' => date('Y-m-d H:i:s'),
-                        ));
+                        ]);
                     } catch (\Exception $e) {
-                        KernelErrorHandler::logException($e);
+                        SystemErrorHandler::logException($e);
                     }
                 }
             }
@@ -449,77 +486,28 @@ class TicketManager
 
     /**
      * @param Person $agent
-     * @param $event_type
-     * @param $event_method
-     * @param array $event_method_options
+     * @param        $eventType
+     * @param        $eventMethod
+     * @param array  $eventMethodOptions
      *
      * @return ExecutorContextInterface
      */
-    public function createAgentExecutorContext(Person $agent = null, $event_type, $event_method, array $event_method_options = array())
+    public function createAgentExecutorContext(Person $agent = null, $eventType, $eventMethod, array $eventMethodOptions = [])
     {
-        $context = new ExecutorContext($this->createNewLogger());
-        $context->getVars()->setArray($this->auto_vars);
-
-        if ($agent) {
-            $context->setPersonContext($agent);
-        }
-
-        if ($event_method === 'api') {
-            $key = null;
-
-            try {
-                /** @var $auth RequestAuth */
-                if ($auth = $this->container->get('deskpro.api.request_auth')) {
-                    $key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
-                }
-            } catch (InactiveScopeException $e) {
-                $key = null;
-            }
-
-            if ($key) {
-                $context->getVars()->set('via_api_key', $key);
-            }
-        }
-
-        $context->setEventPerformer('agent');
-        $context->setEventType($event_type);
-        $context->setEventMethod($event_method, $event_method_options);
-
-        return $context;
+        return $this->createPersonContext('agent', $agent, $eventType, $eventMethod, $eventMethodOptions);
     }
 
     /**
      * @param Person $user
-     * @param $event_type
-     * @param $event_method
-     * @param array $event_method_options
+     * @param        $eventType
+     * @param        $eventMethod
+     * @param array  $eventMethodOptions
      *
      * @return ExecutorContextInterface
      */
-    public function createUserExecutorContext(Person $user = null, $event_type, $event_method, array $event_method_options = array())
+    public function createUserExecutorContext(Person $user = null, $eventType, $eventMethod, array $eventMethodOptions = [])
     {
-        $context = new ExecutorContext($this->createNewLogger());
-        $context->getVars()->setArray($this->auto_vars);
-
-        if ($user) {
-            $context->setPersonContext($user);
-        }
-
-        if ('api' === $event_method) {
-            $key = null;
-            /** @var $auth RequestAuth */
-            if ($auth = $this->container->get('deskpro.api.request_auth')) {
-                $key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
-            }
-
-            $context->getVars()->set('via_api_key', $key);
-        }
-
-        $context->setEventPerformer('user');
-        $context->setEventType($event_type);
-        $context->setEventMethod($event_method, $event_method_options);
-
-        return $context;
+        return $this->createPersonContext('user', $user, $eventType, $eventMethod, $eventMethodOptions);
     }
 
     /**
@@ -529,7 +517,7 @@ class TicketManager
      *
      * @return ExecutorContextInterface
      */
-    public function createSystemExecutorContext($event_type = 'system', $event_method = 'system', array $event_method_options = array())
+    public function createSystemExecutorContext($event_type = 'system', $event_method = 'system', array $event_method_options = [])
     {
         $context = new ExecutorContext($this->createNewLogger());
         $context->getVars()->setArray($this->auto_vars);
@@ -546,7 +534,7 @@ class TicketManager
      *
      * @return ExecutorContext
      */
-    public function createAppExecutorContext(AppInstance $app, $event_method = 'general', array $event_method_options = array())
+    public function createAppExecutorContext(AppInstance $app, $event_method = 'general', array $event_method_options = [])
     {
         $context = new ExecutorContext($this->createNewLogger());
         $context->getVars()->setArray($this->auto_vars);
@@ -564,9 +552,11 @@ class TicketManager
         $logger = new DpLogger('tickets');
         $logger->enableSavedMessages();
 
-        if ($logfile = dp_get_config('debug.enable_ticket_log')) {
+        $env = $this->container->get('deskpro.app_env');
+
+        if ($logfile = $env->getConfig('logs.enable_ticket_log')) {
             if ($logfile === true || $logfile === 1 || $logfile === '1' || $logfile === 'true') {
-                $logfile = dp_get_log_dir().'/ticket.log';
+                $logfile = $env->getUserLogsDir().'/ticket.log';
             }
             $stream = new StreamHandler($logfile);
             $logger->pushHandler($stream);
@@ -578,5 +568,60 @@ class TicketManager
         }
 
         return $logger;
+    }
+
+    /**
+     * @param string      $eventPerformer
+     * @param Person|null $person
+     * @param string      $eventType
+     * @param string      $eventMethod
+     * @param array       $eventMethodOptions
+     *
+     * @return ExecutorContext
+     */
+    private function createPersonContext($eventPerformer, Person $person = null, $eventType, $eventMethod, array $eventMethodOptions = [])
+    {
+        $context = new ExecutorContext($this->createNewLogger());
+        $context->getVars()->setArray($this->auto_vars);
+
+        if ($person) {
+            $context->setPersonContext($person);
+        }
+
+        if ($eventMethod === 'api') {
+            $key = null;
+
+            // try to get legacy api key
+            try {
+                $auth = $this->container->get('deskpro.api.request_auth');
+                if ($auth && $auth->getApiUser()) {
+                    $key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->getId() : null;
+                }
+            } catch (InactiveScopeException $e) {
+            }
+
+            // try to get new api key
+            try {
+                $token = $this->container->get('security.token_storage')->getToken();
+                if ($token instanceof ApiKeySecurityToken) {
+                    $credentials = $token->getCredentials();
+                    if ($credentials && strpos($credentials, ':') !== false) {
+                        list($key) = explode(':', $credentials, 2);
+                        $key       = (int) $key;
+                    }
+                }
+            } catch (InactiveScopeException $e) {
+            }
+
+            if ($key) {
+                $context->getVars()->set('via_api_key', $key);
+            }
+        }
+
+        $context->setEventPerformer($eventPerformer);
+        $context->setEventType($eventType);
+        $context->setEventMethod($eventMethod, $eventMethodOptions);
+
+        return $context;
     }
 }

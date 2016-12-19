@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build\Helper201405;
 
 use Application\DeskPRO\CustomFields\TicketFieldManager;
 use Application\DeskPRO\Entity\TicketLayout as TicketLayoutEntity;
 use Application\DeskPRO\TicketLayout;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use DpSys\LowError\SystemErrorHandler;
 
 class LayoutUpgrader
 {
@@ -247,7 +249,7 @@ class LayoutUpgrader
                 $field->setCriteria($crit);
             }
         } catch (\Exception $e) {
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
 
             return;
         }
@@ -275,7 +277,7 @@ class LayoutUpgrader
             case 'message':
                 return new TicketLayout\LayoutField('message');
             case 'attachments':
-                return new TicketLayout\LayoutField('attach');
+                return new TicketLayout\LayoutField(FormFields::ATTACHMENTS);
             case 'ticket_cc_emails':
                 return new TicketLayout\LayoutField('cc');
             case 'captcha':
@@ -342,30 +344,30 @@ class LayoutUpgrader
                 if (empty($rule['options']['category'])) {
                     return;
                 }
-                $ids = is_array($rule['options']['category']) ? $rule['options']['category'] : array($rule['options']['category']);
+                $ids = is_array($rule['options']['category']) ? $rule['options']['category'] : [$rule['options']['category']];
 
-                return new TicketLayout\Terms\CheckCategory($rule['op'], array('category_ids' => $ids));
+                return new TicketLayout\Terms\CheckCategory($rule['op'], ['category_ids' => $ids]);
             case 'priority':
                 if (empty($rule['options']['priority'])) {
                     return;
                 }
-                $ids = is_array($rule['options']['priority']) ? $rule['options']['priority'] : array($rule['options']['priority']);
+                $ids = is_array($rule['options']['priority']) ? $rule['options']['priority'] : [$rule['options']['priority']];
 
-                return new TicketLayout\Terms\CheckPriority($rule['op'], array('priority_ids' => $ids));
+                return new TicketLayout\Terms\CheckPriority($rule['op'], ['priority_ids' => $ids]);
             case 'workflow':
                 if (empty($rule['options']['workflow'])) {
                     return;
                 }
-                $ids = is_array($rule['options']['workflow']) ? $rule['options']['workflow'] : array($rule['options']['workflow']);
+                $ids = is_array($rule['options']['workflow']) ? $rule['options']['workflow'] : [$rule['options']['workflow']];
 
-                return new TicketLayout\Terms\CheckWorkflow($rule['op'], array('workflow_ids' => $ids));
+                return new TicketLayout\Terms\CheckWorkflow($rule['op'], ['workflow_ids' => $ids]);
             case 'product':
                 if (empty($rule['options']['product'])) {
                     return;
                 }
-                $ids = is_array($rule['options']['product']) ? $rule['options']['product'] : array($rule['options']['product']);
+                $ids = is_array($rule['options']['product']) ? $rule['options']['product'] : [$rule['options']['product']];
 
-                return new TicketLayout\Terms\CheckProduct($rule['op'], array('product_ids' => $ids));
+                return new TicketLayout\Terms\CheckProduct($rule['op'], ['product_ids' => $ids]);
             default:
                 return;
         }

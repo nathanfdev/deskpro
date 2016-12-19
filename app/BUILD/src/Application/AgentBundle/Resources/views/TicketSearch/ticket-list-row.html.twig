@@ -59,12 +59,6 @@
 				<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'spam') { %>
 					<label>{{ phrase('agent.tickets.status_hidden_spam') }}</label>
 				<% } %>
-				<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'temp') { %>
-					<label>{{ phrase('agent.tickets.status_hidden_temp') }}</label>
-				<% } %>
-				<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'validating') { %>
-					<label>{{ phrase('agent.tickets.status_hidden_validating') }}</label>
-				<% } %>
 
 				<% if (ticket_display.status == 'awaiting_agent') { %>
 					<i class="ticket-urgency"><%= ticket_display.urgency %></i>
@@ -85,7 +79,7 @@
 	<div class="userinfo">
 		<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= ticket_display.person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
 			<span class="with-icon" style="background-image: url('<%- ticket_display.person.picture_url_16 %>');"><%- ticket_display.person.display_name %></span></a>
-			<% if (ticket_display.person.primary_email.email) { %>
+			<% if (ticket_display.person.primary_email && ticket_display.person.primary_email.email) { %>
 				<span class="email">&lt;<%- ticket_display.person.primary_email.email %>&gt;</span>
 			<% } %>
 			<% if (ticket_display.organization) { %>
@@ -114,6 +108,11 @@
 							<% if (ticket_display.department.avatar_url_16) { %><span class="avatar"><img src="<%- ticket_display.department.avatar_url_16 %>" /></span><% } %>
 							<%- ticket_display.department.title_full %>
 						</span>
+					<% } %>
+
+					<% if (field == 'brand') { %>
+						<span class="prop-title">{{ phrase('agent.general.brand') }}:</span>
+						<span class="prop-val"><%- ticket_display.brand.name %></span>
 					<% } %>
 
 					<% if (field == 'ref') { %>

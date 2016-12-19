@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Goes through each gateway and processes email.
@@ -44,16 +45,17 @@ class ProcessEmailGateways extends AbstractJob
     public function run()
     {
         // Using adv_email_collect (daemon)
-        global $DP_CONFIG;
-        if (!empty($DP_CONFIG['adv_email_collect'])) {
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+        if ($DP_ENV->getConfig('adv_email_collect')) {
             return;
         }
 
         @ini_set('memory_limit', DP_MAX_MEMSIZE);
 
-        #------------------------------
-        # Mark error sources
-        #------------------------------
+        //------------------------------
+        // Mark error sources
+        //------------------------------
 
         // If a source has been in the 'processing' state for more than 15 mintues,
         // then it means it's probably an error
@@ -64,7 +66,7 @@ class ProcessEmailGateways extends AbstractJob
             UPDATE email_sources
             SET status = 'retry', error_code = NULL
             WHERE status = 'processing' AND date_created < ? AND exec_count <= 2
-        ", array($d));
+        ", [$d]);
 
         if ($num) {
             $this->getLogger()->logNotice("$num email sources(s) marked as timeout and will be retried");
@@ -74,40 +76,26 @@ class ProcessEmailGateways extends AbstractJob
             UPDATE email_sources
             SET status = 'error', error_code = 'timeout'
             WHERE status = 'processing' AND date_created < ? AND exec_count >= 2
-        ", array($d));
+        ", [$d]);
 
         if ($num) {
             $e = new \Exception("$num email source(s) marked as timeout and will not be retried because they are over the retry threshold");
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
             $this->getLogger()->log("$num sources marked as timeout and will not be retried", 'ERR');
         }
 
-        #------------------------------
-        # Run the gateways
-        #------------------------------
+        //------------------------------
+        // Run the gateways
+        //------------------------------
 
         $logger = $this->getLogger();
 
         $runner = new \Application\DeskPRO\EmailGateway\Runner();
         $runner->setLogger($logger);
 
-        if (isset($GLOBALS['DP_PREF_MAX_EXEC_TIME'])) {
-            $runner->setPhpTimeLimit($GLOBALS['DP_PREF_MAX_EXEC_TIME']);
-        } else {
-            $runner->setPhpTimeLimit(900);
-        }
-
-        if (dp_get_config('gateway_soft_time_limit')) {
-            $runner->setSoftTimeLimit(dp_get_config('gateway_soft_time_limit'));
-        } else {
-            $runner->setSoftTimeLimit(480);
-        }
-
-        if (dp_get_config('gateway_message_limit')) {
-            $runner->setMessageLimit(dp_get_config('gateway_message_limit'));
-        } else {
-            $runner->setMessageLimit(40);
-        }
+        $runner->setPhpTimeLimit(900);
+        $runner->setSoftTimeLimit(480);
+        $runner->setMessageLimit(40);
 
         if ($this->options->get('run_source_id')) {
             $sid    = $this->options->get('run_source_id');
@@ -130,7 +118,7 @@ class ProcessEmailGateways extends AbstractJob
                 return;
             }
 
-            $runner->setAccounts(array($account));
+            $runner->setAccounts([$account]);
             $runner->execute(300);
         } else {
             $runner->loadAccountsFromDb(false);
@@ -140,6 +128,6 @@ class ProcessEmailGateways extends AbstractJob
         // The PHP time limit would've been set above while processing messages,
         // reset it to disabled so other cron tasks can finish in this same execution
         @set_time_limit(0);
-        @ini_set('memory_limit', DP_SET_MEMSIZE);
+        @ini_set('memory_limit', DP_USE_MEMSIZE);
     }
 }

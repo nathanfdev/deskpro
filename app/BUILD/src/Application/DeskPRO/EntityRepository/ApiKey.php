@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -42,7 +43,7 @@ class ApiKey extends AbstractEntityRepository
      *
      * @param string $key_string
      *
-     * @return ApiKey
+     * @return \Application\DeskPRO\Entity\ApiKey
      */
     public function findByKeyString($key_string)
     {
@@ -83,7 +84,7 @@ class ApiKey extends AbstractEntityRepository
      */
     public function getApiKeyTitles(array $ids = null)
     {
-        $output = array();
+        $output = [];
         foreach ($this->getAllApiKeys() as $key) {
             if ($ids === null || in_array($key->id, $ids)) {
                 $output[$key->id] = ($key->person ? $key->person->display_name : 'Super User')
@@ -118,26 +119,26 @@ class ApiKey extends AbstractEntityRepository
                         FROM api_key_rate_limit
                         WHERE api_key_id = ?
                     ',
-            array($api_key->id)
+            [$api_key->id]
         );
 
         if ($rate_limit && $rate_limit['reset_stamp'] <= time()) {
             App::getDb()->delete(
                 'api_key_rate_limit',
-                array(
+                [
                      'api_key_id' => $api_key->id,
-                )
+                ]
             );
         }
 
         $interval = (int) App::getSetting('core.api_rate_limit_interval');
         if (!$rate_limit || $rate_limit['reset_stamp'] <= time()) {
-            $rate_limit = array(
+            $rate_limit = [
                 'api_key_id'    => $api_key->id,
                 'hits'          => 0,
                 'created_stamp' => time(),
                 'reset_stamp'   => time() + $interval,
-            );
+            ];
         }
 
         return $rate_limit;
@@ -159,7 +160,7 @@ class ApiKey extends AbstractEntityRepository
                             (?, 1, ?, ?)
                         ON DUPLICATE KEY UPDATE hits = hits + 1
                     ',
-            array($api_key->id, $time, $time + $interval)
+            [$api_key->id, $time, $time + $interval]
         );
     }
 }

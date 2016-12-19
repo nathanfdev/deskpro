@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Orb\Html;
 
 use DOMDocument;
@@ -54,7 +55,7 @@ class Html2Text
      *
      * @var array
      */
-    private $element_procs = array();
+    private $element_procs = [];
 
     /**
      * @param string $html
@@ -69,8 +70,8 @@ class Html2Text
     }
 
     /**
-     * @param string   $tagname The tagname.
-     * @param callable $fn      Function to call. Return null and the default convertNode routine is run.
+     * @param string   $tagname The tagname
+     * @param callable $fn      Function to call. Return null and the default convertNode routine is run
      */
     public function addElementProcessor($tagname, $fn)
     {
@@ -205,7 +206,7 @@ class Html2Text
 
             case 'p':
             case 'br':
-                $output .= '<DP_BR>';
+                    $output .= '<DP_BR>';
                 break;
 
             case 'div':
@@ -213,7 +214,7 @@ class Html2Text
                 break;
 
             case 'a':
-                if (!trim(str_replace(array('<DP_BR>', '<DP_BR_P>', 'xxxDP_NBSP_PLACExxx'), '', $output))) {
+                if (!trim(str_replace(['<DP_BR>', '<DP_BR_P>', 'xxxDP_NBSP_PLACExxx'], '', $output))) {
                     $output = '';
                 } else {
                     $href = $node->getAttribute('href');

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Entity\AppInstance;
@@ -37,9 +38,9 @@ class Build1400056730 extends AbstractBuild
 {
     public function run()
     {
-        $plugins = $this->getUpgradeData('201404', 'plugins') ?: array();
+        $plugins = $this->getUpgradeData('201404', 'plugins') ?: [];
 
-        $enabled_plugins = array();
+        $enabled_plugins = [];
         foreach ($plugins as $p) {
             $enabled_plugins[$p['id']] = $p['id'];
         }
@@ -48,9 +49,9 @@ class Build1400056730 extends AbstractBuild
         $manager = $this->container->getAppManager();
         $em      = $this->container->getEm();
 
-        #-------------------------
-        # Google Analytics
-        #-------------------------
+        //-------------------------
+        // Google Analytics
+        //-------------------------
 
         if ($ga = $this->container->getSetting('core.ga_property_id')) {
             $this->out('Installing Google Analytics');
@@ -58,14 +59,14 @@ class Build1400056730 extends AbstractBuild
             $app          = new AppInstance();
             $app->package = $package;
             $app->title   = $package->title;
-            $app->setSettings(array('ga_property_id' => $ga));
+            $app->setSettings(['ga_property_id' => $ga]);
             $em->persist($app);
             $em->flush();
         }
 
-        #-------------------------
-        # Gravatar
-        #-------------------------
+        //-------------------------
+        // Gravatar
+        //-------------------------
 
         if ($this->container->getSetting('core.use_gravatar')) {
             $this->out('Installing Gravatar');
@@ -73,19 +74,19 @@ class Build1400056730 extends AbstractBuild
             $app          = new AppInstance();
             $app->package = $package;
             $app->title   = $package->title;
-            $app->setSettings(array());
+            $app->setSettings([]);
             $em->persist($app);
             $em->flush();
         }
 
-        #-------------------------
-        # Magento
-        #-------------------------
+        //-------------------------
+        // Magento
+        //-------------------------
 
         if ($this->container->getSetting('Magento.api_key') && isset($enabled_plugins['Magento'])) {
             $this->out('Installing Magento');
 
-            $settings = array(
+            $settings = [
                 'url'               => $this->container->getSetting('Magento.url'),
                 'api_user'          => $this->container->getSetting('Magento.api_user'),
                 'api_key'           => $this->container->getSetting('Magento.api_key'),
@@ -93,7 +94,7 @@ class Build1400056730 extends AbstractBuild
                 'widget_profile'    => true,
                 'enable_usersource' => false, // will be imported next step when importing usersources
                 'enable_sso'        => false,
-            );
+            ];
 
             $package      = $manager->getPackage('deskpro_magento');
             $app          = new AppInstance();
@@ -104,9 +105,9 @@ class Build1400056730 extends AbstractBuild
             $em->flush();
         }
 
-        #-------------------------
-        # MS Translator
-        #-------------------------
+        //-------------------------
+        // MS Translator
+        //-------------------------
 
         if ($this->container->getSetting('MicrosoftTranslator.client_id') && isset($enabled_plugins['MicrosoftTranslator'])) {
             $this->out('Installing MS Translator');
@@ -114,17 +115,17 @@ class Build1400056730 extends AbstractBuild
             $app          = new AppInstance();
             $app->package = $package;
             $app->title   = $package->title;
-            $app->setSettings(array(
+            $app->setSettings([
                 'client_id'     => $this->container->getSetting('MicrosoftTranslator.client_id'),
                 'client_secret' => $this->container->getSetting('MicrosoftTranslator.client_secret'),
-            ));
+            ]);
             $em->persist($app);
             $em->flush();
         }
 
-        #-------------------------
-        # SalesForce
-        #-------------------------
+        //-------------------------
+        // SalesForce
+        //-------------------------
 
         if ($this->container->getSetting('Salesforce.api_user') && isset($enabled_plugins['Salesforce'])) {
             $this->out('Installing SalesForce');
@@ -132,20 +133,20 @@ class Build1400056730 extends AbstractBuild
             $app          = new AppInstance();
             $app->package = $package;
             $app->title   = $package->title;
-            $app->setSettings(array(
+            $app->setSettings([
                 'api_user'           => $this->container->getSetting('Salesforce.api_user'),
                 'api_password'       => $this->container->getSetting('Salesforce.api_password'),
                 'api_security_token' => $this->container->getSetting('Salesforce.api_security_token'),
                 'widget_ticket'      => true,
                 'widget_profile'     => true,
-            ));
+            ]);
             $em->persist($app);
             $em->flush();
         }
 
-        #-------------------------
-        # Share Widget
-        #-------------------------
+        //-------------------------
+        // Share Widget
+        //-------------------------
 
         if ($this->container->getSetting('core.show_share_widget')) {
             $this->out('Installing ShareWidget');
@@ -153,12 +154,12 @@ class Build1400056730 extends AbstractBuild
             $app          = new AppInstance();
             $app->package = $package;
             $app->title   = $package->title;
-            $app->setSettings(array(
+            $app->setSettings([
                 'show_share_facebook' => (bool) $this->container->getSetting('core.show_share_facebook'),
                 'show_share_twitter'  => (bool) $this->container->getSetting('core.show_share_twitter'),
                 'show_share_gplus'    => (bool) $this->container->getSetting('core.show_share_gplus'),
                 'show_share_linkedin' => (bool) $this->container->getSetting('core.show_share_linkedin'),
-            ));
+            ]);
             $em->persist($app);
             $em->flush();
         }

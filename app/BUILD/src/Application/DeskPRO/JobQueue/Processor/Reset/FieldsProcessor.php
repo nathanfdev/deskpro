@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,9 +35,12 @@ class FieldsProcessor extends Base
 {
     const JOB_TYPE = 'reset.fields';
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doProcess(array $data)
     {
-        $types = array('article', 'chat', 'feedback', 'organizations', 'ticket');
+        $types = ['article', 'chat', 'feedback', 'organizations', 'ticket'];
         foreach ($types as $type) {
             $this->connection->executeUpdate("DELETE FROM custom_data_$type");
             $this->connection->executeUpdate("DELETE FROM custom_def_$type");

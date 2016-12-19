@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Search
  */
+
 namespace Application\DeskPRO\Search;
 
 use Application\DeskPRO\Entity\Person;
@@ -39,6 +40,7 @@ use Application\DeskPRO\Searcher\ArticleSearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
@@ -66,6 +68,11 @@ class StickyWordSearch implements PersonContextInterface
      */
     protected $person_context;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
@@ -80,6 +87,11 @@ class StickyWordSearch implements PersonContextInterface
         $this->person_context = $person;
     }
 
+    /**
+     * @param string $query
+     *
+     * @return array|mixed
+     */
     public function getWordsFromQuery($query)
     {
         // Split query into words, quoted strings are grouped togehter
@@ -103,15 +115,22 @@ class StickyWordSearch implements PersonContextInterface
         return $words;
     }
 
+    /**
+     * @param string $type
+     * @param int    $id
+     * @param int    $limit
+     *
+     * @return array
+     */
     public function getStickyWords($type, $id, $limit = 5)
     {
-        $ret = array();
+        $ret = [];
         $res = $this->db->executeQuery(sprintf('
             SELECT word
             FROM search_sticky_result
             WHERE object_type = :type AND object_id = :id
             LIMIT %d
-        ', $limit), array('type' => $type, 'id' => $id));
+        ', $limit), ['type' => $type, 'id' => $id]);
 
         while ($word = $res->fetchColumn()) {
             $ret[] = $word;
@@ -120,12 +139,19 @@ class StickyWordSearch implements PersonContextInterface
         return $ret;
     }
 
-    public function getResults($query, $limit = 10)
+    /**
+     * @param string $query
+     * @param int    $limit
+     * @param array  $limit_types Which types to search in
+     *
+     * @return array
+     */
+    public function getResults($query, $limit = 10, $limit_types = ['article', 'news', 'download', 'feedback'])
     {
         $words = $this->getWordsFromQuery($query);
 
         if (!$words) {
-            return array();
+            return [];
         }
 
         array_unshift($words, $query);
@@ -134,32 +160,45 @@ class StickyWordSearch implements PersonContextInterface
             $words = array_slice($words, 0, 15);
         }
 
-        $in_q = array_fill(0, count($words), '?');
-        $in_q = implode(',', $in_q);
+        // Convert input $limit_types to the type strings used in the db
+        $limit_types = array_map(function ($t) {
+            switch ($t) {
+                case 'article':  return 'DeskPRO:Article';
+                case 'news':     return 'DeskPRO:News';
+                case 'download': return 'DeskPRO:Download';
+                case 'feedback': return 'DeskPRO:Feedback';
+                default: return $t;
+            }
+        }, $limit_types);
 
-        $results_raw = $this->db->fetchAll("
+        $results_raw = $this->db->fetchAll('
             SELECT object_type, object_id
             FROM search_sticky_result
-            WHERE word IN ($in_q)
+            WHERE word IN (?) AND object_type IN (?)
             ORDER BY object_id DESC
             LIMIT 1000
-        ", $words);
+        ', [$words, $limit_types], [Connection::PARAM_STR_ARRAY, Connection::PARAM_STR_ARRAY]);
 
         if (!$results_raw) {
-            return array();
+            return [];
         }
 
-        #------------------------------
-        # Need to verify the user can see
-        # the results that we matched
-        #------------------------------
+        //------------------------------
+        // Need to verify the user can see
+        // the results that we matched
+        //------------------------------
 
-        $check_ids = array(
-            'DeskPRO:Article'  => array(),
-            'DeskPRO:News'     => array(),
-            'DeskPRO:Download' => array(),
-            'DeskPRO:Feedback' => array(),
-        );
+        $check_ids = [
+            'DeskPRO:Article'  => [],
+            'DeskPRO:News'     => [],
+            'DeskPRO:Download' => [],
+            'DeskPRO:Feedback' => [],
+        ];
+
+        if (empty($check_ids)) {
+            return [];
+        }
+
         $valid_ids = $check_ids; //copy structure
 
         if ($this->person_context) {
@@ -198,14 +237,16 @@ class StickyWordSearch implements PersonContextInterface
         }
 
         // Key them for isset() lookups below
-        $valid_ids = array_map(function ($v) { return $v ? array_combine($v, $v) : $v; }, $valid_ids);
+        $valid_ids = array_map(function ($v) {
+            return $v ? array_combine($v, $v) : $v;
+        }, $valid_ids);
 
-        #------------------------------
-        # Get and sort the results
-        #------------------------------
+        //------------------------------
+        // Get and sort the results
+        //------------------------------
 
         // Count matches
-        $results_ranked = array();
+        $results_ranked = [];
         foreach ($results_raw as $r) {
             // Make sure the result is within the list of valid
             // ids we got back from our search verify above
@@ -229,16 +270,16 @@ class StickyWordSearch implements PersonContextInterface
         }
 
         // Get IDs for each type
-        $results_typed = array();
+        $results_typed = [];
         foreach ($results_ranked as $r) {
             if (!isset($results_typed[$r['object_type']])) {
-                $results_typed[$r['object_type']] = array();
+                $results_typed[$r['object_type']] = [];
             }
             $results_typed[$r['object_type']][] = $r['object_id'];
         }
 
         // Fetech actual objects
-        $real_results = array();
+        $real_results = [];
         foreach ($results_typed as $entity_name => $ids) {
             $real_results = array_merge(
                 $real_results,
@@ -275,7 +316,7 @@ class StickyWordSearch implements PersonContextInterface
 
         // Make them a usual array we expect
         // type => typename, object => entity
-        $typed_results = array();
+        $typed_results = [];
         foreach ($real_results as $r) {
             $class       = get_class($r);
             $entity_name = $class::getEntityName();
@@ -283,10 +324,10 @@ class StickyWordSearch implements PersonContextInterface
 
             $key = $type.'.'.$r->getId();
 
-            $typed_results[$key] = array(
+            $typed_results[$key] = [
                 'type'   => $type,
                 'object' => $r,
-            );
+            ];
         }
 
         return $typed_results;

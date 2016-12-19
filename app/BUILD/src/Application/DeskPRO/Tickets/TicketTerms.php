@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -36,7 +37,7 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\Searcher\TicketSearch;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -74,12 +75,12 @@ class TicketTerms
     /**
      * @var array
      */
-    protected $terms = array();
+    protected $terms = [];
 
     /**
      * @var array
      */
-    protected $term_ids_map = array();
+    protected $term_ids_map = [];
 
     /**
      * @var null
@@ -99,7 +100,7 @@ class TicketTerms
             }
             if (isset($info['type'])) {
                 if (!isset($this->term_ids[$info['type']])) {
-                    $this->term_ids_map[$info['type']] = array();
+                    $this->term_ids_map[$info['type']] = [];
                 }
                 $this->term_ids_map[$info['type']][] = $info;
             }
@@ -127,7 +128,7 @@ class TicketTerms
     public function getTicketTerm($type, $first = true)
     {
         if (!isset($this->term_ids_map[$type])) {
-            return array();
+            return [];
         }
 
         if (!$first) {
@@ -354,7 +355,7 @@ class TicketTerms
                 break;
 
             case 'is_via_interface':
-                if (!defined('DP_INTERFACE') || !in_array(DP_INTERFACE, array('user', 'agent'))) {
+                if (!defined('DP_INTERFACE') || !in_array(DP_INTERFACE, ['user', 'agent'])) {
                     return false;
                 }
                 break;
@@ -427,7 +428,7 @@ class TicketTerms
                     }
                 } else {
                     if ($is_agent) {
-                        if ($op    != 'not') {
+                        if ($op != 'not') {
                             return false;
                         }
                     } else {
@@ -719,7 +720,7 @@ class TicketTerms
 
             case 'day_created':
 
-                $days = isset($choice['days']) ? (array) $choice['days'] : array();
+                $days = isset($choice['days']) ? (array) $choice['days'] : [];
                 $day  = $ticket->person->getDateForTime('@'.$ticket->date_created->getTimestamp())->format('w');
 
                 if (!in_array($day, $days)) {
@@ -761,7 +762,7 @@ class TicketTerms
 
             case 'current_day':
 
-                $days = isset($choice['days']) ? (array) $choice['days'] : array();
+                $days = isset($choice['days']) ? (array) $choice['days'] : [];
                 $day  = $ticket->person->getDateForTime('@'.time())->format('w');
 
                 if (!in_array($day, $days)) {
@@ -799,6 +800,12 @@ class TicketTerms
                     }
                 }
 
+                break;
+
+            case TicketSearch::TERM_BRAND:
+                if (!$this->_testChoiceMatch($ticket['brand_id'], $op, $choice)) {
+                    return false;
+                }
                 break;
 
             case TicketSearch::TERM_DEPARTMENT:
@@ -922,7 +929,7 @@ class TicketTerms
                 break;
             case TicketSearch::TERM_URGENCY:
                 if (!is_array($choice)) {
-                    $choice = array('num' => $choice);
+                    $choice = ['num' => $choice];
                 }
 
                 switch ($op) {
@@ -1226,14 +1233,14 @@ class TicketTerms
 
             case 'gateway_account':
                 $e = new \RuntimeException('not supported');
-                KernelErrorHandler::logException($e, true, 'TicketTerms::gateway_account');
+                SystemErrorHandler::logException($e, true, 'TicketTerms::gateway_account');
 
                 return false;
                 break;
 
             case 'gateway_address':
                 $e = new \RuntimeException('not supported');
-                KernelErrorHandler::logException($e, true, 'TicketTerms::gateway_address');
+                SystemErrorHandler::logException($e, true, 'TicketTerms::gateway_address');
 
                 return false;
                 break;
@@ -1245,9 +1252,9 @@ class TicketTerms
                 }
                 break;
 
-            ############################################################################################################
-            # Organization Terms
-            ############################################################################################################
+            //###########################################################################################################
+            // Organization Terms
+            //###########################################################################################################
 
             case OrganizationSearch::TERM_NAME:
                 if (is_array($choice)) {
@@ -1409,7 +1416,7 @@ class TicketTerms
 
             default:
                 $e = new \InvalidArgumentException('(Non-critical notice) Unknown trigger criteria: '.$term);
-                \DeskPRO\Kernel\KernelErrorHandler::logException($e, true, 'failed_term_'.$term);
+                \DpSys\LowError\SystemErrorHandler::logException($e, true, 'failed_term_'.$term);
 
                 return false;
         }
@@ -1484,12 +1491,12 @@ class TicketTerms
                 break;
 
             case 'id':
-                $choices_in = array();
+                $choices_in = [];
                 foreach ((array) $choice as $c) {
                     $choices_in[] = (int) $c;
                 }
 
-                $has_choices = array();
+                $has_choices = [];
                 foreach ($choices_in as $id) {
                     $c = $obj->getCustomDataForField($id);
                     if ($c) {
@@ -1559,7 +1566,7 @@ class TicketTerms
             $choice = Arrays::getFirstItem($choice);
         }
 
-        if ($op == self::OP_IS_REGEX || $op    == self::OP_NOT_REGEX) {
+        if ($op == self::OP_IS_REGEX || $op == self::OP_NOT_REGEX) {
             if (is_array($choice)) {
                 $choice = array_pop($choice);
             }
@@ -1577,7 +1584,7 @@ class TicketTerms
             if ($op == self::OP_IS_REGEX) {
                 return $found;
             } else {
-                return (!$found);
+                return !$found;
             }
         } elseif (!$force_like and ($op == self::OP_IS or $op == self::OP_NOT)) {
             $choices_in = (array) $choice;
@@ -1593,7 +1600,7 @@ class TicketTerms
             if ($op == self::OP_IS) {
                 return $found;
             } else {
-                return (!$found);
+                return !$found;
             }
         } else {
             $choices_in = (array) $choice;
@@ -1616,7 +1623,7 @@ class TicketTerms
             if ($op == self::OP_CONTAINS) {
                 return $found;
             } else {
-                return (!$found);
+                return !$found;
             }
         }
     }
@@ -1699,7 +1706,6 @@ class TicketTerms
         }
 
         if ($op == self::OP_BETWEEN) {
-
             // Make date2 'end of day'
             $date2 = mktime(
                 23,
@@ -1710,15 +1716,15 @@ class TicketTerms
                 date('Y', $date2)
             );
 
-            return ($value >= $date1 and $value <= $date2);
+            return $value >= $date1 and $value <= $date2;
         } elseif ($op == self::OP_GTE) {
             $date = $date1 ? $date1 : $date2;
 
-            return ($value >= $date);
+            return $value >= $date;
         } else {
             $date = $date1 ? $date1 : $date2;
 
-            return ($value <= $date);
+            return $value <= $date;
         }
     }
 
@@ -1733,7 +1739,7 @@ class TicketTerms
      */
     public function compileTermsToJavascript($mode = 'all')
     {
-        $js = array();
+        $js = [];
 
         if ($mode == 'all') {
             $test_pass   = '';
@@ -1764,7 +1770,7 @@ class TicketTerms
 
             switch ($term) {
                 case TicketSearch::TERM_DEPARTMENT:
-                    $ids = array();
+                    $ids = [];
                     foreach ((array) $choice as $cond) {
                         $ids = array_merge($ids, App::getDataService('Department')->getIdsInTree($cond, true));
                     }
@@ -1776,7 +1782,7 @@ class TicketTerms
                     $js[] = $this->_compileJsChoiceTermCondition('ticket.getDepartmentId()', $op, $ids)." { $test_pass } else { $test_fail } ";
                     break;
                 case TicketSearch::TERM_CATEGORY:
-                    $ids = array();
+                    $ids = [];
                     foreach ((array) $choice as $cond) {
                         $ids = array_merge($ids, App::getEntityRepository('DeskPRO:TicketCategory')->getIdsInTree($cond, true));
                     }
@@ -1826,7 +1832,9 @@ class TicketTerms
         }
 
         if (is_array($choice)) {
-            if (Arrays::checkAll($choice, function ($v) { return Numbers::isInteger($v); })) {
+            if (Arrays::checkAll($choice, function ($v) {
+                return Numbers::isInteger($v);
+            })) {
                 $choice = Arrays::castToType($choice, 'integer');
             }
 
@@ -1866,7 +1874,7 @@ class TicketTerms
      */
     public function getDescriptions($as_html = false)
     {
-        $descs = array();
+        $descs = [];
         foreach ($this->terms as $info) {
             if (empty($info['type']) || empty($info['op']) || empty($info['options'])) {
                 continue;
@@ -1926,8 +1934,8 @@ class TicketTerms
         if ($as_html) {
             $summary = htmlspecialchars($summary);
             $summary = str_replace(
-                array('&lt;error&gt;', '&lt;/error&gt;'),
-                array('<span class="term-error">', '</span>'),
+                ['&lt;error&gt;', '&lt;/error&gt;'],
+                ['<span class="term-error">', '</span>'],
                 $summary
             );
         }

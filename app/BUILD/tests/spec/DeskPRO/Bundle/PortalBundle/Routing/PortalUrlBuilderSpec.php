@@ -1,0 +1,93 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+
+namespace spec\DeskPRO\Bundle\PortalBundle\Routing;
+
+use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
+use PhpSpec\ObjectBehavior;
+
+/**
+ * @mixin \DeskPRO\Bundle\PortalBundle\Routing\PortalUrlBuilder
+ */
+class PortalUrlBuilderSpec extends ObjectBehavior
+{
+    public function it_returns_path_if_no_lang_or_mode()
+    {
+        $this->beConstructedWith('/new-ticket');
+
+        $this->__toString()->shouldBe('/new-ticket');
+    }
+
+    public function it_returns_with_language_appended(
+        Language $lang
+    ) {
+        $lang->getUrlCode()->willReturn('fr');
+
+        $this->beConstructedWith('/new-ticket', $lang);
+
+        $this->__toString()->shouldReturn('/fr/new-ticket');
+    }
+
+    public function it_returns_with_mode_appended(
+        PortalMode $mode
+    ) {
+        $mode->getModePath()->willReturn('/admin-mode');
+
+        $this->beConstructedWith('/new-ticket', null, $mode);
+
+        $this->__toString()->shouldReturn('/admin-mode/new-ticket');
+    }
+
+    public function it_returns_with_language_and_mode_appended(
+        PortalMode $mode,
+        Language $lang
+    ) {
+        $mode->getModePath()->willReturn('/admin-mode');
+        $lang->getUrlCode()->willReturn('fr');
+
+        $this->beConstructedWith('/new-ticket', $lang, $mode);
+
+        $this->__toString()->shouldReturn('/admin-mode/fr/new-ticket');
+    }
+
+    public function it_works_for_root_url_and_never_appends_a_slash(
+        PortalMode $mode,
+        Language $lang
+    ) {
+        $this->beConstructedWith('/', $lang, $mode);
+        $mode->getModePath()->willReturn('/admin-mode');
+        $lang->getUrlCode()->willReturn('fr');
+
+        $this->__toString()->shouldReturn('/admin-mode/fr');
+    }
+}

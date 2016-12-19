@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,6 +43,9 @@ use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 
+/**
+ * Class AgentReplyCodes.
+ */
 class AgentReplyCodes implements Loggable
 {
     /**
@@ -103,7 +106,7 @@ class AgentReplyCodes implements Loggable
         }
 
         $this->new_body = $this->orig_body;
-        $this->props    = array();
+        $this->props    = [];
 
         $this->getLogger()->logInfo(sprintf('[AgentReplyCodes] Getting properties from body of %d bytes (%s)', strlen($this->orig_body), $this->is_html ? 'html' : 'plaintext'));
 
@@ -212,7 +215,7 @@ class AgentReplyCodes implements Loggable
      * @param string $code
      * @param string $param
      *
-     * @return bool True if is a valid code SYNTAX.
+     * @return bool True if is a valid code SYNTAX
      */
     protected function handleCode($code, $param)
     {
@@ -290,7 +293,7 @@ class AgentReplyCodes implements Loggable
 
             case 'note':
             case 'isnote':
-                $this->getLogger()->logDebug('[AgentReplyCodes] Message is a note');
+            $this->getLogger()->logDebug('[AgentReplyCodes] Message is a note');
                 $this->props['is_note'] = true;
                 break;
 
@@ -320,7 +323,7 @@ class AgentReplyCodes implements Loggable
                 if ($agent) {
                     $this->getLogger()->logDebug('[AgentReplyCodes] Add follower: '.$agent->id);
                     if (empty($this->props['add_followers'])) {
-                        $this->props['add_followers'] = array();
+                        $this->props['add_followers'] = [];
                     }
                     $this->props['add_followers'][] = $agent;
                 } else {
@@ -335,7 +338,7 @@ class AgentReplyCodes implements Loggable
                 if ($agent) {
                     $this->getLogger()->logDebug('[AgentReplyCodes] Remove follower: '.$agent->id);
                     if (empty($this->props['remove_followers'])) {
-                        $this->props['remove_followers'] = array();
+                        $this->props['remove_followers'] = [];
                     }
                     $this->props['remove_followers'][] = $agent;
                 } else {
@@ -357,7 +360,7 @@ class AgentReplyCodes implements Loggable
                         $this->props['user'] = $person;
                     } else {
                         $this->getLogger()->logDebug('[AgentReplyCodes] Creating new person: '.$param);
-                        $person = $person_processor->createPerson($email, true);
+                        $person = $person_processor->createPerson($email);
                         $this->getLogger()->logDebug('[AgentReplyCodes] Creating person #'.$person->id);
                         $this->props['user'] = $person;
                     }
@@ -399,7 +402,7 @@ class AgentReplyCodes implements Loggable
 
                 if ($param) {
                     if (!isset($this->props['labels'])) {
-                        $this->props['labels'] = array();
+                        $this->props['labels'] = [];
                     }
 
                     $this->getLogger()->logDebug('[AgentReplyCodes] Add labels: '.implode(', ', $param));
@@ -411,7 +414,7 @@ class AgentReplyCodes implements Loggable
 
             case 'dep':
             case 'department':
-                $deps = array();
+                $deps = [];
                 foreach (App::getOrm()->getRepository('DeskPRO:Department')->findAll() as $dep) {
                     if ($dep->is_tickets_enabled) {
                         $deps[$dep->id] = $dep;
@@ -488,10 +491,10 @@ class AgentReplyCodes implements Loggable
                 );
 
                 if ($obj) {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Set category: '.$obj->id);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Set product: '.$obj->id);
                     $this->props['product'] = $obj;
                 } else {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Unknown priority: '.$param);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Unknown product: '.$param);
                 }
                 break;
 
@@ -520,7 +523,7 @@ class AgentReplyCodes implements Loggable
                 }
 
                 if (!isset($this->props['ticket_fields'])) {
-                    $this->props['ticket_fields'] = array();
+                    $this->props['ticket_fields'] = [];
                 }
 
                 // Choice fields means we need to find the actual option...
@@ -532,7 +535,7 @@ class AgentReplyCodes implements Loggable
                     );
 
                     if ($child_opt) {
-                        $set   = isset($this->props['ticket_fields'][$field->id]) ? $this->props['ticket_fields'][$field->id] : array();
+                        $set   = isset($this->props['ticket_fields'][$field->id]) ? $this->props['ticket_fields'][$field->id] : [];
                         $set[] = $child_opt->id;
                         $set   = array_unique($set);
 
@@ -565,58 +568,74 @@ class AgentReplyCodes implements Loggable
                 return;
             }
         } else {
-            $test_param = preg_replace('#\s#', '', $param);
-            $test_param = strtolower($test_param);
+            $testParam = $this->prepareCompareString($param);
+            $useAgent  = null;
 
-            $use_agent = null;
             foreach (App::getDataService('Agent')->getAgents() as $agent) {
-                $test_name = $agent['name'];
-
-                if (!$test_name) {
+                $testName = $this->prepareCompareString($agent['name']);
+                if (!$testName) {
                     continue;
                 }
 
-                $test_name = preg_replace('#\s#', '', $test_name);
-                $test_name = strtolower($test_name);
-
-                if ($test_name == $test_param) {
-                    $use_agent = $agent;
+                if ($testName == $testParam) {
+                    $useAgent = $agent;
                     break;
                 }
             }
 
-            if ($use_agent) {
-                return $use_agent;
+            if ($useAgent) {
+                return $useAgent;
             } else {
                 return;
             }
         }
     }
 
-    protected function _findObjFromCollection($collection, $name_field, $param)
+    /**
+     * @param array  $collection
+     * @param string $nameField
+     * @param string $param
+     *
+     * @return mixed
+     */
+    protected function _findObjFromCollection($collection, $nameField, $param)
     {
-        $test_param = preg_replace('#\s#', '', $param);
-        $test_param = strtolower($test_param);
+        $testParam = $this->prepareCompareString($param);
 
         foreach ($collection as $obj) {
-            if (!isset($obj[$name_field]) || !$obj[$name_field]) {
+            if (!isset($obj[$nameField]) || !$obj[$nameField]) {
                 continue;
             }
 
-            $test_name = $obj[$name_field];
-            $test_name = preg_replace('#\s#', '', $test_name);
-            $test_name = strtolower($test_name);
-
-            if (!$test_name) {
+            $testName = $this->prepareCompareString($obj[$nameField]);
+            if (!$testName) {
                 continue;
             }
 
-            if ($test_param == $test_name) {
+            if ($testParam == $testName) {
                 return $obj;
             }
         }
 
         return;
+    }
+
+    /**
+     * @param $string
+     *
+     * @return string
+     */
+    protected function prepareCompareString($string)
+    {
+        if (!$string || !is_scalar($string)) {
+            return '';
+        }
+
+        $string = preg_replace('#\s#', '', $string);
+        $string = preg_replace('/[[:punct:]]/', '', $string);
+        $string = strtolower($string);
+
+        return $string;
     }
 
     /**

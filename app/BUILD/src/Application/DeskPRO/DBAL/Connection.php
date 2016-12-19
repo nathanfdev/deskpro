@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,10 +31,11 @@
  *
  * @category Controller
  */
+
 namespace Application\DeskPRO\DBAL;
 
 use Doctrine\DBAL\DBALException;
-use Orb\Log\Logger;
+use DpSys\LowError\SystemErrorHandler;
 use PDO;
 
 /**
@@ -68,7 +69,7 @@ class Connection extends \Doctrine\DBAL\Connection
     /**
      * @var array
      */
-    protected $trans_ids = array();
+    protected $trans_ids = [];
 
     /**
      * @var int
@@ -78,7 +79,7 @@ class Connection extends \Doctrine\DBAL\Connection
     /**
      * @var array
      */
-    protected $writes_in_tx = array();
+    protected $writes_in_tx = [];
 
     /**
      * @var bool
@@ -95,58 +96,48 @@ class Connection extends \Doctrine\DBAL\Connection
      */
     protected $do_reset_isolation = false;
 
-    public function __construct(array $params, \Doctrine\DBAL\Driver $driver, \Doctrine\DBAL\Configuration $config = null, \Doctrine\Common\EventManager $eventManager = null)
+    /**
+     * @var int
+     */
+    private $connectAttempts = 0;
+
+    public function connect()
     {
-        if (!isset($params['driverOptions'])) {
-            $params['driverOptions'] = array();
-        }
+        ++$this->connectAttempts;
 
-        $params['driverOptions'][PDO::ATTR_ERRMODE]          = PDO::ERRMODE_EXCEPTION;
-        $params['driverOptions'][PDO::ATTR_EMULATE_PREPARES] = true;
+        try {
+            return $this->doConnect();
+        } catch (\Exception $e) {
+            $params = $this->getParams();
 
-        if (!isset($params['platform'])) {
-            $params['platform'] = new \Application\DeskPRO\DBAL\Platforms\MySqlPlatform();
-        }
+            // It can be common to have a bit of a network glitch that prevents a connection
+            // from failing, and its better to retry once now then show the user a failure screen
 
-        $m = null;
-        if (isset($params['host']) && preg_match('#^unix_socket:(.*?)$#', $params['host'], $m)) {
-            unset($params['host']);
-            unset($params['port']);
-            $params['unix_socket'] = trim($m[1]);
-        }
-
-        $m = null;
-        if (empty($params['unix_socket']) && isset($params['host']) && preg_match('#^(.*?):([0-9]+)$#', $params['host'], $m)) {
-            $params['host'] = $m[1];
-            $params['port'] = $m[2];
-        }
-
-        if (isset($params['names_charset'])) {
-            $this->names_charset = $params['names_charset'];
-            unset($params['names_charset']);
-        }
-
-        parent::__construct($params, $driver, $config, $eventManager);
-
-        if (isset($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) && $GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) {
-            $this->transaction_logger = new Logger();
-            if ($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log'] == 'separate_files') {
-                $fn = 'db-transactions.'.uniqid('').'.log';
-            } else {
-                $fn = 'db-transactions.log';
+            if (isset($params['dp_connect_attempts']) && $this->connectAttempts < $params['dp_connect_attempts']) {
+                usleep(500000); // half a second
+                return $this->doConnect();
             }
-            $this->transaction_logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir().'/'.$fn));
-            $this->transaction_logger->logDebug('--- BEGIN PAGE ---');
 
-            if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
-                $this->transaction_logger->logDebug('Command: '.implode(' ', $_SERVER['argv']));
-            } else {
-                $this->transaction_logger->logDebug('URL: '.$_SERVER['PHP_SELF']);
-            }
+            throw $e;
+        }
+
+        if ($this->connectAttempts === 1) {
+            \DpShutdown::add(function (Connection $db) {
+                if ($db->isTransactionActive()) {
+                    $e = new \RuntimeException('WARNING: Unclosed transaction at shutdown');
+                    SystemErrorHandler::logException($e, false, 'unclosed_trans_shutdown');
+                    try {
+                        while ($db->isTransactionActive()) {
+                            $db->commit();
+                        }
+                    } catch (\Exception $e) {
+                    }
+                }
+            }, [$db], null, 1000);
         }
     }
 
-    public function connect()
+    private function doConnect()
     {
         if (parent::connect()) {
             $this->exec("SET sql_mode='', time_zone='+00:00'");
@@ -206,10 +197,10 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return array
      */
-    public function fetchAllKeyed($statement, array $params = array(), $index = 'id', $types = array())
+    public function fetchAllKeyed($statement, array $params = [], $index = 'id', $types = [])
     {
         $statement = $this->executeQuery($statement, $params, $types);
-        $array     = array();
+        $array     = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $array[$row[$index]] = $row;
@@ -231,14 +222,14 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return array
      */
-    public function fetchAllGrouped($statement, array $params = array(), $group_key, $index_key = null, $col_key = null, $types = array())
+    public function fetchAllGrouped($statement, array $params, $group_key, $index_key = null, $col_key = null, $types = [])
     {
         $statement = $this->executeQuery($statement, $params, $types);
-        $array     = array();
+        $array     = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             if (!isset($array[$row[$group_key]])) {
-                $array[$row[$group_key]] = array();
+                $array[$row[$group_key]] = [];
             }
 
             $val = $row;
@@ -269,10 +260,10 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return array
      */
-    public function fetchAllKeyValue($statement, array $params = array(), $types = array(), $key_index = 0, $val_index = 1, $mode = PDO::FETCH_NUM, $nullkey = 0)
+    public function fetchAllKeyValue($statement, array $params = [], $types = [], $key_index = 0, $val_index = 1, $mode = PDO::FETCH_NUM, $nullkey = 0)
     {
         $statement = $this->executeQuery($statement, $params, $types);
-        $array     = array();
+        $array     = [];
 
         while ($row = $statement->fetch($mode)) {
             if ($row[$key_index] === null) {
@@ -295,10 +286,10 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return array
      */
-    public function fetchAllCol($statement, array $params = array(), $types = array(), $index = 0, $mode = PDO::FETCH_NUM)
+    public function fetchAllCol($statement, array $params = [], $types = [], $index = 0, $mode = PDO::FETCH_NUM)
     {
         $statement = $this->executeQuery($statement, $params, $types);
-        $array     = array();
+        $array     = [];
 
         while ($row = $statement->fetch($mode)) {
             $array[] = $row[$index];
@@ -317,52 +308,64 @@ class Connection extends \Doctrine\DBAL\Connection
      */
     public function batchInsert($table, array $multiple_values, $ignore = false)
     {
-        $cols       = null;
-        $cols_count = 0;
-        $params     = array();
-
-        $value_parts = array();
-        $value_tpl   = '';
-
         if (!$multiple_values) {
             throw new \InvalidArgumentException('No values');
         }
 
-        #------------------------------
-        # Validate values and build params
-        #------------------------------
+        //------------------------------
+        // Validate values and build params
+        //------------------------------
 
-        foreach ($multiple_values as $vals) {
-            if ($cols === null) {
-                foreach (array_keys($vals) as $k) {
-                    $cols[] = $k;
+        $res                     = null;
+        $multiple_values_batches = array_chunk($multiple_values, 1000, false);
+        foreach ($multiple_values_batches as $multiple_values) {
+            $cols       = null;
+            $cols_count = 0;
+            $params     = [];
+
+            $value_parts = [];
+            $value_tpl   = '';
+
+            // TODO we need to create batches based on size of max_packet_size
+
+            foreach ($multiple_values as $vals) {
+                if ($cols === null) {
+                    foreach (array_keys($vals) as $k) {
+                        $cols[] = $k;
+                    }
+                    $cols_count = count($cols);
+                    $value_tpl  = '('.implode(',', array_fill(0, $cols_count, '?')).')';
                 }
-                $cols_count = count($cols);
-                $value_tpl  = '('.implode(',', array_fill(0, $cols_count, '?')).')';
-            }
 
-            if (count($vals) != $cols_count) {
-                throw new \InvalidArgumentException('A value row has more columns than it should');
-            }
-
-            foreach ($cols as $c) {
-                if (!array_key_exists($c, $vals)) {
-                    throw new \InvalidArgumentException("A value row is missing the `$c` column");
+                if (count($vals) != $cols_count) {
+                    throw new \InvalidArgumentException('A value row has more columns than it should');
                 }
 
-                $params[] = $vals[$c];
+                foreach ($cols as $c) {
+                    if (!array_key_exists($c, $vals)) {
+                        throw new \InvalidArgumentException("A value row is missing the `$c` column");
+                    }
+
+                    $params[] = $vals[$c];
+                }
+
+                $value_parts[] = $value_tpl;
             }
 
-            $value_parts[] = $value_tpl;
+            //------------------------------
+            // Build sql
+            //------------------------------
+
+            $sql = 'INSERT '.($ignore ? 'IGNORE' : '')." INTO `$table` (`".implode('`,`', $cols).'`) VALUES '.implode(',', $value_parts);
+
+            $res = $this->executeUpdate($sql, $params);
         }
 
-        #------------------------------
-        # Build sql
-        #------------------------------
+        if ($res === null) {
+            throw new \InvalidArgumentException('No values');
+        }
 
-        $sql = 'INSERT '.($ignore ? 'IGNORE' : '')." INTO `$table` (`".implode('`,`', $cols).'`) VALUES '.implode(',', $value_parts);
-
-        return $this->executeUpdate($sql, $params);
+        return $res;
     }
 
     /**
@@ -375,7 +378,7 @@ class Connection extends \Doctrine\DBAL\Connection
      */
     public function quoteIn(array $values, $type = null)
     {
-        $quoted = array();
+        $quoted = [];
 
         foreach ($values as $val) {
             $quoted[] = $this->quote($val, $type);
@@ -395,14 +398,14 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return int
      */
-    public function insertIgnore($tableName, array $data, array $types = array())
+    public function insertIgnore($tableName, array $data, array $types = [])
     {
         $this->connect();
 
         try {
             // column names are specified as array keys
-            $cols         = array();
-            $placeholders = array();
+            $cols         = [];
+            $placeholders = [];
 
             foreach ($data as $columnName => $value) {
                 $cols[]         = $columnName;
@@ -428,13 +431,13 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return int
      */
-    public function replace($tableName, array $data, array $types = array())
+    public function replace($tableName, array $data, array $types = [])
     {
         $this->connect();
 
         // column names are specified as array keys
-        $cols         = array();
-        $placeholders = array();
+        $cols         = [];
+        $placeholders = [];
 
         foreach ($data as $columnName => $value) {
             $cols[]         = $columnName;
@@ -474,7 +477,7 @@ class Connection extends \Doctrine\DBAL\Connection
         return $qb->execute()->fetchColumn();
     }
 
-    public function countWithPlaceholders($tableName, $where = null, array $params = array())
+    public function countWithPlaceholders($tableName, $where = null, array $params = [])
     {
         $this->connect();
 
@@ -495,7 +498,7 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return \Doctrine\DBAL\Cache\ArrayStatement|\Doctrine\DBAL\Cache\ResultCacheStatement|\Doctrine\DBAL\Driver\Statement
      */
-    public function executeQuery($query, array $params = array(), $types = array(), \Doctrine\DBAL\Cache\QueryCacheProfile $qcp = null, $is_retry = 0)
+    public function executeQuery($query, array $params = [], $types = [], \Doctrine\DBAL\Cache\QueryCacheProfile $qcp = null, $is_retry = 0)
     {
         try {
             return parent::executeQuery($query, $params, $types, $qcp);
@@ -521,15 +524,11 @@ class Connection extends \Doctrine\DBAL\Connection
      * @param array  $params
      * @param array  $types
      */
-    public function executeUpdate($query, array $params = array(), array $types = array(), $is_retry = 0)
+    public function executeUpdate($query, array $params = [], array $types = [], $is_retry = 0)
     {
-        if (!$is_retry && isset($GLOBALS['DP_CONFIG']['debug']['log_delete_queries']) && $GLOBALS['DP_CONFIG']['debug']['log_delete_queries'] && preg_match('#^\s*DELETE|TRUNCATE|DROP#', $query)) {
-            $this->_writeDeleteQuery($query, $params);
-        }
-
         $level = $this->getTransactionNestingLevel();
         if ($level && !$is_retry) {
-            $this->writes_in_tx[] = array($query, $params, $types);
+            $this->writes_in_tx[] = [$query, $params, $types];
         }
 
         try {
@@ -562,13 +561,13 @@ class Connection extends \Doctrine\DBAL\Connection
             return;
         }
 
-        $params = array();
+        $params = [];
         if ($query_params && is_array($query_params)) {
             foreach ($query_params as $v) {
                 if (is_numeric($v) || ctype_digit($v)) {
                     $params[] = $v;
                 } elseif (is_string($v)) {
-                    $v = str_replace(array("\r\n", "\n", "\t"), ' ', $v);
+                    $v = str_replace(["\r\n", "\n", "\t"], ' ', $v);
                     $v = preg_replace('# {2,}#', ' ', $v);
 
                     if (strlen($v) > 100) {
@@ -579,7 +578,7 @@ class Connection extends \Doctrine\DBAL\Connection
                 } elseif ($v === null) {
                     $params[] = 'NULL';
                 } elseif (is_array($v)) {
-                    $params[] = substr(\DeskPRO\Kernel\KernelErrorHandler::varToString($v), 0, 200);
+                    $params[] = substr(\DpSys\LowError\SystemErrorHandler::varToString($v), 0, 200);
                 } elseif (is_object($v)) {
                     $params[] = get_class($v);
                 } else {
@@ -588,7 +587,7 @@ class Connection extends \Doctrine\DBAL\Connection
             }
         }
 
-        $write   = array();
+        $write   = [];
         $write[] = '['.date('Y-m-d H:i:s').']';
 
         if (defined('DP_REQUEST_URL')) {
@@ -662,13 +661,13 @@ class Connection extends \Doctrine\DBAL\Connection
      *
      * @return int
      */
-    public function updateIn($table, array $data, array $ids, $field = 'id', array $types = array())
+    public function updateIn($table, array $data, array $ids, $field = 'id', array $types = [])
     {
         if (!$ids) {
             return 0;
         }
 
-        $set = array();
+        $set = [];
         foreach ($data as $columnName => $value) {
             $set[] = $columnName.' = ?';
         }
@@ -692,7 +691,7 @@ class Connection extends \Doctrine\DBAL\Connection
         } catch (\Exception $e) {
             if ($e instanceof DBALException || $e instanceof \PDOException) {
                 $e->_dp_query        = is_string($statement) ? $statement : null;
-                $e->_dp_query_params = array();
+                $e->_dp_query_params = [];
                 throw $e;
             } else {
                 throw $e;
@@ -716,13 +715,13 @@ class Connection extends \Doctrine\DBAL\Connection
     {
         $level = $this->getTransactionNestingLevel();
         if ($level == 0) {
-            $this->writes_in_tx = array();
+            $this->writes_in_tx = [];
         }
 
         parent::beginTransaction();
         if ($this->transaction_logger) {
             $e                 = new \Exception();
-            $backtrace         = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
+            $backtrace         = \DpSys\LowError\SystemErrorHandler::formatBacktrace($e->getTrace());
             $level             = $this->getTransactionNestingLevel();
             $trans_id          = \Orb\Util\Util::baseEncode($this->trans_count++, \Orb\Util\Strings::CHARS_ALPHA_IU);
             $this->trans_ids[] = $trans_id;
@@ -740,7 +739,7 @@ class Connection extends \Doctrine\DBAL\Connection
                 usleep(500000);
 
                 $retry              = $this->writes_in_tx;
-                $this->writes_in_tx = array();
+                $this->writes_in_tx = [];
 
                 // Retry the trans
                 $this->_conn->beginTransaction();
@@ -749,14 +748,14 @@ class Connection extends \Doctrine\DBAL\Connection
                 }
                 $this->commit(true);
             } else {
-                $this->writes_in_tx = array();
+                $this->writes_in_tx = [];
                 throw $e;
             }
         }
 
         $level = $this->getTransactionNestingLevel();
         if ($level == 0) {
-            $this->writes_in_tx = array();
+            $this->writes_in_tx = [];
         }
 
         if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_COMMIT)) {
@@ -769,13 +768,12 @@ class Connection extends \Doctrine\DBAL\Connection
         if ($this->transaction_logger) {
             $e         = new \Exception();
             $trans_id  = array_pop($this->trans_ids);
-            $backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
+            $backtrace = \DpSys\LowError\SystemErrorHandler::formatBacktrace($e->getTrace());
             $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t\t", $level)."\t\t");
             $this->transaction_logger->logDebug("<== Level $level :: <$trans_id>\n".str_repeat("\t\t", $level)."TRANSACTION COMMITTED\n$backtrace");
         }
 
         if (!$this->getTransactionNestingLevel()) {
-
             // Set in EntityWatcher
             // If we have got here with a successful commit, then the changes are now
             // properly synced and we dont need the flag set anymore
@@ -796,15 +794,15 @@ class Connection extends \Doctrine\DBAL\Connection
         try {
             parent::rollback();
         } catch (\Exception $e) {
-            $einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-            \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+            $einfo = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
+            \DpSys\LowError\SystemErrorHandler::logErrorInfo($einfo);
 
             return;
         }
 
         $level = $this->getTransactionNestingLevel();
         if ($level == 0) {
-            $this->writes_in_tx = array();
+            $this->writes_in_tx = [];
         }
 
         if ($is_unexpected) {
@@ -817,7 +815,7 @@ class Connection extends \Doctrine\DBAL\Connection
 
             if ($this->transaction_logger) {
                 $e         = new \Exception();
-                $backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
+                $backtrace = \DpSys\LowError\SystemErrorHandler::formatBacktrace($e->getTrace());
                 $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level)."\t");
                 $this->transaction_logger->logDebug(str_repeat("\t", $level)."TRANSACTION ROLLED BACK\n$backtrace");
             }

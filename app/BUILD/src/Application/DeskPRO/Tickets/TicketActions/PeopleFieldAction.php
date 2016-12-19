@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -63,7 +64,7 @@ class PeopleFieldAction extends AbstractAction
         // Old versions set array directly while newer versions have standard
         // custom_fields array holder
         if (!isset($this->set_value['custom_fields'])) {
-            $this->set_value = array('custom_fields' => $this->set_value);
+            $this->set_value = ['custom_fields' => $this->set_value];
         }
     }
 
@@ -84,9 +85,7 @@ class PeopleFieldAction extends AbstractAction
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -95,21 +94,21 @@ class PeopleFieldAction extends AbstractAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
-        return array(
-            array('action' => 'person_field', 'person_field_id' => $this->field_def->id, 'value' => $this->set_value),
-        );
+        return [
+            [
+                'action'          => 'person_field',
+                'person_field_id' => $this->field_def->id,
+                'value'           => $this->set_value,
+            ],
+        ];
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -117,7 +116,7 @@ class PeopleFieldAction extends AbstractAction
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {
@@ -128,7 +127,7 @@ class PeopleFieldAction extends AbstractAction
         $value = isset($value['custom_fields']['field_'.$this->field_def->getId()]) ? $value['custom_fields']['field_'.$this->field_def->getId()] : '';
         if ($this->field_def->getTypeName() == 'choice') {
             $value_ids = (array) $value;
-            $value     = array();
+            $value     = [];
             $titles    = $this->field_def->getAllChildTitles();
             foreach ($value_ids as $id) {
                 if (isset($titles[$id])) {
@@ -138,11 +137,11 @@ class PeopleFieldAction extends AbstractAction
             $value = implode(', ', $value);
         }
 
-        return $tr->phrase('agent.tickets.set_x_to_y_action', array('title' => $title, 'value' => $value));
+        return $tr->phrase('agent.tickets.set_x_to_y_action', ['title' => $title, 'value' => $value]);
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getActionName()
     {

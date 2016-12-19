@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,11 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\Service\JIRA;
-use Application\DeskPRO\Service\RateLimit;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -55,37 +54,19 @@ class CoreExtension extends Extension
         $definition = new Definition('Symfony\\Component\\HttpFoundation\\Response');
         $container->setDefinition('response', $definition);
 
-        $definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\SysQueryLogger');
-        $container->setDefinition('deskpro.dbal.logger.query_logger', $definition);
-
-        $definition = new Definition('Symfony\\Bridge\\Doctrine\\Logger\\DbalLogger', array(new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE)));
-        $container->setDefinition('doctrine.query_logger', $definition);
-
         $definition = new Definition('Application\\DeskPRO\\CacheInvalidator\\QueryListener');
         $container->setDefinition('deskpro.cache.query_listener', $definition);
 
-        $definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\CacheExec', array(new Reference('deskpro.cache.query_listener')));
-        $container->setDefinition('deskpro.dbal.logger.cache_query_listener', $definition);
-
-        $definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\DelegateLogger');
-        $definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.cache_query_listener'), 'cache_query_listener'));
-        $definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.query_logger'), 'query_logger'));
-        $container->setDefinition('doctrine.dbal.logger', $definition);
-
-        $definition = new Definition('Application\\DeskPRO\\Entity\\Person');
-        $definition->setFactoryService('session')->setFactoryMethod('getPerson');
-        $container->setDefinition('deskpro.session_person', $definition);
-
-        $definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', array(
+        $definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', [
             new Reference('doctrine.orm.entity_manager'),
-        ));
+        ]);
         $container->setDefinition('deskpro.person_activity_logger', $definition);
 
-        $definition = new Definition('Application\DeskPRO\Log\Handler\LogEventHandler', array(new Reference('doctrine.orm.entity_manager')));
+        $definition = new Definition('Application\DeskPRO\Log\Handler\LogEventHandler', [new Reference('doctrine.orm.entity_manager')]);
         $container->setDefinition('deskpro.log_handler.log_event', $definition);
 
-        $definition = new Definition('Application\DeskPRO\Monolog\Logger', array('changelog'));
-        $definition->addMethodCall('pushHandler', array(new Reference('deskpro.log_handler.log_event')));
+        $definition = new Definition('Application\DeskPRO\Monolog\Logger', ['changelog']);
+        $definition->addMethodCall('pushHandler', [new Reference('deskpro.log_handler.log_event')]);
         $container->setDefinition('deskpro.logger.changelog', $definition);
 
         $container
@@ -97,15 +78,11 @@ class CoreExtension extends Extension
 
         $definition = new Definition();
         $definition->setClass('Application\DeskPRO\Form\Type\CleanerExtension');
-        $definition->setArguments(array(new Reference('deskpro.core.input_cleaner')));
-        $definition->addTag('form.type_extension', array('alias' => 'form'));
+        $definition->setArguments([new Reference('deskpro.core.input_cleaner')]);
+        $definition->addTag('form.type_extension', ['alias' => 'form']);
         $container->setDefinition('form.cleaner_extension', $definition);
 
-        $container->register(RateLimit::KEY, 'Application\DeskPRO\Service\RateLimit')
-            ->addArgument(new Reference('service_container'));
-
         $this->loadPeople($container);
-        $this->loadInputReader($container);
         $this->loadTranslation($container);
         $this->loadSettings($container);
         $this->loadEntityListeners($container);
@@ -113,19 +90,16 @@ class CoreExtension extends Extension
 
     protected function loadPeople(ContainerBuilder $container)
     {
-        $definition = new Definition('Application\\DeskPRO\\Groups\\GroupsReposFactory', array(new Reference('doctrine.orm.entity_manager')));
-        $definition->setFactoryClass('Application\\DeskPRO\\Groups\\GroupsReposFactory');
-        $definition->setFactoryMethod('createFromEntityManager');
+        $definition = new Definition('Application\\DeskPRO\\Groups\\GroupsReposFactory', [new Reference('doctrine.orm.entity_manager')]);
+        $definition->setFactory('Application\\DeskPRO\\Groups\\GroupsReposFactory::createFromEntityManager');
         $container->setDefinition('deskpro.people.groups_repos_factory', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\People\\AgentGroups');
-        $definition->setFactoryService('deskpro.people.groups_repos_factory');
-        $definition->setFactoryMethod('createAgentGroups');
+        $definition->setFactory([new Reference('deskpro.people.groups_repos_factory'), 'createAgentGroups']);
         $container->setDefinition('deskpro.people.agent_groups', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\People\\UserGroups');
-        $definition->setFactoryService('deskpro.people.groups_repos_factory');
-        $definition->setFactoryMethod('createUserGroups');
+        $definition->setFactory([new Reference('deskpro.people.groups_repos_factory'), 'createUserGroups']);
         $container->setDefinition('deskpro.people.user_groups', $definition);
     }
 
@@ -134,34 +108,34 @@ class CoreExtension extends Extension
      */
     protected function loadTranslation(ContainerBuilder $container)
     {
-        $definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\SystemLoader', array(array(
+        $definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\SystemLoader', [[
             DP_ROOT.'/languages',
-        )));
+        ]]);
         $container->setDefinition('deskpro.core.translate_loader_system', $definition);
 
-        $definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DbLoader', array(
+        $definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DbLoader', [
             new Reference('database_connection'),
-        ));
+        ]);
         $container->setDefinition('deskpro.core.translate_loader_db', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DeskproLoader');
-        $definition->addMethodCall('setSystemLoader', array(new Reference('deskpro.core.translate_loader_system')));
-        $definition->addMethodCall('setDbLoader', array(new Reference('deskpro.core.translate_loader_db')));
+        $definition->addMethodCall('setSystemLoader', [new Reference('deskpro.core.translate_loader_system')]);
+        $definition->addMethodCall('setDbLoader', [new Reference('deskpro.core.translate_loader_db')]);
         $container->setDefinition('deskpro.core.translate_loader', $definition);
 
         // Now create the translate object
-        $definition = new Definition('Application\\DeskPRO\\Translate\\Translate', array(
+        $definition = new Definition('Application\\DeskPRO\\Translate\\Translate', [
             new Reference('deskpro.core.translate_loader'),
             new Reference('event_dispatcher'),
-        ));
-        $definition->addMethodCall('setSession', array(new Reference('session')));
+        ]);
+        $definition->addMethodCall('setSession', [new Reference('session')]);
         $container->setDefinition('deskpro.core.translate', $definition);
 
         // Attach listener for no phrase
         $definition = $container->getDefinition('deskpro.sys_events_loader');
         $definition->addMethodCall('addNoPhraseEventListener');
 
-        $definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\EventListener', array(new Reference('service_container')));
+        $definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\EventListener', [new Reference('service_container')]);
         $definition->addTag('doctrine.event_subscriber');
         $container->setDefinition('deskpro.orm.event_listener.activity_stream', $definition);
     }
@@ -171,41 +145,7 @@ class CoreExtension extends Extension
      */
     protected function loadInputReader(ContainerBuilder $container)
     {
-        // Init readers
-        $definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_REQUEST', array('accept_json_post' => true)));
-        $container->setDefinition('deskpro.core.input_reader_req', $definition);
-
-        $definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_POST', array('accept_json_post' => true)));
-        $container->setDefinition('deskpro.core.input_reader_post', $definition);
-
-        $definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_GET'));
-        $container->setDefinition('deskpro.core.input_reader_get', $definition);
-
-        $definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_COOKIE'));
-        $container->setDefinition('deskpro.core.input_reader_cookie', $definition);
-
-        // Cleaner plugin: XssCleaner
-        $definition = new Definition('Orb\Input\Cleaner\CleanerPlugin\BasicXss');
-        $container->setDefinition('deskpro.core.input_cleaner_plugin_xss', $definition);
-
-        // Cleaner plugin: HTML Purifier
-        $definition = new Definition('Orb\Input\Cleaner\CleanerPlugin\HtmlPurifier');
-        $container->setDefinition('deskpro.core.input_cleaner_plugin_html_purifier', $definition);
-
-        // Init cleaner
-        $definition = new Definition('Orb\Input\Cleaner\Cleaner');
-        $definition->addMethodCall('addCleaner', array(new Reference('deskpro.core.input_cleaner_plugin_xss')));
-        $definition->addMethodCall('addCleaner', array(new Reference('deskpro.core.input_cleaner_plugin_html_purifier')));
-        $container->setDefinition('deskpro.core.input_cleaner', $definition);
-
-        // Init reader
-        $definition = new Definition('Application\DeskPRO\Input\Reader', array(new Reference('deskpro.core.input_cleaner')));
-        $definition->addMethodCall('addSource', array('req', new Reference('deskpro.core.input_reader_req')));
-        $definition->addMethodCall('addSource', array('post', new Reference('deskpro.core.input_reader_post')));
-        $definition->addMethodCall('addSource', array('get', new Reference('deskpro.core.input_reader_get')));
-        $definition->addMethodCall('addSource', array('cookie', new Reference('deskpro.core.input_reader_cookie')));
-        $definition->addMethodCall('setArrayStringSeparator', array('.'));
-        $container->setDefinition('deskpro.core.input_reader', $definition);
+        // this is now done in config.shared.php
     }
 
     /**
@@ -213,13 +153,6 @@ class CoreExtension extends Extension
      */
     protected function loadEntityListeners(ContainerBuilder $container)
     {
-        $container
-            ->register(
-                'dp.entity_listener.person_changelog',
-                'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener')
-            ->addArgument(new Reference('service_container'))
-            ->addTag('doctrine.entity_listener');
-
         $container
             ->register(
                 'dp.entity_listener.person_contact_data_changelog',
@@ -233,14 +166,6 @@ class CoreExtension extends Extension
                 'Application\DeskPRO\Entity\EventListener\PersonCustomDataChangeLogListener')
             ->addArgument(new Reference('service_container'))
             ->addTag('doctrine.entity_listener');
-
-        $container
-            ->register(
-                'dp.entity_listener.problem',
-                'Application\DeskPRO\Entity\EventListener\ProblemListener'
-            )
-            ->addArgument(new Reference('service_container'))
-            ->addTag('doctrine.entity_listener');
     }
 
     /**
@@ -248,10 +173,10 @@ class CoreExtension extends Extension
      */
     protected function loadSettings(ContainerBuilder $container)
     {
-        $definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
+        $definition = new Definition('Application\\DeskPRO\\Settings\\Settings', [
             DP_ROOT.'/sys/config/settings.php',
             new Reference('database_connection'),
-        ));
+        ]);
         $container->setDefinition('deskpro.core.settings', $definition);
     }
 

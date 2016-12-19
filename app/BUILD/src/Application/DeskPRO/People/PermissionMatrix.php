@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\People;
 
 class PermissionMatrix
@@ -36,42 +37,42 @@ class PermissionMatrix
     /**
      * @var \Application\DeskPRO\Entity\Person[]
      */
-    protected $agents;
+    protected $agents = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Usergroup[]
      */
-    protected $agent_groups;
+    protected $agent_groups = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Usergroup[]
      */
-    protected $user_groups;
+    protected $user_groups = [];
 
     /**
      * @var array
      */
-    private $agent_to_groups;
+    private $agent_to_groups = [];
 
     /**
      * @var array
      */
-    private $agentgroup_to_agents;
+    private $agentgroup_to_agents = [];
 
     /**
      * @var array
      */
-    private $agent_perms;
+    private $agent_perms = [];
 
     /**
      * @var array
      */
-    private $agentgroup_perms;
+    private $agentgroup_perms = [];
 
     /**
      * @var array
      */
-    private $usergroup_perms;
+    private $usergroup_perms = [];
 
     /**
      * @param \Application\DeskPRO\Entity\Person[]    $agents
@@ -79,12 +80,12 @@ class PermissionMatrix
      */
     public function __construct($agents, $groups)
     {
-        $this->agent_to_agentgroups = array();
-        $this->agentgroup_to_agents = array();
+        $this->agent_to_agentgroups = [];
+        $this->agentgroup_to_agents = [];
 
         foreach ($groups as $g) {
             if ($g->is_agent_group) {
-                $this->agentgroup_to_agents[$g->id] = array();
+                $this->agentgroup_to_agents[$g->id] = [];
                 $this->agent_groups[$g->id]         = $g;
             } else {
                 $this->user_groups[$g->id] = $g;
@@ -93,7 +94,7 @@ class PermissionMatrix
 
         foreach ($agents as $a) {
             $this->agents[$a->id]          = $a;
-            $this->agent_to_groups[$a->id] = array();
+            $this->agent_to_groups[$a->id] = [];
 
             foreach ($this->agent_groups as $g) {
                 if ($a->hasUsergroup($g)) {
@@ -118,9 +119,9 @@ class PermissionMatrix
      */
     public function setPermArray($records)
     {
-        $this->agent_perms      = array();
-        $this->agentgroup_perms = array();
-        $this->usergroup_perms  = array();
+        $this->agent_perms      = [];
+        $this->agentgroup_perms = [];
+        $this->usergroup_perms  = [];
 
         foreach ($records as $rec) {
             if (empty($rec['value']) || !$rec['value']) {
@@ -135,20 +136,20 @@ class PermissionMatrix
                     $g = $this->agent_groups[$rec['usergroup_id']];
 
                     if (!isset($this->agentgroup_perms[$g->id])) {
-                        $this->agentgroup_perms[$g->id] = array();
+                        $this->agentgroup_perms[$g->id] = [];
                     }
                     $this->agentgroup_perms[$g->id][$rec['name']] = 1;
                 } elseif (isset($this->user_groups[$rec['usergroup_id']])) {
                     $g = $this->user_groups[$rec['usergroup_id']];
 
                     if (!isset($this->usergroup_perms[$g->id])) {
-                        $this->usergroup_perms[$g->id] = array();
+                        $this->usergroup_perms[$g->id] = [];
                     }
                     $this->usergroup_perms[$g->id][$rec['name']] = 1;
                 }
             } elseif (!empty($rec['person_id']) && $rec['person_id'] && isset($this->agents[$rec['person_id']])) {
                 if (!isset($this->agent_perms[$rec['person_id']])) {
-                    $this->agent_perms[$rec['person_id']] = array();
+                    $this->agent_perms[$rec['person_id']] = [];
                 }
 
                 $this->agent_perms[$rec['person_id']][$rec['name']] = 1;
@@ -163,15 +164,15 @@ class PermissionMatrix
      */
     public function setPermRecords($records)
     {
-        $array = array();
+        $array = [];
 
         foreach ($records as $rec) {
-            $array[] = array(
+            $array[] = [
                 'usergroup_id' => !empty($rec->usergroup) ? $rec->usergroup->id : null,
                 'person_id'    => !empty($rec->person) ? $rec->person->id : null,
                 'name'         => $rec->name,
                 'value'        => $rec->value,
-            );
+            ];
         }
     }
 
@@ -192,16 +193,16 @@ class PermissionMatrix
      */
     public function getPermsArray()
     {
-        $set_perms = array();
+        $set_perms = [];
 
         foreach ($this->agentgroup_perms as $ugid => $perms) {
             foreach ($perms as $perm_name => $perm_value) {
-                $set_perms[] = array('usergroup_id' => $ugid, 'name' => $perm_name, 'value' => 1);
+                $set_perms[] = ['usergroup_id' => $ugid, 'name' => $perm_name, 'value' => 1];
             }
         }
         foreach ($this->usergroup_perms as $ugid => $perms) {
             foreach ($perms as $perm_name => $perm_value) {
-                $set_perms[] = array('usergroup_id' => $ugid, 'name' => $perm_name, 'value' => 1);
+                $set_perms[] = ['usergroup_id' => $ugid, 'name' => $perm_name, 'value' => 1];
             }
         }
 
@@ -218,7 +219,7 @@ class PermissionMatrix
                 }
 
                 if (!$has) {
-                    $set_perms[] = array('person_id' => $aid, 'name' => $perm_name, 'value' => 1);
+                    $set_perms[] = ['person_id' => $aid, 'name' => $perm_name, 'value' => 1];
                 }
             }
         }

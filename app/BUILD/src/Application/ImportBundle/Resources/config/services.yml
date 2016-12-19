@@ -1,34 +1,56 @@
 services:
 
-  deskpro.import.formatter:
-    class: Application\ImportBundle\Generator\Exporter\Formatter\Formatter
-    factory_class: Application\ImportBundle\Generator\Exporter\Formatter\FormatterFactory
-    factory_method: create
+  dp.importer_logger:
+    class: Monolog\Logger
+    arguments: ["importer"]
 
-  deskpro.import.csv_reader_factory:
-    class: Application\ImportBundle\Reader\Csv\CsvReaderFactory
+  # validator annotations are disabled for most kernels
+  # force enable them for the importer
+  dp.importer_validator:
+    class: Symfony\Component\Validator\Validator\RecursiveValidator
+    factory: ['Application\ImportBundle\Validator\ImporterValidatorFactory', getValidator]
+    arguments: ['@service_container']
 
-  deskpro.import.json_reader_factory:
-    class: Application\ImportBundle\Reader\Json\JsonReaderFactory
+  dp.importer.parser_reader:
+    class: Application\ImportBundle\Parser\Reader\JsonReader
 
-  deskpro.import.deskpro_reader_factory:
-    class: Application\ImportBundle\Reader\DeskPRO\DeskPROReaderFactory
-    arguments: [@service_container]
+  dp.importer.parser:
+    class: Application\ImportBundle\Parser\Parser
+    arguments: ["@dp.importer.parser_reader", "@serializer", "@dp.importer_logger"]
 
-  deskpro.import.osticket_reader_factory:
-    class: Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory
+  dp.importer.writer:
+    class: Application\ImportBundle\Writer\Writer
+    arguments:
+      - "@dp.importer.writer.entity_handler_registry"
+      - "@doctrine.orm.entity_manager"
+      - "@deskpro.search.entity_listener"
+      - "@serializer"
+      - "@dp.importer_logger"
 
-  deskpro.import.zendesk_reader_factory:
-    class: Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory
-
-  deskpro.import:
+  dp.importer:
     class: Application\ImportBundle\Importer\Importer
-    factory_class: Application\ImportBundle\Importer\ImporterFactory
-    factory_method: create
-    arguments: [@service_container]
+    arguments:
+      - "@dp.importer.parser"
+      - "@dp.importer_validator"
+      - "@dp.importer.writer"
+      - "@serializer"
+      - "@dp.importer.writer.entity_handler_registry"
+      - "@dp.importer_logger"
 
-  deskpro.import.batch_exporter:
-    class: Application\ImportBundle\Generator\Exporter\Batch
-    factory_class: Application\ImportBundle\Generator\Exporter\BatchFactory
-    factory_method: createExporter
-    arguments: [@deskpro.import.formatter]
+  dp.importer.entity_persister:
+    class: Application\ImportBundle\Writer\EntityPersister
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@ticket_manager"
+      - "@dp.importer_validator"
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer_logger"
+
+  dp.importer.csv:
+    class: Application\ImportBundle\CsvImport\CsvImporter
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@dp.importer"
+      - "@dp.importer.parser"
+      - "@mailer"
+      - "@deskpro.core.translate"

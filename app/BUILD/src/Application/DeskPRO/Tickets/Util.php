@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -58,7 +59,7 @@ class Util
      */
     public static function resolveAgentCodes(array $codes, Ticket $ticket = null)
     {
-        $agent_ids = array();
+        $agent_ids = [];
 
         foreach ($codes as $send_to) {
             if ($send_to == 'assigned_agent') {
@@ -113,22 +114,24 @@ class Util
      */
     public static function getTacForPerson(Ticket $ticket, Person $person)
     {
+        $em = App::getOrm();
+
         try {
-            $tac = App::getOrm()->createQuery('
+            $tac = $em->createQuery('
                 SELECT t
                 FROM DeskPRO:TicketAccessCode t
                 WHERE t.ticket = ?1 AND t.person = ?2
-            ')->setParameters(array(1 => $ticket, 2 => $person))->getSingleResult();
+            ')->setParameters([1 => $ticket, 2 => $person])->getSingleResult();
 
             return $tac;
         } catch (\Exception $e) {
-            $tac           = new TicketAccessCode();
-            $tac['ticket'] = $ticket;
-            $tac['person'] = $person;
-            $ticket->access_codes->add($tac);
+            $tac = new TicketAccessCode();
+            $tac->setTicket($ticket);
+            $tac->setPerson($person);
+            $ticket->getAccessCodes()->add($tac);
 
-            App::getOrm()->persist($tac);
-            App::getOrm()->flush();
+            $em->persist($tac);
+            $em->flush();
 
             return $tac;
         }
@@ -152,6 +155,6 @@ class Util
             LEFT JOIN tickets_attachments ON (tickets_attachments.blob_id = blobs.id)
             SET blobs.is_temp = 1
             WHERE tickets_attachments.ticket_id = ?
-        ', array($ticket_id));
+        ', [$ticket_id]);
     }
 }

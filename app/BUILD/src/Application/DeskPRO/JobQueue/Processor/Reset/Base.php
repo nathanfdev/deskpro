@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,8 +30,8 @@ namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
-use Application\DeskPRO\ORM\EntityManager;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class Base extends AbstractJobProcessor
 {
@@ -58,13 +58,13 @@ abstract class Base extends AbstractJobProcessor
     /**
      * {@inheritdoc}
      */
-    public function setDataOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'context_person_id' => null,
             'limit'             => 100,
             'offset'            => 0,
-        ));
+        ]);
     }
 
     /**
@@ -78,7 +78,7 @@ abstract class Base extends AbstractJobProcessor
             $data['offset'] = $data['offset'] + $total;
             $new            = $this->container->getJobQueue()->add($this::JOB_TYPE, $data);
 
-            $jobs = $this->em->getRepository('DeskPRO:Job')->findBy(array('depends_on_job' => $job['id']));
+            $jobs = $this->em->getRepository('DeskPRO:Job')->findBy(['depends_on_job' => $job['id']]);
             foreach ($jobs as $dep) {
                 $dep->depends_on_job = $new;
             }
@@ -90,5 +90,8 @@ abstract class Base extends AbstractJobProcessor
         return true;
     }
 
+    /**
+     * @param array $data
+     */
     abstract protected function doProcess(array $data);
 }

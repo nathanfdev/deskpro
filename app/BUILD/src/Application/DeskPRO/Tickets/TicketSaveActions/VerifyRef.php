@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,13 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\RefGenerator\RefGeneratorInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
@@ -68,9 +69,9 @@ class VerifyRef implements TicketSaveActionInterface
         if (!$ticket->ref || (isset($ticket->__dp_is_autogen_ref) && $ticket->__dp_is_autogen_ref)) {
             $ticket->__dp_is_autogen_ref = false;
             try {
-                $ticket->ref = $this->ref_generator->generateReference('DeskPRO:Ticket');
+                $ticket->ref = $this->ref_generator->generateReference(Ticket::class);
             } catch (\Exception $e) {
-                KernelErrorHandler::logException($e);
+                SystemErrorHandler::logException($e);
 
                 $ref         = DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.DpStrings::random(4, Strings::CHARS_NUM).'-'.DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.date('ymd');
                 $ticket->ref = $ref;

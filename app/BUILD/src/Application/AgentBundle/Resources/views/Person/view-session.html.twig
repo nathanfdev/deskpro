@@ -1,14 +1,8 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.PersonSession';
-{% if visitor.name %}
-	pageMeta.title = {{ visitor.name|json_encode|raw }};
-{% elseif visitor.email %}
-	pageMeta.title = {{ visitor.email|json_encode|raw }};
-{% else %}
-	pageMeta.title = 'Anonymous User';
-{% endif %}
+pageMeta.title = 'Anonymous User';
 pageMeta.session_id = {{session.id}};
-pageMeta.visitor_id = {{visitor.id|default(0)}};
+pageMeta.visitor_id = 0;
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
@@ -22,16 +16,7 @@ pageMeta.baseId = '{{ baseId }}';
 <header class="page-header">
 	<div class="titlewrap">
 		<h1>
-			{% if visitor.name or visitor.email %}
-				{% if visitor.name %}
-					{{ visitor.name }}
-				{% endif %}
-				{% if visitor.email %}
-					&lt;{{ visitor.email }}&gt;
-				{% endif %}
-			{% else %}
-                {{ phrase('agent.people.anonymous_user', {'id':visitor.id}) }}
-			{%endif %}
+			{{ phrase('agent.people.anonymous_user', {'id':visitor.id}) }}
 		</h1>
 	</div>
 	<br class="clear" />
@@ -76,36 +61,6 @@ pageMeta.baseId = '{{ baseId }}';
 						{{ phrase('agent.people.since') }}
 						<time>{{session.date_created|date('fulltime')}}</time>
 						(<time class="timeago" datetime="{{session.date_created|date('c', 'UTC')}}"></time>)
-					</td>
-				</tr>
-				<tr>
-					<td class="label">{{ phrase('agent.general.last_activity') }}</td>
-					<td class="value">
-						<time>{{session.date_last|date('fulltime')}}</time>
-						(<time class="timeago" datetime="{{session.date_last|date('c', 'UTC')}}"></time>)
-						{{ phrase('agent.people.on_page') }} <em class="tipped" title="{{ session.visitor.last_track.page_url }}">...</em>
-				</tr>
-				<tr>
-					<td class="label">{{ phrase('agent.general.landing_page') }}</td>
-					<td class="value">
-						{{ phrase('agent.people.user_landed_on_page') }}
-						<em class="tipped" title="{{ session.visitor.initial_track.page_url }}">...</em>
-						{% if session.visitor.visit_track.ref_page_url %}
-							{{ phrase('agent.people.and_came_from') }}
-							<em class="tipped" title="{{ session.visitor.visit_track.ref_page_url }}">...</em>
-						{% endif %}
-					</td>
-				</tr>
-				<tr>
-					<td class="label">{{ phrase('agent.general.ip_address') }}</td>
-					<td class="value">
-						{{ session.visitor.ip_address }}
-					</td>
-				</tr>
-				<tr>
-					<td class="label">{{ phrase('agent.general.user_agent') }}</td>
-					<td class="value">
-						{{ session.visitor.last_track.user_agent }}
 					</td>
 				</tr>
 			</table>

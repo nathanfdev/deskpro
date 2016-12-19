@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,14 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\People\PermissionLoader;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Groups\PermissionsLoader;
 
 /**
  * Loads general usergroup permissions likes flags and the like.
@@ -79,8 +81,8 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 
     public function getSubkey()
     {
-        if ($this->person && $this->person->is_agent) {
-            return 'person-'.$this->person->id;
+        if ($this->person && $this->person->isAgent()) {
+            return 'person-'.$this->person->getId();
         }
     }
 
@@ -98,25 +100,17 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
         switch ($name) {
             case 'core.tickets_submit_check':
                 if ($this->getPermission('tickets.use')) {
-                    if (!$this->person->id && App::getSetting('core.interact_require_login')) {
-                        return 0;
-                    } else {
-                        return 1;
-                    }
+                    return true;
                 } else {
-                    return 0;
+                    return false;
                 }
                 break;
 
             case 'core.feedback_submit_check':
                 if ($this->getPermission('feedback.use')) {
-                    if (!$this->person->id && App::getSetting('core.interact_require_login')) {
-                        return 0;
-                    } else {
-                        return true;
-                    }
+                    return true;
                 } else {
-                    return 0;
+                    return false;
                 }
                 break;
         }
@@ -140,33 +134,29 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
     {
         if ($this->perms === null) {
             if (!$this->usergroup_ids && !$this->person_id) {
-                $this->perms = array();
+                $this->perms = [];
             } else {
+                /** @var PermissionsLoader $permissionLoader */
+                $permissionLoader = App::getSystemService('PermissionsLoader');
+
+                // calc effective permissions for usergroups
+                $this->perms = $permissionLoader->getEffectivePermissionsForUsergroups($this->usergroup_ids);
+
+                // calc effective permissions for overrides
                 if ($this->person_id) {
-                    $perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);
-                    if ($this->person && $this->person->is_agent) {
-                        $overrides = App::getSystemService('PermissionsLoader')->getAgentOverridePermissions($this->person_id);
+                    if ($this->person && $this->person->isAgent()) {
+                        $overrides = $permissionLoader->getAgentOverridePermissions($this->person_id);
                         if ($overrides) {
                             $this->with_overrides = true;
-                            $perms                = array_merge($perms, array(-1 => $overrides));
+                            $this->perms          = Permission::getEffectivePermissions($overrides, $this->perms);
                         }
                     }
-                } else {
-                    $perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);
                 }
-                $perm_result = array();
-                foreach ($perms as $p_group) {
-                    foreach ($p_group as $p) {
-                        $perm_result[] = $p;
-                    }
-                }
-
-                $this->perms = Permission::getEffectivePermissions($perm_result);
             }
         }
 
         if ($this->dynamic_perms === null) {
-            $this->dynamic_perms = array();
+            $this->dynamic_perms = [];
             $agent_groups        = App::$container->getAgentGroups();
             foreach ($this->usergroup_ids as $ugid) {
                 if ($agent_groups->groupExists($ugid)) {
@@ -190,7 +180,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
      */
     protected function serializeData()
     {
-        return array('perms' => $this->perms);
+        return ['perms' => $this->perms];
     }
 
     /**
@@ -204,34 +194,35 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
     }
 
     /**
-     * @param Entity\Usergroup $g
+     * @param Entity\Usergroup $usergroup
      *
      * @return null|array
      */
-    protected static function loadDynamicPerms(Entity\Usergroup $g)
+    protected static function loadDynamicPerms(Entity\Usergroup $usergroup)
     {
-        static $set_perms_by_group = array();
+        static $set_perms_by_group = [];
 
-        if (!$g->sys_name) {
+        $sysName = $usergroup->getSysName();
+        if (!$sysName) {
             return;
         }
 
-        if (isset($set_perms_by_group[$g->sys_name])) {
-            return $set_perms_by_group[$g->sys_name];
+        if (isset($set_perms_by_group[$sysName])) {
+            return $set_perms_by_group[$sysName];
         }
 
-        $set_perms = array();
-        if ($g->sys_name == 'agent_all_perms' || $g->sys_name == 'agent_all_safe_perms') {
+        $set_perms = [];
+        if ($sysName == 'agent_all_perms' || $sysName == 'agent_all_safe_perms') {
             $loader = App::$container->getSystemService('AgentPermissionNamesLoader');
-            if ($g->sys_name == 'agent_all_perms') {
+            if ($sysName == 'agent_all_perms') {
                 $set_perms = $loader->getNames();
             } else {
                 $set_perms = $loader->getSafeNames();
             }
         }
 
-        $set_perms_by_group[$g->sys_name] = $set_perms;
+        $set_perms_by_group[$sysName] = $set_perms;
 
-        return $set_perms_by_group[$g->sys_name];
+        return $set_perms_by_group[$sysName];
     }
 }

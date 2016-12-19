@@ -1,0 +1,28 @@
+services:
+
+  portal_http_cache_user_context:
+      class: DeskPRO\Bundle\PortalBundle\HttpCache\PortalUserHashContextProvider
+      arguments: ["@settings_resolver", "@security.token_storage", "@security.authorization_checker", "@portal_usergroup_decider"]
+      tags:
+        - { name: fos_http_cache.user_context_provider }
+
+
+  portal_cache_helper:
+      class: DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper
+      arguments: ["@request_stack", "@security.token_storage"]
+
+
+  # the fos UserContextSubscriber still runs, this just runs after with our logic
+  portal_user_context_subscriber:
+      class: DeskPRO\Bundle\PortalBundle\HttpCache\EventListener\PortalUserContextSubscriber
+      arguments: ["@fos_http_cache.user_context.request_matcher", "@portal_cache_helper"]
+      tags:
+        - { name: kernel.event_subscriber }
+
+
+  # the fos UserContextSubscriber still runs, this just runs after with our logic
+  portal_http_cache_listener:
+      class: DeskPRO\Bundle\PortalBundle\HttpCache\EventListener\PortalHttpCacheListener
+      arguments: ["@brand_stack", "@portal_cache_helper"]
+      tags:
+        - { name: kernel.event_subscriber }

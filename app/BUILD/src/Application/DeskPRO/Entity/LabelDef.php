@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,14 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * These are pre-defined labels that are allowed to be used.
@@ -44,36 +46,85 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property string $label_type
  * @property string $label
  * @property int $total
+ * @JMS\ExclusionPolicy("all")
  */
 class LabelDef extends DomainObject
 {
+    const DEFAULT_COLOR = '#cccccc';
+
+    const TYPE_TASKS     = 'task';
+    const TYPE_TICKETS   = 'tickets';
+    const TYPE_PEOPLE    = 'people';
+    const TYPE_ORGS      = 'organizations';
+    const TYPE_NEWS      = 'news';
+    const TYPE_FEEDBACK  = 'feedback';
+    const TYPE_DOWNLOADS = 'downloads';
+    const TYPE_CHATS     = 'chat_conversations';
+    const TYPE_ARTICLES  = 'articles';
+
     /**
+     * Label type.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $label_type;
 
     /**
+     * Label itself.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $label;
 
     /**
+     * RGB color representation.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string css color
      */
     protected $color = '';
 
     /**
+     * Label times used total counter.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $total = 0;
 
-    public function __construct(array $data = array())
+    public function __construct(array $data = [])
     {
         foreach ($data as $k => $v) {
             if (property_exists($this, $k)) {
                 $this[$k] = trim($v);
             }
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
+     * @param string $label
+     */
+    public function setLabel($label)
+    {
+        $this->setModelField('label', $label);
     }
 
     /**
@@ -117,64 +168,95 @@ class LabelDef extends DomainObject
         }
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    /**
+     * Increase LabelDef total by 1.
+     */
+    public function increment()
+    {
+        ++$this->total;
+        $this->_onPropertyChanged('total', null, $this->total);
+    }
+
+    /**
+     * Decrease LabelDef total by 1.
+     */
+    public function decrement()
+    {
+        --$this->total;
+        $this->_onPropertyChanged('total', null, $this->total);
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotal()
+    {
+        return $this->total;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LabelDef';
         $metadata->setPrimaryTable(
-            array(
-                 'name'    => 'label_defs',
-                 'indexes' => array(
-                     'type_total_idx' => array('columns' => array('label_type', 'total')),
-                 ),
-            )
+            [
+                'name'    => 'label_defs',
+                'indexes' => [
+                    'type_total_idx' => [
+                        'columns' => [
+                            'label_type',
+                            'total',
+                        ],
+                    ],
+                ],
+            ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'label_type',
-                 'type'       => 'string',
-                 'length'     => 50,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'label_type',
-                 'id'         => true,
-            )
+            [
+                'fieldName'  => 'label_type',
+                'type'       => 'string',
+                'length'     => 50,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'label_type',
+                'id'         => true,
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'label',
-                 'type'       => 'string',
-                 'length'     => 255,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'label',
-                 'id'         => true,
-            )
+            [
+                'fieldName'  => 'label',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'label',
+                'id'         => true,
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'color',
                 'type'       => 'string',
                 'nullable'   => false,
                 'columnName' => 'color',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'total',
-                 'type'       => 'integer',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'total',
-            )
+            [
+                'fieldName'  => 'total',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'total',
+            ]
         );
     }
 }

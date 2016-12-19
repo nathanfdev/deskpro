@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\App;
@@ -69,8 +70,8 @@ class Link extends AbstractFunc
         $format        = array_shift($arguments);
         $formatLiteral = $this->_toLiteral($format);
 
-        $argNames  = array();
-        $argSelect = array();
+        $argNames  = [];
+        $argSelect = [];
         foreach ($arguments as $argument) {
             $prepped     = $argument->prepare($statement, $section, $stack, $select, $result);
             $argNames[]  = $prepped->name();
@@ -94,7 +95,9 @@ class Link extends AbstractFunc
                 || !($valueRenderer instanceof \Application\DeskPRO\Dpql\Renderer\Values\Html)
         );
 
-        $print = $valueRenderer->renderValue($print, 'string');
+        $print = array_key_exists('hierarchy_title', $row)
+               ? $row['hierarchy_title']
+               : $valueRenderer->renderValue($print, 'string');
 
         if ($breakEarly) {
             return $print;
@@ -106,7 +109,7 @@ class Link extends AbstractFunc
             case 'organization': $format = 'agent/#app.people,o:%d'; break;
         }
 
-        $argValues = array();
+        $argValues = [];
         foreach ($argSelect as $key) {
             $argValues[] = urlencode($renderer->getColumnValue($row, $key));
         }

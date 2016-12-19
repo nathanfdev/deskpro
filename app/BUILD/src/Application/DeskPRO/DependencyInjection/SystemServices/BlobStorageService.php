@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -45,24 +46,26 @@ class BlobStorageService
 {
     public static function create(DeskproContainer $container)
     {
-        #------------------------------
-        # Create a logger
-        #------------------------------
+        //------------------------------
+        // Create a logger
+        //------------------------------
+
+        $env = $container->get('deskpro.app_env');
 
         $logger = new Logger();
 
-        if (!dp_get_config('enable_blobstorage_log')) {
+        if (!$env->getConfig('logs.enable_blobstorage_log')) {
             $logger->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::WARN));
         }
 
-        $wr = new \Orb\Log\Writer\Stream($container->getLogDir().DIRECTORY_SEPARATOR.'blob_storage.log');
+        $wr = new \Orb\Log\Writer\Stream($env->getUserLogsDir().DIRECTORY_SEPARATOR.'blob_storage.log');
         $logger->addWriter($wr);
 
-        #------------------------------
-        # Filesystem adapter
-        #------------------------------
+        //------------------------------
+        // Filesystem adapter
+        //------------------------------
 
-        $opts = array('base_path' => $container->getBlobDir());
+        $opts = ['base_path' => $container->getBlobDir()];
         if ($container->getSetting('core.filestorage_file_mode')) {
             $opts['file_mode'] = $container->getSetting('core.filestorage_file_mode');
         }
@@ -73,9 +76,9 @@ class BlobStorageService
         $fs_adapter = new FilesystemStorage($opts);
         $fs_adapter->setLogger($logger);
 
-        #------------------------------
-        # S3 Adapter
-        #------------------------------
+        //------------------------------
+        // S3 Adapter
+        //------------------------------
 
         $s3_adapter = null;
         if ($container->getSetting('core.filestorage_s3_key') && $container->getSetting('core.filestorage_s3_secret') && $container->getSetting('core.filestorage_s3_bucket')) {
@@ -86,46 +89,48 @@ class BlobStorageService
                 define(CURLOPT_TIMEOUT, 13);
             }
 
-            $client = S3Client::factory(array(
+            $client = S3Client::factory([
                 'key'             => $container->getSetting('core.filestorage_s3_key'),
                 'secret'          => $container->getSetting('core.filestorage_s3_secret'),
-                'request.options' => array(
+                'request.options' => [
                     'connect_timeout' => 15,
                     'timeout'         => 120,
-                ),
-                'curl.options' => array(
+                ],
+                'curl.options' => [
                     CURLOPT_CONNECTTIMEOUT => 15,
                     CURLOPT_TIMEOUT        => 120,
-                ),
-            ));
-            $s3_adapter = new AmazonS3Storage(array(
+                ],
+            ]);
+            $s3_adapter = new AmazonS3Storage([
                 's3_client'       => $client,
                 'bucket'          => $container->getSetting('core.filestorage_s3_bucket'),
                 'file_url_domain' => $container->getSetting('core.filestorage_s3_file_url_domain'),
                 'base_path'       => $container->getSetting('core.filestorage_s3_basepath'),
-            ));
+            ]);
             $s3_adapter->setLogger($logger);
         }
 
-        #------------------------------
-        # Database adapter
-        #------------------------------
+        //------------------------------
+        // Database adapter
+        //------------------------------
 
-        $db_adapter = new DatabaseStorage(array(
+        $db_adapter = new DatabaseStorage([
             'db'                   => $container->getDb(),
             'table'                => 'blobs_storage',
             'field_name.data'      => 'data',
             'field_name.path'      => 'blob_id',
             'field_name.order'     => 'id',
             'metadata_id_property' => 'blob_id',
-        ));
+        ]);
         $db_adapter->setLogger($logger);
 
-        #------------------------------
-        # Create the storage
-        #------------------------------
+        //------------------------------
+        // Create the storage
+        //------------------------------
 
-        $bs = new DeskproBlobStorage($container->getEm());
+        $bs = new DeskproBlobStorage($container->getEm(), [
+            'disable_physical_delete' => $container->getSetting('core.filestorage_disable_physical_delete'),
+        ]);
         $bs->setLogger($logger);
 
         if ($s3_adapter && $container->getSetting('core.filestorage_method') == 's3') {
@@ -156,6 +161,13 @@ class BlobStorageService
             $bs->setAdapterForTag('logs.sendmail_source_log', $log_adapter_id);
             $bs->setAdapterForTag('logs.ticket_proc_log', $log_adapter_id);
         }
+
+        // Use local storage for CSS because we need to read it
+        // from local domain for paths to resolve properly
+        $bs->setAdapterForTag('brand_asset.custom_style', 'db');
+        $bs->setAdapterForTag('brand_asset.main', 'db');
+        $bs->setAdapterForTag('brand_asset.portal_css', 'db');
+        $bs->setAdapterForTag('brand_asset.portal_rtl_css', 'db');
 
         return $bs;
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\DBAL;
 
 class DatabaseStats
@@ -54,7 +55,7 @@ class DatabaseStats
             return;
         }
 
-        $this->stats = array();
+        $this->stats = [];
 
         $this->stats['ticket_count']           = $this->db->fetchColumn('SELECT COUNT(*) FROM tickets');
         $this->stats['ticket_active_count']    = $this->db->fetchColumn("SELECT COUNT(*) FROM tickets WHERE status IN ('awaiting_user', 'awaiting_agent')");
@@ -69,7 +70,6 @@ class DatabaseStats
         $this->stats['content_feedback_count'] = $this->db->fetchColumn('SELECT COUNT(*) FROM feedback');
         $this->stats['content_download_count'] = $this->db->fetchColumn('SELECT COUNT(*) FROM downloads');
         $this->stats['content_news_count']     = $this->db->fetchColumn('SELECT COUNT(*) FROM news');
-        $this->stats['daily_visitor_count']    = $this->db->fetchColumn('SELECT COUNT(*) FROM visitors WHERE date_last >= ?', array(date('Y-m-d H:i:s', strtotime('-24 hours'))));
         $this->stats['age_last_agent_login']   = $this->db->fetchColumn('
             SELECT UNIX_TIMESTAMP() - UNIX_TIMESTAMP(people.date_last_login)
             FROM people

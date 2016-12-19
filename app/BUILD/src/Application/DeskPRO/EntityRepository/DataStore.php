@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,55 +31,45 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\DataStore as DataStoreEntity;
 
-/**
- * Class DataStore.
- */
 class DataStore extends AbstractEntityRepository
 {
-    /**
-     * Get data by code.
-     *
-     * @param string $code
-     * @param string $type
-     *
-     * @return null|object
-     */
     public function getByCode($code, $type = null)
     {
-        $info = Entity\DataStore::getPartsFromCode($code);
+        $info = DataStoreEntity::getPartsFromCode($code);
         if (!$info) {
             return;
         }
 
-        $tmp_data = $this->find($info['id']);
-        if ($tmp_data['auth'] != $info['auth']) {
-            return;
-        }
-        if ($type and $tmp_data->getType() != $type) {
+        $tmpdata = $this->find($info['id']);
+        if ($tmpdata['auth'] != $info['auth']) {
             return;
         }
 
-        return $tmp_data;
+        if ($type and $tmpdata->getType() != $type) {
+            return;
+        }
+
+        return $tmpdata;
     }
 
     /**
      * Get data by its unique name.
      *
      * @param string $name
-     * @param bool   $create_unset
      *
-     * @return Entity\DataStore
+     * @return DataStoreEntity
      */
     public function getByName($name, $create_unset = false)
     {
-        $ds = $this->findOneBy(array('name' => $name));
+        $ds = $this->findOneBy(['name' => $name]);
 
         if (!$ds && $create_unset) {
-            $ds       = new Entity\DataStore();
+            $ds       = new DataStoreEntity();
             $ds->name = $name;
         }
 
@@ -91,15 +81,11 @@ class DataStore extends AbstractEntityRepository
      *
      * @param $prefix
      *
-     * @return Entity\DataStore[]
+     * @return array
      */
     public function getByPrefix($prefix)
     {
-        return $this
-            ->getEntityManager()
-            ->createQuery('SELECT d FROM DeskPRO:DataStore d WHERE d.name LIKE :prefix')
-            ->setParameter('prefix', $prefix.'%')
-            ->getResult()
-        ;
+        return $this->getEntityManager()->createQuery('SELECT d FROM DeskPRO:DataStore d WHERE d.name LIKE :prefix')
+            ->setParameter('prefix', $prefix.'%')->getResult();
     }
 }

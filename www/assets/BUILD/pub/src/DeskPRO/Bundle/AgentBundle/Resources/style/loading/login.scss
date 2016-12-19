@@ -1,0 +1,16 @@
+.dpw-login-panels {
+  width: 810px;
+  margin: 0 auto;
+  margin-top: 80px;
+  &:after { content: ""; display: table; clear: both; }// Clearfix
+
+  .left-panel, .right-panel { width: 400px; float: left; }
+  .left-panel { margin-right: 5px; }
+  .right-panel { margin-left: 5px; }
+}
+
+@import "./login--main-panel";
+@import "./login--side-panel";
+@import "./login--alerts";
+@import "./login--footer";
+@import "./loading";

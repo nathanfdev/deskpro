@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -101,9 +102,9 @@ class DetectAutoresponders implements TicketSaveActionInterface
             return;
         }
 
-        #------------------------------
-        # Checking for ticket flood
-        #------------------------------
+        //------------------------------
+        // Checking for ticket flood
+        //------------------------------
 
         if ($this->max_tickets && $context->getEventType() == 'newticket') {
             $context->getLogger()->info(sprintf('[DetectAutoresponders] Checking %d %s for more than %d tickets in %ds', $ticket->person->id, $ticket->person->getDisplayContact(), $this->max_tickets, $this->max_tickets_time));
@@ -116,7 +117,7 @@ class DetectAutoresponders implements TicketSaveActionInterface
                     SELECT COUNT(*)
                     FROM tickets
                     WHERE person_id = ? AND date_created >= ?
-                ', array($ticket->person->id, $date_cut));
+                ', [$ticket->person->id, $date_cut]);
 
                 $context->getLogger()->info(sprintf('[DetectAutoresponders] --> Count: %d', $count));
 
@@ -129,9 +130,9 @@ class DetectAutoresponders implements TicketSaveActionInterface
             }
         }
 
-        #------------------------------
-        # Checking for reply flood
-        #------------------------------
+        //------------------------------
+        // Checking for reply flood
+        //------------------------------
 
         if ($this->max_replies && $context->getEventType() == 'newreply') {
             $message = $ticket->getStateChangeRecorder()->getNewUserReplies();
@@ -151,7 +152,7 @@ class DetectAutoresponders implements TicketSaveActionInterface
                     SELECT COUNT(*)
                     FROM tickets_messages
                     WHERE person_id = ? AND date_created >= ?
-                ', array($message->person->id, $date_cut));
+                ', [$message->person->id, $date_cut]);
 
                 $context->getLogger()->info(sprintf('[DetectAutoresponders] --> Count: %d', $count));
 

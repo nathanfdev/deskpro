@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,12 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\DownloadComment;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\GlossaryWord;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 use Orb\Util\Arrays;
@@ -47,13 +57,28 @@ class AgentHelper implements PersonContextInterface
     const FEEDBACK  = 'feedback';
 
     /** @var array */
-    protected $enabled_types = array('articles', 'downloads', 'news');
+    protected $enabled_types = [
+        self::ARTICLES,
+        self::DOWNLOADS,
+        self::NEWS,
+    ];
 
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person_context;
+
+    /**
+     * @param array $types
+     */
     public function setEnabledTypes(array $types)
     {
         $this->enabled_types = $types;
     }
 
+    /**
+     * @return string|null
+     */
     public function getSingleSpecificType()
     {
         $t = $this->enabled_types;
@@ -65,27 +90,30 @@ class AgentHelper implements PersonContextInterface
     }
 
     /**
-     * @var \Application\DeskPRO\Entity\Person
+     * @param Person $person
+     *
+     * @return $this
      */
-    protected $person_context;
-
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
+
+        return $this;
     }
 
     /**
      * Get the category structure.
      *
      * @param string $type
+     * @param int    $brandId
      *
      * @return array
      */
-    public function getCategoryStructure($type, $flat = false)
+    public function getCategoryStructure($type, $brandId = 0)
     {
         $entity_name = self::getCatEntityNameFor($type);
 
-        return App::getEntityRepository($entity_name)->getRootNodes();
+        return App::getEntityRepository($entity_name)->getRootNodes($brandId);
     }
 
     /**
@@ -105,7 +133,7 @@ class AgentHelper implements PersonContextInterface
     /**
      * Get an array of categories and their perms usergroups.
      *
-     * @param $type
+     * @param string $type
      *
      * @return array
      */
@@ -116,149 +144,77 @@ class AgentHelper implements PersonContextInterface
         $table       = $repos->getPermissionTableName();
 
         if (!$table) {
-            return array();
+            return [];
         }
 
-        $cats_to_ugs = App::getDb()->fetchAllGrouped("
+        $cats_to_ugs = App::getDb()->fetchAllGrouped(
+            "
             SELECT category_id, usergroup_id
             FROM $table
-        ", array(), 'category_id', null, 'usergroup_id');
+        ",
+            [],
+            'category_id',
+            null,
+            'usergroup_id'
+        );
 
         return $cats_to_ugs;
     }
 
-    ############################################################################
-    # Glossary
-    ############################################################################
+    //###########################################################################
+    // Glossary
+    //###########################################################################
 
     /**
      * Get an array of glossary words, sorted into an alphabetically-indexed array.
      *
+     * @param int $brandId
+     *
      * @return array
      */
-    public function getGlossaryWordsIndex()
+    public function getGlossaryWordsIndex($brandId = 0)
     {
-        $glossary_words = App::getEntityRepository('DeskPRO:GlossaryWord')->getWords();
+        $glossary_words = App::getEntityRepository(GlossaryWord::class)->getWords($brandId);
         $glossary_words = Arrays::sortIntoAlphabeticalIndex($glossary_words, null, true, true);
 
         return $glossary_words;
     }
 
-    ############################################################################
-    # Validating Content
-    ############################################################################
+    //###########################################################################
+    // Validating Comments
+    //###########################################################################
 
     /**
-     * Counts all content that needs validating.
-     *
-     * @return int
-     */
-    public function getValidatingContentCount()
-    {
-        $db = App::getDb();
-        foreach ($this->enabled_types as $t) {
-            $table       = $db->quoteIdentifier($t);
-            $alias       = $db->quoteIdentifier('count_'.$t);
-            $sql_parts[] = "(
-                SELECT COUNT(*)
-                FROM $table
-                WHERE hidden_status = 'validating'
-            ) AS $alias";
-        }
-
-        $sql     = 'SELECT '.implode(', ', $sql_parts);
-        $results = $db->fetchAssoc($sql);
-
-        return array_sum($results);
-    }
-
-    /**
-     * Get an array of all content awaiting validation from each content type.
+     * @param int    $limit
+     * @param string $order_dir
      *
      * @return array
      */
-    public function getValidatingContent($limit = 25, $order_dir = 'ASC')
-    {
-        $results = $this->getValidatingContentInfo($limit, $order_dir);
-
-        return $this->getContentFromInfo($results);
-    }
-
-    public function getValidatingContentInfo($limit = 25, $order_dir = 'ASC')
-    {
-        $sql_parts = array();
-
-        if ($limit !== null && !is_array($limit)) {
-            $limit = array(
-                'max'    => $limit,
-                'offset' => 0,
-            );
-        }
-
-        $types = array(
-            'articles'  => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-            'downloads' => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-            'news'      => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
-            'feedback'  => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
-        );
-
-        #------------------------------
-        # Fetch from each comment table with a union
-        #------------------------------
-
-        $db = App::getDb();
-        foreach ($this->enabled_types as $t) {
-            $t_info      = $types[$t];
-            $table       = $db->quoteIdentifier($t);
-            $sql_parts[] = "(
-                SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
-                FROM $table AS c
-                LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
-                WHERE c.hidden_status = 'validating' OR r.status = 'validating'
-            )";
-        }
-
-        $sql = implode(' UNION ', $sql_parts);
-        if ($limit) {
-            $sql .= " ORDER BY date_created $order_dir LIMIT {$limit['offset']}, {$limit['max']}";
-        } else {
-            $sql .= " ORDER BY date_created $order_dir";
-        }
-
-        $results = $db->fetchAll($sql);
-
-        return $results;
-    }
-
-    ############################################################################
-    # Validating Comments
-    ############################################################################
-
     public function getValidatingComments($limit = 25, $order_dir = 'ASC')
     {
-        $sql_parts = array();
+        $sql_parts = [];
 
         if (!is_array($limit)) {
-            $limit = array(
+            $limit = [
                 'max'    => $limit,
                 'offset' => 0,
-            );
+            ];
         }
         $offset = (int) $limit['offset'];
         $limit  = (int) $limit['max'];
 
         $types = $this->getCommentTypeInfo();
 
-        #------------------------------
-        # Fetch from each comment table with a union
-        #------------------------------
+        //------------------------------
+        // Fetch from each comment table with a union
+        //------------------------------
 
         foreach ($this->enabled_types as $t) {
             $t_info      = $types[$t];
             $sql_parts[] = "(
                 SELECT id as comment_id, '{$t_info['content_type']}' as content_type, date_created
                 FROM {$t_info['table']}
-                WHERE status = 'validating' OR (status = 'visible' AND is_reviewed = 0)
+                WHERE is_reviewed = 0
             )";
         }
 
@@ -269,52 +225,55 @@ class AgentHelper implements PersonContextInterface
         $results = $db->fetchAll($sql);
 
         if (!$results) {
-            return array();
+            return [];
         }
 
-        #------------------------------
-        # Fetch each comment in the result
-        #------------------------------
+        //------------------------------
+        // Fetch each comment in the result
+        //------------------------------
 
-        $result_ids_typed = array();
+        $result_ids_typed = [];
 
         foreach ($results as $r) {
             if (!isset($result_ids_typed[$r['content_type']])) {
-                $result_ids_typed[$r['content_type']] = array();
+                $result_ids_typed[$r['content_type']] = [];
             }
 
             $result_ids_typed[$r['content_type']][] = $r['comment_id'];
         }
 
-        $results_typed = array();
+        $results_typed = [];
 
         foreach ($result_ids_typed as $t => $ids) {
             $t_info            = $types[$t];
             $results_typed[$t] = App::getEntityRepository($t_info['entity'])->getByIds($ids);
         }
 
-        #------------------------------
-        # Put back into original sort order
-        # as a combined array
-        #------------------------------
+        //------------------------------
+        // Put back into original sort order
+        // as a combined array
+        //------------------------------
 
-        $results_ordered = array();
+        $results_ordered = [];
 
         foreach ($results as $r) {
             if (isset($results_typed[$r['content_type']][$r['comment_id']])) {
-                $results_ordered[] = array(
+                $results_ordered[] = [
                     'info' => $r,
                     'obj'  => $results_typed[$r['content_type']][$r['comment_id']],
-                );
+                ];
             }
         }
 
         return $results_ordered;
     }
 
+    /**
+     * @return int
+     */
     public function getValidatingCommentsCount()
     {
-        $sql_parts = array();
+        $sql_parts = [];
 
         $types = $this->getCommentTypeInfo();
         $db    = App::getDb();
@@ -325,7 +284,7 @@ class AgentHelper implements PersonContextInterface
             $sql_parts[] = "(
                 SELECT COUNT(*)
                 FROM {$t_info['table']}
-                WHERE status = 'validating' OR (status = 'visible' AND is_reviewed = 0)
+                WHERE is_reviewed = 0
             ) AS $alias";
         }
 
@@ -335,36 +294,71 @@ class AgentHelper implements PersonContextInterface
         return array_sum($results);
     }
 
-    ############################################################################
-    # All Comments
-    ############################################################################
+    //###########################################################################
+    // All Comments
+    //###########################################################################
 
-    public function getComments($limit, $order_dir = 'DESC')
+    /**
+     * @param int|array $limit
+     * @param int       $brandId
+     * @param string    $order_dir
+     *
+     * @return array
+     */
+    public function getComments($limit, $brandId = 0, $order_dir = 'DESC')
     {
-        $sql_parts = array();
+        $sql_parts = [];
 
         if (!is_array($limit)) {
-            $limit = array(
+            $limit = [
                 'max'    => $limit,
                 'offset' => 0,
-            );
+            ];
         }
         $offset = (int) $limit['offset'];
         $limit  = (int) $limit['max'];
 
         $types = $this->getCommentTypeInfo();
 
-        #------------------------------
-        # Fetch from each comment table with a union
-        #------------------------------
+        //------------------------------
+        // Fetch from each comment table with a union
+        //------------------------------
 
         foreach ($this->enabled_types as $t) {
-            $t_info      = $types[$t];
-            $sql_parts[] = "(
-                SELECT id as comment_id, '{$t_info['content_type']}' as content_type, date_created
-                FROM {$t_info['table']}
-                WHERE status != 'deleted'
-            )";
+            $t_info = $types[$t];
+            if ($brandId && $t == 'articles') {
+                $sql_parts[] = "(
+                    SELECT {$t_info['table']}.id as comment_id, '{$t_info['content_type']}' as content_type, 
+                    {$t_info['table']}.date_created
+                    FROM {$t_info['table']} 
+                    INNER JOIN {$t_info['content_type']}
+                        ON {$t_info['content_type']}.id = {$t_info['table']}.{$t_info['id_field']}
+                    INNER JOIN {$t_info['category_link_table']}
+                        ON {$t_info['category_link_table']}.{$t_info['id_field']} = {$t_info['table']}.id
+                    INNER JOIN {$t_info['category_table']}
+                        ON {$t_info['category_table']}.id = {$t_info['category_link_table']}.category_id
+                    WHERE {$t_info['table']}.status != 'deleted'
+                    AND {$t_info['category_table']}.brand_id = ".(int) $brandId.'
+                )';
+            } elseif ($brandId && $t != 'feedback') {
+                $sql_parts[] = "(
+                    SELECT {$t_info['table']}.id as comment_id, '{$t_info['content_type']}' as content_type, 
+                    {$t_info['table']}.date_created
+                    FROM {$t_info['table']} 
+                    INNER JOIN {$t_info['content_type']}
+                        ON {$t_info['content_type']}.id = {$t_info['table']}.{$t_info['id_field']}
+                    INNER JOIN {$t_info['category_table']}
+                        ON {$t_info['category_table']}.id = {$t_info['content_type']}.category_id
+                    WHERE {$t_info['table']}.status != 'deleted'
+                    AND {$t_info['category_table']}.brand_id = ".(int) $brandId.'
+                )';
+            } else {
+                $sql_parts[] = "(
+                    SELECT id as comment_id, '{$t_info['content_type']}' as content_type, date_created
+                    FROM {$t_info['table']}
+                    WHERE status != 'deleted'
+                )";
+            }
         }
 
         $sql = implode(' UNION ', $sql_parts);
@@ -374,64 +368,95 @@ class AgentHelper implements PersonContextInterface
         $results = $db->fetchAll($sql);
 
         if (!$results) {
-            return array();
+            return [];
         }
 
-        #------------------------------
-        # Fetch each comment in the result
-        #------------------------------
+        //------------------------------
+        // Fetch each comment in the result
+        //------------------------------
 
-        $result_ids_typed = array();
+        $result_ids_typed = [];
 
         foreach ($results as $r) {
             if (!isset($result_ids_typed[$r['content_type']])) {
-                $result_ids_typed[$r['content_type']] = array();
+                $result_ids_typed[$r['content_type']] = [];
             }
 
             $result_ids_typed[$r['content_type']][] = $r['comment_id'];
         }
 
-        $results_typed = array();
+        $results_typed = [];
 
         foreach ($result_ids_typed as $t => $ids) {
             $t_info            = $types[$t];
             $results_typed[$t] = App::getEntityRepository($t_info['entity'])->getByIds($ids);
         }
 
-        #------------------------------
-        # Put back into original sort order
-        # as a combined array
-        #------------------------------
+        //------------------------------
+        // Put back into original sort order
+        // as a combined array
+        //------------------------------
 
-        $results_ordered = array();
+        $results_ordered = [];
 
         foreach ($results as $r) {
             if (isset($results_typed[$r['content_type']][$r['comment_id']])) {
-                $results_ordered[] = array(
+                $results_ordered[] = [
                     'info' => $r,
                     'obj'  => $results_typed[$r['content_type']][$r['comment_id']],
-                );
+                ];
             }
         }
 
         return $results_ordered;
     }
 
-    public function getCommentsCountInfo()
+    /**
+     * @param int $brandId
+     *
+     * @return array
+     */
+    public function getCommentsCountInfo($brandId = 0)
     {
-        $sql_parts = array();
+        $sql_parts = [];
 
         $types = $this->getCommentTypeInfo();
         $db    = App::getDb();
 
         foreach ($this->enabled_types as $t) {
-            $t_info      = $types[$t];
-            $alias       = $db->quoteIdentifier($t);
-            $sql_parts[] = "(
-                SELECT COUNT(*)
-                FROM {$t_info['table']}
-                WHERE status != 'deleted'
-            ) AS $alias";
+            $t_info = $types[$t];
+            $alias  = $db->quoteIdentifier($t);
+            if ($brandId && $t == 'articles') {
+                $sql_parts[] = "(
+                    SELECT COUNT(DISTINCT {$t_info['table']}.{$t_info['id_field']})
+                    FROM {$t_info['table']} 
+                    INNER JOIN {$t_info['content_type']}
+                        ON {$t_info['content_type']}.id = {$t_info['table']}.{$t_info['id_field']}
+                    INNER JOIN {$t_info['category_link_table']}
+                        ON {$t_info['category_link_table']}.{$t_info['id_field']} = {$t_info['table']}.id
+                    INNER JOIN {$t_info['category_table']}
+                        ON {$t_info['category_table']}.id = {$t_info['category_link_table']}.category_id
+                    WHERE {$t_info['table']}.status != 'deleted'
+                    AND {$t_info['category_table']}.brand_id = ".(int) $brandId."
+                ) AS $alias";
+            } elseif ($brandId && $t != 'feedback') {
+                $sql_parts[] = "(
+                    SELECT COUNT(DISTINCT {$t_info['table']}.{$t_info['id_field']})
+                    FROM {$t_info['table']} 
+                    INNER JOIN {$t_info['content_type']}
+                        ON {$t_info['content_type']}.id = {$t_info['table']}.{$t_info['id_field']}
+                    INNER JOIN {$t_info['category_table']}
+                        ON {$t_info['category_table']}.id = {$t_info['content_type']}.category_id
+                    WHERE {$t_info['table']}.status != 'deleted'
+                    AND {$t_info['category_table']}.brand_id = ".(int) $brandId."
+                ) AS $alias";
+            } else {
+                $sql_parts[] = "(
+                    SELECT COUNT(*)
+                    FROM {$t_info['table']}
+                    WHERE status != 'deleted'
+                ) AS $alias";
+            }
         }
 
         $sql     = 'SELECT '.implode(', ', $sql_parts);
@@ -445,14 +470,44 @@ class AgentHelper implements PersonContextInterface
         return $counts;
     }
 
+    /**
+     * @param string $for_type
+     * @param string $prop
+     *
+     * @return array
+     */
     public function getCommentTypeInfo($for_type = null, $prop = null)
     {
-        static $types = array(
-            'articles'  => array('content_type' => 'articles',     'table' => 'article_comments',        'entity' => 'DeskPRO:ArticleComment',       'id_field' => 'article_id'),
-            'downloads' => array('content_type' => 'downloads',    'table' => 'download_comments',       'entity' => 'DeskPRO:DownloadComment',      'id_field' => 'download_id'),
-            'news'      => array('content_type' => 'news',         'table' => 'news_comments',           'entity' => 'DeskPRO:NewsComment',          'id_field' => 'news_id'),
-            'feedback'  => array('content_type' => 'feedback',     'table' => 'feedback_comments',       'entity' => 'DeskPRO:FeedbackComment',      'id_field' => 'feedback_id'),
-        );
+        static $types = [
+            'articles' => [
+                'content_type'        => 'articles',
+                'table'               => 'article_comments',
+                'entity'              => ArticleComment::class,
+                'category_table'      => 'article_categories',
+                'category_link_table' => 'article_to_categories',
+                'id_field'            => 'article_id',
+            ],
+            'downloads' => [
+                'content_type'   => 'downloads',
+                'table'          => 'download_comments',
+                'entity'         => DownloadComment::class,
+                'category_table' => 'download_categories',
+                'id_field'       => 'download_id',
+            ],
+            'news' => [
+                'content_type'   => 'news',
+                'table'          => 'news_comments',
+                'entity'         => NewsComment::class,
+                'category_table' => 'news_categories',
+                'id_field'       => 'news_id',
+            ],
+            'feedback' => [
+                'content_type' => 'feedback',
+                'table'        => 'feedback_comments',
+                'entity'       => FeedbackComment::class,
+                'id_field'     => 'feedback_id',
+            ],
+        ];
 
         if ($for_type !== null) {
             if (!isset($types[$for_type])) {
@@ -473,47 +528,79 @@ class AgentHelper implements PersonContextInterface
         return $types;
     }
 
-    ############################################################################
-    # Drafts
-    ############################################################################
+    //###########################################################################
+    // Drafts
+    //###########################################################################
 
     /**
      * Get an array of all drafts.
      *
+     * @param null   $limit
+     * @param string $order_dir
+     * @param bool   $all
+     * @param string $status
+     *
      * @return array
      */
-    public function getDraftContent($limit = null, $order_dir = 'ASC', $all = false)
+    public function getDraftContent($limit = null, $order_dir = 'ASC', $all = false, $status = 'draft')
     {
-        $results = $this->getDraftInfo($limit, $order_dir, $all);
+        $results = $this->getDraftInfo($limit, $order_dir, $all, $status);
 
         return $this->getContentFromInfo($results);
     }
 
-    public function getDraftInfo($limit = null, $order_dir = 'ASC', $all = false)
+    /**
+     * @param int    $limit
+     * @param string $order_dir
+     * @param bool   $all
+     *
+     * @return array
+     */
+    public function getDraftInfo($limit = null, $order_dir = 'ASC', $all = false, $status = 'draft')
     {
-        $sql_parts = array();
+        $sql_parts = [];
 
         if ($limit !== null && !is_array($limit)) {
-            $limit = array(
+            $limit = [
                 'max'    => $limit,
                 'offset' => 0,
-            );
+            ];
         }
         if (null !== $limit) {
             $offset = (int) $limit['offset'];
             $limit  = (int) $limit['max'];
         }
 
-        $types = array(
-            'articles'  => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-            'downloads' => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-            'news'      => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
-            'feedback'  => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
-        );
+        $types = [
+            'articles' => [
+                'content_type' => 'articles',
+                'entity'       => Article::class,
+                'id_field'     => 'article_id',
+                'rev_table'    => 'article_revisions',
+            ],
+            'downloads' => [
+                'content_type' => 'downloads',
+                'entity'       => Download::class,
+                'id_field'     => 'download_id',
+                'rev_table'    => 'download_revisions',
+            ],
+            'news' => [
+                'content_type' => 'news',
+                'entity'       => News::class,
+                'id_field'     => 'news_id',
+                'rev_table'    => 'news_revisions',
+            ],
+            'feedback' => [
+                'content_type' => 'feedback',
+                'entity'       => Feedback::class,
+                'id_field'     => 'feedback_id',
+                'rev_table'    => 'feedback_revisions',
+            ],
+        ];
 
-        #------------------------------
-        # Fetch from each comment table with a union
-        #------------------------------
+        //------------------------------
+        // Fetch from each comment table with a union
+        //------------------------------
 
         $db = App::getDb();
         foreach ($this->enabled_types as $t) {
@@ -529,7 +616,9 @@ class AgentHelper implements PersonContextInterface
                 SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
                 FROM $table AS c
                 LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
-                WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' $person_sql) OR (r.status = 'draft' $person_sql)
+                WHERE 
+                    (c.status = 'hidden' AND c.hidden_status = '{$status}' $person_sql) 
+                 OR (r.status = '{$status}' $person_sql)
                 GROUP BY c.id
             )";
         }
@@ -549,19 +638,42 @@ class AgentHelper implements PersonContextInterface
     /**
      * Count how many drafts there are for this user.
      *
+     * @param bool   $mine
+     * @param string $status
+     *
      * @return int
      */
-    public function getDraftsCount($mine = true)
+    public function getCountsByHiddenStatus($mine = true, $status = 'draft')
     {
-        $types = array(
-            'articles'  => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-            'downloads' => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-            'news'      => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
-            'feedback'  => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
-        );
+        $types = [
+            'articles' => [
+                'content_type' => 'articles',
+                'entity'       => Article::class,
+                'id_field'     => 'article_id',
+                'rev_table'    => 'article_revisions',
+            ],
+            'downloads' => [
+                'content_type' => 'downloads',
+                'entity'       => Download::class,
+                'id_field'     => 'download_id',
+                'rev_table'    => 'download_revisions',
+            ],
+            'news' => [
+                'content_type' => 'news',
+                'entity'       => News::class,
+                'id_field'     => 'news_id',
+                'rev_table'    => 'news_revisions',
+            ],
+            'feedback' => [
+                'content_type' => 'feedback',
+                'entity'       => Feedback::class,
+                'id_field'     => 'feedback_id',
+                'rev_table'    => 'feedback_revisions',
+            ],
+        ];
 
         $db        = App::getDb();
-        $sql_parts = array();
+        $sql_parts = [];
         foreach ($this->enabled_types as $t) {
             $t_info     = $types[$t];
             $person_sql = '';
@@ -576,7 +688,9 @@ class AgentHelper implements PersonContextInterface
                 SELECT COUNT(DISTINCT c.id)
                 FROM $table c
                 LEFT JOIN {$t_info['rev_table']} r ON (r.{$t_info['id_field']} = c.id)
-                WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' $person_sql) OR (r.status = 'draft' $person_sql)
+                WHERE 
+                    (c.status = 'hidden' AND c.hidden_status = '{$status}' $person_sql) 
+                    OR (r.status = '{$status}' $person_sql)
             ) AS $alias";
         }
 
@@ -587,56 +701,76 @@ class AgentHelper implements PersonContextInterface
         return array_sum($results);
     }
 
-    ############################################################################
+    //###########################################################################
 
     /**
-     * @param int $limit
+     * @param array $results
      *
      * @return array
      */
     public function getContentFromInfo($results)
     {
-        $types = array(
-            'articles'  => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-            'downloads' => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-            'news'      => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
-            'feedback'  => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
-        );
+        $types = [
+            'articles' => [
+                'content_type' => 'articles',
+                'entity'       => Article::class,
+                'id_field'     => 'article_id',
+                'rev_table'    => 'article_revisions',
+            ],
+            'downloads' => [
+                'content_type' => 'downloads',
+                'entity'       => Download::class,
+                'id_field'     => 'download_id',
+                'rev_table'    => 'download_revisions',
+            ],
+            'news' => [
+                'content_type' => 'news',
+                'entity'       => News::class,
+                'id_field'     => 'news_id',
+                'rev_table'    => 'news_revisions',
+            ],
+            'feedback' => [
+                'content_type' => 'feedback',
+                'entity'       => Feedback::class,
+                'id_field'     => 'feedback_id',
+                'rev_table'    => 'feedback_revisions',
+            ],
+        ];
 
-        #------------------------------
-        # Fetch each comment in the result
-        #------------------------------
+        //------------------------------
+        // Fetch each comment in the result
+        //------------------------------
 
-        $result_ids_typed = array();
+        $result_ids_typed = [];
 
         foreach ($results as $r) {
             if (!isset($result_ids_typed[$r['content_type']])) {
-                $result_ids_typed[$r['content_type']] = array();
+                $result_ids_typed[$r['content_type']] = [];
             }
 
             $result_ids_typed[$r['content_type']][] = $r['content_id'];
         }
 
-        $results_typed = array();
+        $results_typed = [];
 
         foreach ($result_ids_typed as $t => $ids) {
             $t_info            = $types[$t];
             $results_typed[$t] = App::getEntityRepository($t_info['entity'])->getByIds($ids);
         }
 
-        #------------------------------
-        # Put back into original sort order
-        # as a combined array
-        #------------------------------
+        //------------------------------
+        // Put back into original sort order
+        // as a combined array
+        //------------------------------
 
-        $results_ordered = array();
+        $results_ordered = [];
 
         foreach ($results as $r) {
             if (isset($results_typed[$r['content_type']][$r['content_id']])) {
-                $results_ordered[] = array(
+                $results_ordered[] = [
                     'info' => $r,
                     'obj'  => $results_typed[$r['content_type']][$r['content_id']],
-                );
+                ];
             }
         }
 
@@ -657,16 +791,16 @@ class AgentHelper implements PersonContextInterface
     {
         switch ($type) {
             case self::ARTICLES:
-                return 'DeskPRO:Article';
+                return Article::class;
                 break;
             case self::DOWNLOADS:
-                return 'DeskPRO:Download';
+                return Download::class;
                 break;
             case self::NEWS:
-                return 'DeskPRO:News';
+                return News::class;
                 break;
             case self::FEEDBACK:
-                return 'DeskPRO:Feedback';
+                return Feedback::class;
                 break;
         }
 
@@ -677,7 +811,7 @@ class AgentHelper implements PersonContextInterface
      * Get the category entity for a publish type.
      *
      *
-     * @param $type
+     * @param string $type
      *
      * @throws \InvalidArgumentException
      *
@@ -687,16 +821,16 @@ class AgentHelper implements PersonContextInterface
     {
         switch ($type) {
             case self::ARTICLES:
-                return 'DeskPRO:ArticleCategory';
+                return ArticleCategory::class;
                 break;
             case self::DOWNLOADS:
-                return 'DeskPRO:DownloadCategory';
+                return DownloadCategory::class;
                 break;
             case self::NEWS:
-                return 'DeskPRO:NewsCategory';
+                return NewsCategory::class;
                 break;
             case self::FEEDBACK:
-                return 'DeskPRO:FeedbackCategory';
+                return FeedbackCategory::class;
                 break;
         }
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 namespace Application\DeskPRO\NewSearch\Repository;
 
 use Elastica\Query;
+use Elastica\Search;
 use Elastica\Util as ElasticaUtil;
 use FOS\ElasticaBundle\Repository;
 use Orb\Util\Strings;
@@ -59,7 +60,7 @@ abstract class AbstractRepository extends Repository
      *
      * @var array
      */
-    protected $highlightFields = array();
+    protected $highlightFields = [];
 
     /**
      * Find.
@@ -67,37 +68,50 @@ abstract class AbstractRepository extends Repository
      * Prepares an updated query object and passes back to parent function
      * for actual execution.
      *
-     * @param $query
-     * @param null  $limit
-     * @param array $options
+     * @param string $query
+     * @param null   $limit
+     * @param array  $options
      *
      * @return array
      */
-    public function find($query, $limit = null, $options = array())
+    public function find($query, $limit = null, $options = [])
     {
-        $queryObj = $this->getQuery($query);
+        $queryObj = $this->getQuery($query, $options);
         $queryObj->setSize(50);
 
         if (isset($options['sort_type'])) {
             switch ($options['sort_type']) {
                 case 'date_active':
-                    $queryObj->setSort(array(
-                        array('date_active' => array('order' => 'desc')),
+                    $queryObj->setSort([
+                        ['date_active' => ['order' => 'desc']],
                         '_score',
-                    ));
+                    ]);
                     break;
                 case 'date_created':
-                    $queryObj->setSort(array(
-                        array('date_created' => array('order' => 'desc')),
+                    $queryObj->setSort([
+                        ['date_created' => ['order' => 'desc']],
                         '_score',
-                    ));
+                    ]);
                     break;
             }
-
-            unset($options['sort_type']);
         }
 
         $this->setHighlight($queryObj);
+
+        $options = array_intersect_key($options, array_fill_keys([
+            Search::OPTION_SEARCH_TYPE,
+            Search::OPTION_ROUTING,
+            Search::OPTION_PREFERENCE,
+            Search::OPTION_VERSION,
+            Search::OPTION_TIMEOUT,
+            Search::OPTION_FROM,
+            Search::OPTION_SIZE,
+            Search::OPTION_SCROLL,
+            Search::OPTION_SCROLL_ID,
+            Search::OPTION_SEARCH_TYPE_SUGGEST,
+            Search::OPTION_SEARCH_IGNORE_UNAVAILABLE,
+            Search::OPTION_QUERY_CACHE,
+        ], true));
 
         return parent::find($queryObj, $limit, $options);
     }
@@ -105,11 +119,12 @@ abstract class AbstractRepository extends Repository
     /**
      * Constructs the raw query.
      *
-     * @param $q
+     * @param string $q
+     * @param array  $options
      *
      * @return Query
      */
-    protected function getQuery($q)
+    protected function getQuery($q, array $options = [])
     {
         if (isset($q[self::MAX_LEN])) {
             $q = substr($q, 0, self::MAX_LEN);
@@ -118,29 +133,25 @@ abstract class AbstractRepository extends Repository
         $l = Strings::extractRegexMatch('#^\[(.*?)\]$#', $q);
         if ($l && $this instanceof WithLabelsInterface) {
             $queryString = new Query\QueryString(ElasticaUtil::escapeTerm($l));
-            $queryString->setFields(array('labels'));
+            $queryString->setFields(['labels']);
             $queryString->setDefaultOperator('AND');
-            $query = new Query(
-                array(
-                    'query' => array(
-                        'filtered' => array(
-                            'query'  => $queryString->toArray(),
-                            'filter' => $this->getFilters(),
-                        ),
-                    ),
-                )
-            );
+            $query = new Query([
+                'query' => [
+                    'filtered' => [
+                        'query'  => $queryString->toArray(),
+                        'filter' => $this->getFilters($options),
+                    ],
+                ],
+            ]);
         } else {
-            $query = new Query(
-                array(
-                    'query' => array(
-                        'filtered' => array(
-                            'query'  => $this->getQueryString($q)->toArray(),
-                            'filter' => $this->getFilters(),
-                        ),
-                    ),
-                )
-            );
+            $query = new Query([
+                'query' => [
+                    'filtered' => [
+                        'query'  => $this->getQueryString($q)->toArray(),
+                        'filter' => $this->getFilters($options),
+                    ],
+                ],
+            ]);
         }
 
         return $query;
@@ -156,7 +167,7 @@ abstract class AbstractRepository extends Repository
     protected function escapeQueryStringTerm($q)
     {
         $q = ElasticaUtil::escapeTerm($q);
-        $q = str_replace(array('AND', 'OR', 'NOT'), array('and', 'or', 'not'), $q);
+        $q = str_replace(['AND', 'OR', 'NOT'], ['and', 'or', 'not'], $q);
 
         return $q;
     }
@@ -195,17 +206,19 @@ abstract class AbstractRepository extends Repository
      */
     protected function getQueryFields()
     {
-        return array('_all');
+        return ['_all'];
     }
 
     /**
      * Constructs the filters array (override as needed).
      *
+     * @param array $options
+     *
      * @return array
      */
-    protected function getFilters()
+    protected function getFilters(array $options = [])
     {
-        return array();
+        return [];
     }
 
     /**
@@ -215,10 +228,10 @@ abstract class AbstractRepository extends Repository
      */
     protected function setHighlight(Query $query)
     {
-        $query->setHighlight(array(
+        $query->setHighlight([
             'fields'    => $this->highlightFields,
-            'pre_tags'  => array($this->highlightPreTag),
-            'post_tags' => array($this->highlightPostTag),
-        ));
+            'pre_tags'  => [$this->highlightPreTag],
+            'post_tags' => [$this->highlightPostTag],
+        ]);
     }
 }

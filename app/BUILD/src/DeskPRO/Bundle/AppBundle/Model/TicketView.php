@@ -1,0 +1,149 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Model;
+
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+
+/**
+ * These mirror the link annotations from Application\DeskPRO\Entity\Ticket.
+ *
+ * We build this in the TicketViewDataService data service (it calcs all the $attributes for us, so we only do that once per request)
+ *
+ * @PortalLinkRoute("portal_tickets_guest_view", route_param_map={"auth":"auth"}, type="view_only")
+ * @PortalLinkCustom()
+ * @PortalLinkCustom(type="edit")
+ * @PortalLinkCustom(type="resolve")
+ * @PortalLinkCustom(type="unresolve")
+ */
+class TicketView
+{
+    /**
+     * @var Ticket
+     */
+    protected $ticket;
+
+    /**
+     * @var TicketViewProperty[]
+     */
+    protected $properties = [];
+
+    public function __construct(Ticket $ticket)
+    {
+        $this->properties = [];
+        $this->ticket     = $ticket;
+    }
+
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * A proxy for the object router to use when generating links.
+     *
+     * @return string
+     */
+    public function getAuth()
+    {
+        return $this->ticket->getAuth();
+    }
+
+    public function hasAnyVisibleProperties()
+    {
+        foreach ($this->properties as $property) {
+            if ($property->isVisible()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets a ticket proprty by ID.
+     *
+     * The IDs are consts on this class, but also require a DB ID separated by _. For example, ticket_def_6.
+     * IDs are generated consistently in the TicketDataViewService
+     *
+     * @param string $id the id of the property
+     *
+     * @return TicketViewProperty
+     */
+    public function getProperty($id)
+    {
+        if ($this->hasProperty($id)) {
+            return $this->properties[$id];
+        }
+    }
+
+    public function addProperty($id, $label, $value, $is_always_visible = false)
+    {
+        $this->appendProperty(new TicketViewProperty($id, $label, $value, $is_always_visible));
+    }
+
+    public function appendProperty(TicketViewProperty $property)
+    {
+        if ($this->hasProperty($property->getId())) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'cannot add a TicketViewProperty to TicketView because a property with the ID "%s" already exists.',
+                    $property->getId()
+                )
+            );
+        }
+        $this->properties[$property->getId()] = $property;
+    }
+
+    public function hasProperty($id)
+    {
+        return array_key_exists($id, $this->properties);
+    }
+
+    public function getProperties()
+    {
+        return $this->properties;
+    }
+
+    /**
+     * @return TicketAttachment[]
+     */
+    public function getAttachments()
+    {
+        return $this->ticket->getAttachments()->filter(function (TicketAttachment $attachment) {
+            return !$attachment->isAgentNote() && $attachment->getMessage() && $attachment->getMessage()->getId();
+        });
+    }
+}

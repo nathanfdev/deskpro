@@ -1,0 +1,32 @@
+{
+	"package_name": "deskpro_recaptcha2",
+	"is_native": true,
+	"title": "reCAPTCHA",
+	"description": "When this app is installed, Google reCAPTCHA will be used instead of the default generated captcha images.",
+	"tags": ["captcha"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "recaptcha2_site_key",
+			"type": "text",
+			"label": "Site Key",
+			"description": "This is the \"Site Key\" for your Google reCAPTCHA account. You can register here: https://www.google.com/recaptcha",
+			"native_only": true
+		},
+		{
+			"name": "recaptcha2_secret_key",
+			"type": "text",
+			"label": "Secret Key",
+			"description": "This is the \"Secret Key\" for your Google reCAPTCHA account. You can register here: https://www.google.com/recaptcha",
+			"native_only": true
+		}
+	]
+}

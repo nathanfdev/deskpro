@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
@@ -69,17 +70,23 @@ class Pop3Config implements AccountConfigInterface
     public $secure_mode = null;
 
     /**
+     * @var bool
+     */
+    public $disable_cert_validation = false;
+
+    /**
      * {@inheritdoc}
      */
     public function serializeJsonArray()
     {
-        return array(
-            'host'        => $this->host,
-            'port'        => $this->port,
-            'user'        => $this->user,
-            'password'    => $this->password,
-            'secure_mode' => $this->secure_mode,
-        );
+        return [
+            'host'                    => $this->host,
+            'port'                    => $this->port,
+            'user'                    => $this->user,
+            'password'                => $this->password,
+            'secure_mode'             => $this->secure_mode,
+            'disable_cert_validation' => $this->disable_cert_validation,
+        ];
     }
 
     /**
@@ -103,16 +110,16 @@ class Pop3Config implements AccountConfigInterface
         return 'pop3';
     }
 
-    ############################################################################
-    # Validation Metadata
-    ############################################################################
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
 
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('host', new Constraints\NotBlank());
-        $metadata->addPropertyConstraint('port', new Constraints\GreaterThan(array('value' => 1)));
-        $metadata->addPropertyConstraint('secure_mode', new Constraints\Choice(array(
-            'choices' => array('none', 'ssl', 'tls'),
-        )));
+        $metadata->addPropertyConstraint('port', new Constraints\GreaterThan(['value' => 1]));
+        $metadata->addPropertyConstraint('secure_mode', new Constraints\Choice([
+            'choices' => ['none', 'ssl', 'tls'],
+        ]));
     }
 }

@@ -1,0 +1,115 @@
+.dpdw-navigation-dropdowns-side-header {
+  padding: 13px 10px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.dpdw-navigation-dropdowns-side-title {
+  font-size: 14px;
+  font-weight: normal;
+  color: #424242;
+  padding: 0;
+  margin: 0;
+  line-height: 1em;
+  display: block;
+}
+
+.dpdw-navigation-dropdowns-side-panel {
+  background: #fff;
+  border: 1px solid #63ad8d;
+  position: relative;
+
+  &:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border: 4px solid rgba(0, 0, 0, 0.0);
+    border-right: 4px solid #63ad8d;
+    position: absolute;
+    left: -8px;
+    top: 17px;
+  }
+
+  .dpdw-navigation-dropdowns-side-content {
+    .dpdw-navigation-dropdowns-side-content-line {
+      &:after { // Clearfix
+        content: "";
+        display: table;
+        clear: both;
+      }
+    }
+
+    .dpdw-navigation-dropdowns-side-content-left {
+      float: left;
+      width: 50%;
+    }
+
+    .dpdw-navigation-dropdowns-side-content-right {
+      float: right;
+      width: 50%;
+      border-left: 1px solid #e5e5e5;
+    }
+  }
+}
+
+.dpdw-navigation-dropdowns-side-inner-content {// Provides the padding and borders
+  padding: 5px 10px;
+  border-top: 1px solid #e5e5e5;
+  &:first-child { border-top: 0; }
+  &:last-child { padding-bottom: 10px; }
+
+  .dpdw-navigation-dropdowns-side-title { padding: 5px 0 10px 0; }// Add some more space between titles in content
+}
+
+// List of stuff
+.dpdw-custom-view-list {
+  list-style: none;
+  display: block;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+
+  li { padding: 5px 0 5px 0; }
+
+  .dpdw-custom-view-list-item {
+    display: block;
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .dpdw-custom-view-list-item.dpdw-custom-view-list-item-active {
+    color: #62ad8c;
+    font-weight: bold;
+  }
+
+  .dpdw-custom-view-list-item-move-icon {
+    position: absolute;
+    left: 0;
+    padding-top: 2px;
+    font-size: 11px;
+    cursor: pointer;
+    color: #c3c3c3;
+
+    &:hover { color: #333; }
+  }
+
+  .dpdw-custom-view-list-item-status {
+    position: absolute;
+    left: 15px;
+  }
+
+  .dpdw-custom-view-list-item-icon {
+    display: inline-block;
+    text-align: center;
+    width: 14px;
+    color: #a6a6a6;
+    font-size: 10px;
+    position: relative;
+    left: -1px;
+  }
+
+  .dpdw-custom-view-list-item-title {
+    position: relative;
+    top: 1px;
+  }
+}

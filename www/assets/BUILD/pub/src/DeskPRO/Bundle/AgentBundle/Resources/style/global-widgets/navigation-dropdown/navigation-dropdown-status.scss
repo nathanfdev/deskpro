@@ -1,0 +1,86 @@
+// The default color scheme
+$base-color: #8c8c8c;
+$base-background: #fff;
+$hover-color: #62ad8c;
+$border-color: #d4d4d4;
+
+.dpw-navigation-dropdown.dpw-navigation-dropdown-statuses {
+
+  > ul > li:last-child > a.dpw-navigation-dropdown-item {// Might need to redo this
+    border-bottom: 1px solid $border-color;
+  }
+
+  .divider {
+    border: 0 !important;
+    background: red;
+    position: relative;
+    top: -1px;
+
+    > div {
+      background: $border-color;
+      border: 0;
+      height: 1px;
+      width: 100%;
+      display: block;
+      margin: 0;
+      position: relative;
+      z-index: 1999;
+    }
+  }
+
+  .dpw-navigation-dropdown-item {
+    padding: 10px;
+    padding-top: 5px;
+    padding-left: 30px;
+    display: block;
+    height: 26px;
+    border-bottom: 1px solid $base-background;
+    margin-top: -1px;
+    position: relative;
+    z-index: 997;
+    .dpw-navigation-dropdown-item-mark { top: 5.5px; }
+    .dpw-navigation-dropdown-item-title { margin-top: 1px; }
+
+    &.dpw-navigation-dropdown-item-white { background: #fff; }
+    &.dpw-navigation-dropdown-item-grey { background: #f7f7f7; }
+    &.dpw-navigation-dropdown-item-greyer { background: #f2f2f2; }
+
+    &.dpw-navigation-dropdown-item-lock {
+      &:hover {
+        border: 1px solid #484848;
+        color: #fff;
+        background: #484848;
+      }
+    }
+
+    &.dpw-navigation-dropdown-item-warning {
+      &:hover {
+        border: 1px solid #ff5460;
+        color: #fff;
+        background: #ff5460;
+      }
+    }
+  }
+
+  .dpw-navigation-dropdown-item.active {
+    background: $hover-color;
+    border: 1px solid $hover-color;
+    border-left: 1px solid $hover-color;
+    border-right: 1px solid $hover-color;
+    border-bottom: 1px solid $hover-color;
+    border-top: 0;
+    color: #fff;
+    position: relative;
+    z-index: 998;
+    i { color: #fff; }
+  }
+
+  .dpw-navigation-dropdown-options-link a:hover .fa-cog { color: $hover-color; }
+
+  .dpw-navigation-dropdown-item-expand {
+    &:hover {
+      background: #fff;
+      i { color: #62ad8c; }
+    }
+  }
+}

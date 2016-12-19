@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category People
  */
+
 namespace Application\DeskPRO\People\UserPermissions;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -59,24 +60,12 @@ class GroupsDbLoader
     private $group_perms;
 
     /**
-     * @var array
-     */
-    public static $prefix_map = array(
-        'tickets'   => 'ticket',
-        'chat'      => 'chat',
-        'feedback'  => 'feedback',
-        'articles'  => 'article',
-        'downloads' => 'download',
-        'news'      => 'news',
-    );
-
-    /**
      * @param int[]         $groups Group IDs or Usergroup objects
      * @param EntityManager $em
      */
     public function __construct(array $groups, EntityManager $em)
     {
-        $this->group_ids = array();
+        $this->group_ids = [];
 
         foreach ($groups as $g) {
             if (is_object($g)) {
@@ -98,13 +87,13 @@ class GroupsDbLoader
     private function getPermissions($group_id)
     {
         if ($this->group_perms !== null) {
-            return isset($this->group_perms[$group_id]) ? $this->group_perms[$group_id] : array();
+            return isset($this->group_perms[$group_id]) ? $this->group_perms[$group_id] : [];
         }
 
         if (!$this->group_ids) {
-            $this->group_perms = array();
+            $this->group_perms = [];
 
-            return array();
+            return [];
         }
 
         $perm_recs = $this->db->fetchAll('
@@ -112,19 +101,19 @@ class GroupsDbLoader
             FROM permissions
             WHERE usergroup_id IN (?)
                 AND value = 1
-        ', array($this->group_ids), array(Connection::PARAM_INT_ARRAY));
+        ', [$this->group_ids], [Connection::PARAM_INT_ARRAY]);
 
-        $this->group_perms = array();
+        $this->group_perms = [];
 
         foreach ($perm_recs as $rec) {
             if (!isset($this->group_perms[$rec['usergroup_id']])) {
-                $this->group_perms[$rec['usergroup_id']] = array();
+                $this->group_perms[$rec['usergroup_id']] = [];
             }
 
             $this->group_perms[$rec['usergroup_id']][$rec['name']] = true;
         }
 
-        return isset($this->group_perms[$group_id]) ? $this->group_perms[$group_id] : array();
+        return isset($this->group_perms[$group_id]) ? $this->group_perms[$group_id] : [];
     }
 
     /**
@@ -157,11 +146,11 @@ class GroupsDbLoader
             } // invalid
 
             list($type, $name) = explode('.', $k, 2);
-            if (!isset(self::$prefix_map[$type])) {
+            if (!isset(UserPermissions::$prefix_map[$type])) {
                 continue;
             } // unknown type
 
-            $obj_name = self::$prefix_map[$type];
+            $obj_name = UserPermissions::$prefix_map[$type];
             $obj      = $user_perms->$obj_name;
             if (!isset($obj->$name)) {
                 continue;

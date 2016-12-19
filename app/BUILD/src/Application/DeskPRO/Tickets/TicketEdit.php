@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -51,7 +52,7 @@ class TicketEdit implements PersonContextInterface
     /**
      * @var array
      */
-    protected $perm_errors = array();
+    protected $perm_errors = [];
 
     public function __construct(Entity\Ticket $ticket)
     {
@@ -73,8 +74,8 @@ class TicketEdit implements PersonContextInterface
      */
     public function applyActions(array $actions)
     {
-        $this->perm_errors = array();
-        $return            = array();
+        $this->perm_errors = [];
+        $return            = [];
 
         if ($this->person_context) {
             $tcheck = $this->person_context->PermissionsManager->TicketChecker;
@@ -171,9 +172,9 @@ class TicketEdit implements PersonContextInterface
 
                     if ($this->person_context) {
                         $team = true;
-                        if ($this->person_context->Agent->isTeamMember($team) && !$tcheck->canModify($this->ticket, 'assign_self')) {
-                            $team = null;
-                        } elseif (!$tcheck->canModify($this->ticket, 'assign_team')) {
+                        // it seems that it should check assign_team only, otherwise you never can change team
+                        // cause in UI dropdown shows only your teams
+                        if (!$tcheck->canModify($this->ticket, 'assign_team')) {
                             $team = null;
                         }
 
@@ -350,7 +351,7 @@ class TicketEdit implements PersonContextInterface
                     }
                     $field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
                     foreach ($field->getHandler()->getDataFromForm($action['value']) as $info) {
-                        $this->ticket->setCustomData($info[0], $info[1], $info[2]);
+                        $this->ticket->setCustomDataField($info[0], $info[1], $info[2]);
                     }
 
                     break;
@@ -382,7 +383,7 @@ class TicketEdit implements PersonContextInterface
     public function setCustomDataAll(array $ticket_field_datas)
     {
         foreach ($ticket_field_datas as $info) {
-            $this->ticket->setCustomData($info[0], $info[1], $info[2]);
+            $this->ticket->setCustomDataField($info[0], $info[1], $info[2]);
         }
     }
 

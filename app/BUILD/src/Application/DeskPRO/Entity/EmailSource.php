@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -43,12 +44,13 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 {
-    const STATUS_INSERTED   = 'inserted';
-    const STATUS_RETRY      = 'retry';
-    const STATUS_PROCESSING = 'processing';
-    const STATUS_COMPLETE   = 'complete';
-    const STATUS_ERROR      = 'error';
-    const STATUS_REJECTED   = 'rejected';
+    const STATUS_INSERTED      = 'inserted';
+    const STATUS_RETRY         = 'retry';
+    const STATUS_PROCESSING    = 'processing';
+    const STATUS_COMPLETE      = 'complete';
+    const STATUS_ERROR         = 'error';
+    const STATUS_REJECTED      = 'rejected';
+    const STATUS_REJECTED_SOFT = 'rejected_soft';
 
     const OBJ_TYPE_TICKET         = 'ticket';
     const OBJ_TYPE_TICKET_MESSAGE = 'ticketmessage';
@@ -81,6 +83,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     const ERR_DATE_LIMIT        = 'date_limit';
     const ERR_INVALID_ADDRESS   = 'invalid_address';
     const ERR_RATE_LIMIT        = 'rate_limit';
+    const ERR_USER_VALIDATING   = 'user_validating';
 
     /**
      * @var int
@@ -147,6 +150,11 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
+    protected $header_cc = '';
+
+    /**
+     * @var string
+     */
     protected $header_from = '';
 
     /**
@@ -157,7 +165,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var array
      */
-    protected $parsed_headers = array();
+    protected $parsed_headers = [];
 
     /**
      * The current status of the message:
@@ -332,7 +340,18 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getObjectInfo()
     {
-        return $this->object_info ? $this->object_info : array();
+        return $this->object_info ? $this->object_info : [];
+    }
+
+    /**
+     * @param string $k
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getObjectInfoKey($k, $default = null)
+    {
+        return isset($this->object_id[$k]) ? $this->object_id[$k] : $default;
     }
 
     /**
@@ -344,7 +363,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('date_status', new \DateTime());
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if (!$deep) {
@@ -370,7 +389,10 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $current = null;
         $headers = explode("\n", $headers);
         foreach ($headers as $str) {
-            if (preg_match('/^[A-Za-z]/', $str[0])) {
+            if (empty($str)) {
+                continue;
+            }
+            if (RegexUtils::safePregMatch('/^[A-Za-z]/', $str[0])) {
                 $parts                         = explode(':', $str);
                 $header                        = strtolower($parts[0]);
                 $this->parsed_headers[$header] = trim($parts[1]);
@@ -383,80 +405,183 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         return $this->parsed_headers;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\EmailSource';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'email_sources',
-            'indexes' => array(
-                'date_created' => array('columns' => array('date_created')),
-                'object_idx'   => array('columns' => array('object_type', 'object_id')),
-                'status_idx'   => array('columns' => array('status')),
-                'from_idx'     => array('columns' => array('from_email')),
-            ),
-        ));
+            'indexes' => [
+                'date_created' => ['columns' => ['date_created']],
+                'object_idx'   => [
+                    'columns' => [
+                        'object_type',
+                        'object_id',
+                    ],
+                ],
+                'status_idx' => ['columns' => ['status']],
+                'from_idx'   => ['columns' => ['from_email']],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'uid', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'uid'));
-        $metadata->mapField(array('fieldName' => 'object_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type'));
-        $metadata->mapField(array('fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id'));
-        $metadata->mapField(array(
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'uid',
+            'type'       => 'string',
+            'length'     => 100,
+            'nullable'   => true,
+            'columnName' => 'uid',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'object_type',
+            'type'       => 'string',
+            'length'     => 50,
+            'nullable'   => false,
+            'columnName' => 'object_type',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'object_id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'object_id',
+        ]);
+        $metadata->mapField([
             'columnName' => 'object_info',
             'fieldName'  => 'object_info',
             'type'       => 'json_array',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array('fieldName' => 'from_email', 'type' => 'string', 'length' => 500, 'columnName' => 'from_email'));
-        $metadata->mapField(array('fieldName' => 'headers', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'headers'));
-        $metadata->mapField(array('fieldName' => 'header_to', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_to'));
-        $metadata->mapField(array('fieldName' => 'header_from', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_from'));
-        $metadata->mapField(array('fieldName' => 'header_subject', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_subject'));
-        $metadata->mapField(array('fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status'));
-        $metadata->mapField(array('fieldName' => 'exec_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'exec_count'));
-        $metadata->mapField(array('fieldName' => 'error_code', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'error_code'));
-        $metadata->mapField(array('fieldName' => 'source_info', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'source_info'));
-        $metadata->mapField(array('fieldName' => 'date_status', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_status'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'from_email',
+            'type'       => 'string',
+            'length'     => 255,
+            'columnName' => 'from_email',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'headers',
+            'type'       => 'text',
+            'nullable'   => false,
+            'columnName' => 'headers',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'header_to',
+            'type'       => 'text',
+            'nullable'   => false,
+            'columnName' => 'header_to',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'header_cc',
+            'type'       => 'text',
+            'nullable'   => false,
+            'columnName' => 'header_cc',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'header_from',
+            'type'       => 'text',
+            'nullable'   => false,
+            'columnName' => 'header_from',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'header_subject',
+            'type'       => 'text',
+            'nullable'   => false,
+            'columnName' => 'header_subject',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'status',
+            'type'       => 'string',
+            'length'     => 15,
+            'nullable'   => false,
+            'columnName' => 'status',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'exec_count',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'exec_count',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'error_code',
+            'type'       => 'string',
+            'length'     => 80,
+            'nullable'   => true,
+            'columnName' => 'error_code',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'source_info',
+            'type'       => 'array',
+            'nullable'   => true,
+            'columnName' => 'source_info',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_status',
+            'type'       => 'datetime',
+            'nullable'   => false,
+            'columnName' => 'date_status',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_created',
+            'type'       => 'datetime',
+            'nullable'   => false,
+            'columnName' => 'date_created',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'blob',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
             'dpApi'        => true,
             'dpApiDeep'    => true,
-            'joinColumns'  => array(array(
-                'name'                 => 'blob_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'cascade',
-            )),
-        ));
-        $metadata->mapManyToOne(array(
+            'joinColumns'  => [
+                [
+                    'name'                 => 'blob_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'email_account',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount',
             'dpApi'        => true,
-            'joinColumns'  => array(array(
-                'name'                 => 'email_account_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'cascade',
-            )),
-        ));
-        $metadata->mapManyToOne(array(
+            'joinColumns'  => [
+                [
+                    'name'                 => 'email_account_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'log_blob',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
             'dpApi'        => true,
             'dpApiDeep'    => true,
-            'joinColumns'  => array(array(
-                'name'                 => 'log_blob_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'set null',
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'log_blob_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                ],
+            ],
+        ]);
     }
 }

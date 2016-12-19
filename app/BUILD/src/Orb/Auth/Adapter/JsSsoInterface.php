@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,13 @@
  *
  * @category Auth
  */
+
 namespace Orb\Auth\Adapter;
 
 /**
  * This forces an authentication class to render HTML, usually with Twig, and is therefore violating
  * several OOP principles.
- 
+
  * This interface is used only by the Magento app, and I suggest we keep it that way. Please see
  * SsoCapableInterface and/or IFrameSsoInterface.
  *

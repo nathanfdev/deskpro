@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,8 +31,12 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
+/**
+ * Class FeedbackStatusCategory.
+ */
 class FeedbackStatusCategory extends AbstractEntityRepository
 {
     /** @var array|null */
@@ -46,14 +50,14 @@ class FeedbackStatusCategory extends AbstractEntityRepository
             SELECT c
             FROM DeskPRO:FeedbackStatusCategory c INDEX BY c.id
             WHERE c.status_type = ?1
-            ORDER BY c.display_order ASC
+            ORDER BY c.display_order DESC
         ')->setParameter(1, 'active')->execute();
 
         $this->closed_cats = $this->getEntityManager()->createQuery('
             SELECT c
             FROM DeskPRO:FeedbackStatusCategory c INDEX BY c.id
             WHERE c.status_type = ?1
-            ORDER BY c.display_order ASC
+            ORDER BY c.display_order DESC
         ')->setParameter(1, 'closed')->execute();
     }
 
@@ -79,7 +83,7 @@ class FeedbackStatusCategory extends AbstractEntityRepository
     {
         $categories = $this->findAll();
 
-        $ret = array();
+        $ret = [];
         foreach ($categories as $category) {
             if ($for_ids === null || in_array($category->id, $for_ids)) {
                 $ret[$category->id] = $category->title;

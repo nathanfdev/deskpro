@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,16 +29,22 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Entity\RoundRobin;
 use Application\DeskPRO\Entity\RoundRobinLogEntry;
 use Application\DeskPRO\Tickets\Actions\ActionComposite;
 use Application\DeskPRO\Tickets\Actions\SetRoundRobin;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
+use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @ApiModes("all")
+ */
 class RoundRobinController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -49,13 +55,13 @@ class RoundRobinController extends AbstractController implements ProtectedContro
         return new UserTypePermission(UserTypePermission::AGENT);
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction()
     {
-        $data  = array();
+        $data  = [];
         $adata = $this->container->getAgentData();
         /** @var $rr RoundRobin */
         foreach ($this->em->getRepository('DeskPRO:RoundRobin')->findAll() as $rr) {
@@ -69,9 +75,9 @@ class RoundRobinController extends AbstractController implements ProtectedContro
         return $this->createApiResponse($data);
     }
 
-    ###################################################################################################################
-    # get RR
-    ####################################################################################################################
+    //##################################################################################################################
+    // get RR
+    //###################################################################################################################
 
     public function getAction($id)
     {
@@ -88,9 +94,9 @@ class RoundRobinController extends AbstractController implements ProtectedContro
         return $this->createApiResponse($data);
     }
 
-    ###################################################################################################################
-    # save RR
-    ####################################################################################################################
+    //##################################################################################################################
+    // save RR
+    //###################################################################################################################
 
     public function setAction($id)
     {
@@ -118,9 +124,9 @@ class RoundRobinController extends AbstractController implements ProtectedContro
         return $this->getAction($rr['id']);
     }
 
-    ###################################################################################################################
-    # delete RR
-    ####################################################################################################################
+    //##################################################################################################################
+    // delete RR
+    //###################################################################################################################
 
     public function deleteAction($id)
     {
@@ -133,12 +139,12 @@ class RoundRobinController extends AbstractController implements ProtectedContro
         $this->em->remove($rr);
         $this->em->flush();
 
-        return $this->createApiResponse(array());
+        return $this->createApiResponse([]);
     }
 
-    ###################################################################################################################
-    # setup RR
-    ####################################################################################################################
+    //##################################################################################################################
+    // setup RR
+    //###################################################################################################################
 
     public function settingsAction()
     {
@@ -151,9 +157,9 @@ class RoundRobinController extends AbstractController implements ProtectedContro
             }
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'enabled' => (bool) $this->settings->get('core.round_robin.enabled', false),
-        ));
+        ]);
     }
 
     /**
@@ -161,11 +167,11 @@ class RoundRobinController extends AbstractController implements ProtectedContro
      *
      * @param $id
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function checkTriggersAction($id)
     {
-        return $this->createApiResponse(array('active_triggers' => $this->countRoundRobinTriggers(false, $id)));
+        return $this->createApiResponse(['active_triggers' => $this->countRoundRobinTriggers(false, $id)]);
     }
 
     protected function isTriggerActionClear($action, $roundRobinId = null)
@@ -233,13 +239,13 @@ class RoundRobinController extends AbstractController implements ProtectedContro
         }
 
         $entries = $this->em->getRepository('DeskPRO:RoundRobinLogEntry')->findBy(
-            array('rr'      => $rr),
-            array('created' => 'desc')
+            ['rr' => $rr],
+            ['created' => 'desc']
         );
 
-        return $this->render('AdminInterfaceBundle:RoundRobin:logs.html.twig', array(
+        return $this->render('AdminInterfaceBundle:RoundRobin:logs.html.twig', [
             'entries' => $entries,
             'rr'      => $rr,
-        ));
+        ]);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,37 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Doctrine\DBAL\Driver\Connection;
 
+/**
+ * Class RecalculateTicketStats.
+ */
 class RecalculateTicketStats implements TicketSaveActionInterface
 {
-    /**
-     * @var int[]
-     */
-    private $agent_ids = array();
-
     /**
      * @var Connection
      */
     private $db;
 
     /**
-     * @param array      $agent_ids
+     * Constructor.
+     *
      * @param Connection $db
      */
-    public function __construct(array $agent_ids, Connection $db)
+    public function __construct(Connection $db)
     {
-        $this->agent_ids = $agent_ids;
-        $this->db        = $db;
+        $this->db = $db;
     }
 
     /**
@@ -72,19 +65,22 @@ class RecalculateTicketStats implements TicketSaveActionInterface
         $state = $ticket->getStateChangeRecorder();
 
         if ($state->isNewTicket() || $state->hasChangedField('message')) {
-            $agent_ids_in = implode(',', $this->agent_ids);
+            $agentIds = $this->db->fetchAllCol('SELECT id FROM people WHERE is_agent = 1 AND is_deleted = 0 AND is_disabled = 0');
+            if (!count($agentIds)) {
+                return;
+            }
 
-            $ticket->count_agent_replies = $this->db->fetchColumn("
+            $ticket->count_agent_replies = $this->db->fetchColumn('
                 SELECT COUNT(*)
                 FROM tickets_messages
-                WHERE ticket_id = ? AND is_agent_note = 0 AND person_id IN ($agent_ids_in)
-            ", array($ticket->id));
+                WHERE ticket_id = ? AND is_agent_note = 0 AND person_id IN (?)
+            ', [$ticket->getId(), $agentIds], 0, [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
 
-            $ticket->count_user_replies = $this->db->fetchColumn("
+            $ticket->count_user_replies = $this->db->fetchColumn('
                 SELECT COUNT(*)
                 FROM tickets_messages
-                WHERE ticket_id = ? AND person_id NOT IN ($agent_ids_in)
-            ", array($ticket->id));
+                WHERE ticket_id = ? AND person_id NOT IN (?)
+            ', [$ticket->getId(), $agentIds], 0, [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
         }
     }
 }

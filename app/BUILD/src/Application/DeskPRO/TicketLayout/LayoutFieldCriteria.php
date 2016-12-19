@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\TicketLayout;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -50,7 +51,7 @@ class LayoutFieldCriteria implements \Serializable, \Countable
     /**
      * @var \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[]
      */
-    private $terms = array();
+    private $terms = [];
 
     /**
      * @param \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[] $terms
@@ -127,6 +128,32 @@ class LayoutFieldCriteria implements \Serializable, \Countable
     }
 
     /**
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function isSubmittedDataMatch(array $data)
+    {
+        if ($this->mode == self::CRIT_ALL) {
+            foreach ($this->terms as $t) {
+                if (!$t->isSubmittedDataMatch($data)) {
+                    return false;
+                }
+            }
+
+            return true;
+        } else {
+            foreach ($this->terms as $t) {
+                if ($t->isSubmittedDataMatch($data)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function compileJsCheck()
@@ -137,7 +164,7 @@ class LayoutFieldCriteria implements \Serializable, \Countable
 
         $js = "(function () {\n";
         $js .= "\tvar checkFn = [\n";
-        $fn_bits = array();
+        $fn_bits = [];
         foreach ($this->terms as $t) {
             $t_js      = $t->compileJsCheck();
             $t_js      = trim(Strings::modifyLines($t_js, "\t\t"));
@@ -172,18 +199,18 @@ class LayoutFieldCriteria implements \Serializable, \Countable
      */
     public function exportToArray()
     {
-        $data = array();
+        $data = [];
 
         $data['version'] = 1;
         $data['mode']    = $this->mode;
-        $data['terms']   = array();
+        $data['terms']   = [];
 
         foreach ($this->terms as $t) {
-            $data['terms'][] = array(
+            $data['terms'][] = [
                 'type'    => $t->getTermType(),
                 'op'      => $t->getTermOperator(),
                 'options' => $t->getTermOptions(),
-            );
+            ];
         }
 
         return $data;

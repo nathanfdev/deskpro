@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,17 +31,18 @@
  *
  * @category ORM
  */
+
 namespace Application\DeskPRO\ORM;
 
 class QueryPartial
 {
-    /** @var string|null  */
+    /** @var string|null */
     protected $order_by = null;
-    /** @var string  */
+    /** @var string */
     protected $order_dir = 'ASC';
-    /** @var int|null  */
+    /** @var int|null */
     protected $first_result = null;
-    /** @var int|null  */
+    /** @var int|null */
     protected $max_results = null;
 
     public function __construct()
@@ -72,7 +73,7 @@ class QueryPartial
 
     public function getOrderBy()
     {
-        return array($this->order_by, $this->order_dir);
+        return [$this->order_by, $this->order_dir];
     }
 
     public function getFirstResult()

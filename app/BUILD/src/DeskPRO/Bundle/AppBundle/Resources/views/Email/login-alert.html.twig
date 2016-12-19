@@ -1,0 +1,14 @@
+{% block subject %}
+    {% if success %}
+        {{ phrase('agent.emails.alert_successful_login') }}
+    {% else %}
+        {{ phrase('agent.emails.alert_failed_login') }}
+    {% endif %}
+{% endblock %}
+{% block text %}
+    {% if success %}
+        {{ phrase('agent.emails.notice_account_login') }}<br/>
+    {% else %}
+        {{ phrase('agent.emails.notice_login_attempt') }}<br/>
+    {% endif %}
+{% endblock %}

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Person;
@@ -68,10 +69,10 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
      */
     public function isValidStatus($status)
     {
-        static $valid_statuses = array(
+        static $valid_statuses = [
             'awaiting_agent', 'awaiting_user', 'resolved', 'archived',
-            'hidden.spam', 'hidden.deleted', 'hidden.temp', 'hidden.validating',
-        );
+            'hidden.spam', 'hidden.deleted',
+        ];
 
         return in_array($status, $valid_statuses);
     }
@@ -110,16 +111,16 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
     {
         $set_status = $this->getActionOption('status');
         if (($set_status == 'hidden.deleted' || $set_status == 'hidden.spam') && !$person->PermissionsManager->TicketChecker->canDelete($ticket)) {
-            return array('delete');
+            return ['delete'];
         }
         if ($set_status == 'awaiting_agent' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_agent')) {
-            return array('set_awaiting_agent');
+            return ['set_awaiting_agent'];
         }
         if ($set_status == 'awaiting_user' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_user')) {
-            return array('set_awaiting_user');
+            return ['set_awaiting_user'];
         }
         if ($set_status == 'resolved' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_resolved')) {
-            return array('set_resolved');
+            return ['set_resolved'];
         }
 
         return;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Notifications;
 
 use Application\DeskPRO\App;
@@ -54,6 +55,10 @@ class TaskCompleteNotification extends AbstractAgentNotification
             return false;
         }
 
+        if (!$this->task->person) {
+            return false;
+        }
+
         if ($this->task->person->getId() == $agent->id && $agent->getPref('agent_notif.task_complete.alert')) {
             return true;
         }
@@ -67,6 +72,10 @@ class TaskCompleteNotification extends AbstractAgentNotification
             return false;
         }
 
+        if (!$this->task->person) {
+            return false;
+        }
+
         if ($this->task->person->getId() == $agent->id && $agent->getPref('agent_notif.task_complete.email')) {
             return true;
         }
@@ -76,14 +85,14 @@ class TaskCompleteNotification extends AbstractAgentNotification
 
     public function send()
     {
-        $this->sendBrowserNotifications('AgentBundle:Task:notify-row-completed.html.twig', array(
+        $this->sendBrowserNotifications('AgentBundle:Task:notify-row-completed.html.twig', [
             'task'        => $this->task,
             'performer'   => App::getCurrentPerson(),
-            'notify_data' => array('notify_type' => 'tasks'),
-        ));
-        $this->sendEmailNotifications('DeskPRO:emails_agent:task-completed.html.twig', array(
+            'notify_data' => ['notify_type' => 'tasks'],
+        ]);
+        $this->sendEmailNotifications('DeskPRO:emails_agent:task-completed.html.twig', [
             'task'      => $this->task,
             'performer' => App::getCurrentPerson(),
-        ));
+        ]);
     }
 }

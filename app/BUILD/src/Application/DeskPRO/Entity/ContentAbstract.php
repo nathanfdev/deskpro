@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -27,80 +27,104 @@
  */
 
 /**
- * DeskPRO.
- *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use DateTime;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Basic properties on content.
  */
-abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
+abstract class ContentAbstract extends DomainObject
 {
-    const STATUS_PUBLISHED = 'published';
-    const STATUS_ARCHIVED  = 'archived';
-    const STATUS_HIDDEN    = 'hidden';
+    const CONTENT_TYPE = null;
 
-    const HIDDEN_STATUS_UNPUBLISHED     = 'unpublished';
-    const HIDDEN_STATUS_VALIDATING      = 'validating';
-    const HIDDEN_STATUS_USER_VALIDATING = 'user_validating';
-    const HIDDEN_STATUS_DELETED         = 'deleted';
-    const HIDDEN_STATUS_SPAM            = 'spam';
-    const HIDDEN_STATUS_DRAFT           = 'draft';
-    const HIDDEN_STATUS_TEMP            = 'temp';
+    const STATUS_PUBLISHED          = 'published';
+    const STATUS_ARCHIVED           = 'archived';
+    const STATUS_HIDDEN             = 'hidden';
+    const HIDDEN_STATUS_UNPUBLISHED = 'unpublished';
+    const HIDDEN_STATUS_DELETED     = 'deleted';
+
+    const HIDDEN_STATUS_SPAM    = 'spam';
+    const HIDDEN_STATUS_DRAFT   = 'draft';
+    const HIDDEN_STATUS_PENDING = 'pending';
 
     /**
+     * The unqique ID.
+     *
      * @var int
      */
     protected $id = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Person
+     * Person created this content first time.
+     *
+     * @var Person
      */
     protected $person = null;
 
     /**
+     * Language content was written.
+     *
      * @var Language
      */
     protected $language = null;
 
     /**
+     * Content slug.
+     *
      * @var string
      */
     protected $slug;
 
     /**
+     * Content title.
+     *
      * @var string
+     *
+     * @Assert\NotBlank()
      */
-    protected $title;
+    protected $title = '';
 
     /**
      * The main content for the item. This should be HTML!
      *
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $content = '';
 
     /**
      * View counts.
      *
-     * @var string
+     * @var int
      */
     protected $view_count = 0;
 
     /**
      * Total rating: This is a tally and must be updated when a rating is added.
      *
-     * @var string
+     * @var int
      */
     protected $total_rating = 0;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @Assert\Valid()
+     */
+    protected $comments;
 
     /**
      * Number of user-visible comments: This is a count that must be updated when a comment is added.
@@ -112,12 +136,16 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Total rating.
      *
-     * @var string
+     * @var int
      */
     protected $num_ratings = 0;
 
     /**
+     * Status title.
+     *
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $status;
 
@@ -127,6 +155,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $hidden_status = null;
 
     /**
+     * DateTime when content was created.
+     *
      * @var DateTime
      */
     protected $date_created;
@@ -136,9 +166,21 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $date_published;
 
+    /**
+     * @var \DateTime
+     */
+    protected $date_last_comment;
+
+    /**
+     * DateTime when content was updated last time.
+     *
+     * @var \DateTime
+     */
+    protected $date_updated;
+
     // Implement in children
     ///**
-    // * @var \Doctrine\Common\Collections\ArrayCollection
+    // * @var ArrayCollection
     // */
     //protected $revisions;
 
@@ -157,11 +199,45 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $_label_manager = null;
 
+    protected $slug_history;
+
+    /**
+     * @return array
+     */
+    public static function getAllStatuses()
+    {
+        return [
+            self::STATUS_PUBLISHED,
+            self::STATUS_ARCHIVED,
+            self::STATUS_HIDDEN,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAllHiddenStatuses()
+    {
+        return [
+            self::HIDDEN_STATUS_UNPUBLISHED,
+            self::HIDDEN_STATUS_DELETED,
+            self::HIDDEN_STATUS_SPAM,
+            self::HIDDEN_STATUS_DRAFT,
+        ];
+    }
+
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
-        $this['date_created'] = new \DateTime();
-        $this->revisions      = new ArrayCollection();
-        $this->labels         = new ArrayCollection();
+        $this->setModelField('date_created', new \DateTime());
+        $this->setModelField('date_updated', new \DateTime());
+
+        $this->revisions    = new ArrayCollection();
+        $this->labels       = new ArrayCollection();
+        $this->slug_history = new ArrayCollection();
+        $this->comments     = new ArrayCollection();
 
         $this['status']        = self::STATUS_HIDDEN;
         $this['hidden_status'] = self::HIDDEN_STATUS_DRAFT;
@@ -175,53 +251,131 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * Check if this content is publicly visible (i.e. not spam, not a draft, etc).
+     *
+     * @return bool
+     */
+    public function isPublic()
+    {
+        return $this->status === self::STATUS_PUBLISHED || $this->status === self::STATUS_ARCHIVED;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateLastComment()
+    {
+        return $this->date_last_comment;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
+    /**
+     * @param DateTime $date_created
+     *
+     * @return $this
+     */
+    public function setDateCreated(DateTime $date_created = null)
+    {
+        $this->setModelField('date_created', $date_created);
+
+        return $this;
+    }
+
+    /**
+     * @param DateTime $date_published
+     *
+     * @return $this
+     */
+    public function setDatePublished(DateTime $date_published = null)
+    {
+        $this->setModelField('date_published', $date_published);
+
+        return $this;
+    }
+
+    /**
+     * @param DateTime $date_updated
+     *
+     * @return $this
+     */
+    public function setDateUpdated(DateTime $date_updated = null)
+    {
+        $this->setModelField('date_updated', $date_updated);
+
+        return $this;
+    }
+
+    /**
+     * @deprecated use $this->get('object_router')->getPortalPath($this) instead
+     */
+    public function getPath()
+    {
+        SystemErrorHandler::logExceptionIfUniqueBacktrace(
+            new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getPath()')
+        );
+
+        return App::getObjectRouter()->getPortalPath($this);
+    }
+
+    /**
+     * @deprecated use $this->get('object_router')->getPortalUrl($this) instead
+     *
+     * @return $this
+     */
+    public function getLink()
+    {
+        return App::getObjectRouter()->getPortalUrl($this);
+    }
+
+    /**
+     * @return string
+     *
+     * @deprecated use $this->get('object_router')->getPortalUrl($this, 'permalink') instead
+     */
+    public function getPermalink($absolute = true)
+    {
+        if ($absolute) {
+            return App::getObjectRouter()->getPortalUrl($this, 'permalink');
+        }
+
+        return App::getObjectRouter()->getPortalPath($this, 'permalink');
+    }
+
     public function setTitle($title)
     {
-        $old_title = $this->title;
         $this->setModelField('title', $title);
 
-        if (!$this->slug || $this->slug == Strings::slugifyTitle($old_title)) {
-            $this['slug'] = Strings::slugifyTitle($title);
-            if (!$this['slug']) {
-                $this['slug'] = 'view';
-            }
-        }
-
+        // note: removed the setSlug call, we do that in the DoctrineContentSlugListener now (prepersist/preupdate)
         return $this;
     }
 
-    /**
-     * @param string $slug
-     *
-     * @return $this
-     */
-    public function setSlug($slug)
+    public function getTitle()
     {
-        if ($slug) {
-            $this->setModelField('slug', $slug);
-        }
-
-        return $this;
+        return $this->title;
     }
 
     /**
-     * @param Person $person
-     *
-     * @return $this
+     * @return string
      */
-    public function setPerson(Person $person)
+    public function getTranslatedTitle()
     {
-        $this->setModelField('person', $person);
-
-        return $this;
+        return $this->__call('getTitle', []);
     }
 
     /**
-     * @return Person
+     * @return string
      */
-    public function getPerson()
+    public function getTranslatedContent()
     {
-        return $this->person;
+        return $this->__call('getContent', []);
     }
 
     /**
@@ -253,6 +407,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function setStatus($status)
     {
         $this->setStatusCode($status);
+
+        return $this;
     }
 
     public function setStatusCode($status_code)
@@ -261,8 +417,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
             $status_code = str_replace('hidden.', '', $status_code);
             $this->setModelField('status', 'hidden');
             $this->setModelField('hidden_status', $status_code);
-
-            $this->setModelField('date_published', null);
         } else {
             $this->setModelField('status', $status_code);
             $this->setModelField('hidden_status', null);
@@ -282,11 +436,24 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function getHiddenStatus()
+    {
+        return $this->hidden_status;
+    }
+
     public function contentModifier($content)
     {
         // Find attach replacements: ![attach:{$blob['authcode']}:{$blob['filename']}]
         $fn = function ($m) {
-            return App::getSetting('core.deskpro_url').'file.php/'.$m[1].'/'.urlencode($m[2]);
+            return App::getContainer()->getBrandSetting('core.deskpro_url').'file.php/'.$m[1].'/'.urlencode($m[2]);
         };
         $content = preg_replace_callback('#!\[attach:([0-9A-Z]+):(.*?)\]#', $fn, $content);
 
@@ -309,14 +476,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $this['content'];
     }
 
-    public function getContentPlainHtml()
-    {
-        $content = htmlspecialchars($this['content']);
-        $content = nl2br($content);
-
-        return $content;
-    }
-
     public function getContentPlain()
     {
         $content = $this['content'];
@@ -324,25 +483,25 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
             return '';
         }
         $content = Strings::standardEol($this['content']);
-        $content = preg_replace("#<br\s*/?><p>#", '<p>', $content);
-        $content = preg_replace("#<p></p><br\s*/?>#", '<p>', $content);
-        $content = preg_replace("#</p><br\s*/?>#", '</p>', $content);
-        $content = preg_replace("#<br\s*/?></p>#", '</p>', $content);
-        $content = preg_replace("#<br\s*/?>?#", "\n", $content);
-        $content = preg_replace("#<p>\n?#", "\n", $content);
-        $content = preg_replace("#\n?</p>#", "\n", $content);
+        $content = RegexUtils::safePregReplace("#<br\s*/?><p>#", '<p>', $content);
+        $content = RegexUtils::safePregReplace("#<p></p><br\s*/?>#", '<p>', $content);
+        $content = RegexUtils::safePregReplace("#</p><br\s*/?>#", '</p>', $content);
+        $content = RegexUtils::safePregReplace("#<br\s*/?></p>#", '</p>', $content);
+        $content = RegexUtils::safePregReplace("#<br\s*/?>?#", "\n", $content);
+        $content = RegexUtils::safePregReplace("#<p>\n?#", "\n", $content);
+        $content = RegexUtils::safePregReplace("#\n?</p>#", "\n", $content);
         $content = html_entity_decode(Strings::stripTags($content), \ENT_QUOTES, 'UTF-8');
         $content = str_replace('&nbsp;', ' ', $content);
         $content = trim($content);
 
         $lines_raw = explode("\n", $content);
-        $lines     = array();
+        $lines     = [];
         foreach ($lines_raw as $l) {
             $lines[] = trim($l);
         }
 
         $content = implode("\n", $lines);
-        $content = preg_replace("#\n{3,}#", "\n\n", $content);
+        $content = RegexUtils::safePregReplace("#\n{3,}#", "\n\n", $content);
 
         return $content;
     }
@@ -354,7 +513,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getSearchSummary($length = 100)
     {
         $content = $this->getContentPlain();
-        $content = str_replace(array("\r\n", "\n"), ' ', $content);
+        $content = str_replace(["\r\n", "\n"], ' ', $content);
 
         if (Strings::utf8_strlen($content) > $length) {
             $content = Strings::utf8_substr($content, 0, $length).'...';
@@ -363,14 +522,52 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $content;
     }
 
+    /**
+     * @return string
+     *
+     * @deprecated use getSlug() instead (we no longer do the id-slug format in portal)
+     */
     public function getUrlSlug()
     {
         return $this->id.'-'.$this->slug;
     }
 
-    abstract public function getLink();
+    /**
+     * @return ArrayCollection
+     */
+    public function getSlugHistory()
+    {
+        return $this->slug_history;
+    }
 
-    abstract public function getPermalink();
+    /**
+     * NOTE: don't use this directly. Instead, use the "content_slug_manager" service to set the slug for you.
+     *
+     * @param $new_slug
+     *
+     * @internal this shouldn't be called except by the content_slug_manager
+     */
+    public function setSlug($new_slug)
+    {
+        $history = null;
+        if ($new_slug !== $this->slug && $this->slug) {
+            // if the slug exists in history already, we don't want to add it again
+            $object_slug = $this->slug;
+            if (!$this->slug_history->exists(
+                function ($key, $history) use ($object_slug) {
+                    return $object_slug === $history->getSlug();
+                }
+            )
+            ) {
+                $history = $this->addSlugHistory($this->slug);
+            }
+        }
+        $this->setModelField('slug', $new_slug);
+
+        return $history;
+    }
+
+    abstract protected function addSlugHistory($old_slug);
 
     /**
      * Get an array of authors.
@@ -383,7 +580,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
             return $this->_authors;
         }
 
-        $this->_authors = array();
+        $this->_authors = [];
 
         if ($this->person) {
             $this->_authors[$this->person['id']] = $this->person;
@@ -392,13 +589,15 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $ent   = $this->getEntityName().'Revision';
         $field = strtolower(str_replace('DeskPRO:', '', $this->getEntityName()));
 
-        $revs = App::getOrm()->createQuery("
+        $revs = App::getOrm()->createQuery(
+            "
             SELECT r, p
             FROM $ent r
             LEFT JOIN r.person p
             WHERE r.$field = ?1 AND r.person IS NOT NULL
             ORDER BY r.date_created DESC
-        ")->setParameter(1, $this)->execute();
+        "
+        )->setParameter(1, $this)->execute();
 
         foreach ($revs as $r) {
             if ($r->person) {
@@ -409,9 +608,20 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $this->_authors;
     }
 
+    /**
+     * Last author touched this content.
+     */
+    public function getLastAuthor()
+    {
+        $authors = $this->getAuthors();
+        $author  = end($authors);
+
+        return $author ?: null;
+    }
+
     public function getByLine($sep = ', ')
     {
-        $names = array();
+        $names = [];
         foreach ($this->getAuthors() as $a) {
             $names[] = $a->getDisplayName();
         }
@@ -419,6 +629,9 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return implode($sep, $names);
     }
 
+    /**
+     * Vote stats object, like {"up": 1, "down": 1}.
+     */
     public function getVoteStats()
     {
         $x = $this->num_ratings - abs($this->total_rating);
@@ -435,7 +648,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
             $down = ($x / 2) + abs($this->total_rating);
         }
 
-        return array('up' => $up, 'down' => $down);
+        return ['up' => $up, 'down' => $down];
     }
 
     public function getUpVotes()
@@ -450,6 +663,18 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $stats = $this->getVoteStats();
 
         return $stats['down'];
+    }
+
+    public function markRatingChangedPositivly()
+    {
+        // 2 to override the -1 when the neg rating was added
+        $this['total_rating'] = $this->total_rating + 2;
+    }
+
+    public function markRatingChangedNegatively()
+    {
+        // 2 to override the -1 when the positive rating was added
+        $this['total_rating'] = $this->total_rating - 2;
     }
 
     public function getRatingPercent()
@@ -474,15 +699,60 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $this['total_rating'] = $this->total_rating - $rating->rating;
     }
 
+    /**
+     * @param CommentAbstract $comment
+     */
     public function addComment($comment)
     {
-        ++$this->num_comments;
+        if ($comment->getStatus() === CommentAbstract::STATUS_VISIBLE) {
+            $this->setModelField('num_comments', $this->num_comments + 1);
+            $this->setDateUpdated();
+        }
+        $this->setModelField('date_last_comment', new \DateTime());
         $comment->setObject($this);
+
+        $this->comments->add($comment);
     }
 
-    public function removeComment($comment)
+    public function removeComment()
     {
-        --$this->num_comments;
+        $this->setModelField('num_comments', $this->num_comments - 1);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param int $value
+     *
+     * @return $this
+     */
+    public function setNumComments($value)
+    {
+        $this->setModelField('num_comments', $value);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumComments()
+    {
+        return $this->num_comments;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumRatings()
+    {
+        return $this->num_ratings;
     }
 
     /**
@@ -546,27 +816,36 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @return DateTime
+     * @return string
      */
-    public function getDateCreated()
+    public function getSlug()
     {
-        return $this->date_created;
+        return $this->slug;
     }
 
     /**
-     * @param DateTime $date_created
+     * @return Person
+     * @return $this
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
      *
      * @return $this
      */
-    public function setDateCreated(DateTime $date_created)
+    public function setPerson(Person $person = null)
     {
-        $this->setModelField('date_created', $date_created);
+        $this->setModelField('person', $person);
 
         return $this;
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDatePublished()
     {
@@ -574,15 +853,19 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param DateTime $date_published
-     *
-     * @return $this
+     * @return \DateTime
      */
-    public function setDatePublished(DateTime $date_published = null)
+    public function getDateCreated()
     {
-        $this->setModelField('date_published', $date_published);
+        return $this->date_created;
+    }
 
-        return $this;
+    /**
+     * @return int
+     */
+    public function getTotalRating()
+    {
+        return $this->total_rating;
     }
 
     /**
@@ -590,10 +873,77 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      *
      * @return $this
      */
-    public function setViewsCount($view_count)
+    public function setViewCount($view_count)
     {
         $this->setModelField('view_count', $view_count);
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getViewCount()
+    {
+        return $this->view_count;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentDesc()
+    {
+        $content = $this->content;
+        $content = Strings::html2Text($content);
+        $content = str_replace("\n", ' ', $content);
+        $content = preg_replace('# {2,}#', ' ', $content);
+
+        if (strlen($content) > 120) {
+            $content = substr($content, 0, 120).'...';
+        }
+
+        return $content;
+    }
+
+    protected function getUpdateFields()
+    {
+        return [
+            'title',
+            'content',
+            'status',
+        ];
+    }
+
+    public function _preUpdate()
+    {
+        foreach ($this->getStateChangeRecorder()->getTouchedFields() as $touched_field) {
+            if (in_array($touched_field, $this->getUpdateFields())) {
+                $this->setDateUpdated(new DateTime());
+
+                return true;
+            }
+        }
+    }
+
+    public function getCalcNumComments()
+    {
+        static $numComments = null;
+        if ($numComments !== null) {
+            return $numComments;
+        }
+        $ent    = $this->getEntityName();
+        $entity = strtolower(Util::getBaseClassname(get_called_class()));
+        $result = App::getOrm()->createQuery(
+            "
+            SELECT count(1) as num_comment
+            FROM {$ent}Comment c
+            WHERE c.status = 'visible' AND c.{$entity} = ?1
+        "
+        )->setParameter(1, $this)->getSingleResult();
+        if ($result) {
+            return $result['num_comment'];
+        }
+
+        return 0;
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,15 +31,24 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
 
 /**
- * Log of searches on userend.
+ * Log of searches on user end.
+ *
+ * @property Person $person
+ * @property string $ip_address
+ * @property string $email
+ * @property int $id;
+ * @property string $name
+ * @property string $query
+ * @property string $num_results
+ * @property \DateTime $date_created
  */
 class SearchLog extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -54,9 +63,9 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
     protected $person = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Visitor
+     * @var string
      */
-    protected $visitor = null;
+    protected $visitor_id = null;
 
     /**
      * @var string
@@ -88,19 +97,17 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $date_created;
 
-    public static function create($query, $num_results, $use_request = true)
+    /**
+     * @param $query
+     * @param $num_results
+     *
+     * @return SearchLog
+     */
+    public static function create($query, $num_results)
     {
         $searchlog              = new self();
         $searchlog->query       = $query;
         $searchlog->num_results = $num_results;
-
-        if ($use_request && App::has('request')) {
-            if (!App::getCurrentPerson()->isGuest()) {
-                $searchlog->person = App::getCurrentPerson();
-            }
-
-            $searchlog->visitor = App::getSession()->getVisitor();
-        }
 
         return $searchlog;
     }
@@ -133,31 +140,107 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
         $this['query'] = $query;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\SearchLog';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'searchlog',
-            'indexes' => array(
-                'searchlog_query_idx' => array('columns' => array('query')),
-                'num_results_idx'     => array('columns' => array('num_results')),
-            ),
-        ));
+            'indexes' => [
+                'searchlog_query_idx' => ['columns' => ['query']],
+                'num_results_idx'     => ['columns' => ['num_results']],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address'));
-        $metadata->mapField(array('fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'email'));
-        $metadata->mapField(array('fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'name'));
-        $metadata->mapField(array('fieldName' => 'query', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'query'));
-        $metadata->mapField(array('fieldName' => 'num_results', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_results'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'ip_address',
+            'type'       => 'string',
+            'length'     => 30,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'ip_address',
+        ]);
+        $metadata->mapField(
+            [
+                'fieldName'  => 'visitor_id',
+                'type'       => 'string',
+                'length'     => 120,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'visitor_id',
+            ]
+        );
+        $metadata->mapField([
+            'fieldName'  => 'email',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'email',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'name',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'name',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'query',
+            'type'       => 'string',
+            'length'     => 255,
+            'nullable'   => false,
+            'columnName' => 'query',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'num_results',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'num_results',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_created',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'date_created',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne([
+            'fieldName'    => 'person',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

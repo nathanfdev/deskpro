@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\App\Native\InstallerHandler;
 
 use Application\DeskPRO\App\Native\NativeApp;
@@ -56,7 +57,7 @@ class InstallerContext
     private $raw_form;
 
     /**
-     * @var Usersource|null must be preset for "usersources" apps. null otherwise.
+     * @var Usersource|null must be preset for "usersources" apps. null otherwise
      */
     private $usersource;
 
@@ -66,7 +67,7 @@ class InstallerContext
      * @param array            $raw_form
      * @param                  $usersource
      */
-    public function __construct(DeskproContainer $container, NativeApp $native_app = null, array $raw_form = array(), Usersource $usersource = null)
+    public function __construct(DeskproContainer $container, NativeApp $native_app = null, array $raw_form = [], Usersource $usersource = null)
     {
         $this->container  = $container;
         $this->native_app = $native_app;

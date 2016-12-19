@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,7 +34,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SimpleDefinitionType extends AbstractType implements EventSubscriberInterface
 {
@@ -46,32 +46,28 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
     {
         $builder
             ->add('id', 'hidden')
-            ->add('title', 'text', array('label' => false))
-            ->add('display_order', 'hidden')
-        ;
+            ->add('title', 'text', ['label' => false])
+            ->add('display_order', 'hidden');
         $builder->addEventSubscriber($this);
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(array(
+            ->setDefaults([
                 'data_class' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
-            ))
-            ->setRequired(array(
+            ])
+            ->setRequired([
                 'context', 'parent',
-            ))
-            ->setAllowedTypes(array(
-                // todo
-                'context' => array(
-                    'Application\DeskPRO\Entity\Person',
-                    'Application\DeskPRO\Entity\Ticket',
-                    'Application\DeskPRO\Entity\Organization',
-                ),
-            ))
+            ])
+            ->setAllowedTypes('context', [
+                'Application\DeskPRO\Entity\Person',
+                'Application\DeskPRO\Entity\Ticket',
+                'Application\DeskPRO\Entity\Organization',
+            ])
         ;
     }
 
@@ -126,9 +122,9 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             FormEvents::PRE_SUBMIT  => 'onPreSubmit',
             FormEvents::POST_SUBMIT => 'onPostSubmit',
-        );
+        ];
     }
 }

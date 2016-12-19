@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -63,7 +64,7 @@ class TicketEscalations extends AbstractJob
 
         if ($this->options->has('testEscalation')) {
             $find_id     = $this->options->get('testEscalation');
-            $escalations = App::$container->getEm()->getRepository('DeskPRO:TicketEscalation')->getByIds(array($find_id));
+            $escalations = App::$container->getEm()->getRepository('DeskPRO:TicketEscalation')->getByIds([$find_id]);
             if (!count($escalations)) {
                 $logger->warn("testEscalation: Escalation #$find_id does not exist");
 
@@ -104,6 +105,10 @@ class TicketEscalations extends AbstractJob
             $matcher->setTickets($tickets);
         } else {
             $matcher = new EscalationTicketMatcher(App::$container->getEm(), App::$container->getDb());
+        }
+
+        if ($this->getContainer()->get('deskpro.app_env')->getConfig('settings.escalation_double_check')) {
+            $matcher->enableDoubleCheck();
         }
 
         $matcher->setLogger($logger);

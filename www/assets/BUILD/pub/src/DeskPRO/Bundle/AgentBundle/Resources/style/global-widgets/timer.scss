@@ -1,0 +1,17 @@
+.dpw--timer {
+  color: #d2d2d2;
+  font-size: 0.75em;
+  font-weight: bold;
+  // Will be required on the normal view -- margin-top: 4px;
+
+  span {
+    color: #444444;
+    display: inline-block;
+    line-height: 1em;
+    border-radius: 2px;
+    padding: 2px 4px;
+  }
+
+  .sla-yellow { background: #f6be1a; }
+  .sla-red { background: #ff5460; }
+}

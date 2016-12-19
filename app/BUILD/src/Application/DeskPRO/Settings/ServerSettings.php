@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,8 @@
 /**
  * DeskPRO.
  */
-namespace Application\DeskPRO\Settings;
 
-use Orb\Util\Util;
+namespace Application\DeskPRO\Settings;
 
 class ServerSettings
 {
@@ -40,8 +39,6 @@ class ServerSettings
      */
     private $settings;
 
-    /** @var bool */
-    public $rewrite_urls = false;
     /** @var string */
     public $cookie_path = '/';
     /** @var string */
@@ -61,8 +58,6 @@ class ServerSettings
      */
     public function resetSettings()
     {
-        $this->rewrite_urls = (bool) $this->settings->get('core.rewrite_urls');
-
         $this->cookie_path = $this->settings->get('core.cookie_path');
         if ($this->cookie_path === null) {
             $this->cookie_path = '/';
@@ -79,11 +74,10 @@ class ServerSettings
      */
     public function toArray()
     {
-        $export_settings = array(
-            'rewrite_urls'  => $this->rewrite_urls,
+        $export_settings = [
             'cookie_path'   => $this->cookie_path,
             'cookie_domain' => $this->cookie_domain,
-        );
+        ];
 
         return $export_settings;
     }
@@ -105,7 +99,6 @@ class ServerSettings
      */
     public function saveSettings()
     {
-        $this->settings->setSetting('core.rewrite_urls', Util::boolInt($this->rewrite_urls));
         $this->settings->setSetting('core.cookie_path', $this->cookie_path);
         $this->settings->setSetting('core.cookie_domain', $this->cookie_domain);
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,15 +29,20 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Arrays;
 
+/**
+ * @ApiModes("all")
+ */
 class ReportsAgentActivityController extends AbstractController
 {
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction($agent_or_team_id, $date)
     {
@@ -49,10 +54,10 @@ class ReportsAgentActivityController extends AbstractController
         $all_agents             = $reports_agent_activity->getAllAgents();
         $agent_teams            = $reports_agent_activity->getAllAgentTeams();
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
              'all_agents'  => $this->getApiData(Arrays::flatten($all_agents)),
              'agent_teams' => $this->getApiData($agent_teams),
              'html'        => $this->renderView('ReportsInterfaceBundle:AgentActivity:results.html.twig', $html_vars),
-        ));
+        ]);
     }
 }

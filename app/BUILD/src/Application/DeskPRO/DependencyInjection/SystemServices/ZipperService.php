@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -40,14 +41,10 @@ class ZipperService
 {
     public static function create(DeskproContainer $container)
     {
-        $type = dp_get_config('force_zip_adapter');
-
-        if (!$type) {
-            if (extension_loaded('Zip')) {
-                $type = 'zip';
-            } elseif (extension_loaded('zlib')) {
-                $type = 'pcl_zip';
-            }
+        if (extension_loaded('Zip')) {
+            $type = 'zip';
+        } elseif (extension_loaded('zlib')) {
+            $type = 'pcl_zip';
         }
 
         switch ($type) {

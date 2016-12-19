@@ -1,0 +1,38 @@
+.dpwd-radio-button {
+  margin: 0 4px;
+  color: #c0c0c0;
+  cursor: pointer;
+  position: relative;
+  padding-left: 14px;
+
+  .radio-button-title {
+    display: inline-block;
+    vertical-align: bottom;
+  }
+
+  .dpwd-radio-button-disc {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 19px;
+    background: #aac8bb;
+    border: 2px solid rgba(0, 0, 0, 0);
+    position: absolute;
+    top: 3px;
+    left: 0;
+  }
+}
+
+.dpwd-radio-button:hover {
+  .radio-button-title {
+    color: #333;
+  }
+}
+
+.dpwd-radio-button.active {
+  color: #333;
+
+  .dpwd-radio-button-disc {
+    border: 2px solid #4a9474;
+  }
+}

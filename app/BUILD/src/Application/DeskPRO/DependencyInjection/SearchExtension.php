@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -43,19 +44,18 @@ class SearchExtension extends Extension
     public function load(array $config, ContainerBuilder $container)
     {
         $definition = new Definition('Application\\DeskPRO\\Search\\Adapter\\AbstractAdapter');
-        $definition->setFactoryClass('Application\\DeskPRO\\StaticLoader\\SearchAdapter');
-        $definition->setFactoryMethod('getSearchAdapter');
+        $definition->setFactory('Application\\DeskPRO\\StaticLoader\\SearchAdapter::getSearchAdapter');
         $container->setDefinition('deskpro.search_adapter', $definition);
 
         // Doctrine listener to support search engine
-        $definition = new Definition('Application\\DeskPRO\\Search\\EntityWatcher\\EntityWatcher', array(new Reference('service_container')));
+        $definition = new Definition('Application\\DeskPRO\\Search\\EntityWatcher\\EntityWatcher', [new Reference('service_container')]);
         $definition->addTag('doctrine.event_subscriber');
         $container->setDefinition('deskpro.search.entity_listener', $definition);
 
-        $definition = new Definition('Application\\DeskPRO\\Elastica\\ClientFactory', array(new Reference('deskpro.core.settings')));
+        $definition = new Definition('Application\\DeskPRO\\Elastica\\ClientFactory', [new Reference('deskpro.core.settings')]);
         $container->setDefinition('deskpro.elastica.client_factory', $definition);
-        
-        $definition = new Definition('Application\\DeskPRO\\ApacheTika\\ClientManager', array(new Reference('deskpro.core.settings')));
+
+        $definition = new Definition('Application\\DeskPRO\\ApacheTika\\ClientManager', [new Reference('deskpro.core.settings')]);
         $container->setDefinition('deskpro.apache_tika.client_manager', $definition);
     }
 

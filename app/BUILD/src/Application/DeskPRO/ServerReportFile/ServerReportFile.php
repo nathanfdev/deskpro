@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerReportFile;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ORM\Util\Util;
-use Application\DeskPRO\Service\ErrorReporter;
-use DeskPRO\Kernel\License;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\Instructions\InstructionsGenerator;
 use Doctrine\ORM\EntityManager;
+use DpSys\License;
 use Orb\Util\Files;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -50,7 +53,7 @@ class ServerReportFile
     private $max_file_size = 250000;
 
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 
@@ -72,7 +75,7 @@ class ServerReportFile
     /**
      * @var array - this is mapping array between file name and method of this class that creates file content
      */
-    public $files_added_to_archive = array(
+    public $files_added_to_archive = [
         'phpinfo-web.html'      => '_createPhpInfoFile',
         'phpinfo-cli.txt'       => '_createCliInfoFile',
         'errorlog-deskpro.txt'  => '_createDeskPROErrorLog',
@@ -88,7 +91,8 @@ class ServerReportFile
         'license.txt'           => '_createLicense',
         'file-integrity.txt'    => '_createFileIntegrity',
         'templates.txt'         => '_createTemplates',
-    );
+        'incidents'             => '_createIncidents',
+    ];
 
     /**
      * @var OutputInterface
@@ -96,9 +100,26 @@ class ServerReportFile
     protected $oi;
 
     /**
+     * system entity manager.
+     *
+     * @var EntityManager|null
+     */
+    protected $sem;
+
+    /**
+     * @var InstructionsGenerator|null
+     */
+    protected $ig;
+
+    /**
+     * @var AppEnv
+     */
+    protected $appEnv;
+
+    /**
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em, OutputInterface $output = null)
+    public function __construct(EntityManager $em, OutputInterface $output = null, AppEnv $appEnv)
     {
         $this->em = $em;
         $this->oi = $output;
@@ -110,6 +131,7 @@ class ServerReportFile
         }
 
         $this->archive_file = $this->tmpdir.'/deskpro-report.zip';
+        $this->appEnv       = $appEnv;
     }
 
     /**
@@ -327,9 +349,9 @@ class ServerReportFile
      */
     protected function _createMysqlSchema($file_name)
     {
-        $sql = array();
+        $sql = [];
 
-        $sql[] = '### '.App::getContainer()->getSetting('core.deskpro_url')."\n";
+        $sql[] = '### '.App::getContainer()->getBrandSetting('core.deskpro_url')."\n";
         $sql[] = '### DeskPRO Build: '.DP_BUILD_TIME."\n";
         $sql[] = '### Generated: '.date('Y-m-d H:i:s')."\n\n";
 
@@ -337,7 +359,7 @@ class ServerReportFile
 
         foreach ($tables as $table) {
             $sql[] = "### TABLE: $table\n";
-            $sql[] = App::getDb()->fetchColumn("SHOW CREATE TABLE `$table`", array(), 1);
+            $sql[] = App::getDb()->fetchColumn("SHOW CREATE TABLE `$table`", [], 1);
             $sql[] = "\n\n";
         }
 
@@ -357,10 +379,10 @@ class ServerReportFile
      */
     protected function _createMysqlStatus($file_name)
     {
-        $sections = array();
+        $sections = [];
 
         try {
-            $mysqlstatus              = App::getDb()->fetchAllKeyValue('SHOW STATUS', array(), array(), 0, 1);
+            $mysqlstatus              = App::getDb()->fetchAllKeyValue('SHOW STATUS', [], [], 0, 1);
             $sections['MySQL Status'] = Strings::keyValueAsciiTable($mysqlstatus);
         } catch (\Exception $e) {
         }
@@ -391,10 +413,10 @@ class ServerReportFile
      */
     protected function _createMysqlVariables($file_name)
     {
-        $sections = array();
+        $sections = [];
 
         try {
-            $mysqlinfo                   = App::getDb()->fetchAllKeyValue('SHOW VARIABLES', array(), array(), 0, 1);
+            $mysqlinfo                   = App::getDb()->fetchAllKeyValue('SHOW VARIABLES', [], [], 0, 1);
             $sections['MySQL Variables'] = Strings::keyValueAsciiTable($mysqlinfo);
         } catch (\Exception $e) {
         }
@@ -451,12 +473,10 @@ class ServerReportFile
         $items['has_wincache'] = $vars['has_wincache'] ? 'Yes' : 'No';
         $items                 = array_merge($items, $vars['debug_settings']);
 
-        $sections = array();
+        $sections = [];
 
-        $sections['Info']          = Strings::keyValueAsciiTable($items);
-        $sections['Reporter Info'] = Strings::keyValueAsciiTable(ErrorReporter::getBasicData(true));
-
-        $out = '';
+        $sections['Info'] = Strings::keyValueAsciiTable($items);
+        $out              = '';
 
         foreach ($sections as $title => $content) {
             $out .= "\n\n\n\n\n";
@@ -481,7 +501,7 @@ class ServerReportFile
     protected function _createTemplates()
     {
         $templates = App::getDb()->fetchAll('SELECT name, template_code, date_created, date_updated FROM templates');
-        $out       = array();
+        $out       = [];
 
         foreach ($templates as $t) {
             $out[] = ">>>>>>>>>>>>>>>>>>>> Template: {$t['name']} -- Created: {$t['date_created']} -- Updated: {$t['date_updated']} <<<<<<<<<<<<<<<<<<<<\n\n";
@@ -535,9 +555,9 @@ class ServerReportFile
 
         $content = '';
 
-        $content .=  '### '.App::getContainer()->getSetting('core.deskpro_url')."\n";
-        $content .=  '### DeskPRO Build: '.DP_BUILD_TIME."\n";
-        $content .=  '### Generated: '.date('Y-m-d H:i:s')."\n\n";
+        $content .= '### '.App::getContainer()->getBrandSetting('core.deskpro_url')."\n";
+        $content .= '### DeskPRO Build: '.DP_BUILD_TIME."\n";
+        $content .= '### Generated: '.date('Y-m-d H:i:s')."\n\n";
 
         $content .= 'Task    Interval   Last Run   Last Complete   Next Run'."\n\n";
 
@@ -576,7 +596,6 @@ class ServerReportFile
         $license = License::getLicense();
 
         $licenseExpiresIn = function () use ($license) {
-
             if ($license->getExpireDays() == 0 && $license->getExpireTime('hours') == 0) {
                 return 'In '.$license->getExpireTime('mins').' minutes';
             } elseif ($license->getExpireDays() < 3) {
@@ -588,8 +607,8 @@ class ServerReportFile
 
         $content = '';
 
-        $content .= '### '.App::getContainer()->getSetting('core.deskpro_url')."\n";
-        $content .= '### DeskPRO Build: '.DP_BUILD_TIME."\n";
+        $content .= '### '.App::getContainer()->getBrandSetting('core.deskpro_url')."\n";
+        $content .= '### DeskPRO Build: '.$this->appEnv->getVersionName()."\n";
         $content .= '### Generated: '.date('Y-m-d H:i:s')."\n\n";
 
         $content .= 'License ID: '.$license->getLicenseId()."\n";
@@ -674,5 +693,69 @@ class ServerReportFile
         }
 
         return $content;
+    }
+
+    /**
+     * @param EntityManager $em
+     */
+    public function setSystemEntityManager(EntityManager $em)
+    {
+        $this->sem = $em;
+    }
+
+    /**
+     * @param InstructionsGenerator $ig
+     */
+    public function setInstructionGenerator(InstructionsGenerator $ig)
+    {
+        $this->ig = $ig;
+    }
+
+    /**
+     * @param $file_name
+     *
+     * @return bool
+     */
+    protected function _createIncidents($file_name)
+    {
+        if (!$this->sem || !$this->ig) {
+            return false;
+        }
+
+        try {
+            $ig  = $this->ig;
+            $dir = $this->tmpdir.'/incidents';
+            if (!@mkdir($dir)) {
+                throw new IOException('Could not create incidents directory');
+            }
+
+            $this->sem->transactional(function (EntityManager $em) use ($ig, $dir) {
+                $incidents = [];
+                $qb = $em->createQueryBuilder()
+                    ->select('i, e')
+                    ->from(AbstractIncident::class, 'i')
+                    ->leftJoin('i.events', 'e');
+                $entities = $qb->getQuery()->getResult();
+
+                foreach ($entities as $entity) {
+                    /* @var $entity AbstractIncident */
+                    $incidents[$entity->getId()] = $ig->generate($entity);
+                    $em->remove($entity);
+                }
+
+                foreach ($incidents as $id => $incident) {
+                    $fileName = $dir.'/incident_'.$id.'.html';
+                    if (@file_put_contents($fileName, $incident) === false) {
+                        throw new IOException('Could not create file under location - '.$fileName);
+                    }
+                }
+            });
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+
+            return false;
+        }
+
+        return true;
     }
 }

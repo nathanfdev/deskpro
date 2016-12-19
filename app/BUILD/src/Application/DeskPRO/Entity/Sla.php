@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -40,6 +41,7 @@ use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
 use Orb\Util\TimeUnit;
@@ -49,23 +51,25 @@ use Orb\Util\WorkHoursSetAll;
 /**
  * Entity for an SLA record.
  *
- * @property int $id
- * @property string $title
- * @property string $sla_type
- * @property string $active_time
- * @property int $work_start
- * @property int $work_end
- * @property int[] $work_days
- * @property string $work_timezone
- * @property array $work_holidays
- * @property string $apply_type
- * @property TriggerTerms $apply_terms
- * @property int $warn_time
- * @property string $warn_time_unit
+ * @property int            $id
+ * @property string         $title
+ * @property string         $sla_type
+ * @property string         $active_time
+ * @property int            $work_start
+ * @property int            $work_end
+ * @property int[]          $work_days
+ * @property string         $work_timezone
+ * @property array          $work_holidays
+ * @property string         $apply_type
+ * @property TriggerTerms   $apply_terms
+ * @property int            $warn_time
+ * @property string         $warn_time_unit
  * @property TriggerActions $warn_actions
- * @property int $fail_time
- * @property string $fail_time_unit
+ * @property int            $fail_time
+ * @property string         $fail_time_unit
  * @property TriggerActions $fail_actions
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class Sla extends DomainObject
 {
@@ -76,17 +80,28 @@ class Sla extends DomainObject
     /**
      * The unique ID.
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
+     * SLA title.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $title = '';
 
     /**
      * Type of SLA - first_response, resolution, waiting_time.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -96,6 +111,9 @@ class Sla extends DomainObject
      * Whether active all the time (all) or during work hours only (work_hours)
      * or use the default ticket-wide settings (default).
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $active_time = 'default';
@@ -103,12 +121,18 @@ class Sla extends DomainObject
     /**
      * When the work day starts. This is stored as the number of seconds after 00:00:00.
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $work_start;
 
     /**
      * When the work day ends. This is stored as the number of seconds after 00:00:00.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -118,12 +142,18 @@ class Sla extends DomainObject
      * Array of work days, stored with keys corresponding to day numbers. Values are true.
      * 0 = Sunday, 6 = Saturday (same as PHP, easy to convert to MySQL which is 1 = Sunday, 7 = Saturday).
      *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     *
      * @var array
      */
-    protected $work_days = array();
+    protected $work_days = [];
 
     /**
      * Timezone for work hours/days to be considered in.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -132,48 +162,92 @@ class Sla extends DomainObject
     /**
      * List of work holidays.
      *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     *
      * @var array
      */
-    protected $work_holidays = array();
+    protected $work_holidays = [];
 
     /**
      * Controls how the SLA is applied to tickets: all, auto, manual.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
     protected $apply_type = 'all';
 
     /**
+     * Conditions to apply.
+     *
+     * @JMS\Expose()
+     * @JMS\Groups({"details"})
+     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerTerms")
+     *
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
      */
     protected $apply_terms = null;
 
     /**
+     * Warn time integer.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $warn_time = 1;
 
     /**
+     * And it's unit (see warn time).
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $warn_time_unit = 'days';
 
     /**
+     * How to warn about SLA will fail.
+     *
+     * @JMS\Expose()
+     * @JMS\Groups({"details"})
+     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerActions")
+     *
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
      */
     protected $warn_actions = null;
 
     /**
+     * Fail time integer.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $fail_time = 1;
 
     /**
+     * And it's measuring unit (see fail_time).
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $fail_time_unit = 'days';
 
     /**
+     * What to do if SLA failed.
+     *
+     * @JMS\Expose()
+     * @JMS\Groups({"details"})
+     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerActions")
+     *
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
      */
     protected $fail_actions = null;
@@ -198,6 +272,27 @@ class Sla extends DomainObject
         $this->fail_actions = new TriggerActions();
     }
 
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        return $this;
+    }
+
+    public function setSlaType($type)
+    {
+        $this->setModelField('sla_type', $type);
+
+        return $this;
+    }
+
+    public function setApplyType($type)
+    {
+        $this->setModelField('apply_type', $type);
+
+        return $this;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -214,18 +309,11 @@ class Sla extends DomainObject
      */
     public function setWorkDays(array $days, $raw = false)
     {
-        $old = $this->work_days;
-
-        if ($raw) {
-            $this->work_days = $days;
-        } else {
+        if (!$raw) {
             $days = array_unique($days);
             sort($days);
-
-            $this->work_days = $days;
         }
-
-        $this->_onPropertyChanged('work_days', $old, $this->work_days);
+        $this->setModelField('work_days', $days);
     }
 
     /**
@@ -233,7 +321,7 @@ class Sla extends DomainObject
      */
     public function resetHolidays()
     {
-        $this->setModelField('work_holidays', array());
+        $this->setModelField('work_holidays', []);
     }
 
     /**
@@ -251,9 +339,9 @@ class Sla extends DomainObject
     /**
      * Adds a holiday.
      *
-     * @param $name
-     * @param $day
-     * @param $month
+     * @param      $name
+     * @param      $day
+     * @param      $month
      * @param null $year
      *
      * @return int|string
@@ -269,7 +357,7 @@ class Sla extends DomainObject
         }
 
         if (!$this->work_holidays) {
-            $this->work_holidays = array();
+            $this->work_holidays = [];
         }
         foreach ($this->work_holidays as $k => $existing) {
             if ($existing['day'] == $day && $existing['month'] == $month && $existing['year'] === $year) {
@@ -277,12 +365,12 @@ class Sla extends DomainObject
             }
         }
 
-        $this->work_holidays[] = array(
+        $this->work_holidays[] = [
             'name'  => $name,
             'day'   => intval($day),
             'month' => intval($month),
             'year'  => $year,
-        );
+        ];
 
         $this->_onPropertyChanged('work_holidays', $old, $this->work_holidays);
 
@@ -297,22 +385,25 @@ class Sla extends DomainObject
     public function getHolidaysSorted()
     {
         $holidays = $this->work_holidays;
-        uasort($holidays, function ($a, $b) {
-            if ($a['month'] < $b['month']) {
-                return -1;
-            }
-            if ($a['month'] > $b['month']) {
-                return 1;
-            }
-            if ($a['day'] < $b['day']) {
-                return -1;
-            }
-            if ($a['day'] > $b['day']) {
-                return 1;
-            }
+        uasort(
+            $holidays,
+            function ($a, $b) {
+                if ($a['month'] < $b['month']) {
+                    return -1;
+                }
+                if ($a['month'] > $b['month']) {
+                    return 1;
+                }
+                if ($a['day'] < $b['day']) {
+                    return -1;
+                }
+                if ($a['day'] > $b['day']) {
+                    return 1;
+                }
 
-            return 0; // same month and day
-        });
+                return 0; // same month and day
+            }
+        );
 
         return $holidays;
     }
@@ -328,9 +419,9 @@ class Sla extends DomainObject
             return new WorkHoursSet(
                 $this->work_start ?: 32400,
                 $this->work_end ?: 64860,
-                $this->work_days ?: array(1, 2, 3, 4, 5),
+                $this->work_days ?: [1, 2, 3, 4, 5],
                 $this->work_timezone ?: 'UTC',
-                $this->work_holidays ?: array()
+                $this->work_holidays ?: []
             );
         } else {
             $work_hours = App::getSetting('core_tickets.work_hours');
@@ -347,9 +438,9 @@ class Sla extends DomainObject
                 return new WorkHoursSet(
                     $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_min', 0) * 60,
                     $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_min', 0) * 60,
-                    $work_hours->get('work_days', array(1, 2, 3, 4, 5)),
+                    $work_hours->get('work_days', [1, 2, 3, 4, 5]),
                     $work_hours->get('timezone', 'UTC'),
-                    $work_hours->get('holidays', array())
+                    $work_hours->get('holidays', [])
                 );
             } else {
                 return new WorkHoursSetAll();
@@ -379,8 +470,18 @@ class Sla extends DomainObject
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
+        if ($this->apply_terms === null) {
+            $this->apply_terms = new TriggerTerms();
+        }
+        if ($this->warn_actions === null) {
+            $this->warn_actions = new TriggerActions();
+        }
+        if ($this->fail_actions === null) {
+            $this->fail_actions = new TriggerActions();
+        }
+
         $data                 = parent::toApiData($primary, $deep, $visited);
         $data['apply_terms']  = $this->apply_terms->exportToArray();
         $data['warn_actions'] = $this->warn_actions->exportToArray();
@@ -389,9 +490,9 @@ class Sla extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -400,119 +501,155 @@ class Sla extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Sla';
 
-        $metadata->setPrimaryTable(array(
-            'name' => 'slas',
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'id',
-            'fieldName'  => 'id',
-            'type'       => 'integer',
-            'id'         => true,
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'title',
-            'fieldName'  => 'title',
-            'type'       => 'string',
-            'length'     => 100,
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'sla_type',
-            'fieldName'  => 'sla_type',
-            'type'       => 'string',
-            'length'     => 50,
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'active_time',
-            'fieldName'  => 'active_time',
-            'type'       => 'string',
-            'length'     => 50,
-            'nullable'   => false,
-        ));
+        $metadata->setPrimaryTable(
+            [
+                'name' => 'slas',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'id',
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'id'         => true,
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'title',
+                'fieldName'  => 'title',
+                'type'       => 'string',
+                'length'     => 100,
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'sla_type',
+                'fieldName'  => 'sla_type',
+                'type'       => 'string',
+                'length'     => 50,
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'active_time',
+                'fieldName'  => 'active_time',
+                'type'       => 'string',
+                'length'     => 50,
+                'nullable'   => false,
+            ]
+        );
 
-        $metadata->mapField(array(
-            'columnName' => 'work_start',
-            'fieldName'  => 'work_start',
-            'type'       => 'integer',
-            'nullable'   => true,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'work_end',
-            'fieldName'  => 'work_end',
-            'type'       => 'integer',
-            'nullable'   => true,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'work_days',
-            'fieldName'  => 'work_days',
-            'type'       => 'simple_array',
-            'nullable'   => true,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'work_timezone',
-            'fieldName'  => 'work_timezone',
-            'type'       => 'string',
-            'length'     => 50,
-            'nullable'   => true,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'work_holidays',
-            'fieldName'  => 'work_holidays',
-            'type'       => 'json_array',
-            'nullable'   => true,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'apply_type',
-            'fieldName'  => 'apply_type',
-            'type'       => 'string',
-            'length'     => 25,
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'apply_terms',
-            'fieldName'  => 'apply_terms',
-            'type'       => 'dp_json_obj',
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'warn_time',
-            'fieldName'  => 'warn_time',
-            'type'       => 'integer',
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'warn_time_unit',
-            'fieldName'  => 'warn_time_unit',
-            'type'       => 'string',
-            'length'     => 50,
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'warn_actions',
-            'fieldName'  => 'warn_actions',
-            'type'       => 'dp_json_obj',
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'fail_time',
-            'fieldName'  => 'fail_time',
-            'type'       => 'integer',
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'fail_time_unit',
-            'fieldName'  => 'fail_time_unit',
-            'type'       => 'string',
-            'length'     => 50,
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'fail_actions',
-            'fieldName'  => 'fail_actions',
-            'type'       => 'dp_json_obj',
-            'nullable'   => false,
-        ));
+        $metadata->mapField(
+            [
+                'columnName' => 'work_start',
+                'fieldName'  => 'work_start',
+                'type'       => 'integer',
+                'nullable'   => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'work_end',
+                'fieldName'  => 'work_end',
+                'type'       => 'integer',
+                'nullable'   => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'work_days',
+                'fieldName'  => 'work_days',
+                'type'       => 'simple_array',
+                'nullable'   => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'work_timezone',
+                'fieldName'  => 'work_timezone',
+                'type'       => 'string',
+                'length'     => 50,
+                'nullable'   => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'work_holidays',
+                'fieldName'  => 'work_holidays',
+                'type'       => 'json_array',
+                'nullable'   => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'apply_type',
+                'fieldName'  => 'apply_type',
+                'type'       => 'string',
+                'length'     => 25,
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'apply_terms',
+                'fieldName'  => 'apply_terms',
+                'type'       => 'dp_json_obj',
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'warn_time',
+                'fieldName'  => 'warn_time',
+                'type'       => 'integer',
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'warn_time_unit',
+                'fieldName'  => 'warn_time_unit',
+                'type'       => 'string',
+                'length'     => 50,
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'warn_actions',
+                'fieldName'  => 'warn_actions',
+                'type'       => 'dp_json_obj',
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'fail_time',
+                'fieldName'  => 'fail_time',
+                'type'       => 'integer',
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'fail_time_unit',
+                'fieldName'  => 'fail_time_unit',
+                'type'       => 'string',
+                'length'     => 50,
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'fail_actions',
+                'fieldName'  => 'fail_actions',
+                'type'       => 'dp_json_obj',
+                'nullable'   => false,
+            ]
+        );
     }
 }

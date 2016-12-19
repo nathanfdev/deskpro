@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\Entity\Person;
@@ -79,7 +80,7 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 
     public function propertyChanged($sender, $prop, $old_val, $new_val)
     {
-        if (in_array($prop, array('notes'))) {
+        if (in_array($prop, ['notes'])) {
             $this->recordMultiPropertyChanged($prop, $old_val, $new_val);
         } else {
             $this->recordPropertyChanged($prop, $old_val, $new_val);

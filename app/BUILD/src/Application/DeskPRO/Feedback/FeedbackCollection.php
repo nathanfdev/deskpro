@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\CustomFields\FeedbackFieldManager;
@@ -61,7 +62,7 @@ class FeedbackCollection
     /**
      * @var \Application\DeskPRO\Feedback\UserCategory[]
      */
-    protected $user_cats = array();
+    protected $user_cats = [];
 
     public function __construct(array $feedbacks, EntityManager $em, FeedbackFieldManager $feedback_fm)
     {
@@ -89,7 +90,7 @@ class FeedbackCollection
      */
     public function getDisplayArray()
     {
-        $data = array();
+        $data = [];
 
         foreach ($this->feedbacks as $feedback) {
             $data[$feedback->getId()] = $this->getDisplayArrayForFeedback($feedback);
@@ -110,11 +111,11 @@ class FeedbackCollection
         $custom_data   = $this->getDataForFeedback($feedback);
         $user_category = $this->getUserCategory($feedback);
 
-        $data = array(
+        $data = [
             'feedback'      => $feedback,
             'custom_data'   => $custom_data,
             'user_category' => $user_category,
-        );
+        ];
 
         return $data;
     }
@@ -130,7 +131,7 @@ class FeedbackCollection
             return $this->feedback_data;
         }
 
-        $this->feedback_data = array();
+        $this->feedback_data = [];
 
         if ($this->feedbacks) {
             $ids = array_keys($this->feedbacks);
@@ -144,7 +145,7 @@ class FeedbackCollection
 
             foreach ($results as $data) {
                 if (!isset($this->feedback_data[$data->feedback->getId()])) {
-                    $this->feedback_data[$data->feedback->getId()] = array();
+                    $this->feedback_data[$data->feedback->getId()] = [];
                 }
 
                 $this->feedback_data[$data->feedback->getId()][$data->field->getId()] = $data;
@@ -165,7 +166,7 @@ class FeedbackCollection
     {
         $all_data = $this->getCustomData();
 
-        return isset($all_data[$feedback->getId()]) ? $all_data[$feedback->getId()] : array();
+        return isset($all_data[$feedback->getId()]) ? $all_data[$feedback->getId()] : [];
     }
 
     /**

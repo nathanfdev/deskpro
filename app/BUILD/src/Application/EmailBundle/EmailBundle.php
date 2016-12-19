@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle;
 
+use Application\EmailBundle\DependencyInjection\Compiler\TwigEnvironmentPass;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -39,6 +41,7 @@ class EmailBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new TwigEnvironmentPass());
     }
 
     /**
@@ -46,13 +49,13 @@ class EmailBundle extends Bundle
      */
     public function registerCommands(Application $application)
     {
-        $commands = array(
+        $commands = [
             'Application\\EmailBundle\\Command\\SendSourceCommand',
             'Application\\EmailBundle\\Command\\GenTestEmailCommand',
             'Application\\EmailBundle\\Command\\ProcessQueueCommand',
             'Application\\EmailBundle\\Command\\QueueRawEmailCommand',
             'Application\\EmailBundle\\Command\\GenTestIncomingEmailCommand',
-        );
+        ];
 
         foreach ($commands as $cmd) {
             $application->add(new $cmd());

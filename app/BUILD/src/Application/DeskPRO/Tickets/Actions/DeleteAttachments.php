@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -77,7 +77,7 @@ class DeleteAttachments extends AbstractContainerAwareAction implements ActionIn
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         $options = $this->getActionOptions();
-        $log     = array('deleted' => array());
+        $log     = ['deleted' => []];
 
         foreach ($ticket->attachments as $attachment) {
             /* @var TicketAttachment $attachment */
@@ -119,11 +119,11 @@ class DeleteAttachments extends AbstractContainerAwareAction implements ActionIn
 
     protected function delete(Ticket $ticket, TicketAttachment $attachment, &$log)
     {
-        $log['deleted'][] = array(
+        $log['deleted'][] = [
             'filename' => $attachment->blob->filename,
             'filesize' => $attachment->blob->getReadableFilesize(),
             'message'  => $attachment->message->id,
-        );
+        ];
 
         /* @var TicketMessage $message */
         $ticket->removeAttachment($attachment);

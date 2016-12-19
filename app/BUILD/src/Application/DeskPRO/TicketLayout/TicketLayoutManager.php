@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,10 @@
  *
  * @category TicketLayout
  */
+
 namespace Application\DeskPRO\TicketLayout;
+
+use Application\DeskPRO\App;
 
 class TicketLayoutManager
 {
@@ -112,10 +115,17 @@ class TicketLayoutManager
     }
 
     /**
+     * @param bool $newPortal
+     *
      * @return LayoutCollection
      */
-    public function getUserLayouts()
+    public function getUserLayouts($newPortal = false)
     {
+        // this is a bit of a hack for now. we should deprecate this service in favor of TicketLayoutFactory in portal.
+        if ($newPortal) {
+            App::$container->get('ticket_layout_factory')->prepareUserMultipleLayouts($this->user_layouts);
+        }
+
         return $this->user_layouts;
     }
 
@@ -150,17 +160,17 @@ class TicketLayoutManager
      */
     private function _collectLayoutItems(LayoutCollection $coll)
     {
-        $items = array();
+        $items = [];
 
         foreach ($coll as $layout) {
             foreach ($layout as $item) {
                 if (!isset($items[$item->getId()])) {
-                    $items[$item->getId()] = array(
+                    $items[$item->getId()] = [
                         'id'           => $item->getId(),
                         'field_type'   => $item->getFieldType(),
                         'field_id'     => $item->getFieldId(),
                         'has_criteria' => false,
-                    );
+                    ];
                 }
 
                 if ($item->hasCriteria()) {

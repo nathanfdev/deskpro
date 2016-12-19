@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Form\CustomField\Model;
 
 use Orb\Util\Arrays;
@@ -196,8 +197,8 @@ class ChoiceField extends CustomFieldAbstract
         $choices_structure = $this->choices_structure;
         $choices_structure = Arrays::keyFromData($choices_structure, 'id');
 
-        $choices     = array();
-        $removed_ids = array();
+        $choices     = [];
+        $removed_ids = [];
         foreach ($this->_field->children as $ch) {
             if (!isset($choices_structure[$ch->id])) {
                 $this->_em->remove($ch);
@@ -267,7 +268,7 @@ class ChoiceField extends CustomFieldAbstract
         if ($this->default_value != $this->_field->default_value || false !== strpos($this->default_value, 'cb_')) {
             $this->_field->default_value = null;
 
-            $defaults = array();
+            $defaults = [];
             foreach (explode(',', $this->default_value) as $dval) {
                 if (isset($choices[$dval])) {
                     $defaults[] = $choices[$dval]->id;

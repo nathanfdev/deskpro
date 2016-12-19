@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 use Application\DeskPRO\Service\CheckWhitelistedIP;
+use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -65,31 +66,29 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
     /**
      * Force a login.
+     *
+     * {@inheritdoc}
      */
-    public function preAction($action, $arguments = null)
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
-        if (!$this->request->isXmlHttpRequest() && !UserAgentRequirementCheck::passAgentInterface($this->container->get('browser_sniffer'))) {
-            return $this->redirectRoute('agent_browser_requirements');
-        }
-
         if (!$this->person['id']) {
-            if ($this->request->isXmlHttpRequest()) {
-                $data = array(
+            if ($request->isXmlHttpRequest()) {
+                $data = [
                     'error'          => 'session_expired',
                     'redirect_login' => $this->generateUrl('agent_login'),
-                );
+                ];
 
                 return $this->createJsonResponse($data, 403);
             } else {
-                if ($this->isPostRequest()) {
+                if ($this->getRequest()->getMethod() === 'POST') {
                     $return = $this->get('router')->generate('agent');
                 } else {
-                    $return = $this->request->getRequestUri();
+                    $return = $request->getRequestUri();
                 }
 
-                return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
+                return $this->render('AgentBundle:Login:redirect-login.html.twig', [
                     'return' => $return,
-                ));
+                ]);
             }
         }
 
@@ -98,30 +97,30 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         }
 
         if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
-            if ($this->request->isXmlHttpRequest()) {
-                $data = array(
+            if ($request->isXmlHttpRequest()) {
+                $data = [
                     'error'          => 'invalid_request_token',
                     'redirect_login' => $this->generateUrl('agent_login'),
-                );
+                ];
 
                 return $this->createJsonResponse($data, 403);
             } else {
-                return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
+                return $this->render('AgentBundle:Login:redirect-login.html.twig', [
                     'return' => $this->get('router')->generate('agent'),
-                ));
+                ]);
             }
         }
 
-        if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
-            return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-                'ip' => dp_get_user_ip_address(),
-            ));
+        if (!CheckWhitelistedIP::checkIP($request, $this->container, $this->person)) {
+            return $this->render('AgentBundle:Login:whitelist-ip.html.twig', [
+                'ip' => $request->getClientIp(),
+            ]);
         }
 
         $this->person->loadHelper('Agent');
         $this->person->loadHelper('AgentTeam');
         $this->person->loadHelper('AgentPermissions');
-        $this->person->loadHelper('PermissionsManager');
+        $this->person->loadHelper('PermissionsManager', ['force_load_usergroups' => true]);
         $this->person->loadHelper('HelpMessages');
         $this->person->loadHelper('AgentPrefs');
     }
@@ -144,11 +143,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      */
     protected function createPermissionErrorResponse($message)
     {
-        return $this->createJsonResponse(array('error' => 'not_allowed', 'message' => $message), 403);
+        return $this->createJsonResponse(['error' => 'not_allowed', 'message' => $message], 403);
     }
 
     /**
-     * @return Application\DeskPRO\Entity\Person
+     * @return \Application\DeskPRO\Entity\Person
      */
     public function getPerson()
     {

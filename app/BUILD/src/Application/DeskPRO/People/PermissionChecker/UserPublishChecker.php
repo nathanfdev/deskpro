@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\People\PermissionChecker;
 
 use Application\DeskPRO\Entity\Article;
@@ -136,7 +137,6 @@ class UserPublishChecker extends AbstractChecker
 
         // Only agents can view non-published
         if ($feedback->status == 'hidden' && !$this->person->is_agent) {
-
             // But still show the user their own submitted feedback
             if ($feedback->person && $feedback->person->getId() == $this->person->getId()) {
                 return true;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,6 @@ class Build1458048785 extends AbstractBuild
 {
     public function run()
     {
-        $this->execMutateSql('CREATE INDEX sys_name_idx ON blobs (sys_name)');
+        $this->execSlowAlterTable('blobs', 'ADD INDEX sys_name_idx (sys_name)');
     }
 }

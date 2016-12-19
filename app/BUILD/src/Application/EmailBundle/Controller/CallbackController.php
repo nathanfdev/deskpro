@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,12 @@
 namespace Application\EmailBundle\Controller;
 
 use Application\DeskPRO\Controller\AbstractController;
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\EmailBundle\EntityRepository\SendmailSourceStatusRepository;
 use Application\EmailBundle\Event\Mail;
 use Application\EmailBundle\Event\Subscriber\Sendgrid;
 use deskpro_sendgrid\InstallerHandler as SendGridAppInstaller;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 

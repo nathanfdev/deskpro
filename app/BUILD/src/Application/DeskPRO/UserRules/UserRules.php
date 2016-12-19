@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\UserRules;
 
 use Application\DeskPRO\App;
@@ -38,7 +39,7 @@ use Doctrine\ORM\EntityManager;
 class UserRules
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var EntityManager
      */
     protected $em;
 
@@ -92,7 +93,7 @@ class UserRules
     {
         $user_rule = $this->em->getRepository('DeskPRO:UserRule')->get($id);
 
-        $resultData = array();
+        $resultData = [];
 
         if ($user_rule) {
             $data['id']             = $user_rule->id;
@@ -177,11 +178,11 @@ class UserRules
         ");
 
         if (!$email_to_user) {
-            return array('completed' => true);
+            return ['completed' => true];
         }
 
-        $did_user = array();
-        $batch    = array();
+        $did_user = [];
+        $batch    = [];
 
         foreach ($email_to_user as $email => $user_id) {
             if (isset($did_user[$user_id])) {
@@ -194,18 +195,18 @@ class UserRules
                 if ($user_rule->add_organization) {
                     App::getDb()->update(
                         'people',
-                        array(
+                        [
                              'organization_id' => $user_rule->add_organization->id,
-                        ),
-                        array('id' => $user_id)
+                        ],
+                        ['id' => $user_id]
                     );
                 }
 
                 if ($user_rule->add_usergroup) {
-                    $batch[] = array(
+                    $batch[] = [
                         'person_id'    => $user_id,
                         'usergroup_id' => $user_rule->add_usergroup->id,
-                    );
+                    ];
                 }
             }
         }
@@ -214,11 +215,11 @@ class UserRules
             App::getDb()->batchInsert('person2usergroups', $batch, true);
         }
 
-        return array(
+        return [
             'completed' => false,
             'success'   => true,
             'page'      => $page + 1,
             'num_pages' => $num_pages,
-        );
+        ];
     }
 }

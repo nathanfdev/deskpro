@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -45,6 +46,9 @@ class DepartmentAction extends AbstractAction implements PermissionableAction
         $this->department_id = $department;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function checkPermission(Ticket $ticket, Person $person)
     {
         if ($ticket->getDepartmentId() == $this->department_id) {
@@ -59,9 +63,7 @@ class DepartmentAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -76,19 +78,17 @@ class DepartmentAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
         if ($ticket['department_id'] == $this->department_id) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('action' => 'department', 'department_id' => $this->department_id),
-        );
+        return [
+            ['action' => 'department', 'department_id' => $this->department_id],
+        ];
     }
 
     /**
@@ -102,9 +102,7 @@ class DepartmentAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -112,7 +110,7 @@ class DepartmentAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {
@@ -129,6 +127,9 @@ class DepartmentAction extends AbstractAction implements PermissionableAction
             $name = $names[$this->department_id];
         }
 
-        return $tr->phrase('agent.tickets.set_department_action', array('department' => $name));
+        return '<span class="with-department" data-department-id="'.$this->department_id.'">'
+            .$tr->phrase('agent.tickets.set_department_action', ['department' => $name])
+            .'</span>'
+            ;
     }
 }

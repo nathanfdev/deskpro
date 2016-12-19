@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,10 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
+
+use DeskPRO\Component\Util\RegexUtils;
 
 /**
  * String utility functions.
@@ -124,7 +127,7 @@ class Strings
      */
     public static function addslashesJs($string)
     {
-        $str = str_replace(array('\\', '\'', '"', "\n", "\r"), array('\\\\', "\'", '\\"', '\\n', '\\r'), trim($string));
+        $str = str_replace(['\\', '\'', '"', "\n", "\r"], ['\\\\', "\'", '\\"', '\\n', '\\r'], trim($string));
 
         // Can't have </script> or else browsers will interpret that as
         // ending the script. \x3C is hex for the '<' char, so turn </script> into
@@ -176,11 +179,11 @@ class Strings
         static $vowels, $cons, $num_vowels, $num_cons;
 
         if (!$vowels) {
-            $vowels = array('a', 'e', 'i', 'o', 'u');
-            $cons   = array(
+            $vowels = ['a', 'e', 'i', 'o', 'u'];
+            $cons   = [
                 'b', 'c', 'd', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'u', 'v', 'w', 'tr',
                 'cr', 'br', 'fr', 'th', 'dr', 'ch', 'ph', 'wr', 'st', 'sp', 'sw', 'pr', 'sl', 'cl',
-            );
+            ];
 
             $num_vowels = count($vowels);
             $num_cons   = count($cons);
@@ -227,6 +230,18 @@ class Strings
     public static function removeLineBreaks($string)
     {
         return preg_replace('#\n|\r\n|\r#', ' ', $string);
+    }
+
+    /**
+     * Detects all line breaks with a space character.
+     *
+     * @param string $string The string to work on
+     *
+     * @return int
+     */
+    public static function containsLineBreaks($string)
+    {
+        return preg_match('#\n|\r\n|\r#', $string);
     }
 
     /**
@@ -304,7 +319,7 @@ class Strings
             return true;
         }
 
-        return (strpos($haystack, $needle) !== false);
+        return strpos($haystack, $needle) !== false;
     }
 
     /**
@@ -331,7 +346,7 @@ class Strings
             return true;
         }
 
-        return (strpos($haystack, $needle) === 0);
+        return strpos($haystack, $needle) === 0;
     }
 
     /**
@@ -447,9 +462,9 @@ class Strings
     {
         $args = func_get_args();
 
-        #------------------------------
-        # Get the string ready for vsprintf
-        #------------------------------
+        //------------------------------
+        // Get the string ready for vsprintf
+        //------------------------------
 
         $string = array_shift($args);
 
@@ -468,9 +483,9 @@ class Strings
         // or else vsprintf will throw errors
         $args = array_pad($args, $count, '');
 
-        #------------------------------
-        # Return the string with placeholders replaces
-        #------------------------------
+        //------------------------------
+        // Return the string with placeholders replaces
+        //------------------------------
 
         return vsprintf($string, $args);
     }
@@ -486,7 +501,7 @@ class Strings
     public static function getExtension($string)
     {
         $matches = null;
-        if (preg_match('#\.([a-zA-Z0-9]+)$#', $string, $matches)) {
+        if (preg_match('#\.([a-zA-Z0-9_\-]+)$#', $string, $matches)) {
             return strtolower($matches[1]);
         }
 
@@ -585,10 +600,10 @@ class Strings
         $boundary_end   = preg_quote($boundary_end, '#');
         $regex          = "#$boundary_start(.*?)$boundary_end#ms";
 
-        $matches = array();
+        $matches = [];
         if (!preg_match_all($regex, $string, $matches)) {
             if ($mode == self::BOUNDARY_ARRAY) {
-                return array();
+                return [];
             } else {
                 return '';
             }
@@ -605,7 +620,7 @@ class Strings
         }
 
         // Append all results togehter
-        $res = array();
+        $res = [];
         foreach ($matches[1] as $m) {
             $res[] = $m;
         }
@@ -697,10 +712,9 @@ class Strings
             $str = explode("\n", $str);
         }
 
-        $values = array();
+        $values = [];
 
         foreach ($str as $line) {
-
             // No line
             if (!$line) {
                 continue;
@@ -733,7 +747,7 @@ class Strings
                     if (is_array($values[$key])) {
                         $values[$key][] = $val;
                     } else {
-                        $values[$key] = array($values[$key], $val);
+                        $values[$key] = [$values[$key], $val];
                     }
                 } else {
                     $values[$key] = $val;
@@ -754,7 +768,7 @@ class Strings
      */
     public static function quotedPrintableEncode($input, $line_max = 75)
     {
-        $hex       = array('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
+        $hex       = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
         $lines     = preg_split("/(?:\r\n|\r|\n)/", $input);
         $linebreak = "=0D=0A=\r\n";
 
@@ -837,7 +851,7 @@ class Strings
      *
      * @param string $regex  Regex to run
      * @param string $string The string to run it on
-     * @param int    $index  The index to return, same rules. Or if -1 or null, all matches.
+     * @param int    $index  The index to return, same rules. Or if -1 or null, all matches
      * @param int    $flags  Flags to pass to preg_match
      * @param int    $offset Offset to pass to preg_match
      *
@@ -989,6 +1003,11 @@ class Strings
      */
     public static function getInputRegexPattern($input)
     {
+        // empty line
+        if (!strlen($input)) {
+            return false;
+        }
+
         // Might be missing delims
         if (@preg_match($input, 'test') === false) {
             $input = '/'.str_replace('/', '\\/', $input).'/';
@@ -1043,12 +1062,25 @@ class Strings
     }
 
     /**
+     * @param $string
+     *
+     * @return string
+     */
+    public static function slugifyTitleToUnderscore($string)
+    {
+        $string = self::slugifyTitle($string);
+        $string = str_replace('-', '_', $string);
+
+        return $string;
+    }
+
+    /**
      * Converts newlines to paragraphs and breaks. Two consecutive newlines are paragrpahs, all else
      * are breaks.
      *
      * @param string $string The string to work on
      *
-     * @return stirng
+     * @return string
      */
     public static function nl2p($string)
     {
@@ -1143,7 +1175,7 @@ class Strings
      */
     public static function htmlAttributes(array $attributes, $do_escape = true)
     {
-        $attr = array();
+        $attr = [];
 
         foreach ($attributes as $k => $v) {
             if ($v === false or $v === null or ($v === '' and $k != 'value')) {
@@ -1186,7 +1218,7 @@ class Strings
 
         $offset = $len - $count + 1;
         $parts  = array_merge(
-            array(implode($delim, array_slice($parts, 0, $offset))),
+            [implode($delim, array_slice($parts, 0, $offset))],
             array_slice($parts, $offset)
         );
 
@@ -1209,7 +1241,7 @@ class Strings
     {
         // No wildcard in it, just a straight up comparison is needed
         if (strpos($pattern, '*') === false) {
-            return ($pattern == $test);
+            return $pattern == $test;
         }
 
         $pattern = preg_quote($pattern, '#');
@@ -1296,7 +1328,7 @@ class Strings
             }
         } while ($changed);
 
-        $qp = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
+        $qp = \QueryPath::withHTML($html, null, ['convert_to_encoding' => null]);
 
         ob_start();
         $qp->writeXHTML();
@@ -1305,7 +1337,7 @@ class Strings
 
         // Unwrap outer divs, p's, spans
         do {
-            $qp      = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
+            $qp      = \QueryPath::withHTML($html, null, ['convert_to_encoding' => null]);
             $changed = false;
 
             /** @var $div \QueryPath\DOMQuery */
@@ -1365,7 +1397,7 @@ class Strings
      */
     public static function linkify($text, $attr = '')
     {
-        $search_replace = array();
+        $search_replace = [];
 
         $text = preg_replace_callback('#(?<!\=(\'|")mailto:)([a-zA-Z0-9\-\._]+)@([a-zA-Z0-9\-\.]+)\.([a-zA-Z]+)\b#iu', function ($m) use (&$search_replace, $attr) {
             $email = $m[2].'@'.$m[3].'.'.$m[4];
@@ -1487,7 +1519,7 @@ class Strings
         // so we can then convert those to our special placeholders.
         $string = self::decodeUnicodeEntities($string);
 
-        $string = str_replace(array('&lt;', '&gt;', '&amp;', '&nbsp;'), array('__DP_AMP_LT__', '__DP_AMP_GT__', '__DP_AMP_AMP__', '__DP_AMP_NBSP__'), $string);
+        $string = str_replace(['&lt;', '&gt;', '&amp;', '&nbsp;'], ['__DP_AMP_LT__', '__DP_AMP_GT__', '__DP_AMP_AMP__', '__DP_AMP_NBSP__'], $string);
         $string = self::htmlEntityEncodeUtf8($string, '__DPUNI_%s_DPUNI__');
         $string = str_replace('__DPUNI_194_DPUNI____DPUNI_160_DPUNI__', '__DP_AMP_NBSP__', $string);
         $string = str_replace('__DPUNI_160_DPUNI__', '__DP_AMP_NBSP__', $string);
@@ -1509,7 +1541,7 @@ class Strings
             return Strings::chrUtf8($m[1]);
         }, $string);
 
-        $string = str_replace(array('__DP_AMP_LT__', '__DP_AMP_GT__', '__DP_AMP_AMP__', '__DP_AMP_NBSP__'), array('&lt;', '&gt;', '&amp;', '&nbsp;'), $string);
+        $string = str_replace(['__DP_AMP_LT__', '__DP_AMP_GT__', '__DP_AMP_AMP__', '__DP_AMP_NBSP__'], ['&lt;', '&gt;', '&amp;', '&nbsp;'], $string);
 
         return $string;
     }
@@ -1613,7 +1645,7 @@ class Strings
      */
     public static function stripTags($string)
     {
-        $tag_names = array('head', 'style', 'script', 'object', 'embed', 'applet');
+        $tag_names = ['head', 'style', 'script', 'object', 'embed', 'applet'];
 
         foreach ($tag_names as $t) {
             $string = preg_replace("#<{$t}[^>]*?>.*?</$t>#isu", "\n", $string);
@@ -1641,10 +1673,10 @@ class Strings
     {
         $matches = null;
         if (!preg_match_all('#<img[^>]*/?>#i', $string, $matches[0])) {
-            return array('string' => $string, 'tokens' => array());
+            return ['string' => $string, 'tokens' => []];
         }
 
-        $files = array();
+        $files = [];
 
         foreach ($matches[0] as $m) {
             $url_m = null;
@@ -1663,25 +1695,25 @@ class Strings
             );
 
             if ($raw) {
-                $files[] = array(
+                $files[] = [
                     'token'    => $tok,
                     'raw_data' => $url_m[1],
-                );
+                ];
             } else {
                 $info    = self::decodeDataUrl($url_m[1]);
-                $files[] = array(
+                $files[] = [
                     'token' => $tok,
                     'type'  => $info['type'],
                     'data'  => $info['data'],
-                );
+                ];
                 unset($info);
             }
         }
 
-        return array(
+        return [
             'string' => $string,
             'files'  => $files,
-        );
+        ];
     }
 
     /**
@@ -1711,7 +1743,7 @@ class Strings
         $data      = substr($data_url, $comma_pos + 1);
         $data      = @base64_decode($data);
 
-        return array('type' => $mime_type, 'data' => $data);
+        return ['type' => $mime_type, 'data' => $data];
     }
 
     /**
@@ -1746,6 +1778,18 @@ class Strings
     }
 
     /**
+     * Detects "invisible" characters in strings, except for legit ones like newlines and tabs.
+     *
+     * @param string $string
+     *
+     * @return int
+     */
+    public static function containsInvisibleCharacters($string)
+    {
+        return preg_match('#[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+#S', $string);
+    }
+
+    /**
      * Try to convert a string from one encoding into UTF-8.
      *
      * @param string $string
@@ -1756,10 +1800,10 @@ class Strings
     public static function convertToUtf8($string, $from_charset, $_mode = null)
     {
         // Some missing aliases in iconv
-        static $charset_map = array(
+        static $charset_map = [
             'KS_C_5601-1987' => 'CP949',
             'ISO-8859-8-I'   => 'ISO-8859-8',
-        );
+        ];
 
         $from_charset_u = strtoupper($from_charset);
 
@@ -1793,7 +1837,7 @@ class Strings
                 if ($from_charset_u == 'US-ASCII') {
                     return self::convertToUtf8($string, 'ISO-8859-1', $_mode);
                 } else {
-                    $_mode   = $_mode ?: array();
+                    $_mode   = $_mode ?: [];
                     $_mode[] = 'skip_iconv';
 
                     return self::convertToUtf8($string, $from_charset, $_mode);
@@ -1805,7 +1849,7 @@ class Strings
                 if ($from_charset_u == 'US-ASCII') {
                     return self::convertToUtf8($string, 'ISO-8859-1', $_mode);
                 } else {
-                    $_mode   = $_mode ?: array();
+                    $_mode   = $_mode ?: [];
                     $_mode[] = 'skip_mbstring';
 
                     return self::convertToUtf8($string, $from_charset, $_mode);
@@ -2159,7 +2203,7 @@ class Strings
     {
         $string = explode("\n", $string);
 
-        $ret = array();
+        $ret = [];
         foreach ($string as $l) {
             if (trim($l) !== '') {
                 $ret[] = $l;
@@ -2198,8 +2242,8 @@ class Strings
      */
     public static function asciiTable($array, array $titles = null, $line_sep = false)
     {
-        $lines = array();
-        $lens  = array();
+        $lines = [];
+        $lens  = [];
 
         if ($titles) {
             foreach ($titles as $idx => $t) {
@@ -2220,7 +2264,7 @@ class Strings
         }
 
         $fn_line_sep = function () use ($lens) {
-            $l = array();
+            $l = [];
             foreach ($lens as $len) {
                 $l[] = str_repeat('-', $len);
             }
@@ -2229,7 +2273,7 @@ class Strings
         };
 
         $fn_line = function ($cells) use ($lens) {
-            $l = array();
+            $l = [];
             foreach ($cells as $idx => $t) {
                 $l[] = Strings::utf8_str_pad($t, $lens[$idx], ' ');
             }
@@ -2271,15 +2315,15 @@ class Strings
      */
     public static function keyValueAsciiTable(array $array, $key_title = '', $val_title = '', $line_sep = false)
     {
-        $new_array = array();
+        $new_array = [];
 
         foreach ($array as $k => $v) {
-            $new_array[] = array($k, $v);
+            $new_array[] = [$k, $v];
         }
 
-        $titles = array();
+        $titles = [];
         if ($key_title || $val_title) {
-            $titles = array($key_title, $val_title);
+            $titles = [$key_title, $val_title];
         }
 
         return self::asciiTable($new_array, $titles, $line_sep);
@@ -2317,7 +2361,7 @@ class Strings
      */
     public static function prepareWysiwygHtml($html)
     {
-        $html = str_replace(array('<p>', '</p>'), array('<div>', '</div>'), $html);
+        $html = str_replace(['<p>', '</p>'], ['<div>', '</div>'], $html);
         $html = preg_replace('#<p(\b)#', '<div$1', $html);
         $html = preg_replace('#<div[^>]+class="dp-signature-start"[^>]*>#', '<div>', $html);
         $html = self::trimHtml($html);
@@ -2352,16 +2396,16 @@ class Strings
      */
     public static function compareHtml($html1, $html2)
     {
-        return ($html1 == $html2 || self::_prepareCompareHtml($html1) == self::_prepareCompareHtml($html2));
+        return $html1 == $html2 || self::_prepareCompareHtml($html1) == self::_prepareCompareHtml($html2);
     }
 
     protected static function _prepareCompareHtml($html)
     {
-        $replace = array(
+        $replace = [
             '<br />' => '<br>',
             '<div'   => '<p',
             '</div>' => '</p>',
-        );
+        ];
         $html = str_replace(array_keys($replace), $replace, $html);
 
         // try to normalize whitespace
@@ -2405,7 +2449,7 @@ class Strings
     public static function decodeWhitespaceHtmlEntities($string)
     {
         // Sometimes these chars are encoded by clients
-        $repl = array(
+        $repl = [
             '&#10;'  => "\n",
             '&#xa;'  => "\n",
             '&#13;'  => "\r",
@@ -2416,7 +2460,7 @@ class Strings
             '&#x20;' => ' ',
             '&#160;' => '&nbsp;',
             '&#xa0;' => '&nbsp;',
-        );
+        ];
         $string = str_ireplace(array_keys($repl), array_values($repl), $string);
 
         return $string;
@@ -2471,14 +2515,14 @@ class Strings
     public static function decodeUnicodeEntities($html)
     {
         // HTML special chars that we dont want to decode this way
-        $skip_chars = array(
+        $skip_chars = [
             34  => true, // "
             39  => true, // '
             38  => true, // &
             60  => true, // <
             62  => true, // >
             160 => true, // nbsp
-        );
+        ];
 
         $html = preg_replace_callback('/&#([0-9]+);/', function ($m) use ($skip_chars) {
             if (isset($skip_chars[$m[1]])) {
@@ -2512,10 +2556,10 @@ class Strings
         $val = intval($val);
         switch ($val) {
             case 0: return chr(0);
-            case ($val & 0x7F): return chr($val);
-            case ($val & 0x7FF): return chr(0xC0 | (($val >> 6) & 0x1F)).chr(0x80 | ($val & 0x3F));
-            case ($val & 0xFFFF): return chr(0xE0 | (($val >> 12) & 0x0F)).chr(0x80 | (($val >> 6) & 0x3F)).chr(0x80 | ($val & 0x3F));
-            case ($val & 0x1FFFFF): return chr(0xF0 | ($val >> 18)).chr(0x80 | (($val >> 12) & 0x3F)).chr(0x80 | (($val >> 6) & 0x3F)).chr(0x80 | ($val & 0x3F));
+            case $val & 0x7F: return chr($val);
+            case $val & 0x7FF: return chr(0xC0 | (($val >> 6) & 0x1F)).chr(0x80 | ($val & 0x3F));
+            case $val & 0xFFFF: return chr(0xE0 | (($val >> 12) & 0x0F)).chr(0x80 | (($val >> 6) & 0x3F)).chr(0x80 | ($val & 0x3F));
+            case $val & 0x1FFFFF: return chr(0xF0 | ($val >> 18)).chr(0x80 | (($val >> 12) & 0x3F)).chr(0x80 | (($val >> 6) & 0x3F)).chr(0x80 | ($val & 0x3F));
         }
 
         return '';
@@ -2533,7 +2577,6 @@ class Strings
         static $skip_iconv = false;
 
         if (!$skip_iconv && function_exists('iconv')) {
-
             // depending on how iconv is compiled on the host
             // then //ignore might do nothing and the return value
             // will be false.
@@ -2554,15 +2597,15 @@ class Strings
 
             // see app/vendor-src/php-utf8/utils/bad.php
             $UTF8_BAD =
-                '([\x00-\x7F]'.# ASCII (including control chars)
-                '|[\xC2-\xDF][\x80-\xBF]'.# non-overlong 2-byte
-                '|\xE0[\xA0-\xBF][\x80-\xBF]'.# excluding overlongs
-                '|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}'.# straight 3-byte
-                '|\xED[\x80-\x9F][\x80-\xBF]'.# excluding surrogates
-                '|\xF0[\x90-\xBF][\x80-\xBF]{2}'.# planes 1-3
-                '|[\xF1-\xF3][\x80-\xBF]{3}'.# planes 4-15
-                '|\xF4[\x80-\x8F][\x80-\xBF]{2}'.# plane 16
-                '|(.{1}))';                              # invalid byte
+                '([\x00-\x7F]'.// ASCII (including control chars)
+                '|[\xC2-\xDF][\x80-\xBF]'.// non-overlong 2-byte
+                '|\xE0[\xA0-\xBF][\x80-\xBF]'.// excluding overlongs
+                '|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}'.// straight 3-byte
+                '|\xED[\x80-\x9F][\x80-\xBF]'.// excluding surrogates
+                '|\xF0[\x90-\xBF][\x80-\xBF]{2}'.// planes 1-3
+                '|[\xF1-\xF3][\x80-\xBF]{3}'.// planes 4-15
+                '|\xF4[\x80-\x8F][\x80-\xBF]{2}'.// plane 16
+                '|(.{1}))';                              // invalid byte
             ob_start();
             while (preg_match('/'.$UTF8_BAD.'/S', $string, $matches)) {
                 if (!isset($matches[2])) {
@@ -2613,7 +2656,7 @@ class Strings
             }
         }
 
-        static $funcmap = array(
+        static $funcmap = [
             'utf8_strlen'               => '__CORE__',
             'utf8_strpos'               => '__CORE__',
             'utf8_strrpos'              => '__CORE__',
@@ -2657,7 +2700,7 @@ class Strings
             'utf8_from_unicode'         => 'utils/unicode.php',
             'utf8_is_valid'             => 'utils/validation.php',
             'utf8_compliant'            => 'utils/validation.php',
-        );
+        ];
 
         if (isset($funcmap[$name])) {
             require_once self::$php_utf8_dir.'/ORB_LOAD.php';
@@ -2689,14 +2732,44 @@ class Strings
 
         // ensure trim
         $arr = array_map(function ($val) {
-                return trim($val);
-            }, $arr);
+            return trim($val);
+        }, $arr);
 
         // no empty array values
         $arr = array_filter($arr, function ($val) {
-                return strlen($val) > 0;
-            });
+            return strlen($val) > 0;
+        });
 
         return $arr;
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return string
+     */
+    public static function getNameFromEmail($email)
+    {
+        list($name) = explode('@', $email, 2);
+
+        $name = str_replace('_', ' ', $name);
+        $name = str_replace('.', ' ', $name);
+        $name = preg_replace('#[ ]{2,}#', ' ', $name); //consec spaces to single space
+
+        return self::utf8_ucwords($name);
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return string
+     */
+    public static function getFilenameSafe($filename)
+    {
+        $filename_safe = self::utf8_accents_to_ascii($filename);
+        $filename_safe = RegexUtils::safePregReplace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
+        $filename_safe = RegexUtils::safePregReplace('#\-{2,}#', '-', $filename_safe);
+
+        return $filename_safe ?: 'file';
     }
 }

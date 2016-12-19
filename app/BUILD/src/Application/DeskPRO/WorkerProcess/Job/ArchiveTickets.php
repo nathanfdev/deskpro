@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -54,53 +55,52 @@ class ArchiveTickets extends AbstractJob
             SELECT id FROM tickets_search_active
             WHERE status = 'resolved' AND date_resolved < ?
             LIMIT 3000
-        ", array($datecut));
+        ", [$datecut]);
 
         $count      = count($ticket_ids);
         $ticket_ids = array_chunk($ticket_ids, 500, false);
 
-        $details_arr = serialize(array(
+        $details_arr = serialize([
             'old_status' => 'resolved',
             'new_status' => 'archived',
-        ));
+        ]);
 
         foreach ($ticket_ids as $ids) {
-
             // Re-fetch IDs from tickets table in case
             // search table is corrupt
             $ids = App::getDb()->fetchAllCol("
                 SELECT id FROM tickets
                 WHERE id IN (?) AND status = 'resolved'
-            ", array($ids), array(Connection::PARAM_INT_ARRAY));
+            ", [$ids], [Connection::PARAM_INT_ARRAY]);
 
             if (!$ids) {
                 continue;
             }
 
-            $batch = array();
+            $batch = [];
             foreach ($ids as $id) {
-                $batch[] = array(
+                $batch[] = [
                     'ticket_id'    => $id,
                     'action_type'  => 'changed_status',
                     'id_before'    => 200,
                     'id_after'     => 210,
                     'details'      => $details_arr,
                     'date_created' => $now,
-                );
+                ];
             }
 
             App::getDb()->executeUpdate("
                 UPDATE tickets
                 SET status = 'archived', date_archived = ?, date_status = ?
                 WHERE id IN (?)
-            ", array($now, $now, $ids), array(\PDO::PARAM_STR, \PDO::PARAM_STR, Connection::PARAM_INT_ARRAY));
+            ", [$now, $now, $ids], [\PDO::PARAM_STR, \PDO::PARAM_STR, Connection::PARAM_INT_ARRAY]);
 
             App::getDb()->batchInsert('tickets_logs', $batch);
 
             App::getDb()->executeUpdate('
                 DELETE FROM tickets_search_active
                 WHERE id IN (?)
-            ', array($ids), array(Connection::PARAM_INT_ARRAY));
+            ', [$ids], [Connection::PARAM_INT_ARRAY]);
         }
 
         if ($count) {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,75 +42,65 @@ use FOS\ElasticaBundle\Doctrine\ORM\Provider;
  */
 class Doctrine extends Provider
 {
-    /**
-     * @see FOS\ElasticaBundle\Provider\ProviderInterface::populate()
-     */
-    public function populate(\Closure $loggerClosure = null, array $options = array())
+    protected function doPopulate($options, \Closure $loggerClosure = null)
     {
-        $queryBuilder = $this->createQueryBuilder();
+        $manager = $this->managerRegistry->getManagerForClass($this->objectClass);
+
+        $queryBuilder = $this->createQueryBuilder($options['query_builder_method']);
         $nbObjects    = $this->countObjects($queryBuilder);
+        $offset       = $options['offset'];
 
-        $offset = isset($options['offset']) ? intval($options['offset']) : 0;
-        $limit  = isset($options['limit']) ? intval($options['limit']) : -1;
-        $sleep  = isset($options['sleep']) ? intval($options['sleep']) : 0;
+        for (; $offset < $nbObjects; $offset += $options['batch_size']) {
+            $sliceSize = $options['batch_size'];
+            try {
+                $objects   = $this->fetchSlice($queryBuilder, $options['batch_size'], $offset);
+                $sliceSize = count($objects);
+                $objects   = $this->filterObjects($options, $objects);
 
-        $batchSize    = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
-        $ignoreErrors = isset($options['ignore-errors']) ? $options['ignore-errors'] : $this->options['ignore_errors'];
-
-        if ($limit == -1) {
-            $cutoff = $nbObjects;
-        } else {
-            $cutoff = $limit;
-        }
-
-        for (; $offset < $cutoff; $offset += $batchSize) {
-            if ($loggerClosure) {
-                $stepStartTime = microtime(true);
-            }
-
-            $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset);
-
-            if (!$ignoreErrors) {
-                $this->objectPersister->insertMany($objects);
-            } else {
-                try {
+                if (!empty($objects)) {
                     $this->objectPersister->insertMany($objects);
-                } catch (BulkResponseException $e) {
-                    if ($loggerClosure) {
-                        $loggerClosure(sprintf('<error>%s</error>', $e->getMessage()));
-                    }
+                }
+            } catch (BulkResponseException $e) {
+                if (!$options['ignore_errors']) {
+                    throw $e;
+                }
+
+                if (null !== $loggerClosure) {
+                    $loggerClosure(
+                        $options['batch_size'],
+                        $nbObjects,
+                        sprintf('<error>%s</error>', $e->getMessage())
+                    );
                 }
             }
 
-            if ($loggerClosure) {
-                $stepNbObjects    = count($objects);
-                $stepCount        = $stepNbObjects + $offset;
-                $percentComplete  = 100 * $stepCount / $nbObjects;
-                $timeDifference   = microtime(true) - $stepStartTime;
-                $objectsPerSecond = $timeDifference ? ($stepNbObjects / $timeDifference) : $stepNbObjects;
-                $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s %s', $percentComplete, $stepCount, $nbObjects, $objectsPerSecond, $this->getMemoryUsage()));
+            if ($options['clear_object_manager']) {
+                $manager->clear();
             }
 
-            if ($this->options['clear_object_manager']) {
-                $this->managerRegistry->getManagerForClass($this->objectClass)->clear();
-                $this->managerRegistry->getManagerForClass($this->objectClass)->clearRepositoryCache();
+            usleep($options['sleep']);
 
-                $objects          = null;
-                $stepCount        = null;
-                $stepNbObjects    = null;
-                $percentComplete  = null;
-                $timeDifference   = null;
-                $objectsPerSecond = null;
-
-                gc_collect_cycles();
+            if (null !== $loggerClosure) {
+                $loggerClosure($sliceSize, $nbObjects);
             }
 
-            usleep($sleep);
+            if ($options['single_batch']) {
+                break;
+            }
         }
+    }
+
+    protected function configureOptions()
+    {
+        parent::configureOptions();
+
+        $this->resolver->setDefaults([
+            'single_batch' => false,
+        ]);
     }
 
     public function getCounts()
     {
-        return $this->countObjects($this->createQueryBuilder());
+        return $this->countObjects($this->createQueryBuilder('createSearchQueryBuilder'));
     }
 }

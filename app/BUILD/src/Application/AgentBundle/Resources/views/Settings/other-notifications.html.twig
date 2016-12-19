@@ -8,7 +8,6 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.OtherNotificat
 			<ul>
 				<li class="on" data-tab-for="#settingswin_other_notifications_chats">{{ phrase('agent.general.chats') }}</li>
 				<li data-tab-for="#settingswin_other_notifications_tasks">{{ phrase('agent.general.tasks') }}</li>
-				{% if app.user.getTwitterAccountIds()|length %}<li data-tab-for="#settingswin_other_notifications_tweets">{{ phrase('agent.twitter.tweets') }}</li>{% endif %}
 				<li data-tab-for="#settingswin_other_notifications_feedback">{{ phrase('agent.general.feedback') }}</li>
 				<li data-tab-for="#settingswin_other_notifications_publish">{{ phrase('agent.general.publish') }}</li>
 				<li data-tab-for="#settingswin_other_notifications_crm">{{ phrase('agent.general.crm') }}</li>
@@ -71,63 +70,6 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.OtherNotificat
 				</tbody>
 			</table>
 		</div>
-
-		{% if app.user.getTwitterAccountIds()|length %}
-		<div id="settingswin_other_notifications_tweets" class="check-grid">
-			<table width="100%">
-				<thead>
-					<tr>
-						<th></th>
-						<th width="100">{{ phrase('agent.settings.email_notifications') }}</th>
-						<th width="100">{{ phrase('agent.settings.browser_notifications') }}</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td class="title">{{ phrase('agent.settings.notif_tweet_assigned') }}</td>
-						<td class="prop"><input type="checkbox" name="my_prefs[tweet_assign_self.email]" value="1" {% if my_prefs['tweet_assign_self.email'] %}checked="checked"{% endif %} /></td>
-						<td class="prop"><input type="checkbox" name="my_prefs[tweet_assign_self.alert]" value="1" {% if my_prefs['tweet_assign_self.alert'] %}checked="checked"{% endif %} /></td>
-					</tr>
-
-					<tr>
-						<td class="title">{{ phrase('agent.settings.notif_tweet_assigned_team') }}</td>
-						<td class="prop"><input type="checkbox" name="my_prefs[tweet_assign_team.email]" value="1" {% if my_prefs['tweet_assign_team.email'] %}checked="checked"{% endif %} /></td>
-						<td class="prop"><input type="checkbox" name="my_prefs[tweet_assign_team.alert]" value="1" {% if my_prefs['tweet_assign_team.alert'] %}checked="checked"{% endif %} /></td>
-					</tr>
-
-					<tr>
-						<td class="title">{{ phrase('agent.settings.notif_tweet_responded_my') }}</td>
-						<td class="prop"><input type="checkbox" name="my_prefs[tweet_reply.email]" value="1" {% if my_prefs['tweet_reply.email'] %}checked="checked"{% endif %} /></td>
-						<td class="prop"><input type="checkbox" name="my_prefs[tweet_reply.alert]" value="1" {% if my_prefs['tweet_reply.alert'] %}checked="checked"{% endif %} /></td>
-					</tr>
-
-					<tr>
-						<td class="title">{{ phrase('agent.settings.notif_tweet_dm') }}</td>
-						<td class="prop"><input type="checkbox" name="my_prefs[tweet_new_dm.email]" value="1" {% if my_prefs['tweet_new_dm.email'] %}checked="checked"{% endif %} /></td>
-						<td class="prop"><input type="checkbox" name="my_prefs[tweet_new_dm.alert]" value="1" {% if my_prefs['tweet_new_dm.alert'] %}checked="checked"{% endif %} /></td>
-					</tr>
-
-					<tr>
-						<td class="title">{{ phrase('agent.settings.notif_tweet_responded') }}</td>
-						<td class="prop"><input type="checkbox" name="my_prefs[tweet_new_reply.email]" value="1" {% if my_prefs['tweet_new_reply.email'] %}checked="checked"{% endif %} /></td>
-						<td class="prop"><input type="checkbox" name="my_prefs[tweet_new_reply.alert]" value="1" {% if my_prefs['tweet_new_reply.alert'] %}checked="checked"{% endif %} /></td>
-					</tr>
-
-					<tr>
-						<td class="title">{{ phrase('agent.settings.notif_tweet_mention') }}</td>
-						<td class="prop"><input type="checkbox" name="my_prefs[tweet_new_mention.email]" value="1" {% if my_prefs['tweet_new_mention.email'] %}checked="checked"{% endif %} /></td>
-						<td class="prop"><input type="checkbox" name="my_prefs[tweet_new_mention.alert]" value="1" {% if my_prefs['tweet_new_mention.alert'] %}checked="checked"{% endif %} /></td>
-					</tr>
-
-					<tr>
-						<td class="title">{{ phrase('agent.settings.notif_tweet_retweet') }}</td>
-						<td class="prop"><input type="checkbox" name="my_prefs[tweet_new_retweet.email]" value="1" {% if my_prefs['tweet_new_retweet.email'] %}checked="checked"{% endif %} /></td>
-						<td class="prop"><input type="checkbox" name="my_prefs[tweet_new_retweet.alert]" value="1" {% if my_prefs['tweet_new_retweet.alert'] %}checked="checked"{% endif %} /></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		{% endif %}
 
 		<div id="settingswin_other_notifications_feedback" class="check-grid">
 			<table width="100%">
@@ -193,12 +135,6 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.OtherNotificat
 						<td class="title">{{ phrase('agent.settings.notif_new_user') }}</td>
 						<td class="prop"><input type="checkbox" name="my_prefs[new_user.email]" value="1" {% if my_prefs['new_user.email'] %}checked="checked"{% endif %} /></td>
 						<td class="prop"><input type="checkbox" name="my_prefs[new_user.alert]" value="1" {% if my_prefs['new_user.alert'] %}checked="checked"{% endif %} /></td>
-					</tr>
-
-					<tr>
-						<td class="title">{{ phrase('agent.settings.notif_new_user_validate') }}</td>
-						<td class="prop"><input type="checkbox" name="my_prefs[new_user_validate.email]" value="1" {% if my_prefs['new_user_validate.email'] %}checked="checked"{% endif %} /></td>
-						<td class="prop"><input type="checkbox" name="my_prefs[new_user_validate.alert]" value="1" {% if my_prefs['new_user_validate.alert'] %}checked="checked"{% endif %} /></td>
 					</tr>
 				</tbody>
 			</table>

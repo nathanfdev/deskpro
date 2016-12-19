@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,10 @@
 namespace Application\DeskPRO\Entity\EventListener;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Problem;
-use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Searcher\TicketSearch;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Orb\Util\DpStrings;
@@ -60,7 +61,7 @@ class ProblemListener
     /**
      * @var array
      */
-    protected $queue = array();
+    protected $queue = [];
 
     /**
      * @var \SplQueue
@@ -80,12 +81,10 @@ class ProblemListener
      */
     public function onPreUpdate(Problem $problem, PreUpdateEventArgs $event)
     {
-        $this->updates->enqueue(
-            array(
-                'entity'    => $problem,
-                'changeset' => $event->getEntityChangeSet(),
-            )
-        );
+        $this->updates->enqueue([
+            'entity'    => $problem,
+            'changeset' => $event->getEntityChangeSet(),
+        ]);
     }
 
     /**
@@ -98,30 +97,27 @@ class ProblemListener
         }
     }
 
-    /**
-     *
-     */
     public function onPostUpdate(Problem $problem, LifecycleEventArgs $event)
     {
         while (!$this->updates->isEmpty()) {
             $data = $this->updates->dequeue();
             /* @var Problem $p */
             $problem = $data['entity'];
-            $filter  = $event->getEntityManager()->getRepository('DeskPRO:TicketFilter')->findOneBy(array(
+            $filter  = $event->getEntityManager()->getRepository(LegacyTicketFilter::class)->findOneBy([
                 'sys_name' => Problem::FILTER_PREFIX.$problem->id,
-            ));
+            ]);
 
-            $this->queue[] = array(
+            $this->queue[] = [
                 'channel'      => self::CHANNEL_UPDATE,
                 'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize(array(
+                'data'         => serialize([
                     'id'        => $problem->id,
                     'title'     => $problem->title,
                     'filter_id' => $filter ? $filter->id : 0,
                     'changeset' => $data['changeset'],
-                )),
-            );
+                ]),
+            ];
         }
 
         $this->sendQueue();
@@ -134,34 +130,19 @@ class ProblemListener
     {
         while (!$this->inserts->isEmpty()) {
             /** @var Problem $problem */
-            $problem = $this->inserts->dequeue();
+            $problem  = $this->inserts->dequeue();
+            $filterId = $this->createFilter($event->getEntityManager(), $problem);
 
-            $filter           = new TicketFilter();
-            $filter->title    = 'Problem #'.$problem->id;
-            $filter->sys_name = Problem::FILTER_PREFIX.$problem->id;
-            $filter->terms    = array(array(
-                'type'    => TicketSearch::TERM_PROBLEMS,
-                'op'      => 'is',
-                'options' => array(
-                    'problems' => array($problem->id),
-                ),
-            ));
-
-            $filter->is_global  = true;
-            $filter->is_enabled = true;
-            $event->getEntityManager()->persist($filter);
-            $event->getEntityManager()->flush($filter);
-
-            $this->queue[] = array(
+            $this->queue[] = [
                 'channel'      => self::CHANNEL_NEW,
                 'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize(array(
+                'data'         => serialize([
                     'id'        => $problem->id,
                     'title'     => $problem->title,
-                    'filter_id' => $filter->id,
-                )),
-            );
+                    'filter_id' => $filterId,
+                ]),
+            ];
         }
 
         $this->sendQueue();
@@ -177,10 +158,37 @@ class ProblemListener
         }
 
         $q           = $this->queue;
-        $this->queue = array();
+        $this->queue = [];
 
         $this->conn->batchInsert('client_messages', $q);
 
         return count($q);
+    }
+
+    /**
+     * Save filter into the DB.
+     *
+     * Saves a filter w/o entity manager flush() as:
+     * > EntityManager#flush() can NOT be called safely inside its listeners.
+     * http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/events.html#postflush
+     *
+     * @param EntityManager $em
+     * @param Problem       $problem
+     *
+     * @return int
+     */
+    private function createFilter(EntityManager $em, Problem $problem)
+    {
+        $connection = $em->getConnection();
+        $id         = $problem->getId();
+        $connection->insert($em->getClassMetadata(LegacyTicketFilter::class)->getTableName(), [
+            'title'      => 'Problem #'.$id,
+            'sys_name'   => Problem::FILTER_PREFIX.$id,
+            'is_global'  => 1,
+            'is_enabled' => 1,
+            'terms'      => '[{"type":"'.TicketSearch::TERM_PROBLEMS.'","op":"is","options":{"problems":['.$id.']}}]',
+        ]);
+
+        return $connection->lastInsertId();
     }
 }

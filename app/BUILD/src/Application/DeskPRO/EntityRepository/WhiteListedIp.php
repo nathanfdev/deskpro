@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
@@ -39,14 +40,14 @@ class WhiteListedIp extends AbstractEntityRepository
 {
     public function getIpsForPerson(PersonEntity $person)
     {
-        $output = array();
+        $output = [];
 
         $ip_array = $this->getEntityManager()->createQuery('
             SELECT w.ip_address
             FROM DeskPRO:WhiteListedIp w
             WHERE w.person = ?1
             ORDER BY w.id DESC
-        ')->execute(array(1 => $person));
+        ')->execute([1 => $person]);
 
         foreach ($ip_array as $ip) {
             $output[] = $ip['ip_address'];

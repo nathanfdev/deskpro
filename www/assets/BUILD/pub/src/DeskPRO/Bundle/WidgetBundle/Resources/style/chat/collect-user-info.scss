@@ -1,0 +1,252 @@
+.dpdesignportal-collect-user-info-header {
+  text-align: center;
+  margin: 10px 5px 0;
+
+  .text {
+    display: block;
+    color: #cacaca;
+    margin-bottom: 20px;
+    margin-top: 10px;
+  }
+
+  .img {
+    display: block;
+    width: 50px;
+    height: 47px;
+    margin: 0 auto;
+    @include retina-image("../img/icon-chat-dots", 50px 47px);
+  }
+}
+
+.dpdesignportal-collect-user-info {
+  background: #f8f8f8;
+  padding: 15px 5px 5px;
+  color: #979797;
+  border-top: 1px solid #e7e7e7;
+
+  .title {
+    display: block;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  form {
+    padding: 5px;
+    display: block;
+    border: 1px solid #4681b2;
+    border-radius: 3px;
+    position: relative;
+    padding-right: 55px !important;
+    background: #fff;
+
+    &:before {
+      content: "";
+      width: 0;
+      height: 0;
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      margin-left: -4px;
+      border: 4px solid rgba(0, 0, 0, 0.0);
+      border-bottom: 4px solid #4681b2;
+    }
+
+    input[type="text"] {
+      font-size: 12px;
+      padding: 7px 10px;
+      border: 1px solid #e7e7e7;
+      border-radius: 2px;
+      display: block;
+      width: 100%;
+    }
+
+    textarea {
+      width: 100%;
+      height: 50px;
+    }
+
+    button {
+      font-size: 12px;
+      padding: 7px 10px;
+      background: #4681b2;
+      border: 1px solid #4681b2;
+      border-radius: 2px;
+      color: #fff;
+      display: block;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 45px;
+    }
+
+    .checkbox-container {
+      display: block;
+      padding-top: 9px;
+      padding-bottom: 7px;
+    }
+
+    .checkbox-text { font-size: 11px; }
+
+    .form-display {
+      min-height: 30px;
+    }
+
+    .dp-choice-widget-group {
+      margin-top: 5px;
+    }
+
+    .radio-button {
+      label {
+        margin-bottom: 5px;
+      }
+    }
+
+    .xdsoft_datetimepicker {
+      top: 35px !important;
+      left: -6px !important;
+    }
+
+    .user-collect-checkbox {
+      display: inline-block;
+      vertical-align: middle;
+      width: 14px;
+      height: 14px;
+      border: 1px solid #e7e7e7;
+      border-radius: 2px;
+      font-size: 8px;
+      text-align: center;
+      i {
+        position: relative;
+        top: 2px;
+        color: #e7e7e7;
+      }
+      &.checked i  { color: #333; }
+    }
+  }
+
+  &.error {
+    input[type="text"] {
+      border: 1px solid #ff0000;
+    }
+
+    ul {
+      padding-top: 5px;
+      color: #ff0000;
+      font-size: 10px;
+    }
+  }
+
+  .spinner {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+  }
+}
+
+.dpdesignportal-collect-user-info-waiting {
+  padding: 5px;
+
+  .spinner {
+    display: block;
+    margin: 30px auto 0;
+    width: 30px;
+
+    i {
+      display: inline-block;
+      background: url('../img/loading-big-circle.gif') center;
+      background-size: 30px 30px;
+      width: 30px;
+      height: 30px;
+      margin: 0 auto;
+    }
+  }
+}
+
+.dpdesignportal-chat-message-long {
+  padding: 10px;
+}
+
+.dpdesignportal-chat-email-validation {
+  .description {
+    width: 300px;
+    display: block;
+    margin: 0 auto;
+
+    p {
+      display: block;
+      padding: 0 10px;
+    }
+  }
+
+  input[type="text"] {
+    display: block;
+    width: 200px;
+    height: 30px;
+    margin: 25px auto 10px;
+    text-align: center;
+    outline: none;
+  }
+
+  a {
+    &.email-code-submit, &.email-code-resend {
+      text-align: center;
+      display: block;
+      color: #4681b2;
+      margin: 0 auto 5px;
+    }
+
+    &.email-code-resend {
+      margin-top: 20px;
+      font-size: 11px;
+    }
+  }
+
+  .another-email-sent {
+    text-align: center;
+    display: block;
+    margin-top: 10px;
+    color: #cacaca;
+  }
+
+  .spinner {
+    i {
+      display: block;
+    }
+  }
+
+  &.error {
+    input[type="text"] {
+      border: 1px solid #ff0000;
+      color: #ff0000;
+    }
+  }
+
+  ul.error {
+    color: #ff0000;
+    width: 200px;
+    margin: 10px auto;
+    font-size: 11px;
+
+    li {
+      padding: 0 10px;
+      text-align: center;
+    }
+  }
+}
+
+.dpdesignportal-chat-require-login {
+  text-align: center;
+
+  button {
+    margin-top: 10px;
+    text-decoration: none;
+    display: inline-block;
+    line-height: 1.3em;
+    background: #4681b2;
+    color: #e0e5ec;
+    padding: 5px 10px;
+    border: 1px solid #4681b2;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+  }
+}

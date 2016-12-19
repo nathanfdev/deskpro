@@ -6,6 +6,7 @@
 	<meta name="robots" content="noindex,nofollow" />
 	<meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=1.0" id="dp_meta_viewport" />
 	<meta name="google" content="notranslate" />
+	{% include 'AgentBundle:Main:ios-app-banner.html.twig' %}
 	<script type="text/javascript">
 		(function() {
 			var h = 'device-height';
@@ -109,7 +110,11 @@
 	{% if app.getSetting('core.favicon_blob_id') %}
 		<link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
 	{% else %}
-		<link rel="shortcut icon" id="favicon" href="{{ app.getRequest().getBasePath() }}/favicon.ico" />
+		<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-16x16.png', 'appsrc_assets') }}" />
+		<link rel="icon" type="image/png" sizes="24x24" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-24x24.png', 'appsrc_assets') }}" />
+		<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-32x32.png', 'appsrc_assets') }}" />
+		<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-64x64.png', 'appsrc_assets') }}" />
+		<link rel="icon" type="image/png" sizes="96x96" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-96x96.png', 'appsrc_assets') }}" />
 	{% endif %}
 
 	<title>{{ phrase('agent.interface.deskpro_agent_interface') }}</title>
@@ -165,9 +170,8 @@
 	#dp_loading h1 {
 		font-family: "Helvetica Neue", Helvetica, arial, sans-serif;
 		font-size: 15px;
-		text-align: left;
 		color: #000;
-
+		width: 100%;
 		display: inline-block;
 		text-align: center;
 
@@ -218,7 +222,7 @@
     };
     app_person_id = {{ app.user.id }};
     ">
-
+	<div id="react_dp_agent_onboarding_container"></div>
 {% include 'AgentBundle:Main:window-header.html.twig' %}
 {% include 'AgentBundle:Main:window-nav.html.twig' %}
 {% include 'AgentBundle:Main:window-col-layout.html.twig' %}
@@ -230,11 +234,12 @@
 
 {% include 'AgentBundle:Main:global-templates.html.twig' %}
 
-</div>{# /dp_window #}
+{# /dp_window #}
+</div>
 
 <audio preload="preload">
-	<source src="{{ asset('/sounds/new-chat.mp3') }}" />
-	<source src="{{ asset('/sounds/new-chat.ogg') }}" />
+	<source src="{{ asset('sounds/new-chat.mp3') }}" />
+	<source src="{{ asset('sounds/new-chat.ogg') }}" />
 </audio>
 <div id="volume_controls_back"></div>
 <div id="volume_controls">
@@ -284,29 +289,6 @@
 	}
 </style>
 {% endif %}
-<ul id="create-menu" class="btn-menu">
-    {% if app.user.hasPerm('agent_tickets.create') %}
-        <li id="create_ticket_btn"><a><div class="wrap"><i class="icon-dp-ticket"></i></div>{{ phrase('agent.chrome.create_new-ticket') }} <kbd>t</kbd></a></li>
-    {% endif %}
-    {% if app.user.hasPerm('agent_people.create') %}
-        <li id="create_person_btn"><a><div class="wrap"><i class="icon-dp-person"></i></div>{{ phrase('agent.chrome.create_new-person') }} <kbd>p</kbd></a></li>
-    {% endif %}
-    {% if app.user.hasPerm('agent_org.create') %}
-        <li id="create_organization_btn"><a><div class="wrap"><i class="icon-dp-organization"></i></div>{{ phrase('agent.chrome.create_new-organization') }} <kbd>o</kbd></a></li>
-    {% endif %}
-    {% if app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length %}
-        <li id="create_tweet_btn"><a><div class="wrap"><i class="icon-dp-twitter"></i></div>{{ phrase('agent.chrome.create_new-tweet') }} <kbd>w</kbd></a></li>
-    {% endif %}
-    {% if app.user.hasPerm('agent_publish.create') %}
-        <li id="create_article_btn"><a><div class="wrap"><i class="icon-dp-article"></i></div>{{ phrase('agent.chrome.create_new-article') }} <kbd>a</kbd></a></li>
-        <li id="create_news_btn"><a><div class="wrap"><i class="icon-dp-news"></i></div>{{ phrase('agent.chrome.create_new-news') }} <kbd>n</kbd></a></li>
-        <li id="create_download_btn"><a><div class="wrap"><i class="icon-dp-download"></i></div>{{ phrase('agent.chrome.create_new-download') }} <kbd>d</kbd></a></li>
-        <li id="create_feedback_btn"><a><div class="wrap"><i class="icon-dp-feedback" title="{{ phrase('agent.chrome.quicksearch_title-feedback') }}"></i></div>{{ phrase('agent.chrome.create_new-feedback') }} <kbd>i</kbd></a></li>
-    {% endif %}
-	{% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use')  %}
-		<li id="create_task_btn" class="last"><a><div class="wrap"><i class="icon-dp-task"></i></div>{{ phrase('agent.chrome.create_new-task') }} <kbd>k</kbd></a></li>
-	{% endif %}
-</ul>
 
 <dp-ticket-quick-actions
 	data-phrases="{{ {

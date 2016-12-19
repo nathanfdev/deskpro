@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -43,12 +44,12 @@ class SearchLog extends AbstractEntityRepository
             SELECT searchlog_id, rating
             FROM ratings
             WHERE object_type = ? AND object_id = ? AND searchlog_id IS NOT NULL
-        ', array($object_type, $object_id));
+        ', [$object_type, $object_id]);
 
         $logs = $this->getByIds(array_keys($search_ids_to_rating));
 
         if (!$logs) {
-            return array();
+            return [];
         }
 
         if ($structure == 'all') {
@@ -56,7 +57,7 @@ class SearchLog extends AbstractEntityRepository
         }
 
         if ($structure == 'grouped') {
-            $ret = array('helpful' => array(), 'unhelpful' => array());
+            $ret = ['helpful' => [], 'unhelpful' => []];
             foreach ($logs as $l) {
                 if ($search_ids_to_rating[$l['id']] >= 1) {
                     $ret['helpful'] = $l;
@@ -67,7 +68,7 @@ class SearchLog extends AbstractEntityRepository
 
             return $ret;
         } elseif ($structure == 'counted') {
-            $ret = array('helpful' => array(), 'unhelpful' => array());
+            $ret = ['helpful' => [], 'unhelpful' => []];
             foreach ($logs as $l) {
                 if ($search_ids_to_rating[$l['id']] >= 1) {
                     if (!isset($ret['helpful'][$l['query']])) {
@@ -128,7 +129,7 @@ class SearchLog extends AbstractEntityRepository
     public function getByIds(array $ids, $keep_order = false)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         return $this->getEntityManager()->createQuery('
@@ -136,6 +137,6 @@ class SearchLog extends AbstractEntityRepository
             FROM DeskPRO:SearchLog l
             WHERE l.id IN (?0)
             ORDER BY l.id DESC
-        ')->execute(array($ids));
+        ')->execute([$ids]);
     }
 }

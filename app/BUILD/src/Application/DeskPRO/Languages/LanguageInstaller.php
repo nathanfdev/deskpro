@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Languages;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -122,15 +123,15 @@ class LanguageInstaller
                 $this->em->getConnection()->executeUpdate("
                     DELETE FROM phrases
                     WHERE language_id = ? AND phrase IS NULL OR phrase = ''
-                ", array($lang->getId()));
+                ", [$lang->getId()]);
 
                 // Figure out obsolete phrases to delete
                 $custom_phrase_ids = $this->em->getConnection()->fetchAllCol('
                     SELECT name FROM phrases
                     WHERE language_id = ?
-                ', array($lang->getId()));
+                ', [$lang->getId()]);
 
-                $delete_ids = array();
+                $delete_ids = [];
 
                 foreach ($custom_phrase_ids as $phrase_id) {
                     if (!isset($pack->phrases[$phrase_id])) {
@@ -142,7 +143,7 @@ class LanguageInstaller
                     $this->em->getConnection()->executeUpdate('
                         DELETE FROM phrases
                         WHERE language_id = ? AND name IN (?)
-                    ', array($lang->getId(), $delete_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+                    ', [$lang->getId(), $delete_ids], [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
                 }
             } else {
                 $lang            = new Language();
@@ -158,12 +159,12 @@ class LanguageInstaller
             $lang_id    = $lang->getId();
             $created_at = date('Y-m-d H:i:s');
 
-            $insert_phrases = array();
+            $insert_phrases = [];
             foreach ($pack->phrases as $id => $phrase) {
                 $groupname = \Orb\Util\Strings::rexplode('.', $id);
                 $groupname = array_shift($groupname);
 
-                $insert_phrases[] = array(
+                $insert_phrases[] = [
                     'language_id'     => $lang_id,
                     'name'            => $id,
                     'groupname'       => $groupname,
@@ -171,7 +172,7 @@ class LanguageInstaller
                     'original_hash'   => sha1($phrase),
                     'created_at'      => $created_at,
                     'updated_at'      => $created_at,
-                );
+                ];
             }
 
             $batch = array_chunk($insert_phrases, 150);

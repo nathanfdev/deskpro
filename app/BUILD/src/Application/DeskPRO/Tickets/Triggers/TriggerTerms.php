@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Triggers;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
@@ -38,7 +39,8 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Types\JsonObjectSerializable;
 
 /**
@@ -48,6 +50,8 @@ use Orb\Types\JsonObjectSerializable;
  * While any `TriggerTermInterface` can be used with he trigger system, we can only actually
  * *save* the term to the db if it also implements the standard CriteriaTermInterface which defines
  * a standard interface for getting a term name and options (so we can recreate a term object again).
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSerializable, \Countable
 {
@@ -90,7 +94,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
     public function addTermFromArray(array $term_info)
     {
         if (isset($term_info['set_terms'])) {
-            $composite = new TriggerTermComposite(array(), TriggerTermComposite::OP_AND);
+            $composite = new TriggerTermComposite([], TriggerTermComposite::OP_AND);
             foreach ($term_info['set_terms'] as $ti) {
                 $t = $this->getTermFromArray($ti);
                 $composite->add($t);
@@ -137,44 +141,74 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
      */
     public function exportToArray()
     {
-        $data = array();
+        $data = [];
 
-        $data['version'] = 1;
-        $data['terms']   = array();
+        $data['version'] = $this->getVersion();
+        $data['terms']   = $this->getTerms();
+
+        return $data;
+    }
+
+    /**
+     * Terms version.
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("version")
+     *
+     * @return int
+     */
+    public function getVersion()
+    {
+        return 1;
+    }
+
+    /**
+     * Terms themselves.
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("array")
+     * @JMS\SerializedName("terms")
+     *
+     * @return array
+     */
+    public function getTerms()
+    {
+        $terms = [];
         foreach ($this->criteria->getAll() as $criteria) {
             if ($criteria instanceof TriggerTermComposite) {
-                $set_terms = array();
+                $set_terms = [];
                 foreach ($criteria->getAll() as $set_criteria) {
                     if (!($set_criteria instanceof CriteriaTermInterface)) {
                         continue;
                     }
 
-                    $set_terms[] = array(
+                    $set_terms[] = [
                         'type'    => $set_criteria->getTermType(),
                         'op'      => $set_criteria->getTermOperator(),
                         'options' => $set_criteria->getTermOptions()->all(),
-                    );
+                    ];
                 }
 
                 if ($set_terms) {
-                    $data['terms'][] = array(
+                    $terms[] = [
                         'set_terms' => $set_terms,
-                    );
+                    ];
                 }
             } else {
                 if (!($criteria instanceof CriteriaTermInterface)) {
                     continue;
                 }
 
-                $data['terms'][] = array(
+                $terms[] = [
                     'type'    => $criteria->getTermType(),
                     'op'      => $criteria->getTermOperator(),
                     'options' => $criteria->getTermOptions()->all(),
-                );
+                ];
             }
         }
 
-        return $data;
+        return $terms;
     }
 
     /**
@@ -224,7 +258,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
                 $obj->addTermFromArray($term_info);
             } catch (\Exception $e) {
                 if (!empty($term_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('triggerterm_'.$term_info['type']));
+                    SystemErrorHandler::logException($e, false, md5('triggerterm_'.$term_info['type']));
                 }
             }
         }
@@ -245,7 +279,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
                 $this->addTermFromArray($term_info);
             } catch (\Exception $e) {
                 if (!empty($term_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('triggerterm_'.$term_info['type']));
+                    SystemErrorHandler::logException($e, false, md5('triggerterm_'.$term_info['type']));
                 }
             }
         }

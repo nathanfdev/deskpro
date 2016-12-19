@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Log\Logger;
+use DeskPRO\Bundle\UpdateBundle\Logger\LogKeyEvent;
+use Orb\Util\Env;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 
 class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -55,11 +59,17 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             ->addOption('group', 'g', InputOption::VALUE_REQUIRED, 'Run only a specific group of jobs')
             ->addOption('ignore-interval', 'f', InputOption::VALUE_NONE, 'Always run job(s) even if the job interval has not ellapsed since last run')
             ->addOption('options', 'o', InputOption::VALUE_REQUIRED, 'Specify a JSON-encoded array of options to pass to worker jobs')
+            ->addOption('no-auto-updater', null, InputOption::VALUE_NONE, 'Do NOT start any auto-update process')
+            ->addOption('auto-updater', null, InputOption::VALUE_NONE, 'Start the auto-update process if it is scheduled. This will block/wait if another cron instance is still running and start the update after it finishes.')
             ->addOption('info', null, InputOption::VALUE_NONE, 'Don\'t execute anything, just list info about scheduled tasks');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        /* \DpRun\DpEnv */
+        global $DP_ENV;
+        $DP_ENV->getDatManager()->enableTrigger('cron_has_run');
+
         $time_cron_start = microtime(true);
 
         @ini_set('track_errors', true);
@@ -68,6 +78,39 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         @set_time_limit($GLOBALS['DP_PREF_MAX_EXEC_TIME']);
 
         $is_verbose = $output->getVerbosity() == OutputInterface::VERBOSITY_VERBOSE;
+
+        // see if we need to do an ES index
+        if (!defined('DPC_IS_CLOUD')) {
+            @set_time_limit(0);
+            $index_reset = \Application\DeskPRO\App::getSetting('elastica.requires_reset');
+            if ($index_reset) {
+                try {
+                    $id = mt_rand(10000, 99999);
+                    \Application\DeskPRO\App::getDb()->insertIgnore('settings', ['name' => 'elastica.requires_reset_started', 'value' => $id]);
+
+                    $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:elastica:populate --auto-reset '.$id);
+
+                    if ($is_verbose && defined('DP_START_TIME')) {
+                        $output->writeln('Starting ElasticSearch indexing: '.$cmd);
+                    }
+
+                    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                        // this is needed as we need a fake window to hide the process
+                        $cmd = str_replace('php-win.exe', 'php.exe', $cmd);
+
+                        if (class_exists('\COM', false)) {
+                            $shell = new \COM('WScript.Shell');
+                            $shell->Run($cmd, 0, false);
+                        } else {
+                            pclose(popen("start \"dpindexer\" /MIN $cmd", 'r'));
+                        }
+                    } else {
+                        exec("nohup $cmd > /dev/null 2> /dev/null &");
+                    }
+                } catch (\Exception $e) {
+                }
+            }
+        }
 
         if ($is_verbose && defined('DP_START_TIME')) {
             $output->writeln(sprintf('(Time to enter execute: %.4f)', $time_cron_start - DP_START_TIME));
@@ -123,33 +166,8 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             return 0;
         }
 
-        #------------------------------
-        # Clean up installer error detection
-        #------------------------------
-
-        if (file_exists(dp_get_log_dir().'/cron-boot-errors.log')) {
-            @unlink(dp_get_log_dir().'/cron-boot-errors.log');
-        }
-
-        App::getDb()->delete('install_data', array('build' => 1, 'name' => 'cron_run_errors'));
-
-        #------------------------------
-        # Run
-        #------------------------------
-
-        $time_start = microtime(true);
-        if (!defined('DP_DISABLE_DBCRONLOG')) {
-            App::getDb()->insert('log_items', array(
-                'log_name'      => 'worker_job.cron_runner',
-                'session_name'  => 'cron_runner.'.$time_start,
-                'flag'          => 'cron_start',
-                'priority'      => 6,
-                'priority_name' => 'INFO',
-                'message'       => 'Cron runner started',
-                'date_created'  => date('Y-m-d H:i:s'),
-            ));
-        }
-        App::getDb()->replace('settings', array('name' => 'core.last_cron_start', 'value' => time()));
+        $skipUpdater = $input->getOption('no-auto-updater');
+        $onlyUpdater = $input->getOption('auto-updater');
 
         $cron_id = 'dp-cron';
         if ($input->getOption('job')) {
@@ -158,10 +176,165 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             $cron_id .= '-g-'.$input->getOption('group');
         }
 
+        //------------------------------
+        // Clean up installer error detection
+        //------------------------------
+
+        if (file_exists(dp_get_log_dir().'/cron-boot-errors.log')) {
+            @unlink(dp_get_log_dir().'/cron-boot-errors.log');
+        }
+
+        App::getDb()->delete('install_data', ['build' => 1, 'name' => 'cron_run_errors']);
+
+        //------------------------------
+        // Auto-upgrader
+        //------------------------------
+
+        if (!$skipUpdater) {
+            $updaterSettings = $this->getContainer()->get('updater_settings_resolver')->getUpdaterSettings();
+            $updaterStatus   = $this->getContainer()->get('updater_settings_resolver')->getUpdaterStatus();
+
+            $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name LIKE ?', ['core.croncheck.updater']);
+            if ($check && $check > (time() - 3600)) {
+                if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
+                    $output->writeln('core.croncheck.updater already running');
+                }
+
+                return 0;
+            }
+
+            App::getDb()->replace('settings', ['name' => 'core.croncheck.updater', 'value' => time()]);
+            $db = App::getDb();
+
+            register_shutdown_function(function () use ($db) {
+                $db->delete('settings', ['name' => 'core.croncheck.updater']);
+            });
+
+            if ($updaterStatus->getNextCheck() && $updaterStatus->getNextCheck() < (new \DateTime())) {
+                do {
+                    $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name LIKE ? AND name != ?', ['core.croncheck.%', 'core.croncheck.updater']);
+                    if ($check) {
+                        if ($check < time() - 3600) {
+                            return 0;
+                        }
+                        if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
+                            $output->writeln('Waiting ...');
+                        }
+                        sleep(1);
+                    }
+                } while ($check);
+
+                if ($updaterStatus->isNextManual()) {
+                    $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:update --no-interaction');
+                } else {
+                    $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:update --no-interaction --only-auto');
+                }
+                if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
+                    $output->writeln("Running upgrade: $cmd");
+                    $cb = function ($t, $l) use ($output) {
+                        $output->write($l);
+                    };
+                } else {
+                    $cb = null;
+                }
+
+                $container = $this->getContainer();
+
+                // we need to fetch the updater logger and session
+                // to handle error cases where the command fails
+                $getLogger = function () use ($container) {
+                    /* @var $DP_ENV \DpRun\DpEnv */
+                    global $DP_ENV;
+
+                    $sessionId = $DP_ENV->getDatManager()->readTxtFile('last_updater_session_id', null);
+                    if ($sessionId) {
+                        $smf = $this->getContainer()->get('dp.updater.session_manager_factory');
+                        $smf->enableSessionId($sessionId);
+                    }
+
+                    $logger = $this->getContainer()->get('monolog.logger.updater.general');
+
+                    return $logger;
+                };
+
+                try {
+                    $proc = new Process($cmd);
+                    $proc->setTimeout(36000);
+                    $proc->run($cb);
+
+                    if (!$proc->isSuccessful()) {
+                        $e = new \RuntimeException('Updater exited with a non-success status: '.$proc->getExitCode().' ('.$proc->getExitCodeText().')');
+                        $output->writeln('<error>Updater stopped unexpectedly: '.$e->getMessage().'</error>');
+                        $getLogger()->error(
+                            'Updater from cron: finished unexpectedly',
+                            ['keyEvent' => LogKeyEvent::createForException('AutoUpgrade.error', $e)]
+                        );
+                    }
+                } catch (\Exception $e) {
+                    $output->writeln('<error>Updater stopped unexpectedly: '.$e->getMessage().'</error>');
+                    $getLogger()->error(
+                        'Updater from cron: finished unexpectedly',
+                        ['keyEvent' => LogKeyEvent::createForException('AutoUpgrade.error', $e)]
+                    );
+                }
+
+                return 0;
+            }
+
+            // If we got here, there is nothing to do, so return
+            if ($onlyUpdater) {
+                if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
+                    $output->writeln('No update is scheduled');
+                }
+
+                return 0;
+            }
+        }
+
+        //------------------------------
+        // CLI phpinfo
+        //------------------------------
+
+        ob_start();
+        phpinfo();
+        $phpinfo = ob_get_clean();
+
+        @file_put_contents(
+            $this->getContainer()->get('deskpro.app_env')->getUserCacheDir().'/cli-phpinfo.html',
+            $phpinfo
+        );
+
+        @file_put_contents(
+            $this->getContainer()->get('deskpro.app_env')->getUserCacheDir().'/cli-phpconfig.json',
+            json_encode([
+                'version'      => phpversion(),
+                'memory_limit' => Env::getMemoryLimit(),
+                'error_log'    => ini_get('error_log'),
+            ], \JSON_PRETTY_PRINT)
+        );
+
+        //------------------------------
+        // Run
+        //------------------------------
+
+        $time_start = microtime(true);
+        if (!defined('DP_DISABLE_DBCRONLOG')) {
+            App::getDb()->insert('log_items', [
+                'log_name'      => 'worker_job.cron_runner',
+                'session_name'  => 'cron_runner.'.$time_start,
+                'flag'          => 'cron_start',
+                'priority'      => 6,
+                'priority_name' => 'INFO',
+                'message'       => 'Cron runner started',
+                'date_created'  => date('Y-m-d H:i:s'),
+            ]);
+        }
+        App::getDb()->replace('settings', ['name' => 'core.last_cron_start', 'value' => time()]);
+
         $GLOBALS['DP_CRON_ID'] = $cron_id;
 
         if (!$input->getOption('ignore-interval')) {
-            $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', array('core.croncheck.'.$cron_id));
+            $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', ['core.croncheck.'.$cron_id]);
             if ($check) {
                 $date     = (int) $check;
                 $date_cut = time() - 900;
@@ -171,7 +344,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                     if ($input->getOption('verbose')) {
                         $output->writeln("$cron_id is still active. Running for {$diff} (since ".date('Y-m-d H:i:s', $date).')');
                     }
-                    App::getDb()->insert('log_items', array(
+                    App::getDb()->insert('log_items', [
                         'log_name'      => 'worker_job.cron_runner',
                         'session_name'  => 'cron_runner.'.$time_start,
                         'flag'          => 'cron_abort',
@@ -179,11 +352,11 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                         'priority_name' => 'INFO',
                         'message'       => 'Cron runner aborted (still running)',
                         'date_created'  => date('Y-m-d H:i:s'),
-                    ));
+                    ]);
 
                     return 0;
                 } else {
-                    App::getDb()->insert('log_items', array(
+                    App::getDb()->insert('log_items', [
                         'log_name'      => 'worker_job.cron_runner',
                         'session_name'  => 'cron_runner.'.$time_start,
                         'flag'          => 'cron_resume',
@@ -191,7 +364,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                         'priority_name' => 'ERR',
                         'message'       => "WARNING: Cron ($cron_id) has been active for {$diff}. Assuming crashed process, resuming.",
                         'date_created'  => date('Y-m-d H:i:s'),
-                    ));
+                    ]);
 
                     $title = "WARNING: Cron ($cron_id) has been active for {$diff}. Assuming crashed process, resuming.";
 
@@ -205,21 +378,21 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                     $output->writeln($text);
 
                     $e                           = new Exception\CronRunningException($title);
-                    $e_info                      = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+                    $e_info                      = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
                     $e_info['email']             = true;
                     $e_info['email_subject']     = $title;
                     $e_info['email_body']        = $text;
                     $e_info['email_throttle_id'] = 'email_error_cron_timeout';
                     $e_info['attach_logs']       = true;
-                    \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e_info);
+                    \DpSys\LowError\SystemErrorHandler::logErrorInfo($e_info);
                 }
             }
         }
 
-        App::getDb()->replace('settings', array(
+        App::getDb()->replace('settings', [
             'name'  => 'core.croncheck.'.$cron_id,
             'value' => time(),
-        ));
+        ]);
 
         \DpShutdown::add(function () {
             // Already done (clean shutdown)
@@ -235,13 +408,13 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
                 if ($last_error) {
                     $e = new \Exception('Cron did not shut down cleanly. Last error: '.implode("\n", $last_error));
-                    \DeskPRO\Kernel\KernelErrorHandler::logException($e, false);
+                    \DpSys\LowError\SystemErrorHandler::logException($e, false);
                 } else {
                     $e = new \Exception('Cron did not shut down cleanly');
-                    \DeskPRO\Kernel\KernelErrorHandler::logException($e, false);
+                    \DpSys\LowError\SystemErrorHandler::logException($e, false);
                 }
 
-                App::getDb()->delete('settings', array('name' => 'core.croncheck.'.$GLOBALS['DP_CRON_ID']));
+                App::getDb()->delete('settings', ['name' => 'core.croncheck.'.$GLOBALS['DP_CRON_ID']]);
             } catch (\Exception $e) {
             }
         });
@@ -257,12 +430,12 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             $ret = 0;
         }
 
-        App::getDb()->delete('settings', array('name' => 'core.croncheck.'.$cron_id));
-        App::getDb()->replace('settings', array('name' => 'core.last_cron_run', 'value' => time()));
+        App::getDb()->delete('settings', ['name' => 'core.croncheck.'.$cron_id]);
+        App::getDb()->replace('settings', ['name' => 'core.last_cron_run', 'value' => time()]);
 
         $done_time = microtime(true);
         if (!defined('DP_DISABLE_DBCRONLOG')) {
-            App::getDb()->insert('log_items', array(
+            App::getDb()->insert('log_items', [
                 'log_name'      => 'worker_job.cron_runner',
                 'session_name'  => 'cron_runner.'.$time_start,
                 'flag'          => 'cron_end',
@@ -270,7 +443,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 'priority_name' => 'INFO',
                 'message'       => sprintf('Cron runner done. Took %.4f seconds.', $done_time - $time_start),
                 'date_created'  => date('Y-m-d H:i:s'),
-            ));
+            ]);
         }
 
         unset($GLOBALS['DP_CRON_ID']);
@@ -294,7 +467,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             }
         }
         if (!$options) {
-            $options = array();
+            $options = [];
         }
 
         $verbose = $input->getOption('verbose');
@@ -321,15 +494,15 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             $t = microtime(true) - DP_START_TIME;
             if ($t > 600) {
                 $runner->haltJobLoop();
-                $logger->log(sprintf("haltJobLoop after {$worker_job['id']} :: Time running: %.3fs", $t), Logger::WARN, array('flag' => 'halt_job_loop'));
+                $logger->log(sprintf("haltJobLoop after {$worker_job['id']} :: Time running: %.3fs", $t), Logger::WARN, ['flag' => 'halt_job_loop']);
             }
 
             // Reset the cron timer so we dont try and restart while we still run
             if (isset($GLOBALS['DP_CRON_ID']) && $GLOBALS['DP_CRON_ID']) {
-                App::getDb()->replace('settings', array(
+                App::getDb()->replace('settings', [
                     'name'  => 'core.croncheck.'.$GLOBALS['DP_CRON_ID'],
                     'value' => time(),
-                ));
+                ]);
             }
         });
 
@@ -355,7 +528,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 return 0;
             }
 
-            $runner->runJobs(array($job));
+            $runner->runJobs([$job]);
 
         // A group of jobs
         } elseif ($input->getOption('group')) {
@@ -372,7 +545,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             }
 
             if (!$ignore_interval) {
-                $jobs = array();
+                $jobs = [];
                 foreach ($group_jobs as $job) {
                     if ($job->isReady()) {
                         $jobs[] = $job;
@@ -397,7 +570,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             $group_jobs = App::getEntityRepository('DeskPRO:WorkerJob')->findAll();
 
             if (!$ignore_interval) {
-                $jobs = array();
+                $jobs = [];
                 foreach ($group_jobs as $job) {
                     if ($job->isReady()) {
                         $jobs[] = $job;

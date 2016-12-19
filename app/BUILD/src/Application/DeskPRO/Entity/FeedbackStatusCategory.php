@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,13 +31,17 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Util;
 use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Constraints\Length;
@@ -46,23 +50,41 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
  * Feedback status types for accepted/declined statuses.
+ *
+ * @JMS\ExclusionPolicy("all")
+ * @PortalLinkCustom()
  */
-class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName, HasValidationMetadataInterface
+class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasValidationMetadataInterface
 {
     const STATUS_ACTIVE = 'active';
     const STATUS_CLOSED = 'closed';
 
     /**
+     * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
+     * Category status type.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $status_type;
 
     /**
+     * Category title.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $title;
@@ -98,6 +120,13 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
         return $this->title;
     }
 
+    public function setTitle($string)
+    {
+        $this->setModelField('title', $string);
+
+        return $this;
+    }
+
     /**
      * @return string
      */
@@ -106,12 +135,31 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
         return $this->status_type;
     }
 
+    public function setStatusType($string)
+    {
+        $this->setModelField('status_type', $string);
+
+        return $this;
+    }
+
     /**
      * @return int
      */
     public function getDisplayOrder()
     {
         return $this->display_order;
+    }
+
+    /**
+     * @param $order
+     *
+     * @return $this
+     */
+    public function setDisplayOrder($order)
+    {
+        $this->setModelField('display_order', (int) $order);
+
+        return $this;
     }
 
     public function getStatusCode()
@@ -125,13 +173,9 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseName($property = null, Translate $translate)
+    public function getPhraseName($property, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
@@ -143,13 +187,9 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
     }
 
     /**
-     * Get the default value phrase for the object.
-     *
-     * @param string $property If supplied, the property on the object we want to translate.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPhraseDefault($property = null, Translate $translate)
+    public function getPhraseDefault($property, Translate $translate)
     {
         return $this->title;
     }
@@ -164,38 +204,77 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
         return $this->title;
     }
 
-    ############################################################################
-    # Validation Metadata
-    ############################################################################
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
 
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('title', new NotBlank());
-        $metadata->addPropertyConstraint('title', new Length(array('min' => 2)));
+        $metadata->addPropertyConstraint('title', new Length(['min' => 2]));
         $metadata->addPropertyConstraint(
             'status_type',
             new Choice(
-                array(
-                     'choices' => array('active', 'closed'),
-                )
+                [
+                    'choices' => ['active', 'closed'],
+                ]
             )
         );
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackStatusCategory';
-        $metadata->setPrimaryTable(array('name' => 'feedback_status_categories'));
+        $metadata->setPrimaryTable(['name' => 'feedback_status_categories']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'status_type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status_type'));
-        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
-        $metadata->mapField(array('fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order'));
+        $metadata->mapField(
+            [
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'status_type',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'status_type',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'title',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'title',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'display_order',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'display_order',
+            ]
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

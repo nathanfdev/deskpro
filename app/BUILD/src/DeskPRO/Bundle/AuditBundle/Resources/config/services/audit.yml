@@ -1,0 +1,45 @@
+services:
+
+  audit_log.service:
+    class: DeskPRO\Bundle\AuditBundle\Log\AuditLogService
+    arguments:
+      - "@audit_log.storage"
+      - "@audit_log.transformer"
+      - "@audit_log.helper"
+
+# unfortunately we have to set service_container as dependency, otherwise CirucalrDependency will occur
+  audit_log.helper:
+    class: DeskPRO\Bundle\AuditBundle\Log\AuditLogHelper
+    arguments:
+      - "@service_container"
+
+
+  audit_log.storage.factory:
+    class: DeskPRO\Bundle\AuditBundle\Storage\StorageFactory
+    arguments:
+      - "@service_container"
+
+  audit_log.storage:
+    class: DeskPRO\Bundle\AuditBundle\Storage\StorageInterface
+    factory: ["@audit_log.storage.factory", createStorage]
+
+  audit_log.transformer:
+    class: DeskPRO\Bundle\AuditBundle\Storage\TransformerInterface
+    factory: ["@audit_log.storage.factory", createTransformer]
+
+  audit_log.storage.mongodb:
+    class: DeskPRO\Bundle\AuditBundle\Storage\MongoDB\MongoDBStorage
+    arguments:
+      - "@doctrine_mongodb.odm.default_document_manager"
+
+  audit_log.storage.db:
+    class: DeskPRO\Bundle\AuditBundle\Storage\DB\DBStorage
+    arguments:
+      - "@doctrine.orm.audit_entity_manager"
+
+  audit_log.transformer.mongodb:
+    class: DeskPRO\Bundle\AuditBundle\Storage\MongoDB\MongoDBTransformer
+
+  audit_log.transformer.db:
+    class: DeskPRO\Bundle\AuditBundle\Storage\DB\DBTransformer
+

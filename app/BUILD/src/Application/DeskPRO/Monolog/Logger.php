@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Monolog;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -108,7 +109,7 @@ class Logger extends BaseLogger
             throw new \LogicException('Saved messages has not been enabled.');
         }
 
-        $log = array();
+        $log = [];
         foreach ($this->test_handler->getRecords() as $record) {
             if (!empty($record['formatted'])) {
                 $log[] = $record['formatted'];
@@ -147,7 +148,7 @@ class Logger extends BaseLogger
      *
      * @return bool|void
      */
-    public function addRecord($level, $message, array $context = array())
+    public function addRecord($level, $message, array $context = [])
     {
         if ($message instanceof Loggable) {
             $context = array_merge($context, $message->context());

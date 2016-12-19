@@ -1,0 +1,143 @@
+.im-dropdown {
+  @include corner-top;
+  @include clearfix;
+  width: 500px;
+  background: #f5f6f7;
+  font-weight: 500;
+  z-index: 999;
+  display: none;
+
+  // Left & right containers (agents/teams)
+  .bucket {
+    float: left;
+    padding: 10px;
+  }
+
+  .left {
+    width: 60%;
+    padding-right: 10px;
+    border-right: 1px solid $global-border;
+  }
+  .right { width: 40%; }
+
+  h1, h2 {
+    font-size: 1.1em;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  //Checkbox
+  .show-offline-agents {
+    display: inline-block;
+    color: #b3b3b3;
+    margin-left: 10px;
+  }
+
+  .broadcast-to-all {
+    margin-bottom: 15px;
+    background: #e1e6eb;
+    display: inline-block;
+    line-height: 1em;
+    padding: 8px;
+    color: #909295;
+    font-weight: 600;
+    position: absolute;
+    bottom: 0px;
+    right: 20px;
+
+    i {
+      margin: 0px 5px;
+    }
+  }
+
+  // Overwrite the global .chat-avatar for size etc (from top-bar.scss)
+  .chat-avatar {
+    box-shadow: none;
+    width: 22px;
+    height: 22px;
+    position: relative;
+    top: -1px;
+    margin-left: 0px;
+    margin-right: 5px;
+
+    &:before {
+      border: 1px solid #f5f6f7;
+    }
+  }
+
+  // Amount of time since last message
+  .datestamp {
+    position: absolute;
+    right: 0px;
+    margin-right: 10px;
+    font-size: 0.8em;
+    opacity: 0.5;
+    margin-top: 3px;
+  }
+
+  // Search users form
+  // Will need an x for clearing when user types text (see <div class="active-chat-dropdown"> for example)
+  form {
+    margin-top: 10px;
+
+    input, .button {
+      display: inline-block;
+      vertical-align: top;
+      font-family: Lato, helvetica, sans-serif;
+      padding: 7px;
+      line-height: 1em;
+      border-radius: 2px;
+      line-height: 1.3em;
+    }
+
+    [type="text"] {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid $global-border;
+    }
+  }
+
+  // Agents list
+  .im-list-wrapper {// Handles the scroller when too many items & some extra amrgin for titles on the right side
+    overflow: scroll;
+    max-height: 260px;
+
+    h2 {
+      margin-top: 15px;
+      &:first-child { margin-top: 0px; }
+    }
+  }
+
+  ul.im-list {
+    @extend %flat-list;
+    margin-top: 10px;
+
+    li {
+      position: relative;
+      margin-bottom: 5px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid $global-border;
+      padding-right: 45px;
+    }
+
+    a {
+      display: block;
+      text-decoration: none;
+      font-size: 1.05em;
+      color: #545454;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    // User offline
+    a.offline {
+      opacity: 0.5;
+    }
+  }
+  // For .im-list without a timestamp (removes the padding to have the spot where the ellispeses kick in)
+  ul.im-list.short {
+    li {
+      padding-right: 0px;
+    }
+  }
+}

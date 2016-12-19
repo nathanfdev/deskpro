@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,24 +29,28 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AdminInterfaceBundle\Controller;
 
-use Application\DeskPRO\Entity\ApiToken;
+use Symfony\Component\HttpFoundation\Request;
 
 class UpgradeController extends AbstractController
 {
-    public function preAction($action, $arguments = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
         if (defined('DPC_IS_CLOUD')) {
             throw $this->createNotFoundException();
         }
 
-        return parent::preAction($action, $arguments);
+        return parent::preActionHandler($request, $action, $arguments);
     }
 
-    ####################################################################################################################
-    # index
-    ####################################################################################################################
+    //###################################################################################################################
+    // index
+    //###################################################################################################################
 
     public function indexAction()
     {
@@ -54,19 +58,15 @@ class UpgradeController extends AbstractController
             return $this->redirectRoute('admin');
         }
 
-        $token               = new ApiToken();
-        $token->scope        = ApiToken::SCOPE_SESSION;
-        $token->person       = $this->person;
-        $token->date_expires = new \DateTime('+1 hour');
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
 
-        $this->em->persist($token);
-        $this->em->flush();
+        if ($DP_ENV->getDatManager()->hasTxtFile('server_info_auth')) {
+            $auth = $DP_ENV->getDatManager()->readTxtFile('server_info_auth');
+        } else {
+            $auth = 'VIEWER';
+        }
 
-        return $this->render('AdminInterfaceBundle:Upgrade:layout.html.twig', array(
-            'api_token'             => $token,
-            'session'               => $this->session->getEntity(),
-            'is_wincache'           => extension_loaded('wincache'),
-            'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
-        ));
+        return $this->redirectRoute('admin_upgrade_view', ['auth' => $auth]);
     }
 }

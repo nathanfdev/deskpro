@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -55,7 +56,7 @@ class SendmailQueue extends AbstractJob
         if (!($source_mapper instanceof ExternalPendingQueue)) {
             @ini_set('memory_limit', DP_MAX_MEMSIZE);
             $count = $runner->run();
-            @ini_set('memory_limit', DP_SET_MEMSIZE);
+            @ini_set('memory_limit', DP_USE_MEMSIZE);
         }
 
         if ($count_problems) {

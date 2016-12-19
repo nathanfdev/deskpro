@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Orb\Doctrine\Common\Cache\ArrayFileCache;
@@ -43,17 +44,11 @@ class ArrayFileCacheFactory
             return self::createNull();
         }
 
-        if (isset($GLOBALS['DP_CONFIG']['disable_caches']) && in_array($cache_name, $GLOBALS['DP_CONFIG']['disable_caches'])) {
-            return self::createNull();
-        }
-
         $cache_name = preg_replace('#[^a-zA-Z0-9\-_\.]#', '_', $cache_name);
 
-        if ($cache_name == 'dql' && defined('DPC_IS_CLOUD') && DPC_IS_CLOUD) {
-            $path = dp_get_cache_dir().'/'.$cache_name.'.cache';
-        } else {
-            $path = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$cache_name.'.cache';
-        }
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+        $path = $DP_ENV->getAppBaseKernelCacheDir();
 
         $version_id = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : null;
         $cache      = new ArrayFileCache($path, $version_id);

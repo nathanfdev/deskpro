@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\AgentNotifPrefs;
 
 use Application\DeskPRO\Entity\Person;
@@ -69,15 +70,15 @@ class PrefsLoader
     {
         $prefs = new Prefs();
 
-        #------------------------------
-        # Load filters
-        #------------------------------
+        //------------------------------
+        // Load filters
+        //------------------------------
 
-        $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
+        $filters = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getFiltersForPerson($this->person);
         $filters = Arrays::keyFromData($filters, 'id');
 
-        $sys_filters    = array();
-        $custom_filters = array();
+        $sys_filters    = [];
+        $custom_filters = [];
         foreach ($filters as $f) {
             if ($f->sys_name) {
                 if (strpos($f->sys_name, '_w_hold') !== false || strpos($f->sys_name, 'archive_') === 0) {
@@ -89,15 +90,15 @@ class PrefsLoader
             }
         }
 
-        #------------------------------
-        # Load filter subscriptions
-        #------------------------------
+        //------------------------------
+        // Load filter subscriptions
+        //------------------------------
 
         $filter_subs = $this->db->fetchAll('
             SELECT *
             FROM ticket_filter_subscriptions
             WHERE person_id = ?
-        ', array($this->person->id));
+        ', [$this->person->id]);
 
         foreach ($filter_subs as $info) {
             if (!isset($filters[$info['filter_id']])) {
@@ -105,7 +106,7 @@ class PrefsLoader
             }
 
             $filter = $filters[$info['filter_id']];
-            $subs   = array('email' => array(), 'alert' => array());
+            $subs   = ['email' => [], 'alert' => []];
 
             foreach ($info as $k => $v) {
                 if ($v && preg_match('#(email|alert)_(.*?)$#', $k, $m)) {
@@ -121,30 +122,30 @@ class PrefsLoader
             }
         }
 
-        #------------------------------
-        # Load filter sub override options
-        #------------------------------
+        //------------------------------
+        // Load filter sub override options
+        //------------------------------
 
         $user_prefs = $this->db->fetchAllKeyValue("
             SELECT name, value_str
             FROM people_prefs
             WHERE person_id = ? AND value_str IS NOT NULL AND value_str != ''
-        ", array($this->person->id));
+        ", [$this->person->id]);
 
         $user_prefs = new OptionsArray($user_prefs);
 
-        $prefs->setFilterNotifyPrefs('email', array(
+        $prefs->setFilterNotifyPrefs('email', [
             'override_all'     => (bool) $user_prefs->get('agent_notify_override.all.email'),
             'override_forward' => (bool) $user_prefs->get('agent_notify_override.forward.email'),
-        ));
-        $prefs->setFilterNotifyPrefs('alert', array(
+        ]);
+        $prefs->setFilterNotifyPrefs('alert', [
             'override_all'     => (bool) $user_prefs->get('agent_notify_override.all.alert'),
             'override_forward' => (bool) $user_prefs->get('agent_notify_override.forward.alert'),
-        ));
+        ]);
 
-        #------------------------------
-        # Load mention mode
-        #------------------------------
+        //------------------------------
+        // Load mention mode
+        //------------------------------
 
         if ($user_prefs->get('agent_notif.ticket_mention') == 'smart_send') {
             $prefs->setEmailMentionMode(Prefs::SMART_SEND);
@@ -152,9 +153,9 @@ class PrefsLoader
             $prefs->setEmailMentionMode(Prefs::ALWAYS_SEND);
         }
 
-        #------------------------------
-        # Load apps
-        #------------------------------
+        //------------------------------
+        // Load apps
+        //------------------------------
 
         // Apps are stored as preferences named:
         //     agent_notif.<app>_<pref>.<email|alert>
@@ -169,7 +170,7 @@ class PrefsLoader
         // Which is why we need this loopy loop to convert the structures a bit
 
         foreach (Prefs::$apps as $app_name => $bool) {
-            foreach (array('email', 'alert') as $type) {
+            foreach (['email', 'alert'] as $type) {
                 $subs = $prefs->getAppSubs($type, $app_name);
                 foreach (array_keys($subs) as $name) {
                     $pref_name = "agent_notif.{$name}.$type";
@@ -192,22 +193,22 @@ class PrefsLoader
      *
      * @return Prefs
      */
-    public function getPrefsFromArray(array $filter_subs = array(), array $other_subs = array())
+    public function getPrefsFromArray(array $filter_subs = [], array $other_subs = [])
     {
         $prefs = new Prefs();
 
-        #------------------------------
-        # Load filters
-        #------------------------------
+        //------------------------------
+        // Load filters
+        //------------------------------
 
         if ($filter_subs) {
-            $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
+            $filters = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getFiltersForPerson($this->person);
             $filters = Arrays::keyFromData($filters, 'id');
 
             foreach ($filter_subs as $info) {
                 $filter_id   = !empty($info['filter_id']) ? $info['filter_id'] : null;
-                $email_types = !empty($info['email']) ? $info['email'] : array();
-                $alert_types = !empty($info['alert']) ? $info['alert'] : array();
+                $email_types = !empty($info['email']) ? $info['email'] : [];
+                $alert_types = !empty($info['alert']) ? $info['alert'] : [];
 
                 if ($filter_id && !isset($filters[$filter_id])) {
                     continue;
@@ -224,15 +225,15 @@ class PrefsLoader
             }
         }
 
-        #------------------------------
-        # Load others
-        #------------------------------
+        //------------------------------
+        // Load others
+        //------------------------------
 
         if ($other_subs) {
             foreach ($other_subs as $info) {
                 $app_name    = !empty($info['type']) ? $info['type'] : null;
-                $email_types = !empty($info['email']) ? $info['email'] : array();
-                $alert_types = !empty($info['alert']) ? $info['alert'] : array();
+                $email_types = !empty($info['email']) ? $info['email'] : [];
+                $alert_types = !empty($info['alert']) ? $info['alert'] : [];
 
                 if (!$app_name || !isset(Prefs::$apps[$app_name])) {
                     continue;

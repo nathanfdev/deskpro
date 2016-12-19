@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Form\Captcha;
 
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -50,9 +51,9 @@ class Recaptcha extends CaptchaAbstract
 
     public function init()
     {
-        $this->setOptions(array(
+        $this->setOptions([
             'template' => 'DeskPRO:Common:recaptcha.html.twig',
-        ));
+        ]);
 
         $this->public_key  = $this->getOptionOrSetting('public_key', 'core.recaptcha_public_key');
         $this->private_key = $this->getOptionOrSetting('private_key', 'core.recaptcha_private_key');
@@ -61,9 +62,9 @@ class Recaptcha extends CaptchaAbstract
     public function getHtml()
     {
         $tpl  = $this->getOption('template');
-        $vars = array(
+        $vars = [
             'public_key' => $this->public_key,
-        );
+        ];
 
         return $this->getTemplating()->render($tpl, $vars);
     }
@@ -72,7 +73,7 @@ class Recaptcha extends CaptchaAbstract
     {
         $challenge = $this->getRequest()->request->get('recaptcha_challenge_field');
         $response  = $this->getRequest()->request->get('recaptcha_response_field');
-        $remote_ip = dp_get_user_ip_address();
+        $remote_ip = @$_SERVER['HTTP_CLIENT_IP'];
 
         if (!$challenge || !$response || !$remote_ip) {
             return false;
@@ -90,15 +91,15 @@ class Recaptcha extends CaptchaAbstract
             $r_body     = $r_response->getBody();
 
             if (!$r_response->isOk()) {
-                $r_body = 'true';//fallback on OK when it fails
+                $r_body = 'true'; //fallback on OK when it fails
             }
         } catch (\Exception $e) {
             KernelErrorHandler::logException($e, false);
-            $r_body = 'true';//fallback on OK when it fails
+            $r_body = 'true'; //fallback on OK when it fails
         }
 
         $line = trim(Strings::getFirstLine($r_body));
 
-        return ($line == 'true');
+        return $line == 'true';
     }
 }

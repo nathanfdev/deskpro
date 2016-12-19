@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\AgentNotifPrefs;
 
 use Application\DeskPRO\Entity\Person;
@@ -69,14 +70,14 @@ class PrefsPersister
      */
     public function savePrefs(Prefs $prefs)
     {
-        $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
+        $filters = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getFiltersForPerson($this->person);
         $filters = Arrays::keyFromData($filters, 'id');
 
-        #------------------------------
-        # Create sub records
-        #------------------------------
+        //------------------------------
+        // Create sub records
+        //------------------------------
 
-        $filter_subs = array();
+        $filter_subs = [];
 
         $person     = $this->person;
         $fn_get_sub = function ($filter_id) use (&$filter_subs, $person, $filters) {
@@ -110,13 +111,13 @@ class PrefsPersister
             }
         }
 
-        #------------------------------
-        # Pref records
-        #------------------------------
+        //------------------------------
+        // Pref records
+        //------------------------------
 
-        $pref_records = array();
+        $pref_records = [];
 
-        foreach (array(
+        foreach ([
              'chat',
              'task',
              'twitter',
@@ -124,51 +125,51 @@ class PrefsPersister
              'publish',
              'crm',
              'account',
-        ) as $app_name) {
-            foreach (array('email', 'alert') as $type) {
+        ] as $app_name) {
+            foreach (['email', 'alert'] as $type) {
                 $subs = $prefs->getAppSubs($type, $app_name);
                 foreach ($subs as $name => $v) {
                     if (!$v) {
                         continue;
                     }
-                    $pref_records[] = array(
+                    $pref_records[] = [
                         'person_id' => $this->person->id,
                         'name'      => "agent_notif.{$name}.$type",
                         'value_str' => '1',
-                    );
+                    ];
                 }
             }
         }
 
         // todo
         if ($this->person->getPref('agent_notif.no_allow_set_email')) {
-            $pref_records[] = array(
+            $pref_records[] = [
                 'person_id' => $this->person->id,
                 'name'      => 'agent_notif.no_allow_set_email',
                 'value_str' => '1',
-            );
+            ];
         }
         if ($this->person->getPref('agent_notif.no_allow_set_browser')) {
-            $pref_records[] = array(
+            $pref_records[] = [
                 'person_id' => $this->person->id,
                 'name'      => 'agent_notif.no_allow_set_browser',
                 'value_str' => '1',
-            );
+            ];
         }
 
-        #------------------------------
-        # Save
-        #------------------------------
+        //------------------------------
+        // Save
+        //------------------------------
 
         $this->db->beginTransaction();
 
         try {
-            $this->db->delete('ticket_filter_subscriptions', array('person_id' => $this->person->id));
+            $this->db->delete('ticket_filter_subscriptions', ['person_id' => $this->person->id]);
             $this->db->executeUpdate("
                 DELETE FROM people_prefs
                 WHERE name LIKE 'agent_notif.%'
                 AND person_id = ?
-            ", array($this->person->id));
+            ", [$this->person->id]);
 
             if ($pref_records || $filter_subs) {
                 if ($filter_subs) {

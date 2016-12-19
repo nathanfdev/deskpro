@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Encryption;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -38,7 +39,7 @@ class StandardEncFactory
     public static function create(DeskproContainer $container)
     {
         $is_enabled = $container->getSetting('core.use_encryption');
-        $key_file   = dp_get_data_dir().DIRECTORY_SEPARATOR.'encryption-key.bin';
+        $key_file   = $container->get('deskpro.app_env')->findConfigFile('encryption-key.bin') ?: false;
 
         return new DpEnc($is_enabled, $key_file);
     }

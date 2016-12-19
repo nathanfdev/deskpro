@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,9 +31,11 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\ArticleCategory as CategoryEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 use Application\DeskPRO\Searcher\ArticleSearch;
@@ -79,7 +81,7 @@ class ArticleCategory extends AbstractCategoryRepository
         $ids = Arrays::removeFalsey($ids);
 
         if (!$ids) {
-            return array();
+            return [];
         }
 
         $ids = implode(',', $ids);
@@ -102,7 +104,7 @@ class ArticleCategory extends AbstractCategoryRepository
             SELECT id, parent_id, title
             FROM article_categories
             ORDER BY display_order DESC
-        ', array(), 'id');
+        ', [], 'id');
 
         return $this->all_cats;
     }
@@ -130,7 +132,7 @@ class ArticleCategory extends AbstractCategoryRepository
 
     public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal', $from_parent = 0)
     {
-        $counts = array('0' => 0, '0_total' => 0);
+        $counts = ['0' => 0, '0_total' => 0];
 
         foreach ($this->getIds() as $cid) {
             $searcher = new ArticleSearch();
@@ -152,5 +154,11 @@ class ArticleCategory extends AbstractCategoryRepository
         $counts['0_total'] = $searcher->getCount();
 
         return $counts;
+    }
+
+    public function gatherOrderedBreadcrumbTree(CategoryEntity $category)
+    {
+        // TODO: we should make this more of a query, rather than this which does several requests
+        return $category->getTreeParents();
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\LegacyApiBundle\PermissionStrategy;
 
 use Application\LegacyApiBundle\ApiUser;
@@ -66,14 +67,14 @@ class UserTypePermission implements PermissionStrategyInterface
 
         switch ($this->type) {
             case self::ADMIN: if ($person->is_agent && $person->can_admin) {
-     return true;
- } break;
+                return true;
+            } break;
             case self::AGENT: if ($person->is_agent) {
-     return true;
- } break;
+                return true;
+            } break;
             case self::USER:  if (!$person->is_deleted || !$person->is_disabled) {
-      return true;
-  } break;
+                return true;
+            } break;
         }
 
         return false;

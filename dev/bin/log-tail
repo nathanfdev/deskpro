@@ -1,20 +1,21 @@
 #!/bin/bash
-# this only works if your cache dir is the default app/sys/cache
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd $SCRIPT_DIR
-cd ..
-cd ..
+DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
+rm -rf $DIR_ROOT/var/logs/*.log
 
-touch data/logs/agent-dev.log
-touch data/logs/agent-prod.log
-touch data/logs/agent-test.log
-touch data/logs/portal-dev.log
-touch data/logs/portal-prod.log
-touch data/logs/portal-test.log
-touch data/logs/api-dev.log
-touch data/logs/api-prod.log
-touch data/logs/api-test.log
-touch data/logs/install-dev.log
-touch data/logs/install-prod.log
-touch data/logs/install-test.log
-tail -f data/logs/*.log
+cd $DIR_ROOT/var/logs
+
+touch agent-dev.log
+touch agent-prod.log
+touch agent-test.log
+touch portal-dev.log
+touch portal-prod.log
+touch portal-test.log
+touch api-dev.log
+touch api-prod.log
+touch api-test.log
+touch install-dev.log
+touch install-prod.log
+touch install-test.log
+touch error.log
+
+tail -f *.log

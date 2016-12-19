@@ -1,0 +1,33 @@
+# we need security for some components, but we arent using security itself on
+# legacy controllers so we dont need the firewall
+security:
+  providers:
+    dp_person_user_provider:
+      id: dp_person_user_provider
+  firewalls:
+    default:
+      anonymous: ~
+
+services:
+  legacy_session_close.listener:
+      class: DeskPRO\Bundle\AppBundle\EventListener\LegacySessionCloseListener
+      arguments: ["@service_container", "@deskpro.interface_info"]
+      tags:
+        - { name: kernel.event_subscriber }
+
+  form.form_extension:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\DeskproFormExtension
+    tags:
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType', order: 1000 }
+
+  form.captcha:
+      class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType
+      arguments: ["@brand_stack", "@language_manager", "%gregwar_captcha.config%"]
+      tags:
+        - { name: form.type }
+
+  portal_support_extension.twig:
+        class: DeskPRO\Bundle\PortalBundle\Twig\PortalSupportExtension
+        arguments: ["@service_container"]
+        tags:
+          - { name: twig.extension, priority: -1000 }

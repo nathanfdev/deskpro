@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Search
  */
+
 namespace Application\DeskPRO\Search\ContentType\Mysql;
 
 use Application\DeskPRO\Search\Adapter\MysqlAdapter;
@@ -43,7 +44,7 @@ class Feedback extends AbstractContentType
 
     public function objectToDocument($feedback)
     {
-        $data                 = array();
+        $data                 = [];
         $data['id']           = $feedback['id'];
         $data['content_type'] = 'feedback';
         $data['content']      = $feedback['title']."\n".$feedback['content']."\n";

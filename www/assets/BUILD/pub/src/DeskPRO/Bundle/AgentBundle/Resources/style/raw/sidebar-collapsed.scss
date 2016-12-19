@@ -1,0 +1,39 @@
+.sidebar-wrapper.sidebar-collapsed {
+  width: 15px;
+  background-color: #dfe4eb;
+
+  .collapse-button {
+    background: #dfe4eb;
+    display: block;
+    text-align: center;
+    font-size: 1.2em;
+    position: absolute;
+    top: 5px;
+    left: 4px;
+    z-index: 999;
+  }
+
+  .collapse-controls {
+    display: block;
+    text-align: center;
+    background: #dfe4eb;
+    position: absolute;
+    top: 48%;
+    width: 15px;
+    color: #9ea2a7;
+    cursor: pointer;
+    z-index: 999;
+
+    .disc { margin: 5px 5px; }
+  }
+
+  .sidebar {
+    width: 15px;
+    background: #dfe4eb;
+    border-right: 1px solid #dcdee1;
+    box-shadow: none;
+
+    * { display: none; }
+
+  }
+}

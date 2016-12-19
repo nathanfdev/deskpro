@@ -1,0 +1,6 @@
+#!/bin/bash
+# this only works if your data dir is the default data dir
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $SCRIPT_DIR
+
+rm -rf ../../var/cache/http_cache/*/

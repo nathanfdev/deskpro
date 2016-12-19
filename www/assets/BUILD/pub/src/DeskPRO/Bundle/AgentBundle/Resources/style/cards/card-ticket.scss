@@ -1,0 +1,307 @@
+.dpmw--single-card {// Single card
+  background: #fff;
+  border: 1px solid #d5d5d5;
+  border-radius: 2px;
+  margin: 5px 0 5px 10px;
+  padding: 6px 5px 7px 14px;
+  position: relative;
+  transition: border 0.5s ease;
+  cursor: pointer;
+
+  &.dpmw--single-card.minimized { padding: 3px 5px 3px 14px; }// Resize the minimized cards
+  a { color: inherit; }
+}
+
+.dpmw--single-card:hover {
+  border: 1px solid #4681b2;
+  h1 { color: #4681b2; }
+  .dpw--card-status-bar { transition: all 0.5s ease; opacity: 0; }
+}
+
+.dpw--card-line {
+  margin-bottom: 6px;
+
+  &:last-child { margin-bottom: 2px; }
+
+  &:after { // Clearfix
+    content:"";
+    display:table;
+    clear:both;
+  }
+
+  .dpw--card-line-left {
+    float: left;
+    white-space: nowrap;// Cut off too long text
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dpw--card-line-right {
+    float: right;
+    text-align: right;
+  }
+
+  .dpw--card-disc {
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    background: #dbdbdb;
+    border-radius: 19px;
+    margin-left: 8px;
+    margin-right: 7px;
+    position: relative;
+    top: -3px;
+  }
+}
+
+// Small items (text & icon)
+.dpwd--card-line-item {
+  display: inline-block;
+  font-size: 11px;
+  color: #868686;
+
+  i {
+    color: #c7c7c7;
+    position: relative;
+    margin-left: 2px;
+    margin-right: 2px;
+  }
+
+  i.fa-calendar-o { top: -1px; }
+}
+
+
+
+
+
+
+
+.dpw--card-expand {
+  a {
+    display: inline-block;
+    border: 1px solid #d5d5d5;
+    border-radius: 2px;
+    line-height: 1em;
+    padding: 2px 4px;
+    font-size: 8px;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #a4a4a4;
+    font-weight: bold;
+    position: relative;
+    top: 2px;
+
+    i { margin-left: 2px; }
+  }
+
+  a:hover {
+    background: #d5d5d5;
+    color: #333;
+  }
+}
+
+.dpwd--card-title {
+  display: block;
+
+  h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    font-weight: normal;
+    display: block;
+    vertical-align: middle;
+    white-space: nowrap;// Cut off too long text
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &.dpwd--card-title.strikethrough {
+    h1 {
+      text-decoration: line-through;
+      color: #aeaeae;
+    }
+  }
+}
+
+.dpwd--card-assigned {
+  display: inline-block;
+  vertical-align: top;
+
+  .dpwd--card-assigned-title {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 12px;
+    line-height: 1em;
+    color: #adadad;
+    margin-right: 3px;
+    margin-left: 3px;
+  }
+}
+
+.dpm--card-checkbox {
+  display: block;
+  width: 17px;
+  height: 17px;
+  position: absolute;
+  left: -9px;
+  top: 5px;
+  background: #fff;
+  border: 1px solid #d5d5d5;
+  border-radius: 2px;
+  text-align: center;
+
+  i {
+    font-size: 10px;
+    color: #d5d5d5;
+    position: relative;
+    top: 2px;
+  }
+}
+
+.dpm--card-reset {
+  display: block;
+  width: 17px;
+  height: 17px;
+  position: absolute;
+  left: -9px;
+  top: 5px;
+  background: #fff;
+  border: 1px solid #d5d5d5;
+  border-radius: 2px;
+  text-align: center;
+
+  i {
+    font-size: 14px;
+    color: #d5d5d5;
+  }
+  i.active {
+    color: #aaa;
+  }
+}
+
+// Reposition the checkbox on minimized cards
+.dpmw--single-card.minimized {
+  .dpmw--card-checkbox { top: 3px; }
+}
+
+// If we need a line of text (ie feedback, comments)
+.dpwd--card-content-text {
+  background: #f5f5f5;
+  padding: 8px 8px 3px 8px;
+  font-style: italic;
+  border-radius: 2px;
+  color: #868686;
+  font-size: 12px;
+  line-height: 1.45em;
+
+  p {
+    padding: 0;
+    margin: 0;
+    margin-bottom: 5px;
+  }
+}
+
+
+// Validation line
+.dpmw--single-card.dpmw--single-card-requires-validation {
+  padding-bottom: 33px;
+
+  .dpmw--single-card-requires-validation-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    text-transform: uppercase;
+    font-size: 9px;
+    font-weight: 600;
+    border-top: 1px solid #eaeaea;
+    height: 27px;
+    width: 100%;
+    background: #fef8e8;
+    line-height: 1em;
+
+    .validation-mark {// "Awaiting validation" pointer
+      background: #6c6c6c;
+      display: inline-block;
+      vertical-align: middle;
+      padding: 4px 6px;
+      border-radius: 2px;
+      color: #c9c9c9;
+      height: 18px;
+      position: relative;
+
+      &:before {
+        content: "";
+        display: block;
+        width: 0;
+        height: 0;
+        position: absolute;
+        top: 50%;
+        right: -6px;
+        margin-top: -3px;
+        border: 3px solid rgba(0, 0, 0, 0);
+        border-left: 3px solid #6c6c6c;
+      }
+    }
+
+    .validation-line-title {// Position the button text
+      position: relative;
+      top: 2px;
+    }
+
+    .validation-line-icon {// Button icon
+      background: #62ad8c;
+      color: #fff;
+      display: inline-block;
+      vertical-align: middle;
+      border-radius: 2px;
+      height: 18px;
+      width: 18px;
+      text-align: center;
+      margin-right: 3px;
+      font-size: 10px;
+      line-height: 1em;
+
+      i {
+        position: relative;
+        top: 4px;
+        opacity: 0.8;
+      }
+
+      &.edit {
+        background: #5e5e5e;
+        i { position: relative; left: 1px;}
+      }
+
+      &.trash { background: #ff5460; }
+    }
+
+    ul {
+      display: block;
+      margin: 0;
+      padding: 0;
+      line-height: 1em;
+      list-style: none;
+
+      li {
+        display: inline-block;
+        padding-left: 5px;
+        padding-right: 5px;
+        border-right: 1px solid #e9e6de;
+        height: 26px;
+        padding-top: 4px;
+        &:first-child { padding-right: 10px; }
+      }
+    }
+
+    a {
+      text-decoration: none;
+      color: #a4a096;
+      padding-left: 2px;
+      padding-right: 4px;
+      &:hover {
+        color: #333;
+        i { opacity: 1; }
+      }
+    }
+  }
+}

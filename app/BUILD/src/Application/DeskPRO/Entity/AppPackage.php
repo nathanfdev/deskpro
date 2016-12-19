@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -132,22 +133,22 @@ class AppPackage extends DomainObject
     /**
      * @var array
      */
-    protected $tags = array();
+    protected $tags = [];
 
     /**
      * @var array
      */
-    protected $trigger_events = array();
+    protected $trigger_events = [];
 
     /**
      * @var array
      */
-    protected $settings_def = array();
+    protected $settings_def = [];
 
     /**
      * @var array
      */
-    protected $scopes = array();
+    protected $scopes = [];
 
     /**
      * @var \Application\DeskPRO\Entity\AppAsset[]
@@ -227,7 +228,7 @@ class AppPackage extends DomainObject
      */
     public function getTaggedAssets($tag)
     {
-        $assets = array();
+        $assets = [];
 
         foreach ($this->assets as $asset) {
             if ($asset->tag == $tag) {
@@ -263,7 +264,7 @@ class AppPackage extends DomainObject
      */
     public function getManifest()
     {
-        return array(
+        return [
             'package_name' => $this['name'],
             'title'        => $this['title'],
             'description'  => $this['description'],
@@ -273,22 +274,22 @@ class AppPackage extends DomainObject
             'version_name' => $this['version_name'],
             'is_single'    => (bool) $this['is_single'],
             'is_native'    => null !== $this['native_name'],
-            'author'       => array(
+            'author'       => [
                 'name'  => $this['author_name'],
                 'email' => $this['author_email'],
                 'link'  => $this['author_link'],
-            ),
+            ],
             'trigger_events' => $this['trigger_events'],
             'settings_def'   => $this['settings_def'],
-        );
+        ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
-        $data                      = array();
+        $data                      = [];
         $data['name']              = $this->name;
         $data['native_name']       = $this->native_name;
         $data['title']             = $this->title;
@@ -307,7 +308,7 @@ class AppPackage extends DomainObject
         $data['scopes']            = $this->scopes;
         $data['is_usersource_app'] = $this->isUsersource();
 
-        $sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
+        $sizes = [16, 24, 32, 48, 64, 96, 128, 192, 256, 512];
         foreach ($sizes as $size) {
             $icon = $this->getTaggedAsset("icons.app.$size");
             if ($icon) {
@@ -318,142 +319,151 @@ class AppPackage extends DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->inheritanceType      = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
         $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'app_packages',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'name',
             'fieldName'  => 'name',
             'type'       => 'string',
             'id'         => true,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'title',
             'fieldName'  => 'title',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'description',
             'fieldName'  => 'description',
             'type'       => 'string',
             'length'     => 1000,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'author_name',
             'fieldName'  => 'author_name',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'author_email',
             'fieldName'  => 'author_email',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'author_link',
             'fieldName'  => 'author_link',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'api_version',
             'fieldName'  => 'api_version',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'version',
             'fieldName'  => 'version',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'version_name',
             'fieldName'  => 'version_name',
             'type'       => 'string',
             'length'     => 100,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'native_name',
             'fieldName'  => 'native_name',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => true,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'is_single',
             'fieldName'  => 'is_single',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'is_custom',
             'fieldName'  => 'is_custom',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'tags',
             'fieldName'  => 'tags',
             'type'       => 'simple_array',
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'trigger_events',
             'fieldName'  => 'trigger_events',
             'type'       => 'json_array',
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'settings_def',
             'fieldName'  => 'settings_def',
             'type'       => 'json_array',
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'scopes',
             'fieldName'  => 'scopes',
             'type'       => 'simple_array',
             'nullable'   => true,
-        ));
+        ]);
 
-        $metadata->mapOneToMany(array(
+        $metadata->mapOneToMany([
             'fieldName'    => 'assets',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppAsset',
             'mappedBy'     => 'package',
-        ));
+            'fetch'        => ClassMetadataInfo::FETCH_LAZY,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'package_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'CASCADE',
+                ],
+            ],
+        ]);
     }
 }

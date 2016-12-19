@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,22 +31,33 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Basic hierarchicial category entity. Hierarchy is maintained automatically
+ * Basic hierarchical category entity. Hierarchy is maintained automatically
  * by a Doctrine NestedSet implementation.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
-class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
+class ChatMessage extends DomainObject
 {
     const ORIGIN_AGENT = 'agent';
     const ORIGIN_USER  = 'user';
 
     /**
+     * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
@@ -73,7 +84,10 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Person who created the message.
      *
-     * @var \Application\DeskPRO\Entity\Person
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
      */
     protected $author = null;
 
@@ -87,6 +101,9 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The message.
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $content;
@@ -94,9 +111,22 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Is this a system message? (ended, joined, etc).
      *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_sys = false;
+
+    /**
+     * Is this an user's message? (send from the widget).
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    protected $is_user = false;
 
     /**
      * Is the message hidden from the user?
@@ -108,33 +138,58 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Is the content an HTML message?
      *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_html = false;
 
     /**
-     * Data.
+     * Additional data.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
      *
      * @var array
      */
-    protected $metadata = array();
+    protected $metadata = [];
 
     /**
+     * Date message was created.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_created;
 
     /**
+     * Date message was received.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_received = null;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
     }
 
     /**
+     * The unique message id (legacy).
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("message_id")
+     *
      * @return int
      */
     public function getId()
@@ -142,7 +197,28 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-    public function setAuthor($author)
+    /**
+     * @return ChatConversation
+     */
+    public function getConversation()
+    {
+        return $this->conversation;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    /**
+     * @param Person $author
+     *
+     * @return $this
+     */
+    public function setAuthor(Person $author = null)
     {
         // Could be a guest, in which case we dont care
         if ($author && $author->id) {
@@ -151,8 +227,30 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
                 $this['person_name'] = $author->getDisplayNameUser();
             }
         }
+
+        return $this;
     }
 
+    /**
+     * @param string $person_name
+     *
+     * @return $this
+     */
+    public function setPersonName($person_name)
+    {
+        $this->setModelField('person_name', $person_name);
+
+        return $this;
+    }
+
+    /**
+     * Author id (legacy).
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("integer")
+     *
+     * @return int
+     */
     public function getAuthorId()
     {
         if ($this->author) {
@@ -162,6 +260,35 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
         return 0;
     }
 
+    /**
+     * Author type (legacy).
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("string")
+     *
+     * @return int
+     */
+    public function getAuthorType()
+    {
+        return $this->getIsSys() ? 'sys' : ($this->getIsUser() ? 'user' : 'agent');
+    }
+
+    /**
+     * Conversation id (legacy).
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("integer")
+     *
+     * @return int
+     */
+    public function getConversationId()
+    {
+        return $this->getConversation()->getId();
+    }
+
+    /**
+     * @return int|mixed|string
+     */
     public function getAuthorName()
     {
         if ($this->is_sys) {
@@ -178,6 +305,9 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Gets the URL to a picture for the person. Note that this will always return
      * a path to an image, even if it's the default.
+     *
+     * @param int       $size
+     * @param null|bool $secure
      *
      * @return null|string
      */
@@ -201,10 +331,14 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
         }
 
         if (!$url) {
-            $url = App::get('router')->generate('serve_default_picture', array(
-                's'        => $size,
-                'size-fit' => 1,
-            ), true);
+            $url = App::get('router')->generate(
+                'serve_default_picture',
+                [
+                    's'        => $size,
+                    'size-fit' => 1,
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
         }
 
         if ($secure) {
@@ -215,7 +349,121 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param bool $is_html
+     *
+     * @return $this
      */
+    public function setIsHtml($is_html)
+    {
+        $this->setModelField('is_html', $is_html);
+
+        return $this;
+    }
+
+    /**
+     * @param bool $is_sys
+     *
+     * @return $this
+     */
+    public function setIsSys($is_sys)
+    {
+        $this->setModelField('is_sys', $is_sys);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsSys()
+    {
+        return $this->is_sys;
+    }
+
+    /**
+     * @param bool $is_user
+     *
+     * @return $this
+     */
+    public function setIsUser($is_user)
+    {
+        $this->setModelField('is_user', $is_user);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsUser()
+    {
+        return $this->is_user;
+    }
+
+    /**
+     * @param $is_user_hidden
+     *
+     * @return $this
+     */
+    public function setIsUserHidden($is_user_hidden)
+    {
+        $this->setModelField('is_user_hidden', $is_user_hidden);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsUserHidden()
+    {
+        return $this->is_user_hidden;
+    }
+
+    /**
+     * @param array $metadata
+     *
+     * @return $this
+     */
+    public function setMetadata(array $metadata)
+    {
+        $this->setModelField('metadata', $metadata);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMetadata()
+    {
+        return $this->metadata;
+    }
+
+    /**
+     * @param string $origin
+     *
+     * @return $this
+     */
+    public function setOrigin($origin)
+    {
+        $this->setModelField('origin', $origin);
+
+        return $this;
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return $this
+     */
+    public function setContent($content)
+    {
+        $this->setModelField('content', $content);
+
+        return $this;
+    }
+
     public function _setUserName()
     {
         // If we have no name, then assume the message is
@@ -233,7 +481,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getInfo()
     {
-        $info = array();
+        $info = [];
 
         $info['conversation_id'] = $this->conversation->id;
         $info['message_id']      = $this->id;
@@ -282,7 +530,27 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
         return $content;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @param \DateTime $date_created
+     *
+     * @return $this
+     */
+    public function setDateCreated($date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+
+        return $this;
+    }
+
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if (is_string($data['content'])) {
@@ -295,30 +563,176 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
         return $data;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array('name' => 'chat_messages'));
+        $metadata->setPrimaryTable(['name' => 'chat_messages']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->addLifecycleCallback('_setUserName', 'prePersist');
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'tag', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'tag'));
-        $metadata->mapField(array('fieldName' => 'origin', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'origin'));
-        $metadata->mapField(array('fieldName' => 'person_name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_name'));
-        $metadata->mapField(array('fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content'));
-        $metadata->mapField(array('fieldName' => 'is_sys', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_sys'));
-        $metadata->mapField(array('fieldName' => 'is_user_hidden', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_user_hidden'));
-        $metadata->mapField(array('fieldName' => 'is_html', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_html'));
-        $metadata->mapField(array('fieldName' => 'metadata', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'metadata'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapField(array('fieldName' => 'date_received', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_received'));
+        $metadata->mapField(
+            [
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'tag',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'tag',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'origin',
+                'type'       => 'string',
+                'length'     => 50,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'origin',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'person_name',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'person_name',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'content',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'content',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'is_sys',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_sys',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'is_user',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_user',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'is_user_hidden',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_user_hidden',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'is_html',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_html',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'metadata',
+                'type'       => 'array',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'metadata',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'date_created',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'date_created',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'date_received',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_received',
+            ]
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'conversation', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'conversation_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'author', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'author_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'conversation',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation',
+                'mappedBy'     => null,
+                'inversedBy'   => 'messages',
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'conversation_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'author',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'author_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
     }
 }

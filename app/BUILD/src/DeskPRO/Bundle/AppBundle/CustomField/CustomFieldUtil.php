@@ -1,0 +1,146 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AppBundle\CustomField;
+
+use Application\DeskPRO\CustomFields\Handler\Choice;
+use Application\DeskPRO\CustomFields\Handler\Date;
+use Application\DeskPRO\CustomFields\Handler\DateTime;
+use Application\DeskPRO\CustomFields\Handler\Display;
+use Application\DeskPRO\CustomFields\Handler\Hidden;
+use Application\DeskPRO\CustomFields\Handler\Text;
+use Application\DeskPRO\CustomFields\Handler\Textarea;
+use Application\DeskPRO\CustomFields\Handler\Toggle;
+use Application\DeskPRO\Entity\CustomDataAbstract;
+use Application\DeskPRO\Entity\CustomDefAbstract;
+
+/**
+ * Class CustomFieldUtil.
+ *
+ * todo fix me, does not work properly with choice fields
+ */
+class CustomFieldUtil
+{
+    /**
+     * @param $field_def
+     * @param $data
+     *
+     * @return bool|string
+     */
+    public static function getValueForCustomFormField(CustomDefAbstract $field_def, CustomDataAbstract $data)
+    {
+        switch ($field_def->getHandlerClass()) {
+            case Date::class:
+                try {
+                    if ($data->getData()) {
+                        if (is_numeric($data->getData())) {
+                            $datetime = new \DateTime('@'.$data->getData());
+                        } else {
+                            $datetime = new \DateTime($data->getData());
+                        }
+                        $value = date('F j, Y', $datetime->getTimestamp());
+                    } else {
+                        $value = '';
+                    }
+                } catch (\Exception $e) {
+                    $value = '';
+                }
+                break;
+            case DateTime::class:
+                try {
+                    $datetime = new \DateTime($data->getData());
+                    $value    = date('F j, Y, g:i a', $datetime->getTimestamp());
+                } catch (\Exception $e) {
+                    $value = '';
+                }
+                break;
+            case Toggle::class:
+                if ($data->getData() == 1) {
+                    $value = $field_def->getOption('label_text') ?: 'Checked';
+                } else {
+                    $value = 'None';
+                }
+                break;
+            case Text::class:
+            case Textarea::class:
+                $value = $data->getData();
+                break;
+            case Choice::class:
+                if (!$data->getValue()) {
+                    $ids = explode(',', $data->getInput());
+                } else {
+                    $ids = [$data->getFieldId()];
+                }
+                $selected = [];
+                foreach ($ids as $id) {
+                    if ($selected_field = $field_def->getChildById($id)) {
+                        $selected[] = $selected_field->getTitle();
+                    }
+                }
+                $value = implode(', ', $selected);
+                break;
+            case Hidden::class:
+                $value = $data->getInput();
+                break;
+            case Display::class:
+                $value = $field_def->getHtmlOption();
+                break;
+            default:
+                $value = null;
+                break;
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param CustomDefAbstract $field
+     * @param                   $customData
+     *
+     * @return CustomDataAbstract[]
+     */
+    public static function getCustomDataForField(CustomDefAbstract $field, $customData)
+    {
+        $fieldId = $field->getId();
+        $matches = [];
+        foreach ($customData as $data) {
+            $cdField     = $data->getField();
+            $cdRootField = $data->getRootField();
+
+            if (($cdField && $cdField->getId() === $fieldId) || ($cdRootField && $cdRootField->getId() === $fieldId)) {
+                $matches[] = $data;
+            }
+        }
+
+        if (empty($matches)) {
+            return [];
+        }
+
+        return $matches;
+    }
+}

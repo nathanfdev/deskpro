@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,18 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
+/**
+ * @ApiModes("all")
+ */
 class TicketSlasController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -46,34 +51,34 @@ class TicketSlasController extends AbstractController implements ProtectedContro
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction()
     {
         $slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
 
-        $data = array();
+        $data = [];
 
         foreach ($slas as $sla) {
-            $row = array(
+            $row = [
                 'id'       => $sla->id,
                 'title'    => $sla->title,
                 'sla_type' => $sla->sla_type,
-            );
+            ];
 
             $data[] = $row;
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'slas' => $data,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # get
-    ####################################################################################################################
+    //###################################################################################################################
+    // get
+    //###################################################################################################################
 
     public function getAction($id)
     {
@@ -84,14 +89,14 @@ class TicketSlasController extends AbstractController implements ProtectedContro
 
         $data = $this->getApiData($sla);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'sla' => $data,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # save
-    ####################################################################################################################
+    //###################################################################################################################
+    // save
+    //###################################################################################################################
 
     public function saveAction($id)
     {
@@ -116,7 +121,7 @@ class TicketSlasController extends AbstractController implements ProtectedContro
         $apply_terms = new TriggerTerms();
         foreach ($this->in->getArrayValue('apply_terms') as $set) {
             if ($set) {
-                $apply_terms->addTermFromArray(array('set_terms' => $set));
+                $apply_terms->addTermFromArray(['set_terms' => $set]);
             }
         }
         $sla->apply_terms = $apply_terms;
@@ -174,14 +179,14 @@ class TicketSlasController extends AbstractController implements ProtectedContro
         $this->em->persist($sla);
         $this->em->flush();
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'sla_id' => $sla->id,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # delete
-    ####################################################################################################################
+    //###################################################################################################################
+    // delete
+    //###################################################################################################################
 
     public function deleteAction($id)
     {
@@ -195,6 +200,6 @@ class TicketSlasController extends AbstractController implements ProtectedContro
         $this->em->remove($sla);
         $this->em->flush();
 
-        return $this->createSuccessResponse(array('old_id' => $old_id));
+        return $this->createSuccessResponse(['old_id' => $old_id]);
     }
 }

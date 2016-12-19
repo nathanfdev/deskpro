@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,19 +29,23 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Operations about activity.
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/activity",
  * 	description="Operations about activity",
  * 	basePath="/api"
  * )
+ *
+ * @ApiModes("all")
  */
 class ActivityController extends AbstractController
 {
@@ -50,15 +54,15 @@ class ActivityController extends AbstractController
      *
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/activity/{since}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get activity since given time",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="since",
      *				description="Since what time",
      *				paramType="path",
@@ -73,52 +77,49 @@ class ActivityController extends AbstractController
     {
         if (!$since) {
             $alert_recs = $this->em->createQuery('
-				SELECT a
-				FROM DeskPRO:AgentAlert a
-				WHERE a.person = ?0 AND a.is_dismissed = 0
-				ORDER BY a.id DESC
-			')->setParameters(array($this->person))->setMaxResults(100)->execute();
+                SELECT a
+                FROM DeskPRO:AgentAlert a
+                WHERE a.person = ?0 AND a.is_dismissed = 0
+                ORDER BY a.id DESC
+			')->setParameters([$this->person])->setMaxResults(100)->execute();
         } else {
             $alert_recs = $this->em->createQuery('
-				SELECT a
-				FROM DeskPRO:AgentAlert a
-				WHERE a.person = ?0 AND a.id >= ?1 AND a.is_dismissed = 0
-				ORDER BY a.id DESC
-			')->setParameters(array($this->person, $since))->setMaxResults(100)->execute();
+                SELECT a
+                FROM DeskPRO:AgentAlert a
+                WHERE a.person = ?0 AND a.id >= ?1 AND a.is_dismissed = 0
+                ORDER BY a.id DESC
+			')->setParameters([$this->person, $since])->setMaxResults(100)->execute();
         }
 
-        $alerts = array();
+        $alerts = [];
         foreach ($alert_recs as $alert) {
-            $alerts[] = array(
+            $alerts[] = [
                 'id'                 => $alert->getId(),
                 'type'               => $alert->typename,
                 'date_created'       => $alert->date_created->format('Y-m-d H:i:s'),
                 'date_created_ts'    => $alert->date_created->getTimestamp(),
                 'date_created_ts_ms' => $alert->date_created->getTimestamp() * 1000,
                 'data'               => $this->container->getAgentAlertSender()->getDataArray($alert),
-            );
+            ];
         }
 
         $last_id = $this->db->fetchColumn('SELECT id FROM agent_alerts ORDER BY id DESC LIMIT 1');
 
-        return $this->createApiResponse(array('last_id' => $last_id, 'alerts' => $alerts));
+        return $this->createApiResponse(['last_id' => $last_id, 'alerts' => $alerts]);
     }
 
     /**
      * @throws \Exception
      *
-     * @return Response
-     *
-     *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/activity/dismiss",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Dismiss activities by their IDs",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="dismiss_ids",
      *				description="Escalation ID",
      *				paramType="path",
@@ -128,6 +129,8 @@ class ActivityController extends AbstractController
      *      )
      *  )
      * )
+     *
+     * @return Response
      */
     public function dismissAction()
     {
@@ -154,17 +157,17 @@ class ActivityController extends AbstractController
                     UPDATE agent_alerts
                     SET is_dismissed = 1
                     WHERE person_id = ?
-                ', array($this->person->getId()));
+                ', [$this->person->getId()]);
             } else {
                 $ids_in = implode(',', $alert_ids);
                 $this->db->executeUpdate("
                     UPDATE agent_alerts
                     SET is_dismissed = 1
                     WHERE person_id = ? AND id IN ($ids_in)
-                ", array($this->person->getId()));
+                ", [$this->person->getId()]);
             }
         }
 
-        return $this->createApiResponse(array('success' => true));
+        return $this->createApiResponse(['success' => true]);
     }
 }

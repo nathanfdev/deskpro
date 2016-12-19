@@ -1,0 +1,168 @@
+// Notifications container
+.notification-dropdown {
+  @include corner-top;
+  left: 0px;
+  width: 650px;
+  z-index: 1999;
+  color: #aaaaab;
+  border-bottom: 0px;
+  display: none;
+
+  a { color: inherit; }
+
+  footer {
+    background: #f9f9f9;
+  }
+
+  ul.notification-list {
+    @extend %flat-list;
+    padding: 5px;
+    background: #f5f6f7;
+    max-height: 300px;
+    overflow-y: scroll;
+
+    li {
+      border-bottom: 1px solid #d5d6d7;
+      padding: 5px;
+      padding-left: 40px;
+      padding-right: 80px;
+      position: relative;
+      &:last-child { border-bottom: 1px; }
+
+      span {
+        vertical-align: top;
+        line-height: 1em;
+      }
+    }
+
+    .timestamp {
+      position: absolute;
+      right: 5px;
+      margin-top: 10px;
+      font-size: 0.95em;
+    }
+
+    // First line
+    .title {
+      display: block;
+      font-size: 1.05em;
+      margin-bottom: 2px;
+
+      // Action type icon
+      i {
+        margin-right: 4px;
+        font-size: 0.9em;
+        opacity: 0.6;
+        top: -1px;
+        color: #545454;
+      }
+
+      .user-action, .user-name {
+        color: #545454;
+      }
+
+      .user-action {
+        display: inline-block;
+        line-height: 1em;
+        max-width: 250px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .chat-avatar {
+        width: 16px;
+        height: 16px;
+        margin: 0px 2px;
+        position: relative;
+        top: -1px;
+      }
+
+      .email {
+        font-size: 0.9em;
+        margin-left: 5px;
+        font-weight: 400;
+        color: #aeaeae;
+      }
+    }
+
+
+    // Second line
+
+    .meta {
+      color: #aaaaab;
+      font-weight: 500;
+      display: block;
+
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+      .id {
+        font-size: 10px;
+        border: 1px solid #cecece;
+        display: inline-block;
+        padding: 0px 3px;
+        font-weight: 800;
+        color: #b0b0b0;
+        position: relative;
+        margin-right: 3px;
+        border-radius: 2px;
+      }
+    }
+  }
+
+  footer {
+    a {
+      text-decoration: underline;
+    }
+
+    a.button {
+      font-weight: 600;
+      margin-right: 20px;
+      padding: 5px;
+      padding-right: 15px;
+
+      i {
+        font-size: 1.1em;
+        display: inline-block;
+        top: -1px;
+        border-right: 1px solid #6b9ac1;
+        padding: 4px 10px 4px 0px;
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+// Button to clear notification on the left
+a.dismiss-notification {
+  position: absolute;
+  left: 5px;
+  top: 7px;
+  display: block;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #cecece;
+  background: #fff;
+  text-align: center;
+  border-radius: 2px;
+  color: #e5e5e5;
+  &:hover { color: #7c7c7c; }
+  i { font-size: 0.8em; top: 8px; }
+}
+
+
+// When viewing dismissed notifications
+.dismissed-notifications-warning {
+  background: #f2f2ee;
+  padding: 10px;
+  border-bottom: 1px solid #cecece;
+  color: #6f6f6f;
+  text-align: center;
+
+  a {
+    text-decoration: underline;
+    color: #545454;
+  }
+}

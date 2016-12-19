@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -48,24 +48,24 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * The associated DeskPRO ticket.
-     * 
+     *
      * @var \Application\DeskPRO\Entity\Ticket Associated ticket
      */
     protected $ticket;
 
     /**
-     * @var JIRA issue id
+     * @var int JIRA issue id
      */
     protected $issue_id;
 
     /**
-     * @var JIRA issue status id
+     * @var int JIRA issue status id
      */
     protected $status_id;
 
     /**
      * Export time.
-     * 
+     *
      * @var int Timestamp
      */
     protected $created;
@@ -75,9 +75,9 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
         $this->created = new \DateTime();
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -86,21 +86,42 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\JiraIssue';
-        $metadata->setPrimaryTable(array('name' => 'jira_issues'));
+        $metadata->setPrimaryTable(['name' => 'jira_issues']);
 
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'issue_id', 'type' => 'integer', 'columnName' => 'issue_id'));
-        $metadata->mapField(array('fieldName' => 'status_id', 'type' => 'integer', 'columnName' => 'status_id', 'nullable' => true));
-        $metadata->mapField(array('fieldName' => 'created', 'type' => 'datetime', 'columnName' => 'created'));
-        $metadata->mapManyToOne(array(
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'issue_id',
+            'type'       => 'integer',
+            'columnName' => 'issue_id',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'status_id',
+            'type'       => 'integer',
+            'columnName' => 'status_id',
+            'nullable'   => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'created',
+            'type'       => 'datetime',
+            'columnName' => 'created',
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'ticket',
             'targetEntity' => 'Application\DeskPRO\Entity\Ticket',
-            'joinColumns'  => array(array(
-                'name'                 => 'ticket_id',
-                'referencedColumnName' => 'id',
-                'onDelete'             => 'cascade',
-            )),
+            'inversedBy'   => 'jira_issues',
+            'joinColumns'  => [
+                [
+                    'name'                 => 'ticket_id',
+                    'referencedColumnName' => 'id',
+                    'onDelete'             => 'cascade',
+                ],
+            ],
             'dpApi' => true,
-        ));
+        ]);
     }
 }

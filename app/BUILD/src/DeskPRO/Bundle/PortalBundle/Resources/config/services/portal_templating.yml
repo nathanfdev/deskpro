@@ -1,0 +1,36 @@
+services:
+  portal_loader.twig:
+    class: DeskPRO\Bundle\PortalBundle\Twig\PortalLoader
+    arguments: ["@brand_stack", "@template_repository", "@portal_brand_theme_loader"]
+    tags:
+      - { name: twig.loader }
+
+  portal_view.breadcrumb_generator:
+    class: DeskPRO\Bundle\PortalBundle\View\Breadcrumb\BreadcrumbGenerator
+    arguments: ["@portal_permissions_manager", "@security.token_storage", "@object_router", "@router", "@language_manager"]
+
+  portal_view.page_title_generator:
+    class: DeskPRO\Bundle\PortalBundle\View\PageTitle\PageTitleGenerator
+    arguments:
+      - "@language_manager"
+      - "@brand_stack"
+      - "@portal_permissions_manager"
+      - "@security.token_storage"
+
+  portal_extension.twig:
+    class: DeskPRO\Bundle\PortalBundle\Twig\PortalExtension
+    arguments: ["@service_container"]
+    tags:
+      - { name: twig.extension }
+
+  portal_support_extension.twig:
+      class: DeskPRO\Bundle\PortalBundle\Twig\PortalSupportExtension
+      arguments: ["@service_container"]
+      tags:
+        - { name: twig.extension, priority: -1000 }
+
+  portal_cache.template_map:
+    class: Symfony\Component\Config\ConfigCache
+    arguments:
+      - %kernel.cache_dir%/portalTemplateMap.php
+      - %kernel.debug%

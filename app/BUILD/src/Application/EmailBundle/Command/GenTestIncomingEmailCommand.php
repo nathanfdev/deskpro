@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Command;
 
 use Application\DeskPRO\EmailGateway\Reader\EzcReader;
@@ -81,7 +82,7 @@ class GenTestIncomingEmailCommand extends ContainerAwareCommand
         $message = $mailer->createMessage();
         $message->setTo($to);
         $message->setFrom($from);
-        $message->setCc(array($faker->email, $faker->email));
+        $message->setCc([$faker->email, $faker->email]);
         $message->setSubject($faker->sentence().' - '.$date);
         $message->setBody($faker->paragraph());
 
@@ -101,14 +102,15 @@ class GenTestIncomingEmailCommand extends ContainerAwareCommand
         $reader->setRawSource($raw_source);
 
         $source = new EmailSource();
-        $source->fromArray(array(
+        $source->fromArray([
             'email_account' => $account,
             'headers'       => $raw_headers,
             'status'        => 'inserted',
-        ));
+        ]);
 
         // Rough matching, just for info purposes when browsing a list
         $source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $raw_headers) ?: '';
+        $source->header_cc      = Strings::extractRegexMatch('#^Cc:\s*(.*?)$#m', $raw_headers) ?: '';
         $source->header_from    = Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $raw_headers) ?: '';
         $source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $raw_headers) ?: '';
 
