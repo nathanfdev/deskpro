@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { Select } from 'DeskPRO/Component/Semantic/Form';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { EmailsAndBlockMenuContainer } from './Menus/EmailsAndBlockMenu';
+import { MediaMenuContainer } from './Menus/MediaMenu';
 import { PhrasesMenuContainer } from './Menus/PhrasesMenu';
 import { VariablesMenuContainer } from './Menus/VariablesMenu';
 import DropDownMenu from './Menus/DropDownMenu';
@@ -36,6 +37,10 @@ class EmailTemplatesEditorContainer extends React.Component {
       this.props.emailTemplates.get('currentTemplateGroup'),
       this.props.emailTemplates.get('currentLanguage')
     ));
+  }
+
+  componentDidMount() {
+
   }
 
   componentWillUnmount() {
@@ -134,16 +139,20 @@ class EmailTemplatesEditor extends React.Component {
     undoSubmit:          PropTypes.bool,
   };
 
+  closeMediaMenu = () => {
+    this.mediaMenu.closeMenu();
+  };
+
+  closePhrasesMenu = () => {
+    this.phrasesMenu.closeMenu();
+  };
+
   closeTemplateMenu = () => {
     this.templateMenu.closeMenu();
   };
 
   closeVariablesMenu = () => {
     this.variablesMenu.closeMenu();
-  };
-
-  closePhrasesMenu = () => {
-    this.phrasesMenu.closeMenu();
   };
 
   render() {
@@ -196,6 +205,7 @@ class EmailTemplatesEditor extends React.Component {
                 <DropDownMenu
                   icon="mail"
                   label={currentTemplate}
+                  className="emails-block-button"
                   ref={(c) => { this.templateMenu = c; }}
                 >
                   <EmailsAndBlockMenuContainer
@@ -204,16 +214,22 @@ class EmailTemplatesEditor extends React.Component {
                 </DropDownMenu>
               </div>
               <div className="top-menu right floated">
-                <div>
-                  <i className="icon image" />
-                  Media
-                  <i className="fa fa-caret-down" />
-                </div>
+                <DropDownMenu
+                  icon="image"
+                  label="Media"
+                  className="media-button"
+                  ref={(c) => { this.mediaMenu = c; }}
+                >
+                  <MediaMenuContainer
+                    closeMenu={this.closeMediaMenu}
+                  />
+                </DropDownMenu>
               </div>
               <div className={classNames('top-menu right floated', { disabled: !emailTemplates.get('phrases') })}>
                 <DropDownMenu
                   icon="globe"
                   label="Phrases"
+                  className="phrases-button"
                   ref={(c) => { this.phrasesMenu = c; }}
                 >
                   <PhrasesMenuContainer
@@ -226,6 +242,7 @@ class EmailTemplatesEditor extends React.Component {
                 <DropDownMenu
                   icon="dollar"
                   label="Variables"
+                  className="variables-button"
                   ref={(c) => { this.variablesMenu = c; }}
                 >
                   <VariablesMenuContainer

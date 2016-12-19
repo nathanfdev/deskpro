@@ -146,6 +146,12 @@
   }
 }
 .email-dropdown-menu {
+  &.ui.bottom.left.popup:before {
+    left: 1px;
+    width: 50px;
+    transform: rotate(0deg);
+    display: none;
+  }
   user-select: none;
   &.active {
     border: 1px solid $dp-sonic-primary;
@@ -291,21 +297,29 @@
     }
   }
 }
-.media {
+.media-drop-down {
   width: 480px;
   font-family: $font-family;
   color: $dp-greyscale-850;
   border: 1px solid $dp-sonic-primary;
   .ui.segment.attached.bottom {
     margin-bottom: 0;
+    border: none;
   }
   .ui.top.menu {
     .item {
-      width: 240px;
+      width: 239px;
+      border-top: none;
+      background-color: $dp-greyscale-150;
+    }
+    .item.active {
+      background-color: $dp-greyscale-50;
+    }
+    .item:first-child {
+      border-left: none;
     }
     .item:last-child {
-      width: 239px;
-      border-right: 1px solid $dp-sonic-primary;
+      border-right: none;
     }
   }
   .drop-zone {
@@ -326,9 +340,11 @@
     }
   }
   .ui.vertical.menu.files {
-    width: 479px;
+    width: 480px;
     margin: 20px -21px -21px;
     border-right: 1px solid $dp-sonic-primary;
+    border-bottom: 1px solid $dp-sonic-primary;
+    border-left: 1px solid $dp-sonic-primary;
     box-shadow: none;
     font-weight: 400;
     .menu {

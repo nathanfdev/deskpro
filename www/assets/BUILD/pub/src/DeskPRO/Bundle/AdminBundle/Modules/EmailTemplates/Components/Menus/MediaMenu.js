@@ -25,7 +25,7 @@ export class MediaMenu extends React.Component {
   </div>);
 
   getInlineFiles = () => {
-    if (!this.props.inlineFiles.get('files')) {
+    if (!this.props.inlineFiles || !this.props.inlineFiles.get('files')) {
       return null;
     }
     return this.props.inlineFiles.get('files').valueSeq().map((file, key) =>
@@ -40,7 +40,7 @@ export class MediaMenu extends React.Component {
   };
 
   getAttachmentFiles = () => {
-    if (!this.props.attachmentFiles.get('files')) {
+    if (!this.props.attachmentFiles || !this.props.attachmentFiles.get('files')) {
       return null;
     }
     return this.props.attachmentFiles.get('files').valueSeq().map((file, key) =>
@@ -55,7 +55,7 @@ export class MediaMenu extends React.Component {
 
   render() {
     return (
-      <div className="media">
+      <div className="media-drop-down">
         <TabGroup>
           <Tab key="inline" label="Inline images" icon="image">
             {this.getDropZone('image')}
