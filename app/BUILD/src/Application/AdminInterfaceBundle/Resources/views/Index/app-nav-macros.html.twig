@@ -1,0 +1,50 @@
+{% macro list() %}
+    <div class="sidebar-list">
+        <ul>
+{% endmacro %}
+
+{% macro list_end() %}
+        </ul>
+    </div>
+{% endmacro %}
+
+{% macro list_item(title, href, state_mark, icon, cond, ngClass) %}
+    <li {% if cond %}ng-if="{{ cond }}"{% endif %}>
+        <a ng-href="{{ href }}" class="item" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark="{{ state_mark }}">
+            <i class="fa {{ icon }}"></i> {{ title }}
+            <span class="disabled-tag" title="Disabled">Disabled</span>
+        </a>
+    </li>
+{% endmacro %}
+
+{% macro list_subitem(title, href, state_mark, icon, cond, ngClass) %}
+    <li {% if cond %}ng-if="{{ cond }}"{% endif %}>
+        <a ng-href="{{ href }}" class="item" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark="{{ state_mark }}">
+            <i class="fa {{ icon }}"></i> {{ title }}
+            <span class="disabled-tag" title="Disabled">Disabled</span>
+        </a>
+    </li>
+{% endmacro %}
+
+{% macro list_subitem_regex_statemark(title, href, state_mark, icon, cond, ngClass) %}
+    <li {% if cond %}ng-if="{{ cond }}"{% endif %}>
+        <a ng-href="{{ href }}" class="item" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark-regex="{{ state_mark }}">
+            <i class="fa {{ icon }}"></i> {{ title }}
+            <span class="disabled-tag" title="Disabled">Disabled</span>
+        </a>
+    </li>
+{% endmacro %}
+
+{% macro list_item_group(title, icon, href, state_mark, cond, ngClass, groupNgClass) %}
+    <li {% if groupNgClass %}ng-class="{{ groupNgClass }}"{% endif %} {% if cond %}ng-show="{{ cond }}"{% endif %}>
+        <a ng-href="{{ href }}" class="item group" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark="{{ state_mark }}">
+            <i class="fa fa-caret-down pull-right"></i><i class="fa {{ icon }}"></i> {{ title }}
+            <span class="disabled-tag" title="Disabled">Disabled</span>
+        </a>
+        <ul class="sub-list">
+{% endmacro %}
+
+{% macro list_item_group_end() %}
+        </ul>
+    </li>
+{% endmacro %}

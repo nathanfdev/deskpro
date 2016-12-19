@@ -90,7 +90,7 @@
   "Reports":                         "app-build/Reports",
   "ReportsRouting":                  "app/Reports/Resources/config/routing",
   "semanticAccordion":               "node_modules/semantic-ui-less/definitions/modules/accordion",
-  "customEventPolyfill":             "node_modules/custom-event-polyfill/custom-event-polyfill"
+  "customEventPolyfill":             "node_modules/custom-event-polyfill/custom-event-polyfill",
 
   "angularGridster":                 "bower_components/angular-gridster/src/angular-gridster",
   "ngTable":                         "bower_components/ng-table/ng-table",

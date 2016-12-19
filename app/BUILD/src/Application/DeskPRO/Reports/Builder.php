@@ -54,7 +54,7 @@ class Builder
     public function __construct(EntityManager $em)
     {
         $this->em         = $em;
-        $this->repository = $this->em->getRepository('DeskPRO:ReportWidget');
+        $this->repository = $this->em->getRepository('DeskPRO:ReportBuilder');
         $this->in         = App::getContainer()->getIn();
     }
 
