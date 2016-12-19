@@ -7,9 +7,11 @@ import { loadAll, isLoadedCollectionSelectorFactory, allSelectorFactory } from '
 import PortalFormWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
 import { createChat } from '../../../Actions/chatActions';
 import { liveDemoSelector, widgetAllowDepartmentSelection, widgetLanguageSelector } from '../../../../Application/Selectors/dpWindow';
-import { requireChatEmailValidationSelector, requireChatLoginSelector } from '../../../../Application/Selectors/bootstrap';
+import { requireChatEmailValidationSelector, requireChatLoginSelector, widgetSessionIsLoginSelector } from '../../../../Application/Selectors/bootstrap';
 import { customChatFieldsOrderedSelector } from '../../../../Application/Selectors/customFields';
 import { history } from '../../../../../Services/history';
+import { ChatBeginLoadingSpinner } from './ChatBeginLoadingSpinner';
+import { ChatBeginSimple } from './ChatBeginSimple';
 
 @connect(state => ({
   liveDemo:                 liveDemoSelector(state),
@@ -20,7 +22,8 @@ import { history } from '../../../../../Services/history';
   allowDepartmentSelection: widgetAllowDepartmentSelection(state),
   chatDepartments:          allSelectorFactory('ChatDepartment')(state),
   chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state),
-  widgetLanguage:           widgetLanguageSelector(state)
+  widgetLanguage:           widgetLanguageSelector(state),
+  loggedIn:                 widgetSessionIsLoginSelector(state)
 }))
 export class ChatBeginContainer extends React.Component {
 
@@ -30,7 +33,12 @@ export class ChatBeginContainer extends React.Component {
     dispatch:                 PropTypes.func.isRequired,
     children:                 PropTypes.node,
     liveDemo:                 PropTypes.bool,
-    allowDepartmentSelection: PropTypes.bool
+    allowDepartmentSelection: PropTypes.bool,
+    customFieldsLoaded:       PropTypes.bool,
+    chatDepartmentsLoaded:    PropTypes.bool,
+    loggedIn:                 PropTypes.bool,
+    chatDepartments:          PropTypes.object,
+    customFields:             PropTypes.object
   };
 
   static getWidgetConfig(chatDepartments) {
@@ -94,9 +102,11 @@ export class ChatBeginContainer extends React.Component {
     const { allowDepartmentSelection, dispatch } = this.props;
 
     dispatch(loadAll('CustomDefChat'));
+
     if (allowDepartmentSelection) {
       dispatch(loadAll('ChatDepartment'));
     }
+
     this.mounted = true;
   }
 
@@ -179,7 +189,21 @@ export class ChatBeginContainer extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { loggedIn } = this.props;
+    const { customFields, customFieldsLoaded } = this.props;
+    const { allowDepartmentSelection, chatDepartments, chatDepartmentsLoaded } = this.props;
+
+    if (!customFieldsLoaded || (allowDepartmentSelection && !chatDepartmentsLoaded)) {
+      return <ChatBeginLoadingSpinner />;
+    }
+
+    let { children } = this.props;
+
+    // if user is logged in and no custom fields and no department selection then force simple chat begin mode
+    if (loggedIn && !(chatDepartments.size && allowDepartmentSelection) && !customFields.size) {
+      children = <ChatBeginSimple />;
+    }
+
     const childProps = children.props;
 
     return (

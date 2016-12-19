@@ -2,11 +2,7 @@ import $ from 'jquery';
 import lscache from 'lscache';
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
-import {
-  requireChatLoginSelector,
-  widgetSessionIsLoginSelector,
-  widgetHasChatSelector
-} from '../Selectors/bootstrap';
+import { requireChatLoginSelector, widgetHasChatSelector } from '../Selectors/bootstrap';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import {
   chatBeginModeSelector,
@@ -41,15 +37,9 @@ const openChatBeginStage = createAction(
   'WIDGET_OPEN_CHAT_BEGIN_STAGE',
   () => (dispatch, getState) => {
     const state = getState();
-
     const chatBeginMode = chatBeginModeSelector(state);
-    const isLogin = widgetSessionIsLoginSelector(state);
 
-    if (isLogin) {
-      history.replace('/chat/begin/simple');
-    } else {
-      openChatBeginStageByMode(chatBeginMode);
-    }
+    openChatBeginStageByMode(chatBeginMode);
   }
 );
 

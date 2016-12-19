@@ -5,7 +5,6 @@ import { CustomField } from 'DeskPRO/Component/CustomField/CustomField';
 import { CustomFieldSingleChoice } from 'DeskPRO/Component/CustomField/CustomFieldSingleChoice';
 import { FormItem } from './FormItem';
 import { CustomFieldTemplate } from './CustomFieldTemplate';
-import { ChatBeginLoadingSpinner } from '../ChatBeginLoadingSpinner';
 import { WidgetBodyScrollAreaContainer } from '../../../../../Application/Components/Widget/Parts/Body/WidgetBodyScrollAreaContainer';
 import { ChatBeginContainer } from '../ChatBeginContainer';
 
@@ -16,11 +15,10 @@ export class ChatBeginForm extends React.Component {
     errors:                   PropTypes.object,
     onSubmit:                 PropTypes.func,
     customFields:             PropTypes.object,
-    customFieldsLoaded:       PropTypes.bool,
     allowDepartmentSelection: PropTypes.bool,
     chatDepartments:          PropTypes.object,
-    chatDepartmentsLoaded:    PropTypes.bool,
-    widgetLanguage:           PropTypes.number
+    widgetLanguage:           PropTypes.number,
+    loggedIn:                 PropTypes.bool
   };
 
 
@@ -38,35 +36,26 @@ export class ChatBeginForm extends React.Component {
   }
 
   render() {
-    const { customFields,
-            customFieldsLoaded,
-            submit,
-            errors,
-            onSubmit,
-            allowDepartmentSelection,
-            chatDepartmentsLoaded,
-            widgetLanguage
-          } = this.props;
-
-    if (!customFieldsLoaded) {
-      return <ChatBeginLoadingSpinner />;
-    }
+    const { customFields, allowDepartmentSelection } = this.props;
+    const { submit, errors, onSubmit, widgetLanguage, loggedIn } = this.props;
 
     return (
       <WidgetBodyScrollAreaContainer>
         <div className="dpdesignportal-open-new-chat">
           <form className="dpdesignportal-form" onSubmit={onSubmit}>
-            <FormItem label={portalPhrases.get('portal.chat.label-name')} field="name" errors={errors}>
-              <Field select="name" placeholder={portalPhrases.get('portal.chat.details-placeholder')}>
-                <Input type="text" />
-              </Field>
-            </FormItem>
-            <FormItem label={portalPhrases.get('portal.chat.label-email')} field="email" errors={errors}>
-              <Field select="email" placeholder="email@example.com">
-                <Input type="email" />
-              </Field>
-            </FormItem>
-            { allowDepartmentSelection && chatDepartmentsLoaded ? this.renderDepartmentSelect() : null }
+            {!loggedIn &&
+              <FormItem label={portalPhrases.get('portal.chat.label-name')} field="name" errors={errors}>
+                <Field select="name" placeholder={portalPhrases.get('portal.chat.details-placeholder')}>
+                  <Input type="text" />
+                </Field>
+              </FormItem>}
+            {!loggedIn &&
+              <FormItem label={portalPhrases.get('portal.chat.label-email')} field="email" errors={errors}>
+                <Field select="email" placeholder="email@example.com">
+                  <Input type="email" />
+                </Field>
+              </FormItem>}
+            {allowDepartmentSelection ? this.renderDepartmentSelect() : null}
             {customFields.valueSeq().map((customField, index) =>
               <CustomField
                 key={index}
