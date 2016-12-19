@@ -224,6 +224,12 @@ define([
         o.opener = null;
       });
 
+      // Add special 'bare-page' class to indicate
+      // that we aren't in agent wrapper
+      if (!window.parent || !window.parent.DP_SPA_PAGE_ID || window.parent.DP_SPA_PAGE_ID !== 'agent') {
+        $('body').addClass('bare-page');
+      }
+
       angular.element().ready(function () {
         $html.addClass('ng-app');
 
