@@ -39,16 +39,21 @@ You'll need a web server with the docroot at www/. Or you can just use PHP's web
 You'll need to also run the asset server which serves compiled versions of CSS/JS.
 
     cd /path/to/deskpro/www/assets/BUILD/pub
-    npm run-script gulp-dev-all
+    npm run dev
 
 The asset server is enabled by default in `config/config.paths.php`. If you disable it, then assets
 must be manually built to the normal filesystem:
 
     cd /path/to/deskpro/www/assets/BUILD/pub
-    npm run-script gulp-prod
+    npm run prod
 
 It's almost always desirable to use the asset server in development though. It will set up a file watcher
 and automatically re-compile any changes you make.
+
+If you want to change old/legacy assets, you can run the old asset dev watcher (note the dir is web/):
+
+    cd /path/to/deskpro/www/assets/BUILD/web
+    npm run prod
 
 # Running tests
 

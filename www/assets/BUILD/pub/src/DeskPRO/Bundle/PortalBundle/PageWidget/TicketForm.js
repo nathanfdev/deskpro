@@ -121,6 +121,12 @@ export default class TicketForm extends PageWidget {
       }
     });
 
+    if (window.DP_FIELDS_INIT_CALLBACK) {
+      this.dynamicForm.ee.on('fieldsUpdated', (evData) => {
+        window.DP_FIELDS_INIT_CALLBACK(evData);
+      });
+    }
+
     const updateHitter = _.throttle(() => this.dynamicForm.update(), 250);
     allFormFields.on('change', () => setTimeout(() => updateHitter(), 0));
   }

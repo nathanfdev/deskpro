@@ -30,6 +30,9 @@ namespace DeskPRO\Bundle\AppBundle\Request;
 
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class UrlCorrector.
+ */
 class UrlCorrector
 {
     const CORRECTION_INDEX_SEGMENT = 'index_segment';
@@ -53,6 +56,14 @@ class UrlCorrector
             'autoCorrectHost'   => false,
             'helpdeskUrl'       => 'http://localhost/',
         ], $options);
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 
     /**
@@ -107,6 +118,33 @@ class UrlCorrector
     }
 
     /**
+     * @param string  $url
+     * @param Request $request
+     *
+     * @return string
+     */
+    public function correctUrlScheme($url, Request $request)
+    {
+        // if we are on https but the url is set to just http, we wont change it
+        // (i.e., allow a manual "upgrade" to https)
+        if ($request->isSecure() && !preg_match('#^https:#i', $this->options['helpdeskUrl'])) {
+            $url = preg_replace('#^http:#i', 'https:', $url);
+        }
+
+        return $url;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return string
+     */
+    public function getCorrectedHelpdeskUrl(Request $request)
+    {
+        return $this->correctUrlScheme(rtrim($this->options['helpdeskUrl'], '/'), $request);
+    }
+
+    /**
      * Get the real URL for the current request. Note that this does not apply
      * specific corrections; it simply returns the real, expected URL.
      *
@@ -120,13 +158,7 @@ class UrlCorrector
             $qs = '?'.$qs;
         }
 
-        $url = rtrim($this->options['helpdeskUrl'], '/').$request->getPathInfo().$qs;
-
-        // if we are on https but the url is set to just http, we wont change it
-        // (i.e., allow a manual "upgrade" to https)
-        if ($request->isSecure() && !preg_match('#^https:#i', $this->options['helpdeskUrl'])) {
-            $url = preg_replace('#^http:#i', 'https:', $url);
-        }
+        $url = $this->getCorrectedHelpdeskUrl($request).$request->getPathInfo().$qs;
 
         return $url;
     }

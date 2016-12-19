@@ -45,7 +45,7 @@ class ApiManController extends BaseController
     /**
      * @Rest\Get("/", name="api_landing")
      */
-    public function v2Landing(Request $request)
+    public function v2LandingAction(Request $request)
     {
         // This is LegacyApiBundle:Docs:about
         return new RedirectResponse($request->getUriForPath('/api'));
