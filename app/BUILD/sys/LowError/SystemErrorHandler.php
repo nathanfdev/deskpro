@@ -736,10 +736,10 @@ class SystemErrorHandler
                 $written = @fwrite($fh, $str);
 
                 if ($written) {
-                    // Max 30MB
+                    // Max 50MB
                     $stat = @fstat($fh);
-                    if ($stat && $stat['size'] && $stat['size'] > 31457280) {
-                        @ftruncate($fh, 31457280);
+                    if ($stat && $stat['size'] && $stat['size'] > 52428800) {
+                        @ftruncate($fh, 52428800);
                     }
                 }
 
