@@ -34,8 +34,10 @@ function getInstInfo(helpdeskUrl, instId = 'def') {
     window[constAssetUrlKey] = assetUrl;
 
     if (window.localStorage) {
-      window.localStorage[storageAssetUrlKey] = assetUrl;
-      window.localStorage[storageTimeKey] = (new Date()).getTime();
+      try {
+        window.localStorage[storageAssetUrlKey] = assetUrl;
+        window.localStorage[storageTimeKey] = (new Date()).getTime();
+      } catch (e) {}
     }
   };
 
