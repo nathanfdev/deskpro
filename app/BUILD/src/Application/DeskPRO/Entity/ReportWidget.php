@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -41,16 +42,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Report builder query.
- *
- * @property int $id
- * @property ReportWidget $parent
- * @property string $title
- * @property string $description
- * @property string $query
- * @property boolean $is_custom
- * @property array $labels
- * @property integer $display_order
- * @property string $category
  */
 class ReportWidget extends DomainObject
 {
@@ -102,8 +93,7 @@ class ReportWidget extends DomainObject
     /**
      * @var array
      */
-    protected $display_types ;
-
+    protected $display_types;
 
     public function __construct()
     {
@@ -119,12 +109,137 @@ class ReportWidget extends DomainObject
     }
 
     /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getUniqueKey()
+    {
+        return $this->unique_key;
+    }
+
+    /**
+     * @param null|string $unique_key
+     *
+     * @return $this
+     */
+    public function setUniqueKey($unique_key)
+    {
+        $this->setModelField('unique_key', $unique_key);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     *
+     * @return $this
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    /**
+     * @param string $query
+     *
+     * @return $this
+     */
+    public function setQuery($query)
+    {
+        $this->query = $query;
+
+        return $this;
+    }
+
+    /**
+     * @return ReportWidget
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param ReportWidget $parent
+     *
+     * @return $this
+     */
+    public function setParent($parent)
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIsCustom()
+    {
+        return $this->is_custom;
+    }
+
+    /**
+     * @param bool $is_custom
+     *
+     * @return $this
+     */
+    public function setIsCustom($is_custom)
+    {
+        $this->is_custom = $is_custom;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
+    }
+
+    /**
+     * @param int $display_order
+     *
+     * @return $this
+     */
+    public function setDisplayOrder($display_order)
+    {
+        $this->display_order = $display_order;
+
+        return $this;
+    }
+
+    /**
      * @param string $type
      * @param array  $params
      *
      * @return mixed|string
      */
-    public function getTitle($type = 'raw', $params = array())
+    public function getTitle($type = 'raw', $params = [])
     {
         if ($type == 'raw') {
             return $this->title;
@@ -136,8 +251,8 @@ class ReportWidget extends DomainObject
         $groupParams = $repository->getReportGroupParams();
 
         if (!is_array($params)) {
-            $newParams = array();
-            foreach ($params ? explode(',', $params) : array() as $k => $v) {
+            $newParams = [];
+            foreach ($params ? explode(',', $params) : [] as $k => $v) {
                 $newParams[$k + 1] = $v;
             }
             $params = $newParams;
@@ -260,6 +375,17 @@ class ReportWidget extends DomainObject
     }
 
     /**
+     * @param $title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        return $this;
+    }
+    /**
      * Gets the DPQL parts for this report's query.
      *
      * @return array
@@ -277,7 +403,7 @@ class ReportWidget extends DomainObject
      */
     public function isEditable()
     {
-        return ($this->is_custom || App::getConfig('debug.dev'));
+        return $this->is_custom || App::getConfig('debug.dev');
     }
 
     /**
@@ -301,7 +427,7 @@ class ReportWidget extends DomainObject
         $query     = preg_replace('/\s/', '', $query);
         $thisQuery = preg_replace('/\s/', '', $this->query);
 
-        return ($query != $thisQuery);
+        return $query != $thisQuery;
     }
 
     /**
@@ -309,7 +435,7 @@ class ReportWidget extends DomainObject
      *
      * @var array
      */
-    protected $_is_favorited = array();
+    protected $_is_favorited = [];
 
     /**
      * Returns true if the specified person has favorited this.
@@ -322,7 +448,6 @@ class ReportWidget extends DomainObject
     {
         return false;
     }
-
 
     /**
      * @return array
@@ -337,8 +462,10 @@ class ReportWidget extends DomainObject
      *
      * @return $this
      */
-    public function setLabels(array $labels = null) {
+    public function setLabels(array $labels = null)
+    {
         $this->labels = $labels;
+
         return $this;
     }
 
@@ -358,33 +485,32 @@ class ReportWidget extends DomainObject
     public function setDisplayTypes($display_types)
     {
         $this->display_types = $display_types;
+
         return $this;
     }
 
-
-
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ReportWidget';
+        $metadata->customRepositoryClassName = \Application\DeskPRO\EntityRepository\ReportWidget::class;
         $metadata->setPrimaryTable(
-            array(
-                 'name'              => 'report_widget',
-                 'indexes'           => array(
-                     'parent_id_idx' => array('columns' => array('parent_id'))
-                 ),
-                 'uniqueConstraints' => array(
-                     'unique_key_idx' => array('columns' => array('unique_key')),
-                 ),
-            )
+            [
+                 'name'    => 'report_widget',
+                 'indexes' => [
+                     'parent_id_idx' => ['columns' => ['parent_id']],
+                 ],
+                 'uniqueConstraints' => [
+                     'unique_key_idx' => ['columns' => ['unique_key']],
+                 ],
+            ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
         $metadata->mapField(
-            array(
+            [
                  'fieldName'  => 'id',
                  'type'       => 'integer',
                  'precision'  => 0,
@@ -392,10 +518,10 @@ class ReportWidget extends DomainObject
                  'nullable'   => false,
                  'columnName' => 'id',
                  'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                  'fieldName'  => 'unique_key',
                  'type'       => 'string',
                  'length'     => 50,
@@ -403,10 +529,10 @@ class ReportWidget extends DomainObject
                  'scale'      => 0,
                  'nullable'   => true,
                  'columnName' => 'unique_key',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                  'fieldName'  => 'title',
                  'type'       => 'string',
                  'length'     => 255,
@@ -414,40 +540,40 @@ class ReportWidget extends DomainObject
                  'scale'      => 0,
                  'nullable'   => false,
                  'columnName' => 'title',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                  'fieldName'  => 'description',
                  'type'       => 'text',
                  'precision'  => 0,
                  'scale'      => 0,
                  'nullable'   => false,
                  'columnName' => 'description',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                  'fieldName'  => 'query',
                  'type'       => 'text',
                  'precision'  => 0,
                  'scale'      => 0,
                  'nullable'   => false,
                  'columnName' => 'query',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                  'fieldName'  => 'is_custom',
                  'type'       => 'boolean',
                  'precision'  => 0,
                  'scale'      => 0,
                  'nullable'   => false,
                  'columnName' => 'is_custom',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                  'fieldName'  => 'labels',
                  'type'       => 'simple_array',
                  'length'     => 255,
@@ -455,44 +581,44 @@ class ReportWidget extends DomainObject
                  'scale'      => 0,
                  'nullable'   => true,
                  'columnName' => 'labels',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                  'fieldName'  => 'display_order',
                  'type'       => 'integer',
                  'precision'  => 0,
                  'scale'      => 0,
                  'nullable'   => false,
                  'columnName' => 'display_order',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'display_types',
                 'type'       => 'simple_array',
                 'nullable'   => false,
                 'columnName' => 'display_types',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
         $metadata->mapManyToOne(
-            array(
+            [
                  'fieldName'    => 'parent',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportWidget',
                  'mappedBy'     => null,
                  'inversedBy'   => null,
-                 'joinColumns'  => array(
-                     0 => array(
+                 'joinColumns'  => [
+                     0 => [
                          'name'                 => 'parent_id',
                          'referencedColumnName' => 'id',
                          'nullable'             => true,
                          'onDelete'             => 'set null',
                          'columnDefinition'     => null,
-                     ),
-                 ),
-            )
+                     ],
+                 ],
+            ]
         );
     }
 }
