@@ -59,4 +59,4 @@ class PortalPhrases {
   }
 }
 
-export const portalPhrases = new PortalPhrases;
+export const portalPhrases = new PortalPhrases();

@@ -87,7 +87,6 @@ class DbLoader implements LoaderInterface
             }
         }
         $langs[] = $this->default_lang_id; // default deskpro lang
-        $langs[] = 0; // system use
 
         foreach ($langs as $lid) {
             foreach ($groups as $g) {

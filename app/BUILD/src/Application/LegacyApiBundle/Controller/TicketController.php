@@ -587,9 +587,6 @@ class TicketController extends AbstractController implements ProtectedController
     public function deleteTicketAction($ticket_id)
     {
         $ticket = $this->_getTicketOr404($ticket_id, 'delete');
-
-        $this->container->getTicketManager()->markAsManaged($ticket);
-
         $this->em->getConnection()->beginTransaction();
 
         try {
@@ -601,7 +598,7 @@ class TicketController extends AbstractController implements ProtectedController
             throw $e;
         }
 
-        $this->db->insert('tickets_deleted', [
+        $this->db->replace('tickets_deleted', [
             'ticket_id'     => $ticket->id,
             'by_person_id'  => $this->person->id,
             'new_ticket_id' => 0,

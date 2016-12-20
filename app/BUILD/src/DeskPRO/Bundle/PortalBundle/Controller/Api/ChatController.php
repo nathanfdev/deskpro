@@ -227,7 +227,7 @@ class ChatController extends AbstractApiController
 
         // Add message to chat conversation
         $content = $form->get('message')->getData();
-        if ($content) {
+        if (is_string($content) && strip_tags($content)) {
             $chatMessage = UserChatMessages::createUserTextMessage($conversation, $content);
 
             $conversation->addMessage($chatMessage);

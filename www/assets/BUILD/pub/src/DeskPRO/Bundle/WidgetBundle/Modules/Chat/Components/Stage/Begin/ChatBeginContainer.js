@@ -6,7 +6,7 @@ import Immutable from 'immutable';
 import { loadAll, isLoadedCollectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import PortalFormWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
 import { createChat } from '../../../Actions/chatActions';
-import { liveDemoSelector, widgetAllowDepartmentSelection } from '../../../../Application/Selectors/dpWindow';
+import { liveDemoSelector, widgetAllowDepartmentSelection, widgetLanguageSelector } from '../../../../Application/Selectors/dpWindow';
 import { requireChatEmailValidationSelector, requireChatLoginSelector } from '../../../../Application/Selectors/bootstrap';
 import { customChatFieldsOrderedSelector } from '../../../../Application/Selectors/customFields';
 import { history } from '../../../../../Services/history';
@@ -19,7 +19,8 @@ import { history } from '../../../../../Services/history';
   customFields:             customChatFieldsOrderedSelector(state),
   allowDepartmentSelection: widgetAllowDepartmentSelection(state),
   chatDepartments:          allSelectorFactory('ChatDepartment')(state),
-  chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state)
+  chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state),
+  widgetLanguage:           widgetLanguageSelector(state)
 }))
 export class ChatBeginContainer extends React.Component {
 

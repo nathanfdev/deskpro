@@ -27,6 +27,12 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   # entities
+  api_serializer.handler.custom_def:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomDefHandler
+    arguments: ["@deskpro.core.translate"]
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.custom_data:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomDataHandler
     tags:
