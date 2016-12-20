@@ -145,10 +145,7 @@ define [
     'ui.bootstrap',
     'angularMoment',
     'oc.lazyLoad',
-
-    'deskpro.option_builder',
-    'deskpro.category_builder',
-
+    'gridster',
   ])
 
   # TODO http://christopherthielen.github.io/ui-router-extras/#/home
