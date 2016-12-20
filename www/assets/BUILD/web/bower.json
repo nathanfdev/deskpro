@@ -49,7 +49,7 @@
     "underscore": "1.5.2",
     "zeroclipboard": "2.2.0",
 
-    "oclazyload": "0.5.1",
+    "oclazyload": "0.6.3",
     "select2": "3.4.8",
     "jquery-resize": "*",
     "datatables-scroller": "~1.2.2",

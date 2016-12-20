@@ -133,6 +133,21 @@ $definition->setClass('Application\\DeskPRO\\Settings\\ServiceUrls');
 $definition->addMethodCall('loadPack', ['%kernel.root_dir%/config/service-urls.php']);
 $container->setDefinition('deskpro.service_urls', $definition);
 
+$definition = new Definition();
+$definition->setClass('Application\\LegacyApiBundle\\Service\\DashboardPermissions');
+$definition->setArguments([new Reference('doctrine.orm.entity_manager')]);
+$container->setDefinition('dashboard.permissions.service', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\LegacyApiBundle\\Service\\DashboardWidget');
+$definition->setArguments([new Reference('doctrine.orm.entity_manager')]);
+$container->setDefinition('dashboard.widget.service', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\LegacyApiBundle\\Service\\Dashboard');
+$definition->setArguments([new Reference('doctrine.orm.entity_manager'), new Reference('dashboard.widget.service')]);
+$container->setDefinition('dashboard.service', $definition);
+
 //###########################################################################
 // Validators and Constraints
 //###########################################################################

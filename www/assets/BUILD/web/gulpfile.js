@@ -59,7 +59,7 @@ deskpro.watches = [
   ['./app/Admin*/**/*.coffee', ['coffee-admin']],
   ['./app/Agent*/**/*.coffee', ['coffee-agent']],
   ['./app/Reports/**/*.coffee', ['coffee-reports']],
-  ['./app/Interface/**/*.coffee', ['coffee-reports']],
+  ['./app/Interface/**/*.coffee', ['coffee-interface']],
   ['./app/DeskPRO/**/*.coffee', ['coffee-deskpro']],
   ['./app/**/Resources/style/*.less', ['less-app']],
   ['./app/**/Resources/style/*.scss', ['sass-app']],
@@ -189,6 +189,10 @@ gulp.task('coffee-agent', function () {
   return deskpro.taskGen.coffeeScript('./app/Agent*/**/*.coffee');
 });
 
+gulp.task('coffee-interface', function () {
+  return deskpro.taskGen.coffeeScript('./app/Interface*/**/*.coffee');
+});
+
 gulp.task('coffee-reports', function () {
   return deskpro.taskGen.coffeeScript('./app/Reports*/**/*.coffee');
 });
@@ -202,6 +206,7 @@ gulp.task('coffee', ['clean'], function() {
     './app/Admin*/**/*.coffee',
     './app/Agent*/**/*.coffee',
     './app/Reports*/**/*.coffee',
+    './app/Interface*/**/*.coffee',
     './app/DeskPRO*/**/*.coffee'
   ]);
 });
@@ -211,6 +216,7 @@ gulp.task('dirty-coffee', function() {
     './app/Admin*/**/*.coffee',
     './app/Agent*/**/*.coffee',
     './app/Reports*/**/*.coffee',
+    './app/Interface*/**/*.coffee',
     './app/DeskPRO*/**/*.coffee'
   ]);
 });
@@ -395,6 +401,7 @@ var rjsLoadFiles = [
   './app/AdminStart/AdminStartLoad.js',
   './app/AdminUpdateWatcher/AdminUpdateWatcherLoad.js',
   './app/Reports/ReportsLoad.js',
+  './app/Interface/InterfaceLoad.js',
   './app/Agent/AgentLoad.js'
 ];
 
@@ -418,6 +425,9 @@ function addRjsTask(rjsBundle) {
       break;
     case 'ReportsLoad':
       target = 'Reports/ReportsLoad.min.js';
+      break;
+    case 'InterfaceLoad':
+      target = 'Interface/InterfaceLoad.min.js';
       break;
     case 'AgentLoad':
       target = 'Agent/AgentLoad.min.js';

@@ -37,10 +37,10 @@ class Build1482142098 extends AbstractBuild
     public function run()
     {
         $this->out('Creating report dashboards tables');
-        $this->execDbQuery('default', 'CREATE TABLE report_widget like report_builder;');
-        $this->execDbQuery('default', 'CREATE TABLE report_widget_favorite like report_builder_favorite;');
-        $this->execDbQuery('default', 'SELECT * FROM report_builder INTO report_widget_widget;');
-        $this->execDbQuery('default', 'SELECT * FROM report_builder_favorite INTO report_widget_widget_favorite;');
+//        $this->execDbQuery('default', 'CREATE TABLE report_widget like report_builder;');
+//        $this->execDbQuery('default', 'CREATE TABLE report_widget_favorite like report_builder_favorite;');
+        $this->execDbQuery('default', 'INSERT INTO report_widget (SELECT * FROM report_builder);');
+        $this->execDbQuery('default', 'INSERT INTO report_widget_favorite (SELECT * FROM report_builder_favorite);');
         $this->execDbQuery('default', "
 			ALTER TABLE report_widget ADD labels TINYTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)', DROP category;
 			ALTER TABLE report_widget ADD display_types LONGTEXT NOT NULL COMMENT '(DC2Type:simple_array)';

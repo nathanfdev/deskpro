@@ -1,6 +1,28 @@
 define([
   'angular',
-  'Interface/App/InterfaceApp'
+  'Interface/App/InterfaceApp',
+
+  'angularAnimate',
+  'angularSanitize',
+  'angularBootstrap',
+  'angularSelect2',
+  'angularUiRouter',
+  'angularUiSortable',
+  'angular-moment',
+  'angularFileUpload',
+  'angularSlider',
+  'ngFileUpload',
+
+  'moment',
+
+  'jquery',
+  'jqueryUi',
+  'jquery.fileupload',
+  'underscore',
+  'stacktrace',
+  'DeskPRO/OptionBuilder/Module',
+  'DeskPRO/CategoryBuilder/Module'
+
 ], function(angular, InterfaceApp) {
 
   if (!window.console) {
@@ -8,7 +30,7 @@ define([
       log: function(){},
       warn: function(){},
       error: function(){}
-    }
+    };
   }
 
   return {
@@ -36,5 +58,5 @@ define([
       this.isDoneBoot = true;
       angular.bootstrap(document.getElementById('dp_win'), ['DeskPRO.InterfaceApp']);
     }
-  }
+  };
 });

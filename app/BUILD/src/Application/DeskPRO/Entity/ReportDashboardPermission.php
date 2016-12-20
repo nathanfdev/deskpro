@@ -1,58 +1,57 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Stores who has access to departments
- *
+ * Stores who has access to departments.
  */
-class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
+class ReportDashboardPermission extends DomainObject
 {
     /**
      * Name of the "full access" permission
      * (for now we can track only view and edit, so this cannot be that
-     * agent can edit, but cant view :) )
+     * agent can edit, but cant view :) ).
      */
     const FULL = 'full';
 
     /**
-     * Name of the "view" permission
+     * Name of the "view" permission.
      */
     const VIEW = 'view';
 
@@ -70,7 +69,7 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
     protected $dashboard = null;
 
     /**
-     * The name of the permission
+     * The name of the permission.
      *
      * @var string
      */
@@ -92,6 +91,7 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
     public function setDashboard(ReportDashboard $dashboard)
     {
         $this->dashboard = $dashboard;
+
         return $this;
     }
 
@@ -102,11 +102,12 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setPerson(Person $p)
     {
-        if( $p->getIsAgent() ) {
+        if ($p->getIsAgent()) {
             $this->setModelField('person', $p);
         } else {
             //possibly we gonna throw an Exception here, cause it's wrong trying to add just a person here
         }
+
         return $this;
     }
 
@@ -123,11 +124,12 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
     /**
-     * A name that identifies this permission (eg could be used as an map key)
+     * A name that identifies this permission (eg could be used as an map key).
      *
      * @return string
      */
@@ -162,61 +164,61 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
         return $this->name;
     }
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array( 'name' => 'report_dashboard_permission', ));
+        $metadata->setPrimaryTable(['name' => 'report_dashboard_permission']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-        $metadata->mapField(array('fieldName'  => 'id',
-                                  'type'       => 'integer',
-                                  'precision'  => 0,
-                                  'scale'      => 0,
-                                  'nullable'   => false,
-                                  'columnName' => 'id',
-                                  'id'         => true,
-            ));
-        $metadata->mapField(array('fieldName'  => 'name',
-                                  'type'       => 'string',
-                                  'length'     => 50,
-                                  'precision'  => 0,
-                                  'scale'      => 0,
-                                  'nullable'   => false,
-                                  'columnName' => 'name',
-            ));
+        $metadata->mapField(['fieldName'  => 'id',
+                             'type'       => 'integer',
+                             'precision'  => 0,
+                             'scale'      => 0,
+                             'nullable'   => false,
+                             'columnName' => 'id',
+                             'id'         => true,
+        ]);
+        $metadata->mapField(['fieldName'  => 'name',
+                             'type'       => 'string',
+                             'length'     => 50,
+                             'precision'  => 0,
+                             'scale'      => 0,
+                             'nullable'   => false,
+                             'columnName' => 'name',
+        ]);
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'dashboard',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboard',
+            'targetEntity' => ReportDashboard::class,
             'mappedBy'     => null,
             'inversedBy'   => null,
-            'joinColumns'  => array(
-                0 => array(
+            'joinColumns'  => [
+                0 => [
                     'name'                 => 'dashboard_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => false,
                     'onDelete'             => 'cascade',
                     'columnDefinition'     => null,
-                ),
-            ),
-        ));
-        $metadata->mapManyToOne(array(
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'person',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'targetEntity' => Person::class,
             'mappedBy'     => null,
             'inversedBy'   => 'report_dashboard_permissions',
-            'joinColumns'  => array(
-                0 => array(
+            'joinColumns'  => [
+                0 => [
                     'name'                 => 'person_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => false,
-                    'onDelete'             => 'cascade'
-                ),
-            ),
-        ));
+                    'onDelete'             => 'cascade',
+                ],
+            ],
+        ]);
     }
 }
