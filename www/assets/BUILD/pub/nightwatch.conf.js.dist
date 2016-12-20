@@ -2,5 +2,5 @@ require('babel-core/register');
 
 module.exports = require('./nightwatch.json');
 
-module.exports.test_settings.cbt.username = '';
-module.exports.test_settings.cbt.password = '';
+module.exports.test_settings.cbt.username = 'neb802@gmail.com';
+module.exports.test_settings.cbt.password = 'u9a16e445c4e7608';
