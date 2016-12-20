@@ -336,6 +336,11 @@ export const sendChatMessage = createAction(
       params.message = params.message.replace(/^(&nbsp;|\s)+/g, '');
     }
 
+    // don't send empty messages
+    if (!striptags(params.message) && (!params.attachments || !params.attachments.size)) {
+      return null;
+    }
+
     // Add optimistic message
     if (params.message && striptags(params.message)) {
       dispatch(addNewMessages({
