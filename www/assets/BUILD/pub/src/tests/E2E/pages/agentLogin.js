@@ -23,8 +23,8 @@ module.exports = {
   url:      url('/agent/login'),
   commands: [commands],
   elements: {
-    loginInput:    { selector: 'input[name="email"]' },
-    passwordInput: { selector: 'input[type="password"]' },
-    loginButton:   { selector: 'input[type="submit"]' }
+    loginInput:    { selector: '#normal_view > div.content > form input[name="email"]' },
+    passwordInput: { selector: '#normal_view > div.content > form input[type="password"]' },
+    loginButton:   { selector: '#normal_view > div.content > form input[type="submit"]' }
   }
 };
