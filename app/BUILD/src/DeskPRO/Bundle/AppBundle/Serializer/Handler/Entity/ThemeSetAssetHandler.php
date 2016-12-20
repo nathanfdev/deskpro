@@ -69,8 +69,8 @@ class ThemeSetAssetHandler extends AbstractEntityHandler
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
-        $url    = null;
-        $blobId = null;
+        $url        = null;
+        $blobAuthId = null;
 
         // Generate a URL for user custom assets uploaded in the Portal Designer
         if (in_array(AssetsManager::CUSTOM_ASSET_TAG, $entity->getTags())
@@ -81,10 +81,10 @@ class ThemeSetAssetHandler extends AbstractEntityHandler
         } elseif (in_array('inline-image', $entity->getTags())
             || in_array('attachment', $entity->getTags())
         ) {
-            $url    = $entity->getBlob()->getDownloadUrl(true, true);
-            $blobId = $entity->getBlob()->getId();
+            $url        = $entity->getBlob()->getDownloadUrl(true, true);
+            $blobAuthId = $entity->getBlob()->getAuthId();
         }
 
-        return new ThemeSetAssetModel($entity, $url, $blobId);
+        return new ThemeSetAssetModel($entity, $url, $blobAuthId);
     }
 }
