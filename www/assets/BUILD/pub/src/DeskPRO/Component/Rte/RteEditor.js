@@ -67,12 +67,7 @@ export default class RteEditor extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.value !== this.getNode().innerHTML) {
-      let content = newProps.value;
-      if (!content) {
-        content = '<p></p>';
-      }
-
-      this.medium.setContent(content);
+      this.medium.setContent(newProps.value);
     }
   }
 
