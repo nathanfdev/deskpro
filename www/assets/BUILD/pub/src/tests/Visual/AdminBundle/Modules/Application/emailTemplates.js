@@ -39,6 +39,13 @@ storiesOf('Admin: email templates', module)
       <MediaMenu
         inlineFiles={Immutable.fromJS(mediaInline)}
         attachmentFiles={Immutable.fromJS(mediaAttachments)}
+        insertAttachment={action('Insert Attachment')}
+        insertInlineImage={action('Insert Inline Image')}
+        downloadFile={action('Download File')}
+        reloadFiles={action('Reload File')}
+        deleteFile={action('Delete File')}
+        onSend={action('On Send')}
+        onFail={action('On Fail')}
       />
     </div>
   )

@@ -61,6 +61,20 @@
       color: $dp-greyscale-50;
       border-radius: 0;
       padding: 20px;
+      .ui.dimmer {
+        bottom: 60px;
+        top: 120px !important;
+        height: calc(100% - 180px);
+        cursor: not-allowed;
+        .loader:before,
+        .loader:after {
+          display: none;
+        }
+        .loader {
+          padding: 20px;
+          border: 2px solid $dp-greyscale-450;
+        }
+      }
       textarea {
         background-color: $dp-greyscale-950;
         min-height: 40px;
@@ -372,6 +386,7 @@
           margin-right: 8px;
         }
         .download.icon,
+        .linkify.icon,
         .remove.icon {
           float: right;
           margin: 0 0 0 8px;
@@ -379,6 +394,7 @@
         }
         &:hover {
           .download.icon,
+          .linkify.icon,
           .remove.icon {
             display: inline-block;
           }

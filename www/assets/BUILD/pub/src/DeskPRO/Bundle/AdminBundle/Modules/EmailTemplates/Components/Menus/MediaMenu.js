@@ -13,8 +13,16 @@ import * as actions from '../../Actions/templatesActions';
 }))
 export class MediaMenuContainer extends React.Component {
   static propTypes = {
-    dispatch:       PropTypes.func,
-    emailTemplates: PropTypes.object.isRequired
+    dispatch:               PropTypes.func,
+    emailTemplates:         PropTypes.object.isRequired,
+    insertAttachment:       PropTypes.func,
+    insertAttachmentAsLink: PropTypes.func,
+    insertInlineImage:      PropTypes.func,
+  };
+  static defaultProps = {
+    insertAttachment() {},
+    insertAttachmentAsLink() {},
+    insertInlineImage() {}
   };
 
   constructor(props) {
@@ -75,6 +83,9 @@ export class MediaMenuContainer extends React.Component {
       onSend={this.onSend}
       deleteFile={this.deleteFile}
       downloadFile={this.downloadFile}
+      insertAttachment={this.props.insertAttachment}
+      insertAttachmentAsLink={this.props.insertAttachmentAsLink}
+      insertInlineImage={this.props.insertInlineImage}
       uploading={this.state.uploading}
     />);
   }
@@ -82,16 +93,17 @@ export class MediaMenuContainer extends React.Component {
 
 export class MediaMenu extends React.Component {
   static propTypes = {
-    inlineFiles:       PropTypes.node,
-    attachmentFiles:   PropTypes.node,
-    reloadFiles:       PropTypes.func,
-    onFail:            PropTypes.func,
-    onSend:            PropTypes.func,
-    deleteFile:        PropTypes.func,
-    downloadFile:      PropTypes.func,
-    insertAttachment:  PropTypes.func,
-    insertInlineImage: PropTypes.func,
-    uploading:         PropTypes.bool
+    inlineFiles:            PropTypes.node,
+    attachmentFiles:        PropTypes.node,
+    reloadFiles:            PropTypes.func,
+    onFail:                 PropTypes.func,
+    onSend:                 PropTypes.func,
+    deleteFile:             PropTypes.func,
+    downloadFile:           PropTypes.func,
+    insertAttachment:       PropTypes.func,
+    insertAttachmentAsLink: PropTypes.func,
+    insertInlineImage:      PropTypes.func,
+    uploading:              PropTypes.bool
   };
 
   getInlineFiles = () => {
@@ -103,7 +115,7 @@ export class MediaMenu extends React.Component {
         key={`file${key}`}
         label={file.get('name')}
         url={file.get('url')}
-        onClick={() => this.setActive(file)}
+        onClick={() => this.props.insertInlineImage(file)}
         deleteFile={e => this.props.deleteFile(e, file, 'inline-image')}
         downloadFile={e => this.props.downloadFile(e, file)}
       />
@@ -119,10 +131,11 @@ export class MediaMenu extends React.Component {
         key={`file${key}`}
         label={file.get('name')}
         icon={MimeIcon.getIcon(file.get('mime_type'))}
-        onClick={() => this.setActive(file)}
+        onClick={() => this.props.insertAttachment(file)}
       >
         <i onClick={e => this.props.downloadFile(e, file)} className="download icon" title="Download" />
         <i onClick={e => this.props.deleteFile(e, file, 'attachment')} className="remove icon" title="Remove" />
+        <i onClick={e => this.props.insertAttachmentAsLink(e, file)} className="linkify icon" title="Insert Link" />
       </MenuItem>
     );
   };

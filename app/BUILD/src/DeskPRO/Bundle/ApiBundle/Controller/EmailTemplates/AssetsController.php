@@ -158,9 +158,10 @@ class AssetsController extends BaseController
      */
     public function deleteAction($id)
     {
-        $entity = $this->findOr404(ThemeSetAsset::class, $id);
-        $em     = $this->getManager();
-        $em->remove($entity);
+        $asset = $this->findOr404(ThemeSetAsset::class, $id);
+
+        $em = $this->getManager();
+        $em->remove($asset);
         $em->flush();
 
         return View::create([], Response::HTTP_OK);

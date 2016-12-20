@@ -25,7 +25,7 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.state = {
       saveSubmit:  false,
       undoSubmit:  false,
-      resetSubmit: false
+      resetSubmit: false,
     };
   }
 
@@ -59,14 +59,14 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.props.dispatch(actions.updateTemplateSubject(event.target.value));
   };
 
-  changeTemplateBody = (event) => {
+  changeTemplateBody = (value) => {
     const variables = [];
     if (this.props.emailTemplates.get('exampleTicket')) {
       variables.push({ ticket: this.props.emailTemplates.get('exampleTicket') });
     }
     const viewModel = this.props.emailTemplates.get('currentTemplate').get('viewModel');
-    this.props.dispatch(actions.previewTemplate(viewModel, event.target.value, variables));
-    this.props.dispatch(actions.updateTemplateBody(event.target.value));
+    this.props.dispatch(actions.previewTemplate(viewModel, value, variables));
+    this.props.dispatch(actions.updateTemplateBody(value));
   };
 
   saveTemplate = () => {
@@ -114,6 +114,25 @@ class EmailTemplatesEditorContainer extends React.Component {
     );
   };
 
+  insertInlineImage = (file) => {
+    const tag = `<img src="{{ path('serve_blob', {'blob_auth_id': '${file.get('blob_id')}', 'filename': '${file.get('name')}'}) }}" alt="" />`;
+    const body = this.props.emailTemplates.get('template').get('template_code').get('body') + tag;
+    this.changeTemplateBody(body);
+  };
+
+  insertAttachment = (file) => {
+    const tag = `<attachment id="${file.get('blob_id')}" filename="${file.get('name')}" />`;
+    const body = this.props.emailTemplates.get('template').get('template_code').get('body') + tag;
+    this.changeTemplateBody(body);
+  };
+
+  insertAttachmentAsLink = (e, file) => {
+    e.stopPropagation();
+    const tag = `<a href="{{ path('serve_blob', {'blob_auth_id': '${file.get('blob_id')}', 'filename': '${file.get('name')}'}) }}" alt="">${file.get('name')}</a>`;
+    const body = this.props.emailTemplates.get('template').get('template_code').get('body') + tag;
+    this.changeTemplateBody(body);
+  };
+
   render() {
     return (<EmailTemplatesEditor
       emailTemplates={this.props.emailTemplates}
@@ -122,6 +141,9 @@ class EmailTemplatesEditorContainer extends React.Component {
       saveTemplate={this.saveTemplate}
       resetTemplate={this.resetTemplate}
       undoChanges={this.undoChanges}
+      insertInlineImage={this.insertInlineImage}
+      insertAttachment={this.insertAttachment}
+      insertAttachmentAsLink={this.insertAttachmentAsLink}
       resetSubmit={this.state.resetSubmit}
       saveSubmit={this.state.saveSubmit}
       undoSubmit={this.state.undoSubmit}
@@ -130,15 +152,19 @@ class EmailTemplatesEditorContainer extends React.Component {
 }
 class EmailTemplatesEditor extends React.Component {
   static propTypes = {
-    emailTemplates:      PropTypes.object,
-    selectTemplateGroup: PropTypes.func,
-    changeTemplateBody:  PropTypes.func,
-    saveTemplate:        PropTypes.func,
-    resetTemplate:       PropTypes.func,
-    undoChanges:         PropTypes.func,
-    resetSubmit:         PropTypes.bool,
-    saveSubmit:          PropTypes.bool,
-    undoSubmit:          PropTypes.bool,
+    emailTemplates:         PropTypes.object,
+    selectTemplateGroup:    PropTypes.func,
+    changeTemplateSubject:  PropTypes.func,
+    changeTemplateBody:     PropTypes.func,
+    saveTemplate:           PropTypes.func,
+    resetTemplate:          PropTypes.func,
+    undoChanges:            PropTypes.func,
+    insertAttachment:       PropTypes.func,
+    insertAttachmentAsLink: PropTypes.func,
+    insertInlineImage:      PropTypes.func,
+    resetSubmit:            PropTypes.bool,
+    saveSubmit:             PropTypes.bool,
+    undoSubmit:             PropTypes.bool,
   };
 
   closeMediaMenu = () => {
@@ -215,7 +241,7 @@ class EmailTemplatesEditor extends React.Component {
                   />
                 </DropDownMenu>
               </div>
-              <div className="top-menu right floated">
+              <div className={classNames('top-menu right floated', { disabled: textareaDisabled })}>
                 <DropDownMenu
                   icon="image"
                   label="Media"
@@ -224,10 +250,13 @@ class EmailTemplatesEditor extends React.Component {
                 >
                   <MediaMenuContainer
                     closeMenu={this.closeMediaMenu}
+                    insertAttachment={this.props.insertAttachment}
+                    insertAttachmentAsLink={this.props.insertAttachmentAsLink}
+                    insertInlineImage={this.props.insertInlineImage}
                   />
                 </DropDownMenu>
               </div>
-              <div className={classNames('top-menu right floated', { disabled: !emailTemplates.get('phrases') })}>
+              <div className={classNames('top-menu right floated', { disabled: textareaDisabled })}>
                 <DropDownMenu
                   icon="globe"
                   label="Phrases"
@@ -255,13 +284,16 @@ class EmailTemplatesEditor extends React.Component {
             </div>
           </div>
           <div className="dp-code-editor">
+            <div className={classNames('ui dimmer inverted', { active: textareaDisabled })}>
+              <div className="ui big loader text">Please select a template to edit</div>
+            </div>
             Email subject:
             <textarea
               className={classNames('email-subject', { disabled: textareaDisabled })}
               rows="2"
               value={templateSubject}
               disabled={textareaDisabled}
-              onChange={this.changeTemplateSubject}
+              onChange={this.props.changeTemplateSubject}
             />
             Email:
             <textarea
@@ -269,7 +301,7 @@ class EmailTemplatesEditor extends React.Component {
               rows="20"
               value={templateBody}
               disabled={textareaDisabled}
-              onChange={this.props.changeTemplateBody}
+              onChange={e => this.props.changeTemplateBody(e.target.value)}
             />
           </div>
           <div className="footer">
