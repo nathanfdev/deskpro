@@ -29,8 +29,8 @@ class EmailTemplatesRepository extends ApiRepository {
     return this.api.sendGet(`DP_API/${this.url}/email_assets/${type}`);
   }
 
-  saveFile(type, file) {
-    return this.api.sendPost(`DP_API/${this.url}/email_assets/${type}`, file);
+  deleteAsset(themeSetAssetId) {
+    return this.api.sendDelete(`DP_API/${this.url}/email_assets/${themeSetAssetId}`);
   }
 }
 export default EmailTemplatesRepository;

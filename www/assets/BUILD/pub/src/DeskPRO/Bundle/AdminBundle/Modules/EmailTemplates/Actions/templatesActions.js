@@ -162,3 +162,8 @@ export const saveCustomPhrase = createAction(
 );
 
 export const cleanState = createAction('EMAIL_TEMPLATES_CLEAN_STATE');
+
+export const deleteAsset = createAction(
+  'EMAIL_TEMPLATES_DELETE_ASSET',
+  themeSetAssetId => repository('EmailTemplates').deleteAsset(themeSetAssetId)
+);

@@ -7,6 +7,7 @@ class ImageMenuItem extends React.Component {
     url:          PropTypes.string,
     label:        PropTypes.string,
     onClick:      PropTypes.func,
+    deleteFile:   PropTypes.func,
     downloadFile: PropTypes.func,
     className:    PropTypes.string
   };
@@ -64,6 +65,7 @@ class ImageMenuItem extends React.Component {
           {this.getImage()}
           {this.props.label}
           <i onClick={this.props.downloadFile} className="download icon" title="Download" />
+          <i onClick={this.props.deleteFile} className="remove icon" title="Remove" />
         </MenuItem>
       </PopUp>
     );

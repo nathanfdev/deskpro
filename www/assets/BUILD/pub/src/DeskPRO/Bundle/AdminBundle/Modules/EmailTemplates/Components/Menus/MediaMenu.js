@@ -45,6 +45,16 @@ export class MediaMenuContainer extends React.Component {
     });
   };
 
+  deleteFile = (e, file, type) => {
+    e.stopPropagation();
+    if (confirm('Any uses of the file will stop working')) {
+      this.props.dispatch(actions.deleteAsset(file.get('id'))).then(() => {
+        const action = (type === 'inline-image') ? actions.loadInlineImages : actions.loadAttachments;
+        this.props.dispatch(action);
+      });
+    }
+  };
+
   downloadFile = (e, file) => {
     e.stopPropagation();
     window.location.replace(`${file.get('url')}?dl=1`);
@@ -63,6 +73,7 @@ export class MediaMenuContainer extends React.Component {
       reloadFiles={this.reloadFiles}
       onFail={this.onFail}
       onSend={this.onSend}
+      deleteFile={this.deleteFile}
       downloadFile={this.downloadFile}
       uploading={this.state.uploading}
     />);
@@ -71,13 +82,16 @@ export class MediaMenuContainer extends React.Component {
 
 export class MediaMenu extends React.Component {
   static propTypes = {
-    inlineFiles:     PropTypes.node,
-    attachmentFiles: PropTypes.node,
-    reloadFiles:     PropTypes.func,
-    onFail:          PropTypes.func,
-    onSend:          PropTypes.func,
-    downloadFile:    PropTypes.func,
-    uploading:       PropTypes.bool
+    inlineFiles:       PropTypes.node,
+    attachmentFiles:   PropTypes.node,
+    reloadFiles:       PropTypes.func,
+    onFail:            PropTypes.func,
+    onSend:            PropTypes.func,
+    deleteFile:        PropTypes.func,
+    downloadFile:      PropTypes.func,
+    insertAttachment:  PropTypes.func,
+    insertInlineImage: PropTypes.func,
+    uploading:         PropTypes.bool
   };
 
   getInlineFiles = () => {
@@ -90,6 +104,7 @@ export class MediaMenu extends React.Component {
         label={file.get('name')}
         url={file.get('url')}
         onClick={() => this.setActive(file)}
+        deleteFile={e => this.props.deleteFile(e, file, 'inline-image')}
         downloadFile={e => this.props.downloadFile(e, file)}
       />
     );
@@ -107,6 +122,7 @@ export class MediaMenu extends React.Component {
         onClick={() => this.setActive(file)}
       >
         <i onClick={e => this.props.downloadFile(e, file)} className="download icon" title="Download" />
+        <i onClick={e => this.props.deleteFile(e, file, 'attachment')} className="remove icon" title="Remove" />
       </MenuItem>
     );
   };

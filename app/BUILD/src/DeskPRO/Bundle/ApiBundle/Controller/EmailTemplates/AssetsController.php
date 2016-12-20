@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * API access to person settings.
@@ -126,5 +127,42 @@ class AssetsController extends BaseController
         $entityManager->flush();
 
         return View::create($this->wrap($blob));
+    }
+
+    /**
+     * Obviously it's an ability to erase what you've done.
+     * Be careful there is no CTRL+Z shortcut.
+     *
+     * @ApiDoc(
+     *     section="Email Templates",
+     *      description="Delete an email asset",
+     *      tags={"CRUD"="#ffa500"},
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="The id of the asset",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Returned if everything is ok and there is no such resource anymore",
+     *          404="Well, looks like either asset already deleted either it doesn't exists at all"
+     *      }
+     * )
+     * @Rest\Delete("/{id}", requirements={"id"="\d+"})
+     *
+     * @param int $id
+     *
+     * @return View
+     */
+    public function deleteAction($id)
+    {
+        $entity = $this->findOr404(ThemeSetAsset::class, $id);
+        $em     = $this->getManager();
+        $em->remove($entity);
+        $em->flush();
+
+        return View::create([], Response::HTTP_OK);
     }
 }
