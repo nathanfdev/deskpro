@@ -1983,21 +1983,9 @@ $search-btn-height: $search-height - 24;
     width: 25px;
     position: relative;
     text-align: center;
+    vertical-align: middle;
     @media screen and (max-width: 760px) {
       display: none;
-    }
-
-    &:before {
-      content: "";
-      display: block;
-      height: $search-height - 20px;
-      width: 1px;
-      background: darken($page-bg, 5%);
-      position: absolute;
-      top: 10px;
-      bottom: 0;
-      @include left(12px);
-      z-index: 299;
     }
 
     span {
@@ -2008,7 +1996,6 @@ $search-btn-height: $search-height - 24;
       padding-top: 4px;
       padding-bottom: 4px;
       background: darken($page-bg, 5%);
-      position: absolute;
       z-index: 300;
 
       @include left(5px);
