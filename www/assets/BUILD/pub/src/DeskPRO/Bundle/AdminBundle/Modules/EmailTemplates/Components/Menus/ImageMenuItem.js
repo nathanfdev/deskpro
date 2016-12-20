@@ -4,10 +4,11 @@ import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 
 class ImageMenuItem extends React.Component {
   static propTypes    = {
-    url:       PropTypes.string,
-    label:     PropTypes.string,
-    onClick:   PropTypes.func,
-    className: PropTypes.string
+    url:          PropTypes.string,
+    label:        PropTypes.string,
+    onClick:      PropTypes.func,
+    downloadFile: PropTypes.func,
+    className:    PropTypes.string
   };
   static defaultProps = {
     onClick() {},
@@ -15,6 +16,14 @@ class ImageMenuItem extends React.Component {
 
   componentWillUnmount() {
     this.cancelToolTip();
+  }
+
+  getImage() {
+    const { url } = this.props;
+    if (url) {
+      return <img src={url} role="presentation"  />;
+    }
+    return null;
   }
 
   templateToolTip = () => {
@@ -47,13 +56,15 @@ class ImageMenuItem extends React.Component {
         autoOpen={false}
       >
         <MenuItem
-          label={this.props.label}
-          src={this.props.url}
           className={this.props.className}
           onClick={this.props.onClick}
           onMouseOver={this.templateToolTip}
           onMouseOut={this.cancelToolTip}
-        />
+        >
+          {this.getImage()}
+          {this.props.label}
+          <i onClick={this.props.downloadFile} className="download icon" title="Download" />
+        </MenuItem>
       </PopUp>
     );
   }

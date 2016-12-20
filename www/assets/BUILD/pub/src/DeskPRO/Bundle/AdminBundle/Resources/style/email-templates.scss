@@ -371,6 +371,18 @@
           display: inline-block;
           margin-right: 8px;
         }
+        .download.icon,
+        .remove.icon {
+          float: right;
+          margin: 0 0 0 8px;
+          display:none;
+        }
+        &:hover {
+          .download.icon,
+          .remove.icon {
+            display: inline-block;
+          }
+        }
       }
     }
   }

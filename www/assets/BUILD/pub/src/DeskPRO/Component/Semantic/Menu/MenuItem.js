@@ -6,7 +6,6 @@ class MenuItem extends React.PureComponent {
   static propTypes = {
     label:       PropTypes.string,
     icon:        PropTypes.string,
-    src:         PropTypes.string,
     subContent:  PropTypes.object,
     onClick:     PropTypes.func,
     onMouseOver: PropTypes.func,
@@ -26,14 +25,6 @@ class MenuItem extends React.PureComponent {
     const { icon } = this.props;
     if (icon) {
       return <i className={classNames('icon', icon)} />;
-    }
-    return null;
-  }
-
-  getImage() {
-    const { src } = this.props;
-    if (src) {
-      return <img src={src} role="presentation"  />;
     }
     return null;
   }
@@ -77,7 +68,6 @@ class MenuItem extends React.PureComponent {
     }
 
     return (<a {...props}>
-      {this.getImage()}
       {this.getIcon()}
       {label}
       {children}

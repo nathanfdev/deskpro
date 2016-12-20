@@ -45,6 +45,11 @@ export class MediaMenuContainer extends React.Component {
     });
   };
 
+  downloadFile = (e, file) => {
+    e.stopPropagation();
+    window.location.replace(file.get('url') + '?dl=1');
+  };
+
   render() {
     let inlineImages = null;
     let attachments = null;
@@ -58,6 +63,7 @@ export class MediaMenuContainer extends React.Component {
       reloadFiles={this.reloadFiles}
       onFail={this.onFail}
       onSend={this.onSend}
+      downloadFile={this.downloadFile}
       uploading={this.state.uploading}
     />);
   }
@@ -70,6 +76,7 @@ export class MediaMenu extends React.Component {
     reloadFiles:     PropTypes.func,
     onFail:          PropTypes.func,
     onSend:          PropTypes.func,
+    downloadFile:    PropTypes.func,
     uploading:       PropTypes.bool
   };
 
@@ -83,6 +90,7 @@ export class MediaMenu extends React.Component {
         label={file.get('name')}
         url={file.get('url')}
         onClick={() => this.setActive(file)}
+        downloadFile={(e) => this.props.downloadFile(e, file)}
       />
     );
   };
@@ -97,7 +105,9 @@ export class MediaMenu extends React.Component {
         label={file.get('name')}
         icon={MimeIcon.getIcon(file.get('mime_type'))}
         onClick={() => this.setActive(file)}
-      />
+      >
+        <i onClick={(e) => this.props.downloadFile(e, file)} className="download icon" title="Download" />
+      </MenuItem>
     );
   };
 

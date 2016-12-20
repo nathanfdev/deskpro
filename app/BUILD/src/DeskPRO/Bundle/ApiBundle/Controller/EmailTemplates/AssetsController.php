@@ -51,6 +51,7 @@ class AssetsController extends BaseController
      * @ApiDoc(
      *     section="Email Templates",
      *     description="Add a new asset",
+     *     tags={"CRUD"="#ffa500"},
      *     requirements={
      *         {
      *             "name"="type",
@@ -65,7 +66,7 @@ class AssetsController extends BaseController
      *
      * @return View
      */
-    public function getAssetsAction($type = 'inline-image')
+    public function listAction($type = 'inline-image')
     {
         if (!in_array($type, ['inline-image', 'attachment'])) {
             throw $this->createNotFoundException('Invalid type');
@@ -79,6 +80,7 @@ class AssetsController extends BaseController
      * @ApiDoc(
      *     section="Email Templates",
      *     description="Add a new asset",
+     *     tags={"CRUD"="#ffa500"},
      *     requirements={
      *         {
      *             "name"="type",
@@ -94,7 +96,7 @@ class AssetsController extends BaseController
      *
      * @return View
      */
-    public function postAssetAction(Request $request, $type = 'inline-image')
+    public function postAction(Request $request, $type = 'inline-image')
     {
         if (!in_array($type, ['inline-image', 'attachment'])) {
             throw $this->createNotFoundException('Invalid type');
