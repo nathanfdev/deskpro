@@ -42,7 +42,7 @@ use Application\LegacyApiBundle\ApiUser;
  * - Have an admin user logged in (eg they have a session tied to their key)
  * - Their API key has a 'admin_manage' flag.
  */
-class AdminManagePermission implements PremissionStrategyInterface
+class AdminManagePermission implements PermissionStrategyInterface
 {
     /**
      * {@inheritdoc}
