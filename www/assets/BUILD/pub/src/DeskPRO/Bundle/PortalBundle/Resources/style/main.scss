@@ -2186,7 +2186,6 @@ $search-btn-height: $search-height - 24;
       float: $float-left;
       width: 100%;
       font-size: $font-size-base;
-      box-shadow: none;
       line-height: 1em;
       cursor: pointer;
       @include padding-right($search-btn-height);
@@ -2212,6 +2211,9 @@ $search-btn-height: $search-height - 24;
         @include margin-right(4px);
       }
       .fa-thumbs-o-up {
+        @include margin-right(4px);
+      }
+      .fa-support {
         @include margin-right(4px);
       }
 
