@@ -11,32 +11,35 @@ THREADS_NUM=$(( API_THREADS_NUM > PORTAL_THREADS_NUM ? API_THREADS_NUM : PORTAL_
 
 SECONDS=0
 echo "Init project deps"
-#if [ "$1" = "sequential-build" ] ; then
-#    echo "Building on top of the previous build"
-#    rm -rf $ROOT_DIR/www/BUILD/pub/build
-#    rm -rf $ROOT_DIR/var/cache/*/
-#    rm -rf $ROOT_DIR/var/kernel_cache/*/
-#    rm -rf $ROOT_DIR/var/tmp/*/
-#    rm -f $ROOT_DIR/www/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
-#    find $ROOT_DIR/var/ -type d -print0 | xargs -0 chmod 755
-#
-#    cd $ROOT_DIR/app/BUILD
-#    composer install --ignore-platform-reqs -o
-#
-#    cd $ROOT_DIR/www/assets/BUILD/pub
-#    npm install
-#    npm run-script gulp-prod
-#    npm run-script gulp-refresh-reducers
-#
-#    cd $ROOT_DIR/www/assets/BUILD/web
-#    npm install
-#    npm run-script sassdoc
-#elif [ "$1" = "fresh-build" ] ; then
+if [ "$1" = "sequential-build" ] ; then
+    echo "Building on top of the previous build"
+    rm -rf $ROOT_DIR/www/BUILD/pub/build
+    rm -rf $ROOT_DIR/var/cache/*/
+    rm -rf $ROOT_DIR/var/kernel_cache/*/
+    rm -rf $ROOT_DIR/var/tmp/*/
+    rm -f $ROOT_DIR/www/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
+    find $ROOT_DIR/var/ -type d -print0 | xargs -0 chmod 755
+
+    cd $ROOT_DIR/app/BUILD
+    composer install --ignore-platform-reqs -o
+
+    cd $ROOT_DIR/www/assets/BUILD/pub
+    npm install
+    npm run-script gulp-prod
+    npm run-script gulp-refresh-reducers
+
+    cd $ROOT_DIR/www/assets/BUILD/web
+    npm install
+    npm run-script sassdoc
+
+    echo "Building legacy assets"
+    $ROOT_DIR/bin/console dp:assetic -r ALL --kernel dp --env prod --verbose
+elif [ "$1" = "fresh-build" ] ; then
     echo "Building from the ground up"
     $ROOT_DIR/dev/bin/init-project
-#else
-#    echo 'First arg must be either "sequential-build" or "fresh-build"'
-#fi
+else
+    echo 'First arg must be either "sequential-build" or "fresh-build"'
+fi
 echo "--> Done in $SECONDS seconds"
 
 cd $ROOT_DIR
