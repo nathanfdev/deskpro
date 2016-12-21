@@ -13,6 +13,6 @@ module.exports = {
   url:      url('/admin/start'),
   commands: [commands],
   elements: {
-    header: { selector: 'form > section.card-section:first > p' }
+    header: { selector: 'form > section.card-section:first-child > p' }
   }
 };
