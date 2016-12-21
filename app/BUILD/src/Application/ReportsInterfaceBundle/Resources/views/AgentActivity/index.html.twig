@@ -4,12 +4,13 @@
 
 	<div class="alert alert-info">
 		<div>
-			Showing Agent Activity for:
+			Show Agent Activity for:
 			<select
 					ui-select2
 					ng-model="AgentActivity.filter.agent_or_team"
 					style="width: 200px;"
 					>
+				<option value="0"></option>
 				<option value="all" ng-if="AgentActivity.all_agents.length <= 20">All Agents</option>
 				<option ng-repeat="agent in AgentActivity.all_agents" ng-value="agent.id">
 					{{ ng_var('agent.display_name') }}
@@ -30,13 +31,12 @@
 			<button class="btn btn-primary" ng-click="AgentActivity.updateFilter()">Show</button>
 		</div>
 	</div>
+	<div ng-show="AgentActivity.filter.agent_or_team != 0">
+		<span dp-show-spinning="loading_results" class="padd">
+			<i class="spinner-flat"></i>
+		</span>
 
-	<span dp-show-spinning="loading_results" class="padd">
-		<i class="spinner-flat"></i>
-	</span>
-
-	<section class="padd" ng-bind-html="AgentActivity.html" dp-hide-spinning="loading_results">
-
-	</section>
+		<section class="padd" ng-bind-html="AgentActivity.html" dp-hide-spinning="loading_results"></section>
+	</div>
 
 {% endblock %}
