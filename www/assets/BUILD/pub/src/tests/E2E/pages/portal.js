@@ -6,7 +6,6 @@ const commands = {
       .waitForElementVisible('@header')
       .waitForElementVisible('@admin')
       .waitForElementVisible('@ticket')
-      .assert.containsText('@header', 'Helpdesk')
       .assert.containsText('@admin', 'ADMIN')
       .assert.containsText('@ticket', 'CONTACT US')
     ;
