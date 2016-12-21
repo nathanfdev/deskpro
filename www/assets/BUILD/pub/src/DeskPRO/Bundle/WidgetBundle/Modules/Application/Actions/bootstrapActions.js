@@ -12,7 +12,8 @@ import {
   requireChatLoginSelector,
   requireChatEmailValidationSelector,
   widgetHasChatSelector,
-  widgetSessionChatIdSelector
+  widgetSessionChatIdSelector,
+  buildNumSelector
 } from '../Selectors/bootstrap';
 
 import {
@@ -105,13 +106,14 @@ export const loadPortalPhraseTranslations = createAction(
   () => (dispatch, getState) => new Promise((resolve) => {
     const state = getState();
     const language = widgetLanguageSelector(state);
+    const buildNum = buildNumSelector(state);
 
     const setPhrases = (data) => {
       portalPhrases.setPhrases(data);
       resolve();
     };
 
-    const cacheKey = `dpWidget.phrases.${language}`;
+    const cacheKey = `dpWidget.phrases.${language}.${buildNum}`;
     const cachedData = lscache.get(cacheKey);
 
     if (cachedData) {
