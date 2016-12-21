@@ -20,6 +20,7 @@ class PopUp extends React.Component {
     autoClose:            PropTypes.bool,
     autoOpen:             PropTypes.bool,
     allowCloseOnClickOut: PropTypes.bool,
+    manual:               PropTypes.bool,
     className:            PropTypes.string,
     innerClassName:       PropTypes.string,
     id:                   PropTypes.number.isRequired,         // eslint-disable-line react/no-unused-prop-types
@@ -35,7 +36,8 @@ class PopUp extends React.Component {
     classes:              [],
     autoClose:            false,
     autoOpen:             false,
-    allowCloseOnClickOut: true
+    allowCloseOnClickOut: true,
+    manual:               false,
   };
 
   constructor(props) {
@@ -122,7 +124,7 @@ class PopUp extends React.Component {
       <div
         className={classNames({ active: isOpen }, className)}
         ref={(c) => { this.button = c; }}
-        onClick={this.openPopup}
+        onClick={!this.props.manual && this.openPopup}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >

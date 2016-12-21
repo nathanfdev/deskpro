@@ -246,6 +246,7 @@ class EmailTemplatesEditor extends React.Component {
                   icon="image"
                   label="Media"
                   className="media-button"
+                  disabled={textareaDisabled}
                   ref={(c) => { this.mediaMenu = c; }}
                 >
                   <MediaMenuContainer
@@ -261,6 +262,7 @@ class EmailTemplatesEditor extends React.Component {
                   icon="globe"
                   label="Phrases"
                   className="phrases-button"
+                  disabled={textareaDisabled}
                   ref={(c) => { this.phrasesMenu = c; }}
                 >
                   <PhrasesMenuContainer
@@ -274,6 +276,7 @@ class EmailTemplatesEditor extends React.Component {
                   icon="dollar"
                   label="Variables"
                   className="variables-button"
+                  disabled={!emailTemplates.get('variables')}
                   ref={(c) => { this.variablesMenu = c; }}
                 >
                   <VariablesMenuContainer

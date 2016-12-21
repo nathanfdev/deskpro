@@ -8,16 +8,20 @@ class DropDownMenu extends React.Component {
     icon:      PropTypes.string,
     onClick:   PropTypes.func,
     className: PropTypes.string,
-    children:  PropTypes.node
+    children:  PropTypes.node,
+    disabled:  PropTypes.bool
   };
   static defaultProps = {
     onClick() {},
+    disabled: false,
   };
 
   openMenu = () => {
-    this.dropdown.openPopup();
-    if (this.props.onClick) {
-      this.props.onClick();
+    if (this.props.disabled === false) {
+      this.dropdown.openPopup();
+      if (this.props.onClick) {
+        this.props.onClick();
+      }
     }
   };
 
@@ -35,6 +39,7 @@ class DropDownMenu extends React.Component {
         ref={(c) => { this.dropdown = c; }}
         className="email-dropdown-menu"
         autoOpen={false}
+        manual
       >
         <div
           className={classNames(this.props.className)}
