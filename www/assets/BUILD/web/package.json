@@ -11,6 +11,7 @@
     "fbjs": "^0.8.3",
     "jquery": "^3.1.0",
     "jquery-ui": "^1.12.0",
+    "less": "^2.7.1",
     "ngreact": "^0.3.0",
     "react": "15.1.0",
     "react-addons-shallow-compare": "^15.3.2",
