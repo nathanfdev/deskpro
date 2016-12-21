@@ -26,39 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Logs;
 
 use Application\DeskPRO\Entity\Setting;
-use Application\DeskPRO\EntityRepository\Setting as SettingRepo;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -104,10 +74,7 @@ class LogsController extends BaseController
             $this->container->get('api_log.helper')->getModes()
         );
 
-        return View::create(
-            $this->wrap($options),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($options));
     }
 
     /**
@@ -140,6 +107,8 @@ class LogsController extends BaseController
      *
      * @Rest\Put("/api_logs_options", name="api_logs_options_update")
      *
+     * @param Request $request
+     *
      * @return View
      */
     public function putOptionsAction(Request $request)
@@ -149,50 +118,48 @@ class LogsController extends BaseController
         $requestLength  = $request->request->get('request_length');
         $responseLength = $request->request->get('response_length');
 
-        $em = $this->get('doctrine.orm.default_entity_manager');
+        $em   = $this->get('doctrine.orm.default_entity_manager');
+        $repo = $em->getRepository(Setting::class);
 
-        /** @var SettingRepo $repo */
-        $repo = $em->getRepository('\Application\DeskPRO\Entity\Setting');
-
-        if (!$setting = $repo->findOneBy(['name' => 'api_log.enabled'])) {
-            $setting       = new Setting();
-            $setting->name = 'api_log.enabled';
+        // update enabled setting
+        if (!$enabledSetting = $repo->findOneBy(['name' => 'api_log.enabled'])) {
+            $enabledSetting = new Setting();
+            $enabledSetting->setName('api_log.enabled');
         }
-        /* @var Setting $setting */
-        $setting->value = $enabled;
 
+        $enabledSetting->setValue($enabled);
+
+        // update modes setting
         if (!$modesSetting = $repo->findOneBy(['name' => 'api_log.modes'])) {
-            $modesSetting       = new Setting();
-            $modesSetting->name = 'api_log.modes';
+            $modesSetting = new Setting();
+            $modesSetting->setName('api_log.modes');
         }
-        /* @var Setting $setting */
-        $modesSetting->value = serialize($modes);
 
+        $modesSetting->setValue(serialize($modes));
+
+        // update request length setting
         if (!$requestLengthSetting = $repo->findOneBy(['name' => 'api_log.max_request_body_length'])) {
-            $requestLengthSetting       = new Setting();
-            $requestLengthSetting->name = 'api_log.max_request_body_length';
+            $requestLengthSetting = new Setting();
+            $requestLengthSetting->setName('api_log.max_request_body_length');
         }
-        /* @var Setting $setting */
-        $requestLengthSetting->value = $requestLength;
 
+        $requestLengthSetting->setValue($requestLength);
+
+        // update response length setting
         if (!$responseLengthSetting = $repo->findOneBy(['name' => 'api_log.max_response_body_length'])) {
-            $responseLengthSetting       = new Setting();
-            $responseLengthSetting->name = 'api_log.max_response_body_length';
+            $responseLengthSetting = new Setting();
+            $responseLengthSetting->setName('api_log.max_response_body_length');
         }
-        /* @var Setting $setting */
-        $responseLengthSetting->value = $responseLength;
 
-        $em->persist($setting);
+        $responseLengthSetting->setValue($responseLength);
+
+        $em->persist($enabledSetting);
         $em->persist($modesSetting);
         $em->persist($requestLengthSetting);
         $em->persist($responseLengthSetting);
         $em->flush();
 
-        return View::create(
-            null,
-            Response::HTTP_NO_CONTENT,
-            ['Location' => $this->generateUrl('api_logs_options')]
-        );
+        return View::create(null, Response::HTTP_NO_CONTENT, ['Location' => $this->generateUrl('api_logs_options')]);
     }
 
     /**
@@ -256,9 +223,6 @@ class LogsController extends BaseController
                 throw new BadRequestHttpException();
         }
 
-        return View::create(
-            $this->wrap($log),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($log));
     }
 }

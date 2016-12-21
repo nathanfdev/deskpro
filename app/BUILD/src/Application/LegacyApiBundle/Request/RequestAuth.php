@@ -216,17 +216,17 @@ class RequestAuth
             return;
         }
 
-        $log          = new ApiKeyLog();
-        $log->key     = $key;
-        $log->request = [
+        $log = new ApiKeyLog();
+        $log->setKey($key);
+        $log->setRequest([
             'path'    => $this->request->getPathInfo(),
             'method'  => $this->request->getMethod(),
             'payload' => $this->request->request->all(),
-        ];
-        $log->response = [
+        ]);
+        $log->setResponse([
             'status'  => null,
             'content' => null, // parse json to array?
-        ];
+        ]);
 
         $this->em->persist($log);
         $this->em->flush($log);
