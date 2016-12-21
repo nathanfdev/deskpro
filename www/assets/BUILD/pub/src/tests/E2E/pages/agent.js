@@ -5,7 +5,6 @@ const commands = {
     return this
       .waitForElementVisible('@sidebar')
       .waitForElementVisible('@topbar')
-      .waitForElementVisible('@tickets')
     ;
   }
 };
@@ -15,7 +14,6 @@ module.exports = {
   commands: [commands],
   elements: {
     sidebar: { selector: 'div#react_dp_side_bar_container' },
-    topbar:  { selector: 'div#react_dp_agent_top_bar' },
-    tickets: { selector: 'section#tickets_outline' }
+    topbar:  { selector: 'div#react_dp_agent_top_bar' }
   }
 };
