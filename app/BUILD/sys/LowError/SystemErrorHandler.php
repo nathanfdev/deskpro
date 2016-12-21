@@ -733,16 +733,7 @@ class SystemErrorHandler
 
         foreach ($logFiles as $errorLogFile) {
             if ($errorLogFile && ($fh = @fopen($errorLogFile, 'a')) !== false) {
-                $written = @fwrite($fh, $str);
-
-                if ($written) {
-                    // Max 30MB
-                    $stat = @fstat($fh);
-                    if ($stat && $stat['size'] && $stat['size'] > 31457280) {
-                        @ftruncate($fh, 31457280);
-                    }
-                }
-
+                @fwrite($fh, $str);
                 @fclose($fh);
                 @chmod($errorLogFile, 0777);
             }
