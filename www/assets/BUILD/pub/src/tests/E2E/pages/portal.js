@@ -14,11 +14,11 @@ const commands = {
 };
 
 module.exports = {
-  url:      url('/en'),
+  url:      url('/'),
   commands: [commands],
   elements: {
     header: { selector: 'div.brand h1' },
     admin:  { selector: 'a#admin-dropdown-arrow span.datb-interface-button-title' },
-    ticket: { selector: 'div.search-and-ticket a[href="/en/new-ticket"]' }
+    ticket: { selector: 'div.search-and-ticket a[href="/new-ticket"]' }
   }
 };
