@@ -104,6 +104,9 @@ class EmailSender
         $message->setTo($args['to']);
         $message->setBody($emailCode->getBody());
         $message->setSubject($emailCode->getSubject());
+        foreach ($emailCode->getAttachments() as $blob) {
+            $message->attachBlob($blob);
+        }
         $this->mailer->send($message);
     }
 }

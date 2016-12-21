@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\Render;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Blob;
 use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Parser\JmsMetadataParser;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -49,7 +51,7 @@ class EmailRenderer
     private $templateEngine;
 
     /**
-     * @var Container
+     * @var DeskproContainer|Container
      */
     private $serviceContainer;
 
@@ -110,7 +112,29 @@ class EmailRenderer
     {
         $vars = $this->getSerializer()->toArray($model, new SideloadSerializationContext());
 
-        return new EmailTemplateCode($this->getTemplateEngine()->render($templateName, $vars));
+        $code = $this->getTemplateEngine()->render($templateName, $vars);
+
+        $blobAuthIds = [];
+
+        // We look for <attachement id='{id}'> and remove it from the template
+        $code = preg_replace_callback('#<attachment[^>]*id=("([^"]+)"|\'([^\']+)\')[^>]*>#',
+            function ($matches) use ($blobAuthIds) {
+                $blobAuthIds[] = $matches[2] ? $matches[2] : $matches[3];
+
+                return '';
+            },
+            $code
+        );
+
+        $templateCode = new EmailTemplateCode($code);
+
+        foreach ($blobAuthIds as $authId) {
+            /** @var Blob $blob */
+            $blob = $this->serviceContainer->getEm()->getRepository(Blob::class)->getByAuthId($authId);
+            $templateCode->addAttachment($blob);
+        }
+
+        return $templateCode;
     }
 
     /**
