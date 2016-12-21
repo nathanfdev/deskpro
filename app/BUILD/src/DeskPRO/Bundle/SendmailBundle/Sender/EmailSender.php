@@ -56,13 +56,13 @@ class EmailSender
      *
      * @param EmailRenderer $emailRenderer
      * @param Mailer        $mailer
-     * @param EntityManager $container
+     * @param EntityManager $entityManager
      */
-    public function __construct(EmailRenderer $emailRenderer, Mailer $mailer, EntityManager $container)
+    public function __construct(EmailRenderer $emailRenderer, Mailer $mailer, EntityManager $entityManager)
     {
         $this->renderer      = $emailRenderer;
         $this->mailer        = $mailer;
-        $this->entityManager = $container;
+        $this->entityManager = $entityManager;
     }
 
     /**

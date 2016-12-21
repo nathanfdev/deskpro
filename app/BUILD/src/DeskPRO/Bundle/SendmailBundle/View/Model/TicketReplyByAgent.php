@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use JMS\Serializer\Annotation as JMS;
 
 class TicketReplyByAgent extends TicketEmailType
@@ -45,9 +46,16 @@ class TicketReplyByAgent extends TicketEmailType
 
     protected static $templateFile = 'emails_user:ticket_reply_by_agent.html.twig';
 
-    public function __construct(Ticket $ticket, TicketMessage $reply)
+    /**
+     * TicketReplyByAgent constructor.
+     *
+     * @param ObjectRouter  $router
+     * @param Ticket        $ticket
+     * @param TicketMessage $reply
+     */
+    public function __construct(ObjectRouter $router, Ticket $ticket, TicketMessage $reply)
     {
         $this->reply = $reply;
-        parent::__construct($ticket);
+        parent::__construct($router, $ticket);
     }
 }

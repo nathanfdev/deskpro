@@ -5,6 +5,34 @@ import classNames from 'classnames';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import * as actions from '../../Actions/templatesActions';
 
+class VariablesMenuProperty extends React.Component {
+  static propTypes = {
+    property:         PropTypes.object,
+    attribute:        PropTypes.string,
+    onSelectVariable: PropTypes.func,
+    getExample:       PropTypes.func,
+  };
+
+  selectVariable = (variable) => {
+    this.props.onSelectVariable(variable);
+  };
+
+  render() {
+    const { property, attribute } = this.props;
+    let variableName = attribute ? `${attribute}.` : '';
+    variableName += property.get('attribute');
+    return (<MenuItem onClick={() => this.selectVariable(property)}>
+      <span className="description">{property.get('description')}</span>
+      <br />
+      <span className="variable-name">
+        {'{{'} {variableName} {'}}'}
+      </span>
+      { this.props.getExample(attribute, property.get('attribute')) }
+
+    </MenuItem>);
+  }
+}
+
 @connect(state => ({
   emailTemplates: state.EmailTemplates.templates
 }))
@@ -133,29 +161,43 @@ export class VariablesMenu extends React.Component {
   };
 
   getRightPanel = () => {
-    if (!this.state.selectedLeft || !this.state.selectedLeft.get('properties')) {
+    if (!this.state.selectedLeft) {
+      console.log('Nothing selected');
       return null;
     }
-    const properties = this.state.selectedLeft.get('properties').valueSeq().map(
-      (property, key) => {
-        if (
-          this.state.filter
-          && property.get('description').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-          && property.get('attribute').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-          && this.state.selectedLeft.get('attribute').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-        ) {
-          return null;
-        }
-        return (<MenuItem key={key} onClick={() => this.selectVariable(property)}>
-          <span className="description">{property.get('description')}</span>
-          <br />
-          <span className="variable-name">
-            {'{{'} {this.state.selectedLeft.get('attribute')}.{property.get('attribute')} {'}}'}
-          </span>
-          { this.getVariableExample(this.state.selectedLeft.get('attribute'), property.get('attribute')) }
-
-        </MenuItem>);
-      });
+    let properties = [];
+    if (this.state.selectedLeft.get('type').match(/^object/)) {
+      if (!this.state.selectedLeft.get('properties')) {
+        console.log('No properties');
+        return null;
+      }
+      properties = this.state.selectedLeft.get('properties').valueSeq().map(
+        (property, key) => {
+          if (
+            this.state.filter
+            && property.get('description').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+            && property.get('attribute').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+            && this.state.selectedLeft.get('attribute').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+          ) {
+            return null;
+          }
+          return (<VariablesMenuProperty
+            key={key}
+            attribute={this.state.selectedLeft.get('attribute')}
+            onSelectVariable={this.props.onSelectVariable}
+            getExample={this.getVariableExample}
+            property={property}
+          />);
+        });
+    } else {
+      properties.push(<VariablesMenuProperty
+        key="1"
+        attribute=""
+        onSelectVariable={this.props.onSelectVariable}
+        getExample={this.getVariableExample}
+        property={this.state.selectedLeft}
+      />);
+    }
     return (
       <MenuWrapper className="right-panel">
         <Menu>
@@ -200,10 +242,6 @@ export class VariablesMenu extends React.Component {
   clearTicketIdField = () => {
     this.ticketIdField.value = '';
     this.ticketIdField.focus();
-  };
-
-  selectVariable = (variable) => {
-    this.props.onSelectVariable(variable);
   };
 
   updateFilter = (value) => {

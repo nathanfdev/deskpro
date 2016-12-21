@@ -42,16 +42,16 @@ class ObjectRouterExtension extends \Twig_Extension
     /**
      * @var ObjectRouter
      */
-    private $object_router;
+    private $objectRouter;
 
     /**
      * Constructor.
      *
-     * @param ObjectRouter $object_router
+     * @param ObjectRouter $objectRouter
      */
-    public function __construct(ObjectRouter $object_router)
+    public function __construct(ObjectRouter $objectRouter)
     {
-        $this->object_router = $object_router;
+        $this->objectRouter = $objectRouter;
     }
 
     /**
@@ -81,22 +81,22 @@ class ObjectRouterExtension extends \Twig_Extension
 
     public function generatePortalPath($object, $type = null, array $extra_params = [])
     {
-        return $this->object_router->getPortalPath($object, $type, $extra_params);
+        return $this->objectRouter->getPortalPath($object, $type, $extra_params);
     }
 
     public function generatePortalUrl($object, $type = null, array $extra_params = [])
     {
-        return $this->object_router->getPortalUrl($object, $type, $extra_params);
+        return $this->objectRouter->getPortalUrl($object, $type, $extra_params);
     }
 
     public function generateAgentPath($object, $type = null, array $extra_params = [])
     {
-        return $this->object_router->getAgentPath($object, $type, $extra_params);
+        return $this->objectRouter->getAgentPath($object, $type, $extra_params);
     }
 
     public function generateAgentUrl($object, $type = null, array $extra_params = [])
     {
-        return $this->object_router->getAgentUrl($object, $type, $extra_params);
+        return $this->objectRouter->getAgentUrl($object, $type, $extra_params);
     }
 
     /**

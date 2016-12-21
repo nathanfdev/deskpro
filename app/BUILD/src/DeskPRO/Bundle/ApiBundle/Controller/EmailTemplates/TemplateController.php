@@ -255,8 +255,15 @@ class TemplateController extends BaseController
         $renderer->setTemplateEngine($twig);
 
         $viewModel = $request->request->get('template');
-        $className = 'DeskPRO\Bundle\SendmailBundle\View\Model\\'.$viewModel;
-        $model     = new $className(new Ticket());
+        $ticket    = $this->getRepository(Ticket::class)->findOneBy([]);
+        $action    = 'create'.$viewModel.'Model';
+        if (is_callable([$this->get('email.ticket_viewmodel_factory'), $action])) {
+            $model = $this->get('email.ticket_viewmodel_factory')->$action(
+                $ticket
+            );
+        } else {
+            throw $this->createNotFoundException('Missing method '.$action.' in factory');
+        }
 
         return new View($renderer->render($tplName, $model));
     }

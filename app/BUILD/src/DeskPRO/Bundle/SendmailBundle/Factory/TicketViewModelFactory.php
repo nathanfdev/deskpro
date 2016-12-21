@@ -30,28 +30,49 @@ namespace DeskPRO\Bundle\SendmailBundle\Factory;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewReplyRejectResolved;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewTicketGuest;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewTicketRegClosed;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewTicketValidate;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewTicketValidateEmail;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAddCc;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAutocloseWarn;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAwaitingWarn;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAwaitingWarnFinal;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketNewAutoreply;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketNewByAgent;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketParticipant;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketRate;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyAutoreply;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyByAgent;
 
 class TicketViewModelFactory
 {
     /**
+     * @var ObjectRouter
+     */
+    private $objectRouter;
+
+    /**
+     * Constructor.
+     *
+     * @param ObjectRouter $objectRouter
+     */
+    public function __construct(ObjectRouter $objectRouter)
+    {
+        $this->objectRouter = $objectRouter;
+    }
+
+    /**
      * @param Ticket $ticket
      *
      * @return TicketNewAutoreply
      */
-    public static function createTicketNewAutoreplyModel(
+    public function createTicketNewAutoreplyModel(
         $ticket
     ) {
-        return new TicketNewAutoreply($ticket);
+        return new TicketNewAutoreply($this->objectRouter, $ticket);
     }
 
     /**
@@ -62,7 +83,7 @@ class TicketViewModelFactory
     public function createTicketNewByAgentModel(
         $ticket
     ) {
-        return new TicketNewByAgent($ticket);
+        return new TicketNewByAgent($this->objectRouter, $ticket);
     }
 
     /**
@@ -73,7 +94,7 @@ class TicketViewModelFactory
     public function createNewTicketGuestModel(
         $ticket
     ) {
-        return new NewTicketGuest($ticket);
+        return new NewTicketGuest($this->objectRouter, $ticket);
     }
 
     /**
@@ -84,7 +105,7 @@ class TicketViewModelFactory
     public function createNewTicketValidateModel(
         $ticket
     ) {
-        return new NewTicketValidate($ticket);
+        return new NewTicketValidate($this->objectRouter, $ticket);
     }
 
     /**
@@ -95,13 +116,13 @@ class TicketViewModelFactory
     public function createNewTicketValidateEmailModel(
         $ticket
     ) {
-        return new NewTicketValidateEmail($ticket);
+        return new NewTicketValidateEmail($this->objectRouter, $ticket);
     }
 
     /**
      * @return NewTicketRegClosed
      */
-    public static function createNewTicketRegClosedModel()
+    public function createNewTicketRegClosedModel()
     {
         return new NewTicketRegClosed();
     }
@@ -112,11 +133,11 @@ class TicketViewModelFactory
      *
      * @return TicketReplyByAgent
      */
-    public static function createTicketReplyByAgentModel(
+    public function createTicketReplyByAgentModel(
         $ticket,
         $message
     ) {
-        return new TicketReplyByAgent($ticket, $message);
+        return new TicketReplyByAgent($this->objectRouter, $ticket, $message);
     }
 
     /**
@@ -124,10 +145,10 @@ class TicketViewModelFactory
      *
      * @return TicketReplyAutoreply
      */
-    public static function createTicketReplyAutoreplyModel(
+    public function createTicketReplyAutoreplyModel(
         $ticket
     ) {
-        return new TicketReplyAutoreply($ticket);
+        return new TicketReplyAutoreply($this->objectRouter, $ticket);
     }
 
     /**
@@ -135,10 +156,10 @@ class TicketViewModelFactory
      *
      * @return NewReplyRejectResolved
      */
-    public static function createNewReplyRejectResolvedModel(
+    public function createNewReplyRejectResolvedModel(
         $ticket
     ) {
-        return new NewReplyRejectResolved($ticket);
+        return new NewReplyRejectResolved($this->objectRouter, $ticket);
     }
 
     /**
@@ -146,10 +167,10 @@ class TicketViewModelFactory
      *
      * @return TicketAwaitingWarn
      */
-    public static function createTicketAwaitingWarnModel(
+    public function createTicketAwaitingWarnModel(
         $ticket
     ) {
-        return new TicketAwaitingWarn($ticket);
+        return new TicketAwaitingWarn($this->objectRouter, $ticket);
     }
 
     /**
@@ -157,10 +178,10 @@ class TicketViewModelFactory
      *
      * @return TicketAwaitingWarnFinal
      */
-    public static function createTicketAwaitingWarnFinalModel(
+    public function createTicketAwaitingWarnFinalModel(
         $ticket
     ) {
-        return new TicketAwaitingWarnFinal($ticket);
+        return new TicketAwaitingWarnFinal($this->objectRouter, $ticket);
     }
 
     /**
@@ -168,10 +189,10 @@ class TicketViewModelFactory
      *
      * @return TicketAutocloseWarn
      */
-    public static function createTicketAutocloseWarnModel(
+    public function createTicketAutocloseWarnModel(
         $ticket
     ) {
-        return new TicketAutocloseWarn($ticket);
+        return new TicketAutocloseWarn($this->objectRouter, $ticket);
     }
 
     /**
@@ -179,21 +200,10 @@ class TicketViewModelFactory
      *
      * @return TicketRate
      */
-    public static function createTicketRateModel(
+    public function createTicketRateModel(
         $ticket
     ) {
-        return new TicketRate($ticket);
-    }
-
-    /**
-     * @param Ticket $ticket
-     *
-     * @return TicketRatingLinks
-     */
-    public static function createTicketRatingLinksModel(
-        $ticket
-    ) {
-        return new TicketRatingLinks($ticket);
+        return new TicketRate($this->objectRouter, $ticket);
     }
 
     /**
@@ -201,10 +211,10 @@ class TicketViewModelFactory
      *
      * @return TicketAddCc
      */
-    public static function createTicketAddCcModel(
+    public function createTicketAddCcModel(
         $ticket
     ) {
-        return new TicketAddCc($ticket);
+        return new TicketAddCc($this->objectRouter, $ticket);
     }
 
     /**
@@ -212,9 +222,9 @@ class TicketViewModelFactory
      *
      * @return TicketParticipant
      */
-    public static function createTicketParticipantModel(
+    public function createTicketParticipantModel(
         $ticket
     ) {
-        return new TicketParticipant($ticket);
+        return new TicketParticipant($this->objectRouter, $ticket);
     }
 }
