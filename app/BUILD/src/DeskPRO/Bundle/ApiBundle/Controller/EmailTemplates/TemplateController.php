@@ -257,13 +257,12 @@ class TemplateController extends BaseController
         $viewModel = $request->request->get('template');
         $ticket    = $this->getRepository(Ticket::class)->findOneBy([]);
         $action    = 'create'.$viewModel.'Model';
-        if (is_callable([$this->get('email.ticket_viewmodel_factory'), $action])) {
-            $model = $this->get('email.ticket_viewmodel_factory')->$action(
-                $ticket
-            );
-        } else {
+        if (!is_callable([$this->get('email.ticket_viewmodel_factory'), $action])) {
             throw $this->createNotFoundException('Missing method '.$action.' in factory');
         }
+        $model = $this->get('email.ticket_viewmodel_factory')->$action(
+            $ticket
+        );
 
         return new View($renderer->render($tplName, $model));
     }

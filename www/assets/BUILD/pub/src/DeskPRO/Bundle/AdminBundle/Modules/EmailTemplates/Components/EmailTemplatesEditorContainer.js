@@ -11,6 +11,7 @@ import DropDownMenu from './Menus/DropDownMenu';
 import LanguageSelector from './Menus/LanguageSelector';
 import * as actions from '../Actions/templatesActions';
 import PreviewEmail from './PreviewEmail';
+import Editor from './Editor';
 
 @connect(state => ({
   emailTemplates: state.EmailTemplates.templates
@@ -285,27 +286,13 @@ class EmailTemplatesEditor extends React.Component {
               </div>
             </div>
           </div>
-          <div className="dp-code-editor">
-            <div className={classNames('ui dimmer inverted', { active: textareaDisabled })}>
-              <div className="ui big loader text">Please select a template to edit</div>
-            </div>
-            Email subject:
-            <textarea
-              className={classNames('email-subject', { disabled: textareaDisabled })}
-              rows="2"
-              value={templateSubject}
-              disabled={textareaDisabled}
-              onChange={this.props.changeTemplateSubject}
-            />
-            Email:
-            <textarea
-              className={classNames('email-body', { disabled: textareaDisabled })}
-              rows="20"
-              value={templateBody}
-              disabled={textareaDisabled}
-              onChange={e => this.props.changeTemplateBody(e.target.value)}
-            />
-          </div>
+          <Editor
+            disabled={textareaDisabled}
+            body={templateBody}
+            subject={templateSubject}
+            changeTemplateSubject={this.props.changeTemplateSubject}
+            changeTemplateBody={this.props.changeTemplateBody}
+          />
           <div className="footer">
             <Button
               className={classNames('primary small', { loading: this.props.saveSubmit })}
