@@ -232,6 +232,11 @@ $collection->create('agent_browser_requirements', [
     'controller' => 'AgentBundle:Login:browserRequirements',
 ]);
 
+$collection->create('agent_min_ie_version', [
+    'path'       => '/min-ie-version',
+    'controller' => 'AgentBundle:Login:minIEVersion',
+]);
+
 $collection->create('agent_login', [
     'path'       => '/login',
     'controller' => 'AgentBundle:Login:index',
