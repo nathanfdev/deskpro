@@ -3,7 +3,8 @@ import classNames from 'classnames';
 
 export class MimeIcon extends React.Component {
   static propTypes = {
-    mimeType: PropTypes.string.isRequired
+    className: PropTypes.string,
+    mimeType:  PropTypes.string.isRequired,
   };
 
   static getIcon = (mimeType) => {
@@ -47,7 +48,7 @@ export class MimeIcon extends React.Component {
   };
 
   render() {
-    const { mimeType } = this.props;
-    return (<i className={classNames('icon', MimeIcon.getIcon(mimeType))} />);
+    const { mimeType, className } = this.props;
+    return (<i className={classNames('icon', className, MimeIcon.getIcon(mimeType))} />);
   }
 }

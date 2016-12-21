@@ -156,6 +156,33 @@
         right: 30px;
         overflow-y: auto;
       }
+      &.with-attachment {
+        .email {
+          bottom: 160px;
+        }
+      }
+      .attachments {
+        position: absolute;
+        bottom: 30px;
+        left: 30px;
+        right: 30px;
+        height: 100px;
+        a {
+          color: $dp-greyscale-850;
+        }
+        .card {
+          max-width: 120px;
+          div.icon {
+            text-align: center;
+          }
+          .filename {
+            font-size: 10px;
+          }
+          .filesize {
+            font-size: 10px;
+          }
+        }
+      }
     }
   }
 }

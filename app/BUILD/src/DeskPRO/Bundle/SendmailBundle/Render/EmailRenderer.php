@@ -118,7 +118,7 @@ class EmailRenderer
 
         // We look for <attachement id='{id}'> and remove it from the template
         $code = preg_replace_callback('#<attachment[^>]*id=("([^"]+)"|\'([^\']+)\')[^>]*>#',
-            function ($matches) use ($blobAuthIds) {
+            function ($matches) use (&$blobAuthIds) {
                 $blobAuthIds[] = $matches[2] ? $matches[2] : $matches[3];
 
                 return '';

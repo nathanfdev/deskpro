@@ -10,6 +10,7 @@ import { VariablesMenuContainer } from './Menus/VariablesMenu';
 import DropDownMenu from './Menus/DropDownMenu';
 import LanguageSelector from './Menus/LanguageSelector';
 import * as actions from '../Actions/templatesActions';
+import PreviewEmail from './PreviewEmail';
 
 @connect(state => ({
   emailTemplates: state.EmailTemplates.templates
@@ -200,12 +201,10 @@ class EmailTemplatesEditor extends React.Component {
     }
     let templateSubject = '';
     let templateBody = '';
-    let preview = 'Preview';
     let textareaDisabled = true;
     if (emailTemplates.get('template') && emailTemplates.get('template').get('template_code')) {
       templateSubject = emailTemplates.get('template').get('template_code').get('subject');
       templateBody = emailTemplates.get('template').get('template_code').get('body');
-      preview = emailTemplates.get('preview');
       textareaDisabled = false;
     }
     return (
@@ -358,11 +357,8 @@ class EmailTemplatesEditor extends React.Component {
                 </div>
               </div>
             </form>
-
           </div>
-          <div className="email-preview">
-            <div className="email" dangerouslySetInnerHTML={{ __html: preview }} />
-          </div>
+          <PreviewEmail preview={emailTemplates.get('preview')} />
         </div>
       </div>
     );
