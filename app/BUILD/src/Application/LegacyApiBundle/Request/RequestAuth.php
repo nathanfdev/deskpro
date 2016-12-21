@@ -36,6 +36,7 @@ namespace Application\LegacyApiBundle\Request;
 
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiKeyLog;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\LegacyApiBundle\ApiUser;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,18 +62,25 @@ class RequestAuth
     private $request;
 
     /**
+     * @var SettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
      * @var \Application\DeskPRO\Entity\ApiKeyLog
      */
     protected $log_entry;
 
     /**
-     * @param EntityManager $em
-     * @param Request       $request
+     * @param EntityManager    $em
+     * @param Request          $request
+     * @param SettingsResolver $settingsResolver
      */
-    public function __construct(EntityManager $em, Request $request)
+    public function __construct(EntityManager $em, Request $request, SettingsResolver $settingsResolver)
     {
-        $this->em      = $em;
-        $this->request = $request;
+        $this->em               = $em;
+        $this->request          = $request;
+        $this->settingsResolver = $settingsResolver;
     }
 
     /**
@@ -213,6 +221,19 @@ class RequestAuth
     protected function createApiLogEntry()
     {
         if (!$key = $this->api_user->api_key) {
+            return;
+        }
+
+        $settings = $this->settingsResolver->getGlobalSettings();
+
+        // api log is disabled
+        if (!$settings->get('api_log.enabled')) {
+            return;
+        }
+
+        // api log is disabled for api keys
+        $modes = $settings->getSerializedArray('api_log.modes', []);
+        if (!in_array('key', $modes)) {
             return;
         }
 

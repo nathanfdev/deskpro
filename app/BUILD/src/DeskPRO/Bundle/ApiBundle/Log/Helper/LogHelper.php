@@ -156,6 +156,6 @@ class LogHelper extends AbstractLogHelper
      */
     public function getMaxResponseBodyLength()
     {
-        return $this->resolver->getGlobalSettings()->get('api_log.max_request_body_length', 1024 * 1024);
+        return $this->resolver->getGlobalSettings()->get('api_log.max_response_body_length', 1024 * 1024);
     }
 }
