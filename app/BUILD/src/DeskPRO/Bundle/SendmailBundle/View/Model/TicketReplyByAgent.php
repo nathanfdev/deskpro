@@ -32,17 +32,8 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use JMS\Serializer\Annotation as JMS;
 
-class TicketReplyByAgent extends EmailBaseType
+class TicketReplyByAgent extends TicketEmailType
 {
-    /**
-     * The ticket.
-     *
-     * @JMS\Type("Application\DeskPRO\Entity\Ticket")
-     *
-     * @var Ticket
-     */
-    private $ticket;
-
     /**
      * Reply written by the agent.
      *
@@ -50,13 +41,13 @@ class TicketReplyByAgent extends EmailBaseType
      *
      * @var TicketMessage
      */
-    private $reply;
+    protected $reply;
 
     protected static $templateFile = 'emails_user:ticket_reply_by_agent.html.twig';
 
     public function __construct(Ticket $ticket, TicketMessage $reply)
     {
-        $this->ticket = $ticket;
-        $this->reply  = $reply;
+        $this->reply = $reply;
+        parent::__construct($ticket);
     }
 }

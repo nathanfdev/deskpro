@@ -28,24 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Ticket;
-use JMS\Serializer\Annotation as JMS;
-
-class TicketAutocloseWarn extends EmailBaseType
+class TicketAutocloseWarn extends TicketEmailType
 {
-    /**
-     * The ticket.
-     *
-     * @JMS\Type("Application\DeskPRO\Entity\Ticket")
-     *
-     * @var Ticket
-     */
-    private $ticket;
-
     protected static $templateFile = 'emails_user:ticket_autoclose_warn.html.twig';
-
-    public function __construct(Ticket $ticket)
-    {
-        $this->ticket = $ticket;
-    }
 }

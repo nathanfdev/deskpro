@@ -28,24 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Ticket;
-use JMS\Serializer\Annotation as JMS;
-
-class TicketReplyAutoreply extends EmailBaseType
+class TicketReplyAutoreply extends TicketEmailType
 {
-    /**
-     * The ticket.
-     *
-     * @JMS\Type("Application\DeskPRO\Entity\Ticket")
-     *
-     * @var Ticket
-     */
-    private $ticket;
-
     protected static $templateFile = 'emails_user:ticket_reply_autoreply.html.twig';
-
-    public function __construct(Ticket $ticket)
-    {
-        $this->ticket = $ticket;
-    }
 }
