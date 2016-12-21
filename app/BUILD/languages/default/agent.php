@@ -743,6 +743,7 @@ return [
     'agent.general.message'                                    => 'Message',
     'agent.general.message_history'                            => 'Message History',
     'agent.general.messages'                                   => 'Messages',
+    'agent.general.min-ie-version'                             => 'DeskPRO requires a modern web browser. IE9 or later is required, or any other modern browser such as Google Chrome or Firefox.',
     'agent.general.minute'                                     => 'Minute',
     'agent.general.minutes'                                    => 'minutes',
     'agent.general.misc'                                       => 'Miscellaneous',

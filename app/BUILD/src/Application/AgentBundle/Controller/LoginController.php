@@ -235,6 +235,14 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         return $this->render('AgentBundle:Login:browser-requirements.html.twig');
     }
 
+    /**
+     * @return Response
+     */
+    public function minIEVersionAction()
+    {
+        return $this->render('AgentBundle:Login:min-ie-version.html.twig');
+    }
+
     public function authAdminLoginAction(Request $request, $code)
     {
         /** @var TmpDataRepository $tmpDataRepository */
