@@ -33,7 +33,7 @@ define ->
 
         #//console.log(box.offset().top);
         #//console.log(listItem.offset().top);
-        t = box.offset().top - 47 - listItem.offset().top;
+        t = box.offset().top - 47 - listItem.offset().top
         #//console.log('total = ' + t);
 
         resHandlers = listItem.find('.gridster-item-resizable-handler')

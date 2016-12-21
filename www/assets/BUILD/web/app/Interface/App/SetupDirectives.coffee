@@ -1,0 +1,55 @@
+define [
+# DASHBOARDS SPECIFIC DIRECTIVES
+  'Reports/Dashboards/Directive/DashboardAmcharts',
+  'Reports/Dashboards/Directive/DashboardStat',
+  'Reports/Dashboards/Directive/DashboardTable',
+  'Reports/Dashboards/Directive/DpReportVariables',
+
+# LEGACY DIRECTIVES
+  'Reports/Directive/DpReportBuilderSelectBox',
+  'Reports/Directive/DpReportBillingSelectBox',
+  'Reports/Directive/DpReportBuilderTitle',
+
+# DP DIRECTIVES
+  'DeskPRO/Directive/DpDropdown',
+  'DeskPRO/Directive/DpShowSpinning',
+  'DeskPRO/Directive/DpHideSpinning',
+  'DeskPRO/Directive/DpTabBody',
+  'DeskPRO/Directive/DpTabBtn',
+], (# DASHBOARDS SPECIFIC DIRECTIVES
+  Reports_Dashboards_Directive_DashboardAmcharts,
+  Reports_Dashboards_Directive_DashboardStat,
+  Reports_Dashboards_Directive_DashboardTable,
+  Reports_Dashboards_Directive_DpReportVariables,
+  Reports_Directive_DpReportBuilderSelectBox,
+  Reports_Directive_DpReportBillingSelectBox,
+  Reports_Directive_DpReportBuilderTitle,
+# DP DIRECTIVES
+  Reports_App_Directive_DpDropdown,
+  Reports_App_Directive_DpShowSpinning,
+  Reports_App_Directive_DpHideSpinning,
+  Reports_App_Directive_DpTabBody,
+  Reports_App_Directive_DpTabBtn,) ->
+  return (Module) ->
+    ###
+    # Dashboards specific directives
+    ###
+    Module.directive('dashboardAmcharts', Reports_Dashboards_Directive_DashboardAmcharts)
+    Module.directive('dashboardTable', Reports_Dashboards_Directive_DashboardTable)
+    Module.directive('dpReportVariables', Reports_Dashboards_Directive_DpReportVariables)
+
+    ###
+    # Legacy directives
+    ###
+    Module.directive('dpReportBuilderSelectBox', Reports_Directive_DpReportBuilderSelectBox)
+    Module.directive('dpReportBillingSelectBox', Reports_Directive_DpReportBillingSelectBox)
+    Module.directive('dpReportBuilderTitle', Reports_Directive_DpReportBuilderTitle)
+
+    ###
+    # DeskPRO directives
+    ###
+    Module.directive('dpDropdown', Reports_App_Directive_DpDropdown)
+    Module.directive('dpShowSpinning', Reports_App_Directive_DpShowSpinning)
+    Module.directive('dpHideSpinning', Reports_App_Directive_DpHideSpinning)
+    Module.directive('dpTabBody', Reports_App_Directive_DpTabBody)
+    Module.directive('dpTabBtn', Reports_App_Directive_DpTabBtn)

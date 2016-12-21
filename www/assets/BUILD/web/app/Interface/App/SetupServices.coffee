@@ -1,0 +1,107 @@
+define [
+  'Interface/App/Service/AppConfig',
+  'Interface/App/Service/TemplateLoader',
+  'Interface/App/Service/TemplateManager',
+  'Admin/Main/DataService/EntityManager',
+  'Reports/App/Service/DataServiceManager',
+  'Reports/App/Service/Dashboard',
+  'Reports/App/Service/DashboardWidget',
+  'Reports/App/Service/DashboardPermissions',
+  'Reports/App/Service/DashboardsInfo',
+], (
+  # Services
+  AppConfig,
+  TemplateLoader,
+  TemplateManager,
+  # DASHBOARDS SPECIFIC DIRECTIVES
+  Admin_Main_DataService_EntityManager,
+  Reports_App_Service_DataServiceManager,
+  Reports_App_Service_Dashboard,
+  Reports_App_Service_DashboardWidget,
+  Reports_App_Service_DashboardPermissions,
+  Reports_App_Service_DashboardsInfo,
+) ->
+  return (Module) ->
+    Module.service('AppConfig', -> return new AppConfig)
+
+    Module.service('TemplateLoader', [ 'AppConfig', '$http', '$q', (AppConfig, $http, $q) ->
+      window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'reports/viewer/load-views', $http, $q)
+      return window.DP_TEMPLATE_LOADER
+    ])
+
+    Module.service('TemplateManager', ['TemplateLoader', '$templateCache', '$q', (TemplateLoader, $templateCache, $q) ->
+      return new TemplateManager(TemplateLoader, $templateCache, $q)
+    ])
+
+    Module.run(['TemplateLoader', (TemplateLoader) ->
+  # this is just so the loader is loaded
+    ])
+    Module.factory('HttpTemplateInterceptor', [->
+      isTemplateUrl = (url) ->
+        return !!url.replace(/^\//, '').match(/^(InterfaceBundle|ReportsInterfaceBundle):/)
+      getViewName = (url) ->
+        return url.replace(/^\//, '')
+      getLoadUrl = (view) ->
+        return window.DP_TEMPLATE_LOADER.getLoadUrl([view]) + '&intercepted=1'
+
+      return {
+        request: (config) ->
+          if isTemplateUrl(config.url)
+            config.url = getLoadUrl(getViewName(config.url))
+            config.dp_is_template = true
+
+          return config
+      }
+    ])
+
+    Module.factory('dpHttpInterceptor', ['$q', ($q) ->
+      return {
+        request: (config) ->
+          if window.DP_SESSION_ID
+            config.headers['X-DeskPRO-Session-ID'] = window.DP_SESSION_ID
+          if window.DP_REQUEST_TOKEN
+            config.headers['X-DeskPRO-Request-Token'] = window.DP_REQUEST_TOKEN
+
+          return config
+
+        response: (response) ->
+          return response
+
+        requestError: (rejection) ->
+          return $q.reject(rejection)
+
+        responseError: (rejection) ->
+          return $q.reject(rejection)
+      }
+    ])
+
+    ###
+    # Config section
+    ###
+    Module.config(['$httpProvider', ($httpProvider) ->
+      $httpProvider.interceptors.push('dpHttpInterceptor');
+    ])
+
+    Module.config(['$httpProvider', ($httpProvider) ->
+      $httpProvider.interceptors.push('HttpTemplateInterceptor')
+    ])
+    Module.service('em', [ ->
+      return new Admin_Main_DataService_EntityManager()
+    ])
+  
+    Module.factory('DataService', [ '$injector', ($injector) ->
+      return new Reports_App_Service_DataServiceManager($injector)
+    ])
+  
+    Module.service('DashboardService', ['Api', '$q', (Api, $q) ->
+      return new Reports_App_Service_Dashboard(Api, $q)
+    ])
+    Module.service('DashboardWidgetService', ['Api', '$q', (Api, $q) ->
+      return new Reports_App_Service_DashboardWidget(Api, $q)
+    ])
+    Module.service('DashboardPermissionsService', ['Api', '$q', (Api, $q) ->
+      return new Reports_App_Service_DashboardPermissions(Api, $q)
+    ])
+    Module.service('DashboardsInfo', ['Api', '$q', (Api, $q) ->
+      return new Reports_App_Service_DashboardsInfo(Api, $q)
+    ])

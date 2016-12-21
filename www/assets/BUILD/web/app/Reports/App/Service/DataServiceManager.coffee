@@ -1,7 +1,7 @@
 define [
   'DeskPRO/Util/Strings',
-  'Reports/Legacy/Builder/DataService/ReportBuilderCustom',
-  'Reports/Legacy/Builder/DataService/ReportBuilderBuiltIn',
+  'Reports/Builder/DataService/ReportBuilderCustom',
+  'Reports/Builder/DataService/ReportBuilderBuiltIn',
 ], (
   Strings,
   DataService_ReportBuilderCustom,

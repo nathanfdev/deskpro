@@ -76,10 +76,13 @@ class DashboardWidgetController extends AbstractController
         /** @var Tab $tab */
         $tab = $this->service->getReport($id);
 
+        if ($this->permissionsService->isEditableDashboard($tab->getDashboard())) {
+            throw $this->createNotFoundException('Widget not found!');
+        }
+
         $postData = $this->in->getAll('post');
-        /**
-         * @var \Application\DeskPRO\Reports\Builder
-         */
+
+        /** @var \Application\DeskPRO\Reports\Builder $reports_builder */
         $reports_builder = $this->container->getSystemService('reports_builder');
         $report_widget   = $reports_builder->getById($postData['widget_id']);
         if (!$report_widget) {
@@ -108,54 +111,6 @@ class DashboardWidgetController extends AbstractController
      * @throws NotFoundHttpException
      *
      * @return Response
-     * @SWG\Api(
-     *    path="/dashboards/widgets/{id}",
-     *
-     * 	@SWG\Operation(
-     *      @SWG\ResponseMessage(code=404, message="Widget not found"),
-     *      @SWG\ResponseMessage(code=200, message="success"),
-     *        method="POST",
-     *        summary="Save dashboard with new parameters",
-     *        type="array",
-     *      @SWG\Parameters (
-     *			@SWG\Parameter(
-     *                name="id",
-     *                description="Widget ID",
-     *                paramType="path",
-     *                required=true,
-     *                type="integer"
-     *            ),
-     *          @SWG\Parameter(
-     *                name="col",
-     *                description="Horizontal widget position",
-     *                paramType="query",
-     *                required=true,
-     *                type="string"
-     *            ),
-     *          @SWG\Parameter(
-     *                name="row",
-     *                description="Vertical widget position",
-     *                paramType="query",
-     *                required=true,
-     *                type="integer"
-     *            ),
-     *          @SWG\Parameter(
-     *                name="size_x",
-     *                description="Widget width",
-     *                paramType="query",
-     *                required=true,
-     *                type="string"
-     *            ),
-     *          @SWG\Parameter(
-     *                name="size_y",
-     *                description="Widget height",
-     *                paramType="query",
-     *                required=true,
-     *                type="integer"
-     *            ),
-     *      )
-     *    )
-     * )
      */
     public function saveWidgetAction($id)
     {
@@ -263,26 +218,6 @@ class DashboardWidgetController extends AbstractController
      * @throws NotFoundHttpException
      *
      * @return Response
-     * @SWG\Api(
-     *    path="/dashboards/widgets/{id}",
-     *
-     * 	@SWG\Operation(
-     *      @SWG\ResponseMessage(code=404, message="Widget not found"),
-     *      @SWG\ResponseMessage(code=200, message="deleted"),
-     *        method="DELETE",
-     *        summary="Delete widget",
-     *        type="array",
-     *      @SWG\Parameters (
-     *			@SWG\Parameter(
-     *                name="id",
-     *                description="Widget id",
-     *                paramType="path",
-     *                required=true,
-     *                type="integer"
-     *            ),
-     *      )
-     *    )
-     * )
      */
     public function deleteWidgetAction($id)
     {
