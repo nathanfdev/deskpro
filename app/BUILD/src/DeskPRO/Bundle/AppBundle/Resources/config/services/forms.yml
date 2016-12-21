@@ -172,12 +172,6 @@ services:
     tags:
       - { name: form.type }
 
-  form.ticket_message_attachment_collection_type:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentCollectionType
-    arguments: ["@settings_resolver"]
-    tags:
-      - { name: form.type }
-
   form.ticket_message_inline_attachment:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageInlineAttachmentType
     arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
