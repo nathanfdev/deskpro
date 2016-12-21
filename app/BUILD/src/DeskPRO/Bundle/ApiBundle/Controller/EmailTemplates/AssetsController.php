@@ -158,7 +158,12 @@ class AssetsController extends BaseController
      */
     public function deleteAction($id)
     {
+        /** @var ThemeSetAsset $asset */
         $asset = $this->findOr404(ThemeSetAsset::class, $id);
+
+        if (!in_array('inline-image', $asset->getTags()) && !in_array('attachment', $asset->getTags())) {
+            throw $this->createNotFoundException('Invalid type');
+        }
 
         $em = $this->getManager();
         $em->remove($asset);
