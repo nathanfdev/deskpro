@@ -188,6 +188,11 @@ define [
         value: 'WebHook'
       })
 
+      options.push({
+        title: 'Call Web Hook (Custom JSON Payload)',
+        value: 'WebHook2'
+      })
+
       set_options.push({
         title: 'Ticket Actions',
         subOptions: options
@@ -1308,6 +1313,27 @@ define [
               value.options = model
               return value
             }
+      }
+
+    getWebHook2: (options = {}) ->
+      me = @
+      return {
+        getTemplate: ->
+          return me.dpTemplateManager.get('OptionBuilder/type-actions-webhook2.html')
+
+        getData: ->
+          return {}
+
+        getDataFormatter: ->
+          return {
+            getViewValue: (value = {}, data) ->
+              return value.options || {}
+            getValue: (model = {}, data) ->
+              value = {}
+              value.type = 'WebHook2'
+              value.options = model
+              return value
+          }
       }
 
     getSetSlas: (options = {}) ->

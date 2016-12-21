@@ -53,7 +53,7 @@ use Orb\Util\Strings;
  * @option string headers
  * @option int    timeout
  */
-class WebHook extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
+class WebHook2 extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
     /**
      * {@inheritdoc}
@@ -62,7 +62,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
     {
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('url');
-        $options->addValidNames('username', 'password', 'method', 'custom_data', 'headers', 'timeout', 'payload_type', 'disable_cert');
+        $options->addValidNames('username', 'password', 'method', 'custom_data', 'headers', 'timeout', 'disable_cert');
 
         return $options;
     }
@@ -78,7 +78,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
         $renderer    = $this->getContainer()->get('twig_template_renderer');
         $url         = $renderer->renderTicketTemplate($this->getActionOption('url'), $ticket, $context);
         $headers     = $renderer->renderTicketTemplate($this->getActionOption('headers'), $ticket, $context);
-        $custom_data = $renderer->renderTicketTemplate($this->getActionOption('custom_data') ?: '', $ticket, $context);
+        $custom_data = @json_decode($renderer->renderTicketTemplate($this->getActionOption('custom_data') ?: '', $ticket, $context), true);
         $username    = $renderer->renderTicketTemplate($this->getActionOption('username') ?: '', $ticket, $context);
         $password    = $renderer->renderTicketTemplate($this->getActionOption('password') ?: '', $ticket, $context);
 
@@ -87,25 +87,11 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
         $options     = [];
 
         if ($headers) {
-            $headers                          = Strings::parseEqualsLines($headers, Strings::EQUALSLINES_DUPE_ADD_ARRAY, ':');
-            $options[RequestOptions::HEADERS] = $headers;
+            $options[RequestOptions::HEADERS] = Strings::parseEqualsLines($headers, Strings::EQUALSLINES_DUPE_ADD_ARRAY, ':');
         }
-
         if ($method == 'POST' || $method == 'PUT') {
-            $data                    = [];
-            $data['ticket']          = $ticket->toApiData();
-            $data['person_context']  = $context->getPersonContext() ? $context->getPersonContext()->toApiData() : null;
-            $data['event_performer'] = $context->getEventPerformer();
-            $data['event_type']      = $context->getEventType();
-            $data['event_method']    = $context->getEventMethod();
-            $data['custom_data']     = $custom_data;
-
-            $format = 'json' === $this->getActionOption('payload_type')
-                ? RequestOptions::JSON
-                : RequestOptions::FORM_PARAMS;
-            $options[$format] = $data;
+            $options[RequestOptions::JSON] = $custom_data;
         }
-
         if ($username || $password) {
             $options[RequestOptions::AUTH] = [$username, $password];
         }

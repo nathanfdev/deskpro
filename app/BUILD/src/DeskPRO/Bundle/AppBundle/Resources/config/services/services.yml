@@ -94,7 +94,7 @@ services:
 
   twig_template_renderer:
     class: DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer
-    arguments: ["@twig"]
+    arguments: ["@twig", "@brand_aware_settings_resolver"]
 
   pdf_renderer:
     class: DeskPRO\Component\Pdf\mPdfRenderer
