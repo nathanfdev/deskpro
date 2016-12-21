@@ -196,7 +196,7 @@ class ReportWidget extends DomainObject
     /**
      * @return bool
      */
-    public function isIsCustom()
+    public function isCustom()
     {
         return $this->is_custom;
     }

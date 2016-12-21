@@ -4,7 +4,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     widget_id = parseInt($stateParams.widget_id)
     $scope.widget = { query: "" }
 
-    Api.sendGet('/reports/builder/' + widget_id).then((r) ->
+    Api.sendGet('/reports/widget/' + widget_id).then((r) ->
       $scope.widget = r.data.widget
       console.log($scope.widget)
     )

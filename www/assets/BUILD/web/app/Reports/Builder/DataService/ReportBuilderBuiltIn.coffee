@@ -9,21 +9,14 @@ define [
     @$inject = ['Api', '$q']
 
 
-    ###
-    #
-    ###
-    init: ->
-      @setSubLists ['Tickets', 'Chats', 'Ideas', 'People & Organizations', 'Knowledgebase', 'News', 'Downloads',
-                                  'Feedback', 'Tasks', 'Twitter']
-
-
+   
     ###
     #
     ###
     _doLoadList: ->
       deferred = @$q.defer()
 
-      @Api.sendGet('/reports/builder/builtIn').success( (data) =>
+      @Api.sendGet('/reports/widget/builtIn').success( (data) =>
 
         models = data.reports
         deferred.resolve(models)
@@ -56,7 +49,7 @@ define [
       deferred = @$q.defer()
       if id
 
-        @Api.sendGet('/reports/builder/' + id, {params: params}).then( (result) =>
+        @Api.sendGet('/reports/widget/' + id, {params: params}).then( (result) =>
 
           if result.data.type != 'builtIn' then throw new Error('Report you are loading should be built-in report')
 
@@ -73,7 +66,7 @@ define [
 
       else
 
-        @Api.sendGet('/reports/builder').then( (result) =>
+        @Api.sendGet('/reports/widget').then( (result) =>
 
           data = {}
           data.report = {user: {}}

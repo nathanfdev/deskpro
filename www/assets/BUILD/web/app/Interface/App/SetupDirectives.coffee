@@ -1,22 +1,24 @@
 define [
-# DASHBOARDS SPECIFIC DIRECTIVES
+  # DASHBOARDS SPECIFIC DIRECTIVES
   'Reports/Dashboards/Directive/DashboardAmcharts',
   'Reports/Dashboards/Directive/DashboardStat',
   'Reports/Dashboards/Directive/DashboardTable',
   'Reports/Dashboards/Directive/DpReportVariables',
 
-# LEGACY DIRECTIVES
+  # LEGACY DIRECTIVES
   'Reports/Directive/DpReportBuilderSelectBox',
   'Reports/Directive/DpReportBillingSelectBox',
   'Reports/Directive/DpReportBuilderTitle',
 
-# DP DIRECTIVES
+  # DP DIRECTIVES
   'DeskPRO/Directive/DpDropdown',
   'DeskPRO/Directive/DpShowSpinning',
   'DeskPRO/Directive/DpHideSpinning',
   'DeskPRO/Directive/DpTabBody',
   'DeskPRO/Directive/DpTabBtn',
-], (# DASHBOARDS SPECIFIC DIRECTIVES
+], (
+
+  # DASHBOARDS SPECIFIC DIRECTIVES
   Reports_Dashboards_Directive_DashboardAmcharts,
   Reports_Dashboards_Directive_DashboardStat,
   Reports_Dashboards_Directive_DashboardTable,
@@ -24,7 +26,8 @@ define [
   Reports_Directive_DpReportBuilderSelectBox,
   Reports_Directive_DpReportBillingSelectBox,
   Reports_Directive_DpReportBuilderTitle,
-# DP DIRECTIVES
+
+  # DP DIRECTIVES
   Reports_App_Directive_DpDropdown,
   Reports_App_Directive_DpShowSpinning,
   Reports_App_Directive_DpHideSpinning,

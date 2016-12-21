@@ -12,14 +12,14 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     promises = []
     $scope.labels = []
-    $scope.selectedLabels = 0
-    $scope.searchText = ''
     $scope.custom_data_list_prefiltered = []
     $scope.built_in_data_list_prefiltered = []
+    $scope.selectedLabels = 0
+    $scope.searchText = ''
 
     promises.push customData.loadList().then( (list) -> $scope.custom_data_list = list )
     promises.push builtInData.loadList().then( (list) -> $scope.built_in_data_list = list )
-    promises.push Api.sendGet('/reports/builder/group-params').then( (data) -> $scope.group_params = data.data)
+    promises.push Api.sendGet('/reports/widget/group-params').then( (data) -> $scope.group_params = data.data)
     promises.push DashboardWidgetService.getReports().then (result) ->
       $scope.labels.push {title: label, active: false} for label in result.labels
 
@@ -82,7 +82,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     # Note that this will filter by label.title too (@see OneNote->DR->ImplementingDesign->(4) Adding Widgets)
     ###
     $scope.filterBySearchText = (value) ->
-      if $scope.searchText == ''
+      if $scope.searchText == '' || $scope.searchText == 'undefined'
         return true
       else
         search = $scope.searchText.toLocaleLowerCase()

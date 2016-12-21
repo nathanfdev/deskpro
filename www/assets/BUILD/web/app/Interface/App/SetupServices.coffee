@@ -34,7 +34,7 @@ define [
     ])
 
     Module.run(['TemplateLoader', (TemplateLoader) ->
-  # this is just so the loader is loaded
+    # this is just so the loader is loaded
     ])
     Module.factory('HttpTemplateInterceptor', [->
       isTemplateUrl = (url) ->
