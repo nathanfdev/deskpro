@@ -80,8 +80,8 @@ cp www/assets/BUILD/pub/nightwatch.conf.js.dist www/assets/BUILD/pub/nightwatch.
 echo "--> Done"
 
 echo "Modifying copied E2E configs"
-#echo "module.exports.test_settings.cbt.username = '${CBT_USERNAME}';" >> www/assets/BUILD/pub/nightwatch.conf.js
-#echo "module.exports.test_settings.cbt.password = '${CBT_PASSWORD}';" >> www/assets/BUILD/pub/nightwatch.conf.js
+echo "module.exports.test_settings.cbt.username = '${CBT_USERNAME}';" >> www/assets/BUILD/pub/nightwatch.conf.js
+echo "module.exports.test_settings.cbt.password = '${CBT_PASSWORD}';" >> www/assets/BUILD/pub/nightwatch.conf.js
 echo "exports.config.baseUrl = '${INSTANCE_URL}';" >> www/assets/BUILD/pub/src/tests/E2E/config.js
 echo "exports.config.users.admin.email = 'admin@deskpro.dev';" >> www/assets/BUILD/pub/src/tests/E2E/config.js
 echo "exports.config.users.admin.password = 'pass';" >> www/assets/BUILD/pub/src/tests/E2E/config.js
