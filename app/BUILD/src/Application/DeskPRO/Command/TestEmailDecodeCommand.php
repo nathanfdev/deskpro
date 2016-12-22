@@ -32,18 +32,18 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\EmailGateway\TicketGateway\AgentReplyCodes;
 use Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail;
 use Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmailMessage;
+use Application\DeskPRO\Entity\EmailSource;
 use Orb\Util\Strings;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class TestEmailDecodeCommand extends ContainerAwareCommand
 {
     /**
      * @var \Application\DeskPRO\EmailGateway\Reader\EzcReader
@@ -54,6 +54,14 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
      * @var string
      */
     private $file;
+
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    public function getContainer()
+    {
+        return parent::getContainer();
+    }
 
     protected function configure()
     {
@@ -81,14 +89,14 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
         $this->file = $input->getArgument('file');
 
         if ($input->getOption('source')) {
-            $source_obj = App::getOrm()->find('DeskPRO:EmailSource', $this->file);
+            $source_obj = $this->getContainer()->getEm()->find(EmailSource::class, $this->file);
             if (!$source_obj || !$source_obj->blob) {
                 $output->writeln('<error>Invalid source ID</error>');
 
                 return 1;
             }
 
-            $source = App::getSystemService('BlobStorage')->copyBlobRecordToString($source_obj->blob);
+            $source = $this->getContainer()->getBlobStorage()->copyBlobRecordToString($source_obj->blob);
         } else {
             if ($this->file && !is_file($this->file)) {
                 if (is_file(getcwd().'/'.$this->file)) {
@@ -104,7 +112,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
             $source = file_get_contents($this->file);
         }
 
-        $r = new EzcReader();
+        $r = $this->getContainer()->getEmailEzcReaderFactory()->create();
         $r->setRawSource($source);
         $this->reader = $r;
 
@@ -224,7 +232,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
                 echo str_repeat('-', 72)."\n";
                 echo $body;
                 $rc = new AgentReplyCodes($body, true);
-                $rc->setCleaner(App::$container->getInputCleaner());
+                $rc->setCleaner($this->getContainer()->getInputCleaner());
                 $rc->setLogger($logger);
                 $reply_actions = $rc->getProperties();
 
@@ -296,8 +304,8 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
                 TicketIncomingEmailMessage::MODE_NEWREPLY,
                 null,
                 $ticket_email,
-                App::$container->getInputCleaner(),
-                App::$container->getEmailAccountManager(),
+                $this->getContainer()->getInputCleaner(),
+                $this->getContainer()->getEmailAccountManager(),
                 null,
                 $logger
             );
@@ -360,7 +368,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 
         $attach = $attaches[$idx];
 
-        $r = new EzcReader();
+        $r = $this->getContainer()->getEmailEzcReaderFactory()->create();
         $r->setProperty('override_from_charset', $attach->original_charset);
         $r->setRawSource($attach->getFileContents());
         $this->reader = $r;

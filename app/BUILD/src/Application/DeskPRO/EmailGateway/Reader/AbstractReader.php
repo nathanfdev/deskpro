@@ -49,6 +49,21 @@ abstract class AbstractReader
     /** @var array */
     protected $from_headers = ['from'];
 
+    /**
+     * @var \ezcMail
+     */
+    protected $decryptedMail = null;
+
+    /**
+     * @var string
+     */
+    protected $decryptionError = null;
+
+    /**
+     * @var bool
+     */
+    protected $isSigned = null;
+
     public function _kill()
     {
         $this->vals        = null;
@@ -522,5 +537,29 @@ abstract class AbstractReader
         }
 
         return $newId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSigned()
+    {
+        return $this->isSigned;
+    }
+
+    /**
+     * @return \ezcMail
+     */
+    public function getDecryptedMail()
+    {
+        return $this->decryptedMail;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDecryptionError()
+    {
+        return $this->decryptionError;
     }
 }

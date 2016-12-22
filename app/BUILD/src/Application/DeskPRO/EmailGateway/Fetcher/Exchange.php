@@ -78,28 +78,28 @@ class Exchange extends AbstractFetcher
      *
      * @var string Mailbox name
      */
-    private $archive_mailbox;
+    private $archiveMailbox;
 
     /**
      * Mailbox name to read messages from.
      *
      * @var string Mailbox name
      */
-    private $read_mailbox;
+    private $readMailbox;
 
     /**
      * Max number of email IDs to fetch in one go.
      *
      * @var int
      */
-    protected $fetch_limit = 100;
+    protected $fetchLimit = 100;
 
     /**
      * Next Message index to read.
      *
      * @var int
      */
-    protected $next_index = 0;
+    protected $nextIndex = 0;
 
     /**
      * Initiates the connection.
@@ -110,33 +110,33 @@ class Exchange extends AbstractFetcher
     {
         $options = [];
 
-        $incoming_account = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
+        $incomingAccount = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
 
-        switch ($incoming_account->getType()) {
+        switch ($incomingAccount->getType()) {
             case 'exchange':
-                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ExchangeConfig $exchange_config */
-                $exchange_config = $incoming_account;
+                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ExchangeConfig $exchangeConfig */
+                $exchangeConfig = $incomingAccount;
 
-                $options['host']         = $exchange_config->host;
-                $options['port']         = $exchange_config->port;
-                $options['user']         = $exchange_config->user;
-                $options['password']     = $exchange_config->password;
-                $options['mode']         = $exchange_config->mode;
-                $options['read_mailbox'] = $exchange_config->read_mailbox;
+                $options['host']         = $exchangeConfig->host;
+                $options['port']         = $exchangeConfig->port;
+                $options['user']         = $exchangeConfig->user;
+                $options['password']     = $exchangeConfig->password;
+                $options['mode']         = $exchangeConfig->mode;
+                $options['read_mailbox'] = $exchangeConfig->read_mailbox;
 
-                if ($exchange_config->mode == self::MODE_ARCHIVE) {
-                    $options['archive_mailbox'] = $exchange_config->archive_mailbox;
+                if ($exchangeConfig->mode == self::MODE_ARCHIVE) {
+                    $options['archive_mailbox'] = $exchangeConfig->archive_mailbox;
                 }
 
                 break;
 
             default:
-                throw new \InvalidArgumentException('Unknown account type: '.$incoming_account->getType());
+                throw new \InvalidArgumentException('Unknown account type: '.$incomingAccount->getType());
         }
 
-        $this->mode            = $options['mode'];
-        $this->archive_mailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
-        $this->read_mailbox    = !empty($options['read_mailbox']) ? $options['read_mailbox'] : null;
+        $this->mode           = $options['mode'];
+        $this->archiveMailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
+        $this->readMailbox    = !empty($options['read_mailbox']) ? $options['read_mailbox'] : null;
 
         $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
         $options['logger'] = $this->logger;
@@ -144,24 +144,24 @@ class Exchange extends AbstractFetcher
         $this->storage = new Storage\Exchange($options);
 
         if ($this->mode == self::MODE_ARCHIVE) {
-            $this->storage->ensureFolderExists($this->archive_mailbox);
+            $this->storage->ensureFolderExists($this->archiveMailbox);
         }
 
-        if ($this->read_mailbox) {
-            $this->storage->ensureFolderExists($this->read_mailbox);
+        if ($this->readMailbox) {
+            $this->storage->ensureFolderExists($this->readMailbox);
         }
 
-        $unread_only = false;
-        $folder      = null;
+        $unreadOnly = false;
+        $folder     = null;
 
         if ($this->mode == self::MODE_READ) {
-            $unread_only = true;
+            $unreadOnly = true;
         }
-        if ($this->read_mailbox) {
-            $folder = $this->read_mailbox;
+        if ($this->readMailbox) {
+            $folder = $this->readMailbox;
         }
 
-        $this->messages = $this->storage->searchIds($this->fetch_limit, $unread_only, $folder);
+        $this->messages = $this->storage->searchIds($this->fetchLimit, $unreadOnly, $folder);
         if (!$this->messages) {
             $this->messages = [];
         }
@@ -174,7 +174,9 @@ class Exchange extends AbstractFetcher
     /**
      * Gets the message storage.
      *
-     * @return \Application\DeskPRO\EmailGateway\Storage\Exchange
+     * @param bool $reconnect
+     *
+     * @return Storage\Exchange
      */
     public function getStorage($reconnect = false)
     {
@@ -189,7 +191,7 @@ class Exchange extends AbstractFetcher
      */
     public function getNextMessage()
     {
-        return $this->storage->getEmailParts($this->messages[$this->next_index]);
+        return $this->storage->getEmailParts($this->messages[$this->nextIndex]);
     }
 
     /**
@@ -203,59 +205,59 @@ class Exchange extends AbstractFetcher
             $this->_initConnection();
         }
 
-        if (!isset($this->messages[$this->next_index])) {
+        if (!isset($this->messages[$this->nextIndex])) {
             return false;
         }
 
-        $message_id = $this->messages[$this->next_index];
+        $messageId = $this->messages[$this->nextIndex];
 
-        ++$this->next_index;
+        ++$this->nextIndex;
 
-        $message = $this->storage->getEmailProps($message_id);
+        $message = $this->storage->getEmailProps($messageId);
 
         if (!$message) {
-            return;
+            return null;
         }
 
-        $raw_message       = new RawMessage();
-        $raw_message->id   = $message_id;
-        $raw_message->uid  = $message_id;
-        $raw_message->size = $message->Size;
+        $rawMessage       = new RawMessage();
+        $rawMessage->id   = $messageId;
+        $rawMessage->uid  = $messageId;
+        $rawMessage->size = $message->Size;
 
-        if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
+        if ($this->maxSize && $rawMessage->size && $rawMessage->size > $this->maxSize) {
             // If we are here, it means that message is larger than the max size
             // So, we won't store the whole message, only the headers.
-            $raw_message->content = $this->storage->getRawHeaders($message_id);
+            $rawMessage->content = $this->storage->getRawHeaders($messageId);
         } else {
             // Otherwise store the whole message
-            $raw_message->content = $this->storage->getRawMessage($message_id);
+            $rawMessage->content = $this->storage->getRawMessage($messageId);
         }
 
         $headers = null;
 
-        $this->logger->log(sprintf('Message size: %s bytes', $raw_message->size), 'debug');
+        $this->logger->log(sprintf('Message size: %s bytes', $rawMessage->size), 'debug');
 
-        if ($raw_message->uid) {
-            $this->logger->log(sprintf('Message UID: %s', $raw_message->uid), 'debug');
+        if ($rawMessage->uid) {
+            $this->logger->log(sprintf('Message UID: %s', $rawMessage->uid), 'debug');
         }
 
         $EOL = "\n";
 
         // Reads and formats the Message header
         // To be compatible with the RawMessage
-        if (strpos($raw_message->content, $EOL.$EOL)) {
-            list($headers) = explode($EOL.$EOL, $raw_message->content, 2);
-        } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers) = explode("\r\n\r\n", $raw_message->content, 2);
-        } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers) = explode("\n\n", $raw_message->content, 2);
+        if (strpos($rawMessage->content, $EOL.$EOL)) {
+            list($headers) = explode($EOL.$EOL, $rawMessage->content, 2);
+        } elseif ($EOL != "\r\n" && strpos($rawMessage->content, "\r\n\r\n")) {
+            list($headers) = explode("\r\n\r\n", $rawMessage->content, 2);
+        } elseif ($EOL != "\n" && strpos($rawMessage->content, "\n\n")) {
+            list($headers) = explode("\n\n", $rawMessage->content, 2);
         } else {
-            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $rawMessage->content, 2);
         }
 
-        $raw_message->headers = $headers;
+        $rawMessage->headers = $headers;
 
-        return $raw_message;
+        return $rawMessage;
     }
 
     /**
@@ -271,7 +273,7 @@ class Exchange extends AbstractFetcher
                 $this->storage->deleteMessage($id);
                 break;
             case self::MODE_ARCHIVE:
-                $this->storage->moveMessage($id, $this->archive_mailbox);
+                $this->storage->moveMessage($id, $this->archiveMailbox);
                 break;
             case self::MODE_READ:
                 $this->storage->markRead($id);

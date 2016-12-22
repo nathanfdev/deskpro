@@ -759,7 +759,7 @@ class TicketMessage extends DomainObject
     public function getAttribute($name)
     {
         foreach ($this->attributes as $attr) {
-            if ($attr->getName() === $attr) {
+            if ($attr->getName() === $name) {
                 return $attr;
             }
         }

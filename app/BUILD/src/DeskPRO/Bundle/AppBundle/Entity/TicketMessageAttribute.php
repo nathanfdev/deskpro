@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\TicketMessage;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -44,8 +45,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     "voice_phone_call" = "TicketMessageVoicePhoneCall",
  *     "value" = "TicketMessageAttribute"
  * })
- *
- * @JMS\ExclusionPolicy("all")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
+ * @JMS\ExclusionPolicy("All")
  */
 class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
 {
@@ -97,7 +98,7 @@ class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
      */
     public function __construct($name)
     {
-        $this->name        = $name;
+        $this->setModelField('name', $name);
         $this->dateCreated = new \DateTime();
     }
 
@@ -119,10 +120,14 @@ class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param TicketMessage $message
+     *
+     * @return $this
      */
     public function setMessage($message)
     {
-        $this->message = $message;
+        $this->setModelField('message', $message);
+
+        return $this;
     }
 
     /**
@@ -134,11 +139,23 @@ class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        $this->setModelField('value', $value);
+
+        return $this;
     }
 
     /**
