@@ -28,12 +28,20 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1481197257 extends AbstractBuild
+class Build1482402882 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('Ticket Message Attributes table');
-        $this->execDbQuery('default', 'CREATE TABLE ticket_message_attributes (id INT AUTO_INCREMENT NOT NULL, ticket_message_id INT DEFAULT NULL, name VARCHAR(250) NOT NULL, value VARCHAR(5000) DEFAULT NULL, date_created DATETIME NOT NULL, type VARCHAR(255) NOT NULL, INDEX IDX_92C49E9BC5E9817D (ticket_message_id), UNIQUE INDEX attr_name (ticket_message_id, name), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
-        $this->execDbQuery('default', 'ALTER TABLE ticket_message_attributes ADD CONSTRAINT FK_92C49E9BC5E9817D FOREIGN KEY (ticket_message_id) REFERENCES tickets_messages (id) ON DELETE CASCADE');
+        $this->out('Add encryption fields to email accounts');
+
+        $this->execDbQuery('default', 'ALTER TABLE email_accounts ADD cert_blob_id INT DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE email_accounts ADD CONSTRAINT FK_C1AE81E5A63D3520 FOREIGN KEY (cert_blob_id) REFERENCES blobs (id) ON DELETE SET NULL');
+        $this->execDbQuery('default', 'CREATE INDEX IDX_C1AE81E5A63D3520 ON email_accounts (cert_blob_id)');
+
+        $this->execDbQuery('default', 'ALTER TABLE email_accounts ADD key_blob_id INT DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE email_accounts ADD CONSTRAINT FK_C1AE81E58FE8AA9B FOREIGN KEY (key_blob_id) REFERENCES blobs (id) ON DELETE SET NULL');
+        $this->execDbQuery('default', 'CREATE INDEX IDX_C1AE81E58FE8AA9B ON email_accounts (key_blob_id)');
+
+        $this->execDbQuery('default', 'ALTER TABLE email_accounts ADD key_pass_phrase VARCHAR(255) DEFAULT NULL');
     }
 }
