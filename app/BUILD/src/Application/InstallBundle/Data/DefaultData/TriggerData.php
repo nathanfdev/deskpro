@@ -225,5 +225,7 @@ class TriggerData extends AbstractDefaultData
         if (!isset($ignore[$trigger->sys_name])) {
             $this->getEm()->persist($trigger);
         }
+
+        $this->getEm()->flush();
     }
 }
