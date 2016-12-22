@@ -103,7 +103,7 @@ class SimplePortalEntitySerializer
             || $object instanceof Entity\Feedback
         ) {
             $result['id']        = $object->getId();
-            $result['name']      = $object->getTitle();
+            $result['name']      = $object->getTranslatedTitle();
             $result['url']       = $this->object_router->getPortalUrl($object);
             $result['icon_html'] = $this->icon_factory->makeContentIcon($object);
             if ($object instanceof Entity\News) {
