@@ -49,7 +49,6 @@ class TicketLayoutHelper
      */
     public static function getExtractedData(array $submitted_data, TicketWithLayoutsContext $context)
     {
-        $form      = $context->getForm();
         $finalData = [];
         $keys      = [
             FormFields::DEPARTMENT,
@@ -60,7 +59,7 @@ class TicketLayoutHelper
         ];
 
         foreach ($keys as $key) {
-            if (array_key_exists($key, $submitted_data) && $form->has($key)) {
+            if (array_key_exists($key, $submitted_data)) {
                 $finalData[$key] = $submitted_data[$key];
             } else {
                 $finalData[$key] = null;
