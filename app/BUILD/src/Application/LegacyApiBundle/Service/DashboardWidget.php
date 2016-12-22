@@ -152,12 +152,8 @@ class DashboardWidget
         $query     = preg_replace("#^DISPLAY.*?\n#", "DISPLAY {$mapped}\n", $query);
         $error     = false;
         $variables = $widget->getVariables();
-        $params    = [];
-        foreach ($variables as $variable) {
-            $params[] = $variable['value'];
-        }
 
-        return Display::renderQuery('json', $query, $params, $error);
+        return Display::renderQuery('json', $query, $variables, $error);
     }
 
     public function copyWidgetLinks(DashboardReportEntity $report, DashboardReportEntity $reportPrototype)

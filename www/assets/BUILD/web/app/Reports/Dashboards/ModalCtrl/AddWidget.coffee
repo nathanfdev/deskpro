@@ -1,6 +1,6 @@
 define ['DeskPRO/Util/Arrays',], (Arrays) -> [
-  '$scope', '$q', '$modalInstance', 'DashboardsInfo', 'DashboardWidgetService', 'report_id', 'widget',
-  ($scope, $q, $modalInstance, DashboardsInfo, DashboardWidgetService, report_id, widget) ->
+  '$scope', '$q', '$modalInstance', 'DashboardsInfo', 'DashboardWidgetService', 'report_id', 'widget', 'TemplateManager',
+  ($scope, $q, $modalInstance, DashboardsInfo, DashboardWidgetService, report_id, widget, TemplateManager) ->
 
     ####################################################################################################################
     # LOADING
@@ -35,6 +35,8 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
     load_promises.push DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
       $scope.report = loadedReport
     )
+
+    TemplateManager.queue('ReportsInterfaceBundle:Dashboard/Modal:add-widget-variables.html')
 
     load_promises.push DashboardWidgetService.getReports().then (result) ->
       $scope.reports = result.reports.filter (report)->

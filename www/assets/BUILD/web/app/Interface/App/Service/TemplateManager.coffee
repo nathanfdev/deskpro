@@ -8,18 +8,6 @@ define ->
     commonName: (view) -> return view
 
     ###
-    # Mark a view to be loaded next time we are loading templates
-    #
-    # @param {String} view
-    ###
-    queue: (view) ->
-      view = @commonName(view)
-      if not @$templateCache.get(view) and not @pendingNames[view] and not @sendPending[view]
-        @pending.push(view)
-        @pendingNames[view] = true
-
-
-    ###
     # Sets a template in the template cache
     #
     # @param {String} view
@@ -102,7 +90,6 @@ define ->
         )
         return d.promise
 
-      @load(view)
       promise = @loadPending()
       defer = @$q.defer()
 

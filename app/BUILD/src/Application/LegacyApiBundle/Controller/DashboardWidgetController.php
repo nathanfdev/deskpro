@@ -99,7 +99,7 @@ class DashboardWidgetController extends AbstractController
             ->setReport($tab)
             ->setWidget($reportWidget);
         if (isset($postData['variables'])) {
-            $widget->setVariables($postData['variables']);
+            $widget->setVariables(explode(',', $postData['variables']));
         }
         $this->em->persist($widget);
         $this->em->flush();
@@ -158,14 +158,14 @@ class DashboardWidgetController extends AbstractController
 
     protected function _getWidgetData($widget)
     {
-        if (!($widget instanceof Widget)) {
-            $widget = $this->em->getRepository(Widget::class)->find((int) $widget);
+        if (!$widget instanceof Widget && !$widget = $this->em->getRepository(Widget::class)->find((int) $widget)) {
+            throw $this->createNotFoundException('Widget not found!');
         }
         $pos  = $widget->getPosition();
         $size = $widget->getSize();
 
         $realData = $this->widgetService->renderWidgetQuery($widget);
-        if ($widget->getType() == DashboardWidgetService::WIDGET_TYPE_TABLE) {
+        if ($realData && $widget->getType() == DashboardWidgetService::WIDGET_TYPE_TABLE) {
             $aoColumns = [];
             $columns   = [];
             foreach ($realData['columns'] as $column) {

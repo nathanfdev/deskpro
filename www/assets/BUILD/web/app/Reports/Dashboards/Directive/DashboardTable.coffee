@@ -32,7 +32,6 @@ define ['datatables'], () ->
 #            aoColumns: widget.aoColumns,
             deferRender: true,
             dom: "rtS",
-            scrollY: 300,
             scrollCollapse: true,
             autoWidth: true
           }
