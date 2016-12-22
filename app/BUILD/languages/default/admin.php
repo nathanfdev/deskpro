@@ -647,7 +647,6 @@ return [
     'adm.tickets.new_account'                                                              => 'New Account',
     'adm.tickets.no_email_accounts'                                                        => 'You have not created any email accounts yet.',
     'adm.tickets.x_email_accounts'                                                         => '{{count}} Email Account|{{count}} Email Accounts',
-    'adm.tickets.emails_encryption'                                                        => 'Emails encryption',
     'adm.twitter_accounts.agents_explain'                                                  => 'These are agents allowed to access twitter application.',
     'adm.twitter_accounts.delete_twitter_account_confirm'                                  => 'Are you sure you want to delete this twitter account? This action cannot be undone.',
     'adm.twitter_accounts.new_twitter_account'                                             => 'New Twitter Account',

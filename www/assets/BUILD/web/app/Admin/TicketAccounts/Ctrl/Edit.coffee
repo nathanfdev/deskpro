@@ -105,6 +105,9 @@ define [
           @$scope.form.outgoing_type = 'php_mail'
 
         @updateCriteriaOptionTypes()
+
+        if @$scope.form.encryption_enabled
+          @$scope.show_adv = true
       )
       return final_promise
 
