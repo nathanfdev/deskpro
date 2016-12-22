@@ -106,7 +106,6 @@ class TicketController extends AbstractApiController
             'use_captcha'                   => false,
             'department_id'                 => $request->query->getInt('department_id'),
             'hide_department_field'         => $request->query->getBoolean('hide_department_field'),
-            'hide_subject_field'            => $request->query->getBoolean('hide_subject_field'),
             'subject_type'                  => $request->get('subject_type'),
             'default_subject'               => $request->get('default_subject'),
             'ticket_view_context'           => TicketWithLayoutsContext::VIEW_USER,

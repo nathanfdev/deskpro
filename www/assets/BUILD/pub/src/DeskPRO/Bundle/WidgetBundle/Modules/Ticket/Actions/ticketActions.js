@@ -3,12 +3,11 @@ import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { history } from '../../../Services/history';
-import { ticketDefaultDepartmentSelector, isTicketDepartmentFieldHidden, liveDemoSelector, isTicketSubjectFieldHidden, ticketDefaultSubjectSelector, ticketSelectSubjectTypeSelector } from '../../Application/Selectors/dpWindow';
+import { ticketDefaultDepartmentSelector, isTicketDepartmentFieldHidden, liveDemoSelector, ticketDefaultSubjectSelector, ticketSelectSubjectTypeSelector } from '../../Application/Selectors/dpWindow';
 
 const getNewTicketQueryParams = state => ({
   department_id:         ticketDefaultDepartmentSelector(state),
   hide_department_field: isTicketDepartmentFieldHidden(state),
-  hide_subject_field:    isTicketSubjectFieldHidden(state),
   subject_type:          ticketSelectSubjectTypeSelector(state),
   subject:               ticketDefaultSubjectSelector(state)
 });
