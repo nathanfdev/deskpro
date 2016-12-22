@@ -40,6 +40,9 @@ class InstallFixturesStep extends AbstractStep
         $this->writeBigTitle('Initializing database');
 
         $this->checkAutoIncrementValue();
+        if ($this->isFailed()) {
+            return;
+        }
 
         $this->writeln('We will now initialize the database. This may take a few minutes.');
 
