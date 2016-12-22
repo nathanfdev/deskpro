@@ -27,8 +27,9 @@ define ->
           DashboardWidgetService
             .getWidget(conf)
             .then (widget) =>
-              if widget? and widget
+              if widget? and widget and widget.dataProvider
                 # ugly, but works right now
+                console.log(typeof widget, widget)
                 chartDiv.height(chartParent.height() - chartHeader.outerHeight())
                 chart = new AmCharts.makeChart('ch' + i, widget);
                 chart.handleResize()
