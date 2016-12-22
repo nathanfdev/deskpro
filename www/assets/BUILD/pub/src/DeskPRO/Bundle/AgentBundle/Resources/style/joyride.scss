@@ -31,11 +31,13 @@ $joyride-close: (color: $dp-greyscale-850, size: 25px, top: 7px !important, righ
 
 $joyride-tooltip-arrow-height: 10px;
 
-@function joyride-arrow($location: top, $bg-color: $dp-sonic-primary) {
+@function joyride-arrow($location: top, $bg-color: $dp-greyscale-50) {
+  $border: $dp-sonic-primary;
   $height: $joyride-tooltip-arrow-height;
   $width: $joyride-tooltip-arrow-size;
   $rotate: '0';
   $arrow-color: '%23' + str-slice(#{$bg-color}, 2);
+  $arrow-color: $dp-greyscale-50;
 
   @if $location == bottom {
     $rotate: '180 8 4';
@@ -49,6 +51,7 @@ $joyride-tooltip-arrow-height: 10px;
     $rotate: '90 4 4';
   }
 
+  @return "data:image/svg+xml,%3Csvg%20width%3D%22#{$width}%22%20height%3D%22#{$height}%22%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpolygon%20points%3D%220%2C%200%208%2C%208%2016%2C0%22%20fill%3D%22#{$arrow-color}%22%20transform%3D%22scale%28#{$joyride-tooltip-arrow-scale}%29%20rotate%28#{$rotate}%29%22%20%2F%3E%0A%3Cpolyline%20fill%3D%22none%22%20stroke%3D%22#{$border}%22%20points%3D%220%2C%208%208%2C%200%2016%2C8%22%2F%3E%3C%2Fsvg%3E";
   @return "data:image/svg+xml,%3Csvg%20width%3D%22#{$width}%22%20height%3D%22#{$height}%22%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpolygon%20points%3D%220%2C%200%208%2C%208%2016%2C0%22%20fill%3D%22#{$arrow-color}%22%20transform%3D%22scale%28#{$joyride-tooltip-arrow-scale}%29%20rotate%28#{$rotate}%29%22%3E%3C%2Fpolygon%3E%3C%2Fsvg%3E";
 }
 
@@ -94,7 +97,7 @@ $joyride-tooltip-arrow-height: 10px;
     &.bottom-right {
       .joyride-tooltip__triangle {
         background-image: url(joyride-arrow(bottom));
-        top: -($joyride-tooltip-arrow-height - 2);
+        top: -($joyride-tooltip-arrow-height - 3);
       }
     }
     &.top,
@@ -102,19 +105,19 @@ $joyride-tooltip-arrow-height: 10px;
     &.top-right {
       .joyride-tooltip__triangle {
         background-image: url(joyride-arrow(top));
-        bottom: -($joyride-tooltip-arrow-height - 2);
+        bottom: -($joyride-tooltip-arrow-height - 3);
       }
     }
     &.left {
       .joyride-tooltip__triangle {
         background-image: url(joyride-arrow(left));
-        right: -($joyride-tooltip-arrow-height - 2);
+        right: -($joyride-tooltip-arrow-height - 3);
       }
     }
     &.right {
       .joyride-tooltip__triangle {
         background-image: url(joyride-arrow(right));
-        left: -($joyride-tooltip-arrow-height - 2);
+        left: -($joyride-tooltip-arrow-height - 3);
       }
     }
   }
@@ -141,9 +144,5 @@ $joyride-tooltip-arrow-height: 10px;
     p {
       margin-bottom: 30px;
     }
-  }
-
-  .joyride-tooltip__triangle {
-    display: none;
   }
 }
