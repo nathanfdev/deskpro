@@ -8,8 +8,8 @@ const storeInitialState = {};
 
 function gc(state, recordName) {
   const validRecordIds = [];
-  state.getIn([recordName, 'collections']).forEach(collection => {
-    collection.forEach(id => {
+  state.getIn([recordName, 'collections']).forEach((collection) => {
+    collection.forEach((id) => {
       if (validRecordIds.indexOf(id) === -1) {
         validRecordIds.push(id);
       }
@@ -25,10 +25,19 @@ function handleSetCollection(state, { recordName, collectionName, records, ids, 
 
   // count ids BEFORE we will update records. So we just insert new records in records and replace collection ids
   const newIds = ids ? Immutable.Set(ids) : newRecords.keySeq().toSet();
-  return state.withMutations(map => {
+  return state.withMutations((map) => {
     map.mergeIn([recordName, 'records'], newRecords);
     map.setIn([recordName, 'collections', collectionName], newIds);
     map.mergeIn([recordName, 'statuses', collectionName], { success: true, loading: false });
+
+    if (collectionName !== 'all') {
+      if (!map.getIn([recordName, 'statuses', 'all'])) {
+        map.mergeIn([recordName, 'statuses', 'all'], { success: true, loading: false });
+      }
+
+      const oldIds = map.getIn([recordName, 'collections', 'all']) || Immutable.fromJS([]);
+      map.setIn([recordName, 'collections', 'all'], newIds.union(oldIds));
+    }
   });
 }
 
@@ -39,7 +48,7 @@ function handleAddToCollection(state, { recordName, collectionName, records }) {
   // nope, BEFORE
   const oldIds = Immutable.Set(state.getIn([recordName, 'collections', collectionName]));
   const newIds = newRecords.keySeq().toSet().union(oldIds);
-  return state.withMutations(map => {
+  return state.withMutations((map) => {
     map.mergeIn([recordName, 'records'], newRecords);
     map.setIn([recordName, 'collections', collectionName], newIds);
     map.mergeIn([recordName, 'statuses', collectionName], { success: true, loading: false });
@@ -47,8 +56,8 @@ function handleAddToCollection(state, { recordName, collectionName, records }) {
 }
 
 function handleUpdateCollection(state, { recordName, records, mergeType }) {
-  let currentRecords = state.getIn([recordName, 'records']);
-  currentRecords = currentRecords.withMutations(set => {
+  let currentRecords = state.getIn([recordName, 'records']) || Immutable.fromJS({});
+  currentRecords = currentRecords.withMutations((set) => {
     const newRecords = Immutable.Map.isMap(records) ? records : mapKeyedFromArray(records, 'id');
     newRecords.forEach((record, id) => {
       let newRecord = record;
@@ -85,7 +94,7 @@ export default createReducer(storeInitialState, {
   [removeFromCollection]: (state, { recordName, collectionName, ids }) => {
     let collection = state.getIn([recordName, 'collections', collectionName]);
 
-    collection = collection.withMutations(set => {
+    collection = collection.withMutations((set) => {
       for (const i of ids) {
         set.delete(i);
       }

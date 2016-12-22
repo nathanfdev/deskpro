@@ -7,7 +7,8 @@ class Range extends React.Component {
     onChange:  PropTypes.func,
     elementId: PropTypes.string,
     min:       PropTypes.number,
-    max:       PropTypes.number
+    max:       PropTypes.number,
+    disabled:  PropTypes.bool
   };
 
   static defaultProps = {
@@ -19,7 +20,7 @@ class Range extends React.Component {
   };
 
   render() {
-    const { elementId, value, min, max } = this.props;
+    const { elementId, value, min, max, disabled } = this.props;
     const inputProps = { min, max };
 
     return (
@@ -30,6 +31,7 @@ class Range extends React.Component {
         onChange={this.handleChange}
         ref={(c) => { this.input = c; }}
         value={value}
+        disabled={disabled}
         {...inputProps}
       />
     );

@@ -13,6 +13,7 @@ class IncomingCall extends React.Component {
   static propTypes = {
     me:           PropTypes.object,
     agents:       PropTypes.object,
+    people:       PropTypes.object,
     incomingCall: PropTypes.object,
     onAccept:     PropTypes.func,
     onDecline:    PropTypes.func
@@ -48,7 +49,7 @@ class IncomingCall extends React.Component {
   };
 
   render() {
-    const { me, agents, incomingCall } = this.props;
+    const { me, agents, people, incomingCall } = this.props;
     const soundsPath = `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/sounds`;
 
     let callType = 'Direct';
@@ -74,7 +75,7 @@ class IncomingCall extends React.Component {
           <source src={`${soundsPath}/incoming-call.ogg`} />
           <source src={`${soundsPath}/incoming-call.wav`} />
         </audio>
-        <CallFrom incomingCall={incomingCall} />
+        <CallFrom incomingCall={incomingCall} people={people} />
         <div className="incoming-call-type">
           <div>
             <span>{callType}</span>

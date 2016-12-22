@@ -30,11 +30,14 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TicketParticipant;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,6 +53,34 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class VoiceClientPhoneCallController extends BaseController
 {
+    /**
+     * @ApiDoc(
+     *     description="Toggle agent mute",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Rest\Put("/mute_call")
+     *
+     * @param VoicePhoneCall $phoneCall
+     * @param Request        $request
+     *
+     * @return View
+     */
+    public function muteAction(VoicePhoneCall $phoneCall, Request $request)
+    {
+        $mute        = $request->request->get('mute');
+        $participant = $phoneCall->getParticipantByPerson($this->getUser());
+        if (!$participant) {
+            throw $this->createBadRequestException('Phone call participant not found');
+        }
+
+        $this->get('twilio_adapter')->muteParticipant($phoneCall, $participant->getCallSid(), $mute);
+
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
     /**
      * @ApiDoc(
      *     description="Toggle the hold status for the end user caller",
@@ -100,21 +131,62 @@ class VoiceClientPhoneCallController extends BaseController
             $this->getManager()->persist($phoneCall);
         }
 
+        $em = $this->getManager();
+
+        // get phone call ticket
+        $messageAttribute = $em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $phoneCall,
+        ]);
+        if (!$messageAttribute) {
+            throw $this->createBadRequestException('Unable to get ticket message for the phone call');
+        }
+
+        $ticket = $messageAttribute->getMessage()->getTicket();
+
+        // add the invited agent to followers to prevent permission errors
+        $participant = new TicketParticipant();
+        $participant->setPerson($person);
+        $participant->setTicket($ticket);
+
+        $em->persist($participant);
+        $em->flush();
+
         // send agent invite
         $cm = new ClientMessage();
         $cm->setChannel('agent.voice.conference.participant-invite');
         $cm->setForPerson($person);
         $cm->setData([
-            'number'         => $phoneCall->getFromNumber(),
-            'call_id'        => $phoneCall->getId(),
-            'call_type'      => $callType,
-            'conference_sid' => $phoneCall->getConferenceSid(),
-            'from_agent_id'  => $this->getUser()->getId(),
-            'invite_type'    => $inviteType,
+            'number'           => $phoneCall->getFromNumber(),
+            'caller_person_id' => $phoneCall->getPerson() ? $phoneCall->getPerson()->getId() : null,
+            'call_id'          => $phoneCall->getId(),
+            'call_type'        => $callType,
+            'conference_sid'   => $phoneCall->getConferenceSid(),
+            'from_agent_id'    => $this->getUser()->getId(),
+            'ticket_id'        => $ticket->getId(),
+            'invite_type'      => $inviteType,
         ]);
 
-        $this->getManager()->persist($cm);
-        $this->getManager()->flush();
+        $em->persist($cm);
+        $em->flush();
+
+        // add action log
+        $log = new VoicePhoneCallLog();
+        $log->setPerson($person);
+        $log->setPhoneCall($phoneCall);
+        $log->setDetails([
+            'call_type'   => $callType,
+            'invite_type' => $inviteType,
+            'to_person'   => $person->getId(),
+        ]);
+
+        if ($callType === 'transfer') {
+            $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_TRANSFER);
+        } else {
+            $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_INVITED);
+        }
+
+        $em->persist($log);
+        $em->flush();
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -140,6 +212,21 @@ class VoiceClientPhoneCallController extends BaseController
             throw $this->createBadRequestException('Voice is not enabled for this agent');
         }
 
+        $em = $this->getManager();
+
+        // add action log
+        $log = new VoicePhoneCallLog();
+        $log->setPerson($this->getUser());
+        $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_CANCEL_INVITE);
+        $log->setPhoneCall($phoneCall);
+        $log->setDetails([
+            'to_person' => $person->getId(),
+        ]);
+
+        $em->persist($log);
+        $em->flush();
+
+        // send client notification
         $cm = new ClientMessage();
         $cm->setChannel('agent.voice.conference.participant-cancel');
         $cm->setForPerson($person);
@@ -148,8 +235,8 @@ class VoiceClientPhoneCallController extends BaseController
             'agent_id' => $person->getId(),
         ]);
 
-        $this->getManager()->persist($cm);
-        $this->getManager()->flush();
+        $em->persist($cm);
+        $em->flush();
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -175,6 +262,21 @@ class VoiceClientPhoneCallController extends BaseController
             throw $this->createBadRequestException('Voice is not enabled for this agent');
         }
 
+        $em = $this->getManager();
+
+        // add action log
+        $log = new VoicePhoneCallLog();
+        $log->setPerson($this->getUser());
+        $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_IGNORE_INVITE);
+        $log->setPhoneCall($phoneCall);
+        $log->setDetails([
+            'from_person' => $person->getId(),
+        ]);
+
+        $em->persist($log);
+        $em->flush();
+
+        // send client notification
         $cm = new ClientMessage();
         $cm->setChannel('agent.voice.conference.participant-ignore');
         $cm->setData([
@@ -182,8 +284,8 @@ class VoiceClientPhoneCallController extends BaseController
             'agent_id' => $person->getId(),
         ]);
 
-        $this->getManager()->persist($cm);
-        $this->getManager()->flush();
+        $em->persist($cm);
+        $em->flush();
 
         // try to end call for cold transfer
         $this->get('twilio_adapter')->tryEndConference($phoneCall);
@@ -207,7 +309,14 @@ class VoiceClientPhoneCallController extends BaseController
      */
     public function endCallAction(VoicePhoneCall $phoneCall)
     {
-        $this->get('twilio_adapter')->tryEndConference($phoneCall);
+        // add action log
+        $log = new VoicePhoneCallLog();
+        $log->setPerson($this->getUser());
+        $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_HANGUP);
+        $log->setPhoneCall($phoneCall);
+
+        $this->getManager()->persist($log);
+        $this->getManager()->flush();
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }

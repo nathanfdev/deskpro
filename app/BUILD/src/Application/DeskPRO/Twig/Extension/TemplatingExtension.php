@@ -43,6 +43,8 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\RegexUtils;

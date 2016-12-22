@@ -59,7 +59,7 @@ class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
      *
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\TicketMessage", inversedBy="attributes")
@@ -67,29 +67,39 @@ class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
      *
      * @var TicketMessage
      */
-    private $message;
+    protected $message;
 
     /**
      * @ORM\Column(name="name", type="string", length=250, nullable=false)
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @ORM\Column(type="string", length=5000, nullable=true)
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var int
      */
-    private $value;
+    protected $value;
 
     /**
      * @ORM\Column(type="datetime", name="date_created", nullable=false)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @Assert\NotNull()
      *
      * @var \DateTime
      */
-    private $dateCreated;
+    protected $dateCreated;
 
     /**
      * TicketMessageAttribute constructor.

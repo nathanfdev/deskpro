@@ -15,6 +15,10 @@ const voiceState = {
           agents: {
             loading: false,
             success: true
+          },
+          all: {
+            loading: false,
+            success: true
           }
         },
         records: {
@@ -69,6 +73,7 @@ const voiceState = {
         },
         collections: {
           agents: ['1', '2', '3', '4', '5'],
+          all:    ['1', '2', '3', '4', '5'],
           me:     ['1']
         }
       },
