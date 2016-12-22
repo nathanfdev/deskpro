@@ -12,12 +12,9 @@ import { CustomFieldTemplate } from './CustomFieldTemplate';
 export class ChatBeginConversation extends React.Component {
 
   static propTypes = {
-    errors:                PropTypes.object,
-    onSubmit:              PropTypes.func,
-    customFields:          PropTypes.object,
-    customFieldsLoaded:    PropTypes.bool,
-    chatDepartments:       PropTypes.object,
-    chatDepartmentsLoaded: PropTypes.bool
+    errors:       PropTypes.object,
+    onSubmit:     PropTypes.func,
+    customFields: PropTypes.object
   };
 
   constructor(props) {
@@ -33,14 +30,8 @@ export class ChatBeginConversation extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const { customFields, customFieldsLoaded, chatDepartments, chatDepartmentsLoaded } = this.props;
-
-    if (newProps.customFields !== customFields
-        || newProps.chatDepartments !== chatDepartments
-        || newProps.chatDepartmentsLoaded !== chatDepartmentsLoaded
-        || newProps.customFieldsLoaded !== customFieldsLoaded
-        || newProps.errors
-        || newProps.submit) {
+    const { customFields } = this.props;
+    if (newProps.customFields !== customFields || newProps.errors || newProps.submit) {
       this.prepareFormFields(newProps);
     }
   }
@@ -76,10 +67,7 @@ export class ChatBeginConversation extends React.Component {
   }
 
   prepareFormFields(props) {
-    const { customFields, widgetLanguage, errors, submit } = props;
-    if (!props.customFieldsLoaded || (props.allowDepartmentSelection && !props.chatDepartmentsLoaded)) {
-      return;
-    }
+    const { customFields, widgetLanguage, errors, submit, loggedIn } = props;
 
     const hiddenFields = customFields.valueSeq().filter(this.isHiddenField).map(customField =>
       <CustomField config={customField} key={customField.get('id')}>
@@ -89,34 +77,37 @@ export class ChatBeginConversation extends React.Component {
 
     let current = 0;
     const fields = [];
-    fields.push(
-      <UserInfoForm
-        title={portalPhrases.get('portal.chat.label-name')}
-        isSubmit={submit}
-        onSubmit={this.onSubmit}
-        field="name"
-        errors={errors}
-      >
-        {hiddenFields}
-        <Field select="name">
-          <Input type="text" placeholder={portalPhrases.get('portal.chat.details-placeholder')} />
-        </Field>
-      </UserInfoForm>
-    );
-    fields.push(
-      <UserInfoForm
-        title={portalPhrases.get('portal.chat.label-email')}
-        isSubmit={submit}
-        onSubmit={this.onSubmit}
-        field="email"
-        errors={errors}
-      >
-        {hiddenFields}
-        <Field select="email">
-          <Input type="text" placeholder="email@example.com" />
-        </Field>
-      </UserInfoForm>
-    );
+
+    if (!loggedIn) {
+      fields.push(
+        <UserInfoForm
+          title={portalPhrases.get('portal.chat.label-name')}
+          isSubmit={submit}
+          onSubmit={this.onSubmit}
+          field="name"
+          errors={errors}
+        >
+          {hiddenFields}
+          <Field select="name">
+            <Input type="text" placeholder={portalPhrases.get('portal.chat.details-placeholder')} />
+          </Field>
+        </UserInfoForm>
+      );
+      fields.push(
+        <UserInfoForm
+          title={portalPhrases.get('portal.chat.label-email')}
+          isSubmit={submit}
+          onSubmit={this.onSubmit}
+          field="email"
+          errors={errors}
+        >
+          {hiddenFields}
+          <Field select="email">
+            <Input type="text" placeholder="email@example.com" />
+          </Field>
+        </UserInfoForm>
+      );
+    }
 
     if (props.allowDepartmentSelection) {
       fields.push(this.getChatDepartmentField(props));
@@ -160,11 +151,6 @@ export class ChatBeginConversation extends React.Component {
 
   render() {
     const { fields, current } = this.state;
-    const { customFieldsLoaded } = this.props;
-
-    if (!customFieldsLoaded || !fields.length) {
-      return <ChatBeginLoadingSpinner />;
-    }
 
     return (
       <div>
