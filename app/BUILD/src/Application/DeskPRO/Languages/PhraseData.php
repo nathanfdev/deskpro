@@ -740,13 +740,13 @@ class PhraseData
 
         $parts   = explode('.', $group_id);
         $phrases = [];
-        if (isset(self::$reverseMap[$parts[0]])) {
-            foreach (self::$reverseMap[$parts[0]] as $prefix) {
-                $newParts = $parts;
-                array_shift($newParts);
-                array_unshift($newParts, $prefix);
-                $phrases += $this->phrase_repos->getPhrasesInGroup($language, implode('.', $newParts));
-            }
+        $groups  = isset(self::$reverseMap[$parts[0]]) ? self::$reverseMap[$parts[0]] : [$parts[0]];
+
+        foreach ($groups as $prefix) {
+            $newParts = $parts;
+            array_shift($newParts);
+            array_unshift($newParts, $prefix);
+            $phrases += $this->phrase_repos->getPhrasesInGroup($language, implode('.', $newParts));
         }
 
         return $phrases;
