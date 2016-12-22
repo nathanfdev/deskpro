@@ -51,6 +51,7 @@ class CoreExtension extends Extension
         $definition->setArguments([
             new Reference('doctrine.orm.entity_manager'),
             new Reference('request'),
+            new Reference('settings_resolver'),
         ]);
         $container->setDefinition('deskpro.api.request_auth', $definition);
 
