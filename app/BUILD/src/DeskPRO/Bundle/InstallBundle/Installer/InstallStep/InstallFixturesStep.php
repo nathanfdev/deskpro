@@ -39,6 +39,8 @@ class InstallFixturesStep extends AbstractStep
 
         $this->writeBigTitle('Initializing database');
 
+        $this->checkAutoIncrementValue();
+
         $this->writeln('We will now initialize the database. This may take a few minutes.');
 
         $fixtures = [
@@ -106,6 +108,11 @@ class InstallFixturesStep extends AbstractStep
         $this->writeln('Done!');
 
         $this->getSession()->enableFlag('install_fixtures_ok');
+    }
+
+    public function isComplete()
+    {
+        return $this->getSession()->hasFlag('install_fixtures_ok');
     }
 
     private function installOptions()
@@ -185,8 +192,37 @@ class InstallFixturesStep extends AbstractStep
         );
     }
 
-    public function isComplete()
+    /**
+     * Checks if auto_increment values are sequential. Marks step as failed if not.
+     */
+    private function checkAutoIncrementValue()
     {
-        return $this->getSession()->hasFlag('install_fixtures_ok');
+        $db = $this->getContext()->getMainContainer()->get('database_connection');
+
+        $db->insert('settings', [
+            'name'  => 'test 1',
+            'value' => 'test 1',
+        ]);
+        $firstId = (int) $db->lastInsertId();
+
+        $db->insert('settings', [
+            'name'  => 'test 2',
+            'value' => 'test 2',
+        ]);
+        $secondId = (int) $db->lastInsertId();
+
+        if (($secondId - $firstId) !== 1) {
+            $this->writeln('<error>Your database is configured to use non-sequential auto-increment values. This is common with multi-master configurations such as Galera Cluster.</error>');
+            $this->writeln('<error>Please refer to this article for more information about how to use DeskPRO with a database cluster:</error>');
+            $this->writeln('<error>https://support.deskpro.com/en/kb/articles/378</error>');
+            $this->writeln('<error>The installation cannot continue until auto-increment values are sequential.</error>');
+
+            $this->markAsFailed();
+        }
+
+        // Cleanup test operations
+        $db->delete('settings', ['id' => $firstId]);
+        $db->delete('settings', ['id' => $secondId]);
+        $db->executeQuery('ALTER TABLE settings AUTO_INCREMENT='.$firstId);
     }
 }
