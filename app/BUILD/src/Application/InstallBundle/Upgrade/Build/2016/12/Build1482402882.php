@@ -26,39 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+namespace Application\InstallBundle\Upgrade\Build;
 
-namespace Application\DeskPRO\Tickets\Actions;
-
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-
-/**
- * Interface MacroActionInterface.
- */
-interface MacroActionInterface
+class Build1482402882 extends AbstractBuild
 {
-    /**
-     * Return an array of macros that the user does not have permission to use.
-     * An empty array or null means there are no permission errors.
-     *
-     * @param Person                   $person
-     * @param Ticket                   $ticket
-     * @param ExecutorContextInterface $context
-     *
-     * @return array|null
-     */
-    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context);
+    public function run()
+    {
+        $this->out('Add encryption fields to email accounts');
 
-    /**
-     * @param Person                   $person
-     * @param Ticket                   $ticket
-     * @param ExecutorContextInterface $context
-     */
-    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context);
+        $this->execDbQuery('default', 'ALTER TABLE email_accounts ADD cert_blob_id INT DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE email_accounts ADD CONSTRAINT FK_C1AE81E5A63D3520 FOREIGN KEY (cert_blob_id) REFERENCES blobs (id) ON DELETE SET NULL');
+        $this->execDbQuery('default', 'CREATE INDEX IDX_C1AE81E5A63D3520 ON email_accounts (cert_blob_id)');
+
+        $this->execDbQuery('default', 'ALTER TABLE email_accounts ADD key_blob_id INT DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE email_accounts ADD CONSTRAINT FK_C1AE81E58FE8AA9B FOREIGN KEY (key_blob_id) REFERENCES blobs (id) ON DELETE SET NULL');
+        $this->execDbQuery('default', 'CREATE INDEX IDX_C1AE81E58FE8AA9B ON email_accounts (key_blob_id)');
+
+        $this->execDbQuery('default', 'ALTER TABLE email_accounts ADD key_pass_phrase VARCHAR(255) DEFAULT NULL');
+    }
 }

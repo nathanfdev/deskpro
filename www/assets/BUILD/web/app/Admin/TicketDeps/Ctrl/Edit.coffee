@@ -228,6 +228,7 @@ define [
       promise.error( (info, code) =>
         @stopSpinner('saving_dep')
         @applyErrorResponseToView(info)
+        @Growl.error info?.error_message if info?.error_message
       )
 
       deferred2.promise.then(=>

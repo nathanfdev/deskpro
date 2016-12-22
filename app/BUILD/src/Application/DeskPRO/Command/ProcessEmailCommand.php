@@ -32,9 +32,7 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
-use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\EmailGateway\Runner;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\Logger;
@@ -74,11 +72,11 @@ class ProcessEmailCommand extends ContainerAwareCommand
     {
         $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-        $success_string = $input->getOption('success-string');
-        $error_string   = $input->getOption('error-string');
-        $insert_only    = $input->getOption('insert-only');
+        $successString = $input->getOption('success-string');
+        $errorString   = $input->getOption('error-string');
+        $insertOnly    = $input->getOption('insert-only');
 
-        $expect_pending = $input->getOption('expect-pending');
+        $expectPending = $input->getOption('expect-pending');
 
         if ($input->hasOption('to') && $input->getOption('to')) {
             $input->setOption('account', $input->getOption('to'));
@@ -89,7 +87,8 @@ class ProcessEmailCommand extends ContainerAwareCommand
         //----------------------------------------
 
         if ($input->getOption('source')) {
-            $source = $this->getContainer()->getEm()->find('DeskPRO:EmailSource', $input->getOption('source'));
+            /** @var EmailSource $source */
+            $source = $this->getContainer()->getEm()->find(EmailSource::class, $input->getOption('source'));
 
             if (!$source) {
                 $output->writeln('<error>Could not find source</error>');
@@ -97,17 +96,18 @@ class ProcessEmailCommand extends ContainerAwareCommand
                 return 1;
             }
 
-            $reader = new EzcReader();
+            $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
+            $reader->setEmailAccount($source->getEmailAccount());
             $reader->setRawSource($source['raw_source']);
-            $account = $source->email_account;
+            $account = $source->getEmailAccount();
 
             if (!$account) {
                 $account = $this->findEmailAccountFrom($reader);
             }
 
-            if ($expect_pending) {
-                if ($source->status !== EmailSource::STATUS_INSERTED && $source->status !== EmailSource::STATUS_RETRY) {
-                    $output->writeln(sprintf('<error>Status is %s (expected inserted or retry)</error>', $source->status));
+            if ($expectPending) {
+                if ($source->getStatus() !== EmailSource::STATUS_INSERTED && $source->getStatus() !== EmailSource::STATUS_RETRY) {
+                    $output->writeln(sprintf('<error>Status is %s (expected inserted or retry)</error>', $source->getStatus()));
 
                     return 1;
                 }
@@ -120,65 +120,65 @@ class ProcessEmailCommand extends ContainerAwareCommand
         } else {
             if ($input->getOption('file')) {
                 if (file_exists($input->getOption('file'))) {
-                    $raw_source = file_get_contents($input->getOption('file'));
+                    $rawSource = file_get_contents($input->getOption('file'));
                 } else {
                     $output->writeln('<error>File path does not exist: '.$input->getOption('file').'</error>');
 
                     return 1;
                 }
             } else {
-                $raw_source = '';
+                $rawSource = '';
                 while (!feof(STDIN)) {
-                    $raw_source .= fread(STDIN, 1024);
+                    $rawSource .= fread(STDIN, 1024);
                 }
             }
 
-            $raw_source = trim($raw_source);
-            if (!$raw_source) {
+            $rawSource = trim($rawSource);
+            if (!$rawSource) {
                 $output->writeln('<error>No email source file provided</error>');
 
                 return 1;
             }
 
-            $raw_source = Strings::standardEol($raw_source);
+            $rawSource = Strings::standardEol($rawSource);
 
-            $header_end = strpos($raw_source, "\n\n");
-            if ($header_end === false) {
+            $headerEnd = strpos($rawSource, "\n\n");
+            if ($headerEnd === false) {
                 // Means an empty body (eg message with only subject)
                 // But we trimmed above so the \n\n sep would be trimmed off
-                $raw_source .= "\n\n";
-                $header_end = strpos($raw_source, "\n\n");
+                $rawSource .= "\n\n";
+                $headerEnd = strpos($rawSource, "\n\n");
             }
 
-            $raw_headers = trim(substr($raw_source, 0, $header_end));
+            $rawHeaders = trim(substr($rawSource, 0, $headerEnd));
 
-            if (isset($raw_headers[4000])) {
-                $raw_headers = substr($raw_headers, 0, 4000);
+            if (isset($rawHeaders[4000])) {
+                $rawHeaders = substr($rawHeaders, 0, 4000);
             }
 
-            $reader = new EzcReader();
-            $reader->setRawSource($raw_source);
+            $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
+            $reader->setRawSource($rawSource);
             $account = $this->findEmailAccountFrom($reader);
 
             $source = new EmailSource();
             $source->fromArray([
                 'email_account' => $account,
-                'headers'       => $raw_headers,
+                'headers'       => $rawHeaders,
                 'status'        => 'inserted',
             ]);
 
             // Rough matching, just for info purposes when browsing a list
-            $source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $raw_headers) ?: '';
-            $source->header_cc      = Strings::extractRegexMatch('#^Cc:\s*(.*?)$#m', $raw_headers) ?: '';
-            $source->header_from    = Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $raw_headers) ?: '';
-            $source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $raw_headers) ?: '';
+            $source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $rawHeaders) ?: '';
+            $source->header_cc      = Strings::extractRegexMatch('#^Cc:\s*(.*?)$#m', $rawHeaders) ?: '';
+            $source->header_from    = Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $rawHeaders) ?: '';
+            $source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $rawHeaders) ?: '';
             $source->object_type    = 'ticket';
 
             $t = microtime(true);
             $output->writeln('<info>Saving blob...</info>');
 
-            $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
-                $raw_source,
+            $blob = $this->getContainer()->getBlobStorage()->createBlobRecordFromString(
+                $rawSource,
                 'email.eml',
                 'message/rfc822'
             );
@@ -187,10 +187,10 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
             // Set the copied raw source or else $source->getRawSource() will
             // attempt to load it from the blob storage which is wasteful (eg could read back from s3 what we just wrote)
-            $source->_raw = $raw_source;
+            $source->_raw = $rawSource;
 
-            App::getOrm()->persist($source);
-            App::getOrm()->flush();
+            $this->getContainer()->getEm()->persist($source);
+            $this->getContainer()->getEm()->flush();
 
             $output->writeln(sprintf('<info>Saved email source #'.$source->getId().' (took %.5s)</info>', microtime(true) - $t));
         }
@@ -199,66 +199,66 @@ class ProcessEmailCommand extends ContainerAwareCommand
         // Get gateway account
         //----------------------------------------
 
-        $account_id = $input->getOption('account');
+        $accountId = $input->getOption('account');
 
-        if (!$source->email_account && !$account_id) {
+        if (!$source->email_account && !$accountId) {
             $output->writeln('<error>Could not find account for email. Specify an account using --account</error>');
 
             $source->status     = 'error';
             $source->error_code = 'invalid_address';
-            App::getOrm()->persist($source);
-            App::getOrm()->flush();
+            $this->getContainer()->getEm()->persist($source);
+            $this->getContainer()->getEm()->flush();
 
             return 1;
         }
 
-        if ($account_id) {
-            $account_manager = App::$container->getEmailAccountManager();
+        if ($accountId) {
+            $accountManager = $this->getContainer()->getEmailAccountManager();
 
-            if (ctype_digit($account_id)) {
-                if (!$account_manager->hasAcccount($account_id)) {
-                    $output->writeln("<error>No account with ID $account_id</error>");
+            if (ctype_digit($accountId)) {
+                if (!$accountManager->hasAcccount($accountId)) {
+                    $output->writeln("<error>No account with ID $accountId</error>");
 
                     return 1;
                 }
 
-                $account = $account_manager->getAccount($account_id);
+                $account = $accountManager->getAccount($accountId);
             } else {
-                $account = $account_manager->findAccountForEmailAddress($account_id);
+                $account = $accountManager->findAccountForEmailAddress($accountId);
 
                 if (!$account) {
-                    $output->writeln("<error>No account with address $account_id</error>");
+                    $output->writeln("<error>No account with address $accountId</error>");
 
                     $source->status     = 'error';
                     $source->error_code = 'invalid_address';
-                    App::getOrm()->persist($source);
-                    App::getOrm()->flush();
+                    $this->getContainer()->getEm()->persist($source);
+                    $this->getContainer()->getEm()->flush();
 
                     return 1;
                 }
             }
 
             if ($input->getOption('account-force') && !$account->is_enabled) {
-                $output->writeln("<error>Account $account_id is disabled (use --account-force if you want to use it anyway)</error>");
+                $output->writeln("<error>Account $accountId is disabled (use --account-force if you want to use it anyway)</error>");
 
                 $source->status     = 'error';
                 $source->error_code = 'invalid_address';
-                App::getOrm()->persist($source);
-                App::getOrm()->flush();
+                $this->getContainer()->getEm()->persist($source);
+                $this->getContainer()->getEm()->flush();
             }
         }
 
         if ($source->email_account !== $account) {
             $source->email_account = $account;
-            App::getOrm()->persist($source);
-            App::getOrm()->flush();
+            $this->getContainer()->getEm()->persist($source);
+            $this->getContainer()->getEm()->flush();
         }
 
         //----------------------------------------
         // Run the gateway
         //----------------------------------------
 
-        if (!$insert_only) {
+        if (!$insertOnly) {
             $logger = new Logger();
             $logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));
             $logger->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
@@ -274,17 +274,17 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $result = $runner->executeSource($source, $reader);
 
             if ($result) {
-                if ($success_string) {
+                if ($successString) {
                     echo "\n";
-                    echo $success_string;
+                    echo $successString;
                     echo "\n";
                 }
 
                 return 0;
             } else {
-                if ($error_string) {
+                if ($errorString) {
                     echo "\n";
-                    echo $error_string;
+                    echo $errorString;
                     echo "\n";
                 }
 
@@ -296,7 +296,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
             if ($DP_ENV->getConfig('async_email_processing.process')) {
                 /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
-                $proc = App::getContainer()->get('in_email.proc_queue');
+                $proc = $this->getContainer()->get('in_email.proc_queue');
                 $proc->enqueueNewEmail($source);
             }
         }
@@ -311,15 +311,15 @@ class ProcessEmailCommand extends ContainerAwareCommand
      */
     private function findEmailAccountFrom(AbstractReader $reader)
     {
-        $account_manager = App::$container->getEmailAccountManager();
+        $accountManager = $this->getContainer()->getEmailAccountManager();
 
         foreach ($reader->getReceivedAddresses() as $email) {
-            $account = $account_manager->findAccountForEmailAddress($email->email, 'is_enabled');
+            $account = $accountManager->findAccountForEmailAddress($email->email, 'is_enabled');
             if ($account) {
                 return $account;
             }
         }
 
-        return;
+        return null;
     }
 }

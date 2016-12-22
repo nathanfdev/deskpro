@@ -81,3 +81,9 @@ export const companyLogoSelector = createSelector(
   companyOptionsSelector,
   settings => settings.get('logo')
 );
+
+
+export const buildNumSelector = createSelector(
+  widgetSessionSelector,
+  sessionSettings => sessionSettings.get('build_num')
+);

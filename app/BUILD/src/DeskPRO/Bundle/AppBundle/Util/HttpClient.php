@@ -32,8 +32,16 @@ use Composer\CaBundle\CaBundle;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 
+/**
+ * Class HttpClient.
+ */
 class HttpClient extends Client
 {
+    /**
+     * Constructor.
+     *
+     * @param array $config
+     */
     public function __construct($config = [])
     {
         global $DP_ENV;
@@ -48,6 +56,7 @@ class HttpClient extends Client
         if (false !== @$config[RequestOptions::VERIFY] && !$usSysCABundle) {
             $config[RequestOptions::VERIFY] = CaBundle::getBundledCaBundlePath();
         }
+
         parent::__construct($config);
     }
 }

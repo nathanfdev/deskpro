@@ -3782,7 +3782,7 @@ class TicketController extends AbstractController
                 $message = $this->em->getRepository(TicketMessage::class)->find($message_id);
 
                 if ($message->email_source) {
-                    $r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+                    $r = $this->getContainer()->getEmailEzcReaderFactory()->create();
                     $r->setRawSource($message->email_source->raw_source);
                     $body_html = $r->getBodyHtml() ? $r->getBodyHtml()->getBodyUtf8() : null;
                     $body_text = $r->getBodyText() ? $r->getBodyText()->getBodyUtf8() : null;

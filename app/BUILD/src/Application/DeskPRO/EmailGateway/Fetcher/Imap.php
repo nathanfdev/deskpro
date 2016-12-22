@@ -223,7 +223,7 @@ class Imap extends AbstractFetcher
         $this->logger->log(sprintf('Message UID: %s', $raw_message->uid), 'debug');
         $this->logger->log(sprintf('Message size: %s bytes', $raw_message->size), 'debug');
 
-        if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
+        if ($this->maxSize && $raw_message->size && $raw_message->size > $this->maxSize) {
             // If we are here, it means that message is larger than the max size
             // So, we won't store the whole message, only the headers.
             $raw_message->content = $this->storage->getRawHeaders($message_uid)."\n\n";

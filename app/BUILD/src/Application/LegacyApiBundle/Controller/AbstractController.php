@@ -336,10 +336,18 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             if ($status == 429) {
                 $em->remove($log);
             } else {
-                $log->response = [
+                $settings              = $this->get('settings_resolver')->getGlobalSettings();
+                $maxResponseBodyLength = $settings->get('api_log.max_response_body_length', 1024 * 1024);
+
+                $encodedData = json_encode($data);
+                if ($maxResponseBodyLength && mb_strlen($encodedData, '8bit') > $maxResponseBodyLength) {
+                    $data = substr($encodedData, 0, $maxResponseBodyLength);
+                }
+
+                $log->setResponse([
                     'status'  => $status,
                     'content' => $data,
-                ];
+                ]);
             }
             $em->flush();
         }

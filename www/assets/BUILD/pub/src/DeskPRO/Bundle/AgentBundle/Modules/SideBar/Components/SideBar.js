@@ -58,6 +58,12 @@ export class SideBarContainer extends SeparateComponent {
     window.document.addEventListener('dpChangeSection', (e) => {
       this.changeSection(`menu_${e.detail.section}`);
     });
+    window.document.addEventListener('dpHashChange', (e) => {
+      SideBarContainer.closeIframes();
+      setTimeout(() => {
+        window.DeskPRO_Window.loadHashPath(e.detail.hash);
+      }, 5);
+    });
   }
 
   componentWillMount = () => {

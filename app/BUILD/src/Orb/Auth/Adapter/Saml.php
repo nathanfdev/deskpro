@@ -94,6 +94,9 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     protected function getSamlSettings()
     {
         $settings = [
+            'security' => [
+                'requestedAuthnContext' => false,
+            ],
             'sp' => [
                 'entityId'                 => $this->getMetadataXmlUrl(),
                 'assertionConsumerService' => [
@@ -118,9 +121,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         ];
 
         if ($this->options['sign_authn_request']) {
-            $settings['security'] = [
-                'authnRequestsSigned' => true,
-            ];
+            $settings['security']['authnRequestsSigned'] = true;
 
             $settings['sp']['privateKey'] = $this->options['sp_private_key'];
             $settings['sp']['x509cert']   = $this->options['sp_public_x509'];

@@ -6,6 +6,7 @@ services:
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@request"
+      - "@settings_resolver"
 
   api_view_representation_factory:
     class: DeskPRO\Bundle\ApiBundle\View\ApiViewRepresentationFactory

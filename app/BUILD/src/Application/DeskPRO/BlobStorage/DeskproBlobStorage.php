@@ -439,7 +439,7 @@ class DeskproBlobStorage implements Loggable
     public function createBlobRecordFromFile($source_path, $filename, $content_type, array $props = null)
     {
         $blob_info = $this->createBlobRowFromFile($source_path, $filename, $content_type, $props);
-        $blob      = $this->em->find('DeskPRO:Blob', $blob_info['id']);
+        $blob      = $this->em->find(BlobEntity::class, $blob_info['id']);
 
         return $blob;
     }
@@ -584,7 +584,7 @@ class DeskproBlobStorage implements Loggable
     public function createBlobRecordFromString($source_data, $filename, $content_type, array $props = null)
     {
         $blob_info = $this->createBlobRowFromString($source_data, $filename, $content_type, $props);
-        $blob      = $this->em->find('DeskPRO:Blob', $blob_info['id']);
+        $blob      = $this->em->find(BlobEntity::class, $blob_info['id']);
 
         return $blob;
     }

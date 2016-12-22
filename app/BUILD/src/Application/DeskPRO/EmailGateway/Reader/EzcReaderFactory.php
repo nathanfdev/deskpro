@@ -26,39 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+namespace Application\DeskPRO\EmailGateway\Reader;
 
-namespace Application\DeskPRO\Tickets\Actions;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-
-/**
- * Interface MacroActionInterface.
- */
-interface MacroActionInterface
+class EzcReaderFactory
 {
     /**
-     * Return an array of macros that the user does not have permission to use.
-     * An empty array or null means there are no permission errors.
+     * EzcReaderFactory constructor.
      *
-     * @param Person                   $person
-     * @param Ticket                   $ticket
-     * @param ExecutorContextInterface $context
-     *
-     * @return array|null
+     * @param EmailAccountManager $emailAccountManager
+     * @param DeskproBlobStorage  $blobStorage
+     * @param AppEnv              $environment
      */
-    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context);
+    public function __construct(EmailAccountManager $emailAccountManager, DeskproBlobStorage $blobStorage, AppEnv $environment)
+    {
+        $this->emailAccountManager = $emailAccountManager;
+        $this->blobStorage         = $blobStorage;
+        $this->environment         = $environment;
+    }
 
     /**
-     * @param Person                   $person
-     * @param Ticket                   $ticket
-     * @param ExecutorContextInterface $context
+     * @return EzcReader
      */
-    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context);
+    public function create()
+    {
+        return new EzcReader(
+            $this->emailAccountManager,
+            $this->blobStorage,
+            $this->environment
+        );
+    }
 }

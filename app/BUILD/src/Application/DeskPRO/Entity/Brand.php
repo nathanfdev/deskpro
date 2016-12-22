@@ -187,6 +187,16 @@ class Brand extends DomainObject
     }
 
     /**
+     * @return \Doctrine\Common\Collections\Collection|static
+     */
+    public function getTicketDepartments()
+    {
+        return $this->departments->filter(function (Department $department) {
+            return $department->isTicketsEnabled();
+        });
+    }
+
+    /**
      * @param Department $department
      *
      * @return $this
@@ -214,13 +224,13 @@ class Brand extends DomainObject
     }
 
     /**
-     * @param Department $searchDepartment
+     * @param Department $department
      *
      * @return bool
      */
-    public function hasDepartment(Department $searchDepartment)
+    public function hasDepartment(Department $department)
     {
-        return $this->departments->contains($searchDepartment);
+        return $this->departments->contains($department);
     }
 
     public function __toString()

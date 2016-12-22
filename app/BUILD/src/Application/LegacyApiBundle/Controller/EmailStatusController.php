@@ -332,7 +332,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
         $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->blob));
 
         $info = '';
@@ -376,7 +376,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
         $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->blob));
 
         $text = null;
@@ -511,7 +511,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
         $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->getBlob()));
 
         $info = '';
@@ -555,7 +555,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
         $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->getBlob()));
 
         $text = null;

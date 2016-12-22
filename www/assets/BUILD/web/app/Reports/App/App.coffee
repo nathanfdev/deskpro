@@ -58,8 +58,16 @@ define [
   # IE/Edge Hack http://stackoverflow.com/questions/1481251/what-does-document-domain-document-domain-do
   document.domain = document.domain;
 
-#  if window.parent == window.self
-#    window.location.href = window.DP_BASE_URL + 'agent/#reports:' + (window.location.hash.replace(/^#/, '') || '/')
+  if window.parent == window.self
+    window.location.href = window.DP_BASE_URL + 'agent/#reports:' + (window.location.hash.replace(/^#/, '') || '/')
+  else
+    # open agent links in parent window when clicking in iframe
+    $(document).on 'click', (e) =>
+      href = $(e.target).attr('href')
+      if !href || 0 != href.indexOf('/agent/#') then return
+      e.preventDefault()
+      event = new CustomEvent('dpHashChange', { detail: { hash: href.replace(/.+(#.+)/, "$1") } } )
+      window.parent.document.dispatchEvent(event)
 
   try
     if window.parent?.DP_FRAME_OVERLAYS?.reports

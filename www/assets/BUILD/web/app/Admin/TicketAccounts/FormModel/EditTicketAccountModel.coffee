@@ -37,6 +37,11 @@ define [
         @form.with_email_aliases = false
         @form.other_addresses = ''
 
+      @form.encryption_enabled = (@account.cert_blob? || @account.key_blob?);
+      @form.cert_file = @account.cert_blob?.filename
+      @form.key_file = @account.key_blob?.filename
+      @form.key_pass_phrase = @account.key_pass_phrase
+
       #--------------------
       # Trigger
       #--------------------

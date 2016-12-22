@@ -216,6 +216,32 @@
 				{% endfor %}
 			</ul>
 		{%endif%}
+		{% set attribute = "signed" %}
+		{%  if message.getAttribute("signed") %}
+			<ul class="encryption {% if message.getAttribute("signed").getValue() == 1 %}valid{% else %}invalid{% endif %}">
+				<li>
+                    {% if message.getAttribute("signed").getValue() == 1 %}
+						<i class="icon-shield"></i> {{ phrase('agent.tickets.signature_valid') }}
+					{% else %}
+						<i class="icon-exclamation text-danger"></i> {{ phrase('agent.tickets.signature_invalid') }}
+					{% endif %}
+				</li>
+			</ul>
+		{% endif %}
+        {%  if message.getAttribute("decrypted") %}
+			<ul class="encryption valid">
+				<li>
+					<i class="icon-lock"></i> {{ phrase('agent.tickets.decrypted') }}
+				</li>
+			</ul>
+        {% endif %}
+        {%  if message.getAttribute("decryption_error") %}
+			<ul class="encryption invalid">
+				<li>
+					<i class="icon-exclamation"></i> {{ phrase('agent.tickets.decryption_error') }}
+				</li>
+			</ul>
+        {% endif %}
 		{% if ticket_fwd_logs[message.id] %}
 			<ul class="attachment-list fwd-list">
 				{% for log in ticket_fwd_logs[message.id] %}
