@@ -23,7 +23,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
       area: "AREA"
       simple_area: "AREA"
       pie: "PIE"
-      table: "table"
+      table: "TABLE"
       simple_stat: "STATS"
       group_stats_table: "STATS TABLE"
       group_stats_list: "STATS LIST"

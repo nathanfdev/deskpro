@@ -42,18 +42,6 @@
             <i class="spinner-big-circle"></i>
         </div>
         <ul class="stat-list"  ng-show="loaded">
-            {#<li class="active">#}
-                {#<span class="mark"></span>#}
-                {#<h1>Number of tickets grouped by <a href="#" class="select-data">Awaiting Agent <i class="fa fa-caret-down"></i></a> and something else.</h1>#}
-                {#<p>#}
-                    {#Print this page to PDF for the complete set of vectors. Or to use on the desktop, install FontAwesome.otf, set it as the font in your application, and copy and paste the icons (not the unicode) directly from this page into your designs.#}
-                    {#<a href="#" class="stat-label"><i class="fa fa-tag"></i> Agents</a> <a href="#" class="stat-label"><i class="fa fa-tag"></i> Agents</a>#}
-                {#</p>#}
-                {#<div class="controls">#}
-                    {#<a href="./reports-main.html">Preview <i class="fa fa-external-link"></i></a> <a href="./reports-main.html">Insert into report</a>#}
-                {#</div>#}
-            {#</li>#}
-
             <li ng-class="{'active': report.id == widget.widget_id}"
                 ng-repeat="report in prefilteredReports | filter:filterBySearchText track by $index">
                 <span ng-click="makeChoice(report)" class="mark"></span>
@@ -74,24 +62,6 @@
                     <a class='link-pointer' ng-click="insert()">Insert into report</a>
                 </div>
             </li>
-
-            {#<li>
-                <span class="mark"></span>
-                <h1>Number of tickets grouped by <a href="#" class="select-data">Field 1 <i class="fa fa-caret-down"></i></a> &amp; <a href="#" class="select-data">Field 2 <i class="fa fa-caret-down"></i></a>.</h1>
-                <p><a href="#" class="stat-label"><i class="fa fa-tag"></i> Agents</a> <a href="#" class="stat-label"><i class="fa fa-tag"></i> Agents</a></p>
-                <div class="select-data-dropdown">
-                    <ul>
-                        <li><a href="#">Agent</a></li>
-                        <li><a href="#">User</a></li>
-                        <li><a href="#">Awaiting User</a></li>
-                        <li><a hrefRD="#">Awaiting Agent</a></li>
-                        <li><a href="#">Resolved</a></li>
-                        <li><a href="#">Agent</a></li>
-                    </ul>
-                </div>
-            </li>
-
-          #}
         </ul>
     </div>
 
