@@ -330,7 +330,6 @@ define [
 
 
     onFileSelect: (files, type) ->
-      @$scope.uploading = true
       if (!@$scope.files)
         @$scope.files = {}
       @$scope.files[type] = files[0]
@@ -349,12 +348,10 @@ define [
           url: @Api2.formatUrl('/email_accounts/'+@form_model.account.id+'/encryption'),
           data:{ cert: @$scope.files.certificate, key: @$scope.files.key, pass_phrase: @form_model.form.key_pass_phrase }
         }).success( (data) =>
-          @$scope.uploading = false
           @setCertificate data.data.cert_blob
           @setKey data.data.key_blob
           return resolve()
         ).error( (data) =>
-          @$scope.uploading = false
           return reject(data?.error_message || 'Error')
         )
       )
