@@ -5468,13 +5468,19 @@ h1.fancy-header {
   }
 
   .button {
-    width: 34%;
-    border: 1px solid $btn-primary-bg;
-    border-bottom: none;
-    background: $btn-primary-bg;
-    text-align: center;
-    text-shadow: none;
-    margin-top: 15px;
+    &:not(.attach-file) {
+      width: 34%;
+      border: 1px solid $btn-primary-bg;
+      border-bottom: none;
+      background: $btn-primary-bg;
+      text-align: center;
+      text-shadow: none;
+      margin-top: 15px;
+    }
+
+    &.attach-file {
+      margin-top: 10px;
+    }
   }
 
   &:before {
