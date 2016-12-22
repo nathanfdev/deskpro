@@ -1,24 +1,49 @@
 <?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 /**
- * Created by PhpStorm.
- * User: Den
- * Date: 16.12.2014
- * Time: 2:30
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Service;
 
-use \Doctrine\ORM\EntityManager;
-
-use Application\DeskPRO\Entity\ReportDashboard as DashboardEntity;
-use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\ReportDashboard as Dashboard;
 use Application\DeskPRO\Entity\ReportDashboardPermission as Permission;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
+use Doctrine\ORM\EntityManager;
 
 class DashboardPermissions
 {
     const PERMISSION_FULL = 2;
+
     const PERMISSION_VIEW = 1;
+
     const PERMISSION_NONE = 0;
 
     /**
@@ -30,104 +55,107 @@ class DashboardPermissions
     }
 
     /**
-     * @param PersonEntity    $person
-     * @param DashboardEntity $dashboard
+     * @param Person    $person
+     * @param Dashboard $dashboard
      *
      * @return mixed
      */
-    public function isAllowedToEdit(PersonEntity $person, DashboardEntity $dashboard)
+    public function isAllowedToEdit(Person $person, Dashboard $dashboard)
     {
         $person->loadHelper('DashboardPermissions');
+
         return $person->getHelper('DashboardPermissions')->isAllowedToEdit($dashboard);
     }
 
     /**
-     * @param PersonEntity    $person
-     * @param DashboardEntity $dashboard
+     * @param Person    $person
+     * @param Dashboard $dashboard
      *
      * @return mixed
      */
-    public function isAllowedToView(PersonEntity $person, DashboardEntity $dashboard)
+    public function isAllowedToView(Person $person, Dashboard $dashboard)
     {
         $person->loadHelper('DashboardPermissions');
+
         return $person->getHelper('DashboardPermissions')->isAllowedToView($dashboard);
     }
 
     /**
-     * @param DashboardEntity $dashboard
+     * @param Dashboard $dashboard
      */
-    public function getPermissions(DashboardEntity $dashboard)
+    public function getPermissions(Dashboard $dashboard)
     {
         $this->em
-            ->getRepository('DeskPRO:ReportDashboardPermission')
+            ->getRepository(Permission::class)
             ->findBy(
-                array(
-                    'dashboard'=>$dashboard->getId(),
-                )
+                [
+                    'dashboard' => $dashboard->getId(),
+                ]
             );
     }
 
     /**
-     * @param PersonEntity    $person
-     * @param DashboardEntity $dashboard
+     * @param Person    $person
+     * @param Dashboard $dashboard
      *
      * @return Permission[]|Permission
      */
-    public function getPersonPermissions(PersonEntity $person, DashboardEntity $dashboard = null)
+    public function getPersonPermissions(Person $person, Dashboard $dashboard = null)
     {
-        $criteria = array(
+        $criteria = [
             'person' => $person->getId(),
-        );
-        if($dashboard) {
+        ];
+        if ($dashboard) {
             $criteria['dashboard'] = $dashboard->getId();
-            $permissions = $this->em->getRepository('DeskPRO:ReportDashboardPermission')->findOneBy(
+            $permissions           = $this->em->getRepository(Permission::class)->findOneBy(
                 $criteria
             );
         } else {
-            $permissions = $this->em->getRepository('DeskPRO:ReportDashboardPermission')->findBy(
+            $permissions = $this->em->getRepository(Permission::class)->findBy(
                 $criteria
             );
         }
 
-        if($permissions){
+        if ($permissions) {
             return $permissions;
         }
+
         return false;
     }
 
     /**
-     * @param PersonEntity    $person
-     * @param DashboardEntity $dashboard
-     * @param string          $permission
+     * @param Person    $person
+     * @param Dashboard $dashboard
+     * @param string    $permission
      */
-    public function setPermissions(PersonEntity $person, DashboardEntity $dashboard, $permission)
+    public function setPermissions(Person $person, Dashboard $dashboard, $permission)
     {
         $personPermissions = $this->getPersonPermissions($person, $dashboard);
-        if(!$personPermissions) {
+        if (!$personPermissions && $permission !== self::PERMISSION_NONE) {
             $personPermissions = new Permission();
             $personPermissions->setDashboard($dashboard)->setPerson($person);
         }
-        switch($permission)
-        {
-            case self::PERMISSION_FULL:
-                $personPermissions->setName(Permission::FULL);
-                $this->save($personPermissions);
-                break;
-            case self::PERMISSION_VIEW:
-                $personPermissions->setName(Permission::VIEW);
-                $this->save($personPermissions);
-                break;
-            case self::PERMISSION_NONE:
-                $this->em->remove($personPermissions);
-                $this->em->flush($personPermissions);
-                break;
+        if ($personPermissions) {
+            switch ($permission) {
+                case self::PERMISSION_FULL:
+                    $personPermissions->setName(Permission::FULL);
+                    $this->save($personPermissions);
+                    break;
+                case self::PERMISSION_VIEW:
+                    $personPermissions->setName(Permission::VIEW);
+                    $this->save($personPermissions);
+                    break;
+                case self::PERMISSION_NONE:
+                    $this->em->remove($personPermissions);
+                    $this->em->flush($personPermissions);
+                    break;
+            }
         }
     }
 
     protected function mapPermissions($permissions)
     {
-        switch($permissions)
-        {
+        switch ($permissions) {
             case Permission::FULL:
                 return self::PERMISSION_FULL;
             case Permission::VIEW:
@@ -138,94 +166,94 @@ class DashboardPermissions
     }
 
     /**
-     * @param DashboardEntity $dashboard
+     * @param Dashboard $dashboard
      *
      * @return Permission[]
      */
-    protected function getDashboardPermissions(DashboardEntity $dashboard)
+    protected function getDashboardPermissions(Dashboard $dashboard)
     {
         /** @var Permission[] $permissions */
-        $permissions = $this->em->getRepository('DeskPRO:ReportDashboardPermission')->findBy(
-            array('dashboard' => $dashboard->getId())
+        $permissions = $this->em->getRepository(Permission::class)->findBy(
+            ['dashboard' => $dashboard->getId()]
         );
+
         return $permissions;
     }
 
     protected function getAllAgents()
     {
-        $personRepository = $this->em->getRepository('DeskPRO:Person');
-        $agents = $personRepository->getAgents();
+        /** @var PersonRepository $personRepository */
+        $personRepository = $this->em->getRepository(Person::class);
+        $agents           = $personRepository->getAgents();
+
         return $agents;
     }
 
     /**
      * @param $agent_id
      *
-     * @return PersonEntity
+     * @return Person
      */
     public function getAgent($agent_id)
     {
         /** @var PersonRepository $personRepository */
-        $personRepository = $this->em->getRepository("DeskPRO:Person");
+        $personRepository = $this->em->getRepository(Person::class);
+
         return $personRepository->getAgent($agent_id);
     }
 
     public function getNewDashboardPermissions()
     {
         $agents = $this->getAllAgents();
-        $data = array();
-        foreach($agents as $agent)
-        {
-            /** @var PersonEntity $agent */
-            $data[$agent->getId()] = array(
+        $data   = [];
+        foreach ($agents as $agent) {
+            /* @var Person $agent */
+            $data[$agent->getId()] = [
                 'permissions' => self::PERMISSION_NONE,
-                'id' => $agent->getId(),
-            );
-            $data[$agent->getId()]['name'] = $agent->getDisplayName();
+                'id'          => $agent->getId(),
+            ];
+            $data[$agent->getId()]['name']   = $agent->getDisplayName();
             $data[$agent->getId()]['avatar'] = $agent->getPictureUrl();
         }
         $data = array_values($data);
+
         return $data;
     }
 
-    public function getApiDashboardPermissions(DashboardEntity $dashboard)
+    public function getApiDashboardPermissions(Dashboard $dashboard)
     {
-
         $permissions = $this->getDashboardPermissions($dashboard);
-        $agents = $this->getAllAgents();
-        $data = array();
+        $agents      = $this->getAllAgents();
+        $data        = [];
 
-        foreach($permissions as $permission)
-        {
-            if(isset($agents[$permission->getAgent()->getId()])) {
-                $data[$permission->getAgent()->getId()] = array(
+        foreach ($permissions as $permission) {
+            if (isset($agents[$permission->getAgent()->getId()])) {
+                $data[$permission->getAgent()->getId()] = [
                     'permissions' => $this->mapPermissions($permission->getName()),
-                    'id' => $permission->getAgent()->getId(),
-                );
+                    'id'          => $permission->getAgent()->getId(),
+                ];
             }
         }
-        foreach($agents as $agent)
-        {
-            /** @var PersonEntity $agent */
-            if(!isset($data[$agent->getId()])) {
-                $data[$agent->getId()] = array(
+        foreach ($agents as $agent) {
+            /** @var Person $agent */
+            if (!isset($data[$agent->getId()])) {
+                $data[$agent->getId()] = [
                     'permissions' => self::PERMISSION_NONE,
-                    'id' => $agent->getId(),
-                );
+                    'id'          => $agent->getId(),
+                ];
             }
-            $data[$agent->getId()]['name'] = $agent->getDisplayName();
+            $data[$agent->getId()]['name']   = $agent->getDisplayName();
             $data[$agent->getId()]['avatar'] = $agent->getPictureUrl();
         }
         $data = array_values($data);
-        return $data;
 
+        return $data;
     }
 
-    public function clonePermissions(DashboardEntity $dashboard, DashboardEntity $prototype)
+    public function clonePermissions(Dashboard $dashboard, Dashboard $prototype)
     {
         $reportDashboardPermissions = $this->getDashboardPermissions($prototype);
-        foreach($reportDashboardPermissions as $permission_prototype)
-        {
+        foreach ($reportDashboardPermissions as $permission_prototype) {
             $permission = new Permission();
             $permission
                 ->setDashboard($dashboard)
@@ -235,17 +263,13 @@ class DashboardPermissions
         }
     }
 
-    public function isEditableDashboard(DashboardEntity $dashboard)
+    public function isEditableDashboard(Dashboard $dashboard)
     {
         return !$dashboard->isDefault();
     }
 
     public function save($permission)
     {
-        if(is_array($permission))
-        {
-
-        }
         $this->em->persist($permission);
         $this->em->flush();
     }

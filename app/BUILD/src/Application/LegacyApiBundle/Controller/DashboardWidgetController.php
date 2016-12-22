@@ -34,6 +34,8 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\ReportDashboardReport as Tab;
 use Application\DeskPRO\Entity\ReportDashboardWidget as Widget;
+use Application\DeskPRO\Entity\ReportWidget;
+use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 use Application\LegacyApiBundle\Service\Dashboard as DashboardService;
 use Application\LegacyApiBundle\Service\DashboardPermissions as DashboardPermissionService;
 use Application\LegacyApiBundle\Service\DashboardWidget as DashboardWidgetService;
@@ -76,16 +78,16 @@ class DashboardWidgetController extends AbstractController
         /** @var Tab $tab */
         $tab = $this->service->getReport($id);
 
-        if ($this->permissionsService->isEditableDashboard($tab->getDashboard())) {
-            throw $this->createNotFoundException('Widget not found!');
+        if (!$this->permissionsService->isEditableDashboard($tab->getDashboard())) {
+            throw $this->createAccessDeniedException('You cant edit this dashboard!');
         }
 
         $postData = $this->in->getAll('post');
 
-        /** @var \Application\DeskPRO\Reports\Builder $reports_builder */
-        $reports_builder = $this->container->getSystemService('reports_builder');
-        $report_widget   = $reports_builder->getById($postData['widget_id']);
-        if (!$report_widget) {
+        /** @var \Application\DeskPRO\Reports\Builder $reportsBuilder */
+        $reportsBuilder = $this->container->getSystemService('reports_builder');
+        $reportWidget   = $reportsBuilder->getById($postData['widget_id']);
+        if (!$reportWidget) {
             throw $this->createNotFoundException('ReportWidget not found!');
         }
         $widget = new Widget();
@@ -95,7 +97,7 @@ class DashboardWidgetController extends AbstractController
             ->setSize([$postData['sizeX'], $postData['sizeY']])
             ->setPosition([$postData['row'], $postData['col']])
             ->setReport($tab)
-            ->setWidget($report_widget);
+            ->setWidget($reportWidget);
         if (isset($postData['variables'])) {
             $widget->setVariables($postData['variables']);
         }
@@ -115,7 +117,7 @@ class DashboardWidgetController extends AbstractController
     public function saveWidgetAction($id)
     {
         if ($id) {
-            $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find($id);
+            $widget = $this->em->getRepository(Widget::class)->find($id);
             if (!$widget) {
                 throw $this->createNotFoundException('Widget not found!');
             }
@@ -123,15 +125,15 @@ class DashboardWidgetController extends AbstractController
             $widget = new Widget();
         }
         list($sizeX, $sizeY) =
-        [
-            $this->in->getCleanValue('size_x', 'int'),
-            $this->in->getCleanValue('size_y', 'int'),
-        ];
+            [
+                $this->in->getCleanValue('size_x', 'int'),
+                $this->in->getCleanValue('size_y', 'int'),
+            ];
         list($row, $col) =
-        [
-            $this->in->getCleanValue('row', 'int'),
-            $this->in->getCleanValue('col', 'int'),
-        ];
+            [
+                $this->in->getCleanValue('row', 'int'),
+                $this->in->getCleanValue('col', 'int'),
+            ];
         $title = $this->in->getCleanValue('title', 'string');
         $widget->setSize([$sizeX, $sizeY])->setPosition([$row, $col])->setTitle($title);
         $this->em->persist($widget);
@@ -149,7 +151,7 @@ class DashboardWidgetController extends AbstractController
 
     public function getWidgetAction($id)
     {
-        $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $id);
+        $widget = $this->em->getRepository(Widget::class)->find((int) $id);
 
         return $this->createApiResponse($this->_getWidgetData($widget));
     }
@@ -157,7 +159,7 @@ class DashboardWidgetController extends AbstractController
     protected function _getWidgetData($widget)
     {
         if (!($widget instanceof Widget)) {
-            $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $widget);
+            $widget = $this->em->getRepository(Widget::class)->find((int) $widget);
         }
         $pos  = $widget->getPosition();
         $size = $widget->getSize();
@@ -190,10 +192,10 @@ class DashboardWidgetController extends AbstractController
 
     public function reportsListAction()
     {
-        /** @var \Application\DeskPRO\EntityRepository\ReportWidget $repository */
-        $repository = $this->em->getRepository('DeskPRO:ReportWidget');
+        /** @var ReportWidgetRepository $repository */
+        $repository = $this->em->getRepository(ReportWidget::class);
         $reports    = $repository->getAllReports();
-        $api_data   = [
+        $apiData    = [
             'reports' => [],
             'labels'  => [],
         ];
@@ -203,13 +205,13 @@ class DashboardWidgetController extends AbstractController
             foreach ($datum['labels'] as $label) {
                 $translatedLabels[] = $this->container->getTranslator()->phrase('reports.labels.'.$label);
             }
-            $datum['labels']       = $translatedLabels;
-            $api_data['labels']    = array_merge($api_data['labels'], $translatedLabels);
-            $api_data['reports'][] = $datum;
+            $datum['labels']      = $translatedLabels;
+            $apiData['labels']    = array_merge($apiData['labels'], $translatedLabels);
+            $apiData['reports'][] = $datum;
         }
-        $api_data['labels'] = array_values(array_unique($api_data['labels']));
+        $apiData['labels'] = array_values(array_unique($apiData['labels']));
 
-        return $this->createApiResponse($api_data);
+        return $this->createApiResponse($apiData);
     }
 
     /**
@@ -222,14 +224,14 @@ class DashboardWidgetController extends AbstractController
     public function deleteWidgetAction($id)
     {
         /** @var Widget $widget */
-        $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find($id);
+        $widget = $this->em->getRepository(Widget::class)->find($id);
         if ($widget && $this->permissionsService->isEditableDashboard($widget->getReport()->getDashboard())) {
             $this->em->remove($widget);
             $this->em->flush();
 
             return $this->createApiDeleteResponse();
         } else {
-            throw $this->createNotFoundException('Widget not found!');
+            throw $this->createAccessDeniedException('You can\'t edit this dashboard!');
         }
     }
 }
