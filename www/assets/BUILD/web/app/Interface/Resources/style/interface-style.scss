@@ -1,6 +1,6 @@
 @import "lib";
 @import 'variables';
-
+@import 'report-builder-table';
 $tablet: new-breakpoint(max-width 960px 6);
 $mobile: new-breakpoint(max-width 640px 6);
 

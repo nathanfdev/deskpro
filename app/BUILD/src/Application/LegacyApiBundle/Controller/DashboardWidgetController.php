@@ -184,7 +184,7 @@ class DashboardWidgetController extends AbstractController
             'sizeX' => $size[0],
             'sizeY' => $size[1],
             'type'  => $this->widgetService->getWidgetType($widget->getType()),
-            'data'  => $realData,
+            'data'  => $realData ?: [],
         ];
 
         return $data;

@@ -1119,11 +1119,17 @@ class Json extends AbstractRenderer
         $splitColumns = $this->_handler->getSplitColumns();
 
         if ($splitColumns) {
-            $output = [];
+            $output = [
+                'columns' => [],
+                'data'    => [],
+            ];
             foreach ($this->_results->getSplitResults() as $splitResult) {
                 $result = $this->_renderFormatsWithFallback($this->_outputFormat, $splitResult[0]);
                 if ($result) {
-                    $output = array_merge($output, $result);
+                    $output = [
+                        'columns' => $result['columns'],
+                        'data'    => array_merge($output['data'], $result['data']),
+                    ];
                 }
             }
 

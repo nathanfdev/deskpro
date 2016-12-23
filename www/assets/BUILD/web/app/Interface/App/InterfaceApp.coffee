@@ -21,7 +21,6 @@ define [
   'angular-moment',
   'angularOcLazyLoad',
   'aceEditor',
-  'aceEditorLangTools',
 
   'ngFileUpload',
   'DeskPRO/OptionBuilder/Module',

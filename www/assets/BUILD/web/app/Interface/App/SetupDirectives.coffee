@@ -3,6 +3,7 @@ define [
   'Reports/Dashboards/Directive/DashboardAmcharts',
   'Reports/Dashboards/Directive/DashboardStat',
   'Reports/Dashboards/Directive/DashboardTable',
+  'Reports/Dashboards/Directive/DashboardWidget',
   'Reports/Dashboards/Directive/DpReportVariables',
 
   # LEGACY DIRECTIVES
@@ -22,6 +23,7 @@ define [
   Reports_Dashboards_Directive_DashboardAmcharts,
   Reports_Dashboards_Directive_DashboardStat,
   Reports_Dashboards_Directive_DashboardTable,
+  Reports_Dashboards_Directive_DashboardWidget,
   Reports_Dashboards_Directive_DpReportVariables,
   Reports_Directive_DpReportBuilderSelectBox,
   Reports_Directive_DpReportBillingSelectBox,
@@ -39,6 +41,7 @@ define [
     ###
     Module.directive('dashboardAmcharts', Reports_Dashboards_Directive_DashboardAmcharts)
     Module.directive('dashboardTable', Reports_Dashboards_Directive_DashboardTable)
+    Module.directive('dashboardWidget', Reports_Dashboards_Directive_DashboardWidget)
     Module.directive('dpReportVariables', Reports_Dashboards_Directive_DpReportVariables)
 
     ###

@@ -153,7 +153,9 @@ class DashboardWidget
         $error     = false;
         $variables = $widget->getVariables();
 
-        return Display::renderQuery('json', $query, $variables, $error);
+        return Display::renderQuery('json', $query,
+            $variables,
+            $error);
     }
 
     public function copyWidgetLinks(DashboardReportEntity $report, DashboardReportEntity $reportPrototype)
