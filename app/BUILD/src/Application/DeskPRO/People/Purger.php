@@ -39,7 +39,7 @@ use Doctrine\ORM\EntityManager;
 class Purger implements PersonContextInterface
 {
     /**
-     * @var \Application\DeskPRO\Entity\Person
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 
