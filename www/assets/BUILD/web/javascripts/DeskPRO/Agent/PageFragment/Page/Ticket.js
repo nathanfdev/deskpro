@@ -1861,10 +1861,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			type: 'POST',
 			context: this,
 			data: data,
-			dataType: 'json',
-			success: function(){
-				self.changeManager.updateDataholders();
-			}
+			dataType: 'json'
 		});
 	},
 

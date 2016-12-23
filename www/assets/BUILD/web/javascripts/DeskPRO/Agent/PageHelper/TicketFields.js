@@ -268,11 +268,12 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		var newDisplay = $('<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table mode-edit-on">' + html + '</table>');
 		this.page.rewriteRadioNames(newDisplay);
 		this.display = newDisplay;
+    this.display.prepend(labels);
+    this.display.append(last);
 
-		old.after(this.display);
-		old.remove();
-		this.display.prepend(labels);
-		this.display.append(last);
+    old.after(this.display);
+    old.remove();
+
 		this.initFieldWidgets();
 
 		this.initScope(this.page.getEl('field_holders'));
