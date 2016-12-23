@@ -175,7 +175,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
                 $id                                    = $ent->getId();
 
                 $changeSet = $uow->getEntityChangeSet($ent);
-                if ($ent instanceof Ticket && array_key_exists('status', $changeSet) && Ticket::STATUS_HIDDEN == $changeSet['status'][1]) {
+                if ($ent instanceof Ticket && isset($changeSet['status'][1]) && Ticket::STATUS_HIDDEN == $changeSet['status'][1]) {
                     $action = 'deletes';
                 } else {
                     $action = 'updates';
