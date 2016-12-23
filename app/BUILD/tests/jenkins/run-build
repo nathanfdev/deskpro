@@ -33,7 +33,7 @@ if [ "$1" = "sequential-build" ] ; then
     npm run-script sassdoc
 
     echo "Building legacy assets"
-    chmod 0755 $ROOT_DIR/app/BUILD/vendor-src/smartsprites/smartsprites.sh
+    chmod 0755 $ROOT_DIR/www/assets/BUILD/web/node_modules/gulp-smartsprites/smartsprites-0.2.9/smartsprites.sh
     $ROOT_DIR/bin/console dp:assetic -r ALL --kernel dp --env prod --verbose
 elif [ "$1" = "fresh-build" ] ; then
     echo "Building from the ground up"

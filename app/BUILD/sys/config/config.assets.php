@@ -55,7 +55,7 @@ $CONFIG['OPTIONS'] = [
     'less'           => defined('DP_LESSC_PATH') ? DP_LESSC_PATH : (DP_ROOT.'/../../www/assets/BUILD/web/node_modules/less/bin/lessc'),
     'smartsprites'   => defined(
         'DP_SMARTSPRITES_PATH'
-    ) ? DP_SMARTSPRITES_PATH : (DP_ROOT.'/vendor-src/smartsprites/smartsprites.sh'),
+    ) ? DP_SMARTSPRITES_PATH : (DP_ROOT.'/../../www/assets/BUILD/web/node_modules/gulp-smartsprites/smartsprites-0.2.9/smartsprites.sh'),
 ];
 
 //##############################################################################
