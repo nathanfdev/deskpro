@@ -9,6 +9,7 @@ class VoiceMenu extends React.Component {
   static propTypes = {
     me:            PropTypes.object,
     agents:        PropTypes.object,
+    people:        PropTypes.object,
     incomingCall:  PropTypes.object,
     onAcceptCall:  PropTypes.func,
     onDeclineCall: PropTypes.func
@@ -42,13 +43,14 @@ class VoiceMenu extends React.Component {
   }
 
   renderPhoneTab() {
-    const { me, agents, incomingCall, onAcceptCall, onDeclineCall } = this.props;
+    const { me, agents, people, incomingCall, onAcceptCall, onDeclineCall } = this.props;
 
     if (incomingCall) {
       return (
         <IncomingCall
           me={me}
           agents={agents}
+          people={people}
           incomingCall={incomingCall}
           onAccept={onAcceptCall}
           onDecline={onDeclineCall}

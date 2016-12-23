@@ -10,7 +10,7 @@ const config = {
         include: path.resolve(__dirname, '../../')
       },
       {
-        test: /\.(svg|png|jpg)$/,
+        test: /\.(svg|png|jpg|mp3|wav|ogg)$/,
         loader:  'url'
       },
       {

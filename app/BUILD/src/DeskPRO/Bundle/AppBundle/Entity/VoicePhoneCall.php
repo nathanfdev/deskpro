@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
@@ -127,6 +127,17 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $fromNumber;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
+     */
+    private $person;
+
+    /**
      * @ORM\Column(name="status", type="string", length=50)
      *
      * @JMS\Expose()
@@ -147,26 +158,62 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $data;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Ticket", mappedBy="voicePhoneCalls", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant", mappedBy="phoneCall", cascade={"persist", "remove"}, orphanRemoval=true)
      *
-     * @var Ticket[]|ArrayCollection
+     * @JMS\Expose()
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant")
+     *
+     * @var AbstractVoicePhoneCallParticipant[]|ArrayCollection
      */
-    private $tickets;
+    private $participants;
 
     /**
-     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipant", mappedBy="phoneCall", cascade={"persist"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog", mappedBy="phoneCall", cascade={"persist", "remove"}, orphanRemoval=true)
      *
-     * @var VoicePhoneCallParticipant[]|ArrayCollection
+     * @JMS\Expose()
+     *
+     * @var VoicePhoneCallLog[]|ArrayCollection
      */
-    private $agentParticipants;
+    private $phoneCallLogs;
+
+    /**
+     * @ORM\Column(name="date_created", type="datetime")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
+     * @var \DateTime
+     */
+    private $dateCreated;
+
+    /**
+     * @ORM\Column(name="date_started", type="datetime", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
+     * @var \DateTime
+     */
+    private $dateStarted;
+
+    /**
+     * @ORM\Column(name="date_ended", type="datetime", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
+     * @var \DateTime
+     */
+    private $dateEnded;
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->tickets           = new ArrayCollection();
-        $this->agentParticipants = new ArrayCollection();
+        $this->participants  = new ArrayCollection();
+        $this->phoneCallLogs = new ArrayCollection();
+        $this->dateCreated   = new \DateTime();
     }
 
     /**
@@ -318,66 +365,34 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\Ticket[]|ArrayCollection
+     * @return AbstractVoicePhoneCallParticipant[]|ArrayCollection
      */
-    public function getTickets()
+    public function getParticipants()
     {
-        return $this->tickets;
+        return $this->participants;
     }
 
     /**
-     * @param Ticket $ticket
+     * @param AbstractVoicePhoneCallParticipant $participant
      *
      * @return $this
      */
-    public function addTicket(Ticket $ticket)
+    public function addParticipant(AbstractVoicePhoneCallParticipant $participant)
     {
-        $this->tickets->add($ticket);
-
-        return $this;
-    }
-
-    /**
-     * @param Ticket $ticket
-     *
-     * @return $this
-     */
-    public function removeTicket(Ticket $ticket)
-    {
-        $this->tickets->removeElement($ticket);
-
-        return $this;
-    }
-
-    /**
-     * @return VoicePhoneCallParticipant[]|ArrayCollection
-     */
-    public function getAgentParticipants()
-    {
-        return $this->agentParticipants;
-    }
-
-    /**
-     * @param VoicePhoneCallParticipant $participant
-     *
-     * @return $this
-     */
-    public function addAgentParticipant(VoicePhoneCallParticipant $participant)
-    {
-        $this->agentParticipants->add($participant);
+        $this->participants->add($participant);
         $participant->setPhoneCall($this);
 
         return $this;
     }
 
     /**
-     * @param VoicePhoneCallParticipant $participant
+     * @param AbstractVoicePhoneCallParticipant $participant
      *
      * @return $this
      */
-    public function removeAgentParticipant(VoicePhoneCallParticipant $participant)
+    public function removeParticipant(AbstractVoicePhoneCallParticipant $participant)
     {
-        $this->agentParticipants->removeElement($participant);
+        $this->participants->removeElement($participant);
         $participant->setPhoneCall(null);
 
         return $this;
@@ -386,17 +401,158 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @param string $callSid
      *
-     * @return \Application\DeskPRO\Entity\Person|null
+     * @return AbstractVoicePhoneCallParticipant|null
      */
-    public function getPersonByCallSid($callSid)
+    public function getParticipantByCallSid($callSid)
     {
-        $person = null;
-        foreach ($this->agentParticipants as $participant) {
+        foreach ($this->participants as $participant) {
             if ($participant->getCallSid() === $callSid) {
-                $person = $participant->getPerson();
+                return $participant;
             }
         }
 
-        return $person;
+        return;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return AbstractVoicePhoneCallParticipant|null
+     */
+    public function getParticipantByPerson($person)
+    {
+        foreach ($this->participants as $participant) {
+            if ($participant->getPerson() && $participant->getPerson() === $person) {
+                return $participant;
+            }
+        }
+
+        return;
+    }
+
+    /**
+     * @param string $callSid
+     *
+     * @return Person|null
+     */
+    public function getPersonByCallSid($callSid)
+    {
+        $participant = $this->getParticipantByCallSid($callSid);
+
+        return $participant ? $participant->getPerson() : null;
+    }
+
+    /**
+     * @param VoicePhoneCallLog $phoneCallLog
+     *
+     * @return $this
+     */
+    public function addPhoneCallLog(VoicePhoneCallLog $phoneCallLog)
+    {
+        $this->phoneCallLogs->add($phoneCallLog);
+        $phoneCallLog->setPhoneCall($this);
+
+        return $this;
+    }
+
+    /**
+     * @param VoicePhoneCallLog $phoneCallLog
+     *
+     * @return $this
+     */
+    public function removePhoneCallLog(VoicePhoneCallLog $phoneCallLog)
+    {
+        $this->phoneCallLogs->removeElement($phoneCallLog);
+        $phoneCallLog->setPhoneCall(null);
+
+        return $this;
+    }
+
+    /**
+     * @return VoicePhoneCallLog[]|ArrayCollection
+     */
+    public function getPhoneCallLogs()
+    {
+        return $this->phoneCallLogs;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->dateCreated;
+    }
+
+    /**
+     * @param \DateTime $dateCreated
+     *
+     * @return $this
+     */
+    public function setDateCreated($dateCreated)
+    {
+        $this->setModelField('dateCreated', $dateCreated);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateStarted()
+    {
+        return $this->dateStarted;
+    }
+
+    /**
+     * @param \DateTime $dateStarted
+     *
+     * @return $this
+     */
+    public function setDateStarted(\DateTime $dateStarted = null)
+    {
+        $this->setModelField('dateStarted', $dateStarted);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateEnded()
+    {
+        return $this->dateEnded;
+    }
+
+    /**
+     * @param \DateTime $dateEnded
+     *
+     * @return $this
+     */
+    public function setDateEnded(\DateTime $dateEnded = null)
+    {
+        $this->setModelField('dateEnded', $dateEnded);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
     }
 }

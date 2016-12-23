@@ -1,6 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import Immutable from 'immutable';
+import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 
 // loadAll(), loadBatch() and loadFromApi() have the same ID because they share reducer --------------------------------
@@ -9,12 +10,18 @@ export const loadBatch = createAction(
   'RECORDS_STORE_LOAD',
   (recordName, ids, collectionName) => (dispatch, getState) => {
     const numericIds = [];
-    ids.forEach((id) => {
+    const pushId = (id) => {
       const intId = parseInt(id, 10);
       if (intId) {
         numericIds.push(intId);
       }
-    });
+    };
+
+    if (ids instanceof Array) {
+      ids.forEach(id => pushId(id));
+    } else {
+      pushId(ids);
+    }
 
     const recordStore = getState().RecordsStore.store.get(recordName);
     const loaded = recordStore && recordStore.has('records')
@@ -42,12 +49,17 @@ export const loadBatch = createAction(
         recordName,
         collectionName,
         allCollectionIds,
-        promise: repository(recordName).loadBatch(targets).then(response => ({
-          recordName,
-          collectionName,
-          allCollectionIds,
-          records: response.getData().data
-        }))
+        promise: repository(recordName).loadBatch(targets).then((response) => {
+          const targetRecords = mapKeyedFromArray(response.getData().data, 'id');
+          const newData = loaded.merge(targetRecords);
+
+          return {
+            recordName,
+            collectionName,
+            allCollectionIds,
+            records: newData
+          };
+        })
       };
     } else {
       result = {

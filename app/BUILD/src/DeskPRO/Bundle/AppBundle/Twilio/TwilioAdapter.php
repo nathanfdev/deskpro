@@ -249,12 +249,14 @@ class TwilioAdapter
 
     /**
      * @param VoiceAccount $account
-     * @param string       $voiceUrl
+     * @param string       $requestUrl
      * @param string       $voiceMethod
+     * @param string       $statusUrl
+     * @param string       $statusMethod
      *
      * @return \Twilio\Rest\Api\V2010\Account\ApplicationInstance
      */
-    public function createTwimlApp(VoiceAccount $account, $voiceUrl, $voiceMethod)
+    public function createTwimlApp(VoiceAccount $account, $requestUrl, $voiceMethod, $statusUrl, $statusMethod)
     {
         $client  = $this->getClient($account);
         $appName = 'DeskPRO App';
@@ -268,8 +270,10 @@ class TwilioAdapter
 
         // create twiml app
         $application = $client->applications->create($appName, [
-            'voiceUrl'    => $voiceUrl,
-            'voiceMethod' => $voiceMethod,
+            'voiceUrl'             => $requestUrl,
+            'voiceMethod'          => $voiceMethod,
+            'statusCallback'       => $statusUrl,
+            'statusCallbackMethod' => $statusMethod,
         ]);
 
         return $application;
@@ -609,6 +613,27 @@ class TwilioAdapter
 
     /**
      * @param VoicePhoneCall $phoneCall
+     * @param string         $callSid
+     * @param bool           $mute
+     */
+    public function muteParticipant(VoicePhoneCall $phoneCall, $callSid, $mute)
+    {
+        $account      = $phoneCall->getNumber()->getAccount();
+        $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
+
+        foreach ($participants as $participant) {
+            if ($participant->callSid === $callSid) {
+                $participant->update([
+                    'muted' => $mute ? 'true' : 'false',
+                ]);
+            }
+        }
+
+        unset($this->cache[$phoneCall->getConferenceSid()]['participants']);
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
      * @param bool           $isHold
      */
     public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold)
@@ -651,7 +676,7 @@ class TwilioAdapter
      *
      * @return Person[]
      */
-    public function getPhoneCallParticipants(VoicePhoneCall $phoneCall)
+    public function getActivePhoneCallParticipants(VoicePhoneCall $phoneCall)
     {
         $account      = $phoneCall->getNumber()->getAccount();
         $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());

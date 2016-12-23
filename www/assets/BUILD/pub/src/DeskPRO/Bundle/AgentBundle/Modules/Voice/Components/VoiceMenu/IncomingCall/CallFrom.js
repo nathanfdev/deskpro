@@ -7,22 +7,31 @@ import Avatar from '../../Common/Avatar';
 class CallFrom extends React.Component {
 
   static propTypes = {
+    people:       PropTypes.object,
     incomingCall: PropTypes.object
   };
 
   render() {
-    const { incomingCall } = this.props;
-    const person = null;
+    const { incomingCall, people } = this.props;
 
+    let person;
     let number;
 
     if (incomingCall && incomingCall.task) {
       // twilio reservation props
       const attributes = incomingCall && incomingCall.task ? incomingCall.task.attributes : {};
       number = attributes.from;
+
+      if (attributes.deskpro_person_id) {
+        person = people.get(attributes.deskpro_person_id);
+      }
     } else {
       // participant invite props
       number = incomingCall.get('number');
+
+      if (incomingCall.get('caller_person_id')) {
+        person = people.get(incomingCall.get('caller_person_id'));
+      }
     }
 
     return (

@@ -12,6 +12,7 @@ import { SideBarContainer } from './Modules/SideBar/Components/SideBar';
 import { AgentList } from './Modules/Agent/Components/AgentList';
 import { AgentOnboardingContainer }  from './Modules/Onboarding/Components/AgentOnboarding';
 import VoiceControlsContainer from './Modules/Voice/Components/Controls/VoiceControlsContainer';
+import VoiceTicketMessageContainer from './Modules/Voice/Components/TicketMessage/TicketMessageContainer';
 import AgentReducers from './AgentApp_Reducers';
 import AppReducers from '../AppBundle/AppApp_Reducers';
 import { preloadData } from './Modules/Application/Actions/bootstrapActions';
@@ -74,15 +75,31 @@ class AgentLegacyApp {
     setTimeout(() => this.renderPiece(piece, piecePlace), 1000);
   }
 
-  renderVoiceControls(node, callId, onEndCall) {
+  renderVoiceControls(node, ticketId, onEndCall) {
     let tabRef;
 
     ReactDOM.render(
       <Provider store={this.store}>
         <VoiceControlsContainer
           tabRef={(c) => { tabRef = c; }}
-          callId={callId}
+          ticketId={ticketId}
           onEndCall={onEndCall}
+        />
+      </Provider>,
+      node
+    );
+
+    return tabRef;
+  }
+
+  renderVoiceMessage(node, data) {
+    let tabRef;
+
+    ReactDOM.render(
+      <Provider store={this.store}>
+        <VoiceTicketMessageContainer
+          tabRef={(c) => { tabRef = c; }}
+          data={data}
         />
       </Provider>,
       node
