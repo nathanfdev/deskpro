@@ -30,14 +30,13 @@ define ['datatables'], () ->
             dt = el.DataTable {
               data: widget.data,
               columns: widget.columns,
-  #            aoColumns: widget.aoColumns,
               pagingType: "full_numbers",
-              pageLength: 25,
+              pageLength: 10,
               bJQueryUI      : true,
               iDisplayLength : 5,
               sDom           : 'T<"clear">lfrtip'
               lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]]
-              scrollY: 300,
+              scrollY: 340,
               deferRender: true,
               dom: "rtS",
               scrollCollapse: true,

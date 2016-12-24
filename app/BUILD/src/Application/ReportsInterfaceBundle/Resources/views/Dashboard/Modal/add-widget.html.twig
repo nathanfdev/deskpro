@@ -43,7 +43,7 @@
         </div>
         <ul class="stat-list"  ng-show="loaded">
             <li ng-class="{'active': report.id == widget.widget_id}"
-                ng-repeat="report in prefilteredReports | filter:filterBySearchText track by $index">
+                ng-repeat="report in prefilteredReports | filter:filterBySearchText track by report.id">
                 <span ng-click="makeChoice(report)" class="mark"></span>
 
                 <h1>
