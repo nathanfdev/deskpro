@@ -45,12 +45,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				if ($field.is(':checkbox')) {
 					return $field.is(':checked');
 				}
-				if ($field.is('select, input:not(:radio, :checkbox), textarea')) {
+				if ($field.is('input:not(:radio, :checkbox), textarea')) {
 					return $field.val();
 				}
 				$field = $('[name="' + name + '"], [name="' + name + '[]"]', $holders);
 				if ($field.hasClass('with-select2')) {
-					return $field.select2('val');
+					var val = $.trim($field.select2('val'));
+					return $.trim(val) ? val : null;
 				}
 				return $field.filter(':checked').map(function(i, el) { return el.value; }).get();
 			},
