@@ -49,7 +49,7 @@ define [
               if o then parentTitleSegs.push(o.title)
 
               childOps = []
-              addTree(options, opt.id, childOps, parentTitleSegs)
+              addTree(options, opt.id || opt.value, childOps, parentTitleSegs)
 
               if o then parentTitleSegs.pop()
 

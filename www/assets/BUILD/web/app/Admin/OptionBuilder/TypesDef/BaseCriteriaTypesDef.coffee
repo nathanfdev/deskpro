@@ -67,7 +67,7 @@ define [
 
       if field.type_name == 'choice'
         options.operators = options.operators || ['is', 'not', 'isset', 'not_isset', 'touched', 'nottouched']
-        options.options = field.choices.map( (o) -> {title: o.title, value: o.id})
+        options.options = field.choices.map( (o) -> {title: o.title, value: o.id, parent_id: o.parent_id})
         return @getStandardSelect(options, field)
       else if field.type_name == 'toggle'
         options.operators = options.operators || ['isset', 'not_isset', 'touched', 'nottouched']
