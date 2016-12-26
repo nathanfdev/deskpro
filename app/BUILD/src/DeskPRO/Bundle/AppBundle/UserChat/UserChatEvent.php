@@ -54,6 +54,7 @@ class UserChatEvent extends Event
     const SEND_MESSAGE   = 'user_chat.send_message';
     const ACK_MESSAGES   = 'user_chat.ack_messages';
     const USER_TYPING    = 'user_chat.user_typing';
+    const POLLING        = 'user_chat.polling';
 
     /**
      * @var ChatConversation
