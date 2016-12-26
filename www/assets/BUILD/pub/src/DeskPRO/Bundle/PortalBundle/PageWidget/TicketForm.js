@@ -66,7 +66,17 @@ class TicketValueReader {
     // choice of checkboxes, radio
     const name = `ticket[${prefix}_field_${fieldId}]`;
     $field = $(`[name="${name}[data]"]:checked, [name="${name}[data][]"]:checked`, this.$formEl);
-    return $field.map((i, el) => el.value).get();
+    if ($field.length) {
+      return $field.map((i, el) => el.value).get();
+    }
+
+    // display field
+    $field = $(`#ticket_${prefix}_field_${fieldId}`, this.$formEl);
+    if ($field.length) {
+      return $.trim($field.text());
+    }
+
+    return null;
   }
 
   getTicketFieldValue(fieldId) {
