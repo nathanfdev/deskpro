@@ -3,7 +3,14 @@ import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { history } from '../../../Services/history';
-import { ticketDefaultDepartmentSelector, isTicketDepartmentFieldHidden, liveDemoSelector, ticketDefaultSubjectSelector, ticketSelectSubjectTypeSelector } from '../../Application/Selectors/dpWindow';
+import {
+  ticketDefaultDepartmentSelector,
+  isTicketDepartmentFieldHidden,
+  liveDemoSelector,
+  ticketDefaultSubjectSelector,
+  ticketSelectSubjectTypeSelector,
+  ticketDefaultValuesSelector
+} from '../../Application/Selectors/dpWindow';
 
 const getNewTicketQueryParams = state => ({
   department_id:         ticketDefaultDepartmentSelector(state),
@@ -24,10 +31,39 @@ export const loadNewTicketForm = createAction(
   'WIDGET_LOAD_NEW_TICKET_FORM',
   () => (dispatch, getState) => {
     const state = getState();
+
     const queryParams = {
       type: 'widget',
       ...getNewTicketQueryParams(state)
     };
+
+    let defaultValues = ticketDefaultValuesSelector(state);
+    if (defaultValues) {
+      defaultValues = defaultValues.toJS();
+
+      // convert message format
+      if (defaultValues.message) {
+        defaultValues.message = { message: defaultValues.message };
+      }
+
+      // convert custom fields
+      const convertCustomFields = (groupKey, fieldPrefix) => {
+        if (defaultValues[groupKey] && typeof defaultValues[groupKey] === 'object') {
+          Object.keys(defaultValues[groupKey]).forEach((key) => {
+            defaultValues[`${fieldPrefix}_${key}`] = {};
+            defaultValues[`${fieldPrefix}_${key}`].data = defaultValues[groupKey][key];
+          });
+
+          delete defaultValues[groupKey];
+        }
+      };
+
+      convertCustomFields('fields', 'ticket_field');
+      convertCustomFields('user_fields', 'user_field');
+      convertCustomFields('organization_fields', 'org_field');
+
+      queryParams.ticket = defaultValues;
+    }
 
     const promise = widgetApi.sendGet(`DP_API/tickets/new?${compileParams(queryParams)}`, { ...ajaxOptions });
     promise.success(response => dispatch(setNewTicketFormContent(response.data)));

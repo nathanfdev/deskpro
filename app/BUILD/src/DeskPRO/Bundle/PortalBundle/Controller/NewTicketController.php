@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
@@ -104,6 +105,7 @@ class NewTicketController extends AbstractController
             // set default values
             // using the string constant to acquire data from query instead of Form::getName for BC
             $form->submit($request->query->get('ticket') ?: []);
+            FormValidatorChecker::clearFormErrors($form);
         }
 
         if ($form->isValid()) {
@@ -181,6 +183,12 @@ class NewTicketController extends AbstractController
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
         ]);
+
+        // set default values on the full form
+        if ($request->isMethod('get') && $request->query->get('ticket')) {
+            $formFull->submit($request->query->get('ticket') ?: []);
+            FormValidatorChecker::clearFormErrors($formFull);
+        }
 
         /** @var \Application\DeskPRO\TicketLayout\LayoutCollection $layouts */
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);

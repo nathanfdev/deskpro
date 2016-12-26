@@ -3,21 +3,17 @@
  * @param params
  * @returns {string}
  */
-export function compileParams(params = {}) {
+export function compileParams(value = {}, prefix) {
   const compiled = [];
 
-  for (const key of Object.keys(params)) {
-    if (Object.prototype.toString.call(params[key]) === '[object Array]') {
-      params[key].forEach(item => compiled.push(key + '[]=' + String(item).replace(/\s/g, '%20')));
-    } else if (params[key] && typeof params[key] === 'object') {
-      Object.keys(params[key]).forEach(
-        subKey => compiled.push(`${key}[${subKey}]=` + String(params[key][subKey]).replace(/\s/g, '%20'))
-      );
-    } else if (params[key] !== undefined) {
-      const str = String(params[key]);
-      if (str !== 'null') {
-        compiled.push(key + '=' + str.replace(/\s/g, '%20'));
-      }
+  if (typeof value === 'object') {
+    Object.keys(value).forEach(key => compiled.push(compileParams(value[key], prefix ? `${prefix}[${key}]` : key)));
+  } else if (prefix) {
+    if (Object.prototype.toString.call(value) === '[object Array]') {
+      value.forEach(item => compiled.push(compileParams(item, `${prefix}[]`)));
+    } else if (value !== null) {
+      const str = String(value);
+      compiled.push(`${encodeURIComponent(prefix)}=${encodeURIComponent(str)}`);
     }
   }
 
