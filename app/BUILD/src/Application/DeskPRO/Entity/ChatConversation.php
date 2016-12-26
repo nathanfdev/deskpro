@@ -1169,7 +1169,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
         }
 
         if ($change) {
-            $this->_onPropertyChanged('custom_data', null, $this->participants);
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
         }
     }
 
@@ -1377,6 +1377,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
     public function setVisitorId($visitor_id)
     {
         $this->setModelField('visitor_id', $visitor_id);
+
         return $this;
     }
 
