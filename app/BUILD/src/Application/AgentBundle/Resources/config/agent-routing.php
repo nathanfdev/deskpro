@@ -2401,10 +2401,4 @@ $collection->create('gregwar_captcha.agent.generate_captcha', [
     'methods'    => ['GET'],
 ]);
 
-$collection->create('voice_in_progress', [
-    'path'       => '/voice/in-progress/{phoneCall}/{callSid}',
-    'controller' => 'AgentBundle:Voice:voiceInProgress',
-    'methods'    => ['GET'],
-]);
-
 return $collection;
