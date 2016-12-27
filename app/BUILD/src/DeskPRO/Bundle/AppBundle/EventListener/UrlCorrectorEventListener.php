@@ -117,8 +117,9 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
+        $brand   = $this->brandStack->getActive()->getBrand();
 
-        $urlCorrector = $this->urlCorrectorFactory->createUrlCorrector($this->brandStack->getActive()->getBrand());
+        $urlCorrector = $this->urlCorrectorFactory->createUrlCorrector($brand);
         $corrections  = $urlCorrector->getCorrections($request);
 
         if ($corrections) {
@@ -130,7 +131,7 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
             $this->logger->debug('[UrlCorrector] Got URI: '.$request->getUri());
             $this->logger->debug('[UrlCorrector] Correct URI: '.$url);
 
-            $mode = $this->getCorrectionMode($event);
+            $mode = $this->getCorrectionMode();
 
             switch ($mode) {
                 case self::MODE_REDIRECT:
@@ -225,11 +226,9 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
     }
 
     /**
-     * @param FilterControllerEvent $event
-     *
      * @return string
      */
-    private function getCorrectionMode(FilterControllerEvent $event)
+    private function getCorrectionMode()
     {
         if ($this->interfaceInfo->isInterfaceId([InterfaceInfo::ID_AGENT, InterfaceInfo::ID_ADMIN])) {
             // admin and agent logins are handled in the controller so we can show info
