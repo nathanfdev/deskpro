@@ -177,6 +177,12 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
                 break;
             case 'user':
                 $mode_var = $trigger->by_user_mode;
+
+                // trigger should run if just one of the widget events exists
+                if (array_intersect($mode_var, ['widget', 'form'])) {
+                    $mode_var = array_unique(array_merge($mode_var, ['widget', 'form']));
+                }
+
                 break;
             case 'system':
                 $mode_var = $trigger->by_app_mode;

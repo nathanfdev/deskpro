@@ -116,7 +116,7 @@ class NewTicketController extends AbstractController
 
                         try {
                             $this->getPersonFactory()->checkGuestForValidation($person, $this->isSavedFormSubRequest($request));
-                            $newTicket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request, $guestForm);
+                            $newTicket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request, $guestForm, 'portal');
 
                             return $this->onSavedTicket($newTicket, $request);
                         } catch (\InvalidArgumentException $e) {
@@ -147,13 +147,13 @@ class NewTicketController extends AbstractController
                                 return $this->redirectToRoute('portal_thanks_verify');
                             } else {
                                 // this is a guest that we are accepting
-                                $newTicket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request, $guestForm);
+                                $newTicket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request, $guestForm, 'portal');
 
                                 return $this->onSavedTicket($newTicket, $request);
                             }
                         }
                     } else {
-                        $newTicket = $this->getNewTicketService()->acceptNewTicket($ticket, $request);
+                        $newTicket = $this->getNewTicketService()->acceptNewTicket($ticket, $request, 'portal');
 
                         return $this->onSavedTicket($newTicket, $request);
                     }
