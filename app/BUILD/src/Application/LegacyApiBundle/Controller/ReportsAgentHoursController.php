@@ -45,9 +45,7 @@ class ReportsAgentHoursController extends AbstractController
 
     public function listAction($date1, $date2)
     {
-        /*
-         * @var \Application\DeskPRO\Reports\AgentHours
-         */
+        /** @var \Application\DeskPRO\Reports\AgentHours $reports_agent_hours */
         $reports_agent_hours = $this->container->getSystemService('reports_agent_hours');
         $html_vars           = $reports_agent_hours->getVarsForHtmlView($date1, $date2);
 

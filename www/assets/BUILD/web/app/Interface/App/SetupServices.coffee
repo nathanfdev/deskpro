@@ -2,6 +2,10 @@ define [
   'Interface/App/Service/AppConfig',
   'Interface/App/Service/TemplateLoader',
   'Interface/App/Service/TemplateManager',
+  'Interface/App/Service/ReportsOverview',
+  'Interface/App/Service/AgentActivity',
+  'Interface/App/Service/AgentHours',
+  'Interface/App/Service/TicketSatisfaction',
   'Admin/Main/DataService/EntityManager',
   'Reports/App/Service/DataServiceManager',
   'Reports/App/Service/Dashboard',
@@ -13,6 +17,10 @@ define [
   AppConfig,
   TemplateLoader,
   TemplateManager,
+  ReportsOverview,
+  AgentActivity,
+  AgentHours,
+  TicketSatisfaction,
   # DASHBOARDS SPECIFIC DIRECTIVES
   Admin_Main_DataService_EntityManager,
   Reports_App_Service_DataServiceManager,
@@ -104,4 +112,16 @@ define [
     ])
     Module.service('DashboardsInfo', ['Api', '$q', (Api, $q) ->
       return new Reports_App_Service_DashboardsInfo(Api, $q)
+    ])
+    Module.service('ReportsOverviewService', ['Api', '$q', (Api, $q) ->
+      return new ReportsOverview(Api, $q)
+    ])
+    Module.service('AgentActivityService', ['Api', '$sce', (Api, $sce) ->
+      return new AgentActivity(Api, $sce)
+    ])
+    Module.service('AgentHoursService', ['Api', '$sce', '$q', (Api, $sce, $q) ->
+      return new AgentHours(Api, $sce, $q)
+    ])
+    Module.service('TicketSatisfactionService', ['Api', '$sce', '$q', '$timeout', (Api, $sce, $q, $timeout) ->
+      return new TicketSatisfaction(Api, $sce, $q, $timeout)
     ])

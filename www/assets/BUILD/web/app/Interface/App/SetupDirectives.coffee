@@ -6,6 +6,10 @@ define [
   'Reports/Dashboards/Directive/DashboardWidget',
   'Reports/Dashboards/Directive/DpReportVariables',
 
+  'Reports/Directive/ReportsOverview',
+  'Reports/Directive/AgentPerformance',
+  'Reports/Directive/TicketSatisfaction',
+
   # LEGACY DIRECTIVES
   'Reports/Directive/DpReportBuilderSelectBox',
   'Reports/Directive/DpReportBillingSelectBox',
@@ -25,6 +29,11 @@ define [
   Reports_Dashboards_Directive_DashboardTable,
   Reports_Dashboards_Directive_DashboardWidget,
   Reports_Dashboards_Directive_DpReportVariables,
+
+  Reports_Directive_ReportsOverview,
+  Reports_Directive_AgentPerformance,
+  Reports_Directive_TicketSatisfaction,
+
   Reports_Directive_DpReportBuilderSelectBox,
   Reports_Directive_DpReportBillingSelectBox,
   Reports_Directive_DpReportBuilderTitle,
@@ -43,6 +52,10 @@ define [
     Module.directive('dashboardTable', Reports_Dashboards_Directive_DashboardTable)
     Module.directive('dashboardWidget', Reports_Dashboards_Directive_DashboardWidget)
     Module.directive('dpReportVariables', Reports_Dashboards_Directive_DpReportVariables)
+
+    Module.directive('reportsOverview', Reports_Directive_ReportsOverview)
+    Module.directive('agentPerformance', Reports_Directive_AgentPerformance)
+    Module.directive('ticketSatisfaction', Reports_Directive_TicketSatisfaction)
 
     ###
     # Legacy directives

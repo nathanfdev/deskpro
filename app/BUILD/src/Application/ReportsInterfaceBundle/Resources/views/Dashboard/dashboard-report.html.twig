@@ -96,6 +96,33 @@
                             wtype="{{ ng_var('widget.type') }}">
                         </dashboard-table>
                     </div>
+                    <div class="box" ng-if="widget.type=='reports_overview'">
+                        <reports-overview
+                                my-index="{{ ng_var('$index') }}"
+                                title="{{ ng_var('widget.name') }}"
+                                inner-type="{{ ng_var('widget.inner_type') }}"
+                                outer-type="{{ ng_var('widget.outer_type') }}"
+                                wtype="{{ ng_var('widget.type') }}">
+                        </reports-overview>
+                    </div>
+                    <div class="box" ng-if="widget.type=='agent_performance'">
+                        <agent-performance
+                                my-index="{{ ng_var('$index') }}"
+                                title="{{ ng_var('widget.name') }}"
+                                inner-type="{{ ng_var('widget.inner_type') }}"
+                                outer-type="{{ ng_var('widget.outer_type') }}"
+                                wtype="{{ ng_var('widget.type') }}">
+                        </agent-performance>
+                    </div>
+                    <div class="box" ng-if="widget.type=='ticket_satisfaction'">
+                        <ticket-satisfaction
+                                my-index="{{ ng_var('$index') }}"
+                                title="{{ ng_var('widget.name') }}"
+                                inner-type="{{ ng_var('widget.inner_type') }}"
+                                outer-type="{{ ng_var('widget.outer_type') }}"
+                                wtype="{{ ng_var('widget.type') }}">
+                        </ticket-satisfaction>
+                    </div>
                 </div>
             </div>
         </div>
