@@ -307,7 +307,7 @@ define(function() {
 
   routes.push({
     id: 'agents.agents.edit',
-    url: '/{id:[0-9]+}',
+    url: '/{id:[0-9]+}?created_agent',
     templateName: 'Agents/edit.html',
     controller: 'Admin_Agents_Ctrl_Edit'
   });
