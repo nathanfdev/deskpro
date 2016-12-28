@@ -72,6 +72,7 @@ define [
           @setDataForBarGraphs(data_key)
       )
 
+    @$scope.getStats = @getStats
 
     ###
     # Used for hiding / showing AJAX loader

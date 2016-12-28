@@ -53,6 +53,7 @@ define [
     'ui.router',
     'ui.bootstrap',
     'ui.ace',
+    'ui.select2',
     'angularMoment',
     'oc.lazyLoad',
     'gridster',

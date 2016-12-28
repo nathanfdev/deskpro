@@ -9,6 +9,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
       @$scope = {}
 
     getData: (data_key) ->
+      data_key = data_key.replace(/\-/g, '_')
+
       promise = @Api.sendGet("#{@overviewUrl}#{data_key}")
       promise.then (response) =>
         @$scope[data_key] = response.data
@@ -19,6 +21,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
     ###
     getStats: (data_key) ->
 #      @toggleLoadingState(data_key)
+
+      data_key = data_key.replace(/\-/g, '_')
 
       promise = @Api.sendGet('/reports/overview/get-stats/' + data_key, {
         grouping_field: @$scope[data_key].grouping_field
@@ -44,6 +48,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
     # @param {String} data_key - using this key data is looked in @$scope
     ###
     setDataForBarGraphs: (data_key) ->
+      data_key = data_key.replace(/\-/g, '_')
+
       @$scope[data_key].empty = true if Util.isEmpty(@$scope[data_key].values)
       @$scope[data_key].stats = []
       denominator = @$scope[data_key].max || 1
@@ -98,6 +104,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
     # @param {String} data_key - using this key data is looked in @$scope
     ###
     setDataForTableWithBarGraphs: (data_key) ->
+      data_key = data_key.replace(/\-/g, '_')
+
       @$scope[data_key].empty = true if Util.isEmpty(@$scope[data_key].values)
       @$scope[data_key].stats = []
       denominator = @$scope[data_key].max || 1

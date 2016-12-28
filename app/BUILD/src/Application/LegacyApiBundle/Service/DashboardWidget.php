@@ -35,7 +35,6 @@
 
 namespace Application\LegacyApiBundle\Service;
 
-use Application\DeskPRO\DataSync\ReportWidget;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
 use Application\DeskPRO\Entity\ReportDashboardWidget as DashboardWidgetEntity;
@@ -100,14 +99,10 @@ class DashboardWidget
         $this->em = $em;
     }
 
-    public function changeDisplayType(ReportWidget $reportWidget, DashboardWidgetEntity $dashboardWidget)
-    {
-    }
-
     public function getWidgetData($widget)
     {
         if (!($widget instanceof DashboardWidgetEntity)) {
-            $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $widget);
+            $widget = $this->em->getRepository(DashboardWidgetEntity::class)->find((int) $widget);
         }
         $pos  = $widget->getPosition();
         $size = $widget->getSize();

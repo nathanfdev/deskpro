@@ -1,6 +1,7 @@
 @import "lib";
 @import 'variables';
 @import 'report-builder-table';
+
 $tablet: new-breakpoint(max-width 960px 6);
 $mobile: new-breakpoint(max-width 640px 6);
 
@@ -139,6 +140,9 @@ $header-height: 44px;
 
 
 .wrapper {
+  @include clearfix;
+}
+.clearfix {
   @include clearfix;
 }
 

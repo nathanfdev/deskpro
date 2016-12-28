@@ -1,25 +1,48 @@
 <?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 /**
  * Created by PhpStorm.
  * User: Den
  * Date: 16.12.2014
- * Time: 2:30
+ * Time: 2:30.
  */
 
 namespace Application\LegacyApiBundle\Service;
 
-
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
-use Doctrine\ORM\EntityManager;
-use Doctrine\Common\Collections\ArrayCollection;
-
 use Application\DeskPRO\Entity\ReportDashboard as DashboardEntity;
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class Dashboard
- * @package Application\LegacyApiBundle\Service
+ * Class Dashboard.
  */
 class Dashboard
 {
@@ -29,7 +52,7 @@ class Dashboard
      */
     public function __construct(EntityManager $em, DashboardWidget $widgetService)
     {
-        $this->em = $em;
+        $this->em            = $em;
         $this->widgetService = $widgetService;
     }
 
@@ -42,11 +65,15 @@ class Dashboard
      *
      * @return null|DashboardEntity
      */
-    public function getDashboard($dashboard) {
-        if(! ($dashboard instanceof DashboardEntity)) {
-            $dashboard = $this->em->getRepository('DeskPRO:ReportDashboard')->find((int) $dashboard);
-            if (!$dashboard) throw new NotFoundHttpException('Dashboard not found!');
+    public function getDashboard($dashboard)
+    {
+        if (!($dashboard instanceof DashboardEntity)) {
+            $dashboard = $this->em->getRepository(DashboardEntity::class)->find((int) $dashboard);
+            if (!$dashboard) {
+                throw new NotFoundHttpException('Dashboard not found!');
+            }
         }
+
         return $dashboard;
     }
 
@@ -57,22 +84,22 @@ class Dashboard
      */
     public function getDashboardData($dashboard)
     {
-        if(! ($dashboard instanceof DashboardEntity)) {
+        if (!($dashboard instanceof DashboardEntity)) {
             $dashboard = $this->getDashboard($dashboard);
         }
 
-        $data = array(
+        $data = [
             'id'         => $dashboard->getId(),
             'title'      => $dashboard->getTitle(),
             'is_default' => $dashboard->isDefault(),
-            'reports'    => array(),
-        );
+            'reports'    => [],
+        ];
 
         foreach ($dashboard->getReports() as $r) {
-            $data['reports'][] = array(
-                'id' => $r->id,
-                'title' => $r->title
-            );
+            $data['reports'][] = [
+                'id'    => $r->id,
+                'title' => $r->title,
+            ];
         }
 
         return $data;
@@ -96,6 +123,7 @@ class Dashboard
     {
         $this->em->persist($dashboard);
         $this->em->flush();
+
         return $this->getDashboardData($dashboard);
     }
 
@@ -105,60 +133,59 @@ class Dashboard
 
     /**
      * @param $report
+     *
      * @return array
      */
     public function getReportData($report)
     {
-        $report = $this->getReport($report);
-        $widgets = array();
-        foreach($report->getWidgets() as $widget) {
-
-            $wdata = $this->widgetService->getWidgetData($widget);
+        $report  = $this->getReport($report);
+        $widgets = [];
+        foreach ($report->getWidgets() as $widget) {
+            $wdata     = $this->widgetService->getWidgetData($widget);
             $widgets[] = $wdata;
         }
-        $data = array(
+        $data = [
             'title'        => $report->getTitle(),
             'id'           => $report->getId(),
             'dashboard_id' => $report->getDashboard()->getId(),
             'loaded'       => true,
-            'options'      => array(
+            'options'      => [
                 'columns'  => $report->getColumns(),
-                "floating" => false,
-                "swapping" => false,
-            ),
-            'widgets'      => $widgets,
-        );
+                'floating' => false,
+                'swapping' => false,
+            ],
+            'widgets' => $widgets,
+        ];
+
         return $data;
     }
 
     /**
      * @param $dashboard
+     *
      * @return array
      */
     public function getReportsData($dashboard)
     {
         $dashboard = $this->getDashboard($dashboard);
 
-        $reports_data = array();
-        foreach ($dashboard->getReports() as $report)
-        {
-
-            $data = array(
+        $reports_data = [];
+        foreach ($dashboard->getReports() as $report) {
+            $data = [
                 'title'        => $report->getTitle(),
                 'id'           => $report->getId(),
                 'dashboard_id' => $dashboard->getId(),
                 'loaded'       => false,
                 'deleted'      => false,
-                'options'      => array(
+                'options'      => [
                     'columns'  => $report->getColumns(),
-                    "floating" => false,
-                    "swapping" => false,
-                ),
-                'widgets'      => array()
-            );
+                    'floating' => false,
+                    'swapping' => false,
+                ],
+                'widgets' => [],
+            ];
             $reports_data[] = $data;
         }
-
 
         return $reports_data;
     }
@@ -170,11 +197,14 @@ class Dashboard
      */
     public function getReport($report)
     {
-        if(! ($report instanceof DashboardReportEntity)) {
+        if (!($report instanceof DashboardReportEntity)) {
             $report_id = $report;
-            $report = $this->em->getRepository('DeskPRO:ReportDashboardReport')->find((int) $report_id);
-            if (!$report) throw new NotFoundHttpException(sprintf('DashboardReport[%d] not found!', $report_id));
+            $report    = $this->em->getRepository(DashboardReportEntity::class)->find((int) $report_id);
+            if (!$report) {
+                throw new NotFoundHttpException(sprintf('DashboardReport[%d] not found!', $report_id));
+            }
         }
+
         return $report;
     }
 
@@ -186,12 +216,10 @@ class Dashboard
     {
         $report = $this->getReport($report);
         $this->em->remove($report);
-        if($flush) {
+        if ($flush) {
             $this->em->flush();
         }
-
     }
-
 
     /**
      * @param DashboardReportEntity $report
@@ -202,24 +230,24 @@ class Dashboard
     public function saveReport(DashboardReportEntity $report, $flush = false)
     {
         $this->em->persist($report);
-        if($flush) {
+        if ($flush) {
             $this->em->flush();
         }
+
         return $this->getReportData($report);
     }
-
 
     /**
      * @param $dashboard
      *
      * @return int
      */
-    public function getLastSortOrder($dashboard) {
+    public function getLastSortOrder($dashboard)
+    {
         $dashboard = $this->getDashboard($dashboard);
         /** @var ArrayCollection $allReports */
         $allReports = $dashboard->getReports();
+
         return $allReports->last() ? $allReports->last()->getSortOrder() + 1 : 1;
     }
-
-
 }
