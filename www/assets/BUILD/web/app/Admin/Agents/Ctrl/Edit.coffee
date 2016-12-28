@@ -17,6 +17,7 @@ define [
     init: ->
       window.AGENT_CTRL = this
       @agentId = parseInt(@$stateParams.id)
+      @created_agent = @$stateParams.created_agent
       @form = {email_primary: '', emails_list: []}
       @hasPermOverrides = false
       @hasDepOverrides = false
@@ -644,7 +645,7 @@ define [
 
         if !@agentId
           @service.agents.all(true)
-          @$state.go('agents.agents.edit', {id: res.data.person_id})
+          @$state.go('agents.agents.edit', {id: res.data.person_id, created_agent: 1})
 
         @stopSpinner('saving')
       , (res) =>
