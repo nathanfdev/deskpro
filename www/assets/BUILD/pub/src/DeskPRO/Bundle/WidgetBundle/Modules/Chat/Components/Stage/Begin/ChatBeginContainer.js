@@ -3,11 +3,10 @@ import { connect } from 'react-redux';
 import { Fieldset, createValue } from 'react-forms';
 import $ from 'jquery';
 import Immutable from 'immutable';
-import moment from 'moment';
 import { loadAll, isLoadedCollectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import PortalFormWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
 import { createChat } from '../../../Actions/chatActions';
-import { liveDemoSelector, widgetAllowDepartmentSelection, widgetLanguageSelector } from '../../../../Application/Selectors/dpWindow';
+import { liveDemoSelector, widgetAllowDepartmentSelection, widgetLanguageSelector, chatFormDefaultValuesSelector } from '../../../../Application/Selectors/dpWindow';
 import { requireChatEmailValidationSelector, requireChatLoginSelector, widgetSessionIsLoginSelector } from '../../../../Application/Selectors/bootstrap';
 import { customChatFieldsOrderedSelector } from '../../../../Application/Selectors/customFields';
 import { history } from '../../../../../Services/history';
@@ -24,7 +23,8 @@ import { ChatBeginSimple } from './ChatBeginSimple';
   chatDepartments:          allSelectorFactory('ChatDepartment')(state),
   chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state),
   widgetLanguage:           widgetLanguageSelector(state),
-  loggedIn:                 widgetSessionIsLoginSelector(state)
+  loggedIn:                 widgetSessionIsLoginSelector(state),
+  defaultValues:            chatFormDefaultValuesSelector(state)
 }))
 export class ChatBeginContainer extends React.Component {
 
@@ -187,7 +187,7 @@ export class ChatBeginContainer extends React.Component {
   };
 
   getInitialFormData(props) {
-    const { children, customFields, allowDepartmentSelection } = props;
+    const { children, customFields, allowDepartmentSelection, defaultValues } = props;
     const formData = {
       name:   '',
       email:  '',
@@ -201,9 +201,9 @@ export class ChatBeginContainer extends React.Component {
 
       customFields.forEach((customField) => {
         const fieldId = customField.get('id');
-        const widgetType = customField.get('widget_type');
+        const optionsDefaultValue = defaultValues && defaultValues.getIn(['fields', String(fieldId)]);
 
-        let defaultValue = customField.get('default_value');
+        let defaultValue = optionsDefaultValue || customField.get('default_value');
         if (defaultValue && defaultValue.toJS) {
           defaultValue = defaultValue.toJS();
         }
