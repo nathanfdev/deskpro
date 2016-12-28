@@ -130,9 +130,9 @@ class TicketController extends AbstractApiController
                     $this->getManager()->getUnitOfWork()->clearEntityChangeSet(spl_object_hash($ticket->getPerson()));
                 }
 
-                $ticketService->acceptNewTicket($ticket, $request);
+                $ticketService->acceptNewTicket($ticket, $request, 'widget');
             } else {
-                $ticketService->acceptNewTicketForGuest($ticket, $request, $guestForm);
+                $ticketService->acceptNewTicketForGuest($ticket, $request, $guestForm, 'widget');
             }
 
             // check if ticket was created and then return success response
