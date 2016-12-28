@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
@@ -152,6 +153,6 @@ class SnippetFormatter implements PersonContextInterface
      */
     protected function getTemplateRenderer()
     {
-        return new TwigTemplateRenderer($this->twig);
+        return new TwigTemplateRenderer($this->twig, App::$container->get('brand_aware_settings_resolver'));
     }
 }
