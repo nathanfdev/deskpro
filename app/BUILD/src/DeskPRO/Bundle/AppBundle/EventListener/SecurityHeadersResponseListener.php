@@ -71,7 +71,11 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
             'object-src'  => '*',
             'child-src'   => ['*', 'blob:'],
             'form-action' => '*',
+            'frame-src'   => ['self'],
         ];
+
+        //https://developers.google.com/recaptcha/docs/faq#im-using-content-security-policy-csp-on-my-website-how-can-i-configure-it-to-work-with-recaptcha
+        $csp['frame-src'][] = 'https://www.google.com/recaptcha/';
 
         $referrerPolicy = 'no-referrer-when-downgrade';
 

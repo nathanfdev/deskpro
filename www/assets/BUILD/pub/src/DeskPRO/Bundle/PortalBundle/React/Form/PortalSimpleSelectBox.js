@@ -30,15 +30,11 @@ class SelectOption extends React.Component {
     const { option, isFocused, active, disabled, displayDepth, multiple } = this.props;
 
     return (
-      <li
-        ref="row"
-        className={classNames({ focused: isFocused, 'select-option-disabled': disabled })}
-      >
+      <li className={classNames({ focused: isFocused, 'select-option-disabled': disabled })}>
         <a
           onClick={this.onClickOption}
           className={classNames({ active, [`display-depth-${displayDepth}`]: displayDepth > 0 })}
         >
-
           {multiple && !disabled
             ? <span className={classNames('checkbox', { checked: active })}>
               <i className="fa fa-check" />
@@ -59,8 +55,8 @@ export class PortalSimpleSelectBox extends React.Component {
     multiple:      PropTypes.bool,
     expanded:      PropTypes.bool,
     level:         PropTypes.number,
-    value:         PropTypes.any,
-    options:       PropTypes.any,
+    value:         PropTypes.any, // eslint-disable-line react/forbid-prop-types
+    options:       PropTypes.any, // eslint-disable-line react/forbid-prop-types
     onChange:      PropTypes.func
   };
 
@@ -98,7 +94,7 @@ export class PortalSimpleSelectBox extends React.Component {
     }
   };
 
-  onKeyDown = event => {
+  onKeyDown = (event) => {
     if (event.keyCode === 32) {
       event.preventDefault();
       this.toggleExpanded();
@@ -111,21 +107,12 @@ export class PortalSimpleSelectBox extends React.Component {
     }
   };
 
-  onClickOption = option => {
+  onClickOption = (option) => {
     this.changeToOption(option);
     if (this.state.expanded) {
       this.toggleExpanded();
     }
   };
-
-  getFitleredOptions(rawFilterText, options) {
-    if (rawFilterText) {
-      const filterText = rawFilterText.toLowerCase();
-      return options.filter(opt => opt.title.toLowerCase().indexOf(filterText) !== -1);
-    }
-
-    return options;
-  }
 
   changeToOption(option) {
     if (!option) {
@@ -140,7 +127,7 @@ export class PortalSimpleSelectBox extends React.Component {
       } else {
         val = val.filter(opt => parseInt(opt.id, 10) !== parseInt(option.id, 10));
       }
-      val = val.filter((v) => typeof v !== 'undefined');
+      val = val.filter(v => typeof v !== 'undefined');
     } else {
       val = option;
     }
@@ -152,16 +139,12 @@ export class PortalSimpleSelectBox extends React.Component {
     this.props.onChange(val);
   }
 
-  focusedOnKeyDown = event => {
+  focusedOnKeyDown = (event) => {
     if (event.keyCode === 13) { // enter
       event.preventDefault();
       this.openMenu();
     }
   };
-
-  isNullOption(option) {
-    return option === null || !option.id || option.title === '';
-  }
 
   filterNav = (ev) => {
     const key = ev.keyCode;
@@ -199,12 +182,21 @@ export class PortalSimpleSelectBox extends React.Component {
 
   filterChange = () => {
     // no change
-    if (this.refs.filterInput.value === this.state.filterText) {
+    if (this.filterInput.value === this.state.filterText) {
       return;
     }
 
+    const getFitleredOptions = (rawFilterText, options) => {
+      if (rawFilterText) {
+        const filterText = rawFilterText.toLowerCase();
+        return options.filter(opt => opt.title.toLowerCase().indexOf(filterText) !== -1);
+      }
+
+      return options;
+    };
+
     this.openMenu();
-    const visibleOptions = this.getFitleredOptions(this.refs.filterInput.value, this.state.options);
+    const visibleOptions = getFitleredOptions(this.filterInput.value, this.state.options);
     // current selection if its still visible, or the first result (or nothing if list is empty)
     const selectedOption = visibleOptions.indexOf(this.state.selectedOption) !== -1
       ? this.state.selectedOption
@@ -213,7 +205,7 @@ export class PortalSimpleSelectBox extends React.Component {
     this.setState({
       visibleOptions,
       selectedOption,
-      filterText: this.refs.filterInput.value
+      filterText: this.filterInput.value
     });
   };
 
@@ -226,7 +218,7 @@ export class PortalSimpleSelectBox extends React.Component {
       this.setState({ selectedOption: this.state.visibleOptions[0] });
     } else {
       let next = null;
-      for (let i = 0; i < this.state.visibleOptions.length; i++) {
+      for (let i = 0; i < this.state.visibleOptions.length; i += 1) {
         if (this.state.visibleOptions[i] === this.state.selectedOption) {
           if (this.state.visibleOptions[i + 1]) {
             next = this.state.visibleOptions[i + 1];
@@ -251,7 +243,7 @@ export class PortalSimpleSelectBox extends React.Component {
       this.setState({ selectedOption: this.state.visibleOptions[this.state.visibleOptions.length - 1] });
     } else {
       let next = null;
-      for (let i = 0; i < this.state.visibleOptions.length; i++) {
+      for (let i = 0; i < this.state.visibleOptions.length; i += 1) {
         if (this.state.visibleOptions[i] === this.state.selectedOption) {
           if (i > 0) {
             next = this.state.visibleOptions[i - 1];
@@ -311,7 +303,7 @@ export class PortalSimpleSelectBox extends React.Component {
           onKeyDown={this.focusedOnKeyDown}
           tabIndex="0"
           role="combobox"
-          ref="defaultRow"
+          aria-expanded
         >
           <span className={`multiselect-title_${this.state.id}`}>
             {multiple
@@ -335,7 +327,7 @@ export class PortalSimpleSelectBox extends React.Component {
                 ? portalPhrases.get('portal.general.select_search_placeholder')
                 : portalPhrases.get('portal.general.select_placeholder')
               }
-              ref="filterInput"
+              ref={(c) => { this.filterInput = c; }}
               onKeyDown={this.filterNav}
               onKeyUp={this.filterChange}
             />
@@ -359,6 +351,7 @@ export class PortalSimpleSelectBox extends React.Component {
     }
 
     const options = this.state.visibleOptions;
+    const isNullOption = option => option === null || !option.id || option.title === '';
     const isActive = (option) => {
       if (!this.state.value) {
         return false;
@@ -369,13 +362,12 @@ export class PortalSimpleSelectBox extends React.Component {
       return this.state.value.id === option.id;
     };
 
-
     return (
       <div className="options-wrapper">
         <ul>
           {options.length > 0
             ? options.map((option) => {
-              if (this.isNullOption(option)) {
+              if (isNullOption(option)) {
                 return null;
               }
 
