@@ -134,6 +134,15 @@ class UserSearch implements UserSearchInterface
             $f->addMust($f2);
             $filter->addShould($f);
         }
+        if ($context->getPerson() && ($limit_types === null || in_array('chat_conversation', $limit_types))) {
+            $search->addType('chat_conversation');
+
+            $f = new Query\BoolQuery();
+            $f->addMust(new Query\Term(['_type' => 'chat_conversation']));
+            $f->addMust(new Query\Term(['person' => $context->getPerson()->getId()]));
+
+            $filter->addShould($f);
+        }
 
         if (!$search->getTypes()) {
             return new ResultSet();
