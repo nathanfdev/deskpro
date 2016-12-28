@@ -108,7 +108,6 @@ Feature: /ticket_snippet_categories endpoint
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.title.fields.title_1.errors[0].code" should be equal to "invalid_data_type"
-    And the JSON node "errors.fields.title.fields.title_1.errors[0].message" should be equal to "This data type is not is data type that was expected."
 
   Scenario: I try to create a category with empty object lang data
     When I send a POST request to "/api/v2/ticket_snippet_categories" with body:
