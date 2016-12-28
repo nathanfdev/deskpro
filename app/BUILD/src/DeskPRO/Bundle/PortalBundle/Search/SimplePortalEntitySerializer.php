@@ -133,7 +133,7 @@ class SimplePortalEntitySerializer
         } elseif ($object instanceof Entity\ChatConversation) {
             $result['id']   = $object->getId();
             $result['name'] = $object->getSubjectLine();
-            $result['url']  = null; // TODO: chat conversations will eventually have a route/url
+            $result['url']  = $this->object_router->getPortalUrl($object);
         } else {
             $result = null;
         }

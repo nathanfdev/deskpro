@@ -435,7 +435,7 @@ class SearchController extends AbstractController
     {
         ////////////////////////////////////////////////////////////////////////
         // search types
-        $allowedSearchTypes = ['article', 'news', 'download', 'feedback', 'ticket'];
+        $allowedSearchTypes = ['article', 'news', 'download', 'feedback', 'ticket', 'chat_conversation'];
         if (!$limitTypesArray = $types) {
             $limitTypesArray = $allowedSearchTypes;
         }
