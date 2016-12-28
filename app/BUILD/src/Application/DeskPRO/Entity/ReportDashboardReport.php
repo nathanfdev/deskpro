@@ -256,7 +256,7 @@ class ReportDashboardReport extends DomainObject
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
-                'default'    => 10,
+                'default'    => 24,
                 'columnName' => 'columns',
             ]
         );

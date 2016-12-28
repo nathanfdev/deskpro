@@ -134,8 +134,11 @@ class DashboardWidgetController extends AbstractController
                 $this->in->getCleanValue('row', 'int'),
                 $this->in->getCleanValue('col', 'int'),
             ];
-        $title = $this->in->getCleanValue('title', 'string');
-        $widget->setSize([$sizeX, $sizeY])->setPosition([$row, $col])->setTitle($title);
+        $widget->setSize([$sizeX, $sizeY])->setPosition([$row, $col]);
+        if ($this->permissionsService->isEditableDashboard($widget->getReport()->getDashboard())) {
+            $title = $this->in->getCleanValue('title', 'string');
+            $widget->setTitle($title);
+        }
         $this->em->persist($widget);
         $this->em->flush();
 
@@ -151,14 +154,15 @@ class DashboardWidgetController extends AbstractController
 
     public function getWidgetAction($id)
     {
-        $widget = $this->em->getRepository(Widget::class)->find((int) $id);
-
-        return $this->createApiResponse($this->_getWidgetData($widget));
+        return $this->createApiResponse($this->_getWidgetData($id));
     }
 
     protected function _getWidgetData($widget)
     {
         if (!$widget instanceof Widget && !$widget = $this->em->getRepository(Widget::class)->find((int) $widget)) {
+            throw $this->createNotFoundException('Widget not found!');
+        }
+        if (!$widget->getWidget()) {
             throw $this->createNotFoundException('Widget not found!');
         }
         $pos  = $widget->getPosition();

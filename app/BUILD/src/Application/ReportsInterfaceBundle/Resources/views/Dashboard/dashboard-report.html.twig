@@ -51,7 +51,7 @@
             <a
                 ng-click="toggleLayoutEdit()"
                 class="control"
-                ng-class="{'control-active': layoutEditing, 'control-inactive': dashboard.is_default}">
+                ng-class="{'control-active': layoutEditing}">
                 Dashboard Layout <i class="fa fa-columns"></i>
             </a>
             <a
@@ -69,14 +69,18 @@
             <div class="dp-gridster-wrap">
                 <div ng-if="!widget.deleted" gridster-item="widget" ng-repeat="widget in report.widgets" class="dp-gridster-item">
                     <div class="box-header">
-                        <div ng-show='layoutEditing' class="box-header-btns pull-right">
+                        <div ng-show='layoutEditing && !dashboard.is_default' class="box-header-btns pull-right">
                             <a title="Edit widget" ng-click="openEditWidget(widget)"><i class="fa fa-cog"></i></a>
                             <a title="Remove widget" ng-click="removeWidget(widget)"><i class="fa fa-times"></i></a>
                         </div>
                         <h3 class="ng-binding">{{ ng_var('widget.title') }}</h3>
                     </div>
                     <div class="box" ng-if="widget.type=='stat'">
-                        <dashboard-stat title="{{ ng_var('widget.title') }}" value="{{ ng_var('widget.data.value') }}" wtype="{{ ng_var('widget.type') }}"></dashboard-stat>
+                        <dashboard-stat
+                            title="{{ ng_var('widget.title') }}"
+                            value="{{ ng_var('widget.data.value') }}"
+                            wtype="{{ ng_var('widget.type') }}"
+                        />
                     </div>
                     <div class="box" ng-if="widget.type=='graph'">
                         <dashboard-amcharts
@@ -84,8 +88,8 @@
                             title="{{ ng_var('widget.title') }}"
                             widget-id = "{{ ng_var('widget.id') }}"
                             chart-data = "{{ ng_var('widget.data') }}"
-                            chtype="{{ ng_var('widget.type') }}">
-                        </dashboard-amcharts>
+                            chtype="{{ ng_var('widget.type') }}"
+                        />
                     </div>
                     <div class="box" ng-if="widget.type=='table'">
                         <dashboard-table
@@ -93,8 +97,8 @@
                             title="{{ ng_var('widget.title') }}"
                             table-data="{{ ng_var('widget.data') }}"
                             widget-id = "{{ ng_var('widget.id') }}"
-                            wtype="{{ ng_var('widget.type') }}">
-                        </dashboard-table>
+                            wtype="{{ ng_var('widget.type') }}"
+                        />
                     </div>
                     <div class="box" ng-if="widget.type=='reports_overview'">
                         <reports-overview
@@ -102,8 +106,8 @@
                                 title="{{ ng_var('widget.name') }}"
                                 inner-type="{{ ng_var('widget.inner_type') }}"
                                 outer-type="{{ ng_var('widget.outer_type') }}"
-                                wtype="{{ ng_var('widget.type') }}">
-                        </reports-overview>
+                                wtype="{{ ng_var('widget.type') }}"
+                        />
                     </div>
                     <div class="box" ng-if="widget.type=='agent_performance'">
                         <agent-performance
@@ -111,8 +115,8 @@
                                 title="{{ ng_var('widget.name') }}"
                                 inner-type="{{ ng_var('widget.inner_type') }}"
                                 outer-type="{{ ng_var('widget.outer_type') }}"
-                                wtype="{{ ng_var('widget.type') }}">
-                        </agent-performance>
+                                wtype="{{ ng_var('widget.type') }}"
+                        />
                     </div>
                     <div class="box" ng-if="widget.type=='ticket_satisfaction'">
                         <ticket-satisfaction
@@ -120,8 +124,8 @@
                                 title="{{ ng_var('widget.name') }}"
                                 inner-type="{{ ng_var('widget.inner_type') }}"
                                 outer-type="{{ ng_var('widget.outer_type') }}"
-                                wtype="{{ ng_var('widget.type') }}">
-                        </ticket-satisfaction>
+                                wtype="{{ ng_var('widget.type') }}"
+                        />
                     </div>
                 </div>
             </div>

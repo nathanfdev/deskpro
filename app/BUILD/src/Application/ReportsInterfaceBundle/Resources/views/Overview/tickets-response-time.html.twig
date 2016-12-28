@@ -6,7 +6,7 @@
 		</h2>
 		<div style="float: left; padding-bottom: 5px;">
 			<select ui-select2 ng-model="tickets_response_time.date_choice" style="min-width: 120px" class="no-search"
-					ng-change="Overview.getStats('tickets_response_time')">
+					ng-change="getStats('tickets_response_time')">
 				{% for field,title in {
 				'today': 'Today',
 				'this_week': 'This Week',

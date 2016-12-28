@@ -3,11 +3,6 @@ define ->
     return {
     restrict: 'E',
     replace: true,
-    #//transclude: true,
-    #//scope: {
-    #//    dData: '@',
-    #//    title: '@'
-    #//},www/web/app/build/dashpoc/js/app/templates/stat.html
     template: """
       <div class="stat">
           <div id="stat-title"></div>
@@ -31,17 +26,13 @@ define ->
 
       listItem.scroll () ->
 
-        #//console.log(box.offset().top);
-        #//console.log(listItem.offset().top);
         t = box.offset().top - 47 - listItem.offset().top
-        #//console.log('total = ' + t);
 
         resHandlers = listItem.find('.gridster-item-resizable-handler')
 
         resHandlers.each (index, element) ->
           h = $(this)
           c = 1 + t
-        #//console.log('current = ' + c);
           h[0].style.bottom = "#{c}px"
     }
   ]

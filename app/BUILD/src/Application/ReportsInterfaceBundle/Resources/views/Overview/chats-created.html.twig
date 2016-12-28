@@ -6,7 +6,7 @@
 
 		<div style="float: left; padding-bottom: 5px;">
 			<select ui-select2 ng-model="chats_created.date_choice" style="min-width: 120px" class="no-search"
-					ng-change="Overview.getStats('chats_created')">
+					ng-change="getStats('chats_created')">
 				{% for field,title in {
 					'today': 'Today',
 					'this_week': 'This Week',
@@ -25,7 +25,7 @@
 		<h3>
 			Showing Grouped by
 			<select ui-select2 ng-model="chats_created.grouping_field" style="min-width: 120px" class="no-search"
-					ng-change="Overview.getStats('chats_created')">
+					ng-change="getStats('chats_created')">
 				<optgroup label="Chat Fields">
 					<option {% if chats_created.grouping_field == 'brand' %}selected="selected"{% endif %}
 							value="brand">Brand

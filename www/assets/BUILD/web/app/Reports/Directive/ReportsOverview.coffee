@@ -12,21 +12,18 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 
         scope.outerType = Strings.ucFirst scope.outerType
         templateUrl = "ReportsInterfaceBundle:#{scope.outerType}:#{scope.innerType}.html"
-        ReportsOverviewService.getData(scope.innerType).then (data) ->
-          dataKey = scope.innerType.replace(/\-/g, '_')
-          scope[dataKey] = data.data
-          $http.get(templateUrl).then (response) ->
-            linkFn = $compile(response.data)
-            content = linkFn(scope)
-            element.replaceWith(content)
-            scope.getStats scope.innerType
+        dataKey = scope.innerType.replace(/\-/g, '_')
+        $http.get(templateUrl).then (response) ->
+          linkFn = $compile(response.data)
+          content = linkFn(scope)
+          element.replaceWith(content)
+          ReportsOverviewService.getData(scope.innerType).then (data) ->
+            scope[dataKey] = data
 
         scope.getStats = (dataKey) ->
           dataKey = scope.innerType.replace(/\-/g, '_')
-          ReportsOverviewService
-            .getStats dataKey
-            .then (response) ->
-              scope[dataKey] = response.data
+          ReportsOverviewService.getStats(scope.innerType).then (data) ->
+            scope[dataKey] = data.data
     }
   ]
 

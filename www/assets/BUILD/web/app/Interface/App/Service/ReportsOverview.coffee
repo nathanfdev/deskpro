@@ -8,60 +8,71 @@ define ['DeskPRO/Util/Util'], (Util) ->
       #just a stub, have to be refactored
       @$scope = {}
 
-    getData: (data_key) ->
-      data_key = data_key.replace(/\-/g, '_')
+    getData: (dataKey) ->
+      dataKey = dataKey.replace(/\-/g, '_')
 
-      promise = @Api.sendGet("#{@overviewUrl}#{data_key}")
-      promise.then (response) =>
-        @$scope[data_key] = response.data
-      promise
-    ###
-    # This method is used in select boxes for defining grouping field and / or other search parameters
-    # @param {String} data_key - using this key data is looked in @$scope
-    ###
-    getStats: (data_key) ->
-#      @toggleLoadingState(data_key)
-
-      data_key = data_key.replace(/\-/g, '_')
-
-      promise = @Api.sendGet('/reports/overview/get-stats/' + data_key, {
-        grouping_field: @$scope[data_key].grouping_field
-        date_choice: @$scope[data_key].date_choice
-        sla_id: @$scope[data_key].sla_id
-      })
-
-      promise.success((data) =>
-#        @toggleLoadingState(data_key)
-        @$scope[data_key] = data
-
-        if data_key == 'tickets_user_waiting_time' or data_key == 'tickets_response_time'
-          @setDataForTableWithBarGraphs(data_key)
-        else if data_key == 'tickets_opened_hour'
+      promise = @Api.sendGet("#{@overviewUrl}#{dataKey}")
+      promise.then (data) =>
+        @$scope[dataKey] = data.data
+        if dataKey == 'tickets_user_waiting_time' or dataKey == 'tickets_response_time'
+          @setDataForTableWithBarGraphs(dataKey)
+        else if dataKey == 'tickets_opened_hour'
           @setDataForTicketsOpenedHours()
         else
-          @setDataForBarGraphs(data_key)
+          @setDataForBarGraphs(dataKey)
+        @$scope[dataKey]
 
-        return @$scope[data_key]
-      )
+
+
+
+
+    ###
+    # This method is used in select boxes for defining grouping field and / or other search parameters
+    # @param {String} dataKey - using this key data is looked in @$scope
+    ###
+    getStats: (dataKey) ->
+#      @toggleLoadingState(dataKey)
+
+      dataKey = dataKey.replace(/\-/g, '_')
+
+      promise = @Api.sendGet('/reports/overview/get-stats/' + dataKey, {
+        grouping_field: @$scope[dataKey].grouping_field
+        date_choice: @$scope[dataKey].date_choice
+        sla_id: @$scope[dataKey].sla_id
+      })
+
+      promise.success (data) =>
+#        @toggleLoadingState(dataKey)
+        @$scope[dataKey] = data
+
+        if dataKey == 'tickets_user_waiting_time' or dataKey == 'tickets_response_time'
+          @setDataForTableWithBarGraphs(dataKey)
+        else if dataKey == 'tickets_opened_hour'
+          @setDataForTicketsOpenedHours()
+        else
+          @setDataForBarGraphs(dataKey)
+          
+        @$scope[dataKey]
+
     ###
     # We need to display bar graphs - so let's pre-calculate some variables
-    # @param {String} data_key - using this key data is looked in @$scope
+    # @param {String} dataKey - using this key data is looked in @$scope
     ###
-    setDataForBarGraphs: (data_key) ->
-      data_key = data_key.replace(/\-/g, '_')
+    setDataForBarGraphs: (dataKey) ->
+      dataKey = dataKey.replace(/\-/g, '_')
 
-      @$scope[data_key].empty = true if Util.isEmpty(@$scope[data_key].values)
-      @$scope[data_key].stats = []
-      denominator = @$scope[data_key].max || 1
+      @$scope[dataKey].empty = true if Util.isEmpty(@$scope[dataKey].values)
+      @$scope[dataKey].stats = []
+      denominator = @$scope[dataKey].max || 1
 
-      for key of @$scope[data_key].titles when @$scope[data_key].values[key]
+      for key of @$scope[dataKey].titles when @$scope[dataKey].values[key]
 
-        percentage = @$scope[data_key].values[key] / denominator * 100
+        percentage = @$scope[dataKey].values[key] / denominator * 100
         percentage = 1 if percentage < 1
 
-        @$scope[data_key].stats.push({
-          title: @$scope[data_key].titles[key]
-          value: @$scope[data_key].values[key] || 0
+        @$scope[dataKey].stats.push({
+          title: @$scope[dataKey].titles[key]
+          value: @$scope[dataKey].values[key] || 0
           left_percentage: percentage
           right_percentage: 100 - percentage
         })
@@ -101,61 +112,61 @@ define ['DeskPRO/Util/Util'], (Util) ->
     # Just for cases with no data we display only labels without graphical bars
     # Ie. if we have 0 tickets created < 5 minutes ago, we still display '< 5 minutes' label, but without bar
     # This leads to the situation that we have to iterate over all the '@$scope.tickets_user_waiting_time.titles' array
-    # @param {String} data_key - using this key data is looked in @$scope
+    # @param {String} dataKey - using this key data is looked in @$scope
     ###
-    setDataForTableWithBarGraphs: (data_key) ->
-      data_key = data_key.replace(/\-/g, '_')
+    setDataForTableWithBarGraphs: (dataKey) ->
+      dataKey = dataKey.replace(/\-/g, '_')
+      
+      @$scope[dataKey].empty = true if Util.isEmpty(@$scope[dataKey].values)
+      @$scope[dataKey].stats = []
+      denominator = @$scope[dataKey].max || 1
 
-      @$scope[data_key].empty = true if Util.isEmpty(@$scope[data_key].values)
-      @$scope[data_key].stats = []
-      denominator = @$scope[data_key].max || 1
+      for key of @$scope[dataKey].titles
 
-      for key of @$scope[data_key].titles
-
-        percentage = @$scope[data_key].values[key] / denominator * 100
+        percentage = @$scope[dataKey].values[key] / denominator * 100
         percentage = 1 if percentage < 1
 
         # case of simple data without sub-data
 
-        if not @$scope[data_key].sub_titles
+        if not @$scope[dataKey].sub_titles
 
-          if @$scope[data_key].values[key]
-            @$scope[data_key].stats.push({
-              title: @$scope[data_key].titles[key]
-              value: @$scope[data_key].values[key] || 0
+          if @$scope[dataKey].values[key]
+            @$scope[dataKey].stats.push({
+              title: @$scope[dataKey].titles[key]
+              value: @$scope[dataKey].values[key] || 0
               percentage: percentage
             })
           else
-            @$scope[data_key].stats.push({
-              title: @$scope[data_key].titles[key]
+            @$scope[dataKey].stats.push({
+              title: @$scope[dataKey].titles[key]
             })
 
         else
 
 # case of more sophisticated case with sub-data
 
-          percentage = @$scope[data_key].group_total[key] / denominator * 100
+          percentage = @$scope[dataKey].group_total[key] / denominator * 100
           percentage = 1 if percentage < 1
 
-          if @$scope[data_key].group_total[key]
+          if @$scope[dataKey].group_total[key]
             sub_stats = []
 
-            for subid, subtitle of @$scope[data_key].sub_titles when @$scope[data_key].values[key][subid]
-              sub_percentage = @$scope[data_key].values[key][subid] / @$scope[data_key].group_total[key] * 100
+            for subid, subtitle of @$scope[dataKey].sub_titles when @$scope[dataKey].values[key][subid]
+              sub_percentage = @$scope[dataKey].values[key][subid] / @$scope[dataKey].group_total[key] * 100
               sub_percentage = 1 if sub_percentage < 1
               sub_stats.push({
-                title: subtitle + ' (' + @$scope[data_key].values[key][subid] + ')'
+                title: subtitle + ' (' + @$scope[dataKey].values[key][subid] + ')'
                 percentage: sub_percentage
-                background: @$scope[data_key].group_keys[subid]
+                background: @$scope[dataKey].group_keys[subid]
               })
 
-            @$scope[data_key].stats.push({
-              title: @$scope[data_key].titles[key]
-              value: @$scope[data_key].group_total[key] || 0
+            @$scope[dataKey].stats.push({
+              title: @$scope[dataKey].titles[key]
+              value: @$scope[dataKey].group_total[key] || 0
               percentage: percentage
               sub_stats: sub_stats
             })
           else
-            @$scope[data_key].stats.push({
-              title: @$scope[data_key].titles[key]
+            @$scope[dataKey].stats.push({
+              title: @$scope[dataKey].titles[key]
             })

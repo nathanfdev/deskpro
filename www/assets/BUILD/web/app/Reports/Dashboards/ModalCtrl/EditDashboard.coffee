@@ -55,7 +55,7 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
       axis: 'y',
       handle: '.drag-handle',
       update: ->
-        console.log($scope.reports)
+
     }
 
     ####################################################################################################################

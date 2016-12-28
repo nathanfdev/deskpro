@@ -34,12 +34,14 @@
 
 namespace Application\InstallBundle\Data\DefaultData;
 
-use Application\DeskPRO\Entity\Person as Person;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboard as Dashboard;
 use Application\DeskPRO\Entity\ReportDashboardPermission as Permission;
 use Application\DeskPRO\Entity\ReportDashboardReport as Tab;
 use Application\DeskPRO\Entity\ReportDashboardWidget as Widget;
+use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\Entity\ReportWidget as WidgetPrototype;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 
 class DashboardData extends AbstractDefaultData
 {
@@ -51,108 +53,94 @@ class DashboardData extends AbstractDefaultData
             'reports' => [
                 [
                     'title'      => 'Overview',
-                    'columns'    => 10,
+                    'columns'    => 24,
                     'sort_order' => 1,
                     'widgets'    => [
                         [
-                            'title'     => 'Test widget 1',
-                            'position'  => '0:0',
-                            'size'      => '5:2',
-                            'type'      => 'simple_area',
-                            'widget_id' => 8,
+                            'title'    => 'Tickets status',
+                            'position' => '0:0',
+                            'size'     => '12:4',
+                            'hc_data'  => 'overview:tickets-status',
                         ],
                         [
-                            'title'     => 'Test widget 2',
-                            'position'  => '0:5',
-                            'size'      => '5:2',
-                            'type'      => 'simple_bars',
-                            'widget_id' => 8,
+                            'title'    => 'Resolved tickets',
+                            'position' => '0:12',
+                            'size'     => '12:5',
+                            'hc_data'  => 'overview:tickets-resolved',
                         ],
                         [
-                            'title'     => 'Test widget 3',
-                            'position'  => '2:0',
-                            'size'      => '5:2',
-                            'type'      => 'simple_lines',
-                            'widget_id' => 31,
-                            'variables' => [
-                                ['placeholder' => 'field group', 'value' => 'department'],
-                            ],
+                            'title'    => 'Tickets was "Awaiting agent"',
+                            'position' => '4:0',
+                            'size'     => '12:11',
+                            'hc_data'  => 'overview:tickets-user-waiting-time',
                         ],
                         [
-                            'title'     => 'Test widget 4',
-                            'position'  => '2:5',
-                            'size'      => '5:2',
-                            'type'      => 'simple_area',
-                            'widget_id' => 31,
-                            'variables' => [['placeholder' => 'field group', 'value' => 'department']],
+                            'title'    => 'Tickets awaiting agents',
+                            'position' => '5:12',
+                            'size'     => '12:5',
+                            'hc_data'  => 'overview:tickets-awaiting-agent',
                         ],
                         [
-                            'title'     => 'Test widget 5',
-                            'position'  => '4:0',
-                            'size'      => '5:2',
-                            'type'      => 'simple_bars',
-                            'widget_id' => 31,
-                            'variables' => [['placeholder' => 'field group', 'value' => 'department']],
+                            'title'    => 'Tickets opened hour',
+                            'position' => '10:12',
+                            'size'     => '12:5',
+                            'hc_data'  => 'overview:tickets-opened-hour',
                         ],
                         [
-                            'title'     => 'Test widget 6',
-                            'position'  => '4:5',
-                            'size'      => '5:2',
-                            'type'      => 'simple_area',
-                            'widget_id' => 31,
-                            'variables' => [['placeholder' => 'field group', 'value' => 'department']],
+                            'title'    => 'Tickets sla status',
+                            'position' => '15:0',
+                            'size'     => '12:4',
+                            'hc_data'  => 'overview:tickets-sla-status',
                         ],
                         [
-                            'title'     => 'Test widget 7',
-                            'position'  => '6:0',
-                            'size'      => '10:3',
-                            'type'      => 'simple_lines',
-                            'widget_id' => 31,
-                            'variables' => [['placeholder' => 'field group', 'value' => 'department']],
+                            'title'    => 'Average first response time',
+                            'position' => '15:12',
+                            'size'     => '12:4',
+                            'hc_data'  => 'overview:tickets-response-time',
                         ],
                     ],
                 ],
                 [
                     'title'      => 'Agent Performance',
-                    'columns'    => 10,
+                    'columns'    => 24,
                     'sort_order' => 2,
                     'widgets'    => [
                         [
                             'title'    => 'Agent Activity',
                             'position' => '0:0',
-                            'size'     => '10:3',
+                            'size'     => '24:15',
                             'hc_data'  => 'performance:agent_activity',
                         ],
                         [
                             'title'    => 'Agent Hours',
-                            'position' => '4:0',
-                            'size'     => '10:3',
+                            'position' => '15:0',
+                            'size'     => '24:4',
                             'hc_data'  => 'performance:agent_hours',
                         ],
                     ],
                 ],
                 [
                     'title'      => 'Ticket Satisfaction',
-                    'columns'    => 10,
+                    'columns'    => 24,
                     'sort_order' => 3,
                     'widgets'    => [
                         [
                             'title'    => 'Feedback',
                             'position' => '0:0',
-                            'size'     => '10:3',
+                            'size'     => '24:8',
                             'hc_data'  => 'ticket_satisfaction:feed',
                         ],
                         [
                             'title'    => 'Summary',
-                            'position' => '4:0',
-                            'size'     => '10:3',
+                            'position' => '8:0',
+                            'size'     => '24:8',
                             'hc_data'  => 'ticket_satisfaction:summary',
                         ],
                     ],
                 ],
                 [
                     'title'      => 'Billing',
-                    'columns'    => 10,
+                    'columns'    => 24,
                     'sort_order' => 3,
                     'widgets'    => [
                     ],
@@ -164,14 +152,20 @@ class DashboardData extends AbstractDefaultData
             'reports' => [
                 [
                     'title'      => 'Overview',
-                    'columns'    => 10,
+                    'columns'    => 24,
                     'sort_order' => 1,
                     'widgets'    => [
+                        [
+                            'title'    => 'Chats created',
+                            'position' => '0:0',
+                            'size'     => '12:4',
+                            'hc_data'  => 'overview:chats-created',
+                        ],
                     ],
                 ],
                 [
                     'title'      => 'Chat Satisfaction',
-                    'columns'    => 10,
+                    'columns'    => 24,
                     'sort_order' => 2,
                     'widgets'    => [
                     ],
@@ -182,9 +176,13 @@ class DashboardData extends AbstractDefaultData
 
     public function runInstall()
     {
-        /** @var Person $admin */
-        $admin  = $this->getEm()->getRepository('DeskPRO:Person')->find(1);
-        $agents = $this->getEm()->getRepository('DeskPRO:Person')->findBy(['is_agent' => 1]);
+        /** @var PersonRepository $personRepository */
+        $personRepository = $this->getEm()->getRepository(Person::class);
+
+        /** @var Person[] $admins */
+        $admins = $personRepository->findBy(['can_admin' => 1]);
+        /** @var Person[] $agents */
+        $agents = $personRepository->findBy(['is_agent' => 1]);
         foreach ($this->dashboards as $dashboard) {
             $dashboardEntity = new Dashboard();
             $dashboardEntity->setTitle($dashboard['title'])->setDefault(true);
@@ -209,7 +207,7 @@ class DashboardData extends AbstractDefaultData
                             $widgetEntity->setType(Widget::WIDGET_TYPE_HARDCODED);
                         } elseif (isset($widget['widget_id'])) {
                             /** @var WidgetPrototype $widgetPrototype */
-                            $widgetPrototype = $this->getEm()->getRepository('DeskPRO:ReportWidget')->find($widget['widget_id']);
+                            $widgetPrototype = $this->getEm()->getRepository(ReportWidget::class)->find($widget['widget_id']);
                             $widgetEntity->setWidget($widgetPrototype);
                             $widgetEntity->setType($widget['type']);
                         }
@@ -222,11 +220,13 @@ class DashboardData extends AbstractDefaultData
                 }
             }
             $this->getEm()->persist($dashboardEntity);
-            $permissions = new Permission();
-            $permissions->setDashboard($dashboardEntity)->setPerson($admin)->setName(Permission::FULL);
-            $this->getEm()->persist($permissions);
+            foreach ($admins as $admin) {
+                $permissions = new Permission();
+                $permissions->setDashboard($dashboardEntity)->setPerson($admin)->setName(Permission::FULL);
+                $this->getEm()->persist($permissions);
+            }
             foreach ($agents as $agent) {
-                if ($agent->getId() != 1) {
+                if (!$agent->isAdmin()) {
                     $permissions = new Permission();
                     $permissions
                         ->setName(Permission::VIEW)
@@ -241,7 +241,7 @@ class DashboardData extends AbstractDefaultData
 
     public function runReset()
     {
-        $dashboards = $this->getEm()->getRepository('DeskPRO:ReportDashboard')->findBy(['is_default' => 1]);
+        $dashboards = $this->getEm()->getRepository(Dashboard::class)->findBy(['is_default' => 1]);
         foreach ($dashboards as $dashboard) {
             $this->getEm()->remove($dashboard);
         }
@@ -250,7 +250,7 @@ class DashboardData extends AbstractDefaultData
 
     public function runSync()
     {
-        $dashboards = $this->getEm()->getRepository('DeskPRO:ReportDashboard')->findBy(['is_default' => 1]);
+        $dashboards = $this->getEm()->getRepository(Dashboard::class)->findBy(['is_default' => 1]);
         if (count($dashboards) < count($this->dashboards)) {
             $this->runReset();
             $this->runInstall();

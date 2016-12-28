@@ -15,12 +15,16 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
    DashboardWidgetService,
   ) ->
     $scope.loaded = false
+    $scope.report = {
+      options:
+        columns: 24
+    }
 
     report_id = parseInt($stateParams.report_id)
 
     $scope.gridsterOptions =
-      margins: [20, 20],
-      columns: 10,
+      margins: [10, 10],
+      columns: $scope.report.options.columns,
       draggable:
         enabled: false
         handle: 'h3'
