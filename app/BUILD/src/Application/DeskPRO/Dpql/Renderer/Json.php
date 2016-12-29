@@ -1034,7 +1034,8 @@ class Json extends AbstractRenderer
             }
 
             if (isset($selectColumns[0]) && isset($selectColumns[0]['renderer']) && $selectColumns[0]['renderer'] == 'percent') {
-                $arrayOutput['valueAxis'] = [
+                $arrayOutput['valueAxes'][0]['unit'] = '%';
+                $arrayOutput['valueAxis']            = [
                     'maximum' => 100,
                     'minimum' => 0,
                 ];
@@ -1125,11 +1126,13 @@ class Json extends AbstractRenderer
             ];
             foreach ($this->_results->getSplitResults() as $splitResult) {
                 $result = $this->_renderFormatsWithFallback($this->_outputFormat, $splitResult[0]);
-                if ($result) {
+                if ($result && isset($result['columns'])) {
                     $output = [
                         'columns' => $result['columns'],
                         'data'    => array_merge($output['data'], $result['data']),
                     ];
+                } else {
+                    $output = $result;
                 }
             }
 

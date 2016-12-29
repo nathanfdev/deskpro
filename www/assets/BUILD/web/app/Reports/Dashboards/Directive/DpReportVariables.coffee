@@ -153,6 +153,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           linkFn = $compile(template)
           content = linkFn(scope)
           element.replaceWith(content)
+          scope.changeLinkParams()
     }
   ]
 
