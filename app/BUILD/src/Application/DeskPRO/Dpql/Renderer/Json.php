@@ -989,15 +989,15 @@ class Json extends AbstractRenderer
                 $arrayOutput['pies'] = [];
                 foreach ($pieData as $k => $pie) {
                     $arrayOutput['pies'][] = [
-                        'dataProvider' => $pie['data'],
-                        //                        'legend' => array('title'=> $pie['title']),
+                        'dataProvider'  => $pie['data'],
+                        'legend'        => ['title' => $pie['title']],
                         'labelsEnabled' => count($pie['data']) > 25 ? false : true,
                     ];
                 }
             } else {
                 foreach ($pieData as $pie) {
-                    $arrayOutput['dataProvider'] = $pie['data'];
-//                    $arrayOutput['legend']['title'] = $pie['title'];
+                    $arrayOutput['dataProvider']    = $pie['data'];
+                    $arrayOutput['legend']['title'] = $pie['title'];
                     if (count($pie['data']) > 25) {
                         $arrayOutput['labelsEnabled'] = false;
                     }

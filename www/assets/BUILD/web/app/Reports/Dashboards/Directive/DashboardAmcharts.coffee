@@ -38,15 +38,14 @@ define ->
                   chart.addListener "clickSlice", (event) ->
                     if (event.dataItem.dataContext.id != undefined)
                       selected = event.dataItem.dataContext.id
-                      color = event.dataItem.color
                     else
                       selected = undefined
-                    if selected? and selected
+                    if selected?
                       data = []
                       angular.forEach defaultDataProvider, (element, index) ->
                         if index == selected
                           angular.forEach widget.pies[selected].dataProvider, (pie) ->
-                            pie.color = color
+                            pie.color = '#'+Math.floor(Math.random()*16777215).toString(16);
                             data.push pie
                         else
                           data.push element
