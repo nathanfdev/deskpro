@@ -18,8 +18,8 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
         data: []
         id: 0
         title: "new widget"
-        sizeX: "5"
-        sizeY: "2"
+        sizeX: "8"
+        sizeY: "5"
         type: null
         widget_id: 0
         widget_variables: null

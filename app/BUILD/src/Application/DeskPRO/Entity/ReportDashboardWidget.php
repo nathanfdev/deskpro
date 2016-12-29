@@ -87,7 +87,7 @@ class ReportDashboardWidget extends DomainObject
     /**
      * @var string
      */
-    protected $size = '1:1';
+    protected $size = '8:5';
 
     /**
      * @var string
