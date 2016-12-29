@@ -45,7 +45,7 @@ class WidgetBrandButtonTranslation extends AbstractTranslationModel
      * @JMS\Type("string")
      * @Assert\NotBlank()
      */
-    private $name = 'Help';
+    private $name;
 
     /**
      * @return string

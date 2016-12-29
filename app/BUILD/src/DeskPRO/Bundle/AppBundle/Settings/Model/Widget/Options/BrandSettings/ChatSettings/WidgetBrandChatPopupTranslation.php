@@ -43,7 +43,7 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
      *
      * @JMS\Type("string")
      */
-    private $title = 'Customer Support';
+    private $title;
 
     /**
      * Translation message.
@@ -52,7 +52,7 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
      *
      * @JMS\Type("string")
      */
-    private $message = 'Need help? Just reply to start a live chat with one of our team.';
+    private $message;
 
     /**
      * Translation title.
@@ -61,7 +61,7 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
      *
      * @JMS\Type("string")
      */
-    private $heading = 'Ask us a question!';
+    private $heading;
 
     /**
      * Translation message.
@@ -70,7 +70,7 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
      *
      * @JMS\Type("string")
      */
-    private $subheading = 'Our team are online and ready to help with your enquiries. Send us a message to get started.';
+    private $subheading;
 
     /**
      * Message at start button.
@@ -79,7 +79,7 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
      *
      * @JMS\Type("string")
      */
-    private $startButton = 'Start a conversation';
+    private $startButton;
 
     /**
      * @return string

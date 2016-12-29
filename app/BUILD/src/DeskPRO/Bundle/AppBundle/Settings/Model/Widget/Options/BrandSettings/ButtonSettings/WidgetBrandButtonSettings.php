@@ -137,4 +137,16 @@ class WidgetBrandButtonSettings
     {
         return $this->translations;
     }
+
+    /**
+     * @param int $languageId
+     *
+     * @return WidgetBrandButtonTranslation|null
+     */
+    public function getTranslation($languageId)
+    {
+        return $this->translations->filter(function (WidgetBrandButtonTranslation $translation) use ($languageId) {
+            return $translation->getLanguage() === $languageId;
+        })->first();
+    }
 }
