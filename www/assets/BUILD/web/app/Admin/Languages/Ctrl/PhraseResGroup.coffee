@@ -21,7 +21,7 @@ define [
 
         for p in @phrases
           if p.depth
-            p.depth_items = new Array(p.depth)
+            p.depth_items = Array.from(Array(p.depth).keys())
       )
       return promise
 
