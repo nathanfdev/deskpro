@@ -151,12 +151,18 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
         $agents = array_unique($agents);
         $repo   = $this->getContainer()->getEm()->getRepository('DeskPRO:Person');
         $agents = $repo->getPeopleResultsFromIds($agents);
+
         foreach ($agents as $agent) {
             /* @var $agent Person */
+            if (!$agent->isActiveAgent()) {
+                continue;
+            }
+
             if ($pn = $agent->getPrimaryPhoneNumber()) {
                 $numbers[] = $pn['number'];
             }
         }
+
         $numbers = array_unique($numbers);
         $numbers = array_filter($numbers, function ($val) {
             return $val !== null && strlen($val) > 5; // attempt to filter out any impossible numbers
