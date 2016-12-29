@@ -96,7 +96,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           @$state.go('chat.chat_deps')
 
       ).error( (info, code) =>
-
+        @Growl.error info?.error_message if info?.error_message
         @applyErrorResponseToView(info)
       )
 

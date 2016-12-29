@@ -52,6 +52,7 @@ define [
         @usergroups  = data.usergroups
         @agentgroups = data.agentgroups
         @agents      = data.agents
+        @brands      = data.brands
 
         @dep_parent_list = data.dep_parent_list
         @setAvatar @dep.avatar
@@ -133,6 +134,7 @@ define [
 
         @stopSpinner('saving_dep')
         @applyErrorResponseToView(info)
+        @Growl.error info?.error_message if info?.error_message
       )
 
       return promise
@@ -219,6 +221,18 @@ define [
           @$scope.uploading = false
       )
 
+
+    handleBrand: (brandId, e) ->
+      index = @form.brands.indexOf brandId
+      if index == -1
+        @form.brands.unshift brandId
+      else
+        if (@form.brands.length > 1)
+          @form.brands.splice(index, 1)
+        else
+          alert "Departments need to be linked to at least one Brand"
+          $(e.target).prop("checked", true)
+          return true
 
 
     changeAllPerms: (group) =>

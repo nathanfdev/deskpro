@@ -35,6 +35,7 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\Departments\ChatDepartmentEdit;
 use Application\DeskPRO\Departments\ChatDepartmentEditor;
 use Application\DeskPRO\Departments\Form\Type\ChatDepartmentType;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
@@ -200,8 +201,15 @@ class ChatDepsController extends AbstractController implements ProtectedControll
         $chat_edit = new ChatDepartmentEdit($dep);
 
         $form = $this->createForm(new ChatDepartmentType(), $chat_edit, ['cascade_validation' => true]);
-
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, ['department', 'permissions']), true);
+
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+        foreach ($brands as $brand) {
+            if (!count($brand->getChatDepartments())) {
+                return $this->createApiErrorResponse('validation_error', 'Brand '.$brand.' needs at least one department');
+            }
+        }
 
         if ($form->isValid()) {
             $chat_edit->save($this->em);
@@ -246,6 +254,14 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 
         if (!$dep) {
             throw $this->createNotFoundException();
+        }
+
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+        foreach ($brands as $brand) {
+            if (count($brand->getChatDepartments()) === 1 && $brand->hasDepartment($dep)) {
+                return $this->createApiErrorResponse('validation_error', 'Brand '.$brand.' needs at least one department');
+            }
         }
 
         $move_to_dep = $chat_deps->getById($this->in->getUint('move_to'));

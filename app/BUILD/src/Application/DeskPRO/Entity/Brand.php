@@ -187,12 +187,22 @@ class Brand extends DomainObject
     }
 
     /**
-     * @return \Doctrine\Common\Collections\Collection|static
+     * @return ArrayCollection|Department[]
      */
     public function getTicketDepartments()
     {
         return $this->departments->filter(function (Department $department) {
             return $department->isTicketsEnabled();
+        });
+    }
+
+    /**
+     * @return ArrayCollection|Department[]
+     */
+    public function getChatDepartments()
+    {
+        return $this->departments->filter(function (Department $department) {
+            return $department->isChatEnabled();
         });
     }
 
