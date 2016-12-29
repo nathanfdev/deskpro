@@ -114,7 +114,7 @@
                 </div>
                 <div ng-show="loaded" class="stat-list-wrapper">
                     <ul class="stat-list">
-                        <li ng-repeat="report in custom_data_list_prefiltered | filter:filterBySearchText track by $index" ui-sref-active="active">
+                        <li ng-repeat="report in custom_data_list_prefiltered | filter:filterBySearchText track by report.id" ui-sref-active="active">
                             <span class="mark"></span>
                             <h1>
                                 <a ui-sref="reports.stats.view({ widget_id: report.id })">
@@ -126,7 +126,7 @@
                                 <a href="#" class="stat-label" ng-class="{'active': isActiveLabel(label)}" ng-repeat="label in report.labels"><i class="fa fa-tag"></i> {{ ng_var('label') }}</a>
                             </p>
                         </li>
-                        <li ng-repeat="report in built_in_data_list_prefiltered | filter:filterBySearchText track by $index" ui-sref-active="active">
+                        <li ng-repeat="report in built_in_data_list_prefiltered | filter:filterBySearchText track by report.id" ui-sref-active="active">
                             <span class="mark"></span>
                             <h1>
                                 <a ui-sref="reports.stats.view({ widget_id: report.id })">

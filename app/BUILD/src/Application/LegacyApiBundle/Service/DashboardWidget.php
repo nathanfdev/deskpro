@@ -146,7 +146,11 @@ class DashboardWidget
         $mapped    = $this->getWidgetGraphType($widget->getType());
         $query     = preg_replace("#^DISPLAY.*?\n#", "DISPLAY {$mapped}\n", $query);
         $error     = false;
-        $variables = $widget->getVariables();
+        $variables = [];
+
+        foreach ($widget->getVariables() as $key => $variable) {
+            $variables[$key + 1] = $variable;
+        }
 
         return Display::renderQuery('json', $query,
             $variables,
