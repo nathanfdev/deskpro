@@ -34,7 +34,6 @@ namespace Application\DeskPRO\Usersource\Sync\Syncer;
 
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Sync\SyncCursor;
-use Application\DeskPRO\Usersource\Sync\SyncException;
 use Orb\Auth\Identity;
 use Orb\Log\Logger;
 use Orb\Validator\StringEmail;
@@ -101,15 +100,16 @@ class DbTableSyncer extends AbstractSyncer
         }
 
         if (!$identity instanceof Identity) {
-            throw new SyncException(
+            $this->helper->log(
+                Logger::INFO,
                 sprintf(
                     'could not find remote identity for identity=%s at usersource id=%s',
                     $identity_or_email,
                     $usersource->getId()
-                ),
-                $identity_or_email,
-                $usersource
+                )
             );
+
+            return false;
         }
 
         // FILTER CHECK
@@ -120,8 +120,7 @@ class DbTableSyncer extends AbstractSyncer
                 Logger::INFO,
                 sprintf('user does not meet filter criteria'),
                 [$raw_info]
-            )
-            ;
+            );
 
             return false;
         }
