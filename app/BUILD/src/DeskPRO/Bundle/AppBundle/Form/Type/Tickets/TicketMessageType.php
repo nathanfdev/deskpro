@@ -47,6 +47,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormConfigBuilder;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -159,9 +160,14 @@ class TicketMessageType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class'             => TicketMessage::class,
-                'message_label'          => $this->languageManager->phrase('portal.forms.label_message'),
-                'attr'                   => ['data-rte' => '1'],
+                'data_class'    => TicketMessage::class,
+                'message_label' => $this->languageManager->phrase('portal.forms.label_message'),
+                'attr'          => function (Options $options) {
+                    return [
+                        'data-rte'               => '1',
+                        'data-ctrl-enter-submit' => (int) $options['ctrl_enter_submit'],
+                    ];
+                },
                 'error_bubbling'         => false,
                 'ticket'                 => null,
                 'person'                 => null,
@@ -170,6 +176,7 @@ class TicketMessageType extends AbstractType
                 'has_attachments'        => false,
                 'format'                 => '',
                 'with_ticket_validation' => false,
+                'ctrl_enter_submit'      => false,
                 'message_constraints'    => [],
                 'error_mapping'          => [
                     // we use custom setters to modify message,
@@ -189,6 +196,7 @@ class TicketMessageType extends AbstractType
             ->setAllowedTypes('ticket', Ticket::class)
             ->setAllowedTypes('ticket_message', ['null', TicketMessage::class])
             ->setAllowedValues('format', ['', 'html', 'text'])
+            ->setAllowedTypes('ctrl_enter_submit', 'bool')
         ;
     }
 

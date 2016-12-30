@@ -31,7 +31,8 @@ export default class DpxRte extends PageWidget {
       className:          `dp-medium-rte medium-editor-placeholder${widget ? ' widget' : null}`,
       $inlineAttachProto: $inlineAttachProto[0] ? $inlineAttachProto : null,
       widgetOptions:      this.options,
-      $toolbarContainer:  $rElement
+      $toolbarContainer:  $rElement,
+      ctrlEnterSubmit:    !!$el.data('ctrl-enter-submit')
     });
 
     ReactDOM.render(component, $rElement.get(0));
