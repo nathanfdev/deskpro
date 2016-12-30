@@ -75,13 +75,21 @@ class Column extends AbstractPart
         'labels_tickets'             => ['label', 'label'],
         'languages'                  => ['id', 'title'],
         'organizations'              => ['id', 'name', 'organization'],
-        'people'                     => ['id', 'name', 'person'],
-        'products'                   => ['id', 'title'],
-        'slas'                       => ['id', 'title'],
-        'tickets'                    => ['id', 'subject', 'ticket'],
-        'ticket_categories'          => ['id', 'title'],
-        'ticket_priorities'          => ['id', 'title'],
-        'ticket_workflows'           => ['id', 'title'],
+        'people'                     => ['id', '
+(CASE
+    WHEN (LENGTH(%1$s.first_name) > 0 AND LENGTH(%1$s.last_name) > 0) THEN CONCAT(%1$s.first_name, \' \', %1$s.last_name)
+    WHEN LENGTH(%1$s.name) > 0 THEN %1$s.name
+    WHEN LENGTH(%1$s.last_name) > 0 THEN %1$s.last_name
+    WHEN LENGTH(%1$s.first_name) > 0 THEN %1$s.first_name
+    ELSE CONCAT(\'ID-\', %1$s.id)
+END) as %1$s_name
+', 'person'],
+        'products'          => ['id', 'title'],
+        'slas'              => ['id', 'title'],
+        'tickets'           => ['id', 'subject', 'ticket'],
+        'ticket_categories' => ['id', 'title'],
+        'ticket_priorities' => ['id', 'title'],
+        'ticket_workflows'  => ['id', 'title'],
     ];
 
     /**
@@ -457,7 +465,7 @@ class Column extends AbstractPart
                     $sql = "`$sqlTable`.`$resolver[0]`";
                 }
 
-                $printedSql = "`$sqlTable`.`$resolver[1]`";
+                $printedSql = strpos($resolver[1], '%1$s') !== false ? sprintf($resolver[1], $sqlTable) : "`$sqlTable`.`$resolver[1]`";
 
                 if (isset($resolver[2])) {
                     if ($section == 'split') {

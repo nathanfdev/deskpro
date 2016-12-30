@@ -15,6 +15,7 @@ export default class PortalRte extends React.Component {
     widgetOptions:     PropTypes.object,
     $toolbarContainer: PropTypes.object,
     $textarea:         PropTypes.object,
+    ctrlEnterSubmit:   PropTypes.bool,
 
     // Inline attachment form prototype must be suppled
     // if inline attachments (e.g. pasting, dragging images etc) is to be supported.
@@ -81,7 +82,7 @@ export default class PortalRte extends React.Component {
       $image.removeAttr('data-paste-id').attr('src', blob.url);
       this.onChangeMessage(editor.getContent());
 
-      if (this.props.$inlineAttachProto) {
+      if ($inlineAttachProto) {
         const $inlineField = $($inlineAttachProto.data('prototype').replace(/__name__/g, uniqueId('inline_field_')));
         $inlineField.find('input').val(blob.authcode);
         $inlineField.insertAfter($textarea);
@@ -102,6 +103,11 @@ export default class PortalRte extends React.Component {
     this.onChangeMessage(editor.getContent());
   };
 
+  onSubmit = (event) => {
+    event.preventDefault();
+    this.props.$textarea.closest('form').submit();
+  };
+
   onPasteImage = (file) => {
     this.refDropZone.pushFileToQueue(file);
   };
@@ -111,7 +117,7 @@ export default class PortalRte extends React.Component {
   }
 
   render() {
-    const { widgetOptions, $textarea, $toolbarContainer, className } = this.props;
+    const { widgetOptions, $textarea, $toolbarContainer, className, ctrlEnterSubmit } = this.props;
     const context = widgetOptions.context || document;
 
     const ownerDocument = $textarea.context.ownerDocument;
@@ -130,6 +136,8 @@ export default class PortalRte extends React.Component {
           value={$textarea.val()}
           onChange={this.onChangeMessage}
           onPasteImage={this.onPasteImage}
+          onSubmit={this.onSubmit}
+          ctrlEnterSubmit={ctrlEnterSubmit}
           options={{
             contentWindow,
             ownerDocument,

@@ -43,18 +43,23 @@ class ChatDepartmentsController extends AbstractApiController
      */
     public function getChatDepartmentsAction()
     {
-        $qb                   = $this->getManager()->createQueryBuilder();
         $permissionBag        = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
         $allowedDepartmentIds = $permissionBag->getAllowedChatDepartmentIds();
-        $qb->select('d')
-           ->from(Department::class, 'd')
-           ->where(
-               'd.is_chat_enabled = true',
-               'd.id IN (:allowed_department_ids)'
-           )
-           ->setParameter('allowed_department_ids', $allowedDepartmentIds);
-        $result = $qb->getQuery()->getResult();
 
-        return $this->wrap($result);
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb
+            ->select('d')
+            ->from(Department::class, 'd')
+            ->join('d.brands', 'b')
+            ->where(
+                'd.is_chat_enabled = true',
+                'd.id IN (:allowed_department_ids)',
+                'b.id IN(:brand)'
+            )
+            ->setParameter('allowed_department_ids', $allowedDepartmentIds)
+            ->setParameter('brand', $this->get('brand_stack')->getActive()->getBrand())
+        ;
+
+        return $this->wrap($qb->getQuery()->getResult());
     }
 }

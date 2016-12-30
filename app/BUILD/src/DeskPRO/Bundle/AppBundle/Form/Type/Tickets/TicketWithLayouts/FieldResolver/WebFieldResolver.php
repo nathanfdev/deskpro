@@ -121,9 +121,10 @@ class WebFieldResolver extends AbstractFieldResolver
      */
     protected function createSubject(TicketWithLayoutsContext $context)
     {
-        if ($context->getOption('hide_subject_field')) {
+        $subjectType = $context->getOption('subject_type');
+        if (in_array($subjectType, ['default', 'message'], true)) {
             $params = [];
-            if ($context->getOption('subject_type') === 'default') {
+            if ($subjectType === 'default') {
                 $params['data'] = $context->getOption('default_subject');
             }
 

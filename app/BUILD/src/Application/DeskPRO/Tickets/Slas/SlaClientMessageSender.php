@@ -98,7 +98,7 @@ class SlaClientMessageSender implements PersonContextInterface
                 'fail_date'             => $ticket_sla->fail_date ? $ticket_sla->fail_date->format('c') : null,
                 'is_completed'          => $ticket_sla->is_completed,
                 'original_is_completed' => $orig_completed,
-                'removed'               => $ticket->hasSla($ticket_sla->sla) ? true : false,
+                'removed'               => $ticket->hasSla($ticket_sla->sla) ? false : true,
                 'via_person'            => $this->person ? $this->person->id : null,
             ]),
         ];

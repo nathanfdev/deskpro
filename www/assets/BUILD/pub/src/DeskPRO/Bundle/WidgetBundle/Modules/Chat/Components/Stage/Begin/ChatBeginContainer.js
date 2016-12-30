@@ -6,7 +6,7 @@ import Immutable from 'immutable';
 import { loadAll, isLoadedCollectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import PortalFormWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
 import { createChat } from '../../../Actions/chatActions';
-import { liveDemoSelector, widgetAllowDepartmentSelection, widgetLanguageSelector } from '../../../../Application/Selectors/dpWindow';
+import { liveDemoSelector, widgetAllowDepartmentSelection, widgetLanguageSelector, chatFormDefaultValuesSelector } from '../../../../Application/Selectors/dpWindow';
 import { requireChatEmailValidationSelector, requireChatLoginSelector, widgetSessionIsLoginSelector } from '../../../../Application/Selectors/bootstrap';
 import { customChatFieldsOrderedSelector } from '../../../../Application/Selectors/customFields';
 import { history } from '../../../../../Services/history';
@@ -23,7 +23,8 @@ import { ChatBeginSimple } from './ChatBeginSimple';
   chatDepartments:          allSelectorFactory('ChatDepartment')(state),
   chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state),
   widgetLanguage:           widgetLanguageSelector(state),
-  loggedIn:                 widgetSessionIsLoginSelector(state)
+  loggedIn:                 widgetSessionIsLoginSelector(state),
+  defaultValues:            chatFormDefaultValuesSelector(state)
 }))
 export class ChatBeginContainer extends React.Component {
 
@@ -186,7 +187,7 @@ export class ChatBeginContainer extends React.Component {
   };
 
   getInitialFormData(props) {
-    const { children, customFields, allowDepartmentSelection } = props;
+    const { children, customFields, allowDepartmentSelection, chatDepartments, defaultValues } = props;
     const formData = {
       name:   '',
       email:  '',
@@ -195,13 +196,18 @@ export class ChatBeginContainer extends React.Component {
 
     if (children.type !== ChatBeginSimple) {
       if (allowDepartmentSelection) {
-        formData.chat_department = '';
+        if (chatDepartments.size > 1) {
+          formData.chat_department = '';
+        } else if (chatDepartments.size === 1) {
+          formData.chat_department = chatDepartments.first().get('id');
+        }
       }
 
       customFields.forEach((customField) => {
         const fieldId = customField.get('id');
+        const optionsDefaultValue = defaultValues && defaultValues.getIn(['fields', String(fieldId)]);
 
-        let defaultValue = customField.get('default_value');
+        let defaultValue = optionsDefaultValue || customField.get('default_value');
         if (defaultValue && defaultValue.toJS) {
           defaultValue = defaultValue.toJS();
         }
@@ -228,7 +234,7 @@ export class ChatBeginContainer extends React.Component {
     let { children } = this.props;
 
     // if user is logged in and no custom fields and no department selection then force simple chat begin mode
-    if (loggedIn && !(chatDepartments.size && allowDepartmentSelection) && !customFields.size) {
+    if (loggedIn && !(chatDepartments.size > 1 && allowDepartmentSelection) && !customFields.size) {
       children = <ChatBeginSimple />;
     }
 

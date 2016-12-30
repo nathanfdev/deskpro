@@ -66,7 +66,7 @@ export class ChatBeginConversation extends React.Component {
   }
 
   prepareFormFields(props) {
-    const { customFields, widgetLanguage, errors, submit, loggedIn } = props;
+    const { customFields, chatDepartments, widgetLanguage, errors, submit, loggedIn } = props;
 
     const hiddenFields = customFields.valueSeq().filter(this.isHiddenField).map(customField =>
       <CustomField config={customField} key={customField.get('id')}>
@@ -106,14 +106,19 @@ export class ChatBeginConversation extends React.Component {
           </Field>
         </UserInfoForm>
       );
+
+      if (hasErrors(errors, 'email')) {
+        current = 1;
+      }
     }
 
-    if (props.allowDepartmentSelection) {
-      fields.push(this.getChatDepartmentField(props));
-    }
+    if (props.allowDepartmentSelection && chatDepartments.size > 1) {
+      const departmentField = this.getChatDepartmentField(props);
+      fields.push(departmentField);
 
-    if (hasErrors(errors, 'email')) {
-      current = 1;
+      if (hasErrors(errors, 'chat_department')) {
+        current = fields.indexOf(departmentField);
+      }
     }
 
     customFields.valueSeq().filter(this.isNotHiddenField).forEach((customField) => {

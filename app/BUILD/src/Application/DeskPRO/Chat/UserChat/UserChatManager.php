@@ -610,21 +610,25 @@ class UserChatManager
      * Unassign the chat.
      *
      * @param \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param                                              $agent
      */
     public function unassignAgent(ChatConversation $convo)
     {
         // Already unassigned
-        if (!$convo->agent) {
+        if (!$convo->getAgent()) {
             return;
         }
-        $old_agent_id   = $convo->agent_id;
-        $old_agent_name = $convo->agent->getDisplayNameUser();
 
-        $convo->agent = null;
+        $old_agent_id   = $convo->getAgentId();
+        $old_agent_name = $convo->getAgent()->getDisplayNameUser();
+
+        $convo->setAgent(null);
         $this->em->persist($convo);
 
-        $this->addSystemMessage($convo, 'message_unassigned', [], ['chat_unassigned' => true, 'old_assigned_to' => $old_agent_id, 'old_assigned_name' => $old_agent_name]);
+        $this->addSystemMessage($convo, 'message_unassigned', [], [
+            'chat_unassigned'   => true,
+            'old_assigned_to'   => $old_agent_id,
+            'old_assigned_name' => $old_agent_name,
+        ]);
 
         // Try to reassign
         if ($this->auto_assigner) {
@@ -638,7 +642,7 @@ class UserChatManager
 
         // If no agent auto-assigned,
         // need to broadcast an alert to other agents
-        if (!$convo->agent && $convo->status == 'open') {
+        if (!$convo->getAgent() && $convo->getStatus() == 'open') {
             $cm = new ClientMessage();
             $cm->fromArray([
                 'channel'           => 'chat.unassigned',
@@ -659,7 +663,7 @@ class UserChatManager
      */
     public function agentTimeout(ChatConversation $convo, Person $person)
     {
-        if (!$convo->agent) {
+        if (!$convo->getAgent()) {
             return;
         }
 
@@ -668,13 +672,13 @@ class UserChatManager
             $this->addSystemMessage(
                 $convo,
                 'message_agent-timeout',
-                ['name'            => $convo->agent->display_name_user],
+                ['name'            => $convo->getAgent()->display_name_user],
                 ['agent_timed_out' => true]
             );
 
             $this->personLeft($convo, $person);
 
-            if ($convo->agent && $convo->agent->id == $person->id) {
+            if ($convo->getAgent() && $convo->getAgent()->getId() == $person->getId()) {
                 $this->unassignAgent($convo);
             }
 

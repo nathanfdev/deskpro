@@ -3596,6 +3596,11 @@ class Person extends DomainObject implements
 
         $pp                    = $this->getPrimaryPhoneNumber();
         $data['primary_phone'] = $pp ? $pp->toApiData() : [];
+        $data['phone_numbers'] = [];
+
+        foreach ($this->phone_numbers as $phoneNumber) {
+            $data['phone_numbers'][] = $phoneNumber->toApiData();
+        }
 
         $data['emails'] = [];
         foreach ($this->emails as $eml) {

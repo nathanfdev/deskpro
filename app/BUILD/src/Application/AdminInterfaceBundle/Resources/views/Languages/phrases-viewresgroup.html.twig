@@ -18,7 +18,7 @@
 							<span ng-if="phrase.depth_items.length" class="indent">
 								<span ng-repeat="d in phrase.depth_items"><i class="fa fa-caret-right"></i></span>
 							</span>
-							<span>{{ ng_var('phrase.default') }}</span>
+							<span>{{ ng_var('phrase.title ? phrase.title : phrase.default') }}</span>
 						</td>
 						<td class="phrase-user-title"><input type="text" ng-model="phrase.set" spellcheck="false" /></td>
 					</tr>

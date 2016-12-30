@@ -26,44 +26,54 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings;
+namespace DeskPRO\Bundle\AppBundle\UserChat;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractTranslationModel;
-use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class WidgetBrandButtonTranslation.
+ * Class UserChatPingListener.
  */
-class WidgetBrandButtonTranslation extends AbstractTranslationModel
+class UserChatPingListener implements EventSubscriberInterface
 {
     /**
-     * Button name.
-     *
-     * @var string
-     *
-     * @JMS\Type("string")
-     * @Assert\NotBlank()
+     * @var EntityManager
      */
-    private $name;
+    private $em;
 
     /**
-     * @return string
+     * Constructor.
+     *
+     * @param EntityManager $em
      */
-    public function getName()
+    public function __construct(EntityManager $em)
     {
-        return $this->name;
+        $this->em = $em;
     }
 
     /**
-     * @param string $name
-     *
-     * @return $this
+     * {@inheritdoc}
      */
-    public function setName($name)
+    public static function getSubscribedEvents()
     {
-        $this->name = $name;
+        return [
+            UserChatEvent::STARTED       => 'onPing',
+            UserChatEvent::USER_RETURNED => 'onPing',
+            UserChatEvent::SEND_MESSAGE  => 'onPing',
+            UserChatEvent::USER_TYPING   => 'onPing',
+            UserChatEvent::ACK_MESSAGES  => 'onPing',
+            UserChatEvent::POLLING       => 'onPing',
+        ];
+    }
 
-        return $this;
+    /**
+     * @param UserChatEvent $event
+     */
+    public function onPing(UserChatEvent $event)
+    {
+        $this->em->getConnection()->insert('chat_conversation_pings', [
+            'chat_id'   => $event->getChat()->getId(),
+            'ping_time' => time(),
+        ]);
     }
 }

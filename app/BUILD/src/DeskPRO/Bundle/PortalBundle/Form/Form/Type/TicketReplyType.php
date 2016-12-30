@@ -69,14 +69,15 @@ class TicketReplyType extends AbstractType
     {
         $builder
             ->add('ticket_message', TicketMessageType::class, [
-                'ticket'         => $options['ticket'],
-                'person'         => $options['person'],
-                'ticket_message' => $options['ticket_message'],
-                'message_label'  => $options['message_label'],
-                'label'          => false,
-                'render_is_note' => false,
-                'format'         => 'html',
-                'constraints'    => [
+                'ticket'            => $options['ticket'],
+                'person'            => $options['person'],
+                'ticket_message'    => $options['ticket_message'],
+                'message_label'     => $options['message_label'],
+                'label'             => false,
+                'render_is_note'    => false,
+                'ctrl_enter_submit' => true,
+                'format'            => 'html',
+                'constraints'       => [
                     new AppAssert\Ticket\TicketDupeMessage(),
                     new AppAssert\Ticket\TicketOpenedMessage(),
                 ],

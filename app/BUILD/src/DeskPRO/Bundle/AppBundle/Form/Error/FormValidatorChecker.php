@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
@@ -63,5 +64,24 @@ class FormValidatorChecker
         };
 
         $validationIterator($form);
+    }
+
+    /**
+     * @param FormInterface $form
+     */
+    public static function clearFormErrors(FormInterface $form)
+    {
+        if (!$form instanceof Form) {
+            return;
+        }
+
+        $property = new \ReflectionProperty(Form::class, 'errors');
+        $property->setAccessible(true);
+        $property->setValue($form, []);
+        $property->setAccessible(false);
+
+        foreach ($form->all() as $child) {
+            self::clearFormErrors($child);
+        }
     }
 }

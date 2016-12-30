@@ -176,7 +176,7 @@ class TicketsController extends AbstractController
 
         if ($form->isValid()) {
             // we don't process the reply if they simply clicked the "add more attachments" button (non-JS users)
-            if ($form->getClickedButton() && $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
+            if (!$form->getClickedButton() || $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
                 $this->addCurrentUserAsParticipantIfTheyAreNot($ticket);
 
                 $this->saveNewReply($ticket, $message);

@@ -60,7 +60,7 @@ class UrlCorrectorFactory
     {
         $options = [
             'autoCorrectScheme' => $this->settingsResolver->getSetting('core.deskpro_url_autocorrect', $brand),
-            'autoCorrectHost'   => $this->settingsResolver->getSetting('core.deskpro_url_autocorrect', $brand),
+            'autoCorrectHost'   => false,
             'helpdeskUrl'       => $this->settingsResolver->getSetting('core.deskpro_url', $brand),
         ];
 
