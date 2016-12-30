@@ -10,7 +10,7 @@ define [
   Util
 )  ->
   class ChatDeps extends BaseListEdit
-    @$inject = ['Api', '$q']
+    @$inject = ['Api', 'Api2', '$q']
 
     url: -> '/chat_deps'
 
@@ -82,8 +82,10 @@ define [
         })
 
       deferred = @$q.defer()
+      brandPromise = @Api2.sendGet('brands');
 
-      allPromise = @$q.all([promise, @loadList()]).then( (result) =>
+      allPromise = @$q.all([promise, @loadList(), brandPromise]).then( (result) =>
+        brands = result[2].data.data;
         result = result[0].data
 
         data = {}
@@ -107,6 +109,7 @@ define [
               break
 
         data.agents          = result.agentsInfo.agents
+        data.brands          = brands
         data.agentgroups     = result.agentgroupsInfo.groups
         data.usergroups      = result.usergroupsInfo.groups
 
@@ -114,6 +117,7 @@ define [
           data.dep,
           data.depPerms,
           data.agents,
+          data.brands,
           data.agentgroups,
           data.usergroups
         )

@@ -70,7 +70,8 @@ class TicketDepartmentPropsType extends AbstractType
                     'multiple'     => true,
                     'choice_label' => 'name',
                     'by_reference' => false,
-            ]);
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
