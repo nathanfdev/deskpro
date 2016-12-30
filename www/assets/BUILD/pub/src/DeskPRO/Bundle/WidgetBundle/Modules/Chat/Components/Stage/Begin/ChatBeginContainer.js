@@ -187,7 +187,7 @@ export class ChatBeginContainer extends React.Component {
   };
 
   getInitialFormData(props) {
-    const { children, customFields, allowDepartmentSelection, defaultValues } = props;
+    const { children, customFields, allowDepartmentSelection, chatDepartments, defaultValues } = props;
     const formData = {
       name:   '',
       email:  '',
@@ -196,7 +196,11 @@ export class ChatBeginContainer extends React.Component {
 
     if (children.type !== ChatBeginSimple) {
       if (allowDepartmentSelection) {
-        formData.chat_department = '';
+        if (chatDepartments.size > 1) {
+          formData.chat_department = '';
+        } else if (chatDepartments.size === 1) {
+          formData.chat_department = chatDepartments.first().get('id');
+        }
       }
 
       customFields.forEach((customField) => {
@@ -230,7 +234,7 @@ export class ChatBeginContainer extends React.Component {
     let { children } = this.props;
 
     // if user is logged in and no custom fields and no department selection then force simple chat begin mode
-    if (loggedIn && !(chatDepartments.size && allowDepartmentSelection) && !customFields.size) {
+    if (loggedIn && !(chatDepartments.size > 1 && allowDepartmentSelection) && !customFields.size) {
       children = <ChatBeginSimple />;
     }
 
