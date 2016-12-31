@@ -64,7 +64,7 @@ class PasswordController extends AbstractController
             return $this->redirectToRoute('portal_home');
         }
 
-        $form = $this->createForm(PasswordResetRequestType::class, ['email' => $request->get('email', '')]);
+        $form = $this->createForm(PasswordResetRequestType::class);
         $form->handleRequest($request);
 
         $render_error = false;
