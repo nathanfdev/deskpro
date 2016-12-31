@@ -66,6 +66,10 @@ class ErrorMessageFactory
      */
     public function createMessage($errorCode, array $params = [])
     {
+        foreach ($params as &$param) {
+            $param = htmlentities($param);
+        }
+
         return $this->translate->phrase($this->prefix.$errorCode, $params) ?: $errorCode;
     }
 
