@@ -507,6 +507,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         if (
             $person['is_agent']
+            &&
+            !$this->reader->matchedByPTAC()
             && (
                 // Is not a user email
                 (strpos($ticket_email->email_body_html, 'DP_USER_EMAIL') === false && $is_reply_to_dpmail)

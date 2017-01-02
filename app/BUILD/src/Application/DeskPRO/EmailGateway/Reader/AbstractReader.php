@@ -562,4 +562,17 @@ abstract class AbstractReader
     {
         return $this->decryptionError;
     }
+
+    /**
+     * @return bool
+     */
+    public function matchedByPTAC()
+    {
+        return (bool) @$this->vals['by_ptac'];
+    }
+
+    public function setMatchedByPTAC()
+    {
+        $this->vals['by_ptac'] = true;
+    }
 }

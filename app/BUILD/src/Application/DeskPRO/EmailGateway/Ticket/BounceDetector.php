@@ -139,6 +139,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
         if ($ptac = $this->getPtacCode()) {
             $ticket = $this->em->getRepository('DeskPRO:Ticket')->getByAccessCode($ptac);
             if ($ticket) {
+                $this->reader->setMatchedByPTAC();
                 $this->guessed_ticket = $ticket;
 
                 return $this->guessed_ticket;
