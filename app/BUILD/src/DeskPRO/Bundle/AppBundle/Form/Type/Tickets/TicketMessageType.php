@@ -36,8 +36,8 @@ use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentCollectionType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageInlineAttachmentCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\ApiTicketMessageAttachmentCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessageInlineAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -110,20 +110,23 @@ class TicketMessageType extends AbstractType
                 'property_path' => 'is_agent_note',
             ]);
         }
+
         if ($options['has_attachments']) {
-            $builder->add('attachments', TicketMessageAttachmentCollectionType::class, [
+            // api
+            $builder->add('attachments', ApiTicketMessageAttachmentCollectionType::class, [
                 'required'       => false,
                 'person'         => $options['person'],
                 'ticket_message' => $ticketMessage,
             ]);
+        } else {
+            // web portal
+            $builder->add('inline_attachments', WebTicketMessageInlineAttachmentCollectionType::class, [
+                'required'       => false,
+                'person'         => $options['person'],
+                'ticket_message' => $ticketMessage,
+                'mapped'         => false,
+            ]);
         }
-
-        $builder->add('inline_attachments', TicketMessageInlineAttachmentCollectionType::class, [
-            'required'       => false,
-            'person'         => $options['person'],
-            'ticket_message' => $ticketMessage,
-            'mapped'         => false,
-        ]);
 
         if ($options['with_ticket_validation']) {
             $builder->add('ticket', TicketWithLayoutsApiType::class, [

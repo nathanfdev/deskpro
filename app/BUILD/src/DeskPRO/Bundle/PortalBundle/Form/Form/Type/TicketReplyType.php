@@ -32,7 +32,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\NewSettings\SettingsBag;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessageAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -88,7 +88,7 @@ class TicketReplyType extends AbstractType
                     '.' => 'message',
                 ],
             ])
-            ->add('attachments', TicketMessageAttachmentCollectionType::class, [
+            ->add('attachments', WebTicketMessageAttachmentCollectionType::class, [
                 'ticket_message' => $options['ticket_message'],
                 'person'         => $options['person'],
                 'label'          => false,

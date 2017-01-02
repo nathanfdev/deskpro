@@ -52,7 +52,7 @@ Feature: Agent field only
         | ticket[subject]                             |
         | ticket[message][message]                    |
         | ticket[message][format]                     |
-        | ticket[attachments][0][upload]              |
+        | ticket[attachments][0][blob][upload]        |
         | ticket[person][user_name]                   |
         | ticket[person][user_email][email]           |
         | ticket[displayed_fields]                    |

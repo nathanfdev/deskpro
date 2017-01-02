@@ -250,7 +250,8 @@ class FeedbackController extends AbstractController
      */
     protected function acceptNewFeedback(Feedback $newFeedback, Person $person, Request $request)
     {
-        $this->persistAndFlushEntity($newFeedback);
+        $this->getEm()->persist($newFeedback);
+        $this->getEm()->flush();
 
         if ($newFeedback->isVisibleOnPortal()) {
             $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_posted'));

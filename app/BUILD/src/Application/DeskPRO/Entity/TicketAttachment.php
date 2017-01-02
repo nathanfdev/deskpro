@@ -150,7 +150,7 @@ class TicketAttachment extends DomainObject
      *
      * @return $this
      */
-    public function setBlob(Blob $blob)
+    public function setBlob(Blob $blob = null)
     {
         $this->setModelField('blob', $blob);
 

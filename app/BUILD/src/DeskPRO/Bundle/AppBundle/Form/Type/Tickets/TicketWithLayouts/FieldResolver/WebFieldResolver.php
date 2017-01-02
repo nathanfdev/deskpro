@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HiddenEntityType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessageAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsWebType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
@@ -164,6 +165,22 @@ class WebFieldResolver extends AbstractFieldResolver
             'message_label'  => $context->isWidgetType()
                 ? $this->phrase('portal.widget.label_message')
                 : $this->phrase('portal.forms.label_message'),
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function createAttach(TicketWithLayoutsContext $context)
+    {
+        if (!$context->getMessage()) {
+            return false;
+        }
+
+        return new FormField(WebTicketMessageAttachmentCollectionType::class, [
+            'required'       => false,
+            'person'         => $context->getPerson(),
+            'ticket_message' => $context->getMessage(),
         ]);
     }
 

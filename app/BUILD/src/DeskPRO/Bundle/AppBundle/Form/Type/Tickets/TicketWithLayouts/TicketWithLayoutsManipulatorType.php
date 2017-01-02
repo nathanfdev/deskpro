@@ -209,12 +209,8 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         if ($ticketMessage instanceof TicketMessage) {
             $person = $ticket->getPerson();
             $ticketMessage->setPerson($person);
-            foreach ($ticketMessage->getAttachments() as $attachment) {
-                $blob = $attachment->getBlob();
-                if ($blob) {
-                    $blob->is_temp = false;
-                }
 
+            foreach ($ticketMessage->getAttachments() as $attachment) {
                 $attachment->setPerson($person);
             }
         }

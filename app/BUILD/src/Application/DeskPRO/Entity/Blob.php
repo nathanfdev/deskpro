@@ -645,6 +645,26 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    /**
+     * @return boolean
+     */
+    public function isTemp()
+    {
+        return $this->is_temp;
+    }
+
+    /**
+     * @param boolean $is_temp
+     *
+     * @return $this
+     */
+    public function setIsTemp($is_temp)
+    {
+        $this->setModelField('is_temp', $is_temp);
+
+        return $this;
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $is_image = $this->isImage();
