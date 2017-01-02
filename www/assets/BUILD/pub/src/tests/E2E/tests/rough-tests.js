@@ -17,9 +17,17 @@ module.exports = {
     client.end();
   },
 
-  'I log in and check portal': (client) => {
+  'I log in and check portal admin dropdown menu is expandable': (client) => {
     client.deleteCookies().page.login().navigate().loginAsAdmin();
-    client.page.portal().waitUntilLoaded();
+    var portal = client.page.portal();
+
+    portal.waitUntilLoaded();
+
+    portal
+      .assert.hidden('@adminDropdownBody')
+      .click('@adminDropdownArrow')
+      .waitForElementVisible('@adminDropdownBody', 100);
+
     client.end();
-  },
+  }
 };
