@@ -50,12 +50,12 @@ $CONFIG = [];
 
 $CONFIG['OPTIONS'] = [
     'java_path'      => defined('DP_JAVA_PATH') ? DP_JAVA_PATH : '/usr/bin/java',
-    'yui_compressor' => defined('DP_YUI_COMPRESSOR_PATH') ? DP_YUI_COMPRESSOR_PATH : '/usr/local/bin/yuicompressor.jar',
+    'yui_compressor' => defined('DP_YUI_COMPRESSOR_PATH') ? DP_YUI_COMPRESSOR_PATH : (DP_ROOT.'/vendor-src/yuicompressor/yuicompressor.jar'),
     'nodejs'         => defined('DP_NODEJS_PATH') ? DP_NODEJS_PATH : '/usr/bin/nodejs',
-    'less'           => defined('DP_LESSC_PATH') ? DP_LESSC_PATH : '/usr/local/bin/lessc',
+    'less'           => defined('DP_LESSC_PATH') ? DP_LESSC_PATH : (DP_ROOT.'/../../www/assets/BUILD/web/node_modules/less/bin/lessc'),
     'smartsprites'   => defined(
         'DP_SMARTSPRITES_PATH'
-    ) ? DP_SMARTSPRITES_PATH : '/opt/smartsprites-0.2.8/smartsprites.sh',
+    ) ? DP_SMARTSPRITES_PATH : (DP_ROOT.'/../../www/assets/BUILD/web/node_modules/gulp-smartsprites/smartsprites-0.2.9/smartsprites.sh'),
 ];
 
 //##############################################################################

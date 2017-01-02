@@ -9,7 +9,7 @@ const commands = {
       .setValue('@passwordInput', password)
       .click('@loginButton')
       .waitForElementNotPresent('@loginButton')
-      ;
+    ;
   },
   loginAsAdmin() {
     this.login(
@@ -20,11 +20,11 @@ const commands = {
 };
 
 module.exports = {
-  url:      url('/en/login'),
+  url:      url('/agent/login'),
   commands: [commands],
   elements: {
-    loginInput:    { selector: 'form#login input[name="username"]' },
-    passwordInput: { selector: 'form#login input[type="password"]' },
-    loginButton:   { selector: 'form#login button.button' }
+    loginInput:    { selector: '#normal_view > div.content > form input[name="email"]' },
+    passwordInput: { selector: '#normal_view > div.content > form input[type="password"]' },
+    loginButton:   { selector: '#normal_view > div.content > form input[type="submit"]' }
   }
 };
