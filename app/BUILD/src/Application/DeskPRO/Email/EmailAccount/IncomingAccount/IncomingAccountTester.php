@@ -33,9 +33,12 @@
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
+use Application\DeskPRO\EmailGateway\Fetcher\ImapSocket;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
+use Zend\Mail\Protocol\Imap;
 
 class IncomingAccountTester
 {
@@ -69,13 +72,19 @@ class IncomingAccountTester
      */
     private $message_count = 0;
 
-    public function __construct(AccountConfigInterface $account_config)
+    /**
+     * @var SettingsBag
+     */
+    private $settings;
+
+    public function __construct(AccountConfigInterface $account_config, SettingsBag $settings)
     {
         $this->account_config = $account_config;
 
         $this->logger        = new Logger();
         $this->logger_writer = new ArrayWriter();
         $this->logger->addWriter($this->logger_writer);
+        $this->settings = $settings;
     }
 
     /**
@@ -295,10 +304,30 @@ class IncomingAccountTester
      */
     private function _testGmail()
     {
-        /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $account_config */
+        /** @var GmailConfig $account_config */
         $account_config = $this->account_config;
 
         $this->logger->logInfo('Testing GmailAccount');
+
+        if ($account_config->type === GmailConfig::TYPE_OAUTH) {
+            $options = ImapSocket::initOptions($account_config, $this->settings);
+
+            try {
+                $protocol = new Imap($options['host'], $options['port'], 'ssl');
+                ImapSocket::oauth2Authenticate($options['user'], $options['token'], $protocol);
+                $storage             = new \Zend\Mail\Storage\Imap($protocol);
+                $this->message_count = $storage->countMessages();
+                $this->is_success    = true;
+            } catch (\Exception $e) {
+                $this->exception = $e;
+                $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
+                $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
+                $this->logger->logError(SystemErrorHandler::formatBacktrace($e->getTrace()));
+                $this->is_success = false;
+            }
+
+            return;
+        }
 
         try {
             $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3([

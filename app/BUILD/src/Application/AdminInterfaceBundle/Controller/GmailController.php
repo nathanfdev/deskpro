@@ -32,59 +32,33 @@
 
 namespace Application\AdminInterfaceBundle\Controller;
 
-use Application\DeskPRO\HttpKernel\Exception\NoPermissionException;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\OAuthExceptionEvent;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class GmailController extends AbstractController
 {
     /**
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     */
-    public function tokenAction(Request $request)
-    {
-        if ($request->query->has('id') && $request->query->has('secret')) {
-            return $this->requestAccessCode($request);
-        }
-
-        if ($request->query->has('code')) {
-            return $this->requestAccessToken($request);
-        }
-
-        if ($request->query->has('error')) {
-            throw new NoPermissionException($request->get('error'));
-        }
-
-        throw new BadRequestHttpException();
-    }
-
-    /**
-     * @param Request $request
-     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function requestAccessCode(Request $request)
+    public function requestAccessCodeAction(Request $request)
     {
-        $session = $request->getSession();
-        $client  = new \Google_Client();
-        $client->setClientId($request->get('id'));
-        $client->setClientSecret($request->get('secret'));
+        if (!$id = $this->settings->get('core_email.google_oauth_client_id')) {
+            throw new \RuntimeException('Google OAuth client ID not found');
+        }
+        if (!$secret = $this->settings->get('core_email.google_oauth_secret')) {
+            throw new \RuntimeException('Google OAuth client secret not found');
+        }
 
-        $session->set('google.oauth.client_id', $request->get('id'));
-        $session->set('google.oauth.client_secret', $request->get('secret'));
+        $client = new \Google_Client();
+        $client->setClientId($id);
+        $client->setClientSecret($secret);
 
-        $client->setScopes(\Google_Service_Gmail::MAIL_GOOGLE_COM);
+        $client->setScopes([\Google_Service_Gmail::MAIL_GOOGLE_COM]);
         $client->setAccessType('offline');
-        $backUrl = $this->generateUrl(
-            'gmail_token',
-            ['back_url' => $request->get('back_url')],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
-        $backUrl = str_replace('local.deskpro', 'localhost', $backUrl);
+        $backUrl = 'urn:ietf:wg:oauth:2.0:oob';
+
         $client->setRedirectUri($backUrl);
         $location = $client->createAuthUrl();
 
@@ -94,41 +68,38 @@ class GmailController extends AbstractController
     /**
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function requestAccessToken(Request $request)
+    public function requestAccessTokenAction(Request $request)
     {
-        $session = $request->getSession();
-        $client  = new \Google_Client();
-        $client->setClientId($session->get('google.oauth.client_id'));
-        $client->setClientSecret($session->get('google.oauth.client_secret'));
-        $client->setScopes(\Google_Service_Gmail::MAIL_GOOGLE_COM);
-        $backUrl = $this->generateUrl(
-            'gmail_token',
-            ['back_url' => $request->get('back_url')],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
+        if (!$id = $this->settings->get('core_email.google_oauth_client_id')) {
+            throw new \RuntimeException('Google OAuth client ID not found');
+        }
+        if (!$secret = $this->settings->get('core_email.google_oauth_secret')) {
+            throw new \RuntimeException('Google OAuth client secret not found');
+        }
+        $code = $request->get('code');
+
+        $client = new \Google_Client();
+        $client->setClientId($id);
+        $client->setClientSecret($secret);
+        $client->setScopes([\Google_Service_Gmail::MAIL_GOOGLE_COM]);
+        $backUrl = 'urn:ietf:wg:oauth:2.0:oob';
         $client->setRedirectUri($backUrl);
 
         try {
-            $result = $client->authenticate($request->get('code'));
+            $result = $client->authenticate($code);
             if (!empty($result['error'])) {
                 throw new \Exception($result['description']);
             }
-            $token                 = $client->getAccessToken();
-            $token['clientId']     = $session->get('google.oauth.client_id');
-            $token['clientSecret'] = $session->get('google.oauth.client_secret');
-            $request->getSession()->getFlashBag()->add('gmail.oauth.token', $token);
-            $session->remove('google.oauth.client_id');
-            $session->remove('google.oauth.client_secret');
+            $token = $client->getAccessToken();
+
+            return $this->createJsonResponse($token);
         } catch (\Exception $e) {
-            $request->getSession()->getFlashBag()->add('gmail.oauth.error', true);
             $logger = $this->container->get('dp_sys.alerts.event_logger');
             $logger->log(new OAuthExceptionEvent($e));
+
+            return $this->createJsonResponse(['error' => $e->getMessage()]);
         }
-
-        $backUrl = $request->get('back_url');
-
-        return $this->redirect($backUrl);
     }
 }

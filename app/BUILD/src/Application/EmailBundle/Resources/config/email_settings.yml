@@ -34,7 +34,7 @@ services:
 
   email.raw_transport_factory:
     class: Application\EmailBundle\Mail\RawTransport\RawTransportFactory
-    arguments: ["@logger"]
+    arguments: ["@logger", "@=service('settings_resolver').getGlobalSettings()"]
     tags:
       - { name: monolog.logger, channel: dp.email.out.raw_transport }
 

@@ -323,10 +323,22 @@ define [
       });
 
 
-    resetToken: (type) ->
-      if @form_model.form[type]?.token?
-        @form_model.form[type].token = null
-        @form_model.form[type].refreshToken = null
+
+    getCode: (url) ->
+      newWindow = window.open(url, 'name', 'height=600,width=450');
+      if window.focus then newWindow.focus()
+
+
+
+    getAccessToken: (url, type) =>
+      if !(@$scope.form["#{type}_gmail_account"].code || '').length then return
+      url = url + '?code=' + encodeURIComponent(@$scope.form["#{type}_gmail_account"].code)
+      @$http({method: 'GET', url: url }).then (res) =>
+        if res.data?.error
+          @Growl.error(res.data.error)
+        else
+          @$scope.form["#{type}_gmail_account"].token = res.data.access_token
+          @$scope.form["#{type}_gmail_account"].refreshToken = res.data.refresh_token
 
 
     onFileSelect: (files, type) ->

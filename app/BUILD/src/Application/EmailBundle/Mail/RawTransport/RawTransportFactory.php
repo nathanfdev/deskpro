@@ -36,6 +36,7 @@ namespace Application\EmailBundle\Mail\RawTransport;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\EmailBundle\Mail\RawMessage\Rfc2822Decoder;
 use Application\EmailBundle\SwiftMailer\Plugins\TransportLogger;
 use Psr\Log\LoggerInterface;
@@ -48,11 +49,17 @@ class RawTransportFactory
     private $logger;
 
     /**
+     * @var SettingsBag
+     */
+    private $settings;
+
+    /**
      * @param LoggerInterface $logger
      */
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, SettingsBag $settings)
     {
-        $this->logger = $logger;
+        $this->logger   = $logger;
+        $this->settings = $settings;
     }
 
     /**
@@ -62,7 +69,7 @@ class RawTransportFactory
      *
      * @return RawTransportInterface
      */
-    public function createTransport(AccountConfigInterface $config)
+    public function createTransport(AccountConfigInterface $config, SettingsBag $settings)
     {
         if (function_exists('deskpro_mail_transport_override')) {
             $tr = deskpro_mail_transport_override($config, $this);
@@ -129,11 +136,11 @@ class RawTransportFactory
         $tr = \Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'ssl');
         $tr->setUsername($config->user);
 
-        if (!empty($config->token)) {
+        if ($config->type === OutgoingAccount\GmailConfig::TYPE_OAUTH) {
             $client = new \Google_Client();
-            $client->setClientId($config->clientId);
-            $client->setClientSecret($config->clientSecret);
-            $client->setScopes(\Google_Service_Gmail::MAIL_GOOGLE_COM);
+            $client->setClientId($this->settings->get('core_email.google_oauth_client_id'));
+            $client->setClientSecret($this->settings->get('core_email.google_oauth_service'));
+            $client->setScopes([\Google_Service_Gmail::MAIL_GOOGLE_COM]);
             $client->setAccessToken($config->token);
             $client->setAccessType('offline');
             $client->refreshToken($config->refreshToken);
@@ -142,6 +149,8 @@ class RawTransportFactory
                 $auth = new \Swift_Transport_Esmtp_Auth_XOAuth2Authenticator();
                 $tr->setExtensionHandlers(['AUTH' => new \Swift_Transport_Esmtp_AuthHandler([$auth])]);
                 $tr->setAuthMode('XOAUTH2');
+                // setUsername again to assign username to AuthHandler
+                $tr->setUsername($config->user);
                 $tr->setPassword($data['access_token']);
             }
         } else {

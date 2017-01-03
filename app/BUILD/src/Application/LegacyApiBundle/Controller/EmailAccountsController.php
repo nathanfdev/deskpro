@@ -229,7 +229,10 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $data = $this->in->getAll('post');
         $form->submit($data);
 
-        $tester = new IncomingAccountTester(EmailAccountUtil::decryptIncomingAccount($edit_account->getIncomingAccountConfig(), $this->container->get('dp_enc')));
+        $tester = new IncomingAccountTester(
+            EmailAccountUtil::decryptIncomingAccount($edit_account->getIncomingAccountConfig(), $this->container->get('dp_enc')),
+            $this->get('settings_resolver')->getGlobalSettings()
+        );
         $tester->test();
 
         return $this->createApiResponse([
@@ -278,7 +281,10 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         }
 
         try {
-            $raw_tr = $this->container->get('email.raw_transport_factory')->createTransport(EmailAccountUtil::decryptOutgoingAccount($out_account, $this->container->get('dp_enc')));
+            $raw_tr = $this->container->get('email.raw_transport_factory')->createTransport(
+                EmailAccountUtil::decryptOutgoingAccount($out_account, $this->container->get('dp_enc')),
+                $this->get('settings_resolver')->getGlobalSettings()
+            );
         } catch (\Exception $e) {
             return $this->createApiResponse([
                 'is_success' => false,
