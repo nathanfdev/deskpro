@@ -7,7 +7,7 @@
 				<li class="active" id="tickets_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Tickets"></li>
 			{% endif %}
 
-			{% if app.getSetting('core.apps_chat') and app.user.hasPerm('agent_chat.use') %}
+			{% if isChatAvailable() and app.user.hasPerm('agent_chat.use') %}
 				<li  id="chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.UserChat"></li>
 			{% endif %}
 

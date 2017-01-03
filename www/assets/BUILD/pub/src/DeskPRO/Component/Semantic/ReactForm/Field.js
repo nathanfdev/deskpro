@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 function getFieldErrors(formValue) {
   const propertyPath = formValue.keyPath.join('.');
-  const formErrors   = formValue.root._errorList;
+  const formErrors   = formValue.root._errorList;    // eslint-disable-line no-underscore-dangle
 
   return getErrorsByPropertyPath(formErrors, propertyPath);
 }

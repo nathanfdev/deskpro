@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import $ from 'jquery';
 
 class BlurInput extends React.Component {
@@ -25,7 +24,7 @@ class BlurInput extends React.Component {
   }
 
   componentDidMount() {
-    const $input = $(ReactDOM.findDOMNode(this.input));
+    const $input = $(this.input);
 
     $($input).on('blur', this.onBlur);
     $($input).on('keydown', (event) => {

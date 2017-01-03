@@ -35,8 +35,10 @@
 namespace Application\DeskPRO\TicketLayout\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\Form\FormFields;
 
+/**
+ * Class CheckProduct.
+ */
 class CheckProduct extends AbstractTicketLayoutTerm
 {
     /**
@@ -45,23 +47,6 @@ class CheckProduct extends AbstractTicketLayoutTerm
     public function isTicketMatch(Ticket $ticket)
     {
         $have_id  = $ticket->product ? $ticket->product->getId() : 0;
-        $is_match = in_array($have_id, $this->options['product_ids']);
-
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
-        }
-
-        return $is_match;
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return bool
-     */
-    public function isSubmittedDataMatch(array $data)
-    {
-        $have_id  = isset($data[FormFields::PRODUCT]) ? $data[FormFields::PRODUCT] : 0;
         $is_match = in_array($have_id, $this->options['product_ids']);
 
         if ($this->op == self::OP_NOT) {

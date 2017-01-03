@@ -29,12 +29,12 @@ export class ClickOut extends React.Component {
   componentDidMount() {
     $(this.getContext()).on('click touchend', this.onClick);
 
-    const events = $._data(this.getContext(), 'events');
+    const events = $.data(this.getContext(), 'events');
     if (events) {
       events.click = events.click || [];
       events.click.sort((a, b) => b.guid - a.guid);
 
-      $._data(this.getContext(), 'events', events);
+      $.data(this.getContext(), 'events', events);
     }
   }
 

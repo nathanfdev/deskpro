@@ -17,7 +17,7 @@ export function getErrorPath(propertyPath) {
 
   const errorPath = [];
   let parentField;
-  arrayPath.forEach(field => {
+  arrayPath.forEach((field) => {
     const errorField = !parentField || isNaN(field) ? field : `${parentField}_${field}`;
     parentField = errorField;
 
@@ -42,7 +42,7 @@ export function getErrorsByPropertyPath(formErrors, propertyPath) {
   const iterator = (childErrors, childErrorPath) => {
     if (childErrorPath.length > 0) {
       const errorField = childErrorPath.splice(0, 1)[0];
-      if (childErrors && typeof childErrors === 'object' && childErrors.hasOwnProperty(errorField)) {
+      if (childErrors && typeof childErrors === 'object' && {}.hasOwnProperty.call(childErrors, errorField)) {
         return childErrorPath.length ? iterator(childErrors[errorField], childErrorPath) : childErrors[errorField];
       }
     }
@@ -54,14 +54,14 @@ export function getErrorsByPropertyPath(formErrors, propertyPath) {
 }
 
 export function getFormDataErrors(formData) {
-  return formData._errorList.errors;
+  return formData._errorList.errors; // eslint-disable-line no-underscore-dangle
 }
 
 /**
  * @deprecated use getErrorsByPropertyPath instead
  */
 export function getErrors(response, name) {
-  const errors = response && response.fields || {};
+  const errors = response ? response.fields : {};
   return errors[name] ? errors[name].errors : [];
 }
 

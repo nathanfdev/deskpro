@@ -342,11 +342,6 @@ return [
     'core.apps_feedback' => 1,
 
     /*
-     * Enable chat?
-     */
-    'core.apps_chat' => 1,
-
-    /*
      * Enable agent tasks?
      */
     'core.apps_tasks' => 1,

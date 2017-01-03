@@ -90,9 +90,9 @@ class IncomingCall extends React.Component {
           >
             <i className="icon call" />
             Answer
-          <span className="waiting-time">
-            <Timer format="waiting_time" />
-          </span>
+            <span className="waiting-time">
+              <Timer format="waiting_time" />
+            </span>
           </Button>
           <a
             className="ignore-button"

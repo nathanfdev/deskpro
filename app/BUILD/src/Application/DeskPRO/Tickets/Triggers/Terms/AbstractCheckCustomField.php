@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
+use Application\DeskPRO\CustomFields\Handler\DateTime;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
@@ -253,5 +254,175 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
     public function getTermType()
     {
         return 'CheckTicketField'.$this->getTermOptions()->get('field_id');
+    }
+
+    /**
+     * note: this method is only used in TicketLayout terms
+     * eg app/BUILD/src/Application/DeskPRO/TicketLayout/Terms/CheckTicketField.php.
+     *
+     * @return string
+     */
+    public function compileJsCheck()
+    {
+        $options     = $this->getTermOptions();
+        $op          = $this->getTermOperator();
+        $id          = $options['field_id'];
+        $check_value = $options->get('value');
+        $type        = $options->get('type_name');
+        $value       = $this->getTicketFieldValueJs($id);
+
+        if ($op === AbstractTriggerTerm::OP_ISSET) {
+            return "function (ticket) { return !!($value ? ($value).length : $value); }";
+        } elseif ($op === AbstractTriggerTerm::OP_NOTISSET) {
+            return "function (ticket) { return !$value || 0 === ($value).length; }";
+        }
+
+        $op_is          = AbstractTriggerTerm::OP_IS;
+        $op_not         = AbstractTriggerTerm::OP_NOT;
+        $op_lt          = AbstractTriggerTerm::OP_LT;
+        $op_lte         = AbstractTriggerTerm::OP_LTE;
+        $op_gt          = AbstractTriggerTerm::OP_GT;
+        $op_gte         = AbstractTriggerTerm::OP_GTE;
+        $op_btw         = AbstractTriggerTerm::OP_BETWEEN;
+        $op_contains    = AbstractTriggerTerm::OP_CONTAINS;
+        $op_notcontains = AbstractTriggerTerm::OP_NOTCONTAINS;
+        $op_reg         = AbstractTriggerTerm::OP_IS_REGEX;
+        $op_notreg      = AbstractTriggerTerm::OP_NOT_REGEX;
+
+        switch ($type) {
+            case 'choice':
+                if (!is_array($check_value)) {
+                    $check_value = [$check_value];
+                }
+                foreach ($check_value as &$v) {
+                    $v = (int) $v;
+                }
+                $check_value = json_encode($check_value);
+
+                return <<<JS
+function (ticket) { 
+  var check_value = $check_value;
+  var value = $value || null;
+  var op = '$op';
+  if (!value || undefined === value.length) value = [value + ''];
+  
+  var has = false; 
+  for (var i = 0; i < check_value.length; i++) {
+    if (value.indexOf(check_value[i] + '') !== -1) has = true;
+  }
+  
+  if (op === '$op_is' && has) return true;
+  if (op === '$op_not' && !has) return true;
+  return false;
+}
+JS;
+            case 'date':
+            case 'datetime':
+                $date1 = null;
+                $date2 = null;
+                $i1    = 0;
+                $i2    = 0;
+                if ($options['date1']) {
+                    $date1 = $options['date1'] * 1000;
+                    $date1 = "new Date($date1)";
+                } elseif ($options['date1_relative']) {
+                    $i1   = \DateInterval::createFromDateString($options['date1_relative'].' '.$options['date1_relative_type']);
+                    $date = new \DateTime('@0');
+                    $i1   = $date->add($i1)->getTimestamp() * 1000;
+                }
+                if ($options['date2']) {
+                    $date2 = $options['date2'] * 1000;
+                    $date2 = "new Date($date2)";
+                } elseif ($options['date2_relative']) {
+                    $i2   = \DateInterval::createFromDateString($options['date2_relative'].' '.$options['date2_relative_type']);
+                    $date = new \DateTime('@0');
+                    $i2   = $date->add($i2)->getTimestamp() * 1000;
+                }
+
+                $date1 = $date1 ?: 'null';
+                $date2 = $date2 ?: 'null';
+
+                return <<<JS
+function (ticket) {
+  var date1 = $date1;
+  var date2 = $date2;
+  var i1 = $i1;
+  var i2 = $i2;
+  date1 = date1 ? date1.getTime() : null;
+  date2 = date2 ? date2.getTime() : null;
+  if (!date1 && i1) {
+    date1 = Date.now() - i1;
+  }
+  if (!date2 && i2) {
+    date2 = Date.now() - i2;
+  }
+   
+  var op = '$op';
+  var value = $value;
+  if (!value) {
+    return false;
+  }
+  var parts = (value + '').trim().split(' ');
+  if (!parts[0]) return false;
+  value = parts[0].split('-');
+  if (!value.length || value.length !== 3) return false;
+  value = new Date(parseInt(value[0]), parseInt(value[1]) - 1, parseInt(value[2]));
+  value = value.getTime();
+  if (!date1 && !date2) return false;
+
+  switch (op) {
+    case '$op_lt':
+    case '$op_lte':
+      return value < (date2 || date1);
+    case '$op_gt':
+    case '$op_gte':
+      return value > (date2 || date1);
+    case '$op_btw':
+      if (!date1 || !date2) return false;
+      return Math.min(date1, date2) <= value && Math.max(date1, date2) >= value; 
+  }
+  
+  return false;
+}
+JS;
+            default:
+                return <<<JS
+function (ticket) { 
+  var check_value = '$check_value'.toLowerCase();
+  var value = $value || '';
+  value = value.toLowerCase();
+  var op = '$op';
+  
+  switch (op) {
+    case '$op_is':
+      return !value.localeCompare(check_value);
+    case '$op_not':
+      return !!value.localeCompare(check_value);
+    case '$op_contains':
+      return value.indexOf(check_value) !== -1;
+    case '$op_notcontains':
+      return value.indexOf(check_value) === -1;
+    case '$op_reg':
+    case '$op_notreg':
+      if (check_value.charAt(0) === '/') {
+        check_value = check_value.substr(1);
+      }
+      if (check_value.charAt(check_value.length - 1) === '/') {
+        check_value = check_value.substr(0, check_value.length - 1);
+      }
+      var patt = new RegExp(check_value);
+      if (op === '$op_reg') {
+        return patt.test(value);
+      }
+      if (op === '$op_notreg') {
+        return !patt.test(value);
+      }
+      return false;
+  }
+ 
+  return false;
+}
+JS;
+        }
     }
 }

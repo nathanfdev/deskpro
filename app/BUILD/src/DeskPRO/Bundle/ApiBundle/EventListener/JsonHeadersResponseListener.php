@@ -66,7 +66,7 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
      * Constructor.
      *
      * @param SerializerInterface $serializer
-     * @param SettingsResolver $resolver
+     * @param SettingsResolver    $resolver
      */
     public function __construct(SerializerInterface $serializer, SettingsResolver $resolver)
     {

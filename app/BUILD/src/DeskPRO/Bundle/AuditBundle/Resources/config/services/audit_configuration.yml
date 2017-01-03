@@ -3,6 +3,7 @@ services:
     class: DeskPRO\Bundle\AuditBundle\Configuration\ConfigurationBuilder
     arguments:
       - "@audit_log.field_filter_service"
+      - "@service_container"
 
   audit_log.configuration_builder_wrapper:
     class: DeskPRO\Bundle\AuditBundle\Configuration\ConfigurationBuilderWrapper

@@ -96,9 +96,9 @@ abstract class AbstractTwilioNumber
     /**
      * Constructor.
      *
-     * @param object        $apiNumber
+     * @param object       $apiNumber
      * @param VoiceAccount $account
-     * @param bool          $added
+     * @param bool         $added
      */
     public function __construct($apiNumber, VoiceAccount $account, $added)
     {

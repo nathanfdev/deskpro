@@ -110,12 +110,12 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 	 * @return {Array}
 	 */
 	getLabels: function() {
-		return this.input.select2('val') || [];
+		return this.input && this.input.select2('val') || [];
 	},
 
   setLabels: function (labels) {
     labels = labels || [];
-    this.input.select2('val', labels);
+    this.input && this.input.select2('val', labels);
   },
 
 	/**

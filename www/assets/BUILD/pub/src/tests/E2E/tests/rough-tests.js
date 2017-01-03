@@ -19,7 +19,7 @@ module.exports = {
 
   'I log in and check portal admin dropdown menu is expandable': (client) => {
     client.deleteCookies().page.login().navigate().loginAsAdmin();
-    var portal = client.page.portal();
+    const portal = client.page.portal();
 
     portal.waitUntilLoaded();
 

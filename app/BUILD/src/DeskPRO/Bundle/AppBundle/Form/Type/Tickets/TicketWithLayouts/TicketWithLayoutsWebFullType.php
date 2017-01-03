@@ -28,14 +28,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
-use Application\DeskPRO\Entity\TicketLayout;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\WebFieldRenderer;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\WebFieldResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -80,15 +76,7 @@ class TicketWithLayoutsWebFullType extends AbstractType
      */
     public function getParent()
     {
-        return TicketWithLayoutsType::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onRenderFullLayout']);
+        return TicketWithLayoutsFullType::class;
     }
 
     /**
@@ -107,29 +95,10 @@ class TicketWithLayoutsWebFullType extends AbstractType
         $resolver->setDefaults([
             'field_resolver' => $this->fieldResolver,
             'field_renderer' => $this->fieldRenderer,
+            'full_layout'    => $this->layoutFactory->getFullLayoutForTicketForm(),
             'layout_factory' => function ($department) {
                 return $this->layoutFactory->getLayoutForTicketForm($department, false);
             },
         ]);
-    }
-
-    /**
-     * Returns fields from all layouts.
-     *
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onRenderFullLayout(FormEvent $event)
-    {
-        $context = new TicketWithLayoutsContext($event->getForm(), $event->getData(), new TicketLayout());
-        $context->setNewLayout($this->layoutFactory->getFullLayoutForTicketForm());
-
-        TicketLayoutHelper::renderFormFields($context, function () {
-            // just stub, no need form field validation for the 'full' form
-            return true;
-        });
-
-        $this->fieldRenderer->addSubmitButton($context);
     }
 }

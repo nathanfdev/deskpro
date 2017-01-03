@@ -2070,12 +2070,14 @@ class TicketController extends AbstractController
                     $noValidate = array_intersect(array_keys($params->get('actions') ?: []), ['agent_team_id', 'agent_id']) || $params->has('set_agent_part_ids');
 
                     if (!$noValidate && !$validator->isValid($newticket)) {
-                        $free = [];
+                        $free   = [];
+                        $fields = [];
                         foreach ($validator->getErrorsInfo() as $info) {
-                            $free[] = htmlspecialchars($info['message']);
+                            $free[]   = htmlspecialchars($info['message']);
+                            $fields[] = $info['field'];
                         }
 
-                        return $this->createJsonResponse(['error' => true, 'error_messages' => $free]);
+                        return $this->createJsonResponse(['error' => true, 'error_messages' => $free, 'fields' => $fields]);
                     }
                 }
 

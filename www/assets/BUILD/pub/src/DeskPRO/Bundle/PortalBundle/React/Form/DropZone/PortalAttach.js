@@ -64,7 +64,7 @@ export default class PortalAttach extends React.Component {
   onUploadSuccess = (event, data) => {
     const { $input } = this.props;
     const file = data.files[0];
-    const info = (data.result && data.result.blob) || {};
+    const info = data.result ? data.result.blob : {};
     const newFiles = [];
 
     this.state.files.forEach((f) => {

@@ -80,7 +80,7 @@ export class TextPlayButton extends React.Component {
     return language ? previewVoices[language] : null;
   };
 
-  stopPlaying() {
+  stopPlaying() { // eslint-disable-line class-methods-use-this
     window.speechSynthesis.cancel();
   }
 

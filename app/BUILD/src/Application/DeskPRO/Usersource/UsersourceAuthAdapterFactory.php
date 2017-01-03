@@ -39,6 +39,7 @@ use Orb\Auth\Adapter\SamlAdapterInterface;
 use Orb\Auth\Adapter\SsoCapableInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Auth\StateHandler\SessionWrapper;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -91,6 +92,10 @@ class UsersourceAuthAdapterFactory
 
         if ($adapter instanceof EntityManagerAwareInterface) {
             $adapter->setEm($this->container->getEm());
+        }
+
+        if ($adapter instanceof ContainerAwareInterface) {
+            $adapter->setContainer($this->container);
         }
 
         $adapter = $adapter->getAuthAdapter();

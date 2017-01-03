@@ -223,7 +223,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				self.page.ticketFields.updateDisplay();
 			});
 
-			this.page.getEl('field_holders').find('select.prop-input-product, select.prop-input-priority_id, select.prop-input-workflow_id, select.prop-input-category_id').on('change', function() {
+			this.page.getEl('field_holders').on('change', 'select.prop-input-product, select.prop-input-priority_id, select.prop-input-workflow_id, select.prop-input-category_id', function() {
 				self.page.ticketFields.updateDisplay();
 			});
 		}

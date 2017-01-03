@@ -122,6 +122,7 @@ class TicketWithLayoutsWebType extends AbstractType
             'default_subject'       => null,
             'field_resolver'        => $this->fieldResolver,
             'field_renderer'        => $this->fieldRenderer,
+            'full_type_class'       => TicketWithLayoutsWebFullType::class,
             'layout_factory'        => function ($department) {
                 return $this->layoutFactory->getLayoutForTicketForm($department, false);
             },
