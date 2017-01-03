@@ -47,6 +47,43 @@ class PreProcessor extends AbstractGatewayProcessor
 
     public function run()
     {
+        // TODO [cloudspam] proper cloud spam checker/handling
+        if (defined('DPC_IS_CLOUD') && \DpSys\License::getLicense()->isDemo()) {
+            $em = $this->getEm();
+            $db = $this->getDb();
+
+            $emailCount = $db->fetchColumn('
+                SELECT COUNT(*)
+                FROM email_sources
+                WHERE date_created > ?
+            ', [date('Y-m-d H:i:s', time() - 3600)]);
+
+            if ($emailCount && $emailCount >= 50) {
+                \DpShutdown::add(function () use ($em) {
+                    $tmpdata = new \Application\DeskPRO\Entity\TmpData();
+                    $tmpdata->setType('cancel_for_abuse');
+                    $tmpdata->date_expire = new \DateTime('+30 minutes');
+                    $em->persist($tmpdata);
+                    $em->flush();
+
+                    $url = DP_MA_SERVER_SECURE.'/cloud/call/'.DPC_SITE_ID.'/'.$tmpdata->getCode();
+
+                    try {
+                        $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
+                        $client->setMethod(\Zend\Http\Request::METHOD_GET);
+                        $client->setUri($url);
+                        $r = $client->send();
+                    } catch (\Exception $e) {
+                        error_log('Failed to cancel site: '.$e->getMessage());
+                    }
+                });
+
+                $this->error = EmailSource::ERR_RATE_LIMIT;
+
+                return;
+            }
+        }
+
         //------------------------------
         // Empty From
         //------------------------------

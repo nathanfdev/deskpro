@@ -223,6 +223,7 @@ class AuditListener
             $this->dispatcher->dispatch(LogEvent::FINISH_LOG_EVENT, $logEvent);
         }
 
+        // TODO [cloudspam] proper cloud spam checker/handling
         if (defined('DPC_IS_CLOUD') && \DpSys\License::getLicense()->isDemo()) {
             if ($entity instanceof \Application\DeskPRO\Entity\Template && ($action === self::UPDATE || $action === self::INSERT) && strpos($entity->getName(), ':emails_') !== false) {
                 $code = $entity->getTemplateCode();
