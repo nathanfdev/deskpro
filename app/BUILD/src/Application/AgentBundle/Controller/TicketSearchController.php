@@ -84,7 +84,7 @@ class TicketSearchController extends AbstractController
         $archive_filters  = $filter_info['archive_filters'];
         $custom_filters   = $filter_info['custom_filters'];
 
-        $filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($sys_filters, $this->person);
+        $filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection(array_merge($sys_filters, $sys_filters_hold), $this->person);
         $filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
 
         $problem_filters = [];
@@ -1945,6 +1945,8 @@ class TicketSearchController extends AbstractController
         }
 
         if (($actions || $actions_set || $macro) && $tickets) {
+            $ticketManager = $this->container->getTicketManager();
+
             if ($macro) {
                 /** @var Ticket $ticket */
                 foreach ($tickets as $ticket) {
@@ -1971,10 +1973,10 @@ class TicketSearchController extends AbstractController
                             continue;
                         }
 
-                        $this->em->persist($ticket);
-                        $this->em->flush();
-                        $ticket->getTicketLogger()->done();
+                        $context = $ticketManager->createAgentExecutorContext($this->person, 'update', 'web');
+                        $ticketManager->saveTicket($ticket, $context);
 
+                        $this->em->flush();
                         $this->db->commit();
                     } catch (\Exception $e) {
                         $this->db->rollback();
@@ -2029,7 +2031,8 @@ class TicketSearchController extends AbstractController
                             continue;
                         }
 
-                        $this->em->persist($ticket);
+                        $context = $ticketManager->createAgentExecutorContext($this->person, 'update', 'web');
+                        $ticketManager->saveTicket($ticket, $context);
 
                         if ($snippet_ids) {
                             foreach ($snippet_ids as $snip_id) {

@@ -116,7 +116,11 @@ export class ClickOut extends React.Component {
 
     const context = [document];
     $('iframe').each((i, iframe) => {
-      context.push(iframe.contentWindow.document);
+      try {
+        context.push(iframe.contentWindow.document);
+      } catch (e) {
+        // cross origin frame
+      }
     });
 
     return context;

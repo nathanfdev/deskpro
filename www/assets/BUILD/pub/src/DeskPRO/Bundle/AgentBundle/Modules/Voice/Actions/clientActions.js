@@ -1,8 +1,11 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
+import Immutable from 'immutable';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { callsEnabledSelector } from '../Selectors/agents';
 import { phoneTokenSelector, workerTokenSelector, idleActivitySidSelector, busyActivitySidSelector, offlineActivitySidSelector } from '../Selectors/client';
+import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
 
 export const setVoiceTokens = createAction('VOICE_AGENT_SET_TOKENS');
 export const setVoiceActivities = createAction('VOICE_AGENT_SET_ACTIVITIES');
@@ -17,12 +20,12 @@ let worker;
 export const voiceBootstrap = createAction(
   'VOICE_AGENT_BOOTSTRAP',
   () => (dispatch, getState) => {
-    const state        = getState();
-    const callsEnabled = callsEnabledSelector(state);
-    const phoneToken   = phoneTokenSelector(state);
-    const workerToken  = workerTokenSelector(state);
-    const idleSid      = idleActivitySidSelector(state);
-    const offlineSid   = offlineActivitySidSelector(state);
+    const initialState = getState();
+    const callsEnabled = callsEnabledSelector(initialState);
+    const phoneToken   = phoneTokenSelector(initialState);
+    const workerToken  = workerTokenSelector(initialState);
+    const idleSid      = idleActivitySidSelector(initialState);
+    const offlineSid   = offlineActivitySidSelector(initialState);
     const connectSid   = callsEnabled ? idleSid : offlineSid;
 
     if (!workerToken || !phoneToken) {
@@ -34,8 +37,11 @@ export const voiceBootstrap = createAction(
       console.log('worker ready');
     });
     worker.on('reservation.created', (reservation) => {
-      console.log('reservation.created');
-      console.log(reservation);
+      const personId = reservation.task.attributes.deskpro_person_id;
+      if (personId) {
+        dispatch(loadBatch('Person', personId, 'all'));
+      }
+
       dispatch(addIncomingCall(reservation));
     });
     worker.on('reservation.accepted', () => {
@@ -79,11 +85,10 @@ export const voiceBootstrap = createAction(
         console.log(error);
       });
       window.Twilio.Device.connect((connection) => {
-        const callId = connection.message.CallId;
-        console.log(connection);
+        const ticketId = connection.message.TicketId;
 
         dispatch(addConnection(connection));
-        window.DeskPRO_Window.runPageRoute(`voice:/agent/voice/in-progress/${callId}/${connection.parameters.CallSid}`);
+        window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${ticketId}`);
 
         connection.disconnect(() => {
           // call has ended
@@ -98,6 +103,10 @@ export const voiceBootstrap = createAction(
 
     const messageBroker = window.DeskPRO_Window.getMessageBroker();
     messageBroker.addMessageListener('agent.voice.conference.participant-invite', (data) => {
+      if (data.caller_person_id) {
+        dispatch(loadBatch('Person', data.caller_person_id, 'all'));
+      }
+
       dispatch(addIncomingCall(data));
     });
     messageBroker.addMessageListener('agent.voice.conference.participant-cancel', (data) => {
@@ -105,6 +114,19 @@ export const voiceBootstrap = createAction(
     });
     messageBroker.addMessageListener('agent.voice.conference.status', (event) => {
       const eventName = event.StatusCallbackEvent;
+      const phoneCall = Immutable.fromJS(event.phone_call);
+
+      // realtime phone call updates
+      const state = getState();
+      const phoneCalls = allPhoneCallsSelector(state);
+
+      if (phoneCalls.get(phoneCall.get('id'))) {
+        dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'replace'));
+      } else {
+        dispatch(addToCollection('VoicePhoneCall', 'all', Immutable.List([phoneCall])));
+      }
+
+      // change worker status to idle on conference end
       if (eventName === 'conference-end') {
         dispatch(removeConferenceIncomingCalls(event.ConferenceSid));
         worker.update('ActivitySid', idleSid);
@@ -128,18 +150,20 @@ export const acceptPhoneCall = createAction(
       // accept twilio reservation
       incomingCall.accept(() => {
         window.Twilio.Device.connect({
-          From:    from,
-          CallId:  incomingCall.task.attributes.deskpro_call_id,
-          AgentId: agentId
+          From:     from,
+          CallId:   incomingCall.task.attributes.deskpro_call_id,
+          AgentId:  agentId,
+          TicketId: incomingCall.task.attributes.deskpro_ticket_id
         });
       });
     } else {
       // got invite, join the conference
       worker.update('ActivitySid', busySid);
       window.Twilio.Device.connect({
-        From:    from,
-        CallId:  incomingCall.get('call_id'),
-        AgentId: agentId
+        From:     from,
+        CallId:   incomingCall.get('call_id'),
+        AgentId:  agentId,
+        TicketId: incomingCall.get('ticket_id')
       });
     }
   }
@@ -168,7 +192,14 @@ export const declinePhoneCall = createAction(
 
 export const toggleMute = createAction(
   'VOICE_AGENT_TOGGLE_MUTE',
-  (connection, mute) => connection.mute(mute)
+  (connection, mute) => {
+    // mute on client side
+    connection.mute(mute);
+
+    // send participant mute request
+    const callId = connection.message.CallId;
+    api.sendPut(`DP_API/voice_client/phone_call/${callId}/mute_call`, { mute });
+  }
 );
 
 export const toggleHold = createAction(

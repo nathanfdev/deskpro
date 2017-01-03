@@ -29,6 +29,15 @@ function handleSetCollection(state, { recordName, collectionName, records, ids, 
     map.mergeIn([recordName, 'records'], newRecords);
     map.setIn([recordName, 'collections', collectionName], newIds);
     map.mergeIn([recordName, 'statuses', collectionName], { success: true, loading: false });
+
+    if (collectionName !== 'all') {
+      if (!map.getIn([recordName, 'statuses', 'all'])) {
+        map.mergeIn([recordName, 'statuses', 'all'], { success: true, loading: false });
+      }
+
+      const oldIds = map.getIn([recordName, 'collections', 'all']) || Immutable.fromJS([]);
+      map.setIn([recordName, 'collections', 'all'], newIds.union(oldIds));
+    }
   });
 }
 
@@ -47,7 +56,7 @@ function handleAddToCollection(state, { recordName, collectionName, records }) {
 }
 
 function handleUpdateCollection(state, { recordName, records, mergeType }) {
-  let currentRecords = state.getIn([recordName, 'records']);
+  let currentRecords = state.getIn([recordName, 'records']) || Immutable.fromJS({});
   currentRecords = currentRecords.withMutations((set) => {
     const newRecords = Immutable.Map.isMap(records) ? records : mapKeyedFromArray(records, 'id');
     newRecords.forEach((record, id) => {

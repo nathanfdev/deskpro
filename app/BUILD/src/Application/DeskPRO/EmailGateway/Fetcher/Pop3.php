@@ -44,22 +44,22 @@ class Pop3 extends AbstractFetcher
     /**
      * @var int
      */
-    protected $read_count = 0;
+    protected $readCount = 0;
 
     /**
      * @var array
      */
-    protected $message_list = null;
+    protected $messageList = null;
 
     /**
      * @var array
      */
-    protected $message_list_ids = [];
+    protected $messageListIds = [];
 
     /**
      * @var array
      */
-    protected $message_files = [];
+    protected $messageFiles = [];
 
     /**
      * The size in bytes a message must be before the "memory protection"
@@ -67,12 +67,12 @@ class Pop3 extends AbstractFetcher
      *
      * @var int
      */
-    protected $memory_protection_size = 0;
+    protected $memoryProtectionSize = 0;
 
     /**
      * @var bool
      */
-    protected $done_read_finished = false;
+    protected $doneReadFinished = false;
 
     /**
      * Files written as part of the memory protection.
@@ -80,11 +80,11 @@ class Pop3 extends AbstractFetcher
      *
      * @var array
      */
-    protected $backup_file = [];
+    protected $backupFile = [];
 
     public function init()
     {
-        $this->memory_protection_size = 3670016;
+        $this->memoryProtectionSize = 3670016;
     }
 
     /**
@@ -96,37 +96,37 @@ class Pop3 extends AbstractFetcher
     {
         $options = [];
 
-        $incoming_account = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
+        $incomingAccount = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
 
-        switch ($incoming_account->getType()) {
+        switch ($incomingAccount->getType()) {
             case 'pop3':
-                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config $pop3_config */
-                $pop3_config = $incoming_account;
+                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config $pop3Config */
+                $pop3Config = $incomingAccount;
 
-                $options['host']     = $pop3_config->host;
-                $options['port']     = $pop3_config->port;
-                $options['user']     = $pop3_config->user;
-                $options['password'] = $pop3_config->password;
+                $options['host']     = $pop3Config->host;
+                $options['port']     = $pop3Config->port;
+                $options['user']     = $pop3Config->user;
+                $options['password'] = $pop3Config->password;
 
                 $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 
-                if ($pop3_config->secure_mode == 'ssl') {
+                if ($pop3Config->secure_mode == 'ssl') {
                     $options['ssl'] = 'SSL';
                     $this->logger->log('SSL Enabled', 'debug');
-                } elseif ($pop3_config->secure_mode == 'tls') {
+                } elseif ($pop3Config->secure_mode == 'tls') {
                     $options['ssl'] = 'TLS';
                     $this->logger->log('TLS Enabled', 'debug');
                 }
                 break;
 
             case 'gmail':
-                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $gmail_config */
-                $gmail_config = $incoming_account;
+                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $gmailConfig */
+                $gmailConfig = $incomingAccount;
 
                 $options['host']     = 'pop.gmail.com';
                 $options['port']     = 995;
-                $options['user']     = $gmail_config->user;
-                $options['password'] = $gmail_config->password;
+                $options['user']     = $gmailConfig->user;
+                $options['password'] = $gmailConfig->password;
 
                 $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 
@@ -136,7 +136,7 @@ class Pop3 extends AbstractFetcher
 
             case 'office365':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config $config */
-                $config = $incoming_account;
+                $config = $incomingAccount;
 
                 $options['host']     = 'outlook.office365.com';
                 $options['port']     = 995;
@@ -150,7 +150,7 @@ class Pop3 extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException('Unknown account type: '.$incoming_account->getType());
+                throw new \InvalidArgumentException('Unknown account type: '.$incomingAccount->getType());
         }
 
         $options['logger'] = $this->logger;
@@ -196,10 +196,12 @@ class Pop3 extends AbstractFetcher
 
     /**
      * Get a list of message IDs.
+     *
+     * @param bool $reload
      */
     protected function _initMessageList($reload = false)
     {
-        if (!$reload && $this->message_list !== null) {
+        if (!$reload && $this->messageList !== null) {
             return;
         }
 
@@ -218,18 +220,18 @@ class Pop3 extends AbstractFetcher
                 $einfo['no_send_error'] = true;
                 \DpSys\LowError\SystemErrorHandler::logErrorInfo($einfo);
 
-                $this->message_list = [];
+                $this->messageList = [];
 
                 return;
             }
 
-            $id_to_num = array_flip($this->getStorage()->getUniqueId());
+            $idToNum = array_flip($this->getStorage()->getUniqueId());
 
-            $this->logger->log('Server has '.count($id_to_num).' messages', 'debug');
+            $this->logger->log('Server has '.count($idToNum).' messages', 'debug');
 
-            if (count($id_to_num) > 2500) {
+            if (count($idToNum) > 2500) {
                 $this->logger->log('Server has >= 2500 messages, breaking', 'ERR');
-                $this->message_list = [];
+                $this->messageList = [];
 
                 $e                      = new \InvalidArgumentException("POP3 server has >= 2500 messages and 'keep read' setting is enbaled. Clean out old messages and try again.");
                 $einfo                  = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
@@ -239,42 +241,42 @@ class Pop3 extends AbstractFetcher
                 return;
             }
 
-            $read_ids = App::getDb()->fetchAllCol('
+            $readIds = App::getDb()->fetchAllCol('
                 SELECT id
                 FROM email_uids
                 WHERE email_account_id = ?
             ', [$this->account->getId()]);
 
-            $this->logger->log('System has '.count($read_ids).' tracked IDs', 'debug');
+            $this->logger->log('System has '.count($readIds).' tracked IDs', 'debug');
 
-            foreach ($read_ids as $id) {
-                if (isset($id_to_num[$id])) {
-                    $this->logger->log(sprintf('Skipping message #%s because UID %s', $id_to_num[$id], $id), 'debug');
-                    unset($id_to_num[$id]);
+            foreach ($readIds as $id) {
+                if (isset($idToNum[$id])) {
+                    $this->logger->log(sprintf('Skipping message #%s because UID %s', $idToNum[$id], $id), 'debug');
+                    unset($idToNum[$id]);
                 }
             }
 
-            $this->message_list_ids = array_flip($id_to_num);
+            $this->messageListIds = array_flip($idToNum);
 
             $list = $this->getStorage()->getSize();
 
-            $this->message_list = [];
+            $this->messageList = [];
             foreach ($list as $num => $size) {
-                if (isset($this->message_list_ids[$num])) {
-                    $this->message_list[] = ['num' => $num, 'size' => $size, 'uid' => $this->message_list_ids[$num]];
+                if (isset($this->messageListIds[$num])) {
+                    $this->messageList[] = ['num' => $num, 'size' => $size, 'uid' => $this->messageListIds[$num]];
                 }
             }
 
-            $this->logger->log('Message list contains '.count($this->message_list).' new messages', 'debug');
+            $this->logger->log('Message list contains '.count($this->messageList).' new messages', 'debug');
         } else {
             $list = $this->getStorage()->getSize();
 
-            $this->message_list = [];
+            $this->messageList = [];
             foreach ($list as $num => $size) {
-                $this->message_list[] = ['num' => $num, 'size' => $size, 'uid' => null];
+                $this->messageList[] = ['num' => $num, 'size' => $size, 'uid' => null];
             }
 
-            $this->logger->log('Message list contains '.count($this->message_list).' messages', 'debug');
+            $this->logger->log('Message list contains '.count($this->messageList).' messages', 'debug');
         }
     }
 
@@ -285,112 +287,112 @@ class Pop3 extends AbstractFetcher
      */
     protected function _readNext()
     {
-        $this->done_read_finished = null;
+        $this->doneReadFinished = null;
 
         $this->getStorage();
         $this->_initMessageList();
 
-        ++$this->read_count;
-        $this->logger->log("Trying to read next ({$this->read_count} call)", 'debug');
+        ++$this->readCount;
+        $this->logger->log("Trying to read next ({$this->readCount} call)", 'debug');
 
-        $next = array_shift($this->message_list);
+        $next = array_shift($this->messageList);
         if (!$next) {
             return;
         }
 
-        $message_size = $next['size'];
-        $message_num  = $next['num'];
-        $message_id   = $next['uid'];
+        $messageSize = $next['size'];
+        $messageNum  = $next['num'];
+        $messageId   = $next['uid'];
 
         // Memory protection enables writing the email to a file and then immediately
         // deleting it from the server (which causes a server disconnect/reconnect).
         // So if theres a crash, the same message wont be attempted next run and hold
         // up all other messages.
-        $memory_protection = false;
-        if ($this->memory_protection_size && $message_size >= $this->memory_protection_size) {
-            $memory_protection = true;
+        $memoryProtection = false;
+        if ($this->memoryProtectionSize && $messageSize >= $this->memoryProtectionSize) {
+            $memoryProtection = true;
         }
 
-        if (!$message_id && $this->canUniqueId()) {
+        if (!$messageId && $this->canUniqueId()) {
             try {
-                $message_id = $this->getStorage()->getProtocol()->uniqueid($message_num);
+                $messageId = $this->getStorage()->getProtocol()->uniqueid($messageNum);
             } catch (\Exception $e) {
             }
         }
 
-        $start_time = microtime(true);
+        $startTime = microtime(true);
 
-        $this->logger->log("Fetching message #$message_num", 'debug');
+        $this->logger->log("Fetching message #$messageNum", 'debug');
 
-        $raw_message       = new RawMessage();
-        $raw_message->id   = $message_num;
-        $raw_message->uid  = $message_id;
-        $raw_message->size = $message_size;
+        $rawMessage       = new RawMessage();
+        $rawMessage->id   = $messageNum;
+        $rawMessage->uid  = $messageId;
+        $rawMessage->size = $messageSize;
 
-        if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
-            $raw_message->content = $this->getStorage()->getProtocol()->top($message_num)."\n\n";
+        if ($this->maxSize && $rawMessage->size && $rawMessage->size > $this->maxSize) {
+            $rawMessage->content = $this->getStorage()->getProtocol()->top($messageNum)."\n\n";
         } else {
-            if ($memory_protection) {
+            if ($memoryProtection) {
                 $this->logger->logInfo('Memory protected enabled');
-                $content_file = dp_get_backup_dir().'/eml-'.uniqid('', true).'.eml';
-                $fp           = fopen($content_file, 'w');
+                $contentFile = dp_get_backup_dir().'/eml-'.uniqid('', true).'.eml';
+                $fp          = fopen($contentFile, 'w');
                 if ($fp) {
-                    $this->getStorage()->getProtocol()->retrieveToStream($message_num, $fp);
+                    $this->getStorage()->getProtocol()->retrieveToStream($messageNum, $fp);
                     fclose($fp);
 
-                    $this->_doneRead($message_num);
-                    $this->done_read_finished = $message_num;
+                    $this->_doneRead($messageNum);
+                    $this->doneReadFinished = $messageNum;
 
                     // Disconnect from server so message is deleted now
                     $this->resetConnection();
                 } else {
-                    $memory_protection = false;
-                    $e                 = new \RuntimeException("Could not save email backup file to {$raw_message->content_file}");
+                    $memoryProtection = false;
+                    $e                = new \RuntimeException("Could not save email backup file to {$rawMessage->content_file}");
                     SystemErrorHandler::logException($e, false);
                 }
 
-                $this->logger->logInfo('Message source saved to: '.$content_file);
-                $raw_message->content = file_get_contents($content_file);
-                $this->backup_file    = $content_file;
+                $this->logger->logInfo('Message source saved to: '.$contentFile);
+                $rawMessage->content = file_get_contents($contentFile);
+                $this->backupFile    = $contentFile;
             }
 
-            if (!$memory_protection) {
-                $raw_message->content = $this->getStorage()->getProtocol()->retrieve($message_num);
+            if (!$memoryProtection) {
+                $rawMessage->content = $this->getStorage()->getProtocol()->retrieve($messageNum);
             }
         }
         $headers = null;
 
-        $this->logger->log(sprintf('Message size: %s bytes', $message_size), 'debug');
+        $this->logger->log(sprintf('Message size: %s bytes', $messageSize), 'debug');
 
-        if ($raw_message->uid) {
-            $this->logger->log(sprintf('Message UID: %s', $raw_message->uid), 'debug');
+        if ($rawMessage->uid) {
+            $this->logger->log(sprintf('Message UID: %s', $rawMessage->uid), 'debug');
         }
 
         $EOL = "\n";
-        if (strpos($raw_message->content, $EOL.$EOL)) {
-            list($headers) = explode($EOL.$EOL, $raw_message->content, 2);
-        } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers) = explode("\r\n\r\n", $raw_message->content, 2);
-        } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers) = explode("\n\n", $raw_message->content, 2);
+        if (strpos($rawMessage->content, $EOL.$EOL)) {
+            list($headers) = explode($EOL.$EOL, $rawMessage->content, 2);
+        } elseif ($EOL != "\r\n" && strpos($rawMessage->content, "\r\n\r\n")) {
+            list($headers) = explode("\r\n\r\n", $rawMessage->content, 2);
+        } elseif ($EOL != "\n" && strpos($rawMessage->content, "\n\n")) {
+            list($headers) = explode("\n\n", $rawMessage->content, 2);
         } else {
-            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $rawMessage->content, 2);
         }
 
-        $raw_message->headers = $headers;
+        $rawMessage->headers = $headers;
 
-        if (!$raw_message->size) {
-            $raw_message->size = strlen($raw_message->content);
+        if (!$rawMessage->size) {
+            $rawMessage->size = strlen($rawMessage->content);
         }
 
-        if ($this->max_size && $raw_message->size > $this->max_size) {
-            $raw_message->too_big = true;
+        if ($this->maxSize && $rawMessage->size > $this->maxSize) {
+            $rawMessage->too_big = true;
             $this->logger->log('Setting too_big flag', 'debug');
         }
 
-        $this->logger->log(sprintf('Got message %d %s. Took %0.2f seconds.', $message_num, $message_id, microtime(true) - $start_time), 'debug');
+        $this->logger->log(sprintf('Got message %d %s. Took %0.2f seconds.', $messageNum, $messageId, microtime(true) - $startTime), 'debug');
 
-        return $raw_message;
+        return $rawMessage;
     }
 
     /**
@@ -400,12 +402,12 @@ class Pop3 extends AbstractFetcher
      */
     protected function _doneRead($id)
     {
-        if ($this->backup_file) {
-            unlink($this->backup_file);
-            $this->backup_file = null;
+        if ($this->backupFile) {
+            unlink($this->backupFile);
+            $this->backupFile = null;
         }
 
-        if ($this->done_read_finished !== null && $this->done_read_finished == $id) {
+        if ($this->doneReadFinished !== null && $this->doneReadFinished == $id) {
             return;
         }
 

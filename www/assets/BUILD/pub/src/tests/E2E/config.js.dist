@@ -1,5 +1,5 @@
 const config = {
-  baseUrl: 'http://dp.lo/new-agent',
+  baseUrl: 'http://dp.lo',
   users: {
     admin: {
       email: 'admin@dp.lo',

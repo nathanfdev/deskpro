@@ -287,7 +287,6 @@ class ActionsFactory
                 break;
 
             case 'set_user_email_template_newticket':
-            case 'set_user_email_template_newticket_agent':
             case 'set_user_email_template_newticket_validate':
             case 'set_agent_email_template_newticket':
             case 'set_user_email_template_newticket_agent':

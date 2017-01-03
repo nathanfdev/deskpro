@@ -6672,6 +6672,21 @@ ul.attachment-list {
 	li.with-icon-filetype-js { background-image: url(../../images/filetypes/page_white_world.png); }
 	li.with-icon-filetype-css { background-image: url(../../images/filetypes/page_white_world.png); }
 }
+ul.encryption {
+	margin: 13px 6px 6px 6px;
+	background-color: #ECEEF0;
+	border: 1px solid #D7D9DB;
+	.rounded(4px);
+	padding: 8px;
+	&.valid {
+		background-color: #deffdc;
+		border-color: #81db76;
+	}
+	&.invalid {
+		background-color: #fcc7cf;
+		border-color: #db7988;
+	}
+}
 
 i.dp-icon-filetype {
 	display: block;

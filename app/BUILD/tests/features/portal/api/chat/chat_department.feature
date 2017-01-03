@@ -9,11 +9,11 @@ Feature: Widget Chat
     And a user with "user@deskpro.dev" email exists
     And I have guest portal api session with code "AAAAAAAAAAAAAAA"
     And only the following "Department" records exist:
-      | #   | title   | is_chat_enabled | parent |
-      | d1  | Dep1    | 1               |        |
-      | cd1 | SubDep1 | 1               | {d1}   |
-      | cd2 | SubDep2 | 1               | {d1}   |
-      | d2  | Dep2    | 1               |        |
+      | #   | title   | is_chat_enabled | parent | brands           |
+      | d1  | Dep1    | 1               |        | [{defaultBrand}] |
+      | cd1 | SubDep1 | 1               | {d1}   | [{defaultBrand}] |
+      | cd2 | SubDep2 | 1               | {d1}   | [{defaultBrand}] |
+      | d2  | Dep2    | 1               |        | [{defaultBrand}] |
     And I grant the "{d1}" department permission of chat app for usergroup everyone
     And I grant the "{cd1}" department permission of chat app for usergroup everyone
     And I grant the "{cd2}" department permission of chat app for usergroup everyone
@@ -31,7 +31,6 @@ Feature: Widget Chat
       | chat_department | {d1}  |
     Then the response status code should be 400
     And the response should be in JSON
-    And print last JSON response
     And the JSON node "fields.chat_department.errors[0].code" should be equal to "not_assignable_department"
 
   Scenario: Check bad department

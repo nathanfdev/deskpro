@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use JMS\Serializer\Serializer;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class WidgetLoader.
@@ -68,14 +69,15 @@ class WidgetLoader
     }
 
     /**
-     * @param Brand $brand
-     * @param bool  $withOptions
+     * @param Brand   $brand
+     * @param Request $request
+     * @param bool    $withOptions
      *
      * @return string
      */
-    public function getWidgetCode(Brand $brand, $withOptions = false)
+    public function getWidgetCode(Brand $brand, Request $request, $withOptions = false)
     {
-        $urlSettings = $this->settingsResolver->getWidgetUrlSettings($brand);
+        $urlSettings = $this->settingsResolver->getWidgetUrlSettings($brand, $request);
 
         $loaderSrc = $urlSettings->getWidgetLoader();
         $loaderSrc = preg_replace('#/assets/.*?/pub/#', '/dyn-assets/pub/', $loaderSrc);

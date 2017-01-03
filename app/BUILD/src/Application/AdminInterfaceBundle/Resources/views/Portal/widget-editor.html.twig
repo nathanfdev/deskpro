@@ -508,8 +508,6 @@
                                     </ul>
                                 </div>
                             </div>
-                        </div>
-                        <div class="content" ng-class="{'active': section == 'ticket_settings'}" data-target="ticket_settings">
                             <div class="field">
                                 <div>
                                     <label>Subject</label>
@@ -722,13 +720,15 @@
                     </div>
                 </div>
 
-                <button class="ui button right" ng-click="Ctrl.reset()">Reset to default</button>
-                <button class="ui button" ng-click="Ctrl.discard()" ng-disabled="!flag_has_changed">Discard changes</button>
-                <button class="ui button" ng-click="Ctrl.updateChatCode()" ng-disabled="!flag_has_changed">Save</button>
-                <div ng-show="flag_has_changed" class="pending_changes">
-                    <p>
-                        Pending changes
-                    </p>
+                <div ng-class="{'widget-editor-save-buttons': true, 'preview-opened': brand_settings.widget.enabled && !show_embed_help}">
+                    <button class="ui button right" ng-click="Ctrl.reset()">Reset to default</button>
+                    <button class="ui button" ng-click="Ctrl.discard()" ng-disabled="!flag_has_changed">Discard changes</button>
+                    <button class="ui button" ng-click="Ctrl.updateChatCode()" ng-disabled="!flag_has_changed">Save</button>
+                    <div ng-show="flag_has_changed" class="pending_changes">
+                        <p>
+                            Pending changes
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

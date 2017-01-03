@@ -236,6 +236,14 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('region', $region);
     }
 
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

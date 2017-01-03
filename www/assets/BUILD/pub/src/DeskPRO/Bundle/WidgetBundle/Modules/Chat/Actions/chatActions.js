@@ -27,15 +27,20 @@ export const setChatId = createAction('WIDGET_CHAT_SET_ID');
 export const unsetChatId = createAction(
   'WIDGET_CHAT_UNSET_ID',
   () => {
-    localStorage.removeItem('dpWidget.chat.partial');
-    localStorage.removeItem('dpWidget.chat.lastAgentId');
+    if (storageAvailable('localStorage')) {
+      localStorage.removeItem('dpWidget.chat.partial');
+      localStorage.removeItem('dpWidget.chat.lastAgentId');
+    }
   }
 );
 
 export const setLastAgentId = createAction(
   'WIDGET_CHAT_SET_LAST_AGENT',
   (lastAgentId) => {
-    localStorage.setItem('dpWidget.chat.lastAgentId', lastAgentId);
+    if (storageAvailable('localStorage')) {
+      localStorage.setItem('dpWidget.chat.lastAgentId', lastAgentId);
+    }
+
     return lastAgentId;
   }
 );
@@ -111,7 +116,10 @@ export const createChat = createAction(
       const chatId = data.id;
 
       if (chatId) {
-        localStorage.removeItem('dpWidget.chat.lastAgentId');
+        if (storageAvailable('localStorage')) {
+          localStorage.removeItem('dpWidget.chat.lastAgentId');
+        }
+
         dispatch(setChatId(chatId));
       }
     })
@@ -326,6 +334,11 @@ export const sendChatMessage = createAction(
       params.message = linkifyHtml(params.message);
       params.message = params.message.replace(/(&nbsp;|\s)+$/g, '');
       params.message = params.message.replace(/^(&nbsp;|\s)+/g, '');
+    }
+
+    // don't send empty messages
+    if (!striptags(params.message) && (!params.attachments || !params.attachments.size)) {
+      return null;
     }
 
     // Add optimistic message

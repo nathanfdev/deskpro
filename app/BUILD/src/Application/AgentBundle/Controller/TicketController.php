@@ -1979,7 +1979,7 @@ class TicketController extends AbstractController
     // ajax-save-actions
     //###########################################################################
 
-    public function ajaxSaveActionsAction($ticket_id)
+    public function ajaxSaveActionsAction($ticket_id, Request $request)
     {
         $ticket = $this->getTicketOr404($ticket_id, 'modify');
 
@@ -2066,7 +2066,10 @@ class TicketController extends AbstractController
                 } elseif ($ticket->status == 'hidden' && count($actions) == 2 && isset($actions['status']) && isset($actions['hidden_status'])) {
                     // skip validation just restoring a deleted ticket, validation will apply after
                 } else {
-                    if (!$validator->isValid($newticket)) {
+                    $params     = $request->request;
+                    $noValidate = array_intersect(array_keys($params->get('actions') ?: []), ['agent_team_id', 'agent_id']) || $params->has('set_agent_part_ids');
+
+                    if (!$noValidate && !$validator->isValid($newticket)) {
                         $free   = [];
                         $fields = [];
                         foreach ($validator->getErrorsInfo() as $info) {
@@ -3784,7 +3787,7 @@ class TicketController extends AbstractController
                 $message = $this->em->getRepository(TicketMessage::class)->find($message_id);
 
                 if ($message->email_source) {
-                    $r = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+                    $r = $this->getContainer()->getEmailEzcReaderFactory()->create();
                     $r->setRawSource($message->email_source->raw_source);
                     $body_html = $r->getBodyHtml() ? $r->getBodyHtml()->getBodyUtf8() : null;
                     $body_text = $r->getBodyText() ? $r->getBodyText()->getBodyUtf8() : null;

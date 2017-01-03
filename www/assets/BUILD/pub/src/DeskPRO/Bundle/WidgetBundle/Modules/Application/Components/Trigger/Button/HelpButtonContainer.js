@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { HelpButton } from './HelpButton';
 import { OnlineAgentsPopup } from '../Popups/OnlineAgentsPopup';
 import { AgentMessagePopupContainer } from '../Popups/AgentMessage/AgentMessagePopupContainer';
@@ -98,18 +99,22 @@ export default class HelpButtonContainer extends React.Component {
 
   onClick = () => {
     this.props.dispatch(reopenWidget());
-    delete sessionStorage['dpWidget.dpWindow.minimized'];
+    if (storageAvailable('sessionStorage')) {
+      delete sessionStorage['dpWidget.dpWindow.minimized'];
+    }
   };
 
   onClosePopup = () => {
     this.props.dispatch(closeTriggerPopup());
-    sessionStorage['dpWidget.dpWindow.popupShown'] = 'none';
+    if (storageAvailable('sessionStorage')) {
+      sessionStorage['dpWidget.dpWindow.popupShown'] = 'none';
+    }
   };
 
   checkRenderPopup() {
     const { widgetOpened, triggerPopupOpened, agentsCount, hasChat, proactiveChat, liveDemo, dispatch } = this.props;
     const storageKey = 'dpWidget.dpWindow.popupShown';
-    const notClosedPopup = !(storageKey in sessionStorage) || sessionStorage[storageKey] !== 'none';
+    const notClosedPopup = !storageAvailable('sessionStorage') || !(storageKey in sessionStorage) || sessionStorage[storageKey] !== 'none';
 
     if (!widgetOpened && hasChat && proactiveChat && (liveDemo || (notClosedPopup && agentsCount > 0))) {
       if (!triggerPopupOpened) {

@@ -33,9 +33,9 @@
 
     <title>{{ phrase('adm.general.deskpro_admin_interface') }}</title>
 
-    <!--[if lte IE 8]>
+    <!--[if lt IE 9]>
     <script type="text/javascript">
-        window.location = '/{{ path('user')|ltrim('/') }}index.php?_sys=message&ie8_admin';
+        window.location = '/{{ path('agent_min_ie_version')|ltrim('/') }}';
     </script>
     <![endif]-->
     <script type="text/javascript">
@@ -225,6 +225,12 @@
                         {{ nav.list_subitem('Error Logs', ng_href('server.error_logs'), 'server.error_logs', 'fa-exclamation') }}
                         {{ nav.list_subitem('Incidents', ng_href('server.incidents'), 'server.incidents', 'fa-exclamation') }}
                     {{ nav.list_item_group_end() }}
+                {% endif %}
+
+                {% if app.user.can_billing %}
+                    <div class="show-in-bare-page">
+                        {{ nav.list_item('Licensing and Billing', ng_href('license'), 'license', 'fa-dollar') }}
+                    </div>
                 {% endif %}
 
                 {{ nav.list_end() }}

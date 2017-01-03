@@ -100,6 +100,18 @@ class WidgetBrandChatPopupSettings
     }
 
     /**
+     * @param int $languageId
+     *
+     * @return WidgetBrandChatPopupTranslation|null
+     */
+    public function getTranslation($languageId)
+    {
+        return $this->translations->filter(function (WidgetBrandChatPopupTranslation $translation) use ($languageId) {
+            return $translation->getLanguage() === $languageId;
+        })->first();
+    }
+
+    /**
      * @return string
      */
     public function getStyle()

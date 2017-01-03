@@ -11,16 +11,18 @@ define [
     #
     ###
 
-    getFormFromModel: (dep, depPerms, agents, agentgroups, usergroups) ->
+    getFormFromModel: (dep, depPerms, agents, brands, agentgroups, usergroups) ->
       form = {
         title: '',
         user_title: '',
         parent_id: '0',
-        enable_user_title: false
+        enable_user_title: false,
+        brands: [],
       }
 
       if dep.id
         form.title = dep.title
+        form.brands = dep.brands
 
         if not Util.isBlank(dep.user_title)
           form.user_title = dep.user_title
@@ -28,6 +30,9 @@ define [
 
         if not Util.isBlank(dep.parent_id)
           form.parent_id = dep.parent_id + ""
+      else
+        for brand in brands
+          form.brands.push(brand.id)
 
       matrix = new DepAgentPermMatrix()
       for group in agentgroups
@@ -63,6 +68,7 @@ define [
       depData.parent          = formModel.parent_id || "0"
       depData.move_tickets_to = 'self'
       depData.avatar          = formModel.avatar
+      depData.brands          = formModel.brands
 
       if Util.isBlank(depData.parent)
         depData.parent = null

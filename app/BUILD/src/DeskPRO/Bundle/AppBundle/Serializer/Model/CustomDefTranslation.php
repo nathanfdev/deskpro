@@ -26,26 +26,50 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\AgentBundle\Controller;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
-use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use Application\DeskPRO\Entity\Language;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class VoiceController.
+ * Class CustomDefTranslation.
  */
-class VoiceController extends AbstractController
+class CustomDefTranslation
 {
     /**
-     * @param VoicePhoneCall $phoneCall
-     * @param string         $callSid
+     * Language.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @var int
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Language>")
      */
-    public function voiceInProgressAction(VoicePhoneCall $phoneCall, $callSid)
+    private $language;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $title;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $description;
+
+    /**
+     * Constructor.
+     *
+     * @param string   $title
+     * @param string   $description
+     * @param Language $language
+     */
+    public function __construct($title, $description, Language $language)
     {
-        return $this->render('AgentBundle:Voice:voice-in-progress.html.twig', [
-            'phone_call' => $phoneCall,
-            'call_sid'   => $callSid,
-        ]);
+        $this->title       = $title;
+        $this->description = $description;
+        $this->language    = $language;
     }
 }

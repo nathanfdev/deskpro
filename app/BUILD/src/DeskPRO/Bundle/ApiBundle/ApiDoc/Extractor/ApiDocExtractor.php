@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Component\Util\ControllerUtils;
 use Nelmio\ApiDocBundle\Extractor\ApiDocExtractor as BaseApiDocExtractor;
 use Symfony\Component\Routing\Route;
@@ -56,12 +57,39 @@ class ApiDocExtractor extends BaseApiDocExtractor
      */
     public function getRoutes()
     {
-        return array_filter($this->router->getRouteCollection()->all(), function (Route $r) {
+        $features          = $this->container->get('deskpro.feature_flags');
+        $annotationsReader = $this->container->get('annotation_reader');
+
+        return array_filter($this->router->getRouteCollection()->all(), function (Route $r) use ($annotationsReader, $features) {
             $ctrl = $r->getDefault('_controller');
             $action = $ctrl ? ControllerUtils::cleanAction($ctrl, true) : false;
             $reflection = ControllerUtils::extractControllerReflection($r);
 
-            return $action && $reflection && $this->isExposedAction($action, $reflection);
+            if (!$action || !$reflection) {
+                return false;
+            }
+
+            // check feature annotation
+            $method = explode('::', $ctrl);
+            if (isset($method[1])) {
+                $method = $reflection->getMethod($method[1]);
+
+                $classAnnotation = $annotationsReader->getClassAnnotation($reflection, Feature::class);
+                $methodAnnotation = $annotationsReader->getMethodAnnotation($method, Feature::class);
+
+                /** @var Feature $annotation */
+                $annotation = $methodAnnotation ?: $classAnnotation;
+                if ($annotation && !$features->hasFeature($annotation->getName())) {
+                    return false;
+                }
+            }
+
+            // check exposed
+            if (!$this->isExposedAction($action, $reflection)) {
+                return false;
+            }
+
+            return true;
         });
     }
 

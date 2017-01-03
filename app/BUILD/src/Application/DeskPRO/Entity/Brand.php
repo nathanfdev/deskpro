@@ -187,6 +187,26 @@ class Brand extends DomainObject
     }
 
     /**
+     * @return ArrayCollection|Department[]
+     */
+    public function getTicketDepartments()
+    {
+        return $this->departments->filter(function (Department $department) {
+            return $department->isTicketsEnabled();
+        });
+    }
+
+    /**
+     * @return ArrayCollection|Department[]
+     */
+    public function getChatDepartments()
+    {
+        return $this->departments->filter(function (Department $department) {
+            return $department->isChatEnabled();
+        });
+    }
+
+    /**
      * @param Department $department
      *
      * @return $this
@@ -214,13 +234,13 @@ class Brand extends DomainObject
     }
 
     /**
-     * @param Department $searchDepartment
+     * @param Department $department
      *
      * @return bool
      */
-    public function hasDepartment(Department $searchDepartment)
+    public function hasDepartment(Department $department)
     {
-        return $this->departments->contains($searchDepartment);
+        return $this->departments->contains($department);
     }
 
     public function __toString()

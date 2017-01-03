@@ -42,7 +42,6 @@ Feature: /organizations endpoint
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.email_domains.fields.email_domains_0.errors[0].code" should be equal to "invalid_data_type"
-    And the JSON node "errors.fields.email_domains.fields.email_domains_0.errors[0].message" should be equal to "This data type is not is data type that was expected."
 
   Scenario: I try to add a new organization with duplicate email domains
     When I send a POST request to "/api/v2/organizations" with body:

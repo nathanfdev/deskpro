@@ -198,6 +198,8 @@ class ChatController extends AbstractApiController
             ])
         ;
 
+        $this->dispatch(UserChatEvent::POLLING, new UserChatEvent($conversation));
+
         return View::create([
             'chat_info'    => $this->wrap($conversation),
             'new_messages' => $this->wrap($qb->getQuery()->getResult()),
@@ -227,7 +229,7 @@ class ChatController extends AbstractApiController
 
         // Add message to chat conversation
         $content = $form->get('message')->getData();
-        if ($content) {
+        if (is_string($content) && strip_tags($content)) {
             $chatMessage = UserChatMessages::createUserTextMessage($conversation, $content);
 
             $conversation->addMessage($chatMessage);

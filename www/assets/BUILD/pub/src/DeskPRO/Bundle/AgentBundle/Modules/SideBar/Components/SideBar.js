@@ -25,6 +25,9 @@ export class SideBarContainer extends SeparateComponent {
     this.state = {
       sectionsBadges: []
     };
+  }
+
+  componentWillMount = () => {
     window.document.addEventListener('dpUpdateSideBarBadge', (e) => {
       const sectionsBadges = this.state.sectionsBadges;
       if (e.detail.count > 0) {
@@ -55,20 +58,18 @@ export class SideBarContainer extends SeparateComponent {
         }
       }
     });
-    window.document.addEventListener('dpChangeSection', (e) => {
-      this.changeSection(`menu_${e.detail.section}`);
+    window.document.addEventListener('dpChangeSection', () => {
+      this.changeSection();
     });
-  }
+    window.document.addEventListener('dpHashChange', (e) => {
+      SideBarContainer.closeIframes();
+      setTimeout(() => {
+        window.DeskPRO_Window.loadHashPath(e.detail.hash);
+      }, 5);
+    });
 
-  componentWillMount = () => {
-    if (window.DP_FRAME_OVERLAYS) {
-      if (window.DP_FRAME_OVERLAYS.reports && window.DP_FRAME_OVERLAYS.reports.opened) {
-        this.changeSection('menu_reports');
-      }
-      if (window.DP_FRAME_OVERLAYS.admin && window.DP_FRAME_OVERLAYS.admin.opened) {
-        this.changeSection('menu_admin');
-      }
-    }
+    // set current section on mount
+    this.changeSection();
   };
 
   static getType() {
@@ -142,8 +143,23 @@ export class SideBarContainer extends SeparateComponent {
     window.DP_FRAME_OVERLAYS.admin.open('/license');
   };
 
-  changeSection = (section) => {
-    this.props.dispatch(actions.changeSection({ section }));
+  changeSection = () => {
+    const { dispatch } = this.props;
+    const reportsFrame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS.reports;
+    const adminFrame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS.admin;
+
+    if (reportsFrame && reportsFrame.opened) {
+      dispatch(actions.changeSection({ section: 'menu_reports' }));
+    } else if (adminFrame && adminFrame.opened) {
+      dispatch(actions.changeSection({ section: 'menu_admin' }));
+    } else {
+      const section = window.DeskPRO_Window.getOpenSection();
+      if (section && section.section_id) {
+        const sectionId = section.section_id.replace(/_section/, '');
+
+        dispatch(actions.changeSection({ section: `menu_${sectionId}` }));
+      }
+    }
   };
 
   resumeOnboarding = () => {

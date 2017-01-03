@@ -37,8 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Application\DeskPRO\Twig\Extension\TemplatingExtension;
-use GuzzleHttp\Client;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use GuzzleHttp\RequestOptions;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
@@ -63,7 +62,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
     {
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('url');
-        $options->addValidNames('username', 'password', 'method', 'custom_data', 'headers', 'timeout', 'payload_type');
+        $options->addValidNames('username', 'password', 'method', 'custom_data', 'headers', 'timeout', 'payload_type', 'disable_cert');
 
         return $options;
     }
@@ -73,17 +72,17 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $timeout = intval($this->getActionOption('timeout')) ?: 20;
+        $timeout     = intval($this->getActionOption('timeout')) ?: 20;
+        $disableCert = (bool) $this->getActionOption('disable_cert');
 
-        /** @var TemplatingExtension $renderer */
-        $renderer    = $this->getContainer()->getTwig()->getExtension('deskpro_templating');
+        $renderer    = $this->getContainer()->get('twig_template_renderer');
         $url         = $renderer->renderTicketTemplate($this->getActionOption('url'), $ticket, $context);
         $headers     = $renderer->renderTicketTemplate($this->getActionOption('headers'), $ticket, $context);
         $custom_data = $renderer->renderTicketTemplate($this->getActionOption('custom_data') ?: '', $ticket, $context);
         $username    = $renderer->renderTicketTemplate($this->getActionOption('username') ?: '', $ticket, $context);
         $password    = $renderer->renderTicketTemplate($this->getActionOption('password') ?: '', $ticket, $context);
 
-        $http_client = new Client(['timeout' => $timeout]);
+        $http_client = new HttpClient(['timeout' => $timeout]);
         $method      = strtoupper($this->getActionOption('method')) ?: 'POST';
         $options     = [];
 
@@ -109,6 +108,9 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
 
         if ($username || $password) {
             $options[RequestOptions::AUTH] = [$username, $password];
+        }
+        if ($disableCert) {
+            $options[RequestOptions::VERIFY] = false;
         }
 
         try {

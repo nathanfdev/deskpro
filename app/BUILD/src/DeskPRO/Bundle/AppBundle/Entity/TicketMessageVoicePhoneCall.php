@@ -43,9 +43,12 @@ class TicketMessageVoicePhoneCall extends TicketMessageAttribute
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall")
      * @ORM\JoinColumn(name="phone_call_id", referencedColumnName="id", onDelete="CASCADE")
      *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall>")
+     *
      * @var VoicePhoneCall
      */
-    private $phoneCall;
+    protected $phoneCall;
 
     /**
      * {@inheritdoc}
@@ -65,9 +68,13 @@ class TicketMessageVoicePhoneCall extends TicketMessageAttribute
 
     /**
      * @param VoicePhoneCall $phoneCall
+     *
+     * @return $this
      */
     public function setPhoneCall(VoicePhoneCall $phoneCall)
     {
         $this->setModelField('phoneCall', $phoneCall);
+
+        return $this;
     }
 }

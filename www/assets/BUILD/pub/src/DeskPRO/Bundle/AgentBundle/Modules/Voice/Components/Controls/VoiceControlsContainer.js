@@ -21,9 +21,13 @@ class VoiceControlsContainer extends React.Component {
     agents:         PropTypes.object,
     onlineAgentIds: PropTypes.object,
     connections:    PropTypes.object,
-    callId:         PropTypes.number,
+    ticketId:       PropTypes.number,
     tabRef:         PropTypes.func,
     onEndCall:      PropTypes.func
+  };
+
+  static defaultProps = {
+    onEndCall: () => {}
   };
 
   constructor(props) {
@@ -31,13 +35,23 @@ class VoiceControlsContainer extends React.Component {
     this.state = {
       mute:               false,
       hold:               false,
-      status:             'connecting',
+      status:             null,
       participants:       [],
       addTarget:          null,
       addTargetType:      null,
       transferTarget:     null,
       transferTargetType: null
     };
+  }
+
+  componentWillMount() {
+    const connection = this.getConnection();
+
+    if (connection) {
+      this.setState({
+        status: 'connecting'
+      });
+    }
   }
 
   componentDidMount() {
@@ -54,12 +68,14 @@ class VoiceControlsContainer extends React.Component {
     }
 
     this.interval = setInterval(() => {
-      const status = connection.status();
-      if (status === 'open' && this.state.status !== 'active') {
+      const connectionStatus = connection.status();
+      const { status } = this.state;
+
+      if (connectionStatus === 'open' && status !== 'active') {
         this.setState({
           status: 'connected'
         });
-      } else if (status === 'closed') {
+      } else if (connectionStatus === 'closed' && status !== 'closed') {
         onEndCall();
         this.setState({
           status: 'closed'
@@ -112,8 +128,8 @@ class VoiceControlsContainer extends React.Component {
   };
 
   onExternalSetHold = (event) => {
-    const { callId } = this.props;
-    if (callId !== parseInt(event.call_id, 10)) {
+    const connection = this.getConnection();
+    if (connection.message.CallId !== parseInt(event.call_id, 10)) {
       return;
     }
 
@@ -199,14 +215,15 @@ class VoiceControlsContainer extends React.Component {
   };
 
   onCancelInvite = (target, type) => {
-    const { dispatch, callId } = this.props;
+    const { dispatch } = this.props;
+    const connection = this.getConnection();
 
-    dispatch(cancelInvite(callId, target, type));
+    dispatch(cancelInvite(connection.message.CallId, target, type));
   };
 
   getConnection() {
-    const { connections, callId } = this.props;
-    return connections.filter(connection => parseInt(connection.message.CallId, 10) === parseInt(callId, 10)).first();
+    const { connections, ticketId } = this.props;
+    return connections.filter(connection => parseInt(connection.message.TicketId, 10) === ticketId, 10).first();
   }
 
   isCallActive = () => {
@@ -221,6 +238,11 @@ class VoiceControlsContainer extends React.Component {
   render() {
     const { agents, onlineAgentIds } = this.props;
     const onlineAgents = agents.filter(agent => onlineAgentIds.contains(agent.get('id')));
+    const connection = this.getConnection();
+
+    if (!connection) {
+      return null;
+    }
 
     return (
       <VoiceControls

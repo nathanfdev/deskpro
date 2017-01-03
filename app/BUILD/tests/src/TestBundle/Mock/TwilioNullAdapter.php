@@ -114,7 +114,7 @@ class TwilioNullAdapter extends TwilioAdapter
     /**
      * {@inheritdoc}
      */
-    public function createTwimlApp(VoiceAccount $account, $voiceUrl, $voiceMethod)
+    public function createTwimlApp(VoiceAccount $account, $requestUrl, $voiceMethod, $statusUrl, $statusMethod)
     {
         $payload = [
             'sid'                     => 'sid',
@@ -268,7 +268,7 @@ class TwilioNullAdapter extends TwilioAdapter
     /**
      * {@inheritdoc}
      */
-    public function getPhoneCallParticipants(VoicePhoneCall $phoneCall)
+    public function getActivePhoneCallParticipants(VoicePhoneCall $phoneCall)
     {
         return [];
     }

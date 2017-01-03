@@ -37,7 +37,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
 {
     /**
-     * It's use to handle our super-trouper custom type called "entity"
+     * It's used to handle our super-trouper custom type called "entity"
      * So if it's entity array - then in doc you'll see something like
      * "array of integer ids (EntityName)".
      * In case it's not an array, but entity - then you'll see text like below:

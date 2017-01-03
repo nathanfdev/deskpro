@@ -402,31 +402,43 @@ class PhraseData
             $custom_phrases = [];
         }
 
-        $fn_get_rows = function (CustomDefAbstract $field, $depth = 0) use ($phrase_group, $custom_phrases, $fm, &$fn_get_rows) {
-            $id = $phrase_group.'.'.$field->id.'_title';
+        $fn_get_rows = function (CustomDefAbstract $field, $depth = 0) use ($phrase_group, $custom_phrases, $fm, &$fn_get_rows, $language) {
+            $translatedTitle       = $field->getTitle($language);
+            $translatedDescription = $field->getDescription($language);
 
-            $row = [
-                'id'      => $id,
-                'depth'   => $depth,
-                'type'    => 'field',
-                'type_id' => $field->id,
-                'default' => $field->title,
-                'lang'    => $field->title,
-                'custom'  => isset($custom_phrases[$id]) ? $custom_phrases[$id] : null,
+            $phraseData = [
+                [
+                    'id'           => $phrase_group.'.'.$field->getId().'_title',
+                    'depth'        => $depth,
+                    'type'         => 'field',
+                    'type_id'      => $field->getId(),
+                    'default'      => $field->getRawTitle(),
+                    'lang'         => $translatedTitle, // BC field
+                    'custom'       => $translatedTitle,
+                    'lang_default' => $translatedTitle, // BC field
+                    'set'          => $translatedTitle,
+                ],
+                [
+                    'id'           => $phrase_group.'.'.$field->getId().'_description',
+                    'depth'        => $depth,
+                    'type'         => 'field',
+                    'type_id'      => $field->getId(),
+                    'default'      => $field->getRawDescription(),
+                    'lang'         => $translatedDescription, // BC field
+                    'custom'       => $translatedDescription,
+                    'lang_default' => $translatedDescription, // BC field
+                    'set'          => $translatedDescription,
+                    'title'        => $field->getRawTitle().' - Description',
+                ],
             ];
-
-            $row['lang_default'] = $row['lang'] ?: $row['default'];
-            $row['set']          = $row['custom'] ?: $row['lang_default'];
-
-            $phrase_data = [$row];
 
             if ($children = $fm->getFieldChildren($field)) {
                 foreach ($children as $child_field) {
-                    array_merge($phrase_data, $fn_get_rows($child_field, $depth + 1));
+                    array_merge($phraseData, $fn_get_rows($child_field, $depth + 1));
                 }
             }
 
-            return $phrase_data;
+            return $phraseData;
         };
 
         $phrase_data = [];
@@ -740,13 +752,13 @@ class PhraseData
 
         $parts   = explode('.', $group_id);
         $phrases = [];
-        if (isset(self::$reverseMap[$parts[0]])) {
-            foreach (self::$reverseMap[$parts[0]] as $prefix) {
-                $newParts = $parts;
-                array_shift($newParts);
-                array_unshift($newParts, $prefix);
-                $phrases += $this->phrase_repos->getPhrasesInGroup($language, implode('.', $newParts));
-            }
+        $groups  = isset(self::$reverseMap[$parts[0]]) ? self::$reverseMap[$parts[0]] : [$parts[0]];
+
+        foreach ($groups as $prefix) {
+            $newParts = $parts;
+            array_shift($newParts);
+            array_unshift($newParts, $prefix);
+            $phrases += $this->phrase_repos->getPhrasesInGroup($language, implode('.', $newParts));
         }
 
         return $phrases;

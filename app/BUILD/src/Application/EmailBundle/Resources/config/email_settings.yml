@@ -23,6 +23,10 @@ services:
     factory: [Application\DeskPRO\DependencyInjection\SystemServices\EmailAccountManagerService, create]
     arguments: ["@service_container"]
 
+  email.ezc_reader_factory:
+    class: Application\DeskPRO\EmailGateway\Reader\EzcReaderFactory
+    arguments: ["@email.email_account_manager", "@deskpro.blob_storage", "@deskpro.app_env"]
+
   deskpro.blob_storage:
     class: Application\DeskPRO\BlobStorage\DeskproBlobStorage
     factory: [Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService, create]

@@ -232,6 +232,11 @@ $collection->create('agent_browser_requirements', [
     'controller' => 'AgentBundle:Login:browserRequirements',
 ]);
 
+$collection->create('agent_min_ie_version', [
+    'path'       => '/min-ie-version',
+    'controller' => 'AgentBundle:Login:minIEVersion',
+]);
+
 $collection->create('agent_login', [
     'path'       => '/login',
     'controller' => 'AgentBundle:Login:index',
@@ -2393,12 +2398,6 @@ $collection->create('agent_jira_ticket_issue_unlink', [
 $collection->create('gregwar_captcha.agent.generate_captcha', [
     'path'       => '/generate-captcha/{key}',
     'controller' => 'AgentBundle:Captcha:generate',
-    'methods'    => ['GET'],
-]);
-
-$collection->create('voice_in_progress', [
-    'path'       => '/voice/in-progress/{phoneCall}/{callSid}',
-    'controller' => 'AgentBundle:Voice:voiceInProgress',
     'methods'    => ['GET'],
 ]);
 

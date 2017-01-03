@@ -214,10 +214,10 @@ class Person extends AbstractEntityRepository
             ->select(
                 'p.id',
                 "(CASE
-                    WHEN (p.first_name IS NOT NULL AND p.last_name IS NOT NULL) THEN CONCAT(p.first_name, ' ', p.last_name)
-                    WHEN p.name IS NOT NULL THEN p.name
-                    WHEN p.last_name IS NOT NULL THEN p.last_name
-                    WHEN p.first_name IS NOT NULL THEN p.first_name
+                    WHEN (LENGTH(p.first_name) > 0 AND LENGTH(p.last_name) > 0) THEN CONCAT(p.first_name, ' ', p.last_name)
+                    WHEN LENGTH(p.name) > 0 THEN p.name
+                    WHEN LENGTH(p.last_name) > 0 THEN p.last_name
+                    WHEN LENGTH(p.first_name) > 0 THEN p.first_name
                     ELSE ''
                 END) as name
                 ",

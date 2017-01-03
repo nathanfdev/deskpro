@@ -26,6 +26,8 @@ services:
       - "@security.token_storage"
       - "@portal_permissions_manager"
       - "@portal_mode_storage"
+      - "@url_corrector_factory"
+      - "@language_manager"
       - "@=service('request_stack').getCurrentRequest().getBasePath()"
 
   captcha_settings_resolver:
@@ -93,7 +95,7 @@ services:
 
   twig_template_renderer:
     class: DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer
-    arguments: ["@twig"]
+    arguments: ["@twig", "@brand_aware_settings_resolver"]
 
   pdf_renderer:
     class: DeskPRO\Component\Pdf\mPdfRenderer
@@ -120,3 +122,7 @@ services:
   twilio_adapter:
     class: DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter
     arguments: ["@doctrine.orm.entity_manager"]
+
+  url_corrector_factory:
+    class: DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory
+    arguments: ["@brand_aware_settings_resolver"]

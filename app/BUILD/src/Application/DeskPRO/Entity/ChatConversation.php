@@ -1169,7 +1169,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
         }
 
         if ($change) {
-            $this->_onPropertyChanged('custom_data', null, $this->participants);
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
         }
     }
 
@@ -1413,6 +1413,14 @@ class ChatConversation extends DomainObject implements LabelsOwner
         }
 
         $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = [])

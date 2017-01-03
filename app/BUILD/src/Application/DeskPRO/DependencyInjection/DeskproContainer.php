@@ -558,6 +558,14 @@ class DeskproContainer extends Container
     }
 
     /**
+     * @return \Application\DeskPRO\EmailGateway\Reader\EzcReaderFactory
+     */
+    public function getEmailEzcReaderFactory()
+    {
+        return $this->get('email.ezc_reader_factory');
+    }
+
+    /**
      * @return \Application\DeskPRO\Attachments\AcceptAttachment
      */
     public function getAttachmentAccepter()

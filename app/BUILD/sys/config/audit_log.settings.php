@@ -345,6 +345,8 @@ return [
         AuditListener::UPDATE => [
             'conditions' => [
                 [
+                    'expression'    => 'entity.isAgent() === true',
+                    'variables'     => ['entity', 'changeSet'],
                     'preconditions' => [
                         'custom_data',
                         'password',

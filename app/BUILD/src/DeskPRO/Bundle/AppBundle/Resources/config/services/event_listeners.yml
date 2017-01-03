@@ -85,6 +85,6 @@ services:
 
   url_corrector.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\UrlCorrectorEventListener
-    arguments: ["@deskpro.interface_info", "@brand_stack", "@portal_mode_storage", "@logger"]
+    arguments: ["@deskpro.interface_info", "@brand_stack", "@portal_mode_storage", "@url_corrector_factory", "@logger"]
     tags:
       - { name: kernel.event_subscriber }

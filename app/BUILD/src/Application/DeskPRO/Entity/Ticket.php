@@ -42,7 +42,6 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataTrait;
-use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -627,11 +626,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     protected $stars;
 
     /**
-     * @var VoicePhoneCall[]|ArrayCollection
-     */
-    protected $voicePhoneCalls;
-
-    /**
      * Constructor.
      */
     public function __construct()
@@ -652,7 +646,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->problems         = new ArrayCollection();
         $this->children_tickets = new ArrayCollection();
         $this->stars            = new ArrayCollection();
-        $this->voicePhoneCalls  = new ArrayCollection();
 
         // Default ref (is reset with ref generator)
         $this->ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB');
@@ -4581,14 +4574,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * @return VoicePhoneCall[]|ArrayCollection
-     */
-    public function getVoicePhoneCalls()
-    {
-        return $this->voicePhoneCalls;
-    }
-
-    /**
      * @return array
      */
     public static function getTicketStatuses()
@@ -5300,34 +5285,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                     'inverseJoinColumns' => [
                         [
                             'name'                 => 'problem_id',
-                            'referencedColumnName' => 'id',
-                            'nullable'             => true,
-                            'onDelete'             => 'cascade',
-                        ],
-                    ],
-                    'joinColumns' => [
-                        [
-                            'name'                 => 'ticket_id',
-                            'referencedColumnName' => 'id',
-                            'nullable'             => true,
-                            'onDelete'             => 'cascade',
-                        ],
-                    ],
-                ],
-            ]
-        );
-        $metadata->mapManyToMany(
-            [
-                'fieldName'    => 'voicePhoneCalls',
-                'targetEntity' => VoicePhoneCall::class,
-                'inversedBy'   => 'tickets',
-                'cascade'      => ['persist', 'merge'],
-                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
-                'joinTable'    => [
-                    'name'               => 'voice_tickets',
-                    'inverseJoinColumns' => [
-                        [
-                            'name'                 => 'voice_id',
                             'referencedColumnName' => 'id',
                             'nullable'             => true,
                             'onDelete'             => 'cascade',

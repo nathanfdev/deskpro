@@ -281,7 +281,7 @@ gulp.task('semantic-watch', function () {
 gulp.task('semantic-copy', ['clean'], function () {
   gulp.src('./stylesheets-less/semantic-ui/semantic.css')
     .pipe(postcss([
-      autoprefixer({ browsers: ['last 2 versions'] }),
+      autoprefixer(),
       comments({})
     ]))
     .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
@@ -292,7 +292,7 @@ gulp.task('semantic-copy', ['clean'], function () {
 gulp.task('semantic-copy-prod', ['clean'], function () {
   gulp.src('./stylesheets-less/semantic-ui/semantic.css')
     .pipe(postcss([
-      autoprefixer({ browsers: ['last 2 versions'] }),
+      autoprefixer(),
       comments({}),
       cssnano()
     ]))

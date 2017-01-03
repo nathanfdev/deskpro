@@ -361,6 +361,14 @@ class ChatMessage extends DomainObject
     }
 
     /**
+     * @return bool
+     */
+    public function isHtml()
+    {
+        return $this->is_html;
+    }
+
+    /**
      * @param bool $is_sys
      *
      * @return $this
@@ -528,6 +536,14 @@ class ChatMessage extends DomainObject
         $content = nl2br($content);
 
         return $content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
     }
 
     /**

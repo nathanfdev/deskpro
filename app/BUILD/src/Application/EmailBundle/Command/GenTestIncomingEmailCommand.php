@@ -32,7 +32,6 @@
 
 namespace Application\EmailBundle\Command;
 
-use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\Entity\EmailSource;
 use Faker\Factory as Faker;
 use Orb\Util\Strings;
@@ -98,7 +97,8 @@ class GenTestIncomingEmailCommand extends ContainerAwareCommand
 
         $raw_headers = trim(substr($raw_source, 0, $header_end));
 
-        $reader = new EzcReader();
+        $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
+        $reader->setEmailAccount($account);
         $reader->setRawSource($raw_source);
 
         $source = new EmailSource();

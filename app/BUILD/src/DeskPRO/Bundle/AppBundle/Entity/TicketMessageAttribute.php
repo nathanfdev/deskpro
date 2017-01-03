@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\TicketMessage;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -44,8 +45,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     "voice_phone_call" = "TicketMessageVoicePhoneCall",
  *     "value" = "TicketMessageAttribute"
  * })
- *
- * @JMS\ExclusionPolicy("all")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
+ * @JMS\ExclusionPolicy("All")
  */
 class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
 {
@@ -58,7 +59,7 @@ class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
      *
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\TicketMessage", inversedBy="attributes")
@@ -66,29 +67,39 @@ class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
      *
      * @var TicketMessage
      */
-    private $message;
+    protected $message;
 
     /**
      * @ORM\Column(name="name", type="string", length=250, nullable=false)
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @ORM\Column(type="string", length=5000, nullable=true)
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var int
      */
-    private $value;
+    protected $value;
 
     /**
      * @ORM\Column(type="datetime", name="date_created", nullable=false)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @Assert\NotNull()
      *
      * @var \DateTime
      */
-    private $dateCreated;
+    protected $dateCreated;
 
     /**
      * TicketMessageAttribute constructor.
@@ -97,7 +108,7 @@ class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
      */
     public function __construct($name)
     {
-        $this->name        = $name;
+        $this->setModelField('name', $name);
         $this->dateCreated = new \DateTime();
     }
 
@@ -119,10 +130,14 @@ class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param TicketMessage $message
+     *
+     * @return $this
      */
     public function setMessage($message)
     {
-        $this->message = $message;
+        $this->setModelField('message', $message);
+
+        return $this;
     }
 
     /**
@@ -134,11 +149,23 @@ class TicketMessageAttribute implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        $this->setModelField('value', $value);
+
+        return $this;
     }
 
     /**

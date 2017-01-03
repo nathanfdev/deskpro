@@ -339,8 +339,11 @@ define [
           ticket_works:     '/ticket_works'
           ticket_fields:    '/ticket_fields'
           ticket_slas:      '/ticket_slas'
+          ticket_labels:    '/labels/definitions/tickets'
           user_fields:      '/user_fields'
+          user_labels:      '/labels/definitions/people'
           org_fields:       '/org_fields'
+          org_labels:       '/labels/definitions/organizations'
           ticket_accounts:  '/email_accounts'
           usergroups:       '/user_groups'
           organizations:    '/organizations?per_page=250'
@@ -356,8 +359,11 @@ define [
           options_data['ticket_works']      = data.ticket_works.workflows
           options_data['ticket_fields']     = data.ticket_fields?.custom_fields
           options_data['ticket_slas']       = data.ticket_slas
+          options_data['ticket_labels']     = data.ticket_labels
           options_data['org_fields']        = data.org_fields?.custom_fields
+          options_data['org_labels']        = data.org_labels
           options_data['user_fields']       = data.user_fields?.custom_fields
+          options_data['user_labels']       = data.user_labels
           options_data['ticket_prods']      = data.ticket_prods?.products
           options_data['ticket_accounts']   = data.ticket_accounts.email_accounts
           options_data['usergroups']        = data.usergroups.groups
@@ -391,8 +397,11 @@ define [
       options.propName = 'labels'
       options.type_title = 'Labels'
       options.tags = true
+      options.options = []
+      @options_data.ticket_labels.map (def) ->
+        options.options.push {title: def.label, value: def.label}
       options.operators = ['contains', 'notcontains']
-      def = @getStandardInput(options)
+      def = @getStandardSelect(options)
       return def
 
     getFilterUrgency: (options = {}) ->
@@ -656,8 +665,11 @@ define [
 
     getFilterUserLabels: (options = {}) ->
       options.propName = 'labels'
+      options.options = []
+      @options_data.user_labels.map (def) ->
+        options.options.push {title: def.label, value: def.label}
       options.operators = ['contains', 'notcontains']
-      def = @getStandardInput(options)
+      def = @getStandardSelect(options)
       return def
 
     getFilterUserGroups: (options = {}) ->
@@ -731,8 +743,11 @@ define [
 
     getFilterOrgLabels: (options = {}) ->
       options.propName = 'labels'
+      options.options = []
+      @options_data.org_labels.map (def) ->
+        options.options.push {title: def.label, value: def.label}
       options.operators = ['contains', 'notcontains']
-      def = @getStandardInput(options)
+      def = @getStandardSelect(options)
       return def
 
     getFilterOrgContactPhone: (options = {}) ->

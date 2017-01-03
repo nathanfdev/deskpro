@@ -1,6 +1,8 @@
+{% set isReactComponent = message.getAttribute('voice_phone_call') %}
+
 <article
-	class="content-message message message-{{message.id}} {% if not message.is_agent_note %}public-message{% endif %} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %} {% if ticket_message_attachments[message.id] %}with-attach{% endif %} {% if all_feedback[message.id] %}with-feedback{% endif %}"
-	data-message-id="{{message.id}}"
+	class="content-message message message-{{message.id}} {% if not message.is_agent_note %}public-message{% endif %} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %} {% if ticket_message_attachments[message.id] %}with-attach{% endif %} {% if all_feedback[message.id] %}with-feedback{% endif %} {% if isReactComponent %}is-react-component{% endif %}"
+	data-message-id="{{message.id}}" {% if isReactComponent %}data-message="{{ message|serialize(['voice_phone_call']) }}"{% endif %}
 >
 	{% if message.is_agent_note %}<div class="note-tag" title="Agent note: This message will NOT appear to end-users."><i>Note</i></div>{% endif %}
 	<div class="avatar"><img
@@ -216,6 +218,32 @@
 				{% endfor %}
 			</ul>
 		{%endif%}
+		{% set attribute = "signed" %}
+		{%  if message.getAttribute("signed") %}
+			<ul class="encryption {% if message.getAttribute("signed").getValue() == 1 %}valid{% else %}invalid{% endif %}">
+				<li>
+                    {% if message.getAttribute("signed").getValue() == 1 %}
+						<i class="icon-shield"></i> {{ phrase('agent.tickets.signature_valid') }}
+					{% else %}
+						<i class="icon-exclamation text-danger"></i> {{ phrase('agent.tickets.signature_invalid') }}
+					{% endif %}
+				</li>
+			</ul>
+		{% endif %}
+        {%  if message.getAttribute("decrypted") %}
+			<ul class="encryption valid">
+				<li>
+					<i class="icon-lock"></i> {{ phrase('agent.tickets.decrypted') }}
+				</li>
+			</ul>
+        {% endif %}
+        {%  if message.getAttribute("decryption_error") %}
+			<ul class="encryption invalid">
+				<li>
+					<i class="icon-exclamation"></i> {{ phrase('agent.tickets.decryption_error') }}
+				</li>
+			</ul>
+        {% endif %}
 		{% if ticket_fwd_logs[message.id] %}
 			<ul class="attachment-list fwd-list">
 				{% for log in ticket_fwd_logs[message.id] %}

@@ -4,7 +4,7 @@ import $ from 'jquery';
 import factory from 'iframe-resizer';
 
 const runEmbed = (helpdeskUrl, options, containerEl) => {
-  const { language = 'en', department = 0, hideDepartment = 0 } = options;
+  const { language = 'en', department = 0 } = options;
 
   const node = document.createElement('iframe');
   node.frameborder = 0;
@@ -33,7 +33,7 @@ const runEmbed = (helpdeskUrl, options, containerEl) => {
     let src = `${helpdeskUrl}/focus-win${langSeg}/new-ticket`;
     if (department) {
       src += `?department_id=${department}`;
-      if (hideDepartment) {
+      if (options.hide_department) {
         src += '&hide_department=1';
       }
     }

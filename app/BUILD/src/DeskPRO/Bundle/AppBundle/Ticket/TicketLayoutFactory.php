@@ -150,9 +150,10 @@ class TicketLayoutFactory
     public function verifyRequiredFields(Layout $layout, $forApi = false)
     {
         $requiredFields = [
-            FormFields::DEPARTMENT => 0,
-            FormFields::SUBJECT    => 0,
-            FormFields::MESSAGE    => 0,
+            FormFields::DEPARTMENT  => 0,
+            FormFields::SUBJECT     => 0,
+            FormFields::MESSAGE     => 0,
+            FormFields::ATTACHMENTS => 0,
         ];
 
         /** @var \Application\DeskPRO\TicketLayout\LayoutField $layout_field */

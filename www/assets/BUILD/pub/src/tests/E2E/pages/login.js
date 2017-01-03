@@ -1,17 +1,17 @@
-import { config } from '../config.js';
-import { url } from '../helpers.js';
+import { config } from '../config';
+import { url } from '../helpers';
 
 const commands = {
-  login: function(login, password) {
+  login(login, password) {
     return this
       .waitForElementVisible('@loginInput')
       .setValue('@loginInput', login)
       .setValue('@passwordInput', password)
       .click('@loginButton')
-      .waitForElementVisible('@loadingIndicator')
-    ;
+      .waitForElementNotPresent('@loginButton')
+      ;
   },
-  loginAsAdmin: function() {
+  loginAsAdmin() {
     this.login(
       config.users.admin.email,
       config.users.admin.password
@@ -20,12 +20,11 @@ const commands = {
 };
 
 module.exports = {
-  url: url('/login'),
+  url:      url('/en/login'),
   commands: [commands],
   elements: {
-    loginInput:       {selector: 'input[type=text]'},
-    passwordInput:    {selector: 'input[type=password]'},
-    loginButton:      {selector: 'input[type=submit]'},
-    loadingIndicator: {selector: 'div.deskpro-loading'},
+    loginInput:    { selector: 'form#login input[name="username"]' },
+    passwordInput: { selector: 'form#login input[type="password"]' },
+    loginButton:   { selector: 'form#login button.button' }
   }
 };

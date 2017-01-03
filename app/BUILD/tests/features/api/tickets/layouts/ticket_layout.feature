@@ -68,13 +68,14 @@ Feature: /ticket_layouts endpoint
       | cc           |
 
     When I send a GET request to "/api/v2/ticket_layouts/agent"
-    Then the JSON node "[0].fields" should have 6 elements
+    Then the JSON node "[0].fields" should have 7 elements
     And the JSON node "[0].fields[0].field_id" should be equal to "person"
     And the JSON node "[0].fields[1].field_id" should be equal to "department"
     And the JSON node "[0].fields[2].field_id" should be equal to "cc"
     And the JSON node "[0].fields[3].field_id" should be equal to "labels"
     And the JSON node "[0].fields[4].field_id" should be equal to "subject"
     And the JSON node "[0].fields[5].field_id" should be equal to "message"
+    And the JSON node "[0].fields[6].field_id" should be equal to "attachments"
 
   Scenario: I check user layout field order
     Given the only default ticket layout exists with fields:
@@ -82,13 +83,14 @@ Feature: /ticket_layouts endpoint
       | cc          |
 
     When I send a GET request to "/api/v2/ticket_layouts/user"
-    Then the JSON node "[0].fields" should have 6 elements
+    Then the JSON node "[0].fields" should have 7 elements
     And the JSON node "[0].fields[0].field_id" should be equal to "cc"
     And the JSON node "[0].fields[1].field_id" should be equal to "department"
     And the JSON node "[0].fields[2].field_id" should be equal to "subject"
     And the JSON node "[0].fields[3].field_id" should be equal to "message"
-    And the JSON node "[0].fields[4].field_id" should be equal to "person"
-    And the JSON node "[0].fields[5].field_id" should be equal to "labels"
+    And the JSON node "[0].fields[4].field_id" should be equal to "attachments"
+    And the JSON node "[0].fields[5].field_id" should be equal to "person"
+    And the JSON node "[0].fields[6].field_id" should be equal to "labels"
 
   Scenario Outline: I check custom department layout
     Given the ticket layout exists for "<department>" department with fields:
@@ -141,10 +143,10 @@ Feature: /ticket_layouts endpoint
 
     Examples:
       | context | enabled | expected_count |
-      | agent   | 0       | 5              |
-      | agent   | 1       | 9              |
-      | user    | 0       | 5              |
-      | user    | 1       | 9              |
+      | agent   | 0       | 6              |
+      | agent   | 1       | 10             |
+      | user    | 0       | 6              |
+      | user    | 1       | 10             |
 
   Scenario Outline: I want to see all ticket layouts
     Given the only default ticket layout exists with fields:

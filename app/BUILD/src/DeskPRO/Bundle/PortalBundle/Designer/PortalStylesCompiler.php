@@ -187,10 +187,8 @@ class PortalStylesCompiler
 
         $this->em->persist($asset);
 
-        // we dont delete the blob because it might still be required in old
-        // cached pages. Mark it as temp so it'll be auto-removed in 6 hours
         if ($oldBlob) {
-            $oldBlob->is_temp      = true;
+            $oldBlob->is_temp      = false;
             $oldBlob->date_created = new \DateTime();
             $this->em->persist($oldBlob);
         }

@@ -239,6 +239,20 @@ export const agentAcceptTimeoutSelector = createSelector(
   options => options.get('waiting_timeout') || 120 // 2 minutes
 );
 
+export const chatFormDefaultValuesSelector = createSelector(
+  chatOptionsSelector,
+  options => options.get('default_values')
+);
+
+export const chatEnabledCustomFieldsSelector = createSelector(
+  chatOptionsSelector,
+  options => (
+    options.get('enabled_custom_fields') instanceof Immutable.List
+      ? options.get('enabled_custom_fields').map(id => parseInt(id, 10))
+      : null
+  )
+);
+
 // Ticket options selectors
 export const ticketOptionsSelector = createSelector(
   widgetOptionsSelector,
@@ -271,9 +285,7 @@ export const isTicketDepartmentFieldHidden = createSelector(
   (defaultDepartment, selectDepartmentType) => selectDepartmentType === 'default' && defaultDepartment > 0
 );
 
-export const isTicketSubjectFieldHidden = createSelector(
-  ticketDefaultSubjectSelector,
-  ticketSelectSubjectTypeSelector,
-  (defaultSubject, selectSubjectType) => (selectSubjectType === 'default' && defaultSubject)
-    || selectSubjectType === 'message'
+export const ticketDefaultValuesSelector = createSelector(
+  ticketOptionsSelector,
+  options => options.get('default_values')
 );

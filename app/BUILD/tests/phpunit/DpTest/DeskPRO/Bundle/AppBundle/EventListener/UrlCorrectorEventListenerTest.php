@@ -83,21 +83,6 @@ class UrlCorrectorEventListenerTest extends PortalTestCase
     }
 
     /**
-     * @test
-     */
-    public function focus_window_mode_attr()
-    {
-        $event = $this->createEvent('http://example.com/index.php/focus-win/new-ticket');
-
-        $listener = $this->createListener($event);
-        $listener->onController($event);
-
-        $controller = $event->getController();
-        $this->assertEquals('testController', $controller());
-        $this->assertEquals(['index_segment', 'host'], $this->request->attributes->get('deskpro.url_corrector.corrections'));
-    }
-
-    /**
      * @param string $apiUrl
      *
      * @test
@@ -142,6 +127,7 @@ class UrlCorrectorEventListenerTest extends PortalTestCase
             $this->interfaceInfo,
             $this->getContainer()->get('brand_stack'),
             $portalModeStorage,
+            $this->getContainer()->get('url_corrector_factory'),
             $this->logger
         );
     }

@@ -92,7 +92,7 @@ class ChatPingTimeout extends AbstractJob
         $chat_ids = App::getDb()->fetchAllCol("
             SELECT DISTINCT c.id
             FROM chat_conversations c
-            JOIN chat_conversation_pings AS p ON (p.chat_id = c.id AND p.ping_time > ?)
+            LEFT JOIN chat_conversation_pings AS p ON (p.chat_id = c.id AND p.ping_time > ?)
             WHERE c.status = 'open' AND c.is_agent = 0 AND p.id IS NULL
         ", [$cutoff]);
 

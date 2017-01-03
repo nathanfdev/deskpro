@@ -6,17 +6,18 @@ import { getBlobsFromItems, getBlobsFromHtml } from 'DeskPRO/Component/Uploader/
 export default class RteEditor extends React.Component {
 
   static propTypes = {
-    tag:          PropTypes.string,
-    value:        PropTypes.string,
-    inline:       PropTypes.bool,
-    options:      PropTypes.object,
-    onChange:     PropTypes.func,
-    onSubmit:     PropTypes.func,
-    onPasteImage: PropTypes.func
+    tag:             PropTypes.string,
+    value:           PropTypes.string,
+    inline:          PropTypes.bool,
+    ctrlEnterSubmit: PropTypes.bool,
+    options:         PropTypes.object,
+    onChange:        PropTypes.func,
+    onSubmit:        PropTypes.func,
+    onPasteImage:    PropTypes.func
   };
 
   componentDidMount() {
-    const { inline, value = '', options = {} } = this.props;
+    const { inline, ctrlEnterSubmit, value = '', options = {} } = this.props;
     const { onChange = () => {}, onSubmit = () => {} } = this.props;
 
     const node = this.getNode();
@@ -50,7 +51,9 @@ export default class RteEditor extends React.Component {
     this.medium.subscribe('editableInput', onChangeContent);
     this.medium.subscribe('onChange', onChangeContent);
     this.medium.subscribe('editableKeydownEnter', (event) => {
-      if (inline && !event.altKey && !event.ctrlKey && !event.shiftKey) {
+      const ctrlKey = event.ctrlKey || event.metaKey;
+
+      if ((inline && !event.altKey && !ctrlKey && !event.shiftKey) || (ctrlEnterSubmit && ctrlKey)) {
         onSubmit(event, node.innerHTML);
       }
     });
@@ -67,12 +70,7 @@ export default class RteEditor extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.value !== this.getNode().innerHTML) {
-      let content = newProps.value;
-      if (!content) {
-        content = '<p></p>';
-      }
-
-      this.medium.setContent(content);
+      this.medium.setContent(newProps.value);
     }
   }
 

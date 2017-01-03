@@ -1030,12 +1030,12 @@ define([
 
 				scope.openAllTickets = function(person) {
 					scope.clearSearch();
-					DeskPRO_Window.loadListPane(scope.search_url, {postData: {search_person_id: person.id}});
+					DeskPRO_Window.loadListPane(scope.search_url, {postData: {search_person_id: person.id}, isBackgroundLoad: true});
 				};
 
         scope.openAllMembers = function(org) {
           scope.clearSearch();
-          DeskPRO_Window.loadListPane(scope.search_url, {postData: {search_organization_id: org.id}});
+          DeskPRO_Window.loadListPane(scope.search_url, {postData: {search_organization_id: org.id}, isBackgroundLoad: true});
         };
 			}
 		}

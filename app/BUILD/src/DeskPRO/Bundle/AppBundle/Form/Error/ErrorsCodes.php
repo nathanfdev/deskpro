@@ -90,6 +90,7 @@ final class ErrorsCodes
     const REGEX                       = 'regex';
     const NO_UPLOADED_FILE            = 'no_uploaded_file';
     const NOT_AN_IMAGE                = 'not_an_image';
+    const MISMATCH_VALUES             = 'mismatch_values';
 
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';

@@ -242,6 +242,22 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return EmailAccount
+     */
+    public function getEmailAccount()
+    {
+        return $this->email_account;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
      * Get the full raw source of the email.
      *
      * @deprecated
@@ -544,7 +560,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([
             'fieldName'    => 'blob',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+            'targetEntity' => Blob::class,
             'dpApi'        => true,
             'dpApiDeep'    => true,
             'joinColumns'  => [
@@ -558,7 +574,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'email_account',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount',
+            'targetEntity' => EmailAccount::class,
             'dpApi'        => true,
             'joinColumns'  => [
                 [
@@ -571,7 +587,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'log_blob',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+            'targetEntity' => Blob::class,
             'dpApi'        => true,
             'dpApiDeep'    => true,
             'joinColumns'  => [

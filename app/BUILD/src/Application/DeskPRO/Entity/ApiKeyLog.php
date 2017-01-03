@@ -67,6 +67,9 @@ class ApiKeyLog extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $time;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this['time']     = time();
@@ -82,6 +85,89 @@ class ApiKeyLog extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @return ApiKey
+     */
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    /**
+     * @param ApiKey $key
+     *
+     * @return $this
+     */
+    public function setKey(ApiKey $key = null)
+    {
+        $this->setModelField('key', $key);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * @param array $request
+     *
+     * @return $this
+     */
+    public function setRequest(array $request = null)
+    {
+        $this->setModelField('request', $request);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+
+    /**
+     * @param array $response
+     *
+     * @return $this
+     */
+    public function setResponse(array $response = null)
+    {
+        $this->setModelField('response', $response);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTime()
+    {
+        return $this->time;
+    }
+
+    /**
+     * @param int $time
+     *
+     * @return $this
+     */
+    public function setTime($time)
+    {
+        $this->setModelField('time', $time);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data         = parent::toApiData($primary, $deep, $visited);

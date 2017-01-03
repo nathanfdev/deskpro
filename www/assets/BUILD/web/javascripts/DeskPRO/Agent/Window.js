@@ -2753,7 +2753,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}).bind(this), 'chat_ids', { recurring: true });
 
 		this.getTabWatcher().addTabTypeWatcher('userchat', new DeskPRO.Agent.WindowElement.TabWatcher.UserChat());
-		this.getTabWatcher().addTabTypeWatcher('voice-call', new DeskPRO.Agent.WindowElement.TabWatcher.VoiceCallInProgress());
 	},
 
 	_initRoutes: function() {
@@ -3065,9 +3064,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		DP.console.debug('Switching to %s', section_id);
 
-		var event = new CustomEvent('dpChangeSection', { 'detail': { section: section_id.replace(/_section/, '') } });
-		window.document.dispatchEvent(event);
-
 		var handler = this.sections[section_id];
 		if (!handler) {
 			if (section_id != 'test_section') {
@@ -3077,7 +3073,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		// Already active
-		if (this.openSection == handler) {
+		if (this.openSection === handler) {
+			window.document.dispatchEvent(new CustomEvent('dpChangeSection'));
 			return;
 		}
 
@@ -3119,6 +3116,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		handler.fireEvent('aftershow', [no_load_list]);
 
 		this.openSection = handler;
+		window.document.dispatchEvent(new CustomEvent('dpChangeSection'));
 
 		if (this.openSection.listPage) {
 			this.listPage = this.openSection.listPage;

@@ -14,6 +14,13 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  user_chat.listener.ping_listener:
+    class: DeskPRO\Bundle\AppBundle\UserChat\UserChatPingListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: kernel.event_subscriber }
+
   user_chat.listener.mail_listener:
     class: DeskPRO\Bundle\AppBundle\UserChat\UserChatMailListener
     arguments:

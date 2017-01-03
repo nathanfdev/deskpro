@@ -148,6 +148,7 @@ class TicketLayoutHelper
             FormFields::PERSON,
             FormFields::SUBJECT,
             FormFields::MESSAGE,
+            FormFields::ATTACHMENTS,
         ]);
     }
 }

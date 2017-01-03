@@ -93,7 +93,7 @@ class ApiFieldResolver extends AbstractFieldResolver
     }
 
     /**
-     * @return FormField
+     * {@inheritdoc}
      */
     protected function createSubject(TicketWithLayoutsContext $context)
     {

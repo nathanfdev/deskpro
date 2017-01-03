@@ -137,8 +137,8 @@ class ConfigurationBuilder
                 } else {
                     $conditionObject = new Condition(
                         $preconditions,
-                        $condition['expression'],
-                        $condition['variables'],
+                        isset($condition['expression']) ? $condition['expression'] : '',
+                        isset($condition['variables']) ? $condition['variables'] : [],
                         $this->language
                     );
                 }

@@ -421,14 +421,7 @@ class ChatController extends AbstractController
         $chat_manager = $this->container->getSystemObject('user_chat_manager');
         $message      = $chat_manager->addMessage($chat, $this->person, $text);
 
-        return $this->createApiCreateResponse(
-            ['message_id' => $message->id],
-            $this->generateUrl(
-                'api_chats_chat_message',
-                ['chat_id' => $chat->id, 'message_id' => $message->id],
-                UrlGeneratorInterface::ABSOLUTE_URL
-            )
-        );
+        return $this->createApiResponse(['message_id' => $message->getId()], 201);
     }
 
     /**

@@ -40,7 +40,9 @@ use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Twig\Environment;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -127,12 +129,19 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
             return;
         }
 
-        $brand                = $this->brand_stack->getActive();
-        $brand_portal_enabled = (bool) $brand->getSetting('core.iface_portal', true);
+        // we can always use brand settings here, because they inherit global in case brand specific is not set
+        $brand              = $this->brand_stack->getActive();
+        $brandPortalEnabled = (bool) $brand->getSetting('core.iface_portal', true);
 
-        if (!$brand_portal_enabled) {
-            // we can always use brand settings here, because they inherit global in case brand specific is not set
-            $event->setResponse($this->portal_tpl->renderResponse('Theme:Portal:portal-disabled.html.twig'));
+        if (!$brandPortalEnabled) {
+            if (strpos($event->getRequest()->getPathInfo(), '/portal/api') === 0) {
+                $event->setResponse(new JsonResponse([
+                    'code'    => Response::HTTP_FORBIDDEN,
+                    'message' => 'The portal has been disabled.',
+                ], Response::HTTP_FORBIDDEN));
+            } else {
+                $event->setResponse($this->portal_tpl->renderResponse('Theme:Portal:portal-disabled.html.twig'));
+            }
         }
     }
 
