@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -85,7 +85,7 @@ class HitRecordFactory
 
     /**
      * @param array|ParameterBag $params
-     * @param Request|null       $request Optional request to fetch referrer, user agent and IP from if not specified in params
+     * @param Request|null       $request   Optional request to fetch referrer, user agent and IP from if not specified in params
      * @param string|null        $visitorId
      *
      * @return HitRecord
@@ -94,7 +94,7 @@ class HitRecordFactory
     {
         if ($params instanceof ParameterBag) {
             $bag = $params;
-        } else if (is_array($params)) {
+        } elseif (is_array($params)) {
             $bag = new ParameterBag($params);
         } else {
             throw new \InvalidArgumentException();
