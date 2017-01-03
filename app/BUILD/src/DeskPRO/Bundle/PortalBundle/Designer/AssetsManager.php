@@ -216,6 +216,10 @@ class AssetsManager
      */
     private function upload(UploadedFile $file, $tag)
     {
+        if (!$file->isValid()) {
+            throw new \RuntimeException($file->getErrorMessage());
+        }
+
         $context = new UploadFileContext($file, $this->edit_theme_set, $tag);
         $name    = uniqid().'_'.$file->getClientOriginalName();
         $name    = preg_replace('/\s+/', '_', $name);
@@ -253,6 +257,10 @@ class AssetsManager
      */
     private function uploadFavicon(UploadedFile $file, $tag)
     {
+        if (!$file->isValid()) {
+            throw new \RuntimeException($file->getErrorMessage());
+        }
+
         $context   = new UploadFileContext($file, $this->edit_theme_set, $tag);
         $extension = ContentTypes::findExtensionForContentType($context->getMimeType());
 
