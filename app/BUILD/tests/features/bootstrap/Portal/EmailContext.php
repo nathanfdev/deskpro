@@ -107,7 +107,7 @@ class EmailContext extends BaseContext implements KernelAwareContext
     {
         $ticket    = DataContext::getReference('ticket');
         $message   = DataContext::getReference('ticket_message');
-        $viewModel = $this->get('email.ticket_viewmodel_factory')
+        $viewModel = $this->get('email.user_viewmodel_factory')
             ->createTicketReplyByAgentModel(
                 $ticket,
                 $message

@@ -28,7 +28,51 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-class CommentApproved extends CommentEmailType
+use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\ContentAbstract;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
+use JMS\Serializer\Annotation as JMS;
+
+abstract class CommentEmailType extends EmailBaseType
 {
-    protected static $templateFile = 'emails_user:comment_approved.html.twig';
+    /**
+     * The approved comment.
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\CommentAbstract")
+     *
+     * @var CommentAbstract
+     */
+    protected $comment;
+
+    /**
+     * The commented content.
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\ContentAbstract")
+     *
+     * @var ContentAbstract
+     */
+    protected $content;
+
+    /**
+     * The link to the content.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $contentLink;
+
+    /**
+     * CommentApproved constructor.
+     *
+     * @param ObjectRouter    $router
+     * @param CommentAbstract $comment
+     */
+    public function __construct(ObjectRouter $router, $comment)
+    {
+        $this->comment = $comment;
+        $this->content = $comment->getObject();
+
+        $this->contentLink = $router->getPortalUrl($this->content);
+    }
 }

@@ -1,9 +1,9 @@
 <dp:subject>{{ phrase('user.email_subjects.remind_unresolved_final_subject', {subject: ticket.subject}) }}</dp:subject>
 
 <container>
-    {{ phrase('user.emails.greeting') }}
+    {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
     <br /><br />
 
-    {{ phrase('user.emails.remind_unresolved_final', {resolve_url: portal_url(ticket, 'resolve')})|raw }}
+    {{ phrase('user.emails.remind_unresolved_final', {resolve_url: ticket_resolve_link})|raw }}
 </container>

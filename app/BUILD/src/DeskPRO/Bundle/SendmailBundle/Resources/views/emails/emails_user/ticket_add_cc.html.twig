@@ -1,7 +1,7 @@
 <dp:subject>{{ phrase('portal.email_subjects.ticket_added_cc') }}</dp:subject>
 
 <container>
-    {{ phrase('portal.emails.greeting') }}
+    {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
     <br /><br />
 

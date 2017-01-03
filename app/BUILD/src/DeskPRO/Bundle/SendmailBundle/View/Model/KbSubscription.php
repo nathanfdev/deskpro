@@ -28,11 +28,55 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-class KbSubscription extends EmailBaseType
+use Application\DeskPRO\Entity\Article;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+
+class KbSubscription extends UserEmailBaseType
 {
+    /**
+     * The new articles.
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\Article>")
+     *
+     * @var Article[]
+     */
+    protected $newArticles;
+
+    /**
+     * The updated articles.
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\Article>")
+     *
+     * @var Article[]
+     */
+    protected $updatedArticles;
+
+    /**
+     * Link to unsubscribe to knowledge base articles.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $unsubscribeUrl;
+
     protected static $templateFile = 'emails_user:kb_subscription.html.twig';
 
-    public function __construct()
+    /**
+     * KbSubscription constructor.
+     *
+     * @param RouterInterface $router
+     * @param Article[]       $newArticles
+     * @param Article[]       $updatedArticles
+     */
+    public function __construct(RouterInterface $router, $newArticles, $updatedArticles)
     {
+        parent::__construct($router);
+
+        $this->newArticles     = $newArticles;
+        $this->updatedArticles = $updatedArticles;
+        $this->unsubscribeUrl  = $router->generate('portal_kb_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

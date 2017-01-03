@@ -28,7 +28,27 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
+use JMS\Serializer\Annotation as JMS;
+
 class TicketAwaitingWarn extends TicketEmailType
 {
+    /**
+     * A link to resolve the ticket.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $ticketResolveLink;
+
     protected static $templateFile = 'emails_user:ticket_awaiting_warn.html.twig';
+
+    public function __construct(ObjectRouter $router, Ticket $ticket)
+    {
+        parent::__construct($router, $ticket);
+
+        $this->ticketResolveLink = $router->getPortalUrl($ticket, 'resolve');
+    }
 }

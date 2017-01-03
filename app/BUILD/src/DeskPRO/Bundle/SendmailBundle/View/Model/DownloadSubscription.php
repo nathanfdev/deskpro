@@ -28,11 +28,55 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-class DownloadSubscription extends EmailBaseType
+use Application\DeskPRO\Entity\Download;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+
+class DownloadSubscription extends UserEmailBaseType
 {
+    /**
+     * The new downloads.
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\Download>")
+     *
+     * @var Download[]
+     */
+    protected $newDownloads;
+
+    /**
+     * The updated downloads.
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\Download>")
+     *
+     * @var Download[]
+     */
+    protected $updatedDownloads;
+
+    /**
+     * Link to unsubscribe to downloads.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $unsubscribeUrl;
+
     protected static $templateFile = 'emails_user:download_subscription.html.twig';
 
-    public function __construct()
+    /**
+     * DownloadSubscription constructor.
+     *
+     * @param RouterInterface $router
+     * @param Download[]      $newDownloads
+     * @param Download[]      $updatedDownloads
+     */
+    public function __construct(RouterInterface $router, $newDownloads, $updatedDownloads)
     {
+        parent::__construct($router);
+
+        $this->newDownloads     = $newDownloads;
+        $this->updatedDownloads = $updatedDownloads;
+        $this->unsubscribeUrl   = $router->generate('portal_downloads_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

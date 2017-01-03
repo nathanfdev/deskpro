@@ -1,7 +1,6 @@
 <dp:subject>{{ phrase('user.email_subjects.comment-approved') }}</dp:subject>
 <container>
-    {% set content = comment.getObject() %}
-    {% set phrase_link %}<a href="{{ content.getLink(true) }}">{{ content.title }}</a>{% endset %}
+    {% set phrase_link %}<a href="{{ content_link }}">{{ content.title }}</a>{% endset %}
     {{ phrase('user.emails.comment_thank-you', {'link': phrase_link}, true) }}
     {{ phrase('user.emails.comment_approved') }}
 </container>

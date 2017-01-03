@@ -13,7 +13,7 @@
 		<h1>{{ phrase('user.emails.kb-new-articles', {count: new_articles|length}) }}</h1>
 		<ul>
 			{% for article in new_articles %}
-				<li><a href="{{ url_full('portal_kb_view', {slug: article.getSlug()}) }}">{{ article.title }}</a></li>
+				<li><a href="{{ url_full('portal_kb_view', {slug: article.slug}) }}">{{ article.title }}</a></li>
 			{% endfor %}
 		</ul>
 	{% endif %}
@@ -22,11 +22,11 @@
 		<h1>{{ phrase('user.emails.kb-updated-articles', {count: updated_articles|length}) }}</h1>
 		<ul>
 			{% for article in updated_articles %}
-				<li><a href="{{ url_full('portal_kb_view', {slug: article.getSlug()}) }}">{{ article.title }}</a></li>
+				<li><a href="{{ url_full('portal_kb_view', {slug: article.slug}) }}">{{ article.title }}</a></li>
 			{% endfor %}
 		</ul>
 	{% endif %}
 
 	<div class="dp-hr">&nbsp;</div>
-	{{ phrase('user.emails.kb-explain', {unsubscribe_url: url_full('portal_kb_unsubscribe_all'), deskpro_url: url_full('portal_home') }) }}
+	{{ phrase('user.emails.kb-explain', {deskpro_url: portal_home }) }}
 </container>

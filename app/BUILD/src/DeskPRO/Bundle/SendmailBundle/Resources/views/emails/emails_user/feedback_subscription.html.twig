@@ -6,10 +6,10 @@
 	<h1>{{ phrase('user.emails.feedback-updated-items', {count: updated_items|length}) }}</h1>
 	<ul>
 		{% for item in updated_items %}
-			<li><a href="{{ url_full('portal_feedback_view', {slug: item.getSlug()}) }}">{{ item.title }}</a></li>
+			<li><a href="{{ url_full('portal_feedback_view', {slug: item.slug}) }}">{{ item.title }}</a></li>
 		{% endfor %}
 	</ul>
 
 	<div class="dp-hr">&nbsp;</div>
-	{{ phrase('user.emails.feedback-explain', {unsubscribe_url: url_full('portal_feedback_unsubscribe_all'), deskpro_url: url_full('portal_home') }) }}
+	{{ phrase('user.emails.feedback-explain', {deskpro_url: portal_home }) }}
 </container>

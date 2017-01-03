@@ -28,11 +28,28 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use JMS\Serializer\Annotation as JMS;
+
 class NewEmailValidate extends EmailBaseType
 {
+    /**
+     * A link to the ticket.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $verifyUrl;
+
     protected static $templateFile = 'emails_user:new_email_validate.html.twig';
 
-    public function __construct()
+    /**
+     * EmailValidation constructor.
+     *
+     * @param string $verifyUrl
+     */
+    public function __construct($verifyUrl)
     {
+        $this->verifyUrl = $verifyUrl;
     }
 }

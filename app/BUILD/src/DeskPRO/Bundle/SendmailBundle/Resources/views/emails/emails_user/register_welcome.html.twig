@@ -1,7 +1,7 @@
 <dp:subject>{{ phrase('user.email_subjects.register-welcome') }}</dp:subject>
 
 <container>
-	{{ phrase('user.emails.greeting') }}
+	{{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
 	<br/><br/>
 

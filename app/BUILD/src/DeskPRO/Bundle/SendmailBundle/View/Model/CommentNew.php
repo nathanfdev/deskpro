@@ -28,11 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-class CommentNew extends EmailBaseType
+class CommentNew extends CommentEmailType
 {
     protected static $templateFile = 'emails_user:comment_new.html.twig';
-
-    public function __construct()
-    {
-    }
 }

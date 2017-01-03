@@ -67,7 +67,7 @@ class EmailRendererTest extends SendmailTestCase
         $this->getEntityManager()->persist($message);
         $this->getEntityManager()->flush();
 
-        $viewModel = $this->get('email.ticket_viewmodel_factory')
+        $viewModel = $this->get('email.user_viewmodel_factory')
             ->createTicketReplyByAgentModel(
                 $ticket,
                 $message

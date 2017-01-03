@@ -29,6 +29,8 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\EmailTemplates;
 
 use Application\DeskPRO\Dpql\Exception;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PortalPageDisplay;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
@@ -41,6 +43,7 @@ use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\EmailTemplateType;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
 use DeskPRO\Bundle\SendmailBundle\Templating\Templates\TemplateSet;
+use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -255,14 +258,22 @@ class TemplateController extends BaseController
         $renderer->setTemplateEngine($twig);
 
         $viewModel = $request->request->get('template');
-        $ticket    = $this->getRepository(Ticket::class)->findOneBy([]);
-        $action    = 'create'.$viewModel.'Model';
-        if (!is_callable([$this->get('email.ticket_viewmodel_factory'), $action])) {
+//        $ticket    = $this->getRepository(Ticket::class)->findOneBy([]);
+        $ticket = $this->getRepository(Download::class)->findBy([]);
+        $action = 'create'.$viewModel.'Model';
+        if (!is_callable([$this->get('email.user_viewmodel_factory'), $action])) {
             throw $this->createNotFoundException('Missing method '.$action.' in factory');
         }
-        $model = $this->get('email.ticket_viewmodel_factory')->$action(
+        /** @var EmailBaseType $model */
+        $model = $this->get('email.user_viewmodel_factory')->$action(
+            $ticket,
             $ticket
         );
+
+        $recipient = new Person();
+        $recipient->setFirstName('FirstName');
+        $recipient->setLastName('LastName');
+        $model->setRecipient($recipient);
 
         return new View($renderer->render($tplName, $model));
     }

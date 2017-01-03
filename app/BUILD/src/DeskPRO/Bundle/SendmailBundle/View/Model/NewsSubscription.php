@@ -28,11 +28,56 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-class NewsSubscription extends EmailBaseType
+use Application\DeskPRO\Entity\News;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+
+class NewsSubscription extends UserEmailBaseType
 {
+    public static $exampleData = ['class' => News::class, 'method' => 'findBy'];
+    /**
+     * The new news articles.
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\News>")
+     *
+     * @var News[]
+     */
+    protected $newNews;
+
+    /**
+     * The updated news articles.
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\News>")
+     *
+     * @var News[]
+     */
+    protected $updatedNews;
+
+    /**
+     * Link to unsubscribe to news articles.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $unsubscribeUrl;
+
     protected static $templateFile = 'emails_user:news_subscription.html.twig';
 
-    public function __construct()
+    /**
+     * NewsSubscription constructor.
+     *
+     * @param RouterInterface $router
+     * @param News[]          $newNews
+     * @param News[]          $updatedNews
+     */
+    public function __construct(RouterInterface $router, $newNews, $updatedNews)
     {
+        parent::__construct($router);
+
+        $this->newNews        = $newNews;
+        $this->updatedNews    = $updatedNews;
+        $this->unsubscribeUrl = $router->generate('portal_news_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

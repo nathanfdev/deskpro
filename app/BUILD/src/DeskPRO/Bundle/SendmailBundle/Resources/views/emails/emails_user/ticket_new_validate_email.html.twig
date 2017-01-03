@@ -6,5 +6,5 @@
     <br /><br />
 
     {{ phrase('portal.emails.profile_email_link-validate') }}:
-    {% if verify_url %}<a href="{{ verify_url }}">{{ verify_url }}</a>{% else %}<a href="{{ url_full('user_validate_ticket', {'access_code': ticket.access_code}) }}">{{ url_full('user_validate_ticket', {'access_code': ticket.access_code}) }}</a>{% endif %}
+    {% if verify_url %}<a href="{{ verify_url }}">{{ verify_url }}</a>{% else %}<a href="{{ url_full('user_validate_ticket', {'access_code': access_code}) }}">{{ url_full('user_validate_ticket', {'access_code': access_code}) }}</a>{% endif %}
 </container>

@@ -28,11 +28,44 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-class FeedbackSubscription extends EmailBaseType
+use Application\DeskPRO\Entity\Feedback;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+
+class FeedbackSubscription extends UserEmailBaseType
 {
+    /**
+     * The updated feedback.
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\Feedback>")
+     *
+     * @var Feedback[]
+     */
+    protected $updatedItems;
+
+    /**
+     * Link to unsubscribe to feedback items.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $unsubscribeUrl;
+
     protected static $templateFile = 'emails_user:feedback_subscription.html.twig';
 
-    public function __construct()
+    /**
+     * FeedbackSubscription constructor.
+     *
+     * @param RouterInterface $router
+     * @param Feedback[]      $updatedItems
+     */
+    public function __construct(RouterInterface $router, $updatedItems)
     {
+        parent::__construct($router);
+
+        $this->updatedItems   = $updatedItems;
+        $this->unsubscribeUrl = $router->generate('portal_feedback_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

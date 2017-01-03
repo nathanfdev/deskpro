@@ -26,14 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\SendmailBundle\Factory;
+namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use DeskPRO\Bundle\SendmailBundle\View\Model\WelcomeEmail;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
-class MiscViewModelFactory
+class UserEmailBaseType extends EmailBaseType
 {
-    public static function createWelcomeEmailModel()
+    /**
+     * Link to the portal.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $portalHome;
+
+    /**
+     * EmailBaseType constructor.
+     *
+     * @param RouterInterface $router
+     */
+    public function __construct(RouterInterface $router)
     {
-        return new WelcomeEmail();
+        $this->portalHome = $router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }
