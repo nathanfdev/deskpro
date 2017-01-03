@@ -152,11 +152,10 @@ define [
         value: 'CheckUrgency'
       })
 
-      if types.indexOf('web.agent') != -1
-        options.push({
-          title: 'Workflow',
-          value: 'CheckWorkflow'
-        })
+      options.push({
+        title: 'Workflow',
+        value: 'CheckWorkflow'
+      })
 
       options.push({
         title: 'Subject',
