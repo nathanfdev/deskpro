@@ -22,4 +22,4 @@ import './Semantic/list';
 import './Semantic/menu';
 import './Semantic/popup';
 import './Semantic/Segment/segment';
-import './Semantic/Tabs/tabs';
+import './Semantic/tab';
