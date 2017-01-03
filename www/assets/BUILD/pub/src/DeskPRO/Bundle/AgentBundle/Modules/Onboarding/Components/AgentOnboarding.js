@@ -182,27 +182,26 @@ export class AgentOnboarding extends React.Component {
   };
 
   callback = (data) => {
-    const joyride = this.joyride;
-    const progress = joyride.getProgress();
+    const percentageComplete = parseFloat(((data.index / this.state.steps.length) * 100).toFixed(2).replace('.00', ''));
     let onboarding;
 
     switch (data.action) {
       case 'close':
-        if (progress.percentageComplete < 100) {
+        if (percentageComplete < 100) {
           this.props.pauseOnboarding(this.resumeOnboarding);
         } else {
-          this.finishOnboarding(progress.index);
+          this.finishOnboarding(data.index);
         }
         break;
       case 'next':
       case 'back':
         onboarding = {
-          current_step: progress.index
+          current_step: data.index
         };
-        this.setState({ currentStep: progress.index, intro: false });
-        if (progress.percentageComplete === 0) {
+        this.setState({ currentStep: data.index, intro: false });
+        if (percentageComplete === 0) {
           onboarding.status = 0;
-        } else if (progress.percentageComplete === 100) {
+        } else if (percentageComplete === 100) {
           onboarding.status = 2;
           onboarding.date_completion = moment().format();
         } else {
@@ -214,7 +213,7 @@ export class AgentOnboarding extends React.Component {
         this.props.resumeOnboarding();
         break;
       case 'finished':
-        this.finishOnboarding(progress.index);
+        this.finishOnboarding(data.index);
         break;
       default:
         break;
