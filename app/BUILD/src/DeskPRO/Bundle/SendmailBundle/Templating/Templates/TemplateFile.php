@@ -67,7 +67,7 @@ class TemplateFile extends Template
 
         list($bundle, $dir, $file) = $parts;
 
-        $path = DP_ROOT."/src/DeskPRO/Bundle/$bundle/Resources/views/emails/";
+        $path = DP_ROOT."/src/DeskPRO/Bundle/$bundle/Resources/views/";
         if ($dir) {
             $path .= "$dir/";
         }

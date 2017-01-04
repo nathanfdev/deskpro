@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\EmailTemplates;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PortalPageDisplay;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
@@ -273,6 +274,9 @@ class TemplateController extends BaseController
         $recipient = new Person();
         $recipient->setFirstName('FirstName');
         $recipient->setLastName('LastName');
+        $email = new PersonEmail();
+        $email->setEmail('test@example.com');
+        $recipient->setPrimaryEmail($email);
         $model->setRecipient($recipient);
 
         return new View($renderer->render($tplName, $model));

@@ -52,12 +52,12 @@ use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\Session;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCharge;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\EntityRepository\ChatConversation as ChatConversationRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
-use Application\DeskPRO\EntityRepository\Ticket;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\HttpFoundation\Cookie;
 use Application\DeskPRO\Log\Event\UserMerged;
@@ -660,16 +660,23 @@ class PersonController extends AbstractController
 
                     if ($email) {
                         $message = $this->container->getMailer()->createMessage();
-                        $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-                        $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', [
-                            'person' => $person,
-                        ]);
+                        if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                            $viewModel = $this->get('email.user_viewmodel_factory')
+                                ->createAgentChangedPasswordModel($person->getPlaintextPassword());
+                            $this->get('email.email_sender')
+                                ->send($viewModel, ['to' => $person->getPrimaryEmailAddress()]);
+                        } else {
+                            $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+                            $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', [
+                                'person' => $person,
+                            ]);
 
-                        $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
-                            $message->prepare();
-                        });
+                            $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
+                                $message->prepare();
+                            });
 
-                        $this->container->getMailer()->send($message);
+                            $this->container->getMailer()->send($message);
+                        }
                     }
                 }
                 break;

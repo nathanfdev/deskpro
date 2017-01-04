@@ -28,11 +28,36 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+
 class AgentChangedPassword extends EmailBaseType
 {
+    /**
+     * Link to user profile.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $userLink;
+
+    /**
+     * New password set by agent.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $newPassword;
+
     protected static $templateFile = 'emails_user:agent_changed_password.html.twig';
 
-    public function __construct()
+    public function __construct(RouterInterface $router, $newPassword)
     {
+        $this->newPassword = $newPassword;
+
+        $this->userLink = $router->generate('user', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

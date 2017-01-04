@@ -28,6 +28,14 @@ services:
     arguments:
       - "@kernel"
 
+  templating.new_email.twig.cache_warmer:
+    class: DeskPRO\Bundle\SendmailBundle\Twig\CacheWarmer\TemplateCacheCacheWarmer
+    arguments:
+      - "@service_container"
+      - "@templating.finder"
+    tags:
+      - { name: kernel.cache_warmer }
+
   templating.new_email.twig.extension.templating:
     class: DeskPRO\Bundle\SendmailBundle\Twig\Extension\TemplatingExtension
     arguments: ["@service_container"]

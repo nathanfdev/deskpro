@@ -52,10 +52,10 @@ abstract class EmailBaseType
         $inflector = new CamelCaseToUnderscore();
 
         if (static::$templateFile) {
-            return 'SendmailBundle:emails:'.static::$templateFile;
+            return 'SendmailBundle:'.static::$templateFile;
         }
 
-        return 'SendmailBundle:emails:email.'.strtolower($inflector->filter($reflect->getShortName())).'.html.twig';
+        return 'SendmailBundle:email.'.strtolower($inflector->filter($reflect->getShortName())).'.html.twig';
     }
 
     public function setRecipient(Person $recipient)

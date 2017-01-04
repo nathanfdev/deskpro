@@ -66,6 +66,7 @@
         top: 120px !important;
         height: calc(100% - 180px);
         cursor: not-allowed;
+        z-index: 9;
         .loader:before,
         .loader:after {
           display: none;

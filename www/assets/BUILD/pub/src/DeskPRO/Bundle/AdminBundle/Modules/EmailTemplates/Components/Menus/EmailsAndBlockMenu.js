@@ -137,6 +137,18 @@ export class EmailsAndBlockMenu extends React.Component {
         desc={template.get('desc')}
       />);
     });
+    return (
+      <MenuWrapper className={classNames('right-panel')}>
+        <Menu title={subGroups.get('primary').get('title')}>
+          {primary}
+        </Menu>
+        {this.getAdditionalTemplates()}
+      </MenuWrapper>
+    );
+  };
+
+  getAdditionalTemplates = () => {
+    const subGroups = this.state.selectedLeft.get('subGroups');
     const additionalTemplates = subGroups.valueSeq().map((subGroup) => {
       if (subGroup.get('subGroupId') === 'primary') {
         return null;
@@ -169,14 +181,14 @@ export class EmailsAndBlockMenu extends React.Component {
         }}
       />);
     });
+    if (additionalTemplates.size <= 1) {
+      return null;
+    }
     return (
-      <MenuWrapper className={classNames('right-panel')}>
-        <Menu title={subGroups.get('primary').get('title')}>
-          {primary}
-        </Menu>
+      <div>
         <h4>Additional templates</h4>
         <Accordion>{additionalTemplates}</Accordion>
-      </MenuWrapper>
+      </div>
     );
   };
 

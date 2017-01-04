@@ -60,7 +60,7 @@ class EmailTemplateCode extends TemplateCode
     /**
      * @var Blob[]
      */
-    private $attachments;
+    private $attachments = [];
 
     /**
      * @param string $code

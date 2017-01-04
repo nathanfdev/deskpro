@@ -102,7 +102,7 @@ class EmailSender
         $emailCode = $this->getRenderer()->render($model->getTemplate(), $model);
         $message   = $this->getMailer()->createMessage();
         $message->setTo($args['to']);
-        $message->setBody($emailCode->getBody());
+        $message->setBody($emailCode->getBody(), 'text/html');
         $message->setSubject($emailCode->getSubject());
         foreach ($emailCode->getAttachments() as $blob) {
             $message->attachBlob($blob);

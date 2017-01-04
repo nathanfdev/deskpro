@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AccountDisabled;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentChangedPassword;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentApproved;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentDeleted;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentNew;
@@ -98,6 +99,16 @@ class UserViewModelFactory
     public function createAccountDisabledModel()
     {
         return new AccountDisabled();
+    }
+
+    /**
+     * @param string $newPassword
+     *
+     * @return AgentChangedPassword
+     */
+    public function createAgentChangedPasswordModel($newPassword)
+    {
+        return new AgentChangedPassword($this->router, $newPassword);
     }
 
     /**
