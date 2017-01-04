@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Search\EntityWatcher;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Ticket;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 
 class EntityWatcher implements \Doctrine\Common\EventSubscriber
@@ -172,7 +173,15 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
             if ($ent) {
                 $name                                  = self::getEntityClassName($ent);
                 $id                                    = $ent->getId();
-                $this->updates['updates']["$name-$id"] = ['entity' => $name, 'id' => $id, 'ent' => $ent];
+
+                $changeSet = $uow->getEntityChangeSet($ent);
+                if ($ent instanceof Ticket && isset($changeSet['status'][1]) && Ticket::STATUS_HIDDEN == $changeSet['status'][1]) {
+                    $action = 'deletes';
+                } else {
+                    $action = 'updates';
+                }
+
+                $this->updates[$action]["$name-$id"] = ['entity' => $name, 'id' => $id, 'ent' => $ent];
             }
         }
         foreach ($delete as $ent) {

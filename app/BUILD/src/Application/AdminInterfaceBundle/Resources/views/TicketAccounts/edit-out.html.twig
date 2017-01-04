@@ -111,14 +111,61 @@
 							<span ng-hide="form.address">Enter your email address above</span>
 						</td>
 					</tr>
-					<tr>
+					<tr ng-show="form.out_gmail_account.type === 'password'">
 						<th>Password</th>
 						<td><input type="password" class="form-control" name="title" ng-model="form.out_gmail_account.password" style="width: 50%;" /></td>
 					</tr>
-					<tr>
+					<tr ng-show="form.out_gmail_account.type === 'oauth' && !form.out_gmail_account.token && !form.out_gmail_account.code">
 						<th>&nbsp;</th>
 						<td>
-							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+							<button class="btn btn-info" type="button" ng-click="TicketAccountsEdit.getCode('{{ path('gmail_access_code') }}')">
+								Get Access Code
+							</button>
+						</td>
+					</tr>
+					<tr ng-if="form.out_gmail_account.type === 'oauth' && !form.out_gmail_account.token">
+						<th></th>
+						<td>
+							<input type="text" class="form-control" style="width: 50%;" ng-model="form.out_gmail_account.code" placeholder="Access Code" />
+						</td>
+					</tr>
+					<tr ng-show="form.out_gmail_account.type === 'oauth' && !form.out_gmail_account.token && form.out_gmail_account.code">
+						<th>&nbsp;</th>
+						<td>
+							<input type="hidden" ng-model="form.out_gmail_account.token" />
+							<input type="hidden" ng-model="form.out_gmail_account.refreshToken" />
+							<button class="btn btn-info" type="button" ng-click="TicketAccountsEdit.getAccessToken('{{ path('gmail_token') }}', 'out')">
+								Get Access Token
+							</button>
+						</td>
+					</tr>
+					<tr ng-show="form.out_gmail_account.type === 'oauth' && form.out_gmail_account.token">
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-danger" type="button" ng-click="form.out_gmail_account.token = null">
+								Reset Access Token
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td ng-show="form.out_gmail_account.type === 'oauth'">
+							<button class="btn btn-warning" type="button" ng-click="form.out_gmail_account.type = 'password'">
+								Use password instead
+							</button>
+						</td>
+						<td ng-show="form.out_gmail_account.type === 'password'">
+							<button class="btn btn-warning" type="button" ng-click="form.out_gmail_account.type = 'oauth'">
+								Use OAuth instead
+							</button>
+						</td>
+					</tr>
+					<tr ng-show="form.out_gmail_account.type === 'password' || form.out_gmail_account.token">
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-info" type="button" ng-click="TicketAccountsEdit.testOutgoingModal()">
+								<i class="fa fa-bolt"></i> Test Account Settings
+							</button>
 						</td>
 					</tr>
 				</table>

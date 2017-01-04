@@ -178,10 +178,18 @@ class AppsController extends AbstractController
         $appManager   = $this->container->getAppManager();
         $data['apps'] = [];
         foreach ($manager->getPackageApps($package->name) as $app) {
-            $app = $app->toApiData(false);
+            $app             = $app->toApiData(false);
+            $userUsersource  = $appManager->getUsersourceForApp($app['id'], Usersource::TYPE_USER);
+            $agentUsersource = $appManager->getUsersourceForApp($app['id'], Usersource::TYPE_AGENT);
+            if ($userUsersource) {
+                $userUsersource = $userUsersource->toApiData();
+            }
+            if ($agentUsersource) {
+                $agentUsersource = $agentUsersource->toApiData();
+            }
             if ($package->isUsersource()) {
-                $app['user_usersource']  = $appManager->getUsersourceForApp($app['id'], Usersource::TYPE_USER);
-                $app['agent_usersource'] = $appManager->getUsersourceForApp($app['id'], Usersource::TYPE_AGENT);
+                $app['user_usersource']  = $userUsersource;
+                $app['agent_usersource'] = $agentUsersource;
             }
             $data['apps'][] = $app;
         }

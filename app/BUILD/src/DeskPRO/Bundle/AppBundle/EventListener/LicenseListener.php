@@ -127,7 +127,7 @@ class LicenseListener implements EventSubscriberInterface
             return $settingsConfig[$id];
         }
 
-        if (!$this->container->has('settings_resolver')) {
+        if (!$this->container || !$this->container->has('settings_resolver')) {
             SystemErrorHandler::logException(new \RuntimeException('Calling on License before container is available'));
 
             return null;

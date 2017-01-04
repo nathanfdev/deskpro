@@ -68,7 +68,7 @@ class PasswordController extends AbstractController
         $form->handleRequest($request);
 
         $render_error = false;
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isValid()) {
             $this->runAntiAbuseCheck($request);
 
             $data  = $form->getData();

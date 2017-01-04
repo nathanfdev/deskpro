@@ -362,16 +362,6 @@ pageMeta.lang = {{ {
 <div id="{{ baseId }}_header_profile_box" class="header-profile-box">
 <div class="profile-box-container dp-simpletab-container">
 	<header id="{{baseId}}_properties_header">
-		{% if ticket_perms.modify_fields %}
-			<div class="controls {% if ticket.hasLock() and not locked_self %}hide-locked{% endif %}" id="{{baseId}}_field_edit_controls">
-				<div class="is-not-loading">
-					<span class="edit-gear" id="{{baseId}}_field_edit_start"></span>
-					<button class="cancel" id="{{baseId}}_field_edit_cancel" style="display: none">{{ phrase('agent.general.cancel') }}</button>
-					<button class="save" id="{{baseId}}_field_edit_save" style="display: none">{{ phrase('agent.general.save') }}</button>
-				</div>
-				<span class="is-loading">{{ phrase('agent.general.saving') }}</span>
-			</div>
-		{% endif %}
 		{% set sla_pips %}
 			{% for ticket_sla in ticket.ticket_slas %}<span class="sla-pip {{ ticket_sla.sla_status }}" data-sla-id="{{ ticket_sla.sla_id }}"></span>{% endfor %}
 		{% endset %}
@@ -530,27 +520,50 @@ pageMeta.lang = {{ {
 			</td></tr></table>
 			<div class="sep">-</div>
 			<div id="{{baseId}}_field_holders">
-				<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">
-					{% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
+				<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table mode-edit-on">
+
 					{% if ticket_perms.modify_labels or ticket.labels|length %}
-						<tbody class="always-bottom">
-							<tr>
-								<th width="80" style="vertical-align: middle; border-bottom: none; padding-top: 0; padding-bottom: 0;">{{ phrase('agent.general.labels') }}:</th>
-								<td style="vertical-align: middle; border-bottom: none; padding-top: 0; padding-bottom: 0; padding-right: 0;">
-									<div style="width: 98%" id="{{ baseId }}_labels_wrap">
-										<input
+						<tbody class="labels-row">
+						<tr>
+							<th width="80" style="vertical-align: middle; padding-top: 0; padding-bottom: 0;">
+								{{ phrase('agent.general.labels') }}:
+							</th>
+							<td style="vertical-align: middle; padding-top: 0; padding-bottom: 0; padding-right: 0;">
+								<div style="width: 98%" id="{{ baseId }}_labels_wrap">
+									<input
 											type="hidden"
 											id="{{baseId}}_labels_input"
 											class="dpe_select dpe_select_noborder"
 											data-placeholder="Add a label"
 											value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
 											data-allow-new="{% if app.user.hasPerm('agent_tickets.create_labels') %}1{% endif %}"
-										/>
-									</div>
-								</td>
-							</tr>
+									/>
+								</div>
+							</td>
+						</tr>
 						</tbody>
 					{% endif %}
+
+					{% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
+
+					<tbody class="hidden-row off" ng-show="hidden && !show_hidden">
+					<tr>
+						<td></td>
+						<td>
+							<a ng-click="showHidden()">
+								{{ ng_var('hidden') }} hidden field<span ng-show="hidden !== 1">s</span> without a value
+							</a>
+						</td>
+					</tr>
+					</tbody>
+					<tbody class="controls-row off" ng-show="edit_fields.length">
+						<tr>
+							<td colspan="2" style="text-align: center; background: #eee;">
+								<button class="save clean-white" ng-click="saveFields()">Save</button>
+								<button class="cancel clean-white" ng-click="cancelEdit()">Cancel</button>
+							</td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
 		</article>

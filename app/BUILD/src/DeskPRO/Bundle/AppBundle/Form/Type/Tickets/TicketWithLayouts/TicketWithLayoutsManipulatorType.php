@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
@@ -38,6 +39,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -51,13 +53,20 @@ class TicketWithLayoutsManipulatorType extends AbstractType
     private $hierarchyGenerator;
 
     /**
+     * @var FormFactory
+     */
+    private $formFactory;
+
+    /**
      * Constructor.
      *
      * @param HierarchyGenerator $hierarchyGenerator
+     * @param FormFactory        $formFactory
      */
-    public function __construct(HierarchyGenerator $hierarchyGenerator)
+    public function __construct(HierarchyGenerator $hierarchyGenerator, FormFactory $formFactory)
     {
         $this->hierarchyGenerator = $hierarchyGenerator;
+        $this->formFactory        = $formFactory;
     }
 
     /**
@@ -66,8 +75,8 @@ class TicketWithLayoutsManipulatorType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onUpdateRelatedData'], 100);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 200);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onUpdateRelatedData']);
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
     }
 
@@ -77,6 +86,8 @@ class TicketWithLayoutsManipulatorType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
+            ->setRequired('full_type_class')
+            ->setAllowedTypes('full_type_class', 'string')
             ->setRequired(['field_resolver', 'field_renderer', 'layout_factory'])
             ->setAllowedTypes('field_resolver', AbstractFieldResolver::class)
             ->setAllowedTypes('field_renderer', FieldRendererInterface::class)
@@ -129,14 +140,14 @@ class TicketWithLayoutsManipulatorType extends AbstractType
     }
 
     /**
-     * Change the form based on submitted department.
-     *
      * @internal
      *
      * @param FormEvent $event
      */
     public function onPreSubmit(FormEvent $event)
     {
+        $form    = $event->getForm();
+        $data    = $form->getData();
         $context = TicketWithLayoutsContext::createOnPreSubmit($event);
 
         if ($context->getOption('subject_type') === 'default') {
@@ -161,10 +172,24 @@ class TicketWithLayoutsManipulatorType extends AbstractType
             $event->setData($data);
         }
 
-        $extracted = TicketLayoutHelper::getExtractedData($event->getData() ?: [], $context);
+        $ticket = new Ticket();
+        $ticket->disableAutoTicketProcess();
+        if ($data) {
+            $ticket->setDepartment($data->getDepartment());
+        }
 
-        TicketLayoutHelper::renderFormFields($context, function (LayoutField $field) use ($extracted) {
-            return $field->getCriteria()->isSubmittedDataMatch($extracted);
+        $options         = $form->getConfig()->getOptions();
+        $fullFormOptions = [
+            'person'              => $options['person'],
+            'ticket_view_context' => $options['ticket_view_context'],
+            'ticket_visibility'   => $options['ticket_visibility'],
+        ];
+
+        $fullForm = $this->formFactory->create($options['full_type_class'], $ticket, $fullFormOptions);
+        $fullForm->submit($event->getData());
+
+        TicketLayoutHelper::renderFormFields($context, function (LayoutField $field) use ($ticket) {
+            return $field->getCriteria()->isTicketMatch($ticket);
         });
     }
 
@@ -180,9 +205,8 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         $ticket = $event->getForm()->getData();
 
         // update ticket message properties
-        /** @var TicketMessage $ticketMessage */
         $ticketMessage = $ticket->messages->first();
-        if ($ticketMessage) {
+        if ($ticketMessage instanceof TicketMessage) {
             $person = $ticket->getPerson();
             $ticketMessage->setPerson($person);
             foreach ($ticketMessage->getAttachments() as $attachment) {

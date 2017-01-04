@@ -30,6 +30,8 @@ namespace DeskPRO\Bundle\AuditBundle\EventListener;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Bundle\AuditBundle\Configuration\AuditContext;
+use DeskPRO\Bundle\AuditBundle\Configuration\ConfigurationSet;
 use DeskPRO\Bundle\AuditBundle\Event\LogEvent;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
 use DeskPRO\Component\Util\TypeUtils;
@@ -40,37 +42,35 @@ use DeskPRO\Component\Util\TypeUtils;
 class ObjectListener
 {
     /**
+     * @var ConfigurationSet
+     */
+    protected $configurationSet;
+
+    public function __construct(ConfigurationSet $configurationSet)
+    {
+        $this->configurationSet = $configurationSet;
+    }
+
+    /**
      * @param LogEvent $event
      */
     public function setObject(LogEvent $event)
     {
-        $log    = $event->getLog();
-        $entity = $event->getContext()->getEntity();
+        $log     = $event->getLog();
+        $context = $event->getContext();
+        $entity  = $context->getEntity();
         $log->setObjectId($entity->getId())->setObjectType(TypeUtils::getBaseTypeName($entity));
-        $this->writeObjectName($log, $entity);
+        $this->writeObjectName($log, $context, $entity);
     }
 
     /**
      * @param AuditLog                     $log
      * @param DomainObject|EntityInterface $entity
+     * @param AuditContext                 $context
      */
-    private function writeObjectName(AuditLog $log, $entity)
+    private function writeObjectName(AuditLog $log, AuditContext $context, $entity)
     {
-        switch (true) {
-            case method_exists($entity, 'getDisplayName'):
-                $name = $entity->getDisplayName();
-                break;
-            case method_exists($entity, 'getName'):
-                $name = $entity->getName();
-                break;
-            case method_exists($entity, 'getTitle'):
-                $name = $entity->getTitle();
-                break;
-            default:
-                $name = sprintf('%s-%s', $log->getObjectType(), $log->getObjectId());
-                break;
-        }
-
-        $log->setObjectName($name);
+        $configuration = $this->configurationSet->getConfigurationFor($context);
+        $log->setObjectName($configuration->getNamingStrategy()->getName($entity, $log));
     }
 }

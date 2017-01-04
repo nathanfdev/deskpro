@@ -441,6 +441,13 @@
                                             </dp-semantic-language-button>
                                         </div>
                                     </div>
+                                    <label>
+                                        Delay proactive chat by
+                                        <input type="number" ng-model="brand_settings.chat.popup.delay" step="0.1"
+                                               style="width: 70px; vertical-align: middle;"
+                                        />
+                                        seconds
+                                    </label>
                                 </div>
                                 <div class="with-margin" ng-show="brand_settings.chat.popup.style == 'agent_text_button' || brand_settings.chat.popup.style == 'text_button' || brand_settings.chat.popup.style == 'agents_button'">
                                     <label>Start conversation button</label>

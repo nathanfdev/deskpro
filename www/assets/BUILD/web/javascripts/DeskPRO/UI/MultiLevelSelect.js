@@ -32,7 +32,7 @@
       }
     });
 
-    $select.val(val);
+    $select.val(val).trigger('change');
 
     if (withSelect2) {
       $select.data('no-select2', null);
@@ -88,7 +88,7 @@
 
       $select.on('change', function () {
         var val = parseInt($(this).val());
-        isNaN(val) && $el.val('');
+        isNaN(val) && $el.val('').trigger('change');
 
         var process = function (node) {
           if (!node.children) return;
@@ -98,7 +98,7 @@
                 child.$selectWrap.show();
                 child.$select.trigger('change');
               } else {
-                $el.val(val);
+                $el.val(val).trigger('change');
               }
             } else {
               child.$selectWrap && child.$selectWrap.hide();

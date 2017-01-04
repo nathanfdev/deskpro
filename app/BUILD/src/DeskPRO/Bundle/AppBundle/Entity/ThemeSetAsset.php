@@ -69,7 +69,7 @@ class ThemeSetAsset implements EntityInterface, NotifyPropertyChanged
     protected $tags = [];
 
     /**
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\ThemeSet")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\ThemeSet", inversedBy="assets")
      * @ORM\JoinColumn(name="theme_set_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @var \DeskPRO\Bundle\AppBundle\Entity\ThemeSet

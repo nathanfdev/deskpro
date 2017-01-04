@@ -15,6 +15,7 @@ import {
   widgetOpenedSelector,
   widgetPositionSelector,
   widgetPopupStyleSelector,
+  widgetPopupDelaySelector,
   helpButtonSizeSelector,
   helpButtonNameSelector,
   helpButtonBackgroundColorSelector,
@@ -32,6 +33,7 @@ import { getLocation } from '../../../../../Services/history';
   hasChat:              widgetHasChatSelector(state),
   proactiveChat:        widgetProactiveChatSelector(state),
   popupStyle:           widgetPopupStyleSelector(state),
+  popupDelay:           widgetPopupDelaySelector(state),
   triggerPopupOpened:   triggerPopupOpenedSelector(state),
   widgetOpened:         widgetOpenedSelector(state),
   widgetPosition:       widgetPositionSelector(state),
@@ -45,7 +47,7 @@ import { getLocation } from '../../../../../Services/history';
   chatId:               chatIdSelector(state),
   helpPopupStartButton: helpPopupStartButtonSelector(state)
 }))
-export class HelpButtonContainer extends React.Component {
+export default class HelpButtonContainer extends React.Component {
 
   static propTypes = {
     hasChat:              PropTypes.bool,
@@ -53,6 +55,7 @@ export class HelpButtonContainer extends React.Component {
     triggerPopupOpened:   PropTypes.bool,
     widgetOpened:         PropTypes.bool,
     popupStyle:           PropTypes.string,
+    popupDelay:           PropTypes.number,
     size:                 PropTypes.string,
     widgetPosition:       PropTypes.string,
     dispatch:             PropTypes.func,
@@ -115,7 +118,8 @@ export class HelpButtonContainer extends React.Component {
 
     if (!widgetOpened && hasChat && proactiveChat && (liveDemo || (notClosedPopup && agentsCount > 0))) {
       if (!triggerPopupOpened) {
-        dispatch(openTriggerPopup());
+        const delay = Math.abs(parseFloat(this.props.popupDelay)) || 0;
+        setTimeout(() => dispatch(openTriggerPopup), delay * 1000);
       }
     } else if (triggerPopupOpened) {
       dispatch(closeTriggerPopup());

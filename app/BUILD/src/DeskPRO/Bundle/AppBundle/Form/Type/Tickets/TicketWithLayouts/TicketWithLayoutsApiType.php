@@ -95,9 +95,10 @@ class TicketWithLayoutsApiType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'field_resolver' => $this->fieldResolver,
-            'field_renderer' => $this->fieldRenderer,
-            'layout_factory' => function ($department) {
+            'field_resolver'  => $this->fieldResolver,
+            'field_renderer'  => $this->fieldRenderer,
+            'full_type_class' => TicketWithLayoutsApiFullType::class,
+            'layout_factory'  => function ($department) {
                 return $this->layoutFactory->getLayoutForTicketForm($department, true);
             },
         ]);

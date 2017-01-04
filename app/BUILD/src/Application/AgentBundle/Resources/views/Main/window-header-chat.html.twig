@@ -2,7 +2,7 @@
 {# Chat #}
 {##########################################################################}
 
-<div class="btn-group-chat pull-left" {% if not app.getSetting('core.apps_chat') or not app.user.hasPerm('agent_chat.use') %}style="display: none;"{% endif %}>
+<div class="btn-group-chat pull-left" {% if not isChatAvailable() or not app.user.hasPerm('agent_chat.use') %}style="display: none;"{% endif %}>
 	<a class="btn" id="dp_header_userchat_btn">
 		<div class="chat-big-icon pull-left"></div>
 			<span class="status">

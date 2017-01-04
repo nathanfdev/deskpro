@@ -1,5 +1,5 @@
-function getInstInfo(helpdeskUrl, instId = 'def') {
-  helpdeskUrl = helpdeskUrl.replace(/\/+$/, '');
+function getInstInfo(helpdeskUrl, instId = 'def') { // eslint-disable-line no-unused-vars
+  const url = helpdeskUrl.replace(/\/+$/, '');
 
   const loadKey = '_dp_instinfoload_';
   const storagePrefix = `dp${instId}loader`;
@@ -8,8 +8,30 @@ function getInstInfo(helpdeskUrl, instId = 'def') {
 
   const constAssetUrlKey = 'DESKPRO_ASSETS_URL';
 
-  const loaderState = window[loadKey] || {
+  const updateVersionInfo = (assetUrl) => {
+    window[constAssetUrlKey] = assetUrl;
 
+    if (window.localStorage) {
+      try {
+        window.localStorage[storageAssetUrlKey] = assetUrl;
+        window.localStorage[storageTimeKey] = (new Date()).getTime();
+      } catch (e) {
+        // continue
+      }
+    }
+  };
+
+  const getAssetUrl = () => window.DESKPRO_ASSETS_URL || null;
+
+  const getVersionInfo = () => ({
+    assetUrl: getAssetUrl(),
+    url,
+    instId
+  });
+
+  const hasVersionInfo = () => !!getAssetUrl();
+
+  const loaderState = window[loadKey] || {
     cbs:     [],
     hasSent: false,
     handler(instInfo) {
@@ -18,46 +40,19 @@ function getInstInfo(helpdeskUrl, instId = 'def') {
         updateVersionInfo(instInfo.assetUrl);
 
         if (!alreadyHas) {
-          for (let i = 0; i < window[loadKey]['cbs'].length; i++) {
-            window[loadKey]['cbs'][i](getVersionInfo(), window, document, instId);
+          for (let i = 0; i < window[loadKey].cbs.length; i += 1) {
+            window[loadKey].cbs[i](getVersionInfo(), window, document, instId);
           }
         }
       }
     }
   };
 
-  if (typeof window[loadKey] == 'undefined') {
+  if (typeof window[loadKey] === 'undefined') {
     window[loadKey] = loaderState;
   }
 
-  const updateVersionInfo = function (assetUrl) {
-    window[constAssetUrlKey] = assetUrl;
-
-    if (window.localStorage) {
-      try {
-        window.localStorage[storageAssetUrlKey] = assetUrl;
-        window.localStorage[storageTimeKey] = (new Date()).getTime();
-      } catch (e) {}
-    }
-  };
-
-  const getAssetUrl = function () {
-    return window.DESKPRO_ASSETS_URL || null;
-  };
-
-  const getVersionInfo = function () {
-    return {
-      assetUrl: getAssetUrl(),
-      helpdeskUrl,
-      instId
-    };
-  };
-
-  const hasVersionInfo = function () {
-    return !!getAssetUrl();
-  };
-
-  const loadVersionInfo = function () {
+  const loadVersionInfo = () => {
     if (loaderState.hasSent) {
       return;
     }
@@ -78,7 +73,7 @@ function getInstInfo(helpdeskUrl, instId = 'def') {
     && window.localStorage[storageAssetUrlKey]
     && window.localStorage[storageTimeKey]
   ) {
-    const lastTime = parseInt(window.localStorage[storageTimeKey]) || 0;
+    const lastTime = parseInt(window.localStorage[storageTimeKey], 10) || 0;
 
     // If the version info we have cached is <24 hours, then lets use it
     if (((new Date()).getTime() - 86400) > lastTime) {
@@ -97,41 +92,39 @@ function getInstInfo(helpdeskUrl, instId = 'def') {
         cb(getVersionInfo(), window, document, instId);
       }
     };
-  } else {
-    loadVersionInfo();
-    return {
-      then(cb) {
-        window[loadKey]['cbs'].push(function (instInfo) {
-          cb(instInfo, window, document, instId);
-        });
-      }
-    };
   }
+
+  loadVersionInfo();
+  return {
+    then(cb) {
+      window[loadKey].cbs.push((instInfo) => {
+        cb(instInfo, window, document, instId);
+      });
+    }
+  };
 }
 
 function onReadyState(loadFn) {
   if (document.readyState && (document.readyState === 'complete' || document.readyState === 'interactive')) {
     loadFn();
-  } else {
-    if (document.addEventListener) {
-      document.addEventListener('DOMContentLoaded', loadFn);
-    } else if (window.attachEvent) {
-      window.attachEvent('onload', loadFn);
-    }
+  } else if (document.addEventListener) {
+    document.addEventListener('DOMContentLoaded', loadFn);
+  } else if (window.attachEvent) {
+    window.attachEvent('onload', loadFn);
   }
 }
 
-let dp__v = null;
+let dpV = null;
 function getVisitorId() {
-  if (dp__v) {
-    return dp__v;
+  if (dpV) {
+    return dpV;
   }
 
-  const formatRe = /^\d{8,9}\-[A-Z0-9]{8}\-[A-Z0-9]{8}\-[A-Z0-9]{6}\-[A-Z]{3}$/;
+  const formatRe = /^\d{8,9}-[A-Z0-9]{8}-[A-Z0-9]{8}-[A-Z0-9]{6}-[A-Z]{3}$/;
 
   if (window.DP_VISITOR_ID && window.DP_VISITOR_ID.match(formatRe)) {
-    dp__v = window.DP_VISITOR_ID;
-    return dp__v;
+    dpV = window.DP_VISITOR_ID;
+    return dpV;
   }
 
   let vid = document.cookie.match('(^|;)\\s*dp__v\\s*=\\s*([^;]+)');
@@ -142,25 +135,25 @@ function getVisitorId() {
   }
 
   if (!vid) {
-    vid = (function() {
-      let id = Math.floor((new Date()).getTime() / 1000 / 60) + '-';
+    vid = (() => {
+      let id = `${Math.floor((new Date()).getTime() / 1000 / 60)}-`;
 
       const chars1 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       const chars2 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 8; i += 1) {
         id += chars1.charAt(Math.floor(Math.random() * chars1.length));
       }
       id += '-';
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 8; i += 1) {
         id += chars1.charAt(Math.floor(Math.random() * chars1.length));
       }
       id += '-';
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 6; i += 1) {
         id += chars1.charAt(Math.floor(Math.random() * chars1.length));
       }
       id += '-';
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 3; i += 1) {
         id += chars2.charAt(Math.floor(Math.random() * chars2.length));
       }
 
@@ -168,34 +161,52 @@ function getVisitorId() {
     })();
 
     const date = new Date();
-    date.setTime(date.getTime()+(63072000000));
+    date.setTime(date.getTime() + 63072000000);
 
-    document.cookie = 'dp__v='+vid+';expires='+date.toGMTString()+';path=/';
+    document.cookie = `dp__v=${vid};expires=${date.toGMTString()};path=/`;
   }
 
-  dp__v = vid;
-  window.DP_VISITOR_ID = dp__v;
+  dpV = vid;
+  window.DP_VISITOR_ID = dpV;
   return vid;
 }
 
-function recordPageHit(helpdeskUrl, opts) {
-  const loadFn = function() {
+function getPageHitProperties(extOpts) {
+  const opts = extOpts || {};
+
+  const url = opts.url || window.DP_PAGE_URL || window.location.href;
+  const pageTitle = opts.title || window.DP_PAGE_TITLE || document.title || null;
+  const referrer = opts.referrer || window.DP_PAGE_REFERRER || document.referrer || null;
+  const pageType = opts.pageType || window.DP_PAGE_TYPE || 'page';
+  const pageId = opts.pageId || window.DP_PAGE_ID || 'page';
+  const meta = opts.meta || window.DP_PAGE_META || {};
+  const visitorId = getVisitorId();
+
+  if (!meta.pageTitle && pageTitle) {
+    meta.pageTitle = pageTitle;
+  }
+
+  return {
+    url, pageTitle, referrer, pageType, pageId, meta, visitorId
+  };
+}
+
+function recordPageHit(helpdeskUrl, opts) { // eslint-disable-line no-unused-vars
+  const loadFn = () => {
     const props = getPageHitProperties(opts);
 
-    var dataQs = [];
-    dataQs.push('visitor_id=' + encodeURIComponent(props.visitorId));
-    dataQs.push('url=' + encodeURIComponent(props.url));
+    let dataQs = [];
+    dataQs.push(`visitor_id=${encodeURIComponent(props.visitorId)}`);
+    dataQs.push(`url=${encodeURIComponent(props.url)}`);
 
     if (props.referrer) {
-      dataQs.push('referrer=' + encodeURIComponent(props.referrer));
+      dataQs.push(`referrer=${encodeURIComponent(props.referrer)}`);
     }
 
     const meta = props.meta;
-    for (var k in meta) {
-      if (meta.hasOwnProperty(k)) {
-        if (meta[k]) {
-          dataQs.push('meta[' + encodeURIComponent(k) + ']=' + encodeURIComponent(meta[k]));
-        }
+    for (const k of Object.keys(meta)) {
+      if (meta[k]) {
+        dataQs.push(`meta[${encodeURIComponent(k)}]=${encodeURIComponent(meta[k])}`);
       }
     }
 
@@ -213,24 +224,4 @@ function recordPageHit(helpdeskUrl, opts) {
   };
 
   onReadyState(loadFn);
-}
-
-function getPageHitProperties(opts) {
-  opts = opts || {};
-
-  const url = opts.url || window.DP_PAGE_URL || window.location.href;
-  const pageTitle = opts.title || window.DP_PAGE_TITLE || document.title || null;
-  const referrer = opts.referrer || window.DP_PAGE_REFERRER || document.referrer || null;
-  const pageType = opts.pageType || window.DP_PAGE_TYPE || 'page';
-  const pageId = opts.pageId || window.DP_PAGE_ID || 'page';
-  const meta = opts.meta || window.DP_PAGE_META || {};
-  const visitorId = getVisitorId();
-
-  if (!meta.pageTitle && pageTitle) {
-    meta.pageTitle = pageTitle;
-  }
-
-  return {
-    url, pageTitle, referrer, pageType, pageId, meta, visitorId
-  };
 }

@@ -65,6 +65,13 @@ class WidgetBrandChatPopupSettings
     private $style = self::STYLE_AGENT_TEXT_BUTTON;
 
     /**
+     * @var float
+     *
+     * @JMS\Type("float")
+     */
+    private $delay = 0;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -120,6 +127,26 @@ class WidgetBrandChatPopupSettings
     public function setStyle($style)
     {
         $this->style = $style;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDelay()
+    {
+        return $this->delay;
+    }
+
+    /**
+     * @param float $delay
+     *
+     * @return $this
+     */
+    public function setDelay($delay)
+    {
+        $this->delay = $delay;
 
         return $this;
     }

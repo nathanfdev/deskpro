@@ -8,36 +8,87 @@ import { portalApp } from '../PortalApp';
 import { NewTicketSuggestions } from '../React/NewTicketSuggestions';
 import { DynamicForm } from '../../AppBundle/Form/DynamicForm';
 
-const parseIntSelect = f => parseInt(f.val() || 0, 10) || 0;
-
 class TicketValueReader {
 
   constructor($formEl) {
     this.$formEl = $formEl;
   }
 
+  static parseIntSelect(f) {
+    return parseInt(f.val() || 0, 10) || 0;
+  }
+
   getDepartmentId() {
-    return parseIntSelect($('#ticket_department', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_department', this.$formEl));
   }
 
   getCategoryId() {
-    return parseIntSelect($('#ticket_category', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_category', this.$formEl));
   }
 
   getPriorityId() {
-    return parseIntSelect($('#ticket_priority', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_priority', this.$formEl));
   }
 
   getProductId() {
-    return parseIntSelect($('#ticket_product', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_product', this.$formEl));
   }
 
   getOrganizationId() {
-    return parseIntSelect($('#ticket_user_organization', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_user_organization', this.$formEl));
   }
 
   getWorkflowId() {
-    return parseIntSelect($('#ticket_workflow', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_workflow', this.$formEl));
+  }
+
+  getFieldValue(prefix, fieldId) {
+    const id = `#ticket_${prefix}_field_${fieldId}_data`;
+    let $field = $(id, this.$formEl);
+
+    // toggle
+    if ($field.is(':checkbox')) {
+      return $field.is(':checked');
+    }
+
+    if ($field.is('select, input, textarea')) {
+      return $field.val();
+    }
+
+    // date and datetime widgets
+    if ($field.find(`${id}_year`).length) {
+      const year = $(`${id}_year`, $field).val();
+      const month = $(`${id}_month`, $field).val();
+      const day = $(`${id}_day`, $field).val();
+      return `${year}-${month}-${day}`;
+    }
+
+    // choice of checkboxes, radio
+    const name = `ticket[${prefix}_field_${fieldId}]`;
+    $field = $(`[name="${name}[data]"]:checked, [name="${name}[data][]"]:checked`, this.$formEl);
+    if ($field.length) {
+      return $field.map((i, el) => el.value).get();
+    }
+
+    // display field
+    $field = $(`#ticket_${prefix}_field_${fieldId}`, this.$formEl);
+    if ($field.length) {
+      return $.trim($field.text());
+    }
+
+    return null;
+  }
+
+  getTicketFieldValue(fieldId) {
+    return this.getFieldValue('ticket', fieldId);
+  }
+
+  getUserFieldValue(fieldId) {
+    return this.getFieldValue('user', fieldId);
+  }
+
+  getOrgFieldValue(fieldId) {
+    return this.getFieldValue('org', fieldId);
   }
 }
 

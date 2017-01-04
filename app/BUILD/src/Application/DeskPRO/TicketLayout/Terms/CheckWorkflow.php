@@ -35,8 +35,10 @@
 namespace Application\DeskPRO\TicketLayout\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\Form\FormFields;
 
+/**
+ * Class CheckWorkflow.
+ */
 class CheckWorkflow extends AbstractTicketLayoutTerm
 {
     /**
@@ -45,23 +47,6 @@ class CheckWorkflow extends AbstractTicketLayoutTerm
     public function isTicketMatch(Ticket $ticket)
     {
         $have_id  = $ticket->workflow ? $ticket->workflow->getId() : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
-
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
-        }
-
-        return $is_match;
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return bool
-     */
-    public function isSubmittedDataMatch(array $data)
-    {
-        $have_id  = isset($data[FormFields::WORKFLOW]) ? $data[FormFields::WORKFLOW] : 0;
         $is_match = in_array($have_id, $this->options['workflow_ids']);
 
         if ($this->op == self::OP_NOT) {

@@ -70,7 +70,7 @@ class RecordTab extends BaseUploadTab {
   };
 
   render() {
-    const { downloadUrl, upload, uploadError, recording, playing } = this.state;
+    const { downloadUrl, upload, uploadError, recording } = this.state;
     const baseUrl = window.DP_BASE_URL ? window.DP_BASE_URL.replace(/\/$/, '') : '';
 
     return (

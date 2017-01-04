@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Configuration;
 
+use DeskPRO\Bundle\AuditBundle\Entity\NamingStrategy\NamingStrategyInterface;
+
 /**
  * Class Configuration.
  */
@@ -62,6 +64,11 @@ class Configuration
      * @var AuditContext
      */
     private $context;
+
+    /**
+     * @var NamingStrategyInterface
+     */
+    private $namingStrategy;
 
     /**
      * Configuration constructor.
@@ -168,5 +175,25 @@ class Configuration
         }
 
         return $result;
+    }
+
+    /**
+     * @param NamingStrategyInterface $strategy
+     *
+     * @return $this
+     */
+    public function setNamingStrategy(NamingStrategyInterface $strategy)
+    {
+        $this->namingStrategy = $strategy;
+
+        return $this;
+    }
+
+    /**
+     * @return NamingStrategyInterface
+     */
+    public function getNamingStrategy()
+    {
+        return $this->namingStrategy;
     }
 }

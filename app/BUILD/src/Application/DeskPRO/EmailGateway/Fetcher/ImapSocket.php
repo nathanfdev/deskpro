@@ -34,6 +34,9 @@ namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig;
+use Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Zend\Mail\Protocol;
 use Zend\Mail\Storage;
 
@@ -91,44 +94,21 @@ class ImapSocket extends AbstractFetcher
     private $readMailbox;
 
     /**
-     * @var Protocol\Imap
-     */
-    protected $protocol;
-
-    /**
      * @throws \Exception
      *
      * @return Storage\Imap
      */
     protected function _initConnection()
     {
-        $options = [];
-
         $incomingAccount = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
 
         switch ($incomingAccount->getType()) {
             case 'gmail':
-                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $gmailConfig */
-                $gmailConfig = $incomingAccount;
-
-                $options['host'] = 'imap.gmail.com';
-                $options['port'] = 993;
-                $options['user'] = $gmailConfig->user;
-                $options['mode'] = $gmailConfig->mode ?: self::MODE_DELETE; // delete in gmail just means archive
-
                 $this->logger->log('Trying to refresh gmail access token', 'debug');
-                $client = new \Google_Client();
-                $client->setClientId($gmailConfig->clientId);
-                $client->setClientSecret($gmailConfig->clientSecret);
-                $client->setScopes(\Google_Service_Gmail::MAIL_GOOGLE_COM);
-                $client->setAccessToken($gmailConfig->token);
-                $client->setAccessType('offline');
-                $client->refreshToken($gmailConfig->refreshToken);
-                $data = $client->getAccessToken();
-                if (!empty($data['access_token'])) {
-                    $options['token'] = $data['access_token'];
-                }
-
+                $options = self::initOptions(
+                    $incomingAccount,
+                    App::$container->get('settings_resolver')->getGlobalSettings()
+                );
                 break;
 
             default:
@@ -143,9 +123,9 @@ class ImapSocket extends AbstractFetcher
 
         $options['logger'] = $this->logger;
 
-        $this->protocol = new Protocol\Imap($options['host'], $options['port'], 'ssl');
-        $this->oauth2Authenticate($options['user'], $options['token']);
-        $this->storage = new Storage\Imap($this->protocol);
+        $protocol = new Protocol\Imap($options['host'], $options['port'], 'ssl');
+        self::oauth2Authenticate($options['user'], $options['token'], $protocol);
+        $this->storage = new Storage\Imap($protocol);
 
         if ($this->archiveMailbox === $this->storage->getCurrentFolder()) {
             throw new \Exception('The current mailbox is reserved for processed emails, it can not be used as the primary mailbox');
@@ -176,6 +156,30 @@ class ImapSocket extends AbstractFetcher
         $this->logger->log('Read IDs: '.implode(', ', $this->messageUids), 'debug');
 
         return $this->storage;
+    }
+
+    public static function initOptions(GmailConfig $config, SettingsBag $settings)
+    {
+        $options         = [];
+        $options['host'] = 'imap.gmail.com';
+        $options['port'] = 993;
+        $options['user'] = $config->user;
+        $options['mode'] = $config->mode ?: self::MODE_DELETE; // delete in gmail just means archive
+
+        $client = new \Google_Client();
+        $client->setClientId($settings->get('core_email.google_oauth_client_id'));
+        $client->setClientSecret($settings->get('core_email.google_oauth_secret'));
+        $client->setScopes([\Google_Service_Gmail::MAIL_GOOGLE_COM]);
+        $client->setAccessToken($config->token);
+        $client->setAccessType('offline');
+        $client->refreshToken($config->refreshToken);
+
+        $data = $client->getAccessToken();
+        if (!empty($data['access_token'])) {
+            $options['token'] = $data['access_token'];
+        }
+
+        return $options;
     }
 
     /**
@@ -287,17 +291,17 @@ class ImapSocket extends AbstractFetcher
      *
      * @return bool
      */
-    protected function oauth2Authenticate($email, $accessToken)
+    public static function oauth2Authenticate($email, $accessToken, Protocol\Imap $protocol)
     {
-        $authenticateParams = ['XOAUTH2', $this->constructAuthString($email, $accessToken)];
-        $this->protocol->sendRequest('AUTHENTICATE', $authenticateParams);
+        $authenticateParams = ['XOAUTH2', self::constructAuthString($email, $accessToken)];
+        $protocol->sendRequest('AUTHENTICATE', $authenticateParams);
         while (true) {
             $response = '';
             $isPlus   = $this->protocol->readLine($response, '+', true);
             if ($isPlus) {
                 // error_log("got an extra server challenge: $response");
                 // Send empty client response.
-                $this->protocol->sendRequest('');
+                $protocol->sendRequest('');
                 continue;
             }
 
