@@ -223,11 +223,15 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				if ($field.is(':checkbox')) {
 					return $field.is(':checked');
 				}
-				if ($field.is('select, input:not(:radio, :checkbox), textarea')) {
-					return $field.val();
+        if ($field.attr('type') === 'hidden') {
+					return $.trim($field.parent().text());
 				}
+        if ($field.is('input:not(:radio, :checkbox), textarea')) {
+          return $field.val();
+        }
 				$field = $('[name="' + name + '"], [name="' + name + '[]"]', $cont);
 				if ($field.hasClass('with-select2')) {
+          var val = $.trim($field.select2('val'));
 					return $field.select2('val');
 				}
 				return $field.filter(':checked').map(function(i, el) { return el.value; }).get();
