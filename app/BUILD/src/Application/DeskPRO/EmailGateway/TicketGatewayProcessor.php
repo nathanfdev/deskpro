@@ -101,6 +101,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         $tacPerson  = null;
         $isBounce   = false;
         $isDp3Reply = false;
+        $isPtac     = false;
 
         $canAddNewPerson = false;
 
@@ -113,6 +114,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             $this->logMessage('Is bounced');
             $ticket          = $bounceDetector->getGuessedTicket();
             $canAddNewPerson = true;
+            $isPtac          = $bounceDetector->isPublicTac();
         }
 
         if (!$ticket) {
@@ -122,6 +124,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             }
 
             $ticket = $ticketDetect->findExistingTicket($this->reader);
+            $isPtac = $ticketDetect->isPublicTac();
             $this->logMessage('[TicketGatewayProcessor] Ticket Detector -- Ticket: '.($ticket ? $ticket->id : 'none'));
 
             $tacPerson = $ticketDetect->findTacPerson($this->reader);
@@ -432,6 +435,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         $ticketEmail->email_body_text = $emailBodyText;
         $ticketEmail->is_dp3_reply    = $isDp3Reply;
         $ticketEmail->reply_actions   = $replyActions;
+        $ticketEmail->isPublicTac     = $isPtac;
 
         if ($ticket && $person) {
             App::$container->getTicketManager()->markAsManaged($ticket);
@@ -508,7 +512,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         if (
             $person['is_agent']
             &&
-            !$this->reader->matchedByPTAC()
+            !$ticket_email->isPublicTac
             && (
                 // Is not a user email
                 (strpos($ticket_email->email_body_html, 'DP_USER_EMAIL') === false && $is_reply_to_dpmail)
