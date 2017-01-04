@@ -33,6 +33,7 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Validator\ViolationApiRenderer;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
@@ -634,19 +635,34 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         return $output;
     }
 
-    protected function _sendCommentApprovedNotification($comment)
+    protected function _sendCommentApprovedNotification(CommentAbstract $comment)
     {
         if ($comment->getUserEmail()) {
-            $message = $this->container->getMailer()->createMessage();
-            if ($comment->person) {
-                $message->setTo($comment->person->getPrimaryEmailAddress(), $comment->person->getDisplayName());
+            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                if ($comment->getPerson()) {
+                    $to = $comment->getPerson()->getPrimaryEmailAddress();
+                } else {
+                    $to = $comment->getUserEmail();
+                }
+                $viewModel = $this->get('email.user_viewmodel_factory')
+                    ->createCommentApprovedModel($comment);
+                $this->get('email.email_sender')
+                    ->send($viewModel, ['to' => $to]);
             } else {
-                $message->setTo($comment->getUserEmail());
+                $message = $this->container->getMailer()->createMessage();
+                if ($comment->getPerson()) {
+                    $message->setTo($comment->getPerson()->getPrimaryEmailAddress(), $comment->getPerson()->getDisplayName());
+                } else {
+                    $message->setTo($comment->getUserEmail());
+                }
+                $message->setTemplate(
+                    'DeskPRO:emails_user:comment-approved.html.twig',
+                    [
+                        'comment' => $comment,
+                    ]
+                );
+                $this->container->getMailer()->send($message);
             }
-            $message->setTemplate('DeskPRO:emails_user:comment-approved.html.twig', [
-                'comment' => $comment,
-            ]);
-            $this->container->getMailer()->send($message);
         }
 
         // For feedback we also notify everyone involved

@@ -28,11 +28,41 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
+use JMS\Serializer\Annotation as JMS;
+
 class ChatTranscript extends EmailBaseType
 {
+    /**
+     * The chat conversation.
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\ChatConversation")
+     *
+     * @var ChatConversation
+     */
+    protected $convo;
+
+    /**
+     * The chat messages.
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\ChatMessage>")
+     *
+     * @var ChatMessage[]
+     */
+    protected $convoMessages;
+
     protected static $templateFile = 'emails_user:chat_transcript.html.twig';
 
-    public function __construct()
+    /**
+     * ChatTranscript constructor.
+     *
+     * @param $chat
+     * @param $convoMessages
+     */
+    public function __construct($chat, $convoMessages)
     {
+        $this->convo         = $chat;
+        $this->convoMessages = $convoMessages;
     }
 }

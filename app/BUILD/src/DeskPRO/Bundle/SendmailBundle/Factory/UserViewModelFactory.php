@@ -29,6 +29,8 @@
 namespace DeskPRO\Bundle\SendmailBundle\Factory;
 
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
@@ -38,6 +40,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AccountDisabled;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentChangedPassword;
+use DeskPRO\Bundle\SendmailBundle\View\Model\ChatTranscript;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentApproved;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentDeleted;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentNew;
@@ -109,6 +112,17 @@ class UserViewModelFactory
     public function createAgentChangedPasswordModel($newPassword)
     {
         return new AgentChangedPassword($this->router, $newPassword);
+    }
+
+    /**
+     * @param ChatConversation $chat
+     * @param ChatMessage[]    $convoMessages
+     *
+     * @return ChatTranscript
+     */
+    public function createChatTranscriptModel($chat, $convoMessages)
+    {
+        return new ChatTranscript($chat, $convoMessages);
     }
 
     /**

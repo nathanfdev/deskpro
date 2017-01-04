@@ -481,16 +481,34 @@ class PublishController extends AbstractController
     protected function _sendCommentApprovedNotification(CommentAbstract $comment)
     {
         if ($comment->getUserEmail()) {
-            $message = $this->container->getMailer()->createMessage();
-            if ($comment->getPerson()) {
-                $message->setTo($comment->getPerson()->getPrimaryEmailAddress(), $comment->getPerson()->getDisplayName());
+            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                if ($comment->person) {
+                    $to = $comment->person->getPrimaryEmailAddress();
+                } else {
+                    $to = $comment->getUserEmail();
+                }
+                $viewModel = $this->get('email.user_viewmodel_factory')
+                    ->createCommentApprovedModel($comment);
+                $this->get('email.email_sender')
+                    ->send($viewModel, ['to' => $to]);
             } else {
-                $message->setTo($comment->getUserEmail());
+                $message = $this->container->getMailer()->createMessage();
+                if ($comment->getPerson()) {
+                    $message->setTo(
+                        $comment->getPerson()->getPrimaryEmailAddress(),
+                        $comment->getPerson()->getDisplayName()
+                    );
+                } else {
+                    $message->setTo($comment->getUserEmail());
+                }
+                $message->setTemplate(
+                    'DeskPRO:emails_user:comment-approved.html.twig',
+                    [
+                        'comment' => $comment,
+                    ]
+                );
+                $this->container->getMailer()->send($message);
             }
-            $message->setTemplate('DeskPRO:emails_user:comment-approved.html.twig', [
-                'comment' => $comment,
-            ]);
-            $this->container->getMailer()->send($message);
         }
     }
 

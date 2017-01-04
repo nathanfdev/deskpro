@@ -101,16 +101,24 @@ class ChatTranscripts extends AbstractJob
                 }
 
                 if (!$noAgentAnswer) {
-                    $vars = [
-                        'convo'          => $chat,
-                        'convo_messages' => $chatMessages,
-                    ];
+                    $container = App::getContainer();
+                    if ($container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                        $viewModel = $container->get('email.user_viewmodel_factory')
+                            ->createChatTranscriptModel($chat, $chatMessages);
+                        $container->get('email.email_sender')
+                            ->send($viewModel, ['to' => $person->getPrimaryEmailAddress()]);
+                    } else {
+                        $vars = [
+                            'convo'          => $chat,
+                            'convo_messages' => $chatMessages,
+                        ];
 
-                    $message = App::getMailer()->createMessage();
-                    $message->setTo($email, $name);
-                    $message->setTemplate('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
-                    $message->setSuppressAutoreplies(true);
-                    App::getMailer()->send($message);
+                        $message = App::getMailer()->createMessage();
+                        $message->setTo($email, $name);
+                        $message->setTemplate('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
+                        $message->setSuppressAutoreplies(true);
+                        App::getMailer()->send($message);
+                    }
 
                     // Add a chat log line for it
                     App::getDb()->insert('chat_messages', [

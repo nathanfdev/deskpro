@@ -166,7 +166,7 @@ export class VariablesMenu extends React.Component {
       return null;
     }
     let properties = [];
-    if (this.state.selectedLeft.get('type').match(/^object/)) {
+    if (this.state.selectedLeft.get('type').match(/^(object|array of objects)/)) {
       if (!this.state.selectedLeft.get('properties')) {
         console.log('No properties');
         return null;
