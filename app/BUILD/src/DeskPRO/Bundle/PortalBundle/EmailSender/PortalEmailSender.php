@@ -58,20 +58,27 @@ class PortalEmailSender
 
     public function sendPasswordResetLink(Person $person, array $reset)
     {
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:reset-password.html.twig',
-            [
-                'person'    => $person,
-                'reset_url' => $this->getRouter()->generate(
-                    'portal_reset_password_process',
-                    [
-                        'code' => $reset['code'],
-                    ],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
-            ]
+        $resetUrl = $this->getRouter()->generate(
+            'portal_reset_password_process',
+            ['code' => $reset['code']],
+            UrlGeneratorInterface::ABSOLUTE_URL
         );
+
+        if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createResetPasswordModel($resetUrl);
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:reset-password.html.twig',
+                [
+                    'person'    => $person,
+                    'reset_url' => $resetUrl,
+                ]
+            );
+        }
     }
 
     public function sendPasswordSetLink(Person $person, array $reset)
@@ -96,18 +103,25 @@ class PortalEmailSender
     {
         $email = $person->getPrimaryEmail();
 
-        $portalUrl = $this->getRouter()->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createRegisterWelcomeModel();
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $portalUrl = $this->getRouter()->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:register-welcome.html.twig',
-            [
-                'person'     => $person,
-                'email'      => $email,
-                'verify_url' => null, // BC - this may be in old templates and it should always be null
-                'portal_url' => $portalUrl,
-            ]
-        );
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:register-welcome.html.twig',
+                [
+                    'person'     => $person,
+                    'email'      => $email,
+                    'verify_url' => null, // BC - this may be in old templates and it should always be null
+                    'portal_url' => $portalUrl,
+                ]
+            );
+        }
     }
 
     public function sendEmailValidation(EmailTo $emailTo, $verifyUrl)

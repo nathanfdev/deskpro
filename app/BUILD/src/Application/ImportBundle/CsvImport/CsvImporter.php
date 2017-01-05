@@ -38,7 +38,10 @@ use Application\ImportBundle\Importer\ImporterCollection;
 use Application\ImportBundle\Model\Person as PersonModel;
 use Application\ImportBundle\Model\PersonCustomDef as PersonCustomDefModel;
 use Application\ImportBundle\Parser\Parser;
+use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
+use DeskPRO\Bundle\SendmailBundle\Sender\EmailSender;
 use Doctrine\ORM\EntityManager;
+use DpSys\Features;
 
 /**
  * Class CsvImporter.
@@ -73,19 +76,33 @@ class CsvImporter
     /**
      * Constructor.
      *
-     * @param EntityManager $em
-     * @param Importer      $importer
-     * @param Parser        $parser
-     * @param Mailer        $mailer
-     * @param Translate     $translator
+     * @param EntityManager        $em
+     * @param Importer             $importer
+     * @param Parser               $parser
+     * @param Mailer               $mailer
+     * @param Translate            $translator
+     * @param UserViewModelFactory $viewModelFactory
+     * @param EmailSender          $emailSender
+     * @param Features             $featureFlags     // Temporary until SendmailBundle is permanently activated
      */
-    public function __construct(EntityManager $em, Importer $importer, Parser $parser, Mailer $mailer, Translate $translator)
-    {
-        $this->em         = $em;
-        $this->importer   = $importer;
-        $this->parser     = $parser;
-        $this->mailer     = $mailer;
-        $this->translator = $translator;
+    public function __construct(
+        EntityManager $em,
+        Importer $importer,
+        Parser $parser,
+        Mailer $mailer,
+        Translate $translator,
+        UserViewModelFactory $viewModelFactory,
+        EmailSender $emailSender,
+        Features $featureFlags
+    ) {
+        $this->em               = $em;
+        $this->importer         = $importer;
+        $this->parser           = $parser;
+        $this->mailer           = $mailer;
+        $this->translator       = $translator;
+        $this->viewModelFactory = $viewModelFactory;
+        $this->emailSender      = $emailSender;
+        $this->featureFlags     = $featureFlags;
     }
 
     /**
@@ -266,14 +283,20 @@ class CsvImporter
         $person = reset($people);
 
         if ($sendWelcomeEmail && $isNew && $person) {
-            $message = $this->mailer->createMessage();
-            $message->setToPerson($person);
-            $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', ['person' => $person]);
-            $this->translator->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
-                $message->prepare();
-            });
+            if ($this->featureFlags->hasFeature('new_email_templates')) {
+                $viewModel = $this->viewModelFactory
+                    ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
+                $this->emailSender->send($viewModel, ['to' => $person]);
+            } else {
+                $message = $this->mailer->createMessage();
+                $message->setToPerson($person);
+                $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', ['person' => $person]);
+                $this->translator->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
+                    $message->prepare();
+                });
 
-            $this->mailer->send($message);
+                $this->mailer->send($message);
+            }
         }
 
         return $person ? $person->getId() : false;

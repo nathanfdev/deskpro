@@ -285,17 +285,32 @@ class PersonController extends AbstractController implements ProtectedController
         }
 
         if ($this->in->getBool('send_email')) {
-            $message = App::getMailer()->createMessage();
-            $message->setToPerson($person);
+            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                if ($this->in->getBool('via_agent')) {
+                    $viewModel = $this->get('email.user_viewmodel_factory')
+                        ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
+                } else {
+                    $viewModel = $this->get('email.user_viewmodel_factory')
+                        ->createRegisterWelcomeModel();
+                }
+                $this->get('email.email_sender')
+                    ->send($viewModel, ['to' => $person]);
+            } else {
+                $message = App::getMailer()->createMessage();
+                $message->setToPerson($person);
 
-            $tpl = 'DeskPRO:emails_user:register-welcome.html.twig';
-            if ($this->in->getBool('via_agent')) {
-                $tpl = 'DeskPRO:emails_user:register-welcome-byagent.html.twig';
+                $tpl = 'DeskPRO:emails_user:register-welcome.html.twig';
+                if ($this->in->getBool('via_agent')) {
+                    $tpl = 'DeskPRO:emails_user:register-welcome-byagent.html.twig';
+                }
+                $message->setTemplate(
+                    $tpl,
+                    [
+                        'person' => $person,
+                    ]
+                );
+                App::getMailer()->send($message);
             }
-            $message->setTemplate($tpl, [
-                'person' => $person,
-            ]);
-            App::getMailer()->send($message);
         }
 
         return $this->createApiCreateResponse(

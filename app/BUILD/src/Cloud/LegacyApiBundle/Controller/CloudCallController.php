@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\TmpData;
 use Application\LegacyApiBundle\Controller\AbstractController;
 use DpSys\License;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CloudCallController extends AbstractController
 {
@@ -51,7 +52,7 @@ class CloudCallController extends AbstractController
             return $this->createApiErrorResponse('invalid_call_key', 'Invalid call key', 403);
         }
 
-        return;
+        return null;
     }
 
     public function pingAction()
@@ -80,22 +81,39 @@ class CloudCallController extends AbstractController
                 $interface = 'billing';
             }
 
-            $code_data = TmpData::create('reset-password', ['person_id' => $person['id'], 'interface' => $interface], '+3 days');
-            $this->em->persist($code_data);
+            $codeData = TmpData::create('reset-password', ['person_id' => $person['id'], 'interface' => $interface], '+3 days');
+            $this->em->persist($codeData);
             $this->em->flush();
 
-            $vars = [
-                'code'      => $code_data->getCode(),
-                'person'    => $person,
-                'email'     => $email,
-                'interface' => $interface,
-            ];
+            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                $resetCode = $codeData->getCode();
+                if ($person->isAgent()) {
+                    if ($interface == 'billing') {
+                        $resetUrl = $this->get('router')->generate('billing_login', ['reset_code' => $resetCode], UrlGeneratorInterface::ABSOLUTE_URL);
+                    } else {
+                        $resetUrl = $this->get('router')->generate('agent_login', ['reset_code' => $resetCode], UrlGeneratorInterface::ABSOLUTE_URL);
+                    }
+                } else {
+                    $resetUrl = $this->get('router')->generate('user_login_resetpass_newpass', ['code' => $resetCode], UrlGeneratorInterface::ABSOLUTE_URL);
+                }
+                $viewModel = $this->get('email.user_viewmodel_factory')
+                    ->createResetPasswordModel($resetUrl);
+                $this->get('email.email_sender')
+                    ->send($viewModel, ['to' => $person]);
+            } else {
+                $vars = [
+                    'code'      => $codeData->getCode(),
+                    'person'    => $person,
+                    'email'     => $email,
+                    'interface' => $interface,
+                ];
 
-            $message = $this->container->getMailer()->createMessage();
-            $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
-            $message->setTo($email, $person->getDisplayName());
+                $message = $this->container->getMailer()->createMessage();
+                $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
+                $message->setTo($email, $person->getDisplayName());
 
-            $this->container->getMailer()->send($message);
+                $this->container->getMailer()->send($message);
+            }
 
             return $this->createJsonResponse(['sent_reset_link' => $email]);
 
@@ -103,13 +121,13 @@ class CloudCallController extends AbstractController
         // Reset password
         //------------------------------
         } else {
-            $new_pass = $this->in->getString('password');
+            $newPass = $this->in->getString('password');
 
-            if (!$new_pass) {
+            if (!$newPass) {
                 return $this->createJsonResponse(['error' => 'no_pass']);
             }
 
-            $person->setPassword($new_pass);
+            $person->setPassword($newPass);
 
             return $this->createJsonResponse(['reset_password' => $email]);
         }

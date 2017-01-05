@@ -44,10 +44,10 @@ use Symfony\Component\HttpFoundation\Response;
 class LoginController extends \Application\UserBundle\Controller\LoginController
 {
     /** @var string */
-    protected $tpl_prefix = 'AgentBundle:Login';
+    protected $tplPrefix = 'AgentBundle:Login';
 
     /** @var string */
-    protected $route_prefix = 'agent';
+    protected $routePrefix = 'agent';
 
     /**
      * Handles showing the login form, and on POST handles login credentials
@@ -69,7 +69,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             }
         }
 
-        $has_logged_out = $request->cookies->has('dp-recent-logout');
+        $hasLoggedOut = $request->cookies->has('dp-recent-logout');
         if ($has_logged_out) {
             // remove recent logout cookie on redirect login
             $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-recent-logout');
@@ -78,7 +78,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
         // SSO Automatic Redirecting
 
-        if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), $has_logged_out)) {
+        if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), $hasLoggedOut)) {
             return $res;
         }
 
@@ -124,7 +124,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             }
         }
 
-        $has_done_reset = false;
+        $hasDoneReset = false;
 
         if ($code = $this->in->getString('reset_code')) {
             /** @var TmpDataRepository $tmpDataRepository */
@@ -137,7 +137,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
             if ($codeData and $person) {
                 if ($this->in->getString('new_password')) {
-                    $has_done_reset = true;
+                    $hasDoneReset = true;
 
                     $person->setPassword($this->in->getString('new_password'));
                     $this->db->executeUpdate(
@@ -169,7 +169,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                         'AgentBundle:Login:reset-password.html.twig',
                         [
                             'reset_code'   => $this->in->getString('reset_code'),
-                            'route_prefix' => $this->route_prefix,
+                            'route_prefix' => $this->routePrefix,
                         ]
                     );
                 }
@@ -190,9 +190,9 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             $this->session->save();
         }
 
-        $logo_blob = null;
-        if ($logo_blob_id = $this->settings->get('agent.login_logo_blob_id')) {
-            $logo_blob = $this->em->find(Blob::class, $logo_blob_id);
+        $logoBlob = null;
+        if ($logoBlobId = $this->settings->get('agent.login_logo_blob_id')) {
+            $logoBlob = $this->em->find(Blob::class, $logoBlobId);
         }
 
         $captchaView = null;
@@ -205,9 +205,9 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             $captchaView = $captcha->createView();
         }
 
-        $url_corrections = $request->attributes->get('deskpro.url_corrector.corrections', []);
-        $url_corrections = array_combine($url_corrections, $url_corrections);
-        $is_to_admin     = $return ? strpos($return, 'admin') !== false : false;
+        $urlCorrections = $request->attributes->get('deskpro.url_corrector.corrections', []);
+        $urlCorrections = array_combine($urlCorrections, $urlCorrections);
+        $isToAdmin      = $return ? strpos($return, 'admin') !== false : false;
 
         return $this->render(
             'AgentBundle:Login:index.html.twig',
@@ -215,17 +215,17 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                 'lockout'           => $check->isLockoutRecommended() ? $check->getLockoutTime() : false,
                 'authManager'       => $this->get('dp_authentication_manager.agent'),
                 'return'            => $return,
-                'route_prefix'      => $this->route_prefix,
-                'logo_blob'         => $logo_blob,
-                'has_logged_out'    => $has_logged_out,
-                'has_done_reset'    => $has_done_reset,
+                'route_prefix'      => $this->routePrefix,
+                'logo_blob'         => $logoBlob,
+                'has_logged_out'    => $hasLoggedOut,
+                'has_done_reset'    => $hasDoneReset,
                 'failed_to_login'   => $failedToLogin,
                 'failed_login_name' => $failedLoginName,
                 'timeout'           => $this->in->getBool('timeout'),
                 'captcha'           => $captchaView,
                 'render_forgot_pw'  => $this->in->getString('forgot') ?: false,
-                'url_corrections'   => $url_corrections,
-                'is_to_admin'       => $is_to_admin,
+                'url_corrections'   => $urlCorrections,
+                'is_to_admin'       => $isToAdmin,
                 'didReset'          => $this->in->getBool('did_reset'),
             ]
         );
@@ -263,9 +263,8 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             throw $this->createNotFoundException();
         }
 
-        $agentDataService = $this->container->getAgentData();
-        $admin            = $agentDataService->get($tmpData->getData('admin_id'));
-        $person           = $agentDataService->get($tmpData->getData('agent_id'));
+        $admin  = $this->em->getRepository(Person::class)->find($tmpData->getData('admin_id'));
+        $person = $this->em->getRepository(Person::class)->find($tmpData->getData('agent_id'));
 
         if (!$admin || !$admin->can_admin || !$person || !$person->isAgent()) {
             throw $this->createNotFoundException();

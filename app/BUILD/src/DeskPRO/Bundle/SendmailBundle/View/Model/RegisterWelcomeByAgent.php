@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,11 +28,26 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-class RegisterWelcomeByAgent extends EmailBaseType
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\RouterInterface;
+
+class RegisterWelcomeByAgent extends UserEmailBaseType
 {
+    /**
+     * New password set by agent.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $newPassword;
+
     protected static $templateFile = 'emails_user:register_welcome_by_agent.html.twig';
 
-    public function __construct()
+    public function __construct(RouterInterface $router, $newPassword)
     {
+        parent::__construct($router);
+
+        $this->newPassword = $newPassword;
     }
 }

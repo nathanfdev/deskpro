@@ -347,15 +347,17 @@ class UserViewModelFactory
      */
     public function createRegisterWelcomeModel()
     {
-        return new RegisterWelcome();
+        return new RegisterWelcome($this->router);
     }
 
     /**
+     * @param string $newPassword
+     *
      * @return RegisterWelcomeByAgent
      */
-    public function createRegisterWelcomeByAgentModel()
+    public function createRegisterWelcomeByAgentModel($newPassword)
     {
-        return new RegisterWelcomeByAgent();
+        return new RegisterWelcomeByAgent($this->router, $newPassword);
     }
 
     /**

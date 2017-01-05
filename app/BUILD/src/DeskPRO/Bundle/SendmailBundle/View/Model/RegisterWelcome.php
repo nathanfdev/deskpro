@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,11 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-class RegisterWelcome extends EmailBaseType
+class RegisterWelcome extends UserEmailBaseType
 {
     protected static $templateFile = 'emails_user:register_welcome.html.twig';
-
-    public function __construct()
-    {
-    }
 }

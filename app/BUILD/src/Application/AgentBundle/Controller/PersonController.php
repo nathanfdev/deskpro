@@ -1528,17 +1528,24 @@ class PersonController extends AbstractController
             $this->em->flush();
 
             if ($this->in->getString('newperson.send_welcome_email')) {
-                /** @var Mailer $mailer */
-                $mailer  = $this->get('mailer');
-                $message = $mailer->createMessage();
-                $message->setToPerson($person);
-                $message->setTemplate(
-                    'DeskPRO:emails_user:register-welcome-byagent.html.twig',
-                    [
-                        'person' => $person,
-                    ]
-                );
-                $mailer->send($message);
+                if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                    $viewModel = $this->get('email.user_viewmodel_factory')
+                        ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
+                    $this->get('email.email_sender')
+                        ->send($viewModel, ['to' => $person]);
+                } else {
+                    /** @var Mailer $mailer */
+                    $mailer  = $this->get('mailer');
+                    $message = $mailer->createMessage();
+                    $message->setToPerson($person);
+                    $message->setTemplate(
+                        'DeskPRO:emails_user:register-welcome-byagent.html.twig',
+                        [
+                            'person' => $person,
+                        ]
+                    );
+                    $mailer->send($message);
+                }
             }
 
             return $this->createJsonResponse(
@@ -1620,15 +1627,26 @@ class PersonController extends AbstractController
                 $trans = $this->container->getTranslator();
                 $trans->setPersonContext($newperson->getPerson());
 
-                /** @var Mailer $mailer */
-                $mailer  = $this->get('mailer');
-                $message = $mailer->createMessage();
-                $message->setToPerson($person);
-                $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', [
-                    'person' => $person,
-                ]);
+                if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                    $viewModel = $this->get('email.user_viewmodel_factory')
+                        ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
+                    $this->get('email.email_sender')
+                        ->send($viewModel, ['to' => $person]);
+                } else {
+                    /** @var Mailer $mailer */
+                    $mailer  = $this->get('mailer');
+                    $message = $mailer->createMessage();
+                    $message->setToPerson($person);
+                    $message->setTemplate(
+                        'DeskPRO:emails_user:register-welcome-byagent.html.twig',
+                        [
+                            'person' => $person,
+                        ]
+                    );
 
-                $mailer->send($message);
+                    $mailer->send($message);
+                }
+
                 $trans->setPersonContext($this->person);
             }
 

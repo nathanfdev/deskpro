@@ -12,16 +12,8 @@
 
 		<br/><br/>
 
-		{% if verify_url is null %}
-			{{ phrase('user.emails.register-welcome') }}<br/>
-			{% if portal_url is not defined %}
-				{% set portal_url = url_full('portal_home') %}
-			{% endif %}
-			<a href="{{ portal_url }}">{{ portal_url }}</a>
-		{% else %}
-			{{ phrase('user.emails.register-confirm') }}<br/>
-			<a href="{{ verify_url }}">{{ verify_url }}</a>
-		{% endif %}
+		{{ phrase('user.emails.register-welcome') }}<br/>
+		<a href="{{ portal_home }}">{{ portal_home }}</a>
 	</container>
 
   {% include 'SendmailBundle:blocks:footer.html.twig' %}
