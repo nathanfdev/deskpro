@@ -1993,9 +1993,6 @@ class TicketController extends AbstractController
 
         $language = $ticket->language;
 
-        $layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($ticket->getDepartmentId());
-        $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $ticket);
-
         $field_manager        = $this->container->getTicketFieldManager();
         $new_field_manager    = $this->container->getCustomFieldManager();
         $person_field_manager = $this->container->getPersonFieldManager();
@@ -4054,21 +4051,21 @@ class TicketController extends AbstractController
                 return $this->createJsonResponse(['error' => true, 'error_codes' => $errors]);
             }
 
+            $newTicket->ticket_fields             = $this->request->request->get('custom_fields', []);
+            $newTicket->post_custom_person_fields = $this->request->request->get('custom_person_fields', []);
+            $newTicket->post_custom_org_fields    = $this->request->request->get('custom_org_fields', []);
+            $newTicket->billing_fields            = $this->request->request->get('billing_fields', []);
+            $newTicket->status                    = $set_status;
+
             // Validate based on department...
             $validator = new \Application\AgentBundle\Validator\NewTicketValidator();
             $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newTicket->department_id);
-
-            $layout                   = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newTicket->getMockTicket());
-            $newTicket->ticket_fields = $this->request->request->get('custom_fields', []);
+            $layout    = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newTicket->getMockTicket());
 
             if (isset($check_person) && $check_person) {
                 $newTicket->setValuesFromTicket(null, $check_person, $check_person->organization);
             }
 
-            $newTicket->post_custom_person_fields = $this->request->request->get('custom_person_fields', []);
-            $newTicket->post_custom_org_fields    = $this->request->request->get('custom_org_fields', []);
-            $newTicket->billing_fields            = $this->request->request->get('billing_fields', []);
-            $newTicket->status                    = $set_status;
             $validator->setLayout($layout);
             $newTicket->setLayout($layout);
 
