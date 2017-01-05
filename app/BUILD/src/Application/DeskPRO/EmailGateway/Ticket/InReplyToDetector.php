@@ -42,12 +42,17 @@ use Application\DeskPRO\Entity\Ticket;
  *
  * @see \Application\DeskPRO\Entity\TicketAccessCode
  */
-class InReplyToDetector implements TicketDetectorInterface
+class InReplyToDetector implements TicketDetectorInterface, PublicTacAware
 {
     /**
      * @var \Application\DeskPRO\Entity\TicketAccessCode
      */
     protected $_found_person = null;
+
+    /**
+     * @var bool
+     */
+    protected $publicTac = false;
 
     /**
      * @param AbstractReader $reader
@@ -56,6 +61,7 @@ class InReplyToDetector implements TicketDetectorInterface
      */
     public function findExistingTicket(AbstractReader $reader)
     {
+        $this->publicTac     = false;
         $this->_found_person = null;
 
         //------------------------------
@@ -117,6 +123,10 @@ class InReplyToDetector implements TicketDetectorInterface
             foreach ($matches as $m) {
                 $ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
 
+                if ($ticket) {
+                    $this->publicTac = true;
+                }
+
                 if ($ticket && !$ticket->isArchived()) {
                     $this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
 
@@ -155,5 +165,13 @@ class InReplyToDetector implements TicketDetectorInterface
     public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
     {
         return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPublicTac()
+    {
+        return $this->publicTac;
     }
 }

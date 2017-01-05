@@ -46,7 +46,7 @@ use Orb\Log\Logger;
  *
  * @see \Application\DeskPRO\Entity\TicketAccessCode
  */
-class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterface, TacPersonDetectorInterface, Loggable
+class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterface, TacPersonDetectorInterface, Loggable, PublicTacAware
 {
     /**
      * @var \Application\DeskPRO\Entity\TicketAccessCode
@@ -74,6 +74,11 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
     protected $is_bounce_mode = false;
 
     /**
+     * @var bool
+     */
+    protected $publicTac = false;
+
+    /**
      * Enable bounce mode if the message is or is suspected ot be a bounced message.
      * This will look for PTAC/TAC 'headers' in the body text.
      */
@@ -87,6 +92,7 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
      */
     public function findExistingTicket(AbstractReader $reader)
     {
+        $this->publicTac = false;
         $this->getLogger()->logDebug('[CodeTicketDetector] Finding ticket');
 
         $this->_found_person = null;
@@ -214,6 +220,10 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
 
                 $ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
 
+                if ($ticket) {
+                    $this->publicTac = true;
+                }
+
                 if ($ticket && !$ticket->isArchived()) {
                     $this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
 
@@ -281,5 +291,13 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
         }
 
         return $this->logger;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPublicTac()
+    {
+        return $this->publicTac;
     }
 }

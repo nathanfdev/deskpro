@@ -98,4 +98,6 @@ class TicketIncomingEmail
      * @var bool
      */
     public $is_dp3_reply = false;
+
+    public $isPublicTac = false;
 }

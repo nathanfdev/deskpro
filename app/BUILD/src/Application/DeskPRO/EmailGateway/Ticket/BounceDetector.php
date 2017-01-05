@@ -34,7 +34,7 @@ namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Orb\Util\Strings;
 
-class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
+class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector implements PublicTacAware
 {
     /**
      * @var string
@@ -219,5 +219,10 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
         }
 
         return $this->guessed_ticket;
+    }
+
+    public function isPublicTac()
+    {
+        return $this->guessed_ticket && $this->ptac_code;
     }
 }
