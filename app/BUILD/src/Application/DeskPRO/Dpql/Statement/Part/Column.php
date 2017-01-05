@@ -82,7 +82,7 @@ class Column extends AbstractPart
     WHEN LENGTH(%1$s.last_name) > 0 THEN %1$s.last_name
     WHEN LENGTH(%1$s.first_name) > 0 THEN %1$s.first_name
     ELSE CONCAT(\'ID-\', %1$s.id)
-END) as %1$s_name
+END)
 ', 'person'],
         'products'          => ['id', 'title'],
         'slas'              => ['id', 'title'],
