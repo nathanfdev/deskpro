@@ -323,15 +323,25 @@ class NewsSubscriptions extends AbstractJob
                 }
             }
 
-            $message = $this->getContainer()->getMailer()->createMessage();
-            $message->setToPerson($person);
-            $message->setTemplate('DeskPRO:emails_user:news-subscription.html.twig', [
-                    'person'       => $person,
-                    'new_news'     => $newNews,
-                    'updated_news' => $updatedNews, ]
-            );
+            if ($this->getContainer()->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                $viewModel = $this->getContainer()->get('email.user_viewmodel_factory')
+                    ->createNewsSubscriptionModel($newNews, $updatedNews);
+                $this->getContainer()->get('email.email_sender')
+                    ->send($viewModel, ['to' => $person]);
+            } else {
+                $message = $this->getContainer()->getMailer()->createMessage();
+                $message->setToPerson($person);
+                $message->setTemplate(
+                    'DeskPRO:emails_user:news-subscription.html.twig',
+                    [
+                        'person'       => $person,
+                        'new_news'     => $newNews,
+                        'updated_news' => $updatedNews,
+                    ]
+                );
 
-            $this->getContainer()->getMailer()->send($message);
+                $this->getContainer()->getMailer()->send($message);
+            }
 
             // Saves mem
             $this->getContainer()->getEm()->detach($person);

@@ -325,18 +325,28 @@ class KbSubscriptions extends AbstractJob
                 }
             }
 
-            $message = $this->getContainer()->getMailer()->createMessage();
-            $message->setToPerson($person);
-            $message->setTemplate('DeskPRO:emails_user:kb-subscription.html.twig', [
-                'person'           => $person,
-                'new_articles'     => $newArticles,
-                'updated_articles' => $updatedArticles,
-                'unsub_auth'       => Util::generateStaticSecurityToken(
-                    $this->getContainer()->getSetting('core.app_secret').$person->getId().$person->secret_string
-                ),
-            ]);
+            if ($this->getContainer()->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                $viewModel = $this->getContainer()->get('email.user_viewmodel_factory')
+                    ->createKbSubscriptionModel($newArticles, $updatedArticles);
+                $this->getContainer()->get('email.email_sender')
+                    ->send($viewModel, ['to' => $person]);
+            } else {
+                $message = $this->getContainer()->getMailer()->createMessage();
+                $message->setToPerson($person);
+                $message->setTemplate(
+                    'DeskPRO:emails_user:kb-subscription.html.twig',
+                    [
+                        'person'           => $person,
+                        'new_articles'     => $newArticles,
+                        'updated_articles' => $updatedArticles,
+                        'unsub_auth'       => Util::generateStaticSecurityToken(
+                            $this->getContainer()->getSetting('core.app_secret').$person->getId().$person->secret_string
+                        ),
+                    ]
+                );
 
-            $this->getContainer()->getMailer()->send($message);
+                $this->getContainer()->getMailer()->send($message);
+            }
 
             // Saves mem
             $this->getContainer()->getEm()->detach($person);
