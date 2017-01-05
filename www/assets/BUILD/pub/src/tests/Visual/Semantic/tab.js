@@ -1,8 +1,10 @@
 import React from 'react';
 import { storiesOf } from '@kadira/storybook';
 import { Tab, TabGroup } from 'DeskPRO/Component/Semantic/Tab';
+import { css } from 'Visual/decorators';
 
 storiesOf('Semantic: tab', module)
+  .addDecorator(story => css(story()))
   .add(
     'Tabs',
     () => <TabGroup>

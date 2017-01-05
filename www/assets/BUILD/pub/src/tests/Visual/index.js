@@ -23,3 +23,4 @@ import './Semantic/menu';
 import './Semantic/popup';
 import './Semantic/Segment/segment';
 import './Semantic/tab';
+import './Semantic/Tabs/tabs';
