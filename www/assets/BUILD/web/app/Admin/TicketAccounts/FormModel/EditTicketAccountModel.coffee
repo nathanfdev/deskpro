@@ -11,7 +11,7 @@ define [
       @form.in_gmail_account    =
         mode: "read"
         read_mailbox_type: "inbox"
-        type: 'imap'
+        type: 'pop3'
       @form.in_pop3_account     = {}
       @form.in_imap_account     = {}
       @form.in_exchange_account = {}
@@ -130,7 +130,7 @@ define [
           @form.in_gmail_account.password     = @account.incoming_account.password
           @form.in_gmail_account.token        = @account.incoming_account.token
           @form.in_gmail_account.refreshToken = @account.incoming_account.refreshToken
-          @form.in_gmail_account.type         = @account.incoming_account.type || 'imap'
+          @form.in_gmail_account.type         = @account.incoming_account.type || 'pop3'
           @form.in_gmail_account.mode        = @account.incoming_account.mode || 'read'
           if @form.in_gmail_account.secure_mode and @form.in_gmail_account.secure_mode != ''
             @form.in_gmail_account.secure = true
@@ -163,7 +163,7 @@ define [
           @form.out_gmail_account.password     = @account.outgoing_account.password
           @form.out_gmail_account.token        = @account.outgoing_account.token
           @form.out_gmail_account.refreshToken = @account.outgoing_account.refreshToken
-          @form.out_gmail_account.type         = @account.outgoing_account.type || 'imap'
+          @form.out_gmail_account.type         = @account.outgoing_account.type || 'pop3'
 
         if @form.outgoing_type == 'office365'
           @form.out_office365_account.password = @account.outgoing_account.password

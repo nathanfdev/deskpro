@@ -254,11 +254,17 @@
 								Use POP3 instead
 							</button>
 						</td>
+						{% if
+							app.getSetting('core_email.google_oauth_client_id')
+							and
+							app.getSetting('core_email.google_oauth_secret')
+						%}
 						<td ng-show="form.in_gmail_account.type === 'pop3'">
 							<button class="btn btn-warning" type="button" ng-click="form.in_gmail_account.type = 'oauth'">
 								Use OAuth instead
 							</button>
 						</td>
+						{% endif %}
 					</tr>
 					<tr ng-show="form.in_gmail_account.type === 'pop3' || form.in_gmail_account.token">
 						<th>&nbsp;</th>
