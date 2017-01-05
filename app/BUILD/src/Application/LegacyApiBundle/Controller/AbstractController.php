@@ -672,19 +672,34 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         }
     }
 
-    protected function _sendCommentDeletedNotification($comment)
+    protected function _sendCommentDeletedNotification(CommentAbstract $comment)
     {
         if ($comment->getUserEmail()) {
-            $message = $this->container->getMailer()->createMessage();
-            if ($comment->person) {
-                $message->setTo($comment->person->getPrimaryEmailAddress(), $comment->person->getDisplayName());
+            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                if ($comment->getPerson()) {
+                    $to = $comment->getPerson()->getPrimaryEmailAddress();
+                } else {
+                    $to = $comment->getUserEmail();
+                }
+                $viewModel = $this->get('email.user_viewmodel_factory')
+                    ->createCommentDeletedModel($comment);
+                $this->get('email.email_sender')
+                    ->send($viewModel, ['to' => $to]);
             } else {
-                $message->setTo($comment->getUserEmail());
+                $message = $this->container->getMailer()->createMessage();
+                if ($comment->getPerson()) {
+                    $message->setTo($comment->getPerson()->getPrimaryEmailAddress(), $comment->getPerson()->getDisplayName());
+                } else {
+                    $message->setTo($comment->getUserEmail());
+                }
+                $message->setTemplate(
+                    'DeskPRO:emails_user:comment-deleted.html.twig',
+                    [
+                        'comment' => $comment,
+                    ]
+                );
+                $this->container->getMailer()->send($message);
             }
-            $message->setTemplate('DeskPRO:emails_user:comment-deleted.html.twig', [
-                'comment' => $comment,
-            ]);
-            $this->container->getMailer()->send($message);
         }
     }
 

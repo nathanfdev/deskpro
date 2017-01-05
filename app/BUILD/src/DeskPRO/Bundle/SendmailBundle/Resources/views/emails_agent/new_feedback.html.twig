@@ -2,8 +2,7 @@
 <dp:subject>
 	{{ phrase('agent.feedback.new_feedback') }}	{{ feedback.title }} {% if feedback.status == 'hidden' and not feedback.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
 </dp:subject>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
-"http://www.w3.org/TR/REC-html40/loose.dtd">
+
 <html>
 <head>
 	{% include 'SendmailBundle:blocks:resources.html.twig' %}

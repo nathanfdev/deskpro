@@ -185,22 +185,30 @@ class PortalEmailSender
     public function sendCommentThankYouEmail(CommentAbstract $comment)
     {
         $person = $comment->getPerson();
-        /** @var \Application\DeskPRO\Entity\ContentAbstract $content */
-        $content = $comment->getObject();
 
-        $contentUrl   = $this->container->get('object_router')->getPortalUrl($content);
-        $contentTitle = $content->getTitle();
+        $viewModel = $this->container->get('email.user_viewmodel_factory')
+            ->createCommentNewModel($comment);
+        if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person->getPrimaryEmailAddress()]);
+        } else {
+            /** @var \Application\DeskPRO\Entity\ContentAbstract $content */
+            $content = $comment->getObject();
 
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:comment-new.html.twig',
-            [
-                'content_url'   => $contentUrl,
-                'content_title' => $contentTitle,
-                'comment'       => $comment, // keep for bc ({{ comment.object.permalink }})
-                'validating'    => false, // keep here for BC
-            ]
-        );
+            $contentUrl   = $this->container->get('object_router')->getPortalUrl($content);
+            $contentTitle = $content->getTitle();
+
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:comment-new.html.twig',
+                [
+                    'content_url'   => $contentUrl,
+                    'content_title' => $contentTitle,
+                    'comment'       => $comment, // keep for bc ({{ comment.object.permalink }})
+                    'validating'    => false, // keep here for BC
+                ]
+            );
+        }
     }
 
     public function sendLoginAlert(Person $person, Request $request, $success)

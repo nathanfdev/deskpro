@@ -482,8 +482,8 @@ class PublishController extends AbstractController
     {
         if ($comment->getUserEmail()) {
             if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
-                if ($comment->person) {
-                    $to = $comment->person->getPrimaryEmailAddress();
+                if ($comment->getPerson()) {
+                    $to = $comment->getPerson()->getPrimaryEmailAddress();
                 } else {
                     $to = $comment->getUserEmail();
                 }
@@ -515,19 +515,34 @@ class PublishController extends AbstractController
     public function _sendCommentDeletedNotification(CommentAbstract $comment)
     {
         if ($comment->getUserEmail()) {
-            $message = $this->container->getMailer()->createMessage();
-            if ($comment->getPerson()) {
-                $message->setTo(
-                    $comment->getPerson()->getPrimaryEmailAddress(),
-                    $comment->getPerson()->getDisplayName()
-                );
+            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                if ($comment->getPerson()) {
+                    $to = $comment->getPerson()->getPrimaryEmailAddress();
+                } else {
+                    $to = $comment->getUserEmail();
+                }
+                $viewModel = $this->get('email.user_viewmodel_factory')
+                    ->createCommentDeletedModel($comment);
+                $this->get('email.email_sender')
+                    ->send($viewModel, ['to' => $to]);
             } else {
-                $message->setTo($comment->getUserEmail());
+                $message = $this->container->getMailer()->createMessage();
+                if ($comment->getPerson()) {
+                    $message->setTo(
+                        $comment->getPerson()->getPrimaryEmailAddress(),
+                        $comment->getPerson()->getDisplayName()
+                    );
+                } else {
+                    $message->setTo($comment->getUserEmail());
+                }
+                $message->setTemplate(
+                    'DeskPRO:emails_user:comment-deleted.html.twig',
+                    [
+                        'comment' => $comment,
+                    ]
+                );
+                $this->container->getMailer()->send($message);
             }
-            $message->setTemplate('DeskPRO:emails_user:comment-deleted.html.twig', [
-                'comment' => $comment,
-            ]);
-            $this->container->getMailer()->send($message);
         }
     }
 
