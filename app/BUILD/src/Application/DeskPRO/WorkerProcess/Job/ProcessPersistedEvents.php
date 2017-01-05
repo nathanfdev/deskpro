@@ -44,7 +44,7 @@ class ProcessPersistedEvents extends AbstractJob
 
     public function run()
     {
-        if ($this->getContainer()->get('deskpro.feature_flags')->hasExperimental('agent_chat')) {
+        if ($this->getContainer()->get('deskpro.feature_flags')->hasFeature('agent_chat')) {
             $em   = $this->getContainer()->getEm();
             $repo = $em->getRepository(Event::class);
             /** @var Event[] $events */
