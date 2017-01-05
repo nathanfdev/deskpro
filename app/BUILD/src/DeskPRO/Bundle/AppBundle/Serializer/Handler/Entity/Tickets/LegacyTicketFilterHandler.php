@@ -73,9 +73,11 @@ class LegacyTicketFilterHandler extends AbstractEntityHandler
     {
         $set      = $this->getSet($entity);
         $deferred = new CallbackDeferredProperty([$this, 'getSet'], [$entity]);
-        $context->getSideloadStore()->addCustomSideload('ticket_filter_set', $set->getId(), $deferred);
+        $model    = new LegacyTicketFilterModel($entity, $set);
 
-        return new LegacyTicketFilterModel($entity, $set);
+        $context->getSideloadStore()->addCustomSideload('ticket_filter_set', $set->getId(), $deferred, $model);
+
+        return $model;
     }
 
     /**

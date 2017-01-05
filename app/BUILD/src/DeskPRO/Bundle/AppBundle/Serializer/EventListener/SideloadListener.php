@@ -31,6 +31,8 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineCustomSideload;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineEntitySideload;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\EventDispatcher\Events;
@@ -49,19 +51,13 @@ class SideloadListener implements EventSubscriberInterface
     private $em;
 
     /**
-     * @var \ArrayObject
-     */
-    private $linked;
-
-    /**
      * SideloadListener constructor.
      *
      * @param EntityManager $em
      */
     public function __construct(EntityManager $em)
     {
-        $this->em     = $em;
-        $this->linked = new \ArrayObject();
+        $this->em = $em;
     }
 
     /**
@@ -77,6 +73,21 @@ class SideloadListener implements EventSubscriberInterface
                 'format'   => 'json',
                 'priority' => 16,
             ],
+            [
+                'event'    => Events::POST_SERIALIZE,
+                'method'   => 'copyInlineEntitySideloads',
+                'class'    => ApiWrapper::class,
+                'format'   => 'json',
+                'priority' => 64,
+            ],
+
+            [
+                'event'    => Events::POST_SERIALIZE,
+                'method'   => 'convertLinkedToObject',
+                'class'    => ApiWrapper::class,
+                'format'   => 'json',
+                'priority' => 128,
+            ],
         ];
     }
 
@@ -85,8 +96,6 @@ class SideloadListener implements EventSubscriberInterface
      */
     public function sideload(ObjectEvent $event)
     {
-        $this->linked = new \ArrayObject(); // just clear it
-
         /** @var GenericSerializationVisitor $visitor */
         $visitor = $event->getVisitor();
         $context = $event->getContext();
@@ -100,19 +109,25 @@ class SideloadListener implements EventSubscriberInterface
         $sideloads->setInterests($includes);
         $context->setExclusionEnabled(false);
 
+        $linked = [];
+
+        // disable inline sideloading for linked objects
+        $inlineSideloads = $context->isInlineSideloads();
+        $context->setInlineSideloads(false);
+
         while ($includes && $sideloads->hasSideloads()) {
             foreach ($includes as $include) {
                 $fqcn = $sideloads->getFqcn($include);
                 if ($fqcn) {
-                    $ids_to_load = $sideloads->getSideloads($include);
-                    foreach ($this->em->getRepository($fqcn)->findBy(['id' => $ids_to_load]) as $entity) {
+                    $idsToLoad = $sideloads->getSideloads($include);
+                    foreach ($this->em->getRepository($fqcn)->findBy(['id' => $idsToLoad]) as $entity) {
                         /* @var EntityInterface|DomainObject $entity */
-                        $this->addLinked($include, $entity->getId(), $context->accept($entity));
+                        $linked[$include][$entity->getId()] = $context->accept($entity);
                     }
                 }
                 if ($sideloads->hasCustom($include)) {
                     foreach ($sideloads->getCustom($include) as $custom) {
-                        $this->addLinked($include, $custom->getId(), $context->accept($custom->getData()));
+                        $linked[$include][$custom->getId()] = $context->accept($custom->getData());
                     }
                 }
             }
@@ -120,21 +135,102 @@ class SideloadListener implements EventSubscriberInterface
 
         // perhaps it's not necessary at all, but who knows where context will be used?
         $context->setExclusionEnabled(true);
+        // restore original 'inline_sideloading' option
+        $context->setInlineSideloads($inlineSideloads);
 
-        $visitor->addData('linked', $this->linked);
+        $visitor->setData('linked', $linked);
     }
 
     /**
-     * @param $include
-     * @param $id
-     * @param $data
+     * @param ObjectEvent $event
      */
-    private function addLinked($include, $id, $data)
+    public function copyInlineEntitySideloads(ObjectEvent $event)
     {
-        if (!isset($this->linked[$include])) {
-            $this->linked[$include] = [];
+        /** @var GenericSerializationVisitor $visitor */
+        $visitor = $event->getVisitor();
+        $context = $event->getContext();
+        if (!$context instanceof SideloadSerializationContext) {
+            return;
         }
 
-        $this->linked[$include][$id] = $data;
+        $data = VisitorDataAccessor::getData($visitor);
+        if (isset($data['data']) && isset($data['linked']) && is_array($data['data'])) {
+            $data['data']   = $this->recursiveCopyInlineEntitySideloads($data['data'], $data['linked'], $context);
+            $data['linked'] = $this->removeInlineSideloads($data['linked']);
+
+            VisitorDataAccessor::setData($visitor, $data);
+        }
+    }
+
+    /**
+     * @param ObjectEvent $event
+     */
+    public function convertLinkedToObject(ObjectEvent $event)
+    {
+        /** @var GenericSerializationVisitor $visitor */
+        $visitor = $event->getVisitor();
+        $context = $event->getContext();
+        if (!$context instanceof SideloadSerializationContext) {
+            return;
+        }
+
+        $data = VisitorDataAccessor::getData($visitor);
+        if (isset($data['linked'])) {
+            $data['linked'] = new \ArrayObject($data['linked']);
+
+            VisitorDataAccessor::setData($visitor, $data);
+        }
+    }
+
+    /**
+     * @param array                        $data
+     * @param array                        $linked
+     * @param SideloadSerializationContext $context
+     *
+     * @return array
+     */
+    private function recursiveCopyInlineEntitySideloads(array $data, array $linked, $context)
+    {
+        foreach ($data as $key => $value) {
+            if ($value instanceof InlineCustomSideload) {
+                if ($context->isInlineSideloads() && isset($linked[$value->getType()][$value->getId()])) {
+                    $data[$key] = $linked[$value->getType()][$value->getId()];
+                } else {
+                    unset($data[$key]);
+                }
+            } elseif ($value instanceof InlineEntitySideload) {
+                if (isset($linked[$value->getType()][$value->getId()])) {
+                    $data[$key] = $linked[$value->getType()][$value->getId()];
+                } else {
+                    $data[$key] = $value->getId();
+                }
+            } elseif (is_array($value)) {
+                $data[$key] = $this->recursiveCopyInlineEntitySideloads($value, $linked, $context);
+            } else {
+                $data[$key] = $value;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
+    private function removeInlineSideloads($data)
+    {
+        foreach ($data as $key => $value) {
+            if ($value instanceof InlineCustomSideload || $value instanceof InlineEntitySideload) {
+                unset($data[$key]);
+            } elseif (is_array($value)) {
+                $data[$key] = $this->removeInlineSideloads($value);
+            } else {
+                $data[$key] = $value;
+            }
+        }
+
+        return $data;
     }
 }

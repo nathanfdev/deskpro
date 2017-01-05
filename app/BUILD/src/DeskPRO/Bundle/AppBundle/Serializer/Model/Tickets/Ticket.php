@@ -45,6 +45,7 @@ use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Entity\TicketWorkflow;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineCustomSideload;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
@@ -585,6 +586,34 @@ class Ticket
     private $star;
 
     /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $ticketLayout;
+
+    /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $ticketExcerpt;
+
+    /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $ticketAgentErrors;
+
+    /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $ticketUserErrors;
+
+    /**
      * Constructor.
      *
      * @param TicketEntity $ticket
@@ -665,5 +694,37 @@ class Ticket
     public function setStar($star)
     {
         $this->star = $star;
+    }
+
+    /**
+     * @param InlineCustomSideload $ticketLayout
+     */
+    public function setTicketLayout($ticketLayout)
+    {
+        $this->ticketLayout = $ticketLayout;
+    }
+
+    /**
+     * @param InlineCustomSideload $ticketExcerpt
+     */
+    public function setTicketExcerpt($ticketExcerpt)
+    {
+        $this->ticketExcerpt = $ticketExcerpt;
+    }
+
+    /**
+     * @param InlineCustomSideload $ticketAgentErrors
+     */
+    public function setTicketAgentErrors($ticketAgentErrors)
+    {
+        $this->ticketAgentErrors = $ticketAgentErrors;
+    }
+
+    /**
+     * @param InlineCustomSideload $ticketUserErrors
+     */
+    public function setTicketUserErrors($ticketUserErrors)
+    {
+        $this->ticketUserErrors = $ticketUserErrors;
     }
 }

@@ -29,8 +29,12 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippet as TextSnippetEntity;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineCustomSideload;
 use JMS\Serializer\Annotation as JMS;
 
+/**
+ * Class TextSnippet.
+ */
 class TextSnippet
 {
     /**
@@ -88,6 +92,13 @@ class TextSnippet
     private $isDraft;
 
     /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $textSnippetContent;
+
+    /**
      * TextSnippet constructor.
      *
      * @param TextSnippetEntity $snippet
@@ -101,5 +112,21 @@ class TextSnippet
         $this->category     = $snippet->getCategory();
         $this->shortcutCode = $snippet->getShortcutCode();
         $this->isDraft      = $snippet->isDraft();
+    }
+
+    /**
+     * @return InlineCustomSideload
+     */
+    public function getTextSnippetContent()
+    {
+        return $this->textSnippetContent;
+    }
+
+    /**
+     * @param InlineCustomSideload $textSnippetContent
+     */
+    public function setTextSnippetContent($textSnippetContent)
+    {
+        $this->textSnippetContent = $textSnippetContent;
     }
 }

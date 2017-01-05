@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Component\Util\TypeUtils;
 use Doctrine\Common\Proxy\Proxy;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * Class SideloadStore.
@@ -112,8 +113,9 @@ class SideloadStore
      * @param string                   $interest
      * @param int                      $id
      * @param CallbackDeferredProperty $deferred
+     * @param mixed                    $model
      */
-    public function addCustomSideload($interest, $id, CallbackDeferredProperty $deferred)
+    public function addCustomSideload($interest, $id, CallbackDeferredProperty $deferred, $model = null)
     {
         if (!isset($this->customs[$interest])) {
             $this->customs[$interest] = [];
@@ -122,6 +124,11 @@ class SideloadStore
         $this->updateNotLoaded($interest);
 
         $this->customs[$interest][$id] = new CustomSideload($id, $deferred);
+
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        if ($model && $propertyAccessor->isWritable($model, $interest)) {
+            $propertyAccessor->setValue($model, $interest, new InlineCustomSideload($interest, $id));
+        }
     }
 
     /**
