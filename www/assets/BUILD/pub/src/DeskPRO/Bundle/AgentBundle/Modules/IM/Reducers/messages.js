@@ -1,12 +1,9 @@
-import * as actions from '../Actions/messagesActions';
-import { newActionAlerts } from '../../Application/Actions/notificationActions';
+import Immutable from 'immutable';
 import { createReducer } from 'Ampliflux';
 import { async } from 'Ampliflux/reducers/handlers';
-import Immutable from 'immutable';
+import * as actions from '../Actions/messagesActions';
+import { newActionAlerts } from '../../Application/Actions/notificationActions';
 import { MessagesHelper } from '../../../Services/Helpers/MessagesHelper';
-
-const messagesHelper = new MessagesHelper();
-
 
 const initialState = {
   me:               {},
@@ -24,12 +21,12 @@ export default createReducer(initialState, {
 
   [actions.loadMessages]: async(
     {
-      start:   (state) => state.set('loadingMessages', true),
+      start:   state => state.set('loadingMessages', true),
       success: (state, payloadArgument) => {
         const payload  = payloadArgument;
         const newState = state.set('searching', Boolean(payload.searchQuery));
-        const chat     = messagesHelper.getChat(newState, payload.chat);
-        const path     = messagesHelper.getPath(newState, payload.chat);
+        const chat     = MessagesHelper.getChat(newState, payload.chat);
+        const path     = MessagesHelper.getPath(newState, payload.chat);
 
         if (!chat || (payload.searchQuery && chat.searchQuery !== payload.searchQuery)) {
           const messages = {};
@@ -49,24 +46,24 @@ export default createReducer(initialState, {
 
         return newState.setIn(path, { ...chat });
       },
-      done: (state) => state.set('loadingMessages', false)
+      done: state => state.set('loadingMessages', false)
     }
   ),
 
-  [actions.addMessageOptimistic]:   messagesHelper.addMessageOptimistic.bind(messagesHelper),
-  [actions.markMessagesOptimistic]: messagesHelper.markMessagesOptimistic.bind(messagesHelper),
+  [actions.addMessageOptimistic]:   MessagesHelper.addMessageOptimistic,
+  [actions.markMessagesOptimistic]: MessagesHelper.markMessagesOptimistic,
 
   [actions.markMessages]: async({
-    success: messagesHelper.markMessages.bind(messagesHelper),
+    success: MessagesHelper.markMessages,
     done:    state => state.set('updatingMessages', false)
   }),
 
   [actions.refreshCounts]: async(
     {
       success: (state, payload) => state.set('counts', payload),
-      done:    (state) => state.set('loadingCounts', false)
+      done:    state => state.set('loadingCounts', false)
     }
   ),
 
-  [newActionAlerts]: messagesHelper.handleActionAlerts.bind(messagesHelper)
+  [newActionAlerts]: MessagesHelper.handleActionAlerts
 });

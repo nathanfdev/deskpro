@@ -9,6 +9,11 @@ class List extends React.Component {
     className: PropTypes.string
   };
 
+  static defaultProps = {
+    className: '',
+    elements:  []
+  };
+
   getItems() {
     const items = [];
     const { elements } = this.props;

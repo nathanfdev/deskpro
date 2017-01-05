@@ -40,23 +40,26 @@ export const preloadData    = createAction(
   () => (dispatch, getState) => new Promise(
     (resolve) => {
       const batchComponents = {
-        chat_departments:      { endpoint: 'chat_departments', query: 'include=agents' },
         agents:                { endpoint: 'agents' },
         languages:             { endpoint: 'languages' },
         user_groups:           { endpoint: 'user_groups' },
         settings:              { endpoint: 'helpdesk/agent-client/settings' },
-        alerts:                { endpoint: 'notify/setup/action-alerts' },
         me:                    { endpoint: 'me' },
         agent_teams:           { endpoint: 'agent_teams' },
         my_agent_teams:        { endpoint: 'agent_teams', query: 'my=true' },
         ticket_departments:    { endpoint: 'ticket_departments' },
         my_ticket_departments: { endpoint: 'ticket_departments', query: 'my=true' },
+        chat_departments:      { endpoint: 'chat_departments', query: 'include=agents' },
         onboardings:           { endpoint: 'people/onboarding/pending' }
       };
 
       if (window.DP_HAS_VOICE) {
         batchComponents.voice_tokens     = { endpoint: 'voice_client/tokens' };
         batchComponents.voice_activities = { endpoint: 'voice_client/activities' };
+      }
+
+      if (window.DP_HAS_NEW_IM) {
+        batchComponents.alerts = { endpoint: 'notify/setup/action-alerts' };
       }
 
       dispatch(loadAgentPhraseTranslations());
@@ -66,16 +69,8 @@ export const preloadData    = createAction(
           const data = flattenBatchResponses(responses);
 
           dispatch(setCollection('Department', 'all_tickets', data.ticket_departments));
-          const linked = getLinkedData(responses, 'chat_departments', 'agents');
-          for (const dep of data.chat_departments) {
-            if (linked[dep.id]) {
-              dep.agents = linked[dep.id];
-            } else {
-              dep.agents = [];
-            }
-          }
-          dispatch(setCollection('Department', 'all_chat', data.chat_departments));
           dispatch(setCollection('Department', 'my_tickets', data.my_ticket_departments));
+          dispatch(setCollection('Department', 'all_chat', data.chat_departments));
           dispatch(setCollection('Person', 'agents', data.agents));
           dispatch(setCollection('AgentTeam', 'all', data.agent_teams));
           dispatch(setCollection('AgentTeam', 'my', data.my_agent_teams));
@@ -86,10 +81,22 @@ export const preloadData    = createAction(
             dispatch(setCollection('Onboarding', 'pending', [data.onboardings]));
           }
 
+          const linked = getLinkedData(responses, 'chat_departments', 'agents');
+          for (const dep of data.chat_departments) {
+            if (linked[dep.id]) {
+              dep.agents = linked[dep.id];
+            } else {
+              dep.agents = [];
+            }
+          }
+
           dispatch(setAgentSettings(data.settings));
-          dispatch(setupActionAlerts(data.alerts));
           dispatch(setCollection('Person', 'me', [data.me.person]));
-          dispatch(setImMe(data.me.person));
+
+          if (window.DP_HAS_NEW_IM) {
+            dispatch(setImMe(data.me.person));
+            dispatch(setupActionAlerts(data.alerts));
+          }
 
           if (window.DP_HAS_VOICE) {
             dispatch(setVoiceTokens(data.voice_tokens));

@@ -8,11 +8,17 @@ export class AgentChatRepository extends ApiRepository {
   /**
    * @param {integer} entityId Entity identity to start the chat
    * @param {string} type type of entity, one of agent, team, department or everyone
+   * @param {string} groupName used only for group type.
    * @returns {Promise} promise
    */
-  startChat(entityId, type) {
+  startChat(entityId, type, groupName = '') {
     const params = { type };
     if (Number(entityId)) {
+      params.participant = entityId;
+    } else if (Array.isArray(entityId) && type === 'group') {
+      if (groupName) {
+        params.name = groupName;
+      }
       params.participant = entityId;
     }
 
@@ -44,7 +50,9 @@ export class AgentChatRepository extends ApiRepository {
    * @returns {Promise} promise
    */
   loadMessagesCount() {
-    return this.api.sendGet(`DP_API/${this.url}/messages/counts?group_by=chat&status[]=0&status[]=1&index_group_by=1&not_my=1`);
+    return this.api.sendGet(
+      `DP_API/${this.url}/messages/counts?group_by=chat&status[]=0&status[]=1&index_group_by=1&not_my=1`
+    );
   }
 
   /**
@@ -56,4 +64,10 @@ export class AgentChatRepository extends ApiRepository {
   markMessages(chatId, ids, status) {
     return this.api.sendPut(`DP_API/${this.url}/${chatId}/messages/mark`, { ids, status });
   }
+
+  updateChat(chatId, ids, name) {
+    return this.api.sendPut(`DP_API/${this.url}/${chatId}`, { type: 'group', participant: ids, name });
+  }
 }
+
+export default AgentChatRepository;

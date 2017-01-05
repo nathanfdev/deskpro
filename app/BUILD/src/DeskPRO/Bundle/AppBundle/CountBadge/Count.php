@@ -51,7 +51,7 @@ class Count
     /**
      * Nested counts.
      *
-     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\CountBadge\Count>")
+     * @JMS\Type("map<DeskPRO\Bundle\AppBundle\CountBadge\Count>")
      * @JMS\MaxDepth(0)
      *
      * @var Count[]

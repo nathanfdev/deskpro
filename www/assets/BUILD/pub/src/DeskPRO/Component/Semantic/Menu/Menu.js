@@ -14,7 +14,8 @@ class Menu extends React.Component {
     children: PropTypes.node
   };
   static defaultProps = {
-    items: []
+    items:     [],
+    className: ''
   };
 
   getItems() {

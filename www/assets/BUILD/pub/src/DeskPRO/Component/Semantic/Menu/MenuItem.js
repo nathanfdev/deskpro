@@ -16,7 +16,8 @@ class MenuItem extends React.Component {
   static defaultProps = {
     onClick() {},
     onMouseOver() {},
-    onMouseOut() {}
+    onMouseOut() {},
+    className: ''
   };
 
   getIcon() {

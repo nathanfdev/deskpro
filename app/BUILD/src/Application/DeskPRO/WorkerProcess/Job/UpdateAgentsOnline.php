@@ -43,9 +43,11 @@ class UpdateAgentsOnline extends AbstractJob
 
     public function run()
     {
-        $data_service     = $this->getContainer()->get('data.agent');
-        $agent_ids        = $data_service->getAgentsOnlineStatus();
-        $event_dispatcher = $this->getContainer()->get('event_dispatcher');
-        $event_dispatcher->dispatch(UpdateOnlineEvent::EVENT_NAME, new UpdateOnlineEvent($agent_ids));
+        if ($this->getContainer()->get('deskpro.feature_flags')->hasExperimental('agent_chat')) {
+            $data_service     = $this->getContainer()->get('data.agent');
+            $agent_ids        = $data_service->getAgentsOnlineStatus();
+            $event_dispatcher = $this->getContainer()->get('event_dispatcher');
+            $event_dispatcher->dispatch(UpdateOnlineEvent::EVENT_NAME, new UpdateOnlineEvent($agent_ids));
+        }
     }
 }

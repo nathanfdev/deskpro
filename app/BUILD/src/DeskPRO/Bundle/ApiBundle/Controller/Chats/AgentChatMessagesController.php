@@ -32,6 +32,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatMessageType;
@@ -58,6 +59,7 @@ use Symfony\Component\HttpFoundation\Response;
  *      }
  * )
  * @ApiUnstable()
+ * @Feature("agent_chat")
  */
 class AgentChatMessagesController extends CrudSubController
 {

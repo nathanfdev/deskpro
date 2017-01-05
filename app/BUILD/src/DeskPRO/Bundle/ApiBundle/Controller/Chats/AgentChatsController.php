@@ -33,7 +33,9 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Traits\AgentChatFiltersTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatRepository;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -50,12 +52,12 @@ use Symfony\Component\HttpFoundation\Response;
  * @Rest\Route("/agent_chats")
  * @ApiDoc(target="all", section="Chats", output="DeskPRO\Bundle\AppBundle\Entity\AgentChat")
  * @ApiUnstable()
+ * @Feature("agent_chat")
  */
 class AgentChatsController extends CrudController
 {
     use AgentChatFiltersTrait;
 
-    public static $exposeOnly  = ['get', 'list', 'count', 'post', 'delete'];
     public static $entity      = AgentChat::class;
     public static $type        = AgentChatType::class;
     public static $listOrder   = 'asc';
@@ -80,7 +82,7 @@ class AgentChatsController extends CrudController
      *      {
      *          "name"="type",
      *          "dataType"="integer",
-     *          "requirement"="(agent|team|department|everyone)",
+     *          "requirement"="(agent|team|department|everyone|group)",
      *          "description"="an entity type to start chat with"
      *      }
      *     },
@@ -116,6 +118,80 @@ class AgentChatsController extends CrudController
         $view->setLocation($this->getLocationUrl($entity, $request));
 
         return $view;
+    }
+
+    /**
+     * This endpoint gives an ability to start chat with some person, team, department or with everyone in helpdesk.
+     *
+     * @ApiDoc(
+     *     section = "Chats",
+     *     resourceDescription="Operations about agent chats",
+     *     description = "update an agent chat",
+     *     requirements={
+     *      {
+     *          "name"="id",
+     *          "dataType"="integer",
+     *          "requirement"="\d+",
+     *          "description"="a chat id"
+     *      },
+     *      {
+     *          "name"="participant",
+     *          "dataType"="integer",
+     *          "requirement"="\d+",
+     *          "description"="an entity identifier"
+     *      },
+     *      {
+     *          "name"="type",
+     *          "dataType"="integer",
+     *          "requirement"="(agent|team|department|everyone|group)",
+     *          "description"="an entity type to start chat with"
+     *      }
+     *     },
+     *     statusCodes = {
+     *       204 = "Chat was updated"
+     *     }
+     * )
+     * @Rest\Put("/{id}")
+     *
+     * @param int     $id
+     * @param Request $request
+     *
+     * @throws InvalidFormException
+     *
+     * @return View
+     */
+    public function putAction($id, Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupEntityContext($id, $request));
+
+        return $this->handleForm($this->findEntity($id, $request), $request, ['person' => $this->getUser()]);
+    }
+
+    /**
+     * This endpoint gives an ability to start chat with some person, team, department or with everyone in helpdesk.
+     *
+     * @ApiDoc(
+     *     section = "Chats",
+     *     resourceDescription="Operations about agent chats",
+     *     description = "get agent chat groups",
+     *     output="<DeskPRO\Bundle\AppBundle\Entity\AgentChat>"
+     * )
+     * @Rest\Get("/groups")
+     *
+     * @param Request $request
+     *
+     * @throws InvalidFormException
+     *
+     * @return View
+     */
+    public function getGroupChatsAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, $this->getPermissionGroupContext($request));
+
+        /** @var AgentChatRepository $repo */
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository(AgentChat::class);
+
+        return View::create($this->wrap($repo->findGroupChats($this->getUser())), Response::HTTP_OK);
     }
 
     /**

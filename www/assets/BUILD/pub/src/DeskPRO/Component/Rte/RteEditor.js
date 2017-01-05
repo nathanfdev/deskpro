@@ -13,12 +13,20 @@ export default class RteEditor extends React.Component {
     options:         PropTypes.object,
     onChange:        PropTypes.func,
     onSubmit:        PropTypes.func,
-    onPasteImage:    PropTypes.func
+    onPasteImage:    PropTypes.func,
+    onFocus:         PropTypes.func,
+    onBlur:          PropTypes.func
+    
   };
 
   componentDidMount() {
     const { inline, ctrlEnterSubmit, value = '', options = {} } = this.props;
-    const { onChange = () => {}, onSubmit = () => {} } = this.props;
+    const {
+      onChange = () => {},
+      onSubmit = () => {},
+      onFocus = () => {},
+      onBlur = () => {}
+    } = this.props;
 
     const node = this.getNode();
     const onChangeContent = () => {
@@ -50,6 +58,8 @@ export default class RteEditor extends React.Component {
     this.medium.setContent(value);
     this.medium.subscribe('editableInput', onChangeContent);
     this.medium.subscribe('onChange', onChangeContent);
+    this.medium.subscribe('focus', onFocus);
+    this.medium.subscribe('blur', onBlur);
     this.medium.subscribe('editableKeydownEnter', (event) => {
       const ctrlKey = event.ctrlKey || event.metaKey;
 
@@ -69,8 +79,13 @@ export default class RteEditor extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.value !== this.getNode().innerHTML) {
-      this.medium.setContent(newProps.value);
+    if (this.getNode() && newProps.value !== this.getNode().innerHTML) {
+      let content = newProps.value;
+      if (!content) {
+        content = '<p></p>';
+      }
+
+      this.medium.setContent(content);
     }
   }
 
@@ -196,10 +211,6 @@ export default class RteEditor extends React.Component {
 
   render() {
     const { tag = 'div' } = this.props;
-    const props = {
-      ref: (node) => { this.node = node; },
-      ...this.props
-    };
-    return React.createElement(tag, props);
+    return React.createElement(tag, { ...this.props, ref: (c) => { this.node = c; } });
   }
 }

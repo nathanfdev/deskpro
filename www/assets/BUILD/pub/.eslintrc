@@ -73,6 +73,7 @@
       {"forbid": ["any"]}
     ],
     "import/prefer-default-export": "off",
+    "react/no-unused-prop-types": [2, { "skipShapeProps": true }],
     "class-methods-use-this": [
       "error",
       { "exceptMethods": [
@@ -91,7 +92,7 @@
   ],
   "settings": {
     "import/resolver": {
-      "babel-namespace": {}
+      "babel-namespace": {  }
     },
     "react": {
       "version": "15.1.0"

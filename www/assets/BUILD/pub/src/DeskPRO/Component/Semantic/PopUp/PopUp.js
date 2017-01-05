@@ -9,19 +9,30 @@ class PopUp extends React.Component {
     opened:     PropTypes.bool,
     elementId:  PropTypes.string,
     positionAt: PropTypes.string,
-    content:    PropTypes.oneOfType([
+
+    content: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.node
     ]).isRequired,
-    children:  PropTypes.node,
-    autoClose: PropTypes.bool,
-    autoOpen:  PropTypes.bool,
-    className: PropTypes.string
+
+    children:       PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    autoClose:      PropTypes.bool,
+    autoOpen:       PropTypes.bool,
+    className:      PropTypes.string,
+    innerClassName: PropTypes.string,
+    id:             PropTypes.number.isRequired,
+    classes:        PropTypes.arrayOf(PropTypes.string),
+    innerClasses:   PropTypes.arrayOf(PropTypes.string)
   };
 
   static defaultProps = {
-    autoClose: false,
-    autoOpen:  false
+    onOpen() {},
+    className:      '',
+    innerClassName: '',
+    innerClasses:   [],
+    classes:        [],
+    autoClose:      false,
+    autoOpen:       false
   };
 
   constructor(props) {
@@ -83,26 +94,25 @@ class PopUp extends React.Component {
   };
 
   renderBody() {
-    const { content, positionAt, elementId, className } = this.props;
-    const { isOpen } = this.state;
+    const { content, positionAt, elementId, innerClassName } = this.props;
 
     return (
       <ClickOut onClickOut={this.closePopup}>
-        <div id={elementId} className={classNames('ui', 'popup', positionAt, className, { visible: isOpen })}>
+        <div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen }, innerClassName)}>
           {content}
         </div>
       </ClickOut>
-      );
+    );
   }
 
   render() {
     const { isOpen } = this.state;
-    const { children } = this.props;
+    const { children, className } = this.props;
 
     return (
       <div
         style={{ display: 'inline-block' }}
-        className={classNames({ active: isOpen })}
+        className={classNames({ active: isOpen }, className)}
         ref={(c) => { this.button = c; }}
         onClick={this.openPopup}
         onMouseEnter={this.onMouseEnter}

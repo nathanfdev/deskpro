@@ -1,2 +1,2 @@
 export Segment from './Segment';
-export Segments from './Segments';
+export SegmentsGroup from './SegmentsGroup';

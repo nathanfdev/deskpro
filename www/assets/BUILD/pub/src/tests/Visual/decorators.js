@@ -64,3 +64,6 @@ export function redux(state, jsx) {
     </Provider>
   );
 }
+
+window.DESKPRO_APP_ASSETS_URL = assetsUrl;
+export const appAssetsUrl = assetsUrl;

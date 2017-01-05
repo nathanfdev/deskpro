@@ -491,6 +491,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     public function getPersonList()
     {
         // OMG this should be refactored somehow, but right now it works
+        // also we are interested in agents only
         if (!$this->_people) {
 
             /** @var \Application\DeskPRO\EntityRepository\Department $repository */
@@ -498,11 +499,6 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
             $permissions = $repository->getPermissionsInfo($this);
             $db          = App::getDb();
             $ids         = [];
-            foreach ($permissions['usergroups'] as $usergroup) {
-                if ($usergroup['perm_name'] === 'full') {
-                    $ids[] = $usergroup['usergroup_id'];
-                }
-            }
             foreach ($permissions['agentgroups'] as $usergroup) {
                 if ($usergroup['perm_name'] === 'full') {
                     $ids[] = $usergroup['usergroup_id'];
@@ -512,7 +508,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
             if ($ids) {
                 $usergroups = implode(',', $ids);
                 $sql        = "SELECT DISTINCT(person_id) FROM person2usergroups WHERE usergroup_id IN ({$usergroups})";
-                $personIds  = $db->fetchColumn($sql);
+                $personIds  = $db->fetchAllCol($sql);
             } else {
                 $personIds = [];
             }

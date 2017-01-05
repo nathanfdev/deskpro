@@ -17,6 +17,7 @@ import AgentReducers from './AgentApp_Reducers';
 import AppReducers from '../AppBundle/AppApp_Reducers';
 import { preloadData } from './Modules/Application/Actions/bootstrapActions';
 import { setOnlineAgents, setOnlineUserChatAgents } from './Modules/Agent/Actions/agentActions';
+import { NotificationServiceContainer } from './Modules/Application/Components/Notifications/NotificationServiceContainer';
 
 class AgentLegacyApp {
 
@@ -41,6 +42,9 @@ class AgentLegacyApp {
       this.renderPiece(AgentList, AgentList.getType());
       this.renderPiece(SideBarContainer, SideBarContainer.getType());
       this.renderPiece(AgentOnboardingContainer, AgentOnboardingContainer.getType());
+      if (window.DP_HAS_NEW_IM) {
+        this.renderPiece(NotificationServiceContainer, NotificationServiceContainer.getType());
+      }
       window.$('#dp_loading').remove();
 
       const messageBroker = window.DeskPRO_Window.getMessageBroker();

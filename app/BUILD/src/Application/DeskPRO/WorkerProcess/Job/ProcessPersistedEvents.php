@@ -44,20 +44,22 @@ class ProcessPersistedEvents extends AbstractJob
 
     public function run()
     {
-        $em   = $this->getContainer()->getEm();
-        $repo = $em->getRepository('\DeskPRO\Bundle\AppBundle\Entity\Event');
-        /** @var Event[] $events */
-        $events = $repo->findBy(['processed' => false]);
+        if ($this->getContainer()->get('deskpro.feature_flags')->hasExperimental('agent_chat')) {
+            $em   = $this->getContainer()->getEm();
+            $repo = $em->getRepository(Event::class);
+            /** @var Event[] $events */
+            $events = $repo->findBy(['processed' => false]);
 
-        if ($events) {
-            /** @var DeferredStrategy $strategy */
-            $strategy = $event_dispatcher = $this->getContainer()->get('deskpro.notification.strategy_factory')->create($events[0]->getEvent());
-            foreach ($events as $event) {
-                $strategy->handlePersistedEvent($event->getEvent());
-                $event->setIsPorcessed(true);
-                $em->persist($event);
+            if ($events) {
+                /** @var DeferredStrategy $strategy */
+                $strategy = $event_dispatcher = $this->getContainer()->get('deskpro.notification.strategy_factory')->create($events[0]->getEvent());
+                foreach ($events as $event) {
+                    $strategy->handlePersistedEvent($event->getEvent());
+                    $event->setIsPorcessed(true);
+                    $em->persist($event);
+                }
+                $em->flush();
             }
-            $em->flush();
         }
     }
 }
