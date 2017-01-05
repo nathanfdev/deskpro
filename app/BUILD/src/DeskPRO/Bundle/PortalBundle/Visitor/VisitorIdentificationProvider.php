@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,7 +32,6 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Visitor;
 
-use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\RandUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -81,6 +80,7 @@ class VisitorIdentificationProvider
 
     /**
      * @param bool $acceptFromQuery True to accept COOKIE_NAME from the query string as well (e.g. used in PageHitController, chat AuthController)
+     *
      * @return string
      */
     public function getVisitorIdentifier($acceptFromQuery = false)
@@ -89,10 +89,11 @@ class VisitorIdentificationProvider
             foreach ([
                 $acceptFromQuery ? $request->query->get(static::COOKIE_NAME) : null,
                 $request->cookies->get(static::COOKIE_NAME),
-                $request->attributes->get(static::ATTRIBUTE_NAME)
+                $request->attributes->get(static::ATTRIBUTE_NAME),
             ] as $identifier) {
                 if ($identifier && preg_match('#^\d{8,9}\-[A-Z0-9]{8}\-[A-Z0-9]{8}\-[A-Z0-9]{6}\-[A-Z]{3}$#', $identifier)) {
                     $this->logger->info(sprintf('found visitor identifier in request: %s', $identifier));
+
                     return $identifier;
                 }
             }
