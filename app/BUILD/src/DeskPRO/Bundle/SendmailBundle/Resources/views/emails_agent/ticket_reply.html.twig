@@ -13,26 +13,38 @@
 		{{ phrase('agent.emails.new_user_reply_ticket_subject') }}
 	{% endif %}
 </dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-	<dp:last-reply />
+	<container>
+		<dp:last-reply />
 
-	<br /><br />
+		<br /><br />
 
-	<h1>{{ phrase('agent.general.ticket') }}</h1>
-	{{ phrase('agent.emails.person_replied', {name: new_message.person.getDisplayContact(), 'subject':ticket.subject}) }}
+		<h1>{{ phrase('agent.general.ticket') }}</h1>
+		{{ phrase('agent.emails.person_replied', {name: new_message.person.getDisplayContact(), 'subject':ticket.subject}) }}
 
-	<br /><br />
+		<br /><br />
 
-	<dp:ticket-properties-table />
+		<dp:ticket-properties-table />
 
-	<br /><br />
+		<br /><br />
 
-	<h1>{{ phrase('agent.tickets.ticket_changes') }}</h1>
-	<dp:ticket-logs />
+		<h1>{{ phrase('agent.tickets.ticket_changes') }}</h1>
+		<dp:ticket-logs />
 
-	<br /><br />
+		<br /><br />
 
-	<h1>{{ phrase('agent.general.message_history') }}</h1>
-	<dp:agent-ticket-history />
-</container>
+		<h1>{{ phrase('agent.general.message_history') }}</h1>
+		<dp:agent-ticket-history />
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

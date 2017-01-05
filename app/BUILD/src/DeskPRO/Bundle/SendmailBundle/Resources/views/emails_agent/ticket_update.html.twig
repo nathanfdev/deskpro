@@ -26,38 +26,50 @@
 	{% endif %}
 	[#{{ ticket.id }} {{action}}] Re: {{ ticket.subject }}{% if sla and sla_status == 'warning' %} ({{ phrase('agent.emails.ticket_sla_warning') }}){% elseif sla and sla_status == 'fail' %} ({{ phrase('agent.emails.ticket_sla_failed') }}){% endif %}
 </dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-	{%- set phrase_part -%}
-		{% if action_performer and action_performer.getId() %}
-			{{ action_performer.getDisplayContact() }}
-		{% elseif sla %}
-			{{ phrase('agent.general.sla') }} {{ sla.title }}{% if sla_status == 'warning' %} ({{ phrase('agent.general.warning') }}){% elseif sla_status == 'fail' %} ({{ phrase('agent.general.failed') }}){% endif %}
-		{% else %}
-			{{ phrase('agent.general.system_user') }}
+	<container>
+		{%- set phrase_part -%}
+			{% if action_performer and action_performer.getId() %}
+				{{ action_performer.getDisplayContact() }}
+			{% elseif sla %}
+				{{ phrase('agent.general.sla') }} {{ sla.title }}{% if sla_status == 'warning' %} ({{ phrase('agent.general.warning') }}){% elseif sla_status == 'fail' %} ({{ phrase('agent.general.failed') }}){% endif %}
+			{% else %}
+				{{ phrase('agent.general.system_user') }}
+			{% endif %}
+		{%- endset -%}
+		{{ phrase('agent.emails.user_updated_ticket', {name: phrase_part, subject: ticket.subject|e}, true) }}
+		{% if type_flag == 'assigned' %}
+			{{ phrase('agent.emails.updated_ticket_assigned') }}
+		{% elseif type_flag == 'assigned_team' %}
+			{{ phrase('agent.emails.updated_ticket_assigned_team', {team: ticket.agent_team.name}) }}
+		{% elseif type_flag == 'added_part' %}
+			{{ phrase('agent.emails.updated_ticket_followed') }}
 		{% endif %}
-	{%- endset -%}
-	{{ phrase('agent.emails.user_updated_ticket', {name: phrase_part, subject: ticket.subject|e}, true) }}
-	{% if type_flag == 'assigned' %}
-		{{ phrase('agent.emails.updated_ticket_assigned') }}
-	{% elseif type_flag == 'assigned_team' %}
-		{{ phrase('agent.emails.updated_ticket_assigned_team', {team: ticket.agent_team.name}) }}
-	{% elseif type_flag == 'added_part' %}
-		{{ phrase('agent.emails.updated_ticket_followed') }}
-	{% endif %}
 
-	<br /><br />
+		<br /><br />
 
-	<h1>{{ phrase('agent.general.ticket') }}</h1>
-	<dp:ticket-properties-table />
+		<h1>{{ phrase('agent.general.ticket') }}</h1>
+		<dp:ticket-properties-table />
 
-	<br /><br />
+		<br /><br />
 
-	<h1>{{ phrase('agent.tickets.ticket_changes') }}</h1>
-	<dp:ticket-logs />
+		<h1>{{ phrase('agent.tickets.ticket_changes') }}</h1>
+		<dp:ticket-logs />
 
-	<br /><br />
+		<br /><br />
 
-	<h1>{{ phrase('agent.general.message_history') }}</h1>
-	<dp:agent-ticket-history />
-</container>
+		<h1>{{ phrase('agent.general.message_history') }}</h1>
+		<dp:agent-ticket-history />
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

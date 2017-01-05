@@ -1,18 +1,30 @@
 <dp:subject>{{ phrase('user.email_subjects.tickets_re') }}</dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-	<dp:agent-reply />
+	<container>
+		<dp:agent-reply />
 
-	{% if show_rating_link and app.isPortalEnabled() %}<dp:ticket-rating-links />{% endif %}
+		{% if show_rating_link and app.isPortalEnabled() %}<dp:ticket-rating-links />{% endif %}
 
-	<br /><br />
-
-	<dp:ticket-history />
-
-	{% if app.isPortalEnabled() %}
 		<br /><br />
 
-		{{ phrase('user.emails.ticket_access_ticket_online') }}
-		<a href="{{ ticket_link }}">{{ ticket_link }}</a>
-	{% endif %}
-</container>
+		<dp:ticket-history />
+
+		{% if app.isPortalEnabled() %}
+			<br /><br />
+
+			{{ phrase('user.emails.ticket_access_ticket_online') }}
+			<a href="{{ ticket_link }}">{{ ticket_link }}</a>
+		{% endif %}
+	</container>
+
+  {% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

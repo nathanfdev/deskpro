@@ -1,14 +1,27 @@
 <dp:subject>{{ phrase('user.email_subjects.feedback_new-disapproved') }}</dp:subject>
-<container>
-	{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<br /><br />
+	<container>
+		{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}
 
-	{% if reason %}
-		{{ phrase('user.emails.feedback_disapproved-reason', {name: agent.display_name_user}) }}
 		<br /><br />
-		{{ reason }}
-	{% else %}
-		{{ phrase('user.emails.feedback_disapproved') }}
-	{% endif %}
-</container>
+
+		{% if reason %}
+			{{ phrase('user.emails.feedback_disapproved-reason', {name: agent.display_name_user}) }}
+			<br /><br />
+			{{ reason }}
+		{% else %}
+			{{ phrase('user.emails.feedback_disapproved') }}
+		{% endif %}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

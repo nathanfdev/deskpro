@@ -1,20 +1,32 @@
 <dp:subject>{{ phrase('portal.email_subjects.ticket_added_cc') }}</dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-    {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+    <container>
+        {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
-    <br /><br />
-
-    {{ phrase('portal.emails.ticket_cc-added') }}
-
-    {% if app.isPortalEnabled() %}
         <br /><br />
 
-        {{ phrase('portal.emails.ticket_access_ticket_online') }}
-        <a href="{{ ticket_link }}">{{ ticket_link }}</a>
-    {% endif %}
+        {{ phrase('portal.emails.ticket_cc-added') }}
 
-    <br /><br />
+        {% if app.isPortalEnabled() %}
+            <br /><br />
 
-    {{ phrase('portal.emails.end_greeting')| raw }}
-</container>
+            {{ phrase('portal.emails.ticket_access_ticket_online') }}
+            <a href="{{ ticket_link }}">{{ ticket_link }}</a>
+        {% endif %}
+
+        <br /><br />
+
+        {{ phrase('portal.emails.end_greeting')| raw }}
+    </container>
+
+  {% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

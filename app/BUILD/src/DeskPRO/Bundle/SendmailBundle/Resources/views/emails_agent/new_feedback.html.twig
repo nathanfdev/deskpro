@@ -2,15 +2,28 @@
 <dp:subject>
 	{{ phrase('agent.feedback.new_feedback') }}	{{ feedback.title }} {% if feedback.status == 'hidden' and not feedback.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
 </dp:subject>
-<container>
-	{{ phrase('agent.feedback.user_submitted_new_feedback', {name: feedback.person.getDisplayContact() }) }}
-	{% if feedback.status == 'hidden' and not feedback.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<br /><br />
+	<container>
+		{{ phrase('agent.feedback.user_submitted_new_feedback', {name: feedback.person.getDisplayContact() }) }}
+		{% if feedback.status == 'hidden' and not feedback.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
 
-	{{ phrase('agent.emails.view_online_at') }}: <a href="{{ url_full('agent') }}#app.feedback,i:{{ feedback.id }}">{{ url_full('agent') }}#app.feedback,fb_content,i:{{ feedback.id }}</a>
+		<br /><br />
 
-	<br /><br />
+		{{ phrase('agent.emails.view_online_at') }}: <a href="{{ url_full('agent') }}#app.feedback,i:{{ feedback.id }}">{{ url_full('agent') }}#app.feedback,fb_content,i:{{ feedback.id }}</a>
 
-	{{ feedback.getContent()|raw }}
-</container>
+		<br /><br />
+
+		{{ feedback.getContent()|raw }}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

@@ -1,5 +1,17 @@
 <dp:subject>{{ phrase('user.emails.ticket_no-autoresponse') }}</dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-    {{ phrase('user.emails.ticket_flood') }}
-</container>
+    <container>
+        {{ phrase('user.emails.ticket_flood') }}
+    </container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

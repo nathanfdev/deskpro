@@ -1,18 +1,30 @@
 <dp:subject>{{ phrase('user.email_subjects.register-welcome') }}</dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-	{{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+	<container>
+		{{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
-	<br/><br/>
+		<br/><br/>
 
-	{% if verify_url is null %}
-		{{ phrase('user.emails.register-welcome') }}<br/>
-		{% if portal_url is not defined %}
-			{% set portal_url = url_full('portal_home') %}
+		{% if verify_url is null %}
+			{{ phrase('user.emails.register-welcome') }}<br/>
+			{% if portal_url is not defined %}
+				{% set portal_url = url_full('portal_home') %}
+			{% endif %}
+			<a href="{{ portal_url }}">{{ portal_url }}</a>
+		{% else %}
+			{{ phrase('user.emails.register-confirm') }}<br/>
+			<a href="{{ verify_url }}">{{ verify_url }}</a>
 		{% endif %}
-		<a href="{{ portal_url }}">{{ portal_url }}</a>
-	{% else %}
-		{{ phrase('user.emails.register-confirm') }}<br/>
-		<a href="{{ verify_url }}">{{ verify_url }}</a>
-	{% endif %}
-</container>
+	</container>
+
+  {% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

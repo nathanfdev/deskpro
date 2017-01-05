@@ -1,6 +1,19 @@
 <dp:subject>{{ phrase('user.email_subjects.comment-deleted') }}</dp:subject>
-<container>
-    {% set phrase_link %}<a href="{{ content_link }}">{{ content.title }}</a>{% endset %}
-    {{ phrase('user.emails.comment_thank-you', {'link': phrase_link}, true) }}
-    {{ phrase('user.emails.comment_deleted') }}
-</container>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+    <container>
+        {% set phrase_link %}<a href="{{ content_link }}">{{ content.title }}</a>{% endset %}
+        {{ phrase('user.emails.comment_thank-you', {'link': phrase_link}, true) }}
+        {{ phrase('user.emails.comment_deleted') }}
+    </container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

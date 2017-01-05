@@ -9,17 +9,29 @@
 		{{ phrase('agent.emails.subject_new_ticket') }}
 	{% endif %}
 </dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-	<dp:last-reply />
+	<container>
+		<dp:last-reply />
 
-	<br /><br />
+		<br /><br />
 
-	<h1>{{ phrase('agent.general.ticket') }}</h1>
+		<h1>{{ phrase('agent.general.ticket') }}</h1>
 
-	{{ phrase('agent.emails.ticket_was_created', {name: ticket.person.getDisplayContact()}) }}
+		{{ phrase('agent.emails.ticket_was_created', {name: ticket.person.getDisplayContact()}) }}
 
-	<br /><br />
+		<br /><br />
 
-	<dp:ticket-properties-table />
-</container>
+		<dp:ticket-properties-table />
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

@@ -2,16 +2,31 @@
 <dp:subject>
 	{{ phrase('agent.emails.task_assigned_to_you_by', {title: task.title, agent: performer.getDisplayName() }) }}
 </dp:subject>
-{% if task.assigned_agent %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-{{ phrase('agent.emails.task_assigned_to_you_by', {title: task.title, agent: performer.getDisplayName() }) }}
-<br /><br />
-<a href="{{ url_full('agent') }}#app.tasks,tasks:own:total">{{ phrase('agent.emails.view_your_tasks') }}</a>
+	<container>
+		{% if task.assigned_agent %}
 
-{% elseif task.assigned_agent_team %}
+		{{ phrase('agent.emails.task_assigned_to_you_by', {title: task.title, agent: performer.getDisplayName() }) }}
+		<br /><br />
+		<a href="{{ url_full('agent') }}#app.tasks,tasks:own:total">{{ phrase('agent.emails.view_your_tasks') }}</a>
 
-{{ phrase('agent.emails.task_assigned_to_your_team_by', {title: task.title, agent: performer.getDisplayName() }) }}
-<br /><br />
-<a href="{{ url_full('agent') }}#app.tasks,tasks:team:total">{{ phrase('agent.emails.view_your_teams_tasks') }}</a>
+		{% elseif task.assigned_agent_team %}
 
-{% endif %}
+		{{ phrase('agent.emails.task_assigned_to_your_team_by', {title: task.title, agent: performer.getDisplayName() }) }}
+		<br /><br />
+		<a href="{{ url_full('agent') }}#app.tasks,tasks:team:total">{{ phrase('agent.emails.view_your_teams_tasks') }}</a>
+
+		{% endif %}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

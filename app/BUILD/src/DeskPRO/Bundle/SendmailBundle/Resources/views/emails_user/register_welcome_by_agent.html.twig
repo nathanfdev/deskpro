@@ -1,14 +1,26 @@
 <dp:subject>{{ phrase('user.email_subjects.register-welcome-byagent') }}</dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-    {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+    <container>
+        {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
-    <br /><br />
+        <br /><br />
 
-    {{ phrase('user.emails.register-welcome-byagent') }}<br/>
-    <a href="{{ url_full('user') }}">{{ url_full('user') }}</a><br/>
+        {{ phrase('user.emails.register-welcome-byagent') }}<br/>
+        <a href="{{ url_full('user') }}">{{ url_full('user') }}</a><br/>
 
-    <br/>
+        <br/>
 
-    {{ phrase('user.emails.register-password', {password: person.getPlaintextPassword()}) }}<br/>
-</container>
+        {{ phrase('user.emails.register-password', {password: person.getPlaintextPassword()}) }}<br/>
+    </container>
+
+  {% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

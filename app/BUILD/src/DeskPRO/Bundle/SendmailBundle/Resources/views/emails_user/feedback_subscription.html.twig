@@ -1,15 +1,27 @@
 <dp:subject>
 	{{ phrase('user.email_subjects.feedback_sub_updated') }}
 </dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-	<h1>{{ phrase('user.emails.feedback-updated-items', {count: updated_items|length}) }}</h1>
-	<ul>
-		{% for item in updated_items %}
-			<li><a href="{{ url_full('portal_feedback_view', {slug: item.slug}) }}">{{ item.title }}</a></li>
-		{% endfor %}
-	</ul>
+	<container>
+		<h1>{{ phrase('user.emails.feedback-updated-items', {count: updated_items|length}) }}</h1>
+		<ul>
+			{% for item in updated_items %}
+				<li><a href="{{ url_full('portal_feedback_view', {slug: item.slug}) }}">{{ item.title }}</a></li>
+			{% endfor %}
+		</ul>
 
-	<div class="dp-hr">&nbsp;</div>
-	{{ phrase('user.emails.feedback-explain', {deskpro_url: portal_home }) }}
-</container>
+		<div class="dp-hr">&nbsp;</div>
+		{{ phrase('user.emails.feedback-explain', {deskpro_url: portal_home }) }}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

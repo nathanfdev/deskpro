@@ -1,18 +1,31 @@
 <dp:subject>{{ phrase('user.email_subjects.feedback_updated') }}</dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
 
 <container>
-	{% if show == 'validated' %}
-		{{ phrase('user.emails.feedback_published', {'title':feedback.title}) }}
-	{% elseif show == 'closed' %}
-		{{ phrase('user.emails.feedback_closed', {'title':feedback.title, 'status':feedback.status_category.title}) }}
-	{% elseif show == 'closed' %}
-		{{ phrase('user.emails.feedback_updated', {'title': feedback.title, 'status':feedback.statuscategory.title}) }}
-	{% endif %}
+		{% if show == 'validated' %}
+			{{ phrase('user.emails.feedback_published', {'title':feedback.title}) }}
+		{% elseif show == 'closed' %}
+			{{ phrase('user.emails.feedback_closed', {'title':feedback.title, 'status':feedback.status_category.title}) }}
+		{% elseif show == 'closed' %}
+			{{ phrase('user.emails.feedback_updated', {'title': feedback.title, 'status':feedback.statuscategory.title}) }}
+		{% endif %}
 
-	<br /><br />
+		<br /><br />
 
-	{{ phrase('user.emails.feedback_votes', {'count': feedback.votes}) }}
-	<a href="{{ url_full('user_feedback_view', {'slug': feedback.url_slug}) }}">
-		{{ url_full('user_feedback_view', {'slug': feedback.url_slug}) }}
-	</a>
-</container>
+		{{ phrase('user.emails.feedback_votes', {'count': feedback.votes}) }}
+		<a href="{{ url_full('user_feedback_view', {'slug': feedback.url_slug}) }}">
+			{{ url_full('user_feedback_view', {'slug': feedback.url_slug}) }}
+		</a>
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

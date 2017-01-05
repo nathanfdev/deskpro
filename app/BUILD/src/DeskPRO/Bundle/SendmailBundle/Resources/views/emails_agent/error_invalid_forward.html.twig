@@ -1,26 +1,39 @@
 <dp:subject>{{ phrase('agent.emails.subject_error_forwarded_email') }}</dp:subject>
-<container>
-	{{ phrase('agent.emails.detected_as_forward') }}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	{% if error == 'invalid_fwd_email' %}
-		{{ phrase('agent.emails.invalid_fwd_email_address') }}
-	{% else %}
-		{{ phrase('agent.emails.invalid_fwd_email_parse') }}
-	{% endif %}
+	<container>
+		{{ phrase('agent.emails.detected_as_forward') }}
 
-	<br /><br />
+		{% if error == 'invalid_fwd_email' %}
+			{{ phrase('agent.emails.invalid_fwd_email_address') }}
+		{% else %}
+			{{ phrase('agent.emails.invalid_fwd_email_parse') }}
+		{% endif %}
 
-	{{ phrase('agent.emails.fwd_not_processed', {url: brand_setting('core.deskpro_url') ~ 'agent/'}) }}
+		<br /><br />
 
-	<br /><br />
+		{{ phrase('agent.emails.fwd_not_processed', {url: brand_setting('core.deskpro_url') ~ 'agent/'}) }}
 
-	{{ phrase('agent.emails.fwd_resend_without_fwd') }}
+		<br /><br />
 
-	<br /><br />
+		{{ phrase('agent.emails.fwd_resend_without_fwd') }}
 
-	{{ phrase('agent.emails.invalid_fwd_try_attach') }}
+		<br /><br />
 
-	<br /><br />
+		{{ phrase('agent.emails.invalid_fwd_try_attach') }}
 
-	{{ phrase('agent.emails.fwd_error_more_info') }}
-</container>
+		<br /><br />
+
+		{{ phrase('agent.emails.fwd_error_more_info') }}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

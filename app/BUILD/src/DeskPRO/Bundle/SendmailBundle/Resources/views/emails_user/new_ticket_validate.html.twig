@@ -1,12 +1,24 @@
 <dp:subject>{{ phrase('user.email_subjects.email_new-confirm') }}</dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-	{{ phrase('user.emails.ticket_validate') }}
+	<container>
+		{{ phrase('user.emails.ticket_validate') }}
 
-	<br /><br />
+		<br /><br />
 
-	{{ phrase('user.emails.profile_email_link-validate') }}:
-	<a href="{{ url_full('user_validate_ticket', {'access_code': access_code}) }}">
-		{{ url_full('user_validate_ticket', {'access_code': access_code}) }}
-	</a>
-</container>
+		{{ phrase('user.emails.profile_email_link-validate') }}:
+		<a href="{{ url_full('user_validate_ticket', {'access_code': access_code}) }}">
+			{{ url_full('user_validate_ticket', {'access_code': access_code}) }}
+		</a>
+	</container>
+
+  {% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

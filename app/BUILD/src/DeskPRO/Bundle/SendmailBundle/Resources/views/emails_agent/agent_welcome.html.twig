@@ -1,45 +1,57 @@
 <dp:subject>{{ phrase('agent.emails.subject_new_agent') }}</dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-	{{ phrase('agent.emails.newagent-created-account', {
-		admin_name: app.user.display_name,
-		admin_email: app.user.primary_email_address,
-		helpdesk_url: brand_setting('core.deskpro_url')
-	}) }}
+	<container>
+		{{ phrase('agent.emails.newagent-created-account', {
+			admin_name: app.user.display_name,
+			admin_email: app.user.primary_email_address,
+			helpdesk_url: brand_setting('core.deskpro_url')
+		}) }}
 
-	<br/><br/>
+		<br/><br/>
 
-	{% if app.isCloud() %}
-		{% if app.isDemo() %}
-			{{ phrase('agent.emails.newagent-about-cloud-demo') }}
+		{% if app.isCloud() %}
+			{% if app.isDemo() %}
+				{{ phrase('agent.emails.newagent-about-cloud-demo') }}
+			{% else %}
+				{{ phrase('agent.emails.newagent-about-cloud') }}
+			{% endif %}
 		{% else %}
-			{{ phrase('agent.emails.newagent-about-cloud') }}
+			{% if app.isDemo() %}
+				{{ phrase('agent.emails.newagent-about-demo') }}
+			{% else %}
+				{{ phrase('agent.emails.newagent-about') }}
+			{% endif %}
 		{% endif %}
-	{% else %}
-		{% if app.isDemo() %}
-			{{ phrase('agent.emails.newagent-about-demo') }}
+
+		<br/><br/>
+
+		{{ phrase('agent.emails.newagent-login-link', { link: brand_setting('core.deskpro_url') ~ 'agent/' }) }}<br/>
+		{{ phrase('agent.emails.newagent-login-your-email', { email: agent.email_address }) }}<br/>
+		{%  if agent.getPlaintextPassword() %}
+			{{ phrase('agent.emails.newagent-login-initial-password', { password: agent.getPlaintextPassword() }) }}<br/><br/>
 		{% else %}
-			{{ phrase('agent.emails.newagent-about') }}
+			{{ phrase('agent.emails.newagent-login-your-password') }}<br/><br/>
 		{% endif %}
-	{% endif %}
 
-	<br/><br/>
+		{{ phrase('agent.emails.newagent-about-pdf') }}
 
-	{{ phrase('agent.emails.newagent-login-link', { link: brand_setting('core.deskpro_url') ~ 'agent/' }) }}<br/>
-	{{ phrase('agent.emails.newagent-login-your-email', { email: agent.email_address }) }}<br/>
-	{%  if agent.getPlaintextPassword() %}
-		{{ phrase('agent.emails.newagent-login-initial-password', { password: agent.getPlaintextPassword() }) }}<br/><br/>
-	{% else %}
-		{{ phrase('agent.emails.newagent-login-your-password') }}<br/><br/>
-	{% endif %}
+		<br/><br/>
 
-	{{ phrase('agent.emails.newagent-about-pdf') }}
+		{{ phrase('agent.emails.newagent-help') }}
 
-	<br/><br/>
+		<br/><br/>
 
-	{{ phrase('agent.emails.newagent-help') }}
+		{{ phrase('agent.emails.newagent-welcome-to-deskpro') }}
+	</container>
 
-	<br/><br/>
-
-	{{ phrase('agent.emails.newagent-welcome-to-deskpro') }}
-</container>
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

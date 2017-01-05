@@ -1,14 +1,29 @@
 {{ set_tplvar('agent_notification_footer', 'notify') }}
 <dp:subject>{{ phrase('agent.emails.task_due_today', {title: task.title}) }}</dp:subject>
-{% if task.assigned_agent %}
-{{ phrase('agent.emails.task_assigned_due_today', {title: task.title}) }}
-<br /><br />
-<a href="{{ url_full('agent') }}#app.tasks,tasks:own:total">{{ phrase('agent.emails.view_your_tasks') }}</a>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-{% elseif task.assigned_agent_team %}
+    <container>
+        {% if task.assigned_agent %}
+        {{ phrase('agent.emails.task_assigned_due_today', {title: task.title}) }}
+        <br /><br />
+        <a href="{{ url_full('agent') }}#app.tasks,tasks:own:total">{{ phrase('agent.emails.view_your_tasks') }}</a>
 
-{{ phrase('agent.emails.task_assigned_team_due_today', {title: task.title}) }}
-<br /><br />
-<a href="{{ url_full('agent') }}#app.tasks,tasks:team:total">{{ phrase('agent.emails.view_your_teams_tasks') }}</a>
+        {% elseif task.assigned_agent_team %}
 
-{% endif %}
+        {{ phrase('agent.emails.task_assigned_team_due_today', {title: task.title}) }}
+        <br /><br />
+        <a href="{{ url_full('agent') }}#app.tasks,tasks:team:total">{{ phrase('agent.emails.view_your_teams_tasks') }}</a>
+
+        {% endif %}
+    </container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

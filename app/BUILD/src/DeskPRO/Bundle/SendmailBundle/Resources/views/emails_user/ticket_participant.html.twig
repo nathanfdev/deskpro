@@ -1,12 +1,24 @@
 <dp:subject>{{ phrase('portal.email_subjects.ticket_new-participant') }}</dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-	{% if is_first %}
-		{{ phrase('portal.emails.ticket_cc-new', {'name':ticket.person.display_name_user}) }}
-		<br /><br />
-	{% endif %}
+	<container>
+		{% if is_first %}
+			{{ phrase('portal.emails.ticket_cc-new', {'name':ticket.person.display_name_user}) }}
+			<br /><br />
+		{% endif %}
 
-	{% for message in messages %}
-		{{ message.getMessageHtml(false)|raw }}
-	{% endfor %}
-</container>
+		{% for message in messages %}
+			{{ message.getMessageHtml(false)|raw }}
+		{% endfor %}
+	</container>
+
+  {% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

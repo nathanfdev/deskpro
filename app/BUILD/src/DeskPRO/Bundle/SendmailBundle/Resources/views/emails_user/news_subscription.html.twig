@@ -7,26 +7,38 @@
 		{{ phrase('user.email_subjects.news_sub_updated') }}
 	{% endif %}
 </dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-	{% if new_news %}
-		<h1>{{ phrase('user.emails.news-new-news', {count: new_news|length}) }}</h1>
-		<ul>
-			{% for news in new_news %}
-				<li><a href="{{ url_full('portal_news_view', {slug: news.slug}) }}">{{ news.title }}</a></li>
-			{% endfor %}
-		</ul>
-	{% endif %}
+	<container>
+		{% if new_news %}
+			<h1>{{ phrase('user.emails.news-new-news', {count: new_news|length}) }}</h1>
+			<ul>
+				{% for news in new_news %}
+					<li><a href="{{ url_full('portal_news_view', {slug: news.slug}) }}">{{ news.title }}</a></li>
+				{% endfor %}
+			</ul>
+		{% endif %}
 
-	{% if updated_news %}
-		<h1>{{ phrase('user.emails.news-updated-news', {count: updated_news|length}) }}</h1>
-		<ul>
-			{% for news in updated_news %}
-				<li><a href="{{ url_full('portal_news_view', {slug: news.slug}) }}">{{ news.title }}</a></li>
-			{% endfor %}
-		</ul>
-	{% endif %}
+		{% if updated_news %}
+			<h1>{{ phrase('user.emails.news-updated-news', {count: updated_news|length}) }}</h1>
+			<ul>
+				{% for news in updated_news %}
+					<li><a href="{{ url_full('portal_news_view', {slug: news.slug}) }}">{{ news.title }}</a></li>
+				{% endfor %}
+			</ul>
+		{% endif %}
 
-	<div class="dp-hr">&nbsp;</div>
-	{{ phrase('user.emails.news-explain', {deskpro_url: portal_home }) }}
-</container>
+		<div class="dp-hr">&nbsp;</div>
+		{{ phrase('user.emails.news-explain', {deskpro_url: portal_home }) }}
+	</container>
+
+  {% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

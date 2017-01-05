@@ -1,18 +1,30 @@
 <dp:subject>{{ phrase('portal.email_subjects.validate-email' ) }}</dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
+    <container>
 
-    {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+        {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
-    <br /><br />
+        <br /><br />
 
-    {{ phrase('portal.emails.validate-email') }}
+        {{ phrase('portal.emails.validate-email') }}
 
-    <br/><br/>
+        <br/><br/>
 
-    <a href="{{ verify_url }}">{{ verify_url }}</a>
+        <a href="{{ verify_url }}">{{ verify_url }}</a>
 
-    <br/><br/>
+        <br/><br/>
 
-    {{  phrase('portal.emails.end_greeting')|raw }}
-</container>
+        {{  phrase('portal.emails.end_greeting')|raw }}
+    </container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

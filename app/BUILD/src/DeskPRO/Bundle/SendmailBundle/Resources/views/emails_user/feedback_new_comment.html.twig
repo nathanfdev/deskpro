@@ -1,15 +1,28 @@
 <dp:subject>{{ phrase('user.email_subjects.feedback_new-comment', {title: feedback.title}) }}</dp:subject>
-<container>
-	{{ phrase('user.emails.feedback_new-comment', {name: comment.getUserName(true)|default('Anonymous') }) }}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<br /><br />
+	<container>
+		{{ phrase('user.emails.feedback_new-comment', {name: comment.getUserName(true)|default('Anonymous') }) }}
 
-	{{ comment.getContentHtml()|raw }}
+		<br /><br />
 
-	<br /><br />
+		{{ comment.getContentHtml()|raw }}
 
-	{{ phrase('user.emails.label_view-online') }}:
-	<a href="{{ url_full('user_feedback_view', {'slug': feedback.url_slug}) }}">
-		{{ url_full('user_feedback_view', {'slug': feedback.url_slug}) }}
-	</a>
-</container>
+		<br /><br />
+
+		{{ phrase('user.emails.label_view-online') }}:
+		<a href="{{ url_full('user_feedback_view', {'slug': feedback.url_slug}) }}">
+			{{ url_full('user_feedback_view', {'slug': feedback.url_slug}) }}
+		</a>
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

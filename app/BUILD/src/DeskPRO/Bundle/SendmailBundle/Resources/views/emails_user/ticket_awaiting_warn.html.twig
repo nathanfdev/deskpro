@@ -1,9 +1,21 @@
 <dp:subject>{{ phrase('user.email_subjects.remind_unresolved_subject', {subject: ticket.subject}) }}</dp:subject>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-    {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+    <container>
+        {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
-    <br /><br />
+        <br /><br />
 
-    {{ phrase('user.emails.remind_unresolved', {helpdesk_name: brand_setting('core.deskpro_name'), resolve_url: ticket_resolve_link})|raw }}
-</container>
+        {{ phrase('user.emails.remind_unresolved', {helpdesk_name: brand_setting('core.deskpro_name'), resolve_url: ticket_resolve_link})|raw }}
+    </container>
+
+  {% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>
