@@ -521,17 +521,28 @@ class LoginController extends AbstractController
     {
         $prefName = sprintf('agent_notif.login_attempt%s.email', $success ? '' : '_fail');
         if ($person->getPref($prefName) && !$person->isDeleted()) {
-            $message = $this->container->getMailer()->createMessage();
-            $message->setTemplate(
-                'DeskPRO:emails_agent:login-alert.html.twig',
-                [
-                    'success'   => $success,
-                    'firstSeen' => $this->session->getEntity()->getDateCreated(),
-                    'request'   => $request,
-                ]
-            );
-            $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-            $this->container->getMailer()->send($message);
+            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                $viewModel = $this->get('email.user_viewmodel_factory')
+                    ->createLoginAlertModel(
+                        $request,
+                        $this->session->getEntity()->getDateCreated(),
+                        $success
+                    );
+                $this->get('email.email_sender')
+                    ->send($viewModel, ['to' => $person]);
+            } else {
+                $message = $this->container->getMailer()->createMessage();
+                $message->setTemplate(
+                    'DeskPRO:emails_agent:login-alert.html.twig',
+                    [
+                        'success'   => $success,
+                        'firstSeen' => $this->session->getEntity()->getDateCreated(),
+                        'request'   => $request,
+                    ]
+                );
+                $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+                $this->container->getMailer()->send($message);
+            }
         }
     }
 

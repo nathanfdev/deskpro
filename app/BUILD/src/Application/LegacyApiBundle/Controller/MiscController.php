@@ -192,26 +192,37 @@ class MiscController extends AbstractController
         if (!$result->isValid()) {
 
             // Send alert
-            $attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
-            if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email')) {
-                $message = $this->container->getMailer()->createMessage();
+            $attemptPerson = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
+            if ($attemptPerson && $attemptPerson->getPref('agent_notif.login_attempt_fail.email')) {
+                if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                    $viewModel = $this->get('email.user_viewmodel_factory')
+                        ->createLoginAlertModel(
+                            $request,
+                            $this->session->getEntity()->getDateCreated(),
+                            false
+                        );
+                    $this->get('email.email_sender')
+                        ->send($viewModel, ['to' => $attemptPerson]);
+                } else {
+                    $message = $this->container->getMailer()->createMessage();
 
-                $message->setTemplate(
-                    'DeskPRO:emails_agent:login-alert.html.twig',
-                    [
-                        'success'   => false,
-                        'firstSeen' => $this->session->getEntity()->getDateCreated(),
-                        'request'   => $request,
-                    ]
-                );
-                $message->setTo($attempt_person->getPrimaryEmailAddress(), $attempt_person->getDisplayName());
-                $this->container->getMailer()->send($message);
+                    $message->setTemplate(
+                        'DeskPRO:emails_agent:login-alert.html.twig',
+                        [
+                            'success'   => false,
+                            'firstSeen' => $this->session->getEntity()->getDateCreated(),
+                            'request'   => $request,
+                        ]
+                    );
+                    $message->setTo($attemptPerson->getPrimaryEmailAddress(), $attemptPerson->getDisplayName());
+                    $this->container->getMailer()->send($message);
+                }
             }
 
             // Save login log
-            if ($attempt_person) {
+            if ($attemptPerson) {
                 $this->db->insert('login_log', [
-                    'person_id'    => $attempt_person->getId(),
+                    'person_id'    => $attemptPerson->getId(),
                     'area'         => 'api',
                     'is_success'   => 0,
                     'ip_address'   => $request->getClientIp(),
@@ -235,17 +246,28 @@ class MiscController extends AbstractController
         App::setCurrentPerson($person);
 
         if ($person->getPref('agent_notif.login_attempt.email')) {
-            $message = $this->container->getMailer()->createMessage();
-            $message->setTemplate(
-                'DeskPRO:emails_agent:login-alert.html.twig',
-                [
-                    'success'   => true,
-                    'firstSeen' => $this->session->getEntity()->getDateCreated(),
-                    'request'   => $request,
-                ]
-            );
-            $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-            $this->container->getMailer()->send($message);
+            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                $viewModel = $this->get('email.user_viewmodel_factory')
+                    ->createLoginAlertModel(
+                        $request,
+                        $this->session->getEntity()->getDateCreated(),
+                        true
+                    );
+                $this->get('email.email_sender')
+                    ->send($viewModel, ['to' => $person]);
+            } else {
+                $message = $this->container->getMailer()->createMessage();
+                $message->setTemplate(
+                    'DeskPRO:emails_agent:login-alert.html.twig',
+                    [
+                        'success'   => true,
+                        'firstSeen' => $this->session->getEntity()->getDateCreated(),
+                        'request'   => $request,
+                    ]
+                );
+                $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+                $this->container->getMailer()->send($message);
+            }
         }
 
         // Login log

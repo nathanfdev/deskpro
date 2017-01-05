@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,11 +28,82 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use DateTime;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\HttpFoundation\Request;
+
 class LoginAlert extends EmailBaseType
 {
+    /**
+     * User IP.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $clientIp;
+
+    /**
+     * User browser User Agent.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $clientUserAgent;
+
+    /**
+     * User landing page.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $clientLandingPage;
+
+    /**
+     * User referring page.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $clientReferringPage;
+
+    /**
+     * First date seen.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $firstSeen;
+
+    /**
+     * Did they manage to connect?
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $success;
+
     protected static $templateFile = 'emails_user:login_alert.html.twig';
 
-    public function __construct()
+    /**
+     * LoginAlert constructor.
+     *
+     * @param Request  $request
+     * @param DateTime $firstSeen
+     * @param $success
+     */
+    public function __construct(Request $request, DateTime $firstSeen, $success)
     {
+        $this->clientIp            = $request->getClientIp();
+        $this->clientUserAgent     = $request->headers->get('User-Agent');
+        $this->clientLandingPage   = $request->getRequestUri();
+        $this->clientReferringPage = $request->headers->get('Referer');
+        $this->firstSeen           = $firstSeen->format('D, jS M Y g:ia');
+        $this->success             = (string) $success;
     }
 }

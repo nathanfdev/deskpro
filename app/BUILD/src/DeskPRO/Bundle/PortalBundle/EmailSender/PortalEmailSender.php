@@ -221,15 +221,26 @@ class PortalEmailSender
     public function sendLoginAlert(Person $person, Request $request, $success)
     {
         $created = new \DateTime('@'.$request->getSession()->getMetadataBag()->getCreated());
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:login-alert.html.twig',
-            [
-                'request'   => $request,
-                'firstSeen' => $created,
-                'success'   => $success,
-            ]
-        );
+        if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createLoginAlertModel(
+                    $request,
+                    $created,
+                    $success
+                );
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:login-alert.html.twig',
+                [
+                    'request'   => $request,
+                    'firstSeen' => $created,
+                    'success'   => $success,
+                ]
+            );
+        }
     }
 
     public function sendTicketAddedCC(Person $person, Ticket $ticket)

@@ -53,6 +53,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackNew;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackNewComment;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\KbSubscription;
+use DeskPRO\Bundle\SendmailBundle\View\Model\LoginAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewEmailValidate;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewEmailValidatePrimary;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewReplyRejectResolved;
@@ -75,6 +76,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\TicketParticipant;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketRate;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyAutoreply;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyByAgent;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
 class UserViewModelFactory
@@ -243,6 +245,18 @@ class UserViewModelFactory
     public function createKbSubscriptionModel($newArticles, $updatedArticles)
     {
         return new KbSubscription($this->router, $newArticles, $updatedArticles);
+    }
+
+    /**
+     * @param string  $firstSeen
+     * @param bool    $success
+     * @param Request $request
+     *
+     * @return LoginAlert
+     */
+    public function createLoginAlertModel(Request $request, $firstSeen, $success)
+    {
+        return new LoginAlert($request, $firstSeen, $success);
     }
 
     /**
