@@ -66,6 +66,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\RegisterWelcome;
 use DeskPRO\Bundle\SendmailBundle\View\Model\RegisterWelcomeByAgent;
 use DeskPRO\Bundle\SendmailBundle\View\Model\ResetPassword;
 use DeskPRO\Bundle\SendmailBundle\View\Model\SetPassword;
+use DeskPRO\Bundle\SendmailBundle\View\Model\ShareArticle;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAddCc;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAutocloseWarn;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAwaitingWarn;
@@ -378,6 +379,17 @@ class UserViewModelFactory
     public function createSetPasswordModel($resetUrl)
     {
         return new SetPassword($resetUrl);
+    }
+
+    /**
+     * @param Article $article
+     * @param Person  $author
+     *
+     * @return ShareArticle
+     */
+    public function createShareArticleModel(Article $article, Person $author)
+    {
+        return new ShareArticle($this->objectRouter, $article, $author);
     }
 
     /**

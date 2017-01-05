@@ -1,0 +1,26 @@
+<dp:subject>{{ phrase('portal.email_subjects.share-article') }}</dp:subject>
+
+<html>
+<head>
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+    <container>
+        {{ phrase('portal.emails.greeting') }}
+
+        <br /><br />
+
+        {{ message }}<br />
+
+        <a href="{{ article_link }}">{{ article.title }}</a>
+
+        <br /><br />
+
+        {{ phrase('portal.emails.end_greeting')| raw }}
+    </container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>

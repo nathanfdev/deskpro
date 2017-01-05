@@ -83,20 +83,27 @@ class PortalEmailSender
 
     public function sendPasswordSetLink(Person $person, array $reset)
     {
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:set-password.html.twig',
-            [
-                'person'    => $person,
-                'reset_url' => $this->getRouter()->generate(
-                    'portal_set_password_process',
-                    [
-                        'code' => $reset['code'],
-                    ],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
-            ]
+        $resetUrl = $this->getRouter()->generate(
+            'portal_set_password_process',
+            ['code' => $reset['code']],
+            UrlGeneratorInterface::ABSOLUTE_URL
         );
+
+        if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createSetPasswordModel($resetUrl);
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:set-password.html.twig',
+                [
+                    'person'    => $person,
+                    'reset_url' => $resetUrl,
+                ]
+            );
+        }
     }
 
     public function sendWelcomeEmail(Person $person)
@@ -291,26 +298,38 @@ class PortalEmailSender
     public function sendShareArticle(Article $article, Person $author, $emails, $formData)
     {
         foreach ($emails as $email) {
-            if ($email instanceof Person) {
-                $emailTo = new EmailTo($email);
+            if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                if ($email instanceof Person) {
+                    $to = $email;
+                } else {
+                    $to = $email['address'];
+                }
+                $viewModel = $this->container->get('email.user_viewmodel_factory')
+                    ->createShareArticleModel($article, $author);
+                $this->container->get('email.email_sender')
+                    ->send($viewModel, ['to' => $to]);
             } else {
-                $emailTo = new EmailTo();
-                $emailTo->setTo($email['address'], $email['name']);
+                if ($email instanceof Person) {
+                    $emailTo = new EmailTo($email);
+                } else {
+                    $emailTo = new EmailTo();
+                    $emailTo->setTo($email['address'], $email['name']);
+                }
+
+                $variables = [
+                    'author_email' => $author->getEmailAddress(),
+                    'author_name'  => $author->getName(),
+                    'article'      => $article,
+                ];
+
+                $variables = array_merge($variables, $formData);
+
+                $this->sendTo(
+                    $emailTo,
+                    'DeskPRO:emails_user:share-article.html.twig',
+                    $variables
+                );
             }
-
-            $variables = [
-                'author_email' => $author->getEmailAddress(),
-                'author_name'  => $author->getName(),
-                'article'      => $article,
-            ];
-
-            $variables = array_merge($variables, $formData);
-
-            $this->sendTo(
-                $emailTo,
-                'DeskPRO:emails_user:share-article.html.twig',
-                $variables
-            );
         }
     }
 
