@@ -483,7 +483,7 @@ class PublishController extends AbstractController
         if ($comment->getUserEmail()) {
             if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
                 if ($comment->getPerson()) {
-                    $to = $comment->getPerson()->getPrimaryEmailAddress();
+                    $to = $comment->getPerson();
                 } else {
                     $to = $comment->getUserEmail();
                 }
@@ -517,7 +517,7 @@ class PublishController extends AbstractController
         if ($comment->getUserEmail()) {
             if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
                 if ($comment->getPerson()) {
-                    $to = $comment->getPerson()->getPrimaryEmailAddress();
+                    $to = $comment->getPerson();
                 } else {
                     $to = $comment->getUserEmail();
                 }

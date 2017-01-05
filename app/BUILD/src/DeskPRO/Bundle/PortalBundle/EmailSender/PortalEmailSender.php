@@ -151,16 +151,23 @@ class PortalEmailSender
     {
         $person = $feedback->getPerson();
 
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:feedback-new.html.twig',
-            [
-                'person'     => $person,
-                'feedback'   => $feedback,
-                'verify_url' => null,
-                'validating' => false,
-            ]
-        );
+        if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createFeedbackNewModel($feedback);
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:feedback-new.html.twig',
+                [
+                    'person'     => $person,
+                    'feedback'   => $feedback,
+                    'verify_url' => null,
+                    'validating' => false,
+                ]
+            );
+        }
     }
 
     public function sendNewTicketGuestThankYou(Ticket $ticket)
@@ -186,11 +193,11 @@ class PortalEmailSender
     {
         $person = $comment->getPerson();
 
-        $viewModel = $this->container->get('email.user_viewmodel_factory')
-            ->createCommentNewModel($comment);
         if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createCommentNewModel($comment);
             $this->container->get('email.email_sender')
-                ->send($viewModel, ['to' => $person->getPrimaryEmailAddress()]);
+                ->send($viewModel, ['to' => $person]);
         } else {
             /** @var \Application\DeskPRO\Entity\ContentAbstract $content */
             $content = $comment->getObject();

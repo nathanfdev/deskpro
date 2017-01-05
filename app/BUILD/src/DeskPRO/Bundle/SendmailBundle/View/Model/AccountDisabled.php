@@ -28,52 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\Person;
-use JMS\Serializer\Annotation as JMS;
-
-class FeedbackDisapproved extends EmailBaseType
+class AccountDisabled extends EmailBaseType
 {
-    /**
-     * The feedback that has been approved.
-     *
-     * @JMS\Type("Application\DeskPRO\Entity\Feedback")
-     *
-     * @var Feedback
-     */
-    protected $feedback;
-
-    /**
-     * The agent that approved the feedback.
-     *
-     * @JMS\Type("Application\DeskPRO\Entity\Person")
-     *
-     * @var Person
-     */
-    protected $agent;
-
-    /**
-     * The reason why the feedback was not approved.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $reason;
-
-    protected static $templateFile = 'emails_user:feedback_disapproved.html.twig';
-
-    /**
-     * FeedbackDisapproved constructor.
-     *
-     * @param Feedback $feedback
-     * @param Person   $agent
-     * @param $reason
-     */
-    public function __construct(Feedback $feedback, Person $agent, $reason)
-    {
-        $this->feedback = $feedback;
-        $this->agent    = $agent;
-        $this->reason   = $reason;
-    }
+    protected static $templateFile = 'emails_user:account_disabled.html.twig';
 }

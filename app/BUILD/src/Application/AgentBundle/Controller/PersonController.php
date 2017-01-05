@@ -664,7 +664,7 @@ class PersonController extends AbstractController
                             $viewModel = $this->get('email.user_viewmodel_factory')
                                 ->createAgentChangedPasswordModel($person->getPlaintextPassword());
                             $this->get('email.email_sender')
-                                ->send($viewModel, ['to' => $person->getPrimaryEmailAddress()]);
+                                ->send($viewModel, ['to' => $person]);
                         } else {
                             $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
                             $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', [

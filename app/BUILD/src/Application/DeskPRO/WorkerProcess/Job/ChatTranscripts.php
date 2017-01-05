@@ -106,7 +106,7 @@ class ChatTranscripts extends AbstractJob
                         $viewModel = $container->get('email.user_viewmodel_factory')
                             ->createChatTranscriptModel($chat, $chatMessages);
                         $container->get('email.email_sender')
-                            ->send($viewModel, ['to' => $person->getPrimaryEmailAddress()]);
+                            ->send($viewModel, ['to' => $person]);
                     } else {
                         $vars = [
                             'convo'          => $chat,

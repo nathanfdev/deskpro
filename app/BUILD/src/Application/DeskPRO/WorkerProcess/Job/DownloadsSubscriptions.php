@@ -320,15 +320,25 @@ class DownloadsSubscriptions extends AbstractJob
                 }
             }
 
-            $message = $this->getContainer()->getMailer()->createMessage();
-            $message->setToPerson($person);
-            $message->setTemplate('DeskPRO:emails_user:download-subscription.html.twig', [
-                'person'            => $person,
-                'new_downloads'     => $newDownloads,
-                'updated_downloads' => $updatedDownloads,
-            ]);
+            if ($this->getContainer()->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                $viewModel = $this->getContainer()->get('email.user_viewmodel_factory')
+                    ->createDownloadSubscriptionModel($newDownloads, $updatedDownloads);
+                $this->getContainer()->get('email.email_sender')
+                    ->send($viewModel, ['to' => $person]);
+            } else {
+                $message = $this->getContainer()->getMailer()->createMessage();
+                $message->setToPerson($person);
+                $message->setTemplate(
+                    'DeskPRO:emails_user:download-subscription.html.twig',
+                    [
+                        'person'            => $person,
+                        'new_downloads'     => $newDownloads,
+                        'updated_downloads' => $updatedDownloads,
+                    ]
+                );
 
-            $this->getContainer()->getMailer()->send($message);
+                $this->getContainer()->getMailer()->send($message);
+            }
 
             // Saves mem
             $this->getContainer()->getEm()->detach($person);

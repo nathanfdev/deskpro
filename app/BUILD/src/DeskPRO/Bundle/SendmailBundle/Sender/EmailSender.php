@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -92,16 +92,26 @@ class EmailSender
     /**
      * @param EmailBaseType $model
      * @param array         $args
+     *
+     * @throws \Exception
      */
     public function send(EmailBaseType $model, $args)
     {
-        $recipient = $this->getEntityManager()->getRepository(Person::class)->findOneByEmail($args['to']);
+        $message = $this->getMailer()->createMessage();
+        if (is_string($args['to'])) {
+            $recipient = $this->getEntityManager()->getRepository(Person::class)->findOneByEmail($args['to']);
+        } elseif (is_a($args['to'], Person::class)) {
+            $recipient = $args['to'];
+        } else {
+            throw new \Exception('Missing required "to" argument');
+        }
         if ($recipient) {
             $model->setRecipient($recipient);
+            $message->setToPerson($recipient);
+        } else {
+            $message->setTo($args['to']);
         }
         $emailCode = $this->getRenderer()->render($model->getTemplate(), $model);
-        $message   = $this->getMailer()->createMessage();
-        $message->setTo($args['to']);
         $message->setBody($emailCode->getBody(), 'text/html');
         $message->setSubject($emailCode->getSubject());
         foreach ($emailCode->getAttachments() as $blob) {

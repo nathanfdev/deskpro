@@ -640,7 +640,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         if ($comment->getUserEmail()) {
             if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
                 if ($comment->getPerson()) {
-                    $to = $comment->getPerson()->getPrimaryEmailAddress();
+                    $to = $comment->getPerson();
                 } else {
                     $to = $comment->getUserEmail();
                 }
@@ -677,7 +677,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         if ($comment->getUserEmail()) {
             if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
                 if ($comment->getPerson()) {
-                    $to = $comment->getPerson()->getPrimaryEmailAddress();
+                    $to = $comment->getPerson();
                 } else {
                     $to = $comment->getUserEmail();
                 }

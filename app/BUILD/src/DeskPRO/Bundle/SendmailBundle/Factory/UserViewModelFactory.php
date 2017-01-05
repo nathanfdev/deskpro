@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
@@ -46,6 +47,10 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\CommentDeleted;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentNew;
 use DeskPRO\Bundle\SendmailBundle\View\Model\DownloadSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailValidation;
+use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackApproved;
+use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackDisapproved;
+use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackNew;
+use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackNewComment;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\KbSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewEmailValidate;
@@ -174,6 +179,49 @@ class UserViewModelFactory
     public function createEmailValidationModel($verifyUrl)
     {
         return new EmailValidation($verifyUrl);
+    }
+
+    /**
+     * @param Feedback $feedback
+     * @param Person   $agent
+     *
+     * @return FeedbackApproved
+     */
+    public function createFeedbackApprovedModel($feedback, $agent)
+    {
+        return new FeedbackApproved($this->router, $feedback, $agent);
+    }
+
+    /**
+     * @param Feedback $feedback
+     * @param Person   $agent
+     * @param string   $reason
+     *
+     * @return FeedbackDisapproved
+     */
+    public function createFeedbackDisapprovedModel($feedback, $agent, $reason)
+    {
+        return new FeedbackDisapproved($feedback, $agent, $reason);
+    }
+
+    /**
+     * @param Feedback $feedback
+     *
+     * @return FeedbackNew
+     */
+    public function createFeedbackNewModel($feedback)
+    {
+        return new FeedbackNew($feedback);
+    }
+
+    /**
+     * @param Feedback $feedback
+     *
+     * @return FeedbackNewComment
+     */
+    public function createFeedbackNewCommentModel($feedback)
+    {
+        return new FeedbackNewComment($feedback);
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,11 +28,53 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\Person;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\RouterInterface;
+
 class FeedbackApproved extends EmailBaseType
 {
+    /**
+     * The feedback that has been approved.
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\Feedback")
+     *
+     * @var Feedback
+     */
+    protected $feedback;
+
+    /**
+     * The agent that approved the feedback.
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\Person")
+     *
+     * @var Person
+     */
+    protected $agent;
+
+    /**
+     * A link to the feedback.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $feedbackLink;
+
     protected static $templateFile = 'emails_user:feedback_approved.html.twig';
 
-    public function __construct()
+    /**
+     * FeedbackApproved constructor.
+     *
+     * @param RouterInterface $router
+     * @param Feedback        $feedback
+     * @param Person          $agent
+     */
+    public function __construct(RouterInterface $router, Feedback $feedback, Person $agent)
     {
+        $this->feedback     = $feedback;
+        $this->agent        = $agent;
+        $this->feedbackLink = $router->generate('user_feedback_view', ['slug' => $feedback->getSlug()]);
     }
 }
