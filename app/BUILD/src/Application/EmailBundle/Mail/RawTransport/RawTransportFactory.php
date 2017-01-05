@@ -55,6 +55,7 @@ class RawTransportFactory
 
     /**
      * @param LoggerInterface $logger
+     * @param SettingsBag     $settings
      */
     public function __construct(LoggerInterface $logger, SettingsBag $settings)
     {
@@ -69,7 +70,7 @@ class RawTransportFactory
      *
      * @return RawTransportInterface
      */
-    public function createTransport(AccountConfigInterface $config, SettingsBag $settings)
+    public function createTransport(AccountConfigInterface $config)
     {
         if (function_exists('deskpro_mail_transport_override')) {
             $tr = deskpro_mail_transport_override($config, $this);
