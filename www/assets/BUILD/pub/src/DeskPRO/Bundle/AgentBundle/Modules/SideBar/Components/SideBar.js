@@ -61,6 +61,9 @@ export class SideBarContainer extends SeparateComponent {
     window.document.addEventListener('dpChangeSection', () => {
       this.changeSection();
     });
+    window.document.addEventListener('dpCloseOverlayFrame', () => {
+      this.changeSection();
+    });
     window.document.addEventListener('dpHashChange', (e) => {
       SideBarContainer.closeIframes();
       setTimeout(() => {
@@ -151,7 +154,11 @@ export class SideBarContainer extends SeparateComponent {
     if (reportsFrame && reportsFrame.opened) {
       dispatch(actions.changeSection({ section: 'menu_reports' }));
     } else if (adminFrame && adminFrame.opened) {
-      dispatch(actions.changeSection({ section: 'menu_admin' }));
+      if (adminFrame.getFrameWindow().location.hash === '#/license') {
+        dispatch(actions.changeSection({ section: 'menu_billing' }));
+      } else {
+        dispatch(actions.changeSection({ section: 'menu_admin' }));
+      }
     } else {
       const section = window.DeskPRO_Window.getOpenSection();
       if (section && section.section_id) {

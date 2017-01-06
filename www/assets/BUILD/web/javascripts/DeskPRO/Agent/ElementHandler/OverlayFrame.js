@@ -147,6 +147,10 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 
     this.getFrameWindow().location.hash = '#' + path;
     window.location.hash = '#' + this.frameId + ':' + (path || '');
+
+    setTimeout(function() {
+      window.document.dispatchEvent(new CustomEvent('dpChangeSection'));
+    }, 0);
   },
 
   close: function() {
@@ -160,7 +164,6 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
     }
 
     DeskPRO_Window.enableHashPath();
-
     DeskPRO_Window.updateWindowUrlFragment();
     var event = new CustomEvent('dpCloseOverlayFrame', { 'detail': { id: this.frameId } });
     window.document.dispatchEvent(event);
