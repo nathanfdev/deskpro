@@ -36,6 +36,7 @@ use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Reports\Form\Type\ReportType;
 use Application\DeskPRO\Reports\ReportEdit;
+use Application\DeskPRO\Reports\Widget;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
@@ -48,13 +49,13 @@ class ReportsWidgetController extends AbstractController
     //###################################################################################################################
     public function listAction()
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder
+        /*
+         * @var Widget
          */
-        $reports_builder = $this->container->getSystemService('reports_builder');
+        $reports_widget = $this->container->getSystemService('reports_widget');
 
         return $this->createApiResponse([
-            'reports' => $reports_builder->getAll(),
+            'reports' => $reports_widget->getAll(),
         ]);
     }
     //###################################################################################################################
@@ -62,11 +63,11 @@ class ReportsWidgetController extends AbstractController
     //###################################################################################################################
     public function listCustomAction()
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder
+        /*
+         * @var Widget
          */
-        $reports_builder = $this->container->getSystemService('reports_builder');
-        $customReports   = $reports_builder->getCustomReports();
+        $reports_widget = $this->container->getSystemService('reports_widget');
+        $customReports  = $reports_widget->getCustomReports();
         foreach ($customReports as &$report) {
             foreach ($report['labels'] as &$label) {
                 $label = $this->container->getTranslator()->phrase('reports.labels.'.$label);
@@ -82,11 +83,11 @@ class ReportsWidgetController extends AbstractController
     //###################################################################################################################
     public function listBuiltInAction()
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder
+        /*
+         * @var Widget
          */
-        $reports_builder = $this->container->getSystemService('reports_builder');
-        $builtInReports  = $reports_builder->getBuiltInReports();
+        $reports_widget = $this->container->getSystemService('reports_widget');
+        $builtInReports = $reports_widget->getBuiltInReports();
         foreach ($builtInReports as &$report) {
             foreach ($report['labels'] as &$label) {
                 $label = $this->container->getTranslator()->phrase('reports.labels.'.$label);
@@ -102,27 +103,27 @@ class ReportsWidgetController extends AbstractController
     //###################################################################################################################
     public function getGroupParamsAction()
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder
+        /*
+         * @var Widget
          */
-        $reports_builder = $this->container->getSystemService('reports_builder');
+        $reports_widget = $this->container->getSystemService('reports_widget');
 
-        return $this->createApiResponse($reports_builder->getGroupParams());
+        return $this->createApiResponse($reports_widget->getGroupParams());
     }
     //###################################################################################################################
     // get report
     //###################################################################################################################
     public function getAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder
+        /*
+         * @var Widget
          */
-        $reports_builder = $this->container->getSystemService('reports_builder');
-        $report          = $reports_builder->getById($id);
+        $reports_widget = $this->container->getSystemService('reports_widget');
+        $report         = $reports_widget->getById($id);
         if (!$report) {
             throw $this->createNotFoundException();
         }
-        $query_parts           = $reports_builder->getQueryParts($id, false);
+        $query_parts           = $reports_widget->getQueryParts($id, false);
         $widget                = $this->getApiData($report);
         $widget['query_parts'] = $query_parts;
 
@@ -135,22 +136,22 @@ class ReportsWidgetController extends AbstractController
     //###################################################################################################################
     public function saveAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder
+        /*
+         * @var Widget
          */
-        $reports_builder = $this->container->getSystemService('reports_builder');
+        $reports_widget = $this->container->getSystemService('reports_widget');
         if ($id) {
-            $report = $reports_builder->getById($id);
+            $report = $reports_widget->getById($id);
             if (!$report) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $report = $reports_builder->createNew();
+            $report = $reports_widget->createNew();
         }
         if (!$report->is_custom) {
             throw ValidationException::create('you can edit only custom report');
         }
-        if ($error = $reports_builder->getErrors($id, 'from_request')) {
+        if ($error = $reports_widget->getErrors($id, 'from_request')) {
             return $this->createApiResponse(['error' => $error]);
         } else {
             $postData    = $this->in->getAll('req');
@@ -164,8 +165,8 @@ class ReportsWidgetController extends AbstractController
                     $this->container->getValidator()->validate($report)
                 );
             }
-            $reports_builder->saveQuery($report, 'from_request');
-            $rendered_result = $reports_builder->getRenderedResult($id, 'from_request');
+            $reports_widget->saveQuery($report, 'from_request');
+            $rendered_result = $reports_widget->getRenderedResult($id, 'from_request');
 
             return $this->createApiResponse([
                 'success'         => true,
@@ -179,15 +180,15 @@ class ReportsWidgetController extends AbstractController
     //###################################################################################################################
     public function cloneAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder
+        /*
+         * @var Widget
          */
-        $reports_builder = $this->container->getSystemService('reports_builder');
-        $report          = $reports_builder->getById($id);
+        $reports_widget = $this->container->getSystemService('reports_widget');
+        $report         = $reports_widget->getById($id);
         if (!$report) {
             throw $this->createNotFoundException();
         }
-        $new_report              = $reports_builder->createNew();
+        $new_report              = $reports_widget->createNew();
         $new_report->title       = $this->in->getString('title') ?: $report->title;
         $new_report->description = $this->in->getString('description') ?: $report->description;
         $new_report->query       = $report->query;
@@ -218,18 +219,18 @@ class ReportsWidgetController extends AbstractController
     //###################################################################################################################
     public function deleteAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder
+        /*
+         * @var Widget
          */
-        $reports_builder = $this->container->getSystemService('reports_builder');
-        $report          = $reports_builder->getById($id);
+        $reports_widget = $this->container->getSystemService('reports_widget');
+        $report         = $reports_widget->getById($id);
         if (!$report) {
             throw $this->createNotFoundException();
         }
         if (!$report->is_custom) {
             throw ValidationException::create('you can delete only custom report');
         }
-        $reports_builder->remove($report);
+        $reports_widget->remove($report);
 
         return $this->createSuccessResponse(['id' => $id]);
     }
@@ -238,14 +239,14 @@ class ReportsWidgetController extends AbstractController
     //###################################################################################################################
     public function testAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder
+        /*
+         * @var Widget
          */
-        $reports_builder = $this->container->getSystemService('reports_builder');
-        if ($error = $reports_builder->getErrors($id, 'from_request')) {
+        $reports_widget = $this->container->getSystemService('reports_widget');
+        if ($error = $reports_widget->getErrors($id, 'from_request')) {
             return $this->createApiResponse(['error' => $error]);
         } else {
-            $rendered_result = $reports_builder->getRenderedResult($id, 'from_request');
+            $rendered_result = $reports_widget->getRenderedResult($id, 'from_request');
 
             return $this->createApiResponse([
                 'rendered_result' => $rendered_result,
@@ -257,23 +258,23 @@ class ReportsWidgetController extends AbstractController
     //###################################################################################################################
     public function parseAction()
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder
+        /*
+         * @var Widget
          */
-        $reports_builder = $this->container->getSystemService('reports_builder');
+        $reports_widget = $this->container->getSystemService('reports_widget');
 
-        return $this->createApiResponse($reports_builder->parseInput());
+        return $this->createApiResponse($reports_widget->parseInput());
     }
     //###################################################################################################################
     // download
     //###################################################################################################################
     public function downloadAction($id, $type)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder
+        /*
+         * @var Widget
          */
-        $reports_builder = $this->container->getSystemService('reports_builder');
+        $reports_widget = $this->container->getSystemService('reports_widget');
 
-        return $reports_builder->outputDownloadContent($id, $type);
+        return $reports_widget->outputDownloadContent($id, $type);
     }
 }

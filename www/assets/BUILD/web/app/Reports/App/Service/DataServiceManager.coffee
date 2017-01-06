@@ -2,10 +2,14 @@ define [
   'DeskPRO/Util/Strings',
   'Reports/Builder/DataService/ReportBuilderCustom',
   'Reports/Builder/DataService/ReportBuilderBuiltIn',
+  'Reports/Builder/DataService/ReportWidgetBuiltIn',
+  'Reports/Builder/DataService/ReportWidgetCustom',
 ], (
   Strings,
   DataService_ReportBuilderCustom,
   DataService_ReportBuilderBuiltIn,
+  DataService_ReportWidgetBuiltIn,
+  DataService_ReportWidgetCustom,
 ) ->
   ###
   # A simple wrapper around the data services

@@ -3,6 +3,6 @@ define [
 ], (
   ReportBuiltInAbstract
 )  ->
-  class ReportBuilderCustom extends ReportBuiltInAbstract
+  class ReportWidgetCustom extends ReportBuiltInAbstract
     getUrlPart: ->
-      return 'builder'
+      return 'widget'

@@ -3,8 +3,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
   ($scope, $stateParams, $q, $timeout, DataService, Api, DashboardWidgetService) ->
     $scope.loaded = false
 
-    customData = DataService.get('ReportBuilderCustom')
-    builtInData = DataService.get('ReportBuilderBuiltIn')
+    customData = DataService.get('ReportWidgetCustom')
+    builtInData = DataService.get('ReportWidgetBuiltIn')
     # TODO looks ugly cause this code duplicates (almost) code in AddWidget.coffee
     ####################################################################################################################
     # LOADING
