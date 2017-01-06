@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,35 +35,46 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefPerson;
+use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\ReportWidget as ReportWidgetEntity;
+use Application\DeskPRO\EntityRepository\CustomDefOrganization as CustomDefOrganizationRepository;
+use Application\DeskPRO\EntityRepository\CustomDefPerson as CustomDefPersonRepository;
+use Application\DeskPRO\EntityRepository\CustomDefTicket as CustomDefTicketRepository;
 
 class ReportWidget extends AbstractEntityRepository
 {
     /**
      * Gets all reports.
      *
-     * @return \Application\DeskPRO\Entity\ReportWidget[]
+     * @return ReportWidgetEntity[]
      */
     public function getAllReports()
     {
-        return $this->getEntityManager()->createQuery('
-            SELECT rb
-            FROM DeskPRO:ReportWidget rb
-            ORDER BY rb.display_order, rb.title
-        ')->execute();
+        return $this->findBy([], ['display_order', 'title']);
     }
 
+    /**
+     * @param $key
+     *
+     * @return mixed
+     */
     public function getByUniqueKey($key)
     {
-        return $this->getEntityManager()->createQuery('
-            SELECT rb
-            FROM DeskPRO:ReportWidget rb
-            WHERE rb.unique_key = ?0
-        ')->setParameters([$key])->getOneOrNullResult();
+        return $this->findOneBy(['unique_key' => $key]);
     }
 
+    /**
+     * @param ReportWidgetEntity $report
+     * @param Person             $person
+     * @param array              $params
+     *
+     * @return mixed
+     */
     public function findFavorite(
-        \Application\DeskPRO\Entity\ReportWidget $report,
-        \Application\DeskPRO\Entity\Person $person = null,
+        ReportWidgetEntity $report,
+        Person $person = null,
         array $params = []
     ) {
         if (!$person) {
@@ -79,7 +90,12 @@ class ReportWidget extends AbstractEntityRepository
         ')->setParameters([$report, $person, $params ? implode(',', $params) : ''])->getOneOrNullResult();
     }
 
-    public function getFavoritesForPerson(\Application\DeskPRO\Entity\Person $person = null)
+    /**
+     * @param Person $person
+     *
+     * @return mixed
+     */
+    public function getFavoritesForPerson(Person $person = null)
     {
         if (!$person) {
             $person = App::getCurrentPerson();
@@ -94,6 +110,11 @@ class ReportWidget extends AbstractEntityRepository
         ')->execute([$person]);
     }
 
+    /**
+     * @param array $favorites
+     *
+     * @return array
+     */
     public function getFavoritesSimplified(array $favorites)
     {
         $output = [];
@@ -102,50 +123,6 @@ class ReportWidget extends AbstractEntityRepository
         }
 
         return $output;
-    }
-
-    /**
-     * Groups a list of reports for use in the reports list. Returns lists of
-     * reports in these keys:
-     *  - custom: list of custom reports
-     *  - builtIn: grouped list of built-in reports. Grouped by printable name of the group.
-     *
-     * @return array
-     *
-     * @deprecated
-     */
-    public function groupReportsList()
-    {
-        $reports = $this->getAllReports();
-
-        $custom     = [];
-        $builtIn    = [];
-        $categories = $this->getBuiltInCategories();
-
-        foreach ($reports as $report) {
-            if ($report->is_custom) {
-                $custom[] = $report;
-            } else {
-                if (isset($categories[$report->category])) {
-                    $categoryId = $report->category;
-                } else {
-                    $categoryId = '';
-                }
-                $builtIn[$categoryId][] = $report;
-            }
-        }
-
-        $builtInOrdered = [];
-        foreach ($categories as $categoryId => $categoryName) {
-            if (isset($builtIn[$categoryId])) {
-                $builtInOrdered[$categoryName] = $builtIn[$categoryId];
-            }
-        }
-
-        return [
-            'custom'  => $custom,
-            'builtIn' => $builtInOrdered,
-        ];
     }
 
     /**
@@ -159,7 +136,7 @@ class ReportWidget extends AbstractEntityRepository
         $custom  = [];
 
         foreach ($reports as $report) {
-            if ($report->is_custom) {
+            if ($report->isCustom()) {
                 $custom[] = $report->toApiData();
             }
         }
@@ -184,28 +161,6 @@ class ReportWidget extends AbstractEntityRepository
 
         return $builtIn;
     }
-
-    /**
-     * Gets the list of built-in report grouping categories.
-     *
-     * @return array
-     */
-    public function getBuiltInCategories()
-    {
-        return [
-            'ticket'    => 'Tickets',
-            'chat'      => 'Chats',
-            'idea'      => 'Ideas',
-            'person'    => 'People & Organizations',
-            'kb'        => 'Knowledgebase',
-            'news'      => 'News',
-            'downloads' => 'Downloads',
-            'feedback'  => 'Feedback',
-            'tasks'     => 'Tasks',
-            'twitter'   => 'Twitter',
-        ];
-    }
-
     /**
      * @return bool
      */
@@ -214,6 +169,9 @@ class ReportWidget extends AbstractEntityRepository
         return (bool) App::getConfig('debug.dev');
     }
 
+    /**
+     * @return array
+     */
     public function getReportGroupParams()
     {
         $return = [
@@ -345,7 +303,9 @@ class ReportWidget extends AbstractEntityRepository
             ],
         ];
 
-        $fields = $this->getEntityManager()->getRepository('DeskPRO:CustomDefTicket')->getTopFields();
+        /** @var CustomDefTicketRepository $customDefTicketRepository */
+        $customDefTicketRepository = $this->getEntityManager()->getRepository(CustomDefTicket::class);
+        $fields                    = $customDefTicketRepository->getTopFields();
         foreach ($fields as $field) {
             $escaped                                               = addslashes($field->title);
             $return['fields']['tickets']['ticketfield'.$field->id] = [
@@ -353,7 +313,9 @@ class ReportWidget extends AbstractEntityRepository
             ];
         }
 
-        $fields = $this->getEntityManager()->getRepository('DeskPRO:CustomDefPerson')->getTopFields();
+        /** @var CustomDefPersonRepository $customDefPersonRepository */
+        $customDefPersonRepository = $this->getEntityManager()->getRepository(CustomDefPerson::class);
+        $fields                    = $customDefPersonRepository->getTopFields();
         foreach ($fields as $field) {
             $escaped                                               = addslashes($field->title);
             $return['fields']['tickets']['personfield'.$field->id] = [
@@ -361,7 +323,9 @@ class ReportWidget extends AbstractEntityRepository
             ];
         }
 
-        $fields = $this->getEntityManager()->getRepository('DeskPRO:CustomDefOrganization')->getTopFields();
+        /** @var CustomDefOrganizationRepository $customDefOrganizationRepository */
+        $customDefOrganizationRepository = $this->getEntityManager()->getRepository(CustomDefOrganization::class);
+        $fields                          = $customDefOrganizationRepository->getTopFields();
         foreach ($fields as $field) {
             $escaped                                            = addslashes($field->title);
             $return['fields']['tickets']['orgfield'.$field->id] = [
