@@ -1,5 +1,5 @@
-function getInstInfo(helpdeskUrl, instId = 'def') { // eslint-disable-line no-unused-vars
-  const url = helpdeskUrl.replace(/\/+$/, '');
+function getInstInfo(url, instId = 'def') { // eslint-disable-line no-unused-vars
+  const helpdeskUrl = url.replace(/\/+$/, '');
 
   const loadKey = '_dp_instinfoload_';
   const storagePrefix = `dp${instId}loader`;
@@ -25,7 +25,7 @@ function getInstInfo(helpdeskUrl, instId = 'def') { // eslint-disable-line no-un
 
   const getVersionInfo = () => ({
     assetUrl: getAssetUrl(),
-    url,
+    helpdeskUrl,
     instId
   });
 

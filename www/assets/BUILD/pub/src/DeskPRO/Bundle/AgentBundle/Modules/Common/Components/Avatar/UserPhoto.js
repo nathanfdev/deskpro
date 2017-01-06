@@ -4,13 +4,18 @@ import classNames from 'classnames';
 export class UserPhoto extends React.Component {
 
   static propTypes = {
-    type:     PropTypes.string,
-    width:    PropTypes.number,
-    height:   PropTypes.number,
-    imageUrl: PropTypes.string,
-    text:     PropTypes.string,
-    color:    PropTypes.string,
-    children: PropTypes.node
+    type:      PropTypes.string,
+    width:     PropTypes.number,
+    height:    PropTypes.number,
+    imageUrl:  PropTypes.string,
+    text:      PropTypes.string,
+    color:     PropTypes.string,
+    children:  PropTypes.node,
+    className: PropTypes.string
+  };
+
+  static defaultProps = {
+    className: ''
   };
 
   getStyle() {
@@ -47,12 +52,13 @@ export class UserPhoto extends React.Component {
   }
 
   render() {
-    const { type, text, children } = this.props;
+    const { type, text, children, className } = this.props;
 
     return (
       <span
         style={this.getStyle()}
         className={classNames(
+        className,
         'user-photo', {
           'text-fallback': type === 'text',
           gravatar:        type === 'gravatar'
@@ -65,3 +71,5 @@ export class UserPhoto extends React.Component {
     );
   }
 }
+
+export default UserPhoto;

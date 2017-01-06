@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\TaskQueue;
+use Application\ImportBundle\CsvImport\CsvImporter;
 use Monolog\Logger;
 use Orb\Logger\Handler\ArrayHandler;
 
@@ -112,6 +113,8 @@ class CsvImport extends AbstractJob
         $logger   = App::$container->get('dp.importer_logger');
         $handler  = new ArrayHandler(0, Logger::ERROR);
         $logger->pushHandler($handler);
+        /** @var CsvImporter $importer */
+        $importer = App::$container->get('dp.importer.csv');
 
         /** @var Blob $blob */
         $blob = $em->find(Blob::class, $this->data['blob_id']);
@@ -157,7 +160,7 @@ class CsvImport extends AbstractJob
 
             ++$this->data['lines_done'];
 
-            if ($this->importRow($row, $handler)) {
+            if ($this->importRow($importer, $row, $handler)) {
                 ++$this->data['imported'];
                 ++$imported;
             } else {
@@ -271,7 +274,7 @@ class CsvImport extends AbstractJob
      *
      * @return int
      */
-    protected function importRow(array $row, ArrayHandler $handler)
+    protected function importRow(CsvImporter $importer, array $row, ArrayHandler $handler)
     {
         if (isset($row[0]) && $row[0] === null) {
             $this->log(['Empty row']);
@@ -279,11 +282,16 @@ class CsvImport extends AbstractJob
             return false;
         }
 
-        $importer = App::$container->get('dp.importer.csv');
-        $result   = $importer->importPerson($this->data['field_maps'], $row, $this->data['ref'], $this->data['welcome_email']);
+        $result = false;
+        try {
+            $result = $importer->importPerson($this->data['field_maps'], $row, $this->data['ref'], $this->data['welcome_email']);
+        } catch (\Exception $e) {
+            $this->log(['Skipped row due to error: '.$e->getMessage()]);
+        }
 
         if (!$result) {
-            $this->log($handler->getMessages());
+            // TODO separate error log from this Job, reduce verbosity
+//            $this->log($handler->getMessages());
         }
         $handler->reset();
 

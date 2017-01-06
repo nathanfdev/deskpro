@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,20 +44,22 @@ class ProcessPersistedEvents extends AbstractJob
 
     public function run()
     {
-        $em   = $this->getContainer()->getEm();
-        $repo = $em->getRepository('\DeskPRO\Bundle\AppBundle\Entity\Event');
-        /** @var Event[] $events */
-        $events = $repo->findBy(['processed' => false]);
+        if ($this->getContainer()->get('deskpro.feature_flags')->hasFeature('agent_chat')) {
+            $em   = $this->getContainer()->getEm();
+            $repo = $em->getRepository(Event::class);
+            /** @var Event[] $events */
+            $events = $repo->findBy(['processed' => false]);
 
-        if ($events) {
-            /** @var DeferredStrategy $strategy */
-            $strategy = $event_dispatcher = $this->getContainer()->get('deskpro.notification.strategy_factory')->create($events[0]->getEvent());
-            foreach ($events as $event) {
-                $strategy->handlePersistedEvent($event->getEvent());
-                $event->setIsPorcessed(true);
-                $em->persist($event);
+            if ($events) {
+                /** @var DeferredStrategy $strategy */
+                $strategy = $event_dispatcher = $this->getContainer()->get('deskpro.notification.strategy_factory')->create($events[0]->getEvent());
+                foreach ($events as $event) {
+                    $strategy->handlePersistedEvent($event->getEvent());
+                    $event->setIsPorcessed(true);
+                    $em->persist($event);
+                }
+                $em->flush();
             }
-            $em->flush();
         }
     }
 }

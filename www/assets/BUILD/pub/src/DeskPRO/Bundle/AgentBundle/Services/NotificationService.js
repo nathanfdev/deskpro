@@ -31,10 +31,12 @@ export class NotificationService {
   createClients() {
     const me = this.options.user.get('id');
     const dispatcher = this.eventEmitter.emit.bind(this.eventEmitter);
-    this.options.clients.map(client => {
-      client.options.dispatcher = dispatcher;
-      client.options.me = me;
-      this.clients.push(this.createClient(client));
+    this.options.clients.map((client) => {
+      const editedClient = client;
+      editedClient.options.dispatcher = dispatcher;
+      editedClient.options.me = me;
+      this.clients.push(this.createClient(editedClient));
+      return editedClient;
     });
   }
 
@@ -46,21 +48,21 @@ export class NotificationService {
         this.heartbeat_disabled = true;
         return new PollingClient(clientConfig.options);
       default:
-        throw new Error('You should provide supported client. Given is ' + clientConfig.type);
+        throw new Error(`You should provide supported client. Given is ${clientConfig.type}`);
     }
   }
 
-  heartbeat() {
+  static heartbeat() {
     api.sendPut('DP_API/notify/heartbeat', {});
   }
 
   startHeartbeat() {
-    this.heartbeat_interval = setInterval(this.heartbeat.bind(this), 60000);
+    this.heartbeat_interval = setInterval(NotificationService.heartbeat, 60000);
   }
 
   startPolling() {
-    this.eventEmitter.on('action_alert', (data) => this.options.actionAlertsHandler.handle(data));
-    this.clients.map(client => client.bind('private-channel-' + this.options.user.get('id'), 'action_alert'));
+    this.eventEmitter.on('action_alert', data => this.options.actionAlertsHandler.handle(data));
+    this.clients.map(client => client.bind(`private-channel-${this.options.user.get('id')}`, 'action_alert'));
     if (!this.heartbeat_disabled) {
       this.startHeartbeat();
     }
@@ -73,3 +75,5 @@ export class NotificationService {
     }
   }
 }
+
+export default NotificationService;

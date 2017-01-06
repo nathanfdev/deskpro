@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@kadira/storybook';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 
-const structure = {
+export const structure = {
   elements: [
     {
       label: 'Boat',
@@ -84,7 +84,7 @@ const hierarchy = {
           label:       'theme.config',
           icon:        'folder',
           description: 'Config file for setting packaged themes'
-        },
+        }
       ]
     },
     {
@@ -103,7 +103,7 @@ const hierarchy = {
       label:       'semantic.json',
       icon:        'folder',
       description: 'Contains build settings for gulp'
-    },
+    }
   ]
 };
 
@@ -121,7 +121,7 @@ storiesOf('Semantic: list', module)
     () => <List {...hierarchy} />
   )
   .add(
-    'List without JSON',
+    'List without JSON (use children, not passed elements property)',
     () => <List>
       <ListElement label="Rock" icon="hand rock" />
       <ListElement label="Paper" icon="hand paper" />

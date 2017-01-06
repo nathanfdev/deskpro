@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,9 +43,11 @@ class UpdateAgentsOnline extends AbstractJob
 
     public function run()
     {
-        $data_service     = $this->getContainer()->get('data.agent');
-        $agent_ids        = $data_service->getAgentsOnlineStatus();
-        $event_dispatcher = $this->getContainer()->get('event_dispatcher');
-        $event_dispatcher->dispatch(UpdateOnlineEvent::EVENT_NAME, new UpdateOnlineEvent($agent_ids));
+        if ($this->getContainer()->get('deskpro.feature_flags')->hasExperimental('agent_chat')) {
+            $data_service     = $this->getContainer()->get('data.agent');
+            $agent_ids        = $data_service->getAgentsOnlineStatus();
+            $event_dispatcher = $this->getContainer()->get('event_dispatcher');
+            $event_dispatcher->dispatch(UpdateOnlineEvent::EVENT_NAME, new UpdateOnlineEvent($agent_ids));
+        }
     }
 }

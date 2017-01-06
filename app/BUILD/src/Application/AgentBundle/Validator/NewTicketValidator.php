@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -210,7 +210,7 @@ class NewTicketValidator extends AbstractValidator
                                     break;
                             }
 
-                            $this->addError('ticket.'.$code, array('message' => $str, 'field' => 'ticket_field_' . $field->getId()));
+                            $this->addError('ticket.'.$code, ['message' => $str, 'field' => 'ticket_field_'.$field->getId()]);
                         }
                     }
                 }
@@ -246,7 +246,7 @@ class NewTicketValidator extends AbstractValidator
                                     break;
                             }
 
-                            $this->addError('person.'.$code, ['message' => $str, 'field' => 'person_field_' . $field->getId()]);
+                            $this->addError('person.'.$code, ['message' => $str, 'field' => 'person_field_'.$field->getId()]);
                         }
                     }
                 }
@@ -282,7 +282,7 @@ class NewTicketValidator extends AbstractValidator
                                     break;
                             }
 
-                            $this->addError('person.'.$code, ['message' => $str, 'field' => 'org_field_' . $field->getId()]);
+                            $this->addError('person.'.$code, ['message' => $str, 'field' => 'org_field_'.$field->getId()]);
                         }
                     }
                 }

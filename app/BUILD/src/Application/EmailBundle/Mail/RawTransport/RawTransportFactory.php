@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,6 +55,7 @@ class RawTransportFactory
 
     /**
      * @param LoggerInterface $logger
+     * @param SettingsBag     $settings
      */
     public function __construct(LoggerInterface $logger, SettingsBag $settings)
     {
@@ -69,7 +70,7 @@ class RawTransportFactory
      *
      * @return RawTransportInterface
      */
-    public function createTransport(AccountConfigInterface $config, SettingsBag $settings)
+    public function createTransport(AccountConfigInterface $config)
     {
         if (function_exists('deskpro_mail_transport_override')) {
             $tr = deskpro_mail_transport_override($config, $this);

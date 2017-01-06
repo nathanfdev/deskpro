@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,7 +34,7 @@ namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Orb\Util\Strings;
 
-class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
+class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector implements PublicTacAware
 {
     /**
      * @var string
@@ -219,5 +219,10 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
         }
 
         return $this->guessed_ticket;
+    }
+
+    public function isPublicTac()
+    {
+        return $this->guessed_ticket && $this->ptac_code;
     }
 }

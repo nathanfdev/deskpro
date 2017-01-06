@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -1992,9 +1992,6 @@ class TicketController extends AbstractController
         $new_department_id = $ticket->getDepartmentId();
 
         $language = $ticket->language;
-
-        $layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($ticket->getDepartmentId());
-        $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $ticket);
 
         $field_manager        = $this->container->getTicketFieldManager();
         $new_field_manager    = $this->container->getCustomFieldManager();
@@ -4054,21 +4051,21 @@ class TicketController extends AbstractController
                 return $this->createJsonResponse(['error' => true, 'error_codes' => $errors]);
             }
 
+            $newTicket->ticket_fields             = $this->request->request->get('custom_fields', []);
+            $newTicket->post_custom_person_fields = $this->request->request->get('custom_person_fields', []);
+            $newTicket->post_custom_org_fields    = $this->request->request->get('custom_org_fields', []);
+            $newTicket->billing_fields            = $this->request->request->get('billing_fields', []);
+            $newTicket->status                    = $set_status;
+
             // Validate based on department...
             $validator = new \Application\AgentBundle\Validator\NewTicketValidator();
             $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newTicket->department_id);
-
-            $layout                   = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newTicket->getMockTicket());
-            $newTicket->ticket_fields = $this->request->request->get('custom_fields', []);
+            $layout    = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newTicket->getMockTicket());
 
             if (isset($check_person) && $check_person) {
                 $newTicket->setValuesFromTicket(null, $check_person, $check_person->organization);
             }
 
-            $newTicket->post_custom_person_fields = $this->request->request->get('custom_person_fields', []);
-            $newTicket->post_custom_org_fields    = $this->request->request->get('custom_org_fields', []);
-            $newTicket->billing_fields            = $this->request->request->get('billing_fields', []);
-            $newTicket->status                    = $set_status;
             $validator->setLayout($layout);
             $newTicket->setLayout($layout);
 

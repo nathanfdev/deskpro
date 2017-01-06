@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@kadira/storybook';
-import Accordion from 'DeskPRO/Component/Semantic/Accordion/Accordion';
-import List from 'DeskPRO/Component/Semantic/List/List';
+import { Accordion } from 'Semantic/Accordion';
+import { List } from 'Semantic/List';
 
 const structureSimple = {
   panels: [

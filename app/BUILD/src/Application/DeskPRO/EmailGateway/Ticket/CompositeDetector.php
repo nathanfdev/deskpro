@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,7 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Orb\Log\Logger;
 use Orb\Util\Util;
 
-class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface, TacPersonDetectorInterface
+class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface, TacPersonDetectorInterface, PublicTacAware
 {
     /**
      * @var \Application\DeskPRO\EmailGateway\Ticket\TicketDetectorInterface[]
@@ -63,6 +63,11 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
      * @var \Orb\Log\Logger
      */
     private $logger;
+
+    /**
+     * @var bool
+     */
+    protected $publicTac = false;
 
     /**
      * @param TicketDetectorInterface $detector
@@ -147,11 +152,16 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
      */
     public function findExistingTicket(AbstractReader $reader)
     {
-        $this->getMatchedDetector($reader);
+        $this->publicTac = false;
+        $detector        = $this->getMatchedDetector($reader);
 
         $reader_id = spl_object_hash($reader);
         if ($this->matched_tickets[$reader_id] === false) {
             return;
+        }
+
+        if ($detector instanceof PublicTacAware) {
+            $this->publicTac = $detector->isPublicTac();
         }
 
         return $this->matched_tickets[$reader_id];
@@ -217,5 +227,10 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
         }
 
         return $this->logger;
+    }
+
+    public function isPublicTac()
+    {
+        return $this->publicTac;
     }
 }

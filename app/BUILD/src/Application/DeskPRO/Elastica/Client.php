@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,6 +40,12 @@ class Client extends BaseClient
 {
     protected function _initConnections()
     {
+        // doubleslashes aren't accepted anymore since ES 5.*
+        // see Elastica\Transport\Http:58
+        $config         = $this->getConfig();
+        $config['path'] = ltrim('/', @$config['path']);
+        $this->setConfig($config);
+
         parent::_initConnections();
 
         // Adds empty 'headers' config or else logger on

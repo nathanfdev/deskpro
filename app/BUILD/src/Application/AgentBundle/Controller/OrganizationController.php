@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -293,8 +293,7 @@ class OrganizationController extends AbstractController
                     $usergroupIds = $this->container->getDb()->fetchAllCol('
                         SELECT id
                         FROM usergroups
-                        WHERE id IN (?)
-                            AND sys_name NOT IN (\'everyone\', \'registered\') OR `sys_name` IS NULL
+                        WHERE id IN (?) AND (sys_name NOT IN (\'everyone\', \'registered\') OR `sys_name` IS NULL)
                     ', [$usergroupIds], [Connection::PARAM_INT_ARRAY]);
                 }
                 $this->container->getDb()->delete('organization2usergroups', ['organization_id' => $org->getId()]);

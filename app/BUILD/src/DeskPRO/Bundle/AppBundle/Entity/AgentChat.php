@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -112,10 +112,21 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     protected $date_last_message;
 
     /**
+     * Custom groups name for chat with type = 'group'.
+     *
+     * @var \DateTime
+     * @ORM\Column(type="string", nullable=true)
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     */
+    protected $name;
+
+    /**
      * List of participating in chat entities.
      *
      * @var AgentChatParticipant[] an id array of participants
-     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant", mappedBy="chat", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant", mappedBy="chat",
+     *     cascade={"persist", "remove"}, orphanRemoval=true)
      */
     protected $participants;
 
@@ -219,6 +230,26 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     public function setDateLastMessage(\DateTime $date)
     {
         $this->setModelField('date_last_message', $date);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param \DateTime $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
 
         return $this;
     }
@@ -344,6 +375,34 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
         $this->participants->add($chatParticipant);
 
         return $this;
+    }
+
+    /**
+     * @param mixed $participant
+     *
+     * @return $this
+     */
+    public function removeParticipant($participant)
+    {
+        if ($participant instanceof Person) {
+            $this->removePersonParticipant($participant);
+        }
+
+        return $this;
+    }
+
+    private function removePersonParticipant(Person $participant)
+    {
+        $toRemove = $this->participants->filter(
+            function (AgentChatParticipant $item) use ($participant) {
+                return $item->getPerson() === $participant;
+            }
+        );
+        foreach ($toRemove as $participant) {
+            /* @var AgentChatParticipant $participant */
+            $this->participants->removeElement($participant);
+            $participant->setChat(null);
+        }
     }
 
     /**

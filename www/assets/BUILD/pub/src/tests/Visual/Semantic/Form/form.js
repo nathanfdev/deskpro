@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf, action, linkTo } from '@kadira/storybook';
 import { Toggle, Range, Select } from 'DeskPRO/Component/Semantic/Form';
-import { css } from '../../decorators';
+import { css } from 'Visual/decorators';
 
 const options = [
   {
@@ -72,5 +72,13 @@ storiesOf('Semantic: form', module)
   .add(
     'Select with filter', () =>
       <Select options={optionsColours} onChange={action('Range change')} placeholder="Colour" filter />
+  )
+  .add(
+    'Checkbox off',
+    () => <Toggle checkbox onChange={linkTo('Semantic: form', 'Checkbox on')}>Label</Toggle>
+  )
+  .add(
+    'Checkbox on',
+    () => <Toggle active checkbox onChange={linkTo('Semantic: form', 'Checkbox off')}>Label</Toggle>
   )
 ;

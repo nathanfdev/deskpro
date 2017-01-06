@@ -7,28 +7,34 @@ export class AgentTeamAvatar extends React.Component {
 
   static propTypes = {
     agentTeam: PropTypes.object.isRequired,
-    size:      PropTypes.any
+    size:      PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    className: PropTypes.string
+  };
+
+  static defaultProps = {
+    className: ''
   };
 
   getAgentTeamFallbackText() {
     const agentTeam = this.props.agentTeam || Immutable.fromJS({});
-    const name = agentTeam.get('name');
-    const text = (name && name.length ? name[0] : '');
+    const name      = agentTeam.get('name');
+    const text      = (name && name.length ? name[0] : '');
 
-    return text ? text : '?';
+    return text || '?';
   }
 
   render() {
-    const { size } = this.props;
+    const { size, className } = this.props;
     const agentTeam = this.props.agentTeam || Immutable.fromJS({});
-    const avatar = agentTeam.get('avatar') || Immutable.fromJS({});
+    const avatar    = agentTeam.get('avatar') || Immutable.fromJS({});
 
     const props = {
       size,
       color:      chooseColor(agentTeam.get('id')),
       url:        avatar.get('url'),
       urlPattern: avatar.get('url_pattern'),
-      text:       this.getAgentTeamFallbackText()
+      text:       this.getAgentTeamFallbackText(),
+      className
     };
 
     return (
@@ -36,3 +42,6 @@ export class AgentTeamAvatar extends React.Component {
     );
   }
 }
+
+export default AgentTeamAvatar;
+

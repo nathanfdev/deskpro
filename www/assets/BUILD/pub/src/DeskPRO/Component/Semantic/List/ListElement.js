@@ -8,7 +8,22 @@ class ListElement extends React.Component {
     description: PropTypes.string,
     icon:        PropTypes.string,
     image:       PropTypes.string,
-    elements:    PropTypes.arrayOf(PropTypes.object)
+    imageNode:   PropTypes.object,
+    elements:    PropTypes.arrayOf(PropTypes.object),
+    className:   PropTypes.string,
+    onClick:     PropTypes.func,
+    children:    PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.array
+    ])
+  };
+
+  static defaultProps = {
+    onClick() {
+
+    },
+    label:     '',
+    className: ''
   };
 
   getContent() {
@@ -19,7 +34,7 @@ class ListElement extends React.Component {
         <a className="header">{label}</a>,
         <div className="description">{description}</div>
       ];
-    } else {
+    } else if (label) {
       content = [label];
     }
     if (elements) {
@@ -28,26 +43,30 @@ class ListElement extends React.Component {
       };
       content.push(<List {...props} />);
     }
-    return content;
+    return content.length ? <div className="content">{content}</div> : null;
   }
 
   getIcon() {
-    const { icon, image } = this.props;
+    const { icon, image, imageNode } = this.props;
     if (icon) {
       return <i className={classNames('icon', icon)} />;
     }
     if (image) {
       return <img className="ui avatar image" src={image} role="presentation" />;
     }
+
+    if (imageNode) {
+      return imageNode;
+    }
     return null;
   }
 
   render() {
-    return (<div className="item">
+    const { className, children } = this.props;
+    return (<div className={classNames('item', className)} onClick={this.props.onClick}>
       {this.getIcon()}
-      <div className="content">
-        {this.getContent()}
-      </div>
+      {this.getContent()}
+      {children}
     </div>);
   }
 }
