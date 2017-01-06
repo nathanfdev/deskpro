@@ -219,6 +219,22 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         return $this->language;
     }
 
+    /**
+     * @return string
+     */
+    public function getRefType()
+    {
+        return $this->ref_type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRefId()
+    {
+        return $this->ref_id;
+    }
+
     public function _resetRefCode()
     {
         if ($this->_set_object) {
