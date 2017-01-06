@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,17 +37,19 @@ use Application\DeskPRO\Dpql\Compiler;
 use Application\DeskPRO\Dpql\Exception as DpqlException;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Entity\ReportWidget;
+use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\Response;
 
-class Widget
+class ReportsWidgetService
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
     protected $em;
 
     /**
-     * @var \Application\DeskPRO\EntityRepository\ReportWidget
+     * @var ReportWidgetRepository
      */
     protected $repository;
 
@@ -115,8 +117,8 @@ class Widget
     }
 
     /**
-     * @param int         $id
-     * @param string|null $query
+     * @param int    $id
+     * @param string $query
      *
      * @return array
      */
@@ -141,9 +143,9 @@ class Widget
     /**
      * @param int    $id
      * @param string $type
-     * @param null   $query
+     * @param mixed  $query
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function outputDownloadContent($id, $type, $query = null)
     {
@@ -161,8 +163,8 @@ class Widget
     }
 
     /**
-     * @param int         $id
-     * @param string|null $query
+     * @param int    $id
+     * @param string $query
      *
      * @return bool
      */
@@ -185,7 +187,7 @@ class Widget
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\ReportWidget $report
+     * @param ReportWidget $report
      *
      * @throws \Exception
      */
@@ -202,7 +204,7 @@ class Widget
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
+            $this->em->getConnection()->rollBack();
             throw $e;
         }
     }
@@ -255,17 +257,18 @@ class Widget
             $this->em->flush();
             $this->em->commit();
         } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
+            $this->em->getConnection()->rollBack();
             throw $e;
         }
     }
 
     /**
-     * @param int $id
+     * @param int  $id
+     * @param bool $withParams
      *
      * @return array
      */
-    public function getQueryParts($id, $with_params = true)
+    public function getQueryParts($id, $withParams = true)
     {
         $parts  = [];
         $report = $this->repository->find($id);
@@ -273,7 +276,7 @@ class Widget
 
         try {
             $compiler = new Compiler();
-            if ($with_params) {
+            if ($withParams) {
                 $input = $compiler->replacePlaceholders($query, $this->getParamsInput('params'));
             } else {
                 $input = $query;
@@ -358,7 +361,7 @@ class Widget
      * @param string $title
      * @param array  $params
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     protected function getReportResponseForType($type, $query, $title, array $params = [])
     {
@@ -381,14 +384,14 @@ class Widget
     }
 
     /**
-     * @param       $query
-     * @param       $renderer
-     * @param bool  $error
-     * @param array $params
+     * @param array  $query
+     * @param string $renderer
+     * @param bool   $error
+     * @param array  $params
      *
-     * @return bool|string
+     * @return mixed
      */
-    protected function renderQuery($query, $renderer, &$error = false, array $params = [])
+    protected function renderQuery(array $query, $renderer, &$error = false, array $params = [])
     {
         return Display::renderQuery(
             $renderer,

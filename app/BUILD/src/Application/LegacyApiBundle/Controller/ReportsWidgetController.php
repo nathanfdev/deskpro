@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,245 +36,259 @@ use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Reports\Form\Type\ReportType;
 use Application\DeskPRO\Reports\ReportEdit;
-use Application\DeskPRO\Reports\Widget;
+use Application\DeskPRO\Reports\ReportsWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @ApiModes("all")
  */
 class ReportsWidgetController extends AbstractController
 {
-    //###################################################################################################################
-    // list
-    //###################################################################################################################
+    /**
+     * @return Response
+     */
     public function listAction()
     {
-        /*
-         * @var Widget
-         */
-        $reports_widget = $this->container->getSystemService('reports_widget');
+        /* @var ReportsWidgetService */
+        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
 
         return $this->createApiResponse([
-            'reports' => $reports_widget->getAll(),
+            'reports' => $reportsWidget->getAll(),
         ]);
     }
-    //###################################################################################################################
-    // list custom reports
-    //###################################################################################################################
+
+    /**
+     * @return Response
+     */
     public function listCustomAction()
     {
-        /*
-         * @var Widget
-         */
-        $reports_widget = $this->container->getSystemService('reports_widget');
-        $customReports  = $reports_widget->getCustomReports();
+        /* @var ReportsWidgetService */
+        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
+        $customReports = $reportsWidget->getCustomReports();
         foreach ($customReports as &$report) {
             foreach ($report['labels'] as &$label) {
                 $label = $this->container->getTranslator()->phrase('reports.labels.'.$label);
             }
         }
 
-        return $this->createApiResponse([
-            'reports' => $customReports,
-        ]);
+        return $this->createApiResponse(['reports' => $customReports]);
     }
-    //###################################################################################################################
-    // list built-in reports
-    //###################################################################################################################
+
+    /**
+     * @return Response
+     */
     public function listBuiltInAction()
     {
-        /*
-         * @var Widget
-         */
-        $reports_widget = $this->container->getSystemService('reports_widget');
-        $builtInReports = $reports_widget->getBuiltInReports();
+        /* @var ReportsWidgetService */
+        $reportsWidget  = $reportsWidget  = $this->container->get('reports.widget.service');
+        $builtInReports = $reportsWidget->getBuiltInReports();
         foreach ($builtInReports as &$report) {
             foreach ($report['labels'] as &$label) {
                 $label = $this->container->getTranslator()->phrase('reports.labels.'.$label);
             }
         }
 
-        return $this->createApiResponse([
-            'reports' => $builtInReports,
-        ]);
+        return $this->createApiResponse(['reports' => $builtInReports]);
     }
-    //###################################################################################################################
-    // get group params
-    //###################################################################################################################
+
+    /**
+     * @return Response
+     */
     public function getGroupParamsAction()
     {
-        /*
-         * @var Widget
-         */
-        $reports_widget = $this->container->getSystemService('reports_widget');
+        /* @var ReportsWidgetService */
+        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
 
-        return $this->createApiResponse($reports_widget->getGroupParams());
+        return $this->createApiResponse($reportsWidget->getGroupParams());
     }
-    //###################################################################################################################
-    // get report
-    //###################################################################################################################
+
+    /**
+     * @param int $id
+     *
+     * @return Response
+     */
     public function getAction($id)
     {
-        /*
-         * @var Widget
-         */
-        $reports_widget = $this->container->getSystemService('reports_widget');
-        $report         = $reports_widget->getById($id);
+        /* @var ReportsWidgetService */
+        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
+        $report        = $reportsWidget->getById($id);
         if (!$report) {
             throw $this->createNotFoundException();
         }
-        $query_parts           = $reports_widget->getQueryParts($id, false);
+        $queryParts            = $reportsWidget->getQueryParts($id, false);
         $widget                = $this->getApiData($report);
-        $widget['query_parts'] = $query_parts;
+        $widget['query_parts'] = $queryParts;
 
         return $this->createApiResponse([
             'widget' => $widget,
         ]);
     }
-    //###################################################################################################################
-    // save report
-    //###################################################################################################################
+
+    /**
+     * @param int $id
+     *
+     * @throws ValidationException
+     *
+     * @return Response
+     */
     public function saveAction($id)
     {
-        /*
-         * @var Widget
-         */
-        $reports_widget = $this->container->getSystemService('reports_widget');
+        /* @var ReportsWidgetService */
+        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
         if ($id) {
-            $report = $reports_widget->getById($id);
+            $report = $reportsWidget->getById($id);
             if (!$report) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $report = $reports_widget->createNew();
+            $report = $reportsWidget->createNew();
         }
-        if (!$report->is_custom) {
+        if (!$report->isCustom()) {
             throw ValidationException::create('you can edit only custom report');
         }
-        if ($error = $reports_widget->getErrors($id, 'from_request')) {
+        if ($error = $reportsWidget->getErrors($id, 'from_request')) {
             return $this->createApiResponse(['error' => $error]);
         } else {
-            $postData    = $this->in->getAll('req');
-            $report_edit = new ReportEdit($report);
-            $form        = $this->createForm(new ReportType(), $report_edit, ['cascade_validation' => true]);
+            $postData   = $this->in->getAll('req');
+            $reportEdit = new ReportEdit($report);
+            $form       = $this->createForm(new ReportType(), $reportEdit, ['cascade_validation' => true]);
             $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'report'), true);
             if ($form->isValid()) {
-                $report_edit->save($this->em);
+                $reportEdit->save($this->em);
             } else {
                 return $this->createApiValidationErrorResponse(
                     $this->container->getValidator()->validate($report)
                 );
             }
-            $reports_widget->saveQuery($report, 'from_request');
-            $rendered_result = $reports_widget->getRenderedResult($id, 'from_request');
+            $reportsWidget->saveQuery($report);
+            $renderedResult = $reportsWidget->getRenderedResult($id, 'from_request');
 
             return $this->createApiResponse([
                 'success'         => true,
                 'id'              => $report->id,
-                'rendered_result' => $rendered_result,
+                'rendered_result' => $renderedResult,
             ]);
         }
     }
-    //###################################################################################################################
-    // clone report
-    //###################################################################################################################
+
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
+     * @throws \Throwable
+     *
+     * @return Response
+     */
     public function cloneAction($id)
     {
-        /*
-         * @var Widget
-         */
-        $reports_widget = $this->container->getSystemService('reports_widget');
-        $report         = $reports_widget->getById($id);
+        /* @var ReportsWidgetService */
+        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
+        $report        = $reportsWidget->getById($id);
         if (!$report) {
             throw $this->createNotFoundException();
         }
-        $new_report              = $reports_widget->createNew();
-        $new_report->title       = $this->in->getString('title') ?: $report->title;
-        $new_report->description = $this->in->getString('description') ?: $report->description;
-        $new_report->query       = $report->query;
-        $parts                   = $this->in->getArrayValue('parts');
+        $newReport = $reportsWidget->createNew();
+        $newReport->setTitle($this->in->getString('title') ?: $report->getTitle());
+        $newReport->setDescription($this->in->getString('description') ?: $report->getDescription());
+        $newReport->setQuery($report->getQuery());
+        $parts = $this->in->getArrayValue('parts');
         if ($parts) {
             $query = Display::getQueryStringFromParts($parts);
             if ($query) {
-                $new_report->query = $query;
+                $newReport->setQuery($query);
             }
         }
         $this->em->getConnection()->beginTransaction();
         try {
-            $this->em->persist($new_report);
+            $this->em->persist($newReport);
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
+            $this->em->getConnection()->rollBack();
             throw $e;
         }
 
         return $this->createApiResponse([
             'success' => true,
-            'id'      => $new_report->id,
+            'id'      => $newReport->getId(),
         ]);
     }
-    //###################################################################################################################
-    // delete report
-    //###################################################################################################################
+
+    /**
+     * @param $id
+     *
+     * @throws ValidationException
+     * @throws \Exception
+     * @throws \Throwable
+     *
+     * @return Response
+     */
     public function deleteAction($id)
     {
-        /*
-         * @var Widget
-         */
-        $reports_widget = $this->container->getSystemService('reports_widget');
-        $report         = $reports_widget->getById($id);
+        /* @var ReportsWidgetService */
+        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
+        $report        = $reportsWidget->getById($id);
         if (!$report) {
             throw $this->createNotFoundException();
         }
-        if (!$report->is_custom) {
+        if (!$report->isCustom()) {
             throw ValidationException::create('you can delete only custom report');
         }
-        $reports_widget->remove($report);
+        $reportsWidget->remove($report);
 
         return $this->createSuccessResponse(['id' => $id]);
     }
-    //###################################################################################################################
-    // test report
-    //###################################################################################################################
+
+    /**
+     * @param $id
+     *
+     * @throws \Throwable
+     *
+     * @return Response
+     */
     public function testAction($id)
     {
-        /*
-         * @var Widget
-         */
-        $reports_widget = $this->container->getSystemService('reports_widget');
-        if ($error = $reports_widget->getErrors($id, 'from_request')) {
+        /* @var ReportsWidgetService */
+        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
+        if ($error = $reportsWidget->getErrors($id, 'from_request')) {
             return $this->createApiResponse(['error' => $error]);
         } else {
-            $rendered_result = $reports_widget->getRenderedResult($id, 'from_request');
+            $renderedResult = $reportsWidget->getRenderedResult($id, 'from_request');
 
             return $this->createApiResponse([
-                'rendered_result' => $rendered_result,
+                'rendered_result' => $renderedResult,
             ]);
         }
     }
-    //###################################################################################################################
-    // parse
-    //###################################################################################################################
+
+    /**
+     * @throws \Throwable
+     *
+     * @return Response
+     */
     public function parseAction()
     {
-        /*
-         * @var Widget
-         */
-        $reports_widget = $this->container->getSystemService('reports_widget');
+        /* @var ReportsWidgetService */
+        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
 
-        return $this->createApiResponse($reports_widget->parseInput());
+        return $this->createApiResponse($reportsWidget->parseInput());
     }
-    //###################################################################################################################
-    // download
-    //###################################################################################################################
+
+    /**
+     * @param $id
+     * @param $type
+     *
+     * @throws \Throwable
+     *
+     * @return Response
+     */
     public function downloadAction($id, $type)
     {
-        /*
-         * @var Widget
-         */
-        $reports_widget = $this->container->getSystemService('reports_widget');
+        /* @var ReportsWidgetService */
+        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
 
-        return $reports_widget->outputDownloadContent($id, $type);
+        return $reportsWidget->outputDownloadContent($id, $type);
     }
 }

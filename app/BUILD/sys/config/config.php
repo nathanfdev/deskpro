@@ -148,6 +148,11 @@ $definition->setClass('Application\\LegacyApiBundle\\Service\\Dashboard');
 $definition->setArguments([new Reference('doctrine.orm.entity_manager'), new Reference('dashboard.widget.service')]);
 $container->setDefinition('dashboard.service', $definition);
 
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Reports\\ReportsWidgetService');
+$definition->setArguments([new Reference('doctrine.orm.entity_manager')]);
+$container->setDefinition('reports.widget.service', $definition);
+
 //###########################################################################
 // Validators and Constraints
 //###########################################################################
