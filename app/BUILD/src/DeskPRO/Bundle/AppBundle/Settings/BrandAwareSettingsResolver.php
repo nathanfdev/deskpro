@@ -61,6 +61,11 @@ class BrandAwareSettingsResolver
     private $settings_resolver;
 
     /**
+     * @var Brand[]
+     */
+    private $brands;
+
+    /**
      * Constructor.
      *
      * @param SettingsResolver $settings_resolver
@@ -95,6 +100,34 @@ class BrandAwareSettingsResolver
         }
 
         return $this->getGlobalSetting($name, $default);
+    }
+
+    /**
+     * Allows to check if a setting is enabled on any brand.
+     *
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getAnyBrandSetting($name, $default = null)
+    {
+        foreach ($this->getBrands() as $brand) {
+            $setting = $this->getBrandSetting($name, $brand, $default);
+            if ($setting) {
+                return $setting;
+            }
+        }
+
+        return $default;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isChatAvailable()
+    {
+        return $this->getAnyBrandSetting(WidgetSettingsResolver::CHAT_ENABLED, false);
     }
 
     /**
@@ -178,23 +211,14 @@ class BrandAwareSettingsResolver
     }
 
     /**
-     * @return mixed
+     * @return \Application\DeskPRO\Entity\Brand[]|array
      */
-    public function isChatAvailable()
+    protected function getBrands()
     {
-        $brands   = $this->em->getRepository(Brand::class)->findAll();
-        $that     = $this;
-        $settings = array_map(function ($brand) use ($that) {
-            return $that->getBrandSetting(WidgetSettingsResolver::CHAT_ENABLED, $brand, false);
-        },
-        $brands);
+        if (!$this->brands) {
+            $this->brands = $this->em->getRepository(Brand::class)->findAll();
+        }
 
-        return array_reduce(
-            $settings,
-            function ($carry, $item) {
-                return $carry || $item;
-            },
-            false
-        );
+        return $this->brands;
     }
 }
