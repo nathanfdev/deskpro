@@ -1,6 +1,12 @@
 .widget-editor {
   $inline-label-width: 250px;
   padding: 20px;
+  height: inherit;
+  min-height: 850px;
+
+  > div {
+    height: inherit;
+  }
 
   .right {
     float: right;
