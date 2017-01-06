@@ -136,21 +136,13 @@ abstract class AbstractRepository extends Repository
             $queryString->setFields(['labels']);
             $queryString->setDefaultOperator('AND');
             $query = new Query([
-                'query' => [
-                    'filtered' => [
-                        'query'  => $queryString->toArray(),
-                        'filter' => $this->getFilters($options),
-                    ],
-                ],
+                'query'       => $queryString->toArray(),
+                'post_filter' => $this->getFilters($options),
             ]);
         } else {
             $query = new Query([
-                'query' => [
-                    'filtered' => [
-                        'query'  => $this->getQueryString($q)->toArray(),
-                        'filter' => $this->getFilters($options),
-                    ],
-                ],
+                'query'       => $this->getQueryString($q)->toArray(),
+                'post_filter' => $this->getFilters($options),
             ]);
         }
 

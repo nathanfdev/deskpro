@@ -40,6 +40,12 @@ class Client extends BaseClient
 {
     protected function _initConnections()
     {
+        // doubleslashes aren't accepted anymore since ES 5.*
+        // see Elastica\Transport\Http:58
+        $config         = $this->getConfig();
+        $config['path'] = ltrim('/', @$config['path']);
+        $this->setConfig($config);
+
         parent::_initConnections();
 
         // Adds empty 'headers' config or else logger on
