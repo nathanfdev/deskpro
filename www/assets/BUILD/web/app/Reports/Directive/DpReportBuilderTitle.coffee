@@ -71,6 +71,9 @@ define ->
         ###
         buildDirectiveVariables = (value) ->
 
+          key = 0
+          params = $state.params.params.split(',')
+
           lastPiece = value
           regex = /(.*?)(<(\d+:.+?)>)/g
 
@@ -78,7 +81,8 @@ define ->
             scope.texts.push(match[1])
             collected = collectSelectOptions(match[3])
             scope.options.push(collected.options)
-            scope.selected.push(collected.selected)
+            scope.selected.push(params[key])
+            key++
 
             # case when text that continues after last select box
             lastPiece = lastPiece.replace(match[1], '').replace(match[2], '')

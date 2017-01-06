@@ -2,12 +2,12 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
   '$scope', '$stateParams', '$q', 'Api', '$timeout',
   ($scope, $stateParams, $q, Api, $timeout) ->
     widget_id = parseInt($stateParams.widget_id)
-    $scope.widget = { query: "" }
+    $scope.widget = { query_parts: {} }
 
-    Api.sendGet('/reports/widget/' + widget_id).then((r) ->
-      $scope.widget = r.data.widget
-      console.log($scope.widget)
-    )
+    if(widget_id)
+      Api.sendGet('/reports/widget/' + widget_id).then((r) ->
+        $scope.widget = r.data.widget
+      )
 
     $scope.editor_conf = (conf = {}) ->
       opts = {
@@ -29,4 +29,16 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       }
 
       return opts
+
+    $scope.saveWidget = (event) ->
+      event.preventDefault()
+      postData = {
+        id: $scope.widget.id
+        title: $scope.widget.title
+        description: $scope.widget.description
+      }
+#      if(widget_id)
+#        promise = Api.sendPostJson('/reports/widget/' + $scope.widget.id, {report: postData, parts: $scope.widget.query_parts})
+#      else
+      promise = Api.sendPutJson('/reports/widget', {report: postData, parts: $scope.widget.query_parts})
   ]

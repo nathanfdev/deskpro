@@ -84,6 +84,11 @@ define -> (States) ->
     .setCtrl('Reports.Stats.WidgetView')
     .setTpl('ReportsInterfaceBundle:Stats:widget.html')
 
+  States.add('reports.stats.new')
+    .setUrl('/new')
+    .setCtrl('Reports.Stats.WidgetView')
+    .setTpl('ReportsInterfaceBundle:Stats:widget.html')
+
   #----------------------------------------
   # Agent Activity
   #----------------------------------------

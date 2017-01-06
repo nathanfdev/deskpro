@@ -13,6 +13,7 @@ define [
     # Just doing all the necessary AJAX calls here
     ###
     initialLoad: ->
+      @$scope.getStats = @getStats
       data_promise = @Api.sendDataGet({
         tickets_status:            "/reports/overview/data/tickets_status"
         tickets_awaiting_agent:    "/reports/overview/data/tickets_awaiting_agent"
@@ -72,7 +73,7 @@ define [
           @setDataForBarGraphs(data_key)
       )
 
-    @$scope.getStats = @getStats
+
 
     ###
     # Used for hiding / showing AJAX loader
