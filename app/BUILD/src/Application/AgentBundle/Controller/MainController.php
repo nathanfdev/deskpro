@@ -751,7 +751,6 @@ class MainController extends AbstractController
             'core.apps_tasks'                      => false,
         ];
 
-        /** @var BrandAwareSettingsResolver $brandSettingsResolver */
         $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
         foreach ($appSettings as $name => $default) {
             $appSettings[$name] = (bool) $brandSettingsResolver->getAnyBrandSetting($name, $default);
