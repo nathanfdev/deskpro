@@ -738,6 +738,9 @@ class MainController extends AbstractController
         ]);
     }
 
+    /**
+     * @return array
+     */
     protected function getBrandAppSettings()
     {
         $appSettings = [
@@ -748,21 +751,10 @@ class MainController extends AbstractController
             'core.apps_tasks'                      => false,
         ];
 
-        /** @var Brand[] $brands */
-        $brands = $this->em->getRepository(Brand::class)->findAll();
-
-        /** @var BrandStack $brandStack */
-        $brandStack = $this->get('brand_stack');
-
         /** @var BrandAwareSettingsResolver $brandSettingsResolver */
         $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
-
-        foreach ($brands as $brand) {
-            $brandStack->push($brand);
-            foreach ($appSettings as $key => &$setting) {
-                $setting = $setting || $brandSettingsResolver->getSetting($key);
-            }
-            $brandStack->pop();
+        foreach ($appSettings as $name => $default) {
+            $appSettings[$name] = (bool) $brandSettingsResolver->getAnyBrandSetting($name, $default);
         }
 
         return $appSettings;
