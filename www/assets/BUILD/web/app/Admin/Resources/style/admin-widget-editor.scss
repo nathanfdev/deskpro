@@ -1,6 +1,12 @@
 .widget-editor {
   $inline-label-width: 250px;
   padding: 20px;
+  height: inherit;
+  min-height: 850px;
+
+  > div {
+    height: inherit;
+  }
 
   .right {
     float: right;
@@ -117,12 +123,12 @@
       right: 0;
       margin: 1rem;
       z-index: 1000;
-      background: url('../../../../images/admin/chat-widget/screenshot.png') bottom right no-repeat;
+      background: url('../../../../images/admin/chat-widget/screenshot.png') top right no-repeat;
       background-color: #fff;
       border: 1px solid #000000;
 
       @media screen and (max-width: 1280px) {
-        background: url('../../../../images/admin/chat-widget/screenshot_small.png') bottom right no-repeat;
+        background: url('../../../../images/admin/chat-widget/screenshot_small.png') top right no-repeat;
       }
 
       .widget-editor-live-demo-loader {
