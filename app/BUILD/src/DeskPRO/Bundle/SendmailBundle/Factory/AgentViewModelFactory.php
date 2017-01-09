@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\Factory;
 
-use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\ChatMessage;
 use DateTime;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AdminNoResetPassword;
@@ -111,6 +111,16 @@ class AgentViewModelFactory
     }
 
     /**
+     * @param ChatMessage $chatMessage
+     *
+     * @return AgentNewChatMessage
+     */
+    public function createAgentNewChatMessageModel(ChatMessage $chatMessage)
+    {
+        return new AgentNewChatMessage($chatMessage);
+    }
+
+    /**
      * @return AgentWelcome
      */
     public function createAgentWelcomeModel()
@@ -124,17 +134,6 @@ class AgentViewModelFactory
     public function createAgentWelcomeUsersourceModel()
     {
         return new AgentWelcomeUsersource($this->router);
-    }
-
-    /**
-     * @param Ticket $ticket
-     *
-     * @return AgentNewChatMessage
-     */
-    public function createAgentNewChatMessageModel(
-        $ticket
-    ) {
-        return new AgentNewChatMessage($this->objectRouter, $ticket);
     }
 
     /**

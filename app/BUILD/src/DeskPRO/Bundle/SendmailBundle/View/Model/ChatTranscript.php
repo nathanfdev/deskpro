@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,7 +37,7 @@ class ChatTranscript extends EmailBaseType
     /**
      * The chat conversation.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\ChatConversation")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\Chat")
      *
      * @var ChatConversation
      */
@@ -46,7 +46,7 @@ class ChatTranscript extends EmailBaseType
     /**
      * The chat messages.
      *
-     * @JMS\Type("array<Application\DeskPRO\Entity\ChatMessage>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\ChatMessage>")
      *
      * @var ChatMessage[]
      */

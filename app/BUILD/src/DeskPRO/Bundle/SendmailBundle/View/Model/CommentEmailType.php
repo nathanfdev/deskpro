@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,7 +38,7 @@ abstract class CommentEmailType extends EmailBaseType
     /**
      * The approved comment.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\CommentAbstract")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\CommentAbstract")
      *
      * @var CommentAbstract
      */
@@ -47,7 +47,7 @@ abstract class CommentEmailType extends EmailBaseType
     /**
      * The commented content.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\ContentAbstract")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract")
      *
      * @var ContentAbstract
      */

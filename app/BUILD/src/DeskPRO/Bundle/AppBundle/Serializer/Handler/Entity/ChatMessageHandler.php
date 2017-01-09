@@ -26,48 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\SendmailBundle\View\Model;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
-use JMS\Serializer\Annotation as JMS;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage as ChatMessageEntity;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\ChatMessage;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
-class ShareArticle extends EmailBaseType
+class ChatMessageHandler extends AbstractEntityHandler
 {
     /**
-     * The article.
-     *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Article")
-     *
-     * @var Article
+     * {@inheritdoc}
      */
-    protected $article;
-
-    /**
-     * The author.
-     *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
-     *
-     * @var Person
-     */
-    protected $author;
-
-    /**
-     * A link to the article.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $articleLink;
-
-    protected static $templateFile = 'emails_user:share_article.html.twig';
-
-    public function __construct(ObjectRouter $router, Article $article, Person $author)
+    public static function getClassNames()
     {
-        $this->article     = $article;
-        $this->author      = $author;
-        $this->articleLink = $router->getPortalUrl($article);
+        return ChatMessageEntity::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param ChatConversation $entity
+     */
+    protected function createModel($entity, SideloadSerializationContext $context)
+    {
+        return new ChatMessage($entity);
     }
 }

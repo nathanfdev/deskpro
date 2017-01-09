@@ -47,7 +47,7 @@ class FeedbackApproved extends EmailBaseType
     /**
      * The agent that approved the feedback.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Person")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
      *
      * @var Person
      */

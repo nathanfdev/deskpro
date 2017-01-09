@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,7 +28,35 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-class AgentNewChatMessage extends TicketEmailType
+use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\Person;
+use JMS\Serializer\Annotation as JMS;
+
+class AgentNewChatMessage extends EmailBaseType
 {
+    /**
+     * The chat message.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\ChatMessage")
+     *
+     * @var ChatMessage
+     */
+    protected $chatMessage;
+
+    /**
+     * The author of the message.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+     *
+     * @var Person
+     */
+    protected $author;
+
     protected static $templateFile = 'emails_agent:new_agent_chat_message.html.twig';
+
+    public function __construct(ChatMessage $chatMessage)
+    {
+        $this->chatMessage = $chatMessage;
+        $this->author      = $chatMessage->getAuthor();
+    }
 }

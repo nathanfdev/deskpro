@@ -26,48 +26,64 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\SendmailBundle\View\Model;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Chats;
 
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
+use Application\DeskPRO\Entity\ChatMessage as ChatMessageEntity;
 use JMS\Serializer\Annotation as JMS;
 
-class ShareArticle extends EmailBaseType
+/**
+ * Class ChatMessage.
+ */
+class ChatMessage
 {
     /**
-     * The article.
+     * The unique id of chat message.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Article")
+     * @JMS\Type("integer")
      *
-     * @var Article
+     * @var int
      */
-    protected $article;
+    protected $id;
 
     /**
-     * The author.
+     * The user who sent the message.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      *
-     * @var Person
+     * @var \Application\DeskPRO\Entity\Person
      */
-    protected $author;
+    protected $author = null;
 
     /**
-     * A link to the article.
+     * The message.
      *
+     * @JMS\Expose()
      * @JMS\Type("string")
      *
      * @var string
      */
-    protected $articleLink;
+    protected $content;
 
-    protected static $templateFile = 'emails_user:share_article.html.twig';
+    /**
+     * The HTML message.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $contentHtml;
 
-    public function __construct(ObjectRouter $router, Article $article, Person $author)
+    /**
+     * Constructor.
+     *
+     * @param ChatMessageEntity $chat
+     */
+    public function __construct(ChatMessageEntity $chat)
     {
-        $this->article     = $article;
-        $this->author      = $author;
-        $this->articleLink = $router->getPortalUrl($article);
+        $this->id          = $chat->getId();
+        $this->author      = $chat->getAuthor();
+        $this->content     = $chat->getContent();
+        $this->contentHtml = $chat->getContentHtml();
     }
 }

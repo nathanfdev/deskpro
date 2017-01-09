@@ -182,6 +182,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.chat_message:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ChatMessageHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.department:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\DepartmentHandler
     arguments:
