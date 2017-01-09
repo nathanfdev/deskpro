@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,15 +30,22 @@ namespace DeskPRO\Bundle\SendmailBundle\Factory;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AdminNoResetPassword;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentChangedPassword;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorInvalidForward;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorMarkerMissing;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorUnknownFrom;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentLoginAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewChatMessage;
+use Symfony\Component\Routing\RouterInterface;
 
 class AgentViewModelFactory
 {
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
     /**
      * @var ObjectRouter
      */
@@ -47,19 +54,21 @@ class AgentViewModelFactory
     /**
      * Constructor.
      *
-     * @param ObjectRouter $objectRouter
+     * @param RouterInterface $router
+     * @param ObjectRouter    $objectRouter
      */
-    public function __construct(ObjectRouter $objectRouter)
+    public function __construct(RouterInterface $router, ObjectRouter $objectRouter)
     {
+        $this->router       = $router;
         $this->objectRouter = $objectRouter;
     }
 
     /**
-     * @return AgentChangedPassword
+     * @return AdminNoResetPassword
      */
-    public function createAgentChangedPasswordModel()
+    public function createAdminNoResetPasswordModel()
     {
-        return new AgentChangedPassword();
+        return new AdminNoResetPassword();
     }
 
     /**

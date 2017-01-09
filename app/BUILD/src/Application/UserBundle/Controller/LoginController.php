@@ -1060,10 +1060,17 @@ class LoginController extends AbstractController
                 ];
 
                 $this->container->getTranslator()->setDefaultPersonContext($person);
-                $message = $this->container->getMailer()->createMessage();
-                $message->setTemplate('DeskPRO:emails_agent:admin-noreset-password.html.twig', $vars);
-                $message->setTo($email, $person->getDisplayName());
-                $this->container->getMailer()->send($message);
+                if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                    $viewModel = $this->get('email.agent_viewmodel_factory')
+                        ->createAdminNoResetPasswordModel();
+                    $this->get('email.email_sender')
+                        ->send($viewModel, ['to' => $email]);
+                } else {
+                    $message = $this->container->getMailer()->createMessage();
+                    $message->setTemplate('DeskPRO:emails_agent:admin-noreset-password.html.twig', $vars);
+                    $message->setTo($email, $person->getDisplayName());
+                    $this->container->getMailer()->send($message);
+                }
                 $this->container->getTranslator()->setDefaultPersonContext($person);
 
                 if ($_format == 'json') {
