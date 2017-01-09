@@ -173,11 +173,6 @@ export const widgetProactiveChatSelector = createSelector(
   options => (options.get('proactive') !== undefined ? options.get('proactive') : true)
 );
 
-export const widgetAllowDepartmentSelection = createSelector(
-  chatOptionsSelector,
-  options => (options.get('allow_department_selection') !== undefined ? options.get('allow_department_selection') : false)
-);
-
 export const chatBeginModeSelector = createSelector(
   chatOptionsSelector,
   options => (options.get('request_user_info') ? options.get('begin_mode') : 'simple')

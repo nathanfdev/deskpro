@@ -131,34 +131,33 @@ class ChatCreateType extends AbstractType
         ;
 
         $brand = $this->brandStack->getActive()->getBrand();
-        if ($this->settingsResolver->getWidgetBrandOptions($brand)->getChat()->isAllowDepartmentSelection()) {
-            $permissionsBag       = $this->permissionsManager->getPortalPermissionsBag($options['person']);
-            $allowedDepartmentIds = $permissionsBag->getAllowedChatDepartmentIds();
 
-            $builder->add('chat_department', EntityType::class, [
-                'class'         => Department::class,
-                'property_path' => 'department',
-                'query_builder' => function (EntityRepository $er) use ($allowedDepartmentIds, $brand) {
-                    $qb = $er
-                        ->createQueryBuilder('d')
-                        ->join('d.brands', 'b')
-                        ->where(
-                            'd.is_chat_enabled = true',
-                            'd.id IN (:allowed_department_ids)',
-                            'b.id IN(:brand)'
-                        )
-                        ->setParameter('allowed_department_ids', $allowedDepartmentIds)
-                        ->setParameter('brand', $brand)
-                    ;
+        $permissionsBag       = $this->permissionsManager->getPortalPermissionsBag($options['person']);
+        $allowedDepartmentIds = $permissionsBag->getAllowedChatDepartmentIds();
 
-                    return $qb;
-                },
-                'constraints' => [
-                    new Assert\NotNull(),
-                    new LeafDepartment(),
-                ],
-            ]);
-        }
+        $builder->add('chat_department', EntityType::class, [
+            'class'         => Department::class,
+            'property_path' => 'department',
+            'query_builder' => function (EntityRepository $er) use ($allowedDepartmentIds, $brand) {
+                $qb = $er
+                    ->createQueryBuilder('d')
+                    ->join('d.brands', 'b')
+                    ->where(
+                        'd.is_chat_enabled = true',
+                        'd.id IN (:allowed_department_ids)',
+                        'b.id IN(:brand)'
+                    )
+                    ->setParameter('allowed_department_ids', $allowedDepartmentIds)
+                    ->setParameter('brand', $brand)
+                ;
+
+                return $qb;
+            },
+            'constraints' => [
+                new Assert\NotNull(),
+                new LeafDepartment(),
+            ],
+        ]);
 
         $builder->addEventSubscriber($this->personListener);
         $builder->addEventSubscriber(new AutoSetShouldSentTranscriptListener());

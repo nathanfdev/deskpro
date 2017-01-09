@@ -204,15 +204,6 @@
                                     <p>
                                         {{ phrase('admin.widget.chat_request_person_desc') }}
                                     </p>
-                                    <div class="inline field" ng-if="brand_settings.chat.request_user_info">
-                                        <div class="ui toggle checkbox">
-                                            <input type="checkbox" id="require_department"
-                                                   ng-model="brand_settings.chat.allow_department_selection" class="hidden right">
-                                            <label for="require_department">
-                                                {{ phrase('admin.widget.chat_allow_department_selection') }}
-                                            </label>
-                                        </div>
-                                    </div>
                                     <label ng-if="brand_settings.chat.request_user_info">{{ phrase('admin.widget.chat_show_fields_title') }}:</label>
                                     <div ng-if="brand_settings.chat.request_user_info">
                                         <div class="dp-item-list">
@@ -231,6 +222,15 @@
                                                            checked="checked" class="hidden">
                                                     <label for="information_email">
                                                         Email address
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="inline field">
+                                                <div class="ui checkbox">
+                                                    <input type="checkbox" id="information_email" disabled="disabled"
+                                                           checked="checked" class="hidden">
+                                                    <label for="information_email">
+                                                        Department
                                                     </label>
                                                 </div>
                                             </div>
