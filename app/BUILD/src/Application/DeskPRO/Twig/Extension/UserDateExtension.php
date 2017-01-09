@@ -174,6 +174,12 @@ class UserDateExtension extends \Twig_Extension
             $prefix = 'agent.time.';
         }
 
-        return $this->container->getTranslator()->date($format, $date, $prefix);
+        if ($this->container->has('language_manager')) {
+            $translator = $this->container->get('language_manager')->getTranslator();
+        } else {
+            $translator = $this->container->getTranslator();
+        }
+
+        return $translator->date($format, $date, $prefix);
     }
 }
