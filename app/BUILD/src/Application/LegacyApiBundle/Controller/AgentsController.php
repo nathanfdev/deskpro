@@ -817,20 +817,25 @@ class AgentsController extends AbstractController implements ProtectedController
      */
     protected function sendWelcomeEmail(Person $agent)
     {
+        $attach = \Swift_Attachment::fromPath(
+            DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf',
+            'application/pdf'
+        );
+        $attach->setFilename('Getting Started with DeskPRO.pdf');
         if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
             $viewModel = $this->get('email.agent_viewmodel_factory')
-                ->createAgentWelcomeUsersourceModel();
+                ->createAgentWelcomeModel();
             $this->get('email.email_sender')
-                ->send($viewModel, ['to' => $agent]);
+                ->send($viewModel,
+                    [
+                        'to'          => $agent,
+                        'attachments' => [$attach],
+                    ]
+                );
         } else {
             $message = $this->container->getMailer()->createMessage();
             $message->setToPerson($agent);
             $message->setTemplate('DeskPRO:emails_agent:agent-welcome.html.twig', ['agent' => $agent]);
-            $attach = \Swift_Attachment::fromPath(
-                DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf',
-                'application/pdf'
-            );
-            $attach->setFilename('Getting Started with DeskPRO.pdf');
             $message->attach($attach);
             $this->container->getMailer()->send($message);
         }

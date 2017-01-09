@@ -249,9 +249,9 @@ class UserViewModelFactory
     }
 
     /**
-     * @param string  $firstSeen
-     * @param bool    $success
-     * @param Request $request
+     * @param \DateTime $firstSeen
+     * @param bool      $success
+     * @param Request   $request
      *
      * @return LoginAlert
      */

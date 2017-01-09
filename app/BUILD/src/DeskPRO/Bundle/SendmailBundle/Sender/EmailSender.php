@@ -117,6 +117,11 @@ class EmailSender
         foreach ($emailCode->getAttachments() as $blob) {
             $message->attachBlob($blob);
         }
+        if (!empty($args['attachments'])) {
+            foreach ($args['attachments'] as $attach) {
+                $message->attach($attach);
+            }
+        }
         $this->mailer->send($message);
     }
 }
