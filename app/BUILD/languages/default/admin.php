@@ -2297,6 +2297,7 @@ return [
     'admin.widget.chat_mode_form_style'                                                    => 'Form Style',
     'admin.widget.chat_permissions_desc'                                                   => 'Manage which usergroups have access to chat',
     'admin.widget.chat_permissions_title'                                                  => 'Who can use chat',
+    'admin.widget.chat_show_fields_title'                                                  => 'Show fields',
     'admin.widget.chat_request_person_desc'                                                => 'Require users to provide their name and email address as well as adding custom fields or require departments.',
     'admin.widget.chat_request_person_for_comments'                                        => 'Ask for information before chat commences',
     'admin.widget.chat_allow_department_selection'                                         => 'Require department to chat with',
