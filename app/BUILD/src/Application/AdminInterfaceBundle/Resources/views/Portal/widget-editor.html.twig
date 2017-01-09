@@ -225,14 +225,36 @@
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div class="inline field">
+                                            <div class="inline field" ng-if="chat_departments.length > 1">
                                                 <div class="ui checkbox">
-                                                    <input type="checkbox" id="information_email" disabled="disabled"
-                                                           checked="checked" class="hidden">
-                                                    <label for="information_email">
+                                                    <input type="checkbox" id="chat_department"
+                                                           ng-model="brand_settings.chat.select_department"
+                                                           ng-true-value="custom"
+                                                           ng-false-value="default"
+                                                           class="hidden">
+                                                    <label for="chat_department">
                                                         Department
                                                     </label>
                                                 </div>
+                                            </div>
+                                            <div class="inline field" ng-if="chat_departments.length > 1 && brand_settings.chat.select_department == 'default'">
+                                                <span>Chat will always be created in</span>
+                                                <select ng-model="brand_settings.chat.default_department">
+                                                    <option ng-repeat="option in chat_departments" ng-value="option.id" ng-selected="brand_settings.chat.default_department == option.id">
+                                                        {{ ng_var('option.title') }}
+                                                    </option>
+                                                </select>
+
+                                                <ul class="errors">
+                                                    <li ng-repeat="error in formErrors.settings.fields.brand.fields.chat.fields.select_department.errors">
+                                                        {{ ng_var('error.message') }}
+                                                    </li>
+                                                </ul>
+                                                <ul class="errors">
+                                                    <li ng-repeat="error in formErrors.settings.fields.brand.fields.chat.fields.default_department.errors">
+                                                        {{ ng_var('error.message') }}
+                                                    </li>
+                                                </ul>
                                             </div>
                                             <div ui-sortable="Ctrl.chatFieldsSortOptions" class="chat-custom-fields">
                                                 <div class="inline field with-drag-handle" ng-repeat="field in chat_custom_fields" data-id="{{ ng_var('field.id') }}">

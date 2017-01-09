@@ -248,6 +248,16 @@ export const chatEnabledCustomFieldsSelector = createSelector(
   )
 );
 
+export const chatDefaultDepartmentSelector = createSelector(
+  chatOptionsSelector,
+  options => parseInt(options.get('default_department'), 10)
+);
+
+export const chatSelectDepartmentTypeSelector = createSelector(
+  chatOptionsSelector,
+  options => options.get('select_department')
+);
+
 // Ticket options selectors
 export const ticketOptionsSelector = createSelector(
   widgetOptionsSelector,

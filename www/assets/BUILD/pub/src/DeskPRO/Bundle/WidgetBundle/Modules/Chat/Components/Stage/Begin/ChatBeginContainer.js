@@ -6,7 +6,7 @@ import Immutable from 'immutable';
 import { loadAll, isLoadedCollectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import PortalFormWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
 import { createChat } from '../../../Actions/chatActions';
-import { liveDemoSelector, widgetLanguageSelector, chatFormDefaultValuesSelector } from '../../../../Application/Selectors/dpWindow';
+import { liveDemoSelector, widgetLanguageSelector, chatFormDefaultValuesSelector, chatSelectDepartmentTypeSelector, chatDefaultDepartmentSelector } from '../../../../Application/Selectors/dpWindow';
 import { requireChatEmailValidationSelector, requireChatLoginSelector, widgetSessionIsLoginSelector } from '../../../../Application/Selectors/bootstrap';
 import { customChatFieldsOrderedSelector } from '../../../../Application/Selectors/customFields';
 import { history } from '../../../../../Services/history';
@@ -14,30 +14,34 @@ import { ChatBeginLoadingSpinner } from './ChatBeginLoadingSpinner';
 import { ChatBeginSimple } from './ChatBeginSimple';
 
 @connect(state => ({
-  liveDemo:               liveDemoSelector(state),
-  requireEmailValidation: requireChatEmailValidationSelector(state),
-  requireLogin:           requireChatLoginSelector(state),
-  customFieldsLoaded:     isLoadedCollectionSelectorFactory('CustomDefChat', 'all')(state),
-  customFields:           customChatFieldsOrderedSelector(state),
-  chatDepartments:        allSelectorFactory('ChatDepartment')(state),
-  chatDepartmentsLoaded:  isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state),
-  widgetLanguage:         widgetLanguageSelector(state),
-  loggedIn:               widgetSessionIsLoginSelector(state),
-  defaultValues:          chatFormDefaultValuesSelector(state)
+  liveDemo:                 liveDemoSelector(state),
+  requireEmailValidation:   requireChatEmailValidationSelector(state),
+  requireLogin:             requireChatLoginSelector(state),
+  customFieldsLoaded:       isLoadedCollectionSelectorFactory('CustomDefChat', 'all')(state),
+  customFields:             customChatFieldsOrderedSelector(state),
+  chatDepartments:          allSelectorFactory('ChatDepartment')(state),
+  chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state),
+  chatSelectDepartmentType: chatSelectDepartmentTypeSelector(state),
+  chatDefaultDepartment:    chatDefaultDepartmentSelector(state),
+  widgetLanguage:           widgetLanguageSelector(state),
+  loggedIn:                 widgetSessionIsLoginSelector(state),
+  defaultValues:            chatFormDefaultValuesSelector(state)
 }))
 export class ChatBeginContainer extends React.Component {
 
   static propTypes = {
-    requireEmailValidation: PropTypes.bool,
-    requireLogin:           PropTypes.bool,
-    dispatch:               PropTypes.func.isRequired,
-    children:               PropTypes.node,
-    liveDemo:               PropTypes.bool,
-    customFieldsLoaded:     PropTypes.bool,
-    chatDepartmentsLoaded:  PropTypes.bool,
-    loggedIn:               PropTypes.bool,
-    chatDepartments:        PropTypes.object,
-    customFields:           PropTypes.object
+    requireEmailValidation:   PropTypes.bool,
+    requireLogin:             PropTypes.bool,
+    dispatch:                 PropTypes.func.isRequired,
+    children:                 PropTypes.node,
+    liveDemo:                 PropTypes.bool,
+    customFieldsLoaded:       PropTypes.bool,
+    chatDepartmentsLoaded:    PropTypes.bool,
+    chatSelectDepartmentType: PropTypes.string,
+    chatDefaultDepartment:    PropTypes.number,
+    loggedIn:                 PropTypes.bool,
+    chatDepartments:          PropTypes.object,
+    customFields:             PropTypes.object
   };
 
   static getWidgetConfig(chatDepartments) {
@@ -109,12 +113,14 @@ export class ChatBeginContainer extends React.Component {
   componentWillReceiveProps(newProps) {
     const newState = {};
     const { children, customFields, customFieldsLoaded } = this.props;
-    const { chatDepartments, chatDepartmentsLoaded } = this.props;
+    const { chatDepartments, chatDepartmentsLoaded, chatSelectDepartmentType, chatDefaultDepartment } = this.props;
 
     if (children !== newProps.children
         || customFields !== newProps.customFields
         || customFieldsLoaded !== newProps.customFieldsLoaded
         || chatDepartments !== newProps.chatDepartments
+        || chatSelectDepartmentType !== newProps.chatSelectDepartmentType
+        || chatDefaultDepartment !== newProps.chatDefaultDepartment
         || chatDepartmentsLoaded !== newProps.chatDepartmentsLoaded) {
       newState.formData = this.getInitialFormData(newProps);
     }
@@ -181,7 +187,8 @@ export class ChatBeginContainer extends React.Component {
   };
 
   getInitialFormData(props) {
-    const { children, customFields, chatDepartments, defaultValues } = props;
+    const { children, customFields, defaultValues } = props;
+    const { chatDepartments, chatSelectDepartmentType, chatDefaultDepartment } = props;
     const formData = {
       name:   '',
       email:  '',
@@ -189,7 +196,9 @@ export class ChatBeginContainer extends React.Component {
     };
 
     if (children.type !== ChatBeginSimple) {
-      if (chatDepartments.size > 1) {
+      if (chatSelectDepartmentType === 'default' && chatDefaultDepartment && chatDepartments.get(chatDefaultDepartment)) {
+        formData.chat_department = chatDefaultDepartment;
+      } else if (chatDepartments.size > 1) {
         formData.chat_department = '';
       } else if (chatDepartments.size === 1) {
         formData.chat_department = chatDepartments.first().get('id');
@@ -217,7 +226,9 @@ export class ChatBeginContainer extends React.Component {
   render() {
     const { loggedIn } = this.props;
     const { customFields, customFieldsLoaded } = this.props;
-    const { chatDepartments, chatDepartmentsLoaded } = this.props;
+    const { chatDepartments, chatDepartmentsLoaded, chatSelectDepartmentType, chatDefaultDepartment } = this.props;
+    const allowDepartmentSelection = chatSelectDepartmentType === 'custom'
+      || (chatDefaultDepartment && !chatDepartments.has(chatDefaultDepartment));
 
     if (!customFieldsLoaded || !chatDepartmentsLoaded) {
       return <ChatBeginLoadingSpinner />;
@@ -226,7 +237,9 @@ export class ChatBeginContainer extends React.Component {
     let { children } = this.props;
 
     // if user is logged in and no custom fields and no department selection then force simple chat begin mode
-    if (loggedIn && chatDepartments.size < 2 && !customFields.size) {
+    if (loggedIn
+        && (chatDepartments.size < 2 || !allowDepartmentSelection)
+        && !customFields.size) {
       children = <ChatBeginSimple />;
     }
 
@@ -239,6 +252,7 @@ export class ChatBeginContainer extends React.Component {
           ...childProps,
           ...this.state,
 
+          allowDepartmentSelection,
           onSubmit: this.onSubmit
         })}
       </Fieldset>

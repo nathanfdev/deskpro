@@ -114,19 +114,6 @@ class WidgetBrandTicketSettings implements GroupSequenceProviderInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getGroupSequence()
-    {
-        $groups = ['Common'];
-        if ($this->selectDepartment === self::SELECT_DEFAULT) {
-            $groups[] = 'DefaultDepartment';
-        }
-
-        return $groups;
-    }
-
-    /**
      * @return string
      */
     public function getDefaultSubject()
@@ -156,5 +143,18 @@ class WidgetBrandTicketSettings implements GroupSequenceProviderInterface
     public function setSelectSubject($selectSubject)
     {
         $this->selectSubject = $selectSubject;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupSequence()
+    {
+        $groups = ['Common'];
+        if ($this->selectDepartment === self::SELECT_DEFAULT) {
+            $groups[] = 'DefaultDepartment';
+        }
+
+        return $groups;
     }
 }

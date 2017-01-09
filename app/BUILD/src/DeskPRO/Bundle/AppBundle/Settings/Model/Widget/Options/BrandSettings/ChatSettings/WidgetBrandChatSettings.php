@@ -30,14 +30,20 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\C
 
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
  * Class WidgetBrandChatSettings.
+ *
+ * @Assert\GroupSequenceProvider
  */
-class WidgetBrandChatSettings
+class WidgetBrandChatSettings implements GroupSequenceProviderInterface
 {
     const BEGIN_MODE_CONVERSATION = 'conversation';
     const BEGIN_MODE_FORM         = 'form';
+
+    const SELECT_DEFAULT = 'default';
+    const SELECT_CUSTOM  = 'custom';
 
     /**
      * @var bool
@@ -67,6 +73,22 @@ class WidgetBrandChatSettings
      * @JMS\Type("string")
      */
     private $beginMode = self::BEGIN_MODE_FORM;
+
+    /**
+     * @var int
+     *
+     * @JMS\Type("integer")
+     * @Assert\NotNull(groups={"DefaultDepartment"})
+     */
+    private $defaultDepartment;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @Assert\NotBlank(groups={"Common"})
+     */
+    private $selectDepartment = self::SELECT_CUSTOM;
 
     /**
      * @var int
@@ -182,5 +204,58 @@ class WidgetBrandChatSettings
         $this->waitingTimeout = $waitingTimeout;
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDefaultDepartment()
+    {
+        return $this->defaultDepartment;
+    }
+
+    /**
+     * @param int $defaultDepartment
+     *
+     * @return $this
+     */
+    public function setDefaultDepartment($defaultDepartment)
+    {
+        $this->defaultDepartment = $defaultDepartment;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSelectDepartment()
+    {
+        return $this->selectDepartment;
+    }
+
+    /**
+     * @param string $selectDepartment
+     *
+     * @return $this
+     */
+    public function setSelectDepartment($selectDepartment)
+    {
+        $this->selectDepartment = $selectDepartment;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupSequence()
+    {
+        $groups = ['Common'];
+        if ($this->selectDepartment === self::SELECT_DEFAULT) {
+            $groups[] = 'DefaultDepartment';
+        }
+
+        return $groups;
     }
 }
