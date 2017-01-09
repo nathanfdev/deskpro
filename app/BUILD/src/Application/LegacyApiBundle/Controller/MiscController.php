@@ -34,7 +34,11 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiToken;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Session;
+use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\LoginLogs\LoginLogs;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\TokenExchangeAbuseCheck;
@@ -124,7 +128,7 @@ class MiscController extends AbstractController
         $result = $adapter->authenticate();
 
         if ($result->isValid()) {
-            $person = $this->em->getRepository('DeskPRO:Person')->find($result->getIdentity()->getIdentity());
+            $person = $this->em->getRepository(Person::class)->find($result->getIdentity()->getIdentity());
 
             if ($person) {
                 $identity = new \Orb\Auth\Identity($person->id, ['person' => $person]);
@@ -138,7 +142,7 @@ class MiscController extends AbstractController
         // Auth usersources that accept local input
         //------------------------------
 
-        $usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
+        $usersources = $this->em->getRepository(Usersource::class)->getLocalInputUsersources();
         foreach ($usersources as $us) {
 
             /* @var $us \Application\DeskPRO\Entity\Usersource */
@@ -192,7 +196,7 @@ class MiscController extends AbstractController
         if (!$result->isValid()) {
 
             // Send alert
-            $attemptPerson = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
+            $attemptPerson = $this->em->getRepository(Person::class)->findOneByEmail($this->in->getString('email'));
             if ($attemptPerson && $attemptPerson->getPref('agent_notif.login_attempt_fail.email')) {
                 if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
                     $viewModel = $this->get('email.agent_viewmodel_factory')
@@ -282,7 +286,7 @@ class MiscController extends AbstractController
         ]);
 
         /** @var ApiToken $token */
-        $token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
+        $token = $this->em->getRepository(ApiToken::class)->getTokenForPerson($person);
         if (!$token) {
             $token         = new \Application\DeskPRO\Entity\ApiToken();
             $token->scope  = 'client';
@@ -324,7 +328,7 @@ class MiscController extends AbstractController
     {
         $person = $this->person;
 
-        $token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
+        $token = $this->em->getRepository(ApiToken::class)->getTokenForPerson($person);
         if (!$token) {
             $token         = new \Application\DeskPRO\Entity\ApiToken();
             $token->person = $person;
@@ -396,7 +400,7 @@ class MiscController extends AbstractController
 
     public function getSessionPersonAction($session_code)
     {
-        $session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_code);
+        $session = $this->em->getRepository(Session::class)->getSessionFromCode($session_code);
         if (!$session) {
             return $this->createApiErrorResponse('no_session', 'session could not be found or could not be validated');
         }
@@ -417,9 +421,9 @@ class MiscController extends AbstractController
         }
 
         if ($this->apikey) {
-            $this->rate_info = $this->em->getRepository('DeskPRO:ApiKey')->getRateLimitInfo($this->apikey);
+            $this->rate_info = $this->em->getRepository(ApiKey::class)->getRateLimitInfo($this->apikey);
         } else {
-            $this->rate_info = $this->em->getRepository('DeskPRO:ApiToken')->getRateLimitInfo($this->api_token);
+            $this->rate_info = $this->em->getRepository(ApiToken::class)->getRateLimitInfo($this->api_token);
         }
 
         return $this->createApiResponse([

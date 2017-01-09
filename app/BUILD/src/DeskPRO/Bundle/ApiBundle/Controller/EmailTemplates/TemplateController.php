@@ -269,8 +269,9 @@ class TemplateController extends BaseController
         }
         /** @var EmailBaseType $model */
         $model = $factory->$action(
-            $ticket,
-            $ticket
+            $request,
+            new \DateTime(),
+            true
         );
 
         $recipient = new Person();
