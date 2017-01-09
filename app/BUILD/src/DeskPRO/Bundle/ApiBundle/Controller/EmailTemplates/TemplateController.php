@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -259,14 +259,16 @@ class TemplateController extends BaseController
         $renderer->setTemplateEngine($twig);
 
         $viewModel = $request->request->get('template');
+        $group     = $request->request->get('group');
+        $factory   = $this->get('email.'.$group.'_viewmodel_factory');
 //        $ticket    = $this->getRepository(Ticket::class)->findOneBy([]);
         $ticket = $this->getRepository(Download::class)->findBy([]);
         $action = 'create'.$viewModel.'Model';
-        if (!is_callable([$this->get('email.user_viewmodel_factory'), $action])) {
+        if (!is_callable([$factory, $action])) {
             throw $this->createNotFoundException('Missing method '.$action.' in factory');
         }
         /** @var EmailBaseType $model */
-        $model = $this->get('email.user_viewmodel_factory')->$action(
+        $model = $factory->$action(
             $ticket,
             $ticket
         );

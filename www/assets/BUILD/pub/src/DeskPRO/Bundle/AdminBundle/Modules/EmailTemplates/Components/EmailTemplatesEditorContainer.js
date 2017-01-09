@@ -67,7 +67,8 @@ class EmailTemplatesEditorContainer extends React.Component {
       variables.push({ ticket: this.props.emailTemplates.get('exampleTicket') });
     }
     const viewModel = this.props.emailTemplates.get('currentTemplate').get('viewModel');
-    this.props.dispatch(actions.previewTemplate(viewModel, value, variables));
+    const group = this.props.emailTemplates.get('currentTemplateGroup');
+    this.props.dispatch(actions.previewTemplate(viewModel, group, value, variables));
     this.props.dispatch(actions.updateTemplateBody(value));
   };
 
