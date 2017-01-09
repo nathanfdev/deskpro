@@ -4,9 +4,16 @@ Feature: Widget Chat
 
   Background:
     Given no Person records exist
+    And I have only default brand
     And a user with "user@deskpro.dev" email exists
     And I have guest portal api session with code "AAAAAAAAAAAAAAA"
     And I have authorized portal api session with code "BBBBBBBBBBBBBBB" for "user@deskpro.dev"
+    And only the following Department records exist:
+      | #  | Title        | Brands           | Is Chat Enabled |
+      | d1 | Department 1 | [{defaultBrand}] | 1               |
+      | d2 | Department 2 | [{defaultBrand}] | 1               |
+    And I grant the "{d1}" department permission of chat app for usergroup everyone
+    And I grant the "{d2}" department permission of chat app for usergroup everyone
 
   Scenario: I try to create a new chat without session code
     When I send a POST request to "/portal/api/chats/create"
@@ -17,7 +24,9 @@ Feature: Widget Chat
   Scenario: I create a new chat without person info
     Given the setting "portal.chat.email_validation" is set to 0
     Given the setting "portal.chat.require_login" is set to 0
-    When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
+      | key             | value |
+      | chat_department | {d1}  |
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.person" should be equal to "0"
@@ -29,8 +38,9 @@ Feature: Widget Chat
     Given the setting "portal.chat.email_validation" is set to 0
     Given the setting "portal.chat.require_login" is set to 0
     When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
-      | key   | value             |
-      | email | unknown@email.com |
+      | key             | value             |
+      | email           | unknown@email.com |
+      | chat_department | {d1}              |
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.person" should exist
@@ -42,9 +52,10 @@ Feature: Widget Chat
     Given the setting "portal.chat.email_validation" is set to 0
     Given the setting "portal.chat.require_login" is set to 0
     When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
-      | key   | value            |
-      | email | user@deskpro.dev |
-      | name  | New Username     |
+      | key             | value            |
+      | email           | user@deskpro.dev |
+      | name            | New Username     |
+      | chat_department | {d1}             |
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.person" should exist
@@ -65,8 +76,9 @@ Feature: Widget Chat
     Given the setting "portal.chat.email_validation" is set to 1
     Given the setting "portal.chat.require_login" is set to 0
     When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
-      | key   | value            |
-      | email | user@deskpro.dev |
+      | key             | value            |
+      | email           | user@deskpro.dev |
+      | chat_department | {d1}             |
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.person" should exist
@@ -77,7 +89,9 @@ Feature: Widget Chat
   Scenario: I create a new chat as guest but require login is enabled
     Given the setting "portal.chat.email_validation" is set to 0
     Given the setting "portal.chat.require_login" is set to 1
-    When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
+      | key             | value |
+      | chat_department | {d1}  |
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "errors[0].message" should be equal to "Login required"
@@ -85,7 +99,9 @@ Feature: Widget Chat
   Scenario: I create a new chat as guest and all restrictions are enabled
     Given the setting "portal.chat.email_validation" is set to 1
     Given the setting "portal.chat.require_login" is set to 1
-    When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
+      | key             | value |
+      | chat_department | {d1}  |
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "errors[0].message" should be equal to "Login required"
@@ -94,7 +110,9 @@ Feature: Widget Chat
   Scenario Outline: I create a new chat after login
     Given the setting "portal.chat.email_validation" is set to <email_validation>
     Given the setting "portal.chat.require_login" is set to <require_login>
-    When I send a POST request to "/portal/api/chats/create?dpsid={sid_BBBBBBBBBBBBBBB}"
+    When I send a POST request to "/portal/api/chats/create?dpsid={sid_BBBBBBBBBBBBBBB}" with parameters:
+      | key             | value |
+      | chat_department | {d1}  |
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.person" should exist

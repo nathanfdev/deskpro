@@ -94,7 +94,7 @@ class WidgetBrandChatSettings implements GroupSequenceProviderInterface
      * @var int
      *
      * @JMS\Type("integer")
-     * @Assert\GreaterThanOrEqual(30)
+     * @Assert\GreaterThanOrEqual(value=30, groups={"Common"})
      */
     private $waitingTimeout = 150;
 

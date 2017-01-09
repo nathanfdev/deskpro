@@ -44,6 +44,7 @@ Feature: Widget Setup Validation
           },
           "chat": {
             "waiting_timeout": 10,
+            "select_department": "unknown",
             "popup": {
               "style": "unknown"
             }
@@ -58,9 +59,7 @@ Feature: Widget Setup Validation
     Then the response status code should be 400
 
     And the JSON node "errors.fields.settings.fields.brand.fields.widget.fields.type.errors[0].code" should be equal to "bad_choice"
-    And the JSON node "errors.fields.settings.fields.brand.fields.widget.fields.type.errors[0].message" should be equal to "One or more of the given values is invalid."
     And the JSON node "errors.fields.settings.fields.brand.fields.widget.fields.position.errors[0].code" should be equal to "bad_choice"
-    And the JSON node "errors.fields.settings.fields.brand.fields.widget.fields.position.errors[0].message" should be equal to "One or more of the given values is invalid."
     And the JSON node "errors.fields.settings.fields.brand.fields.widget.fields.agent_polling_timeout.errors[0].code" should be equal to "too_low"
     And the JSON node "errors.fields.settings.fields.brand.fields.widget.fields.agent_polling_timeout.errors[0].message" should be equal to "This value should be greater than or equal to 300."
 
@@ -68,12 +67,11 @@ Feature: Widget Setup Validation
     And the JSON node "errors.fields.settings.fields.brand.fields.button.fields.size.errors[0].message" should be equal to "One or more of the given values is invalid."
 
     And the JSON node "errors.fields.settings.fields.brand.fields.chat.fields.popup.fields.style.errors[0].code" should be equal to "bad_choice"
-    And the JSON node "errors.fields.settings.fields.brand.fields.chat.fields.popup.fields.style.errors[0].message" should be equal to "One or more of the given values is invalid."
     And the JSON node "errors.fields.settings.fields.brand.fields.chat.fields.waiting_timeout.errors[0].code" should be equal to "too_low"
     And the JSON node "errors.fields.settings.fields.brand.fields.chat.fields.waiting_timeout.errors[0].message" should be equal to "This value should be greater than or equal to 30."
+    And the JSON node "errors.fields.settings.fields.brand.fields.chat.fields.select_department.errors[0].code" should be equal to "bad_choice"
 
     And the JSON node "errors.fields.settings.fields.brand.fields.ticket.fields.select_department.errors[0].code" should be equal to "bad_choice"
-    And the JSON node "errors.fields.settings.fields.brand.fields.ticket.fields.select_department.errors[0].message" should be equal to "One or more of the given values is invalid."
 
   Scenario: I check tickets default department
     When I send a POST request to "/api/v2/settings/brands/{defaultBrandId}/widget/setup" with body:
