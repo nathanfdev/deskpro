@@ -522,7 +522,7 @@ class LoginController extends AbstractController
         $prefName = sprintf('agent_notif.login_attempt%s.email', $success ? '' : '_fail');
         if ($person->getPref($prefName) && !$person->isDeleted()) {
             if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
-                $viewModel = $this->get('email.user_viewmodel_factory')
+                $viewModel = $this->get('email.agent_viewmodel_factory')
                     ->createLoginAlertModel(
                         $request,
                         $this->session->getEntity()->getDateCreated(),

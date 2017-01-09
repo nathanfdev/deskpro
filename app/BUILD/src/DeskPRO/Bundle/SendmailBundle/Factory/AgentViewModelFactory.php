@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\SendmailBundle\Factory;
 
 use Application\DeskPRO\Entity\Ticket;
+use DateTime;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AdminNoResetPassword;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentChangeEmailMergeUser;
@@ -39,6 +40,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\AgentLoginAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewChatMessage;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcome;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcomeUsersource;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
 class AgentViewModelFactory
@@ -109,14 +111,6 @@ class AgentViewModelFactory
     }
 
     /**
-     * @return AgentLoginAlert
-     */
-    public function createAgentLoginAlertModel()
-    {
-        return new AgentLoginAlert();
-    }
-
-    /**
      * @return AgentWelcome
      */
     public function createAgentWelcomeModel()
@@ -141,5 +135,17 @@ class AgentViewModelFactory
         $ticket
     ) {
         return new AgentNewChatMessage($this->objectRouter, $ticket);
+    }
+
+    /**
+     * @param DateTime $firstSeen
+     * @param bool     $success
+     * @param Request  $request
+     *
+     * @return AgentLoginAlert
+     */
+    public function createLoginAlertModel(Request $request, $firstSeen, $success)
+    {
+        return new AgentLoginAlert($request, $firstSeen, $success);
     }
 }

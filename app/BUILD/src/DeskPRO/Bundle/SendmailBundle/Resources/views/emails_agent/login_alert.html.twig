@@ -21,11 +21,11 @@
 			{{ phrase('agent.emails.notice_login_attempt') }}<br />
 		{% endif %}
 		<ul>
-			<li>{{ phrase('agent.emails.user_ip') }}: {{ request.getClientIp() }}</li>
-			<li>{{ phrase('agent.emails.user_agent') }}: {{ request.headers.get('User-Agent') }}</li>
-			<li>{{ phrase('agent.emails.landing_page') }}: {{ request.getRequestUri() }}</li>
-			<li>{{ phrase('agent.emails.referer_page') }}: {{ request.headers.get('Referer') }}</li>
-			<li>{{ phrase('agent.emails.first_seen') }}: {{ firstSeen.format('D, jS M Y g:ia') }}</li>
+			<li>{{ phrase('agent.emails.user_ip') }}: {{ client_ip }}</li>
+			<li>{{ phrase('agent.emails.user_agent') }}: {{ client_user_agent }}</li>
+			<li>{{ phrase('agent.emails.landing_page') }}: {{ client_landing_page }}</li>
+			<li>{{ phrase('agent.emails.referring_page') }}: {{ client_referring_page }}</li>
+			<li>{{ phrase('agent.emails.first_seen') }}: {{ first_seen }}</li>
 		</ul>
 	</container>
 
