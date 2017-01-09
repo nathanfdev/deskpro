@@ -279,6 +279,7 @@ class TemplateController extends BaseController
         $email = new PersonEmail();
         $email->setEmail('test@example.com');
         $recipient->setPrimaryEmail($email);
+        $recipient->setPassword('Password1234');
         $model->setRecipient($recipient);
 
         return new View($renderer->render($tplName, $model));

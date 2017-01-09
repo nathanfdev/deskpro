@@ -31,10 +31,10 @@
 
 		<br/><br/>
 
-		{{ phrase('agent.emails.newagent-login-link', { link: brand_setting('core.deskpro_url') ~ 'agent/' }) }}<br/>
-		{{ phrase('agent.emails.newagent-login-your-email', { email: agent.email_address }) }}<br/>
-		{%  if agent.getPlaintextPassword() %}
-			{{ phrase('agent.emails.newagent-login-initial-password', { password: agent.getPlaintextPassword() }) }}<br/><br/>
+		{{ phrase('agent.emails.newagent-login-link', { link: login_link }) }}<br/>
+		{{ phrase('agent.emails.newagent-login-your-email', { email: recipient.primary_email }) }}<br/>
+		{%  if agent_password %}
+			{{ phrase('agent.emails.newagent-login-initial-password', { password: agent_password }) }}<br/><br/>
 		{% else %}
 			{{ phrase('agent.emails.newagent-login-your-password') }}<br/><br/>
 		{% endif %}

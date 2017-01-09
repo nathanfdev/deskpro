@@ -37,6 +37,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorMarkerMissing;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorUnknownFrom;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentLoginAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewChatMessage;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcome;
 use Symfony\Component\Routing\RouterInterface;
 
 class AgentViewModelFactory
@@ -112,6 +113,14 @@ class AgentViewModelFactory
     public function createAgentLoginAlertModel()
     {
         return new AgentLoginAlert();
+    }
+
+    /**
+     * @return AgentWelcome
+     */
+    public function createAgentWelcomeModel()
+    {
+        return new AgentWelcome($this->router);
     }
 
     /**

@@ -28,7 +28,47 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use Application\DeskPRO\Entity\Person;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+
 class AgentWelcome extends EmailBaseType
 {
+    /**
+     * Link to agent interface.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $loginLink;
+
+    /**
+     * Agent password (if it has been set).
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $agentPassword;
+
     protected static $templateFile = 'emails_agent:agent_welcome.html.twig';
+
+    /**
+     * AgentWelcome constructor.
+     *
+     * @param RouterInterface $router
+     */
+    public function __construct(RouterInterface $router)
+    {
+        $this->loginLink = $router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    public function setRecipient(Person $recipient)
+    {
+        parent::setRecipient($recipient);
+
+        $this->agentPassword = $recipient->getPlaintextPassword();
+    }
 }
