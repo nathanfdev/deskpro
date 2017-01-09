@@ -164,6 +164,7 @@ class ChatCreateType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonEmailFromSession']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckRequireLogin']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceDepartment']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetEmailValidationCode']);
     }
 
@@ -195,6 +196,23 @@ class ChatCreateType extends AbstractType
         $data = $event->getData();
         if (!isset($data['email'])) {
             $data['email'] = '';
+        }
+
+        $event->setData($data);
+    }
+
+    /**
+     * Ensure that department field was submitted.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onForceDepartment(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!isset($data['chat_department'])) {
+            $data['chat_department'] = null;
         }
 
         $event->setData($data);

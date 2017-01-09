@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Department;
+use DeskPRO\Bundle\PortalBundle\Annotation\Dpsid;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
@@ -40,6 +41,7 @@ class ChatDepartmentsController extends AbstractApiController
 {
     /**
      * @Rest\Get("")
+     * @Dpsid()
      */
     public function getChatDepartmentsAction()
     {
