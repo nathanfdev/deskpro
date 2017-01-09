@@ -35,6 +35,7 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Validator\ViolationApiRenderer;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\Request\RequestAuth;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DpSys\LowError\SystemErrorHandler;
@@ -361,7 +362,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      * @param array $extra
      * @param int   $status
      *
-     * @return Response
+     * @return Response|JsonResponse
      */
     public function createSuccessResponse(array $extra = [], $status = 200)
     {

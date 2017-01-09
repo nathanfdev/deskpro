@@ -220,12 +220,12 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             return $this->createSuccessResponse([
                 'field_id' => $field->id,
             ]);
-        } else {
-            return $this->createSuccessResponse([
-                'field_id' => $field->id,
-                $this->generateUrl('api_ticket_fields_get', ['id' => $field->id]),
-            ]);
         }
+
+        return $this->createSuccessResponse([
+            'field_id' => $field->id,
+            $this->generateUrl('api_ticket_fields_get', ['id' => $field->id]),
+        ]);
     }
 
     //###################################################################################################################
