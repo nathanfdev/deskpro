@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Search\EntityWatcher;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\Entity\Ticket;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 
@@ -57,6 +59,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         'Application\\DeskPRO\\Entity\\Organization'     => 1,
         'Application\\DeskPRO\\Entity\\ChatConversation' => 1,
         'Application\\DeskPRO\\Entity\\ChatMessage'      => 1,
+        'Application\\DeskPRO\\Entity\\ObjectLang'       => 1,
     ];
 
     /**
@@ -144,14 +147,19 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 
         foreach ($uow->getScheduledEntityInsertions() as $ent) {
             if (self::isWatchedEntity($ent)) {
-                $ent      = $this->replaceEntity($ent);
-                $update[] = $ent;
+                $ent = $this->replaceEntity($ent);
+                if ($ent) {
+                    $update[] = $ent;
+                }
+
             }
         }
         foreach ($uow->getScheduledEntityUpdates() as $ent) {
             if (self::isWatchedEntity($ent)) {
-                $ent      = $this->replaceEntity($ent);
-                $update[] = $ent;
+                $ent = $this->replaceEntity($ent);
+                if ($ent) {
+                    $update[] = $ent;
+                }
             }
         }
         foreach ($uow->getScheduledEntityDeletions() as $ent) {
@@ -216,6 +224,20 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
             return $ent->person;
         } elseif ($ent instanceof \Application\DeskPRO\Entity\ChatMessage) {
             return $ent->conversation;
+        } elseif ($ent instanceof ObjectLang) {
+            $em      = $this->container->getEm();
+            $refId   = $ent->getRefId();
+            $refType = $ent->getRefType();
+
+            if (!$refId) {
+                return;
+            }
+
+            if ($refType === 'articles') {
+                return $em->getRepository(Article::class)->find($refId);
+            } else {
+                return;
+            }
         }
 
         return $ent;
