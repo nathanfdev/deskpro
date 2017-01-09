@@ -32,30 +32,41 @@
 
 namespace Application\DeskPRO\Reports\Form\Type;
 
-use Application\DeskPRO\Entity\ReportBuilder;
+use Application\DeskPRO\Entity\ReportWidget;
+use Application\LegacyApiBundle\Service\DashboardWidget;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ReportPropsType extends AbstractType
+class ReportWidgetType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title', 'text', ['required' => true]);
-        $builder->add('description', 'text', ['required' => false]);
+        $builder
+            ->add('title', TextType::class, ['required' => true])
+            ->add('description', TextType::class, ['required' => false])
+            ->add('display_types', ChoiceType::class, [
+                'choices' => [
+                    DashboardWidget::WIDGET_RENDER_TYPE_AREA,
+                    DashboardWidget::WIDGET_RENDER_TYPE_BAR,
+                    DashboardWidget::WIDGET_RENDER_TYPE_LINE,
+                    DashboardWidget::WIDGET_RENDER_TYPE_PIE,
+                    DashboardWidget::WIDGET_RENDER_TYPE_TABLE,
+                ],
+                'multiple'          => true,
+                'choices_as_values' => true,
+                'required'          => true,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             [
-                 'data_class' => ReportBuilder::class,
+                'data_class' => ReportWidget::class,
             ]
         );
-    }
-
-    public function getName()
-    {
-        return 'report';
     }
 }

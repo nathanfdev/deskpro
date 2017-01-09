@@ -52,7 +52,7 @@ class ReportWidget extends AbstractEntityRepository
      */
     public function getAllReports()
     {
-        return $this->findBy([], ['display_order', 'title']);
+        return $this->findBy([], ['display_order' => 'ASC', 'title' => 'ASC']);
     }
 
     /**

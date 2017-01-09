@@ -23,6 +23,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           ed.setShowPrintMargin(false)
 
           if conf.fontFamily
+
+
             ed.setOption('fontFamily', conf.fontFamily)
           if conf.fontSize
             ed.setOption('fontSize', conf.fontSize)
@@ -33,12 +35,12 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     $scope.saveWidget = (event) ->
       event.preventDefault()
       postData = {
-        id: $scope.widget.id
         title: $scope.widget.title
         description: $scope.widget.description
+        display_types: $scope.widget.query_parts.display
       }
-#      if(widget_id)
-#        promise = Api.sendPostJson('/reports/widget/' + $scope.widget.id, {report: postData, parts: $scope.widget.query_parts})
-#      else
-      promise = Api.sendPutJson('/reports/widget', {report: postData, parts: $scope.widget.query_parts})
+      if(widget_id)
+        promise = Api.sendPostJson('/reports/widget/' + $scope.widget.id, {report: postData, parts: $scope.widget.query_parts})
+      else
+        promise = Api.sendPutJson('/reports/widget', {report: postData, parts: $scope.widget.query_parts})
   ]

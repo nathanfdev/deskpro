@@ -34,8 +34,7 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Exception\ValidationException;
-use Application\DeskPRO\Reports\Form\Type\ReportType;
-use Application\DeskPRO\Reports\ReportEdit;
+use Application\DeskPRO\Reports\Form\Type\ReportWidgetType;
 use Application\DeskPRO\Reports\ReportsWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpFoundation\Response;
@@ -150,12 +149,12 @@ class ReportsWidgetController extends AbstractController
         if ($error = $reportsWidget->getErrors($id, 'from_request')) {
             return $this->createApiResponse(['error' => $error]);
         } else {
-            $postData   = $this->in->getAll('req');
-            $reportEdit = new ReportEdit($report);
-            $form       = $this->createForm(new ReportType(), $reportEdit, ['cascade_validation' => true]);
-            $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'report'), true);
+            $postData = $this->in->getAll('req');
+            $form     = $this->createForm(new ReportWidgetType(), $report, ['cascade_validation' => true]);
+            $form->submit($postData['report'], true);
             if ($form->isValid()) {
-                $reportEdit->save($this->em);
+                $this->em->persist($report);
+                $this->em->flush();
             } else {
                 return $this->createApiValidationErrorResponse(
                     $this->container->getValidator()->validate($report)
@@ -166,7 +165,7 @@ class ReportsWidgetController extends AbstractController
 
             return $this->createApiResponse([
                 'success'         => true,
-                'id'              => $report->id,
+                'id'              => $report->getId(),
                 'rendered_result' => $renderedResult,
             ]);
         }

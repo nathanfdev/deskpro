@@ -135,7 +135,7 @@ class ReportsWidgetService
         }
 
         $error   = false;
-        $results = $this->renderQuery($query, 'html', $error, $params);
+        $results = $this->renderQuery($query, 'json', $error, $params);
 
         return $results;
     }
@@ -384,14 +384,14 @@ class ReportsWidgetService
     }
 
     /**
-     * @param array  $query
+     * @param string $query
      * @param string $renderer
      * @param bool   $error
      * @param array  $params
      *
      * @return mixed
      */
-    protected function renderQuery(array $query, $renderer, &$error = false, array $params = [])
+    protected function renderQuery($query, $renderer, &$error = false, array $params = [])
     {
         return Display::renderQuery(
             $renderer,
