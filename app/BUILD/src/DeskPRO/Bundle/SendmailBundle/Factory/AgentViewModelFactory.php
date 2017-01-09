@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\SendmailBundle\Factory;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AdminNoResetPassword;
-use DeskPRO\Bundle\SendmailBundle\View\Model\AgentChangedPassword;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentChangeEmailMergeUser;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorInvalidForward;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorMarkerMissing;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorUnknownFrom;
@@ -69,6 +69,17 @@ class AgentViewModelFactory
     public function createAdminNoResetPasswordModel()
     {
         return new AdminNoResetPassword();
+    }
+
+    /**
+     * @param $oldEmail
+     * @param $newEmail
+     *
+     * @return AgentChangeEmailMergeUser
+     */
+    public function createAgentChangeEmailMergeUserModel($oldEmail, $newEmail)
+    {
+        return new AgentChangeEmailMergeUser($oldEmail, $newEmail);
     }
 
     /**
