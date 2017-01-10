@@ -258,6 +258,16 @@ export const chatSelectDepartmentTypeSelector = createSelector(
   options => options.get('select_department')
 );
 
+export const chatRequiredNameSelector = createSelector(
+  chatOptionsSelector,
+  options => !!options.get('required_name')
+);
+
+export const chatRequiredEmailSelector = createSelector(
+  chatOptionsSelector,
+  options => !!options.get('required_email')
+);
+
 // Ticket options selectors
 export const ticketOptionsSelector = createSelector(
   widgetOptionsSelector,

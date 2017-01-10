@@ -6,7 +6,15 @@ import Immutable from 'immutable';
 import { loadAll, isLoadedCollectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import PortalFormWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
 import { createChat } from '../../../Actions/chatActions';
-import { liveDemoSelector, widgetLanguageSelector, chatFormDefaultValuesSelector, chatSelectDepartmentTypeSelector, chatDefaultDepartmentSelector } from '../../../../Application/Selectors/dpWindow';
+import {
+  liveDemoSelector,
+  widgetLanguageSelector,
+  chatFormDefaultValuesSelector,
+  chatSelectDepartmentTypeSelector,
+  chatDefaultDepartmentSelector,
+  chatRequiredNameSelector,
+  chatRequiredEmailSelector
+} from '../../../../Application/Selectors/dpWindow';
 import { requireChatEmailValidationSelector, requireChatLoginSelector, widgetSessionIsLoginSelector } from '../../../../Application/Selectors/bootstrap';
 import { customChatFieldsOrderedSelector } from '../../../../Application/Selectors/customFields';
 import { history } from '../../../../../Services/history';
@@ -23,6 +31,8 @@ import { ChatBeginSimple } from './ChatBeginSimple';
   chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state),
   chatSelectDepartmentType: chatSelectDepartmentTypeSelector(state),
   chatDefaultDepartment:    chatDefaultDepartmentSelector(state),
+  chatRequiredName:         chatRequiredNameSelector(state),
+  chatRequiredEmail:        chatRequiredEmailSelector(state),
   widgetLanguage:           widgetLanguageSelector(state),
   loggedIn:                 widgetSessionIsLoginSelector(state),
   defaultValues:            chatFormDefaultValuesSelector(state)

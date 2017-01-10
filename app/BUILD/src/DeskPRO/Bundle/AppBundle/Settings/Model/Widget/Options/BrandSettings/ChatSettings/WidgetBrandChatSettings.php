@@ -99,6 +99,20 @@ class WidgetBrandChatSettings implements GroupSequenceProviderInterface
     private $waitingTimeout = 150;
 
     /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $requiredName = false;
+
+    /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $requiredEmail = false;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -242,6 +256,46 @@ class WidgetBrandChatSettings implements GroupSequenceProviderInterface
     public function setSelectDepartment($selectDepartment)
     {
         $this->selectDepartment = $selectDepartment;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isRequiredName()
+    {
+        return $this->requiredName;
+    }
+
+    /**
+     * @param boolean $requiredName
+     *
+     * @return $this
+     */
+    public function setRequiredName($requiredName)
+    {
+        $this->requiredName = $requiredName;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isRequiredEmail()
+    {
+        return $this->requiredEmail;
+    }
+
+    /**
+     * @param boolean $requiredEmail
+     *
+     * @return $this
+     */
+    public function setRequiredEmail($requiredEmail)
+    {
+        $this->requiredEmail = $requiredEmail;
 
         return $this;
     }

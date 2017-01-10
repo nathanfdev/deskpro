@@ -108,9 +108,18 @@ class ChatCreateType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $brand   = $this->brandStack->getActive()->getBrand();
+        $brandOptions = $this->settingsResolver->getWidgetBrandOptions($brand);
+
+        $nameConstraints = [];
+        if ($brandOptions->getChat()->isRequiredName()) {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceName'], 100);
+            $nameConstraints[] = new Assert\NotBlank();
+        }
+
         $emailConstraints = [new Assert\Email(['strict' => true])];
-        if ($this->settingsResolver->isChatEmailValidation() && !$this->settingsResolver->isChatRequireLogin()) {
-            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceEmailSubmit'], 100);
+        if (($this->settingsResolver->isChatEmailValidation() || $brandOptions->getChat()->isRequiredEmail()) && !$this->settingsResolver->isChatRequireLogin()) {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceEmail'], 100);
             $emailConstraints[] = new Assert\NotBlank();
         }
 
@@ -118,6 +127,7 @@ class ChatCreateType extends AbstractType
             ->add('name', TextType::class, [
                 'property_path' => 'person_name',
                 'required'      => false,
+                'constraints'   => $nameConstraints,
             ])
             ->add('email', EmailType::class, [
                 'property_path' => 'person_email',
@@ -129,8 +139,6 @@ class ChatCreateType extends AbstractType
                 'error_bubbling' => false,
             ])
         ;
-
-        $brand = $this->brandStack->getActive()->getBrand();
 
         $permissionsBag       = $this->permissionsManager->getPortalPermissionsBag($options['person']);
         $allowedDepartmentIds = $permissionsBag->getAllowedChatDepartmentIds();
@@ -185,13 +193,30 @@ class ChatCreateType extends AbstractType
     }
 
     /**
+     * Force name field if it's required.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onForceName(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!isset($data['name'])) {
+            $data['name'] = '';
+        }
+
+        $event->setData($data);
+    }
+
+    /**
      * Form fields are optional but we need to handle email field anyway if chat email validation is enabled.
      *
      * @internal
      *
      * @param FormEvent $event
      */
-    public function onForceEmailSubmit(FormEvent $event)
+    public function onForceEmail(FormEvent $event)
     {
         $data = $event->getData();
         if (!isset($data['email'])) {

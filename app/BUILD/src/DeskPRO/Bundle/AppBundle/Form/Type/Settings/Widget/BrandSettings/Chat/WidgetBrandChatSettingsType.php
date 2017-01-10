@@ -97,6 +97,12 @@ class WidgetBrandChatSettingsType extends AbstractType
                 'property_path' => 'defaultDepartment',
                 'class'         => Department::class,
             ])
+            ->add('required_name', ApiBooleanType::class, [
+                'property_path' => 'requiredName',
+            ])
+            ->add('required_email', ApiBooleanType::class, [
+                'property_path' => 'requiredEmail',
+            ])
         ;
 
         $departmentRepo = $this->em->getRepository(Department::class);

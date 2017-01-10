@@ -18,7 +18,9 @@ export class ChatBeginForm extends React.Component {
     allowDepartmentSelection: PropTypes.bool,
     chatDepartments:          PropTypes.object,
     widgetLanguage:           PropTypes.number,
-    loggedIn:                 PropTypes.bool
+    loggedIn:                 PropTypes.bool,
+    chatRequiredName:         PropTypes.bool,
+    chatRequiredEmail:        PropTypes.bool
   };
 
 
@@ -36,7 +38,7 @@ export class ChatBeginForm extends React.Component {
   }
 
   render() {
-    const { customFields, allowDepartmentSelection, chatDepartments } = this.props;
+    const { customFields, allowDepartmentSelection, chatDepartments, chatRequiredName, chatRequiredEmail } = this.props;
     const { submit, errors, onSubmit, widgetLanguage, loggedIn } = this.props;
 
     return (
@@ -44,13 +46,23 @@ export class ChatBeginForm extends React.Component {
         <div className="dpdesignportal-open-new-chat">
           <form className="dpdesignportal-form" onSubmit={onSubmit}>
             {!loggedIn &&
-              <FormItem label={portalPhrases.get('portal.chat.label-name')} field="name" errors={errors}>
+              <FormItem
+                label={portalPhrases.get('portal.chat.label-name')}
+                field="name"
+                errors={errors}
+                required={chatRequiredName}
+              >
                 <Field select="name" placeholder={portalPhrases.get('portal.chat.details-placeholder')}>
                   <Input type="text" />
                 </Field>
               </FormItem>}
             {!loggedIn &&
-              <FormItem label={portalPhrases.get('portal.chat.label-email')} field="email" errors={errors}>
+              <FormItem
+                label={portalPhrases.get('portal.chat.label-email')}
+                field="email"
+                errors={errors}
+                required={chatRequiredEmail}
+              >
                 <Field select="email" placeholder="email@example.com">
                   <Input type="email" />
                 </Field>
