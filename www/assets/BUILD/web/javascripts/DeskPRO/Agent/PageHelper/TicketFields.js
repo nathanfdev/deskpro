@@ -113,7 +113,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		// to avoid re-load the page to proper get hidden fields w/o value
 		$scope.show_hidden = oldShowHidden;
 
-		$scope.editField = function(field) {
+		$scope.editField = function($event, field) {
 			if (!$scope.editables[field]) return;
 			if ($scope.isEditMode(field)) return;
 
@@ -137,6 +137,20 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 
 			$scope.edit_fields.push(field);
+
+			// focus input field on open edit mode
+			var $editContainer = $($event.currentTarget).parent().find('.mode-edit');
+			var $simpleField = $editContainer.find('input[type=text], textarea, select');
+			var $select2Field = $editContainer.find('.with-select2');
+
+			setTimeout(function() {
+				if ($simpleField.length) {
+					$simpleField.focus();
+				}
+				if ($select2Field.length) {
+					$select2Field.select2('open');
+				}
+			}, 0);
 		};
 
 		$scope.isEditMode = function(field) {
