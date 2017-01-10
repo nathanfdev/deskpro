@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\SendmailBundle\Factory;
 
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\CommentAbstract;
 use DateTime;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AdminNoResetPassword;
@@ -38,6 +39,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorMarkerMissing;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorUnknownFrom;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentLoginAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewChatMessage;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewComment;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcome;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcomeUsersource;
 use Symfony\Component\HttpFoundation\Request;
@@ -146,5 +148,13 @@ class AgentViewModelFactory
     public function createLoginAlertModel(Request $request, $firstSeen, $success)
     {
         return new AgentLoginAlert($request, $firstSeen, $success);
+    }
+
+    /**
+     * @param CommentAbstract $comment
+     */
+    public function createNewCommentModel(CommentAbstract $comment)
+    {
+        return new AgentNewComment($comment);
     }
 }

@@ -38,7 +38,7 @@ class FeedbackApproved extends EmailBaseType
     /**
      * The feedback that has been approved.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Feedback")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback")
      *
      * @var Feedback
      */

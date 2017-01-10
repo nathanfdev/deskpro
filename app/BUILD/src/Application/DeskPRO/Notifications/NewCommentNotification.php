@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\Notifications;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Person;
 
@@ -73,6 +74,12 @@ class NewCommentNotification extends AbstractAgentNotification
     public function send()
     {
         $this->sendBrowserNotifications('AgentBundle:Publish:alert-new-comment.html.twig', ['comment' => $this->comment, 'notify_data' => ['notify_type' => 'new_comment']]);
-        $this->sendEmailNotifications('DeskPRO:emails_agent:new-comment.html.twig', ['comment' => $this->comment]);
+        if (App::$container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            $viewModel = App::$container->get('email.agent_viewmodel_factory')
+                ->createNewCommentModel($this->comment);
+            $this->sendNewEmailNotifications($viewModel);
+        } else {
+            $this->sendEmailNotifications('DeskPRO:emails_agent:new-comment.html.twig', ['comment' => $this->comment]);
+        }
     }
 }

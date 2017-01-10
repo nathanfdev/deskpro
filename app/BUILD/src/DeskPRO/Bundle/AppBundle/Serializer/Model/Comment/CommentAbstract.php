@@ -117,6 +117,16 @@ abstract class CommentAbstract
     protected $content;
 
     /**
+     * Comment`s content in HTML.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"details"})
+     *
+     * @var string
+     */
+    protected $contentHtml;
+
+    /**
      * Comment`s status.
      *
      * @JMS\Type("string")
@@ -160,6 +170,7 @@ abstract class CommentAbstract
         $this->name        = $entity->getName();
         $this->website     = $entity->getWebsite();
         $this->content     = $entity->getContent();
+        $this->contentHtml = $entity->getContentHtml();
         $this->status      = $entity->getStatus();
         $this->isReviewed  = $entity->isReviewed();
         $this->dateCreated = $entity->getDateCreated();

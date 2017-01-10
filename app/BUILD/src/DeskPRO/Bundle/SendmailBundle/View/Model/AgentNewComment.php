@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,7 +28,49 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-class AgentNewComment extends TicketEmailType
+use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\ContentAbstract;
+
+class AgentNewComment extends EmailBaseType
 {
+    /**
+     * The new comment.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\CommentAbstract")
+     *
+     * @var CommentAbstract
+     */
+    protected $comment;
+
+    /**
+     * The commented content.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract")
+     *
+     * @var ContentAbstract
+     */
+    protected $object;
+
+    /**
+     * The type to the content.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $objectType;
+
     protected static $templateFile = 'emails_agent:new_comment.html.twig';
+
+    /**
+     * AgentNewComment constructor.
+     *
+     * @param CommentAbstract $comment
+     */
+    public function __construct(CommentAbstract $comment)
+    {
+        $this->comment    = $comment;
+        $this->object     = $comment->getObject();
+        $this->objectType = $comment->getObjectType();
+    }
 }
