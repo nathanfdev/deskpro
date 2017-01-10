@@ -241,7 +241,7 @@ export class ChatBeginContainer extends React.Component {
     const { loggedIn } = this.props;
     const { customFields, customFieldsLoaded } = this.props;
     const { chatDepartments, chatDepartmentsLoaded, chatSelectDepartmentType } = this.props;
-    const allowDepartmentSelection = chatSelectDepartmentType !== 'default' && chatDepartments.size > 0;
+    const allowDepartmentSelection = chatSelectDepartmentType !== 'default' && chatDepartments.size > 1;
 
     if (!customFieldsLoaded || !chatDepartmentsLoaded) {
       return <ChatBeginLoadingSpinner />;
@@ -250,9 +250,7 @@ export class ChatBeginContainer extends React.Component {
     let { children } = this.props;
 
     // if user is logged in and no custom fields and no department selection then force simple chat begin mode
-    if (loggedIn
-        && (chatDepartments.size < 2 || !allowDepartmentSelection)
-        && !customFields.size) {
+    if (loggedIn && !allowDepartmentSelection && !customFields.size) {
       children = <ChatBeginSimple />;
     }
 
