@@ -94,6 +94,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 	initScope: function(el) {
 		var self = this;
+		var oldShowHidden = this.$scope ? this.$scope.show_hidden : 0;
 		var $scope = this.$scope = DeskPRO_Window.$scope.$new();
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
@@ -104,14 +105,52 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		$scope.edit_fields = [];
 		$scope.fields = {};
 		$scope.editables = {
-			language: 1
+			language: 1,
+			problem: 1
 		};
-		$scope.show_hidden = 0;
 
-		$scope.editField = function(field) {
+		// keep all fields shown if the link was clicked on save changes
+		// to avoid re-load the page to proper get hidden fields w/o value
+		$scope.show_hidden = oldShowHidden;
+
+		$scope.editField = function($event, field) {
 			if (!$scope.editables[field]) return;
 			if ($scope.isEditMode(field)) return;
+
+			var getSelected = function() {
+				if (window.getSelection) {
+					return window.getSelection().toString();
+				} else if (document.getSelection) {
+					return document.getSelection().toString();
+				} else {
+					var selection = document.selection && document.selection.createRange();
+					if (selection.text) {
+						return selection.text.toString();
+					}
+					return '';
+				}
+				return '';
+			};
+
+			if (getSelected()) {
+				return;
+			}
+
 			$scope.edit_fields.push(field);
+
+			// focus input field on open edit mode
+			var $editContainer = $($event.currentTarget).parent().find('.mode-edit');
+			var $simpleField = $editContainer.find('input[type=text], textarea, select');
+			var $select2Field = $editContainer.find('.with-select2');
+
+			setTimeout(function() {
+				if ($simpleField.length) {
+					$simpleField.focus();
+				}
+				if ($select2Field.length) {
+					$select2Field.select2('open');
+				}
+			}, 0);
 		};
 
 		$scope.isEditMode = function(field) {
@@ -149,7 +188,11 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		};
 
 		$scope.hidden = 0;
-		$scope.editables = {};
+		$scope.editables = {
+			language: 1,
+			problem: 1
+		};
+
 		this.no_value_fields = [];
 		var $ctrls = this.display.find('.controls-row');
 		$ctrls.removeClass('off').prev().removeClass('off');
