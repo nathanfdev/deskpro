@@ -1,7 +1,7 @@
-{{ set_tplvar('agent_notification_footer', 'notify') }}
 <dp:subject>
 	{{ phrase('agent.publish.new_comment_on', {name: object.title}) }}
 </dp:subject>
+{{ set_tplvar('agent_notification_footer', 'notify') }}
 
 <html>
 <head>
@@ -26,15 +26,15 @@
 				<td colspan="2">
 					{{ phrase('agent.publish.comment_requires_validation') }}<br />
 					{% if object_type == 'Article' %}
-						<a href="{{ url_full('agent') }}#app.publish,validating_comments,a.o:{{ object.id }}">{{ url_full('agent') }}#app.publish,validating_comments,a.o={{ object.id }}</a>
+						<a href="{{ login_link }}#app.publish,validating_comments,a.o:{{ object.id }}">{{ login_link }}#app.publish,validating_comments,a.o={{ object.id }}</a>
 					{% elseif object_type == 'Download' %}
-						<a href="{{ url_full('agent') }}#app.publish,validating_comments,d.o:{{ object.id }}">{{ url_full('agent') }}#app.publish,validating_comments,d.o={{ object.id }}</a>
+						<a href="{{ login_link }}#app.publish,validating_comments,d.o:{{ object.id }}">{{ login_link }}#app.publish,validating_comments,d.o={{ object.id }}</a>
 					{% elseif object_type == 'News' %}
-						<a href="{{ url_full('agent') }}#app.publish,validating_comments,n.o:{{ object.id }}">{{ url_full('agent') }}#app.publish,validating_comments,n.o={{ object.id }}</a>
+						<a href="{{ login_link }}#app.publish,validating_comments,n.o:{{ object.id }}">{{ login_link }}#app.publish,validating_comments,n.o={{ object.id }}</a>
 					{% elseif object_type == 'Feedback' %}
-						<a href="{{ url_full('agent') }}#app.publish,fb_comments,i.o:{{ object.id }}">{{ url_full('agent') }}#app.publish,fb_comments,i.o={{ object.id }}</a>
+						<a href="{{ login_link }}#app.publish,fb_comments,i.o:{{ object.id }}">{{ login_link }}#app.publish,fb_comments,i.o={{ object.id }}</a>
 					{% else %}
-						<a href="{{ url_full('agent') }}#app.publish,validating_comments">{{ url_full('agent') }}#app.publish,validating_comments</a>
+						<a href="{{ login_link }}#app.publish,validating_comments">{{ login_link }}#app.publish,validating_comments</a>
 					{% endif %}
 				</td>
 			{% endif %}
@@ -55,13 +55,13 @@
 			<tr>
 				<td colspan="2">
 					{% if object_type == 'Article' %}
-						{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#a.o:{{ object.id }}">{{ url_full('agent') }}#a.o={{ object.id }}</a>
+						{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#a.o:{{ object.id }}">{{ login_link }}#a.o={{ object.id }}</a>
 					{% elseif object_type == 'Download' %}
-						{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#d.o:{{ object.id }}">{{ url_full('agent') }}#d.o={{ object.id }}</a>
+						{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#d.o:{{ object.id }}">{{ login_link }}#d.o={{ object.id }}</a>
 					{% elseif object_type == 'News' %}
-						{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#n.o:{{ object.id }}">{{ url_full('agent') }}#n.o={{ object.id }}</a>
+						{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#n.o:{{ object.id }}">{{ login_link }}#n.o={{ object.id }}</a>
 					{% elseif object_type == 'Feedback' %}
-						{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#i.o:{{ object.id }}">{{ url_full('agent') }}#i.o={{ object.id }}</a>
+						{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#i.o:{{ object.id }}">{{ login_link }}#i.o={{ object.id }}</a>
 					{% endif %}
 				</td>
 			</tr>

@@ -38,7 +38,7 @@ abstract class EmailBaseType
     /**
      * Email recipient.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+     * @JMS\Type("Application\DeskPRO\Entity\Person")
      *
      * @var Person
      */

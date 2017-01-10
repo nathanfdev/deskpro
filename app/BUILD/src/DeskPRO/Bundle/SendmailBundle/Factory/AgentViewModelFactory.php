@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\SendmailBundle\Factory;
 
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\Feedback;
 use DateTime;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AdminNoResetPassword;
@@ -40,6 +41,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorUnknownFrom;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentLoginAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewChatMessage;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewComment;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewFeedback;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcome;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcomeUsersource;
 use Symfony\Component\HttpFoundation\Request;
@@ -123,6 +125,16 @@ class AgentViewModelFactory
     }
 
     /**
+     * @param Feedback $feedback
+     *
+     * @return AgentNewFeedback
+     */
+    public function createAgentNewFeedbackModel(Feedback $feedback)
+    {
+        return new AgentNewFeedback($this->router, $feedback);
+    }
+
+    /**
      * @return AgentWelcome
      */
     public function createAgentWelcomeModel()
@@ -152,9 +164,11 @@ class AgentViewModelFactory
 
     /**
      * @param CommentAbstract $comment
+     *
+     * @return AgentNewComment
      */
     public function createNewCommentModel(CommentAbstract $comment)
     {
-        return new AgentNewComment($comment);
+        return new AgentNewComment($this->router, $comment);
     }
 }

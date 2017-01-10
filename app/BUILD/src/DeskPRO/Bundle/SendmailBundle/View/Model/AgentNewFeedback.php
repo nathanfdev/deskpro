@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,7 +28,47 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-class AgentNewFeedback extends TicketEmailType
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\Person;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+
+class AgentNewFeedback extends EmailBaseType
 {
+    /**
+     * The feedback.
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\Feedback")
+     *
+     * @var Feedback
+     */
+    protected $feedback;
+
+    /**
+     * The feedback.
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\Person")
+     *
+     * @var Person
+     */
+    protected $person;
+
+    /**
+     * Link to agent interface.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $loginLink;
+
     protected static $templateFile = 'emails_agent:new_feedback.html.twig';
+
+    public function __construct(RouterInterface $router, Feedback $feedback)
+    {
+        $this->feedback  = $feedback;
+        $this->person    = $feedback->getPerson();
+        $this->loginLink = $router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
 }

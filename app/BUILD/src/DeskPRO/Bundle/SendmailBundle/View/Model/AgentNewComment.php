@@ -30,6 +30,8 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\RouterInterface;
 
 class AgentNewComment extends EmailBaseType
 {
@@ -60,17 +62,28 @@ class AgentNewComment extends EmailBaseType
      */
     protected $objectType;
 
+    /**
+     * Link to agent interface.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $loginLink;
+
     protected static $templateFile = 'emails_agent:new_comment.html.twig';
 
     /**
      * AgentNewComment constructor.
      *
+     * @param RouterInterface $router
      * @param CommentAbstract $comment
      */
-    public function __construct(CommentAbstract $comment)
+    public function __construct(RouterInterface $router, CommentAbstract $comment)
     {
         $this->comment    = $comment;
         $this->object     = $comment->getObject();
         $this->objectType = $comment->getObjectType();
+        $this->loginLink  = $router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

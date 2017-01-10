@@ -51,9 +51,9 @@ class NewCommentNotification extends AbstractAgentNotification
 
     public function shouldSendBrowserNotification(Person $person)
     {
-        if ($this->comment->is_reviewed && $person->getPref('agent_notif.new_comment_validate.alert')) {
+        if ($this->comment->isReviewed() && $person->getPref('agent_notif.new_comment_validate.alert')) {
             return true;
-        } elseif (!$this->comment->is_reviewed && $person->getPref('agent_notif.new_comment.alert')) {
+        } elseif (!$this->comment->isReviewed() && $person->getPref('agent_notif.new_comment.alert')) {
             return true;
         }
 
@@ -62,9 +62,9 @@ class NewCommentNotification extends AbstractAgentNotification
 
     public function shouldSendEmailNotification(Person $person)
     {
-        if ($this->comment->is_reviewed && $person->getPref('agent_notif.new_comment_validate.email')) {
+        if ($this->comment->isReviewed() && $person->getPref('agent_notif.new_comment_validate.email')) {
             return true;
-        } elseif (!$this->comment->is_reviewed && $person->getPref('agent_notif.new_comment.email')) {
+        } elseif (!$this->comment->isReviewed() && $person->getPref('agent_notif.new_comment.email')) {
             return true;
         }
 

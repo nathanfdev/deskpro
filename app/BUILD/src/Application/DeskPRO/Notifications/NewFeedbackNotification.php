@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\Notifications;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
@@ -51,9 +52,9 @@ class NewFeedbackNotification extends AbstractAgentNotification
 
     public function shouldSendBrowserNotification(Person $person)
     {
-        if ($this->feedback->status == 'hidden' && $person->getPref('agent_notif.new_feedback_validate.alert')) {
+        if ($this->feedback->getStatus() == 'hidden' && $person->getPref('agent_notif.new_feedback_validate.alert')) {
             return true;
-        } elseif ($this->feedback->status != 'hidden' && $person->getPref('agent_notif.new_feedback.alert')) {
+        } elseif ($this->feedback->getStatus() != 'hidden' && $person->getPref('agent_notif.new_feedback.alert')) {
             return true;
         }
 
@@ -62,9 +63,9 @@ class NewFeedbackNotification extends AbstractAgentNotification
 
     public function shouldSendEmailNotification(Person $person)
     {
-        if ($this->feedback->status == 'hidden' && $person->getPref('agent_notif.new_feedback_validate.email')) {
+        if ($this->feedback->getStatus() == 'hidden' && $person->getPref('agent_notif.new_feedback_validate.email')) {
             return true;
-        } elseif ($this->feedback->status != 'hidden' && $person->getPref('agent_notif.new_feedback.email')) {
+        } elseif ($this->feedback->getStatus() != 'hidden' && $person->getPref('agent_notif.new_feedback.email')) {
             return true;
         }
 
@@ -74,7 +75,16 @@ class NewFeedbackNotification extends AbstractAgentNotification
     public function send()
     {
         $this->sendBrowserNotifications('AgentBundle:Feedback:alert-new-feedback.html.twig', ['feedback' => $this->feedback, 'notify_data' => ['notify_type' => 'new_feedback']]);
-        $this->sendEmailNotifications('DeskPRO:emails_agent:new-feedback.html.twig', ['feedback' => $this->feedback]);
+        if (App::$container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            $viewModel = App::$container->get('email.agent_viewmodel_factory')
+                ->createNewFeedbackModel($this->feedback);
+            $this->sendNewEmailNotifications($viewModel);
+        } else {
+            $this->sendEmailNotifications(
+                'DeskPRO:emails_agent:new-feedback.html.twig',
+                ['feedback' => $this->feedback]
+            );
+        }
 
         $this->eventDispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.ui.new-feedback',
