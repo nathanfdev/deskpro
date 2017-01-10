@@ -94,6 +94,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 	initScope: function(el) {
 		var self = this;
+		var oldShowHidden = this.$scope ? this.$scope.show_hidden : 0;
 		var $scope = this.$scope = DeskPRO_Window.$scope.$new();
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
@@ -107,7 +108,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			language: 1,
 			problem: 1
 		};
-		$scope.show_hidden = 0;
+
+		// keep all fields shown if the link was clicked on save changes
+		// to avoid re-load the page to proper get hidden fields w/o value
+		$scope.show_hidden = oldShowHidden;
 
 		$scope.editField = function(field) {
 			if (!$scope.editables[field]) return;
