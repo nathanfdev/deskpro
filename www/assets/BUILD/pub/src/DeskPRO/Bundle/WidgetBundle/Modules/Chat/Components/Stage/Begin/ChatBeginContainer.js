@@ -206,8 +206,12 @@ export class ChatBeginContainer extends React.Component {
     };
 
     if (children.type !== ChatBeginSimple) {
-      if (chatSelectDepartmentType === 'default' && chatDefaultDepartment && chatDepartments.get(chatDefaultDepartment)) {
-        formData.chat_department = chatDefaultDepartment;
+      if (chatSelectDepartmentType === 'default' && chatDefaultDepartment) {
+        if (chatDepartments.has(chatDefaultDepartment)) {
+          formData.chat_department = chatDefaultDepartment;
+        } else if (chatDepartments.size > 0) {
+          formData.chat_department = chatDepartments.first().get('id');
+        }
       } else if (chatDepartments.size > 1) {
         formData.chat_department = '';
       } else if (chatDepartments.size === 1) {
@@ -236,9 +240,8 @@ export class ChatBeginContainer extends React.Component {
   render() {
     const { loggedIn } = this.props;
     const { customFields, customFieldsLoaded } = this.props;
-    const { chatDepartments, chatDepartmentsLoaded, chatSelectDepartmentType, chatDefaultDepartment } = this.props;
-    const allowDepartmentSelection = chatSelectDepartmentType === 'custom'
-      || (chatDefaultDepartment && !chatDepartments.has(chatDefaultDepartment));
+    const { chatDepartments, chatDepartmentsLoaded, chatSelectDepartmentType } = this.props;
+    const allowDepartmentSelection = chatSelectDepartmentType !== 'default' && chatDepartments.size > 0;
 
     if (!customFieldsLoaded || !chatDepartmentsLoaded) {
       return <ChatBeginLoadingSpinner />;
