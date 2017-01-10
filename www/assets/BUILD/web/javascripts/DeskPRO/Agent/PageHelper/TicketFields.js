@@ -149,7 +149,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		};
 
 		$scope.hidden = 0;
-		$scope.editables = {};
+		$scope.editables = {
+			language: 1
+		};
+
 		this.no_value_fields = [];
 		var $ctrls = this.display.find('.controls-row');
 		$ctrls.removeClass('off').prev().removeClass('off');
