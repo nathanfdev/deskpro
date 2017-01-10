@@ -63,10 +63,7 @@
 {% endif %}
 
 {% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.view') %}
-    <tbody class="problem problem_id standard-field item off"
-		   data-item-type="ticket_problem"
-		   ng-show="fields['problem']"
-	>
+    <tbody class="problem problem_id standard-field item" data-item-type="ticket_problem">
     <tr class="mode-display" ng-show="!isEditMode('problem')" ng-click="editField('problem')">
         <th width="80">
             <span class="problem_id label">{{ phrase('agent.problems.problem') }}:</span>

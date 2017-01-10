@@ -104,7 +104,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		$scope.edit_fields = [];
 		$scope.fields = {};
 		$scope.editables = {
-			language: 1
+			language: 1,
+			problem: 1
 		};
 		$scope.show_hidden = 0;
 
@@ -150,7 +151,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		$scope.hidden = 0;
 		$scope.editables = {
-			language: 1
+			language: 1,
+			problem: 1
 		};
 
 		this.no_value_fields = [];
