@@ -37,7 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Assets\RequireJsConfigGenerator;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\EntityRepository\Usersource;
+use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 use Application\DeskPRO\Routing\Generator\UrlGenerator;
 use Composer\CaBundle\CaBundle;
