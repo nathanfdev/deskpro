@@ -268,7 +268,7 @@
                                                             <i class="fa fa-bars drag-handle"></i>
                                                         </label>
                                                     </div>
-                                                    <input type="checkbox" ng-model="brand_settings.chat.required_email" ng-checked="field.options.required" disabled /> Required
+                                                    <input type="checkbox" ng-model="brand_settings.chat.required_email" ng-checked="field.options.required || field.options.validation_type === 'required'" disabled /> Required
                                                     (<a href="#/chat/fields/{{ ng_var('field.id') }}">change</a>)
                                                 </div>
                                             </div>
