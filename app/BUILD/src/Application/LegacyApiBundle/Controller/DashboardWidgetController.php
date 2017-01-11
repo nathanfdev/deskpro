@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -84,9 +84,9 @@ class DashboardWidgetController extends AbstractController
 
         $postData = $this->in->getAll('post');
 
-        /** @var \Application\DeskPRO\Reports\Builder $reportsBuilder */
-        $reportsBuilder = $this->container->getSystemService('reports_builder');
-        $reportWidget   = $reportsBuilder->getById($postData['widget_id']);
+        /** @var \Application\DeskPRO\Reports\ReportsWidgetService $reportsWidgetService */
+        $reportsWidgetService = $this->container->get('reports.widget.service');
+        $reportWidget         = $reportsWidgetService->getById($postData['widget_id']);
         if (!$reportWidget) {
             throw $this->createNotFoundException('ReportWidget not found!');
         }
