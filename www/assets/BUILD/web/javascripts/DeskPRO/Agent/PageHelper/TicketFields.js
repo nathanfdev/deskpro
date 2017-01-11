@@ -112,6 +112,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		// keep all fields shown if the link was clicked on save changes
 		// to avoid re-load the page to proper get hidden fields w/o value
 		$scope.show_hidden = oldShowHidden;
+		$scope.is_saving = false;
 
 		$scope.editField = function($event, field) {
 			if (!$scope.editables[field]) return;
@@ -164,7 +165,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		$scope.saveFields = function() {
 			self.saveChanges();
-			$scope.edit_fields.length = 0;
 		};
 
 		$scope.showHidden = function() {
@@ -281,6 +281,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			customFieldData[i].name = customFieldData[i].name.replace(baseId + '_', '');
 		}
 		customFieldData.unshift({name: 'custom_fields[]', value: ''});
+
+		this.$scope.is_saving = true;
 
 		changeManager.saveChanges(
 			customFieldData,

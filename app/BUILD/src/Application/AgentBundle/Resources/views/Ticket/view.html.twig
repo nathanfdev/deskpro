@@ -559,8 +559,11 @@ pageMeta.lang = {{ {
 					<tbody class="controls-row off" ng-show="edit_fields.length">
 						<tr>
 							<td colspan="2" style="text-align: center; background: #eee;">
-								<button class="save clean-white" ng-click="saveFields()">Save</button>
-								<button class="cancel clean-white" ng-click="cancelEdit()">Cancel</button>
+								<span ng-hide="is_saving">
+									<button class="save clean-white" ng-click="saveFields()">Save</button>
+									<button class="cancel clean-white" ng-click="cancelEdit()">Cancel</button>
+								</span>
+								<i ng-show="is_saving" class="spinner-flat"></i>
 							</td>
 						</tr>
 					</tbody>
