@@ -34,10 +34,12 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use libphonenumber\PhoneNumberUtil;
 use Orb\Util\PhoneNumbers;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * A Phone Number that is registered somewhere in the system (people can have many phone numbers).
@@ -52,6 +54,10 @@ use Orb\Util\PhoneNumbers;
  * @property string $region
  * @property string $guessed_type
  * @property \DateTime $date_created
+ *
+ * @JMS\ExclusionPolicy("ALL")
+ *
+ * @AppAssert\PhoneNumber()
  */
 class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -71,6 +77,9 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
      * The number, stored in E.164 string format, ie. +19021111111.
      *
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $number;
 
@@ -78,6 +87,9 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
      * A human-defined (optional) label to describe what this phone number is.
      *
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $label;
 
@@ -85,6 +97,10 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
      * An extension for the number - optional.
      *
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\SerializedName("extension")
      */
     protected $ext;
 
@@ -199,6 +215,58 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return $number;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * @param string $number
+     *
+     * @return $this
+     */
+    public function setNumber($number)
+    {
+        $this->setModelField('number', $number);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNumber()
+    {
+        return $this->number;
+    }
+
+    /**
+     * @param string $guessed_type
+     *
+     * @return $this
+     */
+    public function setGuessedType($guessed_type)
+    {
+        $this->setModelField('guessed_type', $guessed_type);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGuessedType()
+    {
+        return $this->guessed_type;
     }
 
     /**

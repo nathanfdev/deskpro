@@ -34,11 +34,19 @@ use Symfony\Component\Validator\Constraint;
  * Class PhoneNumber.
  *
  * @Annotation
- * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
+ * @Target({"CLASS", "PROPERTY", "METHOD", "ANNOTATION"})
  */
 class PhoneNumber extends Constraint
 {
     const INVALID_PHONE_NUMBER = 'invalid_phone_number_format';
 
     public $message = 'Invalid phone number format.';
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTargets()
+    {
+        return [self::CLASS_CONSTRAINT, self::PROPERTY_CONSTRAINT];
+    }
 }
