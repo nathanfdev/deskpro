@@ -182,6 +182,10 @@ export class AgentOnboarding extends React.Component {
   };
 
   callback = (data) => {
+    if (!data.index) {
+      return;
+    }
+
     const percentageComplete = parseFloat(((data.index / this.state.steps.length) * 100).toFixed(2).replace('.00', ''));
     let onboarding;
 

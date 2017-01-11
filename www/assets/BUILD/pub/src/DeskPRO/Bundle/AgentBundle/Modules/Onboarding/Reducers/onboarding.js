@@ -17,5 +17,5 @@ export default createReducer(initialState, {
     }
     return newState;
   },
-  [actions.resumeOnboarding]: (state) => state.set('logoActive', false)
+  [actions.resumeOnboarding]: state => state.set('logoActive', false)
 });
