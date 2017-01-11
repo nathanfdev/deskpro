@@ -116,6 +116,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		$scope.editField = function($event, field) {
 			if (!$scope.editables[field]) return;
 			if ($scope.isEditMode(field)) return;
+			if ($event.target.tagName === 'A') return;
 
 			var getSelected = function() {
 				if (window.getSelection) {
