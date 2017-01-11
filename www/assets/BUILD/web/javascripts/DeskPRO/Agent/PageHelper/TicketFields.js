@@ -12,9 +12,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		this.mode = 'view';
 
-		this.initScope(this.page.getEl('field_holders'));
-		this.no_value_fields = [];
-
 		this.ticketReader = {
 			getDepartmentId: function() {
 				var catId = self.page.getEl('department_id').val();
@@ -69,6 +66,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 		};
 
+		this.initScope(this.page.getEl('field_holders'));
+		this.no_value_fields = [];
+
 		this.page.getEl('department').on('change', function() {
 			self.page.getEl('field_errors').hide();
 			self.updateDisplay();
@@ -94,7 +94,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 	initScope: function(el) {
 		var self = this;
-		var oldShowHidden = this.$scope ? this.$scope.show_hidden : 0;
 		var $scope = this.$scope = DeskPRO_Window.$scope.$new();
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
@@ -109,9 +108,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			problem: 1
 		};
 
-		// keep all fields shown if the link was clicked on save changes
-		// to avoid re-load the page to proper get hidden fields w/o value
-		$scope.show_hidden = oldShowHidden;
+		$scope.show_hidden = 0;
 		$scope.is_saving = false;
 
 		$scope.editField = function($event, field) {
@@ -205,7 +202,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			if (undefined === $scope.fields[f.id]) {
 				row.detach().removeClass('off').insertBefore($ctrls);
 			}
-			var noValue = row.hasClass('no-value');
+
+			var value = true;
+			if (f.field_type === 'ticket_field') {
+				value = this.ticketReader.getTicketFieldValue(f.field_id);
+			}
+
+			var noValue = !value || (value instanceof Array && value.length === 0);
 
 			if (f.isVisibleOnEdit) {
 				$scope.editables[f.id] = 1;
@@ -316,6 +319,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		var old = this.display;
 		var newDisplay = $('<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table mode-edit-on">' + html + '</table>');
+		newDisplay.append(this.display.find('.hidden-row'));
+		newDisplay.append(this.display.find('.controls-row'));
 		this.page.rewriteRadioNames(newDisplay);
 		this.display = newDisplay;
     this.display.prepend(labels);
@@ -328,8 +333,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		this.initScope(this.page.getEl('field_holders'));
 
-		this.currentDisplay = [];
-		this.currentDisplayModify = [];
 		this.updateDisplay();
 		this.$scope.$apply();
 	}

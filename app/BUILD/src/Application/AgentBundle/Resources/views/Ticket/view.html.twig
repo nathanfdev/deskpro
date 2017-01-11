@@ -550,7 +550,7 @@ pageMeta.lang = {{ {
 					<tr>
 						<td colspan="2" style="padding-top: 4px; padding-bottom: 4px;">
 							<a ng-click="showHidden()">
-								{{ ng_var('hidden') }} hidden field<span ng-show="hidden !== 1">s</span> without a value
+								<span ng-bind-html="hidden"></span> hidden field<span ng-show="hidden !== 1">s</span> without a value
 							</a>
 						</td>
 					</tr>
