@@ -1,7 +1,7 @@
-{{ set_tplvar('agent_notification_footer', 'notify') }}
 <dp:subject>
 	{{ phrase('agent.people.new_registration_name', {name: person.getDisplayContact()}) }}
 </dp:subject>
+{{ set_tplvar('agent_notification_footer', 'notify') }}
 
 <html>
 <head>
@@ -11,7 +11,7 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
 	<container>
-		{{ phrase('agent.people.new_registration_name', {name: person.getDisplayContact()}) }}
+		{{ phrase('agent.people.new_registration_name', {name: person.display_contact}) }}
 	</container>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}

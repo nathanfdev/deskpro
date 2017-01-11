@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 class AgentNewComment extends EmailBaseType
@@ -38,7 +39,7 @@ class AgentNewComment extends EmailBaseType
     /**
      * The new comment.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\CommentAbstract")
+     * @JMS\Type("Application\DeskPRO\Entity\CommentAbstract")
      *
      * @var CommentAbstract
      */
@@ -47,7 +48,7 @@ class AgentNewComment extends EmailBaseType
     /**
      * The commented content.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract")
+     * @JMS\Type("Application\DeskPRO\Entity\ContentAbstract")
      *
      * @var ContentAbstract
      */

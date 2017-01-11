@@ -48,7 +48,7 @@
 					{% if object_type == 'Article' %}
 						{{ object.getCategoryNames() }}
 					{% else %}
-						{{ object.category.getFullTitle() }}
+						{{ object.category.full_title }}
 					{% endif %}
 				</td>
 			</tr>
