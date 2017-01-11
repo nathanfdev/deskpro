@@ -18,6 +18,8 @@ import AppReducers from '../AppBundle/AppApp_Reducers';
 import { preloadData } from './Modules/Application/Actions/bootstrapActions';
 import { setOnlineAgents, setOnlineUserChatAgents } from './Modules/Agent/Actions/agentActions';
 import { NotificationServiceContainer } from './Modules/Application/Components/Notifications/NotificationServiceContainer';
+import { isVoiceEnabledSelector } from './Modules/Voice/Selectors/client';
+import { voiceBootstrap } from './Modules/Voice/Actions/clientActions';
 
 class AgentLegacyApp {
 
@@ -54,6 +56,15 @@ class AgentLegacyApp {
       messageBroker.addMessageListener('agent.online-agents-userchat', (event) => {
         this.store.dispatch(setOnlineUserChatAgents(event.online_agents));
       });
+
+      if (window.DP_HAS_VOICE) {
+        const state = this.store.getState();
+        const voiceEnabled = isVoiceEnabledSelector(state);
+
+        if (voiceEnabled) {
+          this.store.dispatch(voiceBootstrap());
+        }
+      }
     }
   }
 
