@@ -240,11 +240,8 @@ class PersonSearch extends SearcherAbstract
 
             case 'people.num_tickets':
                 $order_by = [
-                    'LEFT JOIN
-	tickets_participants participants ON (participants.person_id = people.id)
-        LEFT JOIN
-    tickets AS sort_table ON (sort_table.person_id = people.id OR sort_table.id = participants.ticket_id)',
-                    "COUNT(DISTINCT sort_table.id) $dir, people.id DESC",
+                    'LEFT JOIN tickets AS sort_table ON (sort_table.person_id = people.id)',
+                    "COUNT(sort_table.id) $dir, people.id DESC",
                 ];
                 break;
 

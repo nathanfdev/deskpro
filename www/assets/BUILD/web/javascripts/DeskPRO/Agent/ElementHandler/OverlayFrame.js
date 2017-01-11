@@ -145,8 +145,17 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
     path = path || '/';
     path = path.replace(/^#/, '');
 
+    if (navigator.appName === 'Microsoft Internet Explorer' ||
+      (navigator.appName === 'Netscape' && navigator.appVersion.indexOf('Edge') !== -1) ||
+      (navigator.appName === 'Netscape' && navigator.appVersion.indexOf('Trident') !== -1)) {
+      return;
+    }
     this.getFrameWindow().location.hash = '#' + path;
     window.location.hash = '#' + this.frameId + ':' + (path || '');
+
+    setTimeout(function() {
+      window.document.dispatchEvent(new CustomEvent('dpChangeSection'));
+    }, 0);
   },
 
   close: function() {
@@ -160,7 +169,6 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
     }
 
     DeskPRO_Window.enableHashPath();
-
     DeskPRO_Window.updateWindowUrlFragment();
     var event = new CustomEvent('dpCloseOverlayFrame', { 'detail': { id: this.frameId } });
     window.document.dispatchEvent(event);

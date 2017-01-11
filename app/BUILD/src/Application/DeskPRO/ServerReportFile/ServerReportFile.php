@@ -153,9 +153,12 @@ class ServerReportFile
      */
     public function outputArchive()
     {
-        header('Content-Type: application/zip; filename='.$this->file_name);
+        header('Content-Type: application/zip');
         header('Content-Length: '.filesize($this->archive_file));
         header('Content-Disposition: attachment; filename='.$this->file_name);
+
+        ob_clean();
+        flush();
 
         $fp = fopen($this->archive_file, 'r');
 
