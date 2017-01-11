@@ -50,6 +50,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskAssigned;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskDueReminder;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcome;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcomeUsersource;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWhitelistIp;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -207,6 +208,16 @@ class AgentViewModelFactory
     public function createAgentWelcomeUsersourceModel()
     {
         return new AgentWelcomeUsersource($this->router);
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return AgentWhitelistIp
+     */
+    public function createAgentWhitelistIpModel($url)
+    {
+        return new AgentWhitelistIp($url);
     }
 
     /**

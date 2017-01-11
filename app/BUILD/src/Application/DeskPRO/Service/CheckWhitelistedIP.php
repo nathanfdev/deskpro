@@ -75,29 +75,36 @@ class CheckWhitelistedIP
             return true;
         }
 
-        $code_data = TmpData::create(
+        $codeData = TmpData::create(
             'whitelist-ip', ['person_id' => $person['id'], 'interface' => DP_INTERFACE], '+40 minutes'
         );
-        $code_data->setData('ip', $ip);
-        $container->getEm()->persist($code_data);
+        $codeData->setData('ip', $ip);
+        $container->getEm()->persist($codeData);
         $container->getEm()->flush();
 
         $url = $container->get('router')->generate(
-            'agent_whitelist_ip', ['code' => $code_data->getCode()], UrlGeneratorInterface::ABSOLUTE_URL
+            'agent_whitelist_ip', ['code' => $codeData->getCode()], UrlGeneratorInterface::ABSOLUTE_URL
         );
         $vars = [
             'ip'        => $ip,
-            'code'      => $code_data->getCode(),
+            'code'      => $codeData->getCode(),
             'person'    => $person,
             'interface' => DP_INTERFACE,
             'url'       => $url,
         ];
 
-        $message = $container->getMailer()->createMessage();
-        $message->setTemplate('DeskPRO:emails_agent:whitelist-ip.html.twig', $vars);
-        $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+        if ($container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            $viewModel = $container->get('email.agent_viewmodel_factory')
+                ->createAgentWhitelistIpModel($url);
+            $container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $message = $container->getMailer()->createMessage();
+            $message->setTemplate('DeskPRO:emails_agent:whitelist-ip.html.twig', $vars);
+            $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 
-        $container->getMailer()->send($message);
+            $container->getMailer()->send($message);
+        }
 
         return false;
     }

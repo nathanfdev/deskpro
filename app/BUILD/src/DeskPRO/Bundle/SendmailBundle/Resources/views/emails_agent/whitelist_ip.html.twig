@@ -1,0 +1,28 @@
+<dp:subject>Verify DeskPRO Login - New IP Address</dp:subject>
+
+<html>
+<head>
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+    <container>
+        Someone has made a login attempt for your DeskPRO account from the following new IP address:<br/>
+        {{ ip }}
+
+        <br/><br/>
+
+        If this is a valid login attempt by you, click the following link to validate the new IP address:<br />
+        <a href="{{ url }}"/>{{ url }}</a>
+
+        <br /><br />
+        Once the IP address has been validated, you will be able to login to your account.
+
+        <br/><br/>
+        If you did not initiate this request; do not click the link above. Someone has successfully logged into your helpdesk account with your email address and password. You should contact your helpdesk administrator.
+    </container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+</body>
+</html>
