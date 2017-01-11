@@ -7,8 +7,7 @@ import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actio
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 import { setImMe } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import { setVoiceTokens, setVoiceActivities, voiceBootstrap } from '../../Voice/Actions/clientActions';
-import { isVoiceEnabledSelector } from '../../Voice/Selectors/client';
+import { setVoiceTokens, setVoiceActivities } from '../../Voice/Actions/clientActions';
 
 export const loadAgentPhraseTranslations = createAction(
   'AGENT_LOAD_PHRASE_TRANSLATIONS',
@@ -37,7 +36,7 @@ export const loadAgentPhraseTranslations = createAction(
 export const donePreloading = createAction('APP_BOOTSTRAP_DONE_PRELOADING');
 export const preloadData    = createAction(
   'BOOTSTRAP_PRELOAD_DATA',
-  () => (dispatch, getState) => new Promise(
+  () => dispatch => new Promise(
     (resolve) => {
       const batchComponents = {
         agents:                { endpoint: 'agents' },
@@ -101,13 +100,6 @@ export const preloadData    = createAction(
           if (window.DP_HAS_VOICE) {
             dispatch(setVoiceTokens(data.voice_tokens));
             dispatch(setVoiceActivities(data.voice_activities));
-
-            const state = getState();
-            const voiceEnabled = isVoiceEnabledSelector(state);
-
-            if (voiceEnabled) {
-              dispatch(voiceBootstrap());
-            }
           }
 
           dispatch(donePreloading());
