@@ -145,6 +145,11 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
     path = path || '/';
     path = path.replace(/^#/, '');
 
+    if (navigator.appName === 'Microsoft Internet Explorer' ||
+      (navigator.appName === 'Netscape' && navigator.appVersion.indexOf('Edge') !== -1) ||
+      (navigator.appName === 'Netscape' && navigator.appVersion.indexOf('Trident') !== -1)) {
+      return;
+    }
     this.getFrameWindow().location.hash = '#' + path;
     window.location.hash = '#' + this.frameId + ':' + (path || '');
 
