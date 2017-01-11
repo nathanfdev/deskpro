@@ -16,6 +16,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
   ) ->
     $scope.loaded = false
     $scope.report = {
+      dashboard_id: 0
       options:
         columns: 24
     }
@@ -50,7 +51,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       return if not o
 
       p1 = DashboardsInfo.getDashboardList().then((dbs) ->
-        $scope.dashboard = Arrays.find(dbs, (x) -> x.id == loadedReport.dashboard_id)
+        $scope.dashboard = Arrays.find(dbs, (x) -> x.id == $scope.report.dashboard_id)
       )
 
       p2 = DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
