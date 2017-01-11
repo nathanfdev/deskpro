@@ -44,6 +44,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewChatMessage;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewComment;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewFeedback;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewRegistration;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentPasswordResetAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcome;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcomeUsersource;
 use Symfony\Component\HttpFoundation\Request;
@@ -154,6 +155,17 @@ class AgentViewModelFactory
     public function createAgentNewRegistrationModel(Person $person)
     {
         return new AgentNewRegistration($this->router, $person);
+    }
+
+    /**
+     * @param Person $performer
+     * @param $newPassword
+     *
+     * @return AgentPasswordResetAlert
+     */
+    public function createAgentPasswordResetAlertModel(Person $performer, $newPassword)
+    {
+        return new AgentPasswordResetAlert($this->router, $performer, $newPassword);
     }
 
     /**

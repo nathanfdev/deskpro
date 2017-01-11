@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,11 +28,46 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use Application\DeskPRO\Entity\Person;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+
 class AgentPasswordResetAlert extends EmailBaseType
 {
+    /**
+     * Person that perform the password reset.
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\Person")
+     *
+     * @var Person
+     */
+    protected $performer;
+
+    /**
+     * New password.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $newPassword;
+
+    /**
+     * Link to agent interface.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $loginLink;
+
     protected static $templateFile = 'emails_agent:password_reset_alert.html.twig';
 
-    public function __construct()
+    public function __construct(RouterInterface $router, Person $performer, $newPassword)
     {
+        $this->performer   = $performer;
+        $this->newPassword = $newPassword;
+        $this->loginLink   = $router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }
