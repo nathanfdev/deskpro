@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -49,7 +49,7 @@ GROUP BY ALIAS(DATE(articles.views.date_created), \'Date\')',
         'average-chat-length-chats-created-group-x' => [
                 'labels'        => 'chat',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '30',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT AVG(chat_conversations.total_to_ended) / 60 AS \'Average Length (Minutes)\'
@@ -61,7 +61,7 @@ GROUP BY %2:FIELD_GROUP:chats:chat_conversations%',
         'average-time-first-re-tickets-created-date-group-x' => [
                 'labels'        => 'tickets',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '120',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT AVG(UNIX_TIMESTAMP(tickets.date_first_agent_reply) - UNIX_TIMESTAMP(tickets.date_created)) / (60 * 60) AS \'Average Time (Hours)\', COUNT() AS \'Total Tickets\'
@@ -73,7 +73,7 @@ GROUP BY %2:FIELD_GROUP:tickets%',
         'average-time-resolve-tickets-date-group-by-x' => [
                 'labels'        => 'tickets',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '100',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT AVG(UNIX_TIMESTAMP(tickets.date_resolved) - UNIX_TIMESTAMP(tickets.date_created)) / (60 * 60) AS \'Average Time (Hours)\', COUNT() AS \'Total Tickets\'
@@ -85,7 +85,7 @@ GROUP BY %2:FIELD_GROUP:tickets%',
         'average-total-wait-tickets-resolve-date-group-by-x' => [
                 'labels'        => 'tickets',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '110',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT AVG(tickets.total_user_waiting) / (60 * 60) AS \'Total Waiting Time (Hours)\', COUNT() AS \'Total Tickets\'
@@ -149,7 +149,7 @@ LIMIT 100',
         'number-article-com-created-date-group-by-article' => [
                 'labels'        => 'kb',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '30',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Comments Created\'
@@ -161,7 +161,7 @@ GROUP BY %2:FIELD_GROUP:articles:article_comments.article%',
         'number-article-comments-created-date-group-by-x' => [
                 'labels'        => 'kb',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '20',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Comments Created\'
@@ -173,7 +173,7 @@ GROUP BY %2:FIELD_GROUP:article_comments%',
         'number-articles-created-date-group-by-x' => [
                 'labels'        => 'kb',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '10',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Entries Created\'
@@ -185,7 +185,7 @@ GROUP BY %2:FIELD_GROUP:articles%',
         'number-chats-created-date-grouped-by-x' => [
                 'labels'        => 'chat',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '10',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Chats Created\'
@@ -197,7 +197,7 @@ GROUP BY %2:FIELD_GROUP:chats:chat_conversations%',
         'number-chats-missed-date-grouped-by-x' => [
                 'labels'        => 'chat',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '20',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Chats Created\'
@@ -209,7 +209,7 @@ GROUP BY %2:FIELD_GROUP:chats:chat_conversations%',
         'number-feedback-com-created-date-group-by-feedback' => [
                 'labels'        => 'feedback',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '30',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Comments Created\'
@@ -221,7 +221,7 @@ GROUP BY %2:FIELD_GROUP:feedback:feedback_comments.feedback%',
         'number-feedback-comments-created-date-group-by-x' => [
                 'labels'        => 'feedback',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '20',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Comments Created\'
@@ -233,7 +233,7 @@ GROUP BY %2:FIELD_GROUP:feedback_comments%',
         'number-feedback-created-date-group-by-x' => [
                 'labels'        => 'feedback',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '10',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Entries Created\'
@@ -245,7 +245,7 @@ GROUP BY %2:FIELD_GROUP:feedback%',
         'number-feedback-votes-submitted-date-x-group-y' => [
                 'labels'        => 'feedback',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '60',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Ratings\'
@@ -325,7 +325,7 @@ GROUP BY ALIAS(DATE(tickets.date_created), \'Date Created\'), %2:FIELD_GROUP:tic
         'number-tickets-created-date-grouped-by-x-y' => [
                 'labels'        => 'tickets',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '10',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Total Tickets\'
@@ -337,7 +337,7 @@ GROUP BY MATRIX(%2:FIELD_GROUP:tickets%, %3:FIELD_GROUP:tickets%)',
         'number-tickets-created-date-grouped-first-agent-x' => [
                 'labels'        => 'tickets',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '90',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Total Tickets\'
@@ -349,7 +349,7 @@ GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(NOW(), tickets.date_first_agent_reply), 
         'number-tickets-resolved-date-grouped-time-res-x' => [
                 'labels'        => 'tickets,resolved',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '80',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Total Tickets\'
@@ -361,7 +361,7 @@ GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(tickets.date_resolved, tickets.date_crea
         'number-tickets-resolved-date-grouped-total-wait-x' => [
                 'labels'        => 'tickets,resolved',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '70',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Total Tickets\'
@@ -373,7 +373,7 @@ GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(tickets.total_user_waiting), \'Time Wait
         'number-tickets-resolved-date-grouped-x-y' => [
                 'labels'        => 'tickets,resolved',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '30',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Total Tickets\'
@@ -385,7 +385,7 @@ GROUP BY MATRIX(%2:FIELD_GROUP:tickets%, %3:FIELD_GROUP:tickets%)',
         'number-tickets-status-grouped-by-x-y' => [
                 'labels'        => 'tickets',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '20',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Total Tickets\'
@@ -397,7 +397,7 @@ GROUP BY MATRIX(%2:FIELD_GROUP:tickets%, %3:FIELD_GROUP:tickets%)',
         'number-tickets-wait-agent-grouped-time-wait-ag-x' => [
                 'labels'        => 'tickets,agents',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '50',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Total Tickets\'
@@ -409,7 +409,7 @@ GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(NOW(), tickets.date_user_waiting), \'Tim
         'number-tickets-wait-agent-grouped-total-wait-x' => [
                 'labels'        => 'tickets,agents',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '60',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Total Tickets\'
@@ -499,7 +499,7 @@ LIMIT 100',
         'percent-ticket-create-date-resolved-24hour-group-x' => [
                 'labels'        => 'tickets',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '131',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT PERCENT(tickets.date_resolved <> NULL AND UNIX_TIMESTAMP(tickets.date_resolved) - UNIX_TIMESTAMP(tickets.date_created) < 24 * 60 * 60) AS \'Percentage\'
@@ -511,7 +511,7 @@ GROUP BY %2:FIELD_GROUP:tickets%',
         'percent-tickets-created-date-replied-hour-group-x' => [
                 'labels'        => 'tickets',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '130',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT PERCENT(tickets.total_to_first_reply < 3600) AS \'Percentage\'
@@ -523,7 +523,7 @@ GROUP BY %2:FIELD_GROUP:tickets%',
         'percent-tickets-created-date-res-1-agent-group-x' => [
                 'labels'        => 'tickets',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '135',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT PERCENT(tickets.count_agent_replies = 1) AS \'Percentage\'
@@ -535,7 +535,7 @@ GROUP BY %2:FIELD_GROUP:tickets%',
         'sla-date-groupby-x' => [
                 'labels'        => 'tickets',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '96',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Total Tickets\'
@@ -574,7 +574,7 @@ LIMIT 100',
         'tickets-created-date-grouped-labels' => [
                 'labels'        => 'tickets',
                 'description'   => '',
-                'display_types' => 'table,simple_bars',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => '170',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Total Tickets\'
