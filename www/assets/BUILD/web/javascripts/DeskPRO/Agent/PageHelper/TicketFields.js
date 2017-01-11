@@ -195,7 +195,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		};
 
 		this.no_value_fields = [];
-		var $ctrls = this.display.find('.controls-row');
+		var $ctrls = this.display.find('.hidden-row');
 		$ctrls.removeClass('off').prev().removeClass('off');
 
 		for (var i = 0; i < fields.length; i++) {
