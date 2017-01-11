@@ -12,6 +12,8 @@ define [
   'Reports/App/Service/DashboardWidget',
   'Reports/App/Service/DashboardPermissions',
   'Reports/App/Service/DashboardsInfo',
+
+  'Reports/Main/Service/SessionPing',
 ], (
   # Services
   AppConfig,
@@ -28,6 +30,8 @@ define [
   Reports_App_Service_DashboardWidget,
   Reports_App_Service_DashboardPermissions,
   Reports_App_Service_DashboardsInfo,
+
+  Reports_Main_Service_SessionPing
 ) ->
   return (Module) ->
     Module.service('AppConfig', -> return new AppConfig)
@@ -124,4 +128,13 @@ define [
     ])
     Module.service('TicketSatisfactionService', ['Api', '$sce', '$q', '$timeout', (Api, $sce, $q, $timeout) ->
       return new TicketSatisfaction(Api, $sce, $q, $timeout)
+    ])
+
+    Module.service('SessionPing', ['Api', (Api) ->
+      return new Reports_Main_Service_SessionPing(Api)
+    ])
+    Module.run(['SessionPing', (SessionPing) ->
+      window.setTimeout(->
+        SessionPing.startInterval()
+      , 20000)
     ])
