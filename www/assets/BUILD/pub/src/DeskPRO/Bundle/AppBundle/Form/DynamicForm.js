@@ -113,6 +113,10 @@ export class DynamicForm {
     return this.currentFields;
   }
 
+  getHiddenFields() {
+    return this.fieldNames.filter(name => this.currentFields.indexOf(name) === -1);
+  }
+
   /**
    * Sets the current field set.
    *
@@ -166,40 +170,40 @@ export class DynamicForm {
    * Update the form.
    */
   update() {
-    if (this._firePreUpdate().cancel) {
-      return false;
-    }
+    let didChange;
 
-    const r = this._fireUpdateFields(this.fieldFilter(this.fieldNames, this));
-    if (r.cancel) {
-      return false;
-    }
+    do {
+      didChange = false;
 
-    const newFields = this.resolveFields(r.newFields);
-    let didChange = false;
+      if (this._firePreUpdate().cancel) {
+        break;
+      }
 
-    if (newFields.length !== this.currentFields.length) {
-      didChange = true;
-    } else {
-      for (let i = 0; i < newFields.length; i++) {
-        if (newFields[i] !== this.currentFields[i]) {
-          didChange = true;
-          break;
+      const r = this._fireUpdateFields(this.fieldFilter(this.fieldNames, this));
+      if (r.cancel) {
+        break;
+      }
+
+      const newFields = this.resolveFields(r.newFields);
+      if (newFields.length !== this.currentFields.length) {
+        didChange = true;
+      } else {
+        for (let i = 0; i < newFields.length; i++) {
+          if (newFields[i] !== this.currentFields[i]) {
+            didChange = true;
+            break;
+          }
         }
       }
-    }
 
-    if (!didChange) {
-      console.log('[DynamicForm] <update> No change. Fields: %o', this.currentFields);
-    }
+      if (didChange) {
+        this.setFieldSet(newFields);
+      } else {
+        console.log('[DynamicForm] <update> No change. Fields: %o', this.currentFields);
+      }
 
-    if (didChange) {
-      this.setFieldSet(newFields);
-    }
-
-    this._firePostUpdate(didChange);
-
-    return didChange;
+      this._firePostUpdate(didChange);
+    } while (didChange);
   }
 
   _firePreUpdate() {
