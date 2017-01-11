@@ -45,7 +45,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option bool from_name      Who to send the email from
  * @option bool from_account   The account to send from (falsey for ticket account)
  */
-class SendAgentEmail extends AbstractEmailAction implements ActionInterface, NoopableInterface
+class SendAgentLegacyEmail extends AbstractEmailAction implements ActionInterface, NoopableInterface
 {
     /**
      * {@inheritdoc}
@@ -76,13 +76,11 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
         foreach ($agentIds as $aid) {
             if ('all_agents' === $aid) {
-                $context->getLogger()->debug('[SendAgentEmail] notify_list all agents');
                 $agents = $this->getContainer()->getAgentData()->getAgents();
                 break;
             }
 
             if ($aid == 'notify_list') {
-                $context->getLogger()->debug('[SendAgentEmail] notify_list using notify_list');
                 if ($isNotifDisabled) {
                     continue;
                 }
@@ -108,10 +106,10 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                         }
 
                         if (!$override) {
-                            $context->getLogger()->debug('[SendAgentEmail] notify_list skipping self');
+                            $context->getLogger()->debug('[SendAgentLegacyEmail] notify_list skipping self');
                             continue;
                         } else {
-                            $context->getLogger()->debug('[SendAgentEmail] notify_list sending to self because got override preference');
+                            $context->getLogger()->debug('[SendAgentLegacyEmail] notify_list sending to self because got override preference');
                         }
                     }
                     if (in_array('email', $n['types'])) {
@@ -121,7 +119,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
                 $forceList = $context->getVars()->get('agent_force_subscription_list', []);
                 if ($forceList) {
-                    $context->getLogger()->debug('[SendAgentEmail] Appending force list');
+                    $context->getLogger()->debug('[SendAgentLegacyEmail] Appending force list');
                     $agents = array_merge($agents, $forceList);
                 }
             } else {
@@ -131,16 +129,10 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         }
 
         if ($context->getVars()->has('mention_agents')) {
-            $aids = array_map(function ($a) {
-                return $a->getId();
-            }, $context->getVars()->get('mention_agents'));
-            $context->getLogger()->debug('[SendAgentEmail] notify_list adding mentioned agents: '.implode(', ', $aids));
             $agents = array_merge($agents, array_values($context->getVars()->get('mention_agents')));
         }
 
         if (!$agents) {
-            $context->getLogger()->debug('[SendAgentEmail] notify_list is empty');
-
             return [];
         }
 
@@ -152,11 +144,6 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             }
         }
 
-        $aids = array_map(function ($a) {
-            return $a->getId();
-        }, $set_agents);
-        $context->getLogger()->debug('[SendAgentEmail] notify_list final list: '.implode(', ', $aids));
-
         return array_values($setAgents);
     }
 
@@ -165,13 +152,13 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $context->getLogger()->debug('[SendAgentEmail] Begin :: agent_ids = '.implode(', ', $this->getActionOption('agent_ids')));
+        $context->getLogger()->debug('[SendAgentLegacyEmail] Begin :: agent_ids = '.implode(', ', $this->getActionOption('agent_ids')));
         $startTime = microtime(true);
 
         $agents = $this->resolveAgents($ticket, $this->getActionOption('agent_ids'), $context);
 
         if (!$agents) {
-            $context->getLogger()->debug('[SendAgentEmail] No agents to send to');
+            $context->getLogger()->debug('[SendAgentLegacyEmail] No agents to send to');
 
             return;
         }
@@ -179,7 +166,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         try {
             $fromAccount = $this->getFromEmailAccountOption($ticket, $context);
         } catch (\InvalidArgumentException $e) {
-            $context->getLogger()->warn("[SendAgentEmail] Error {$e->getMessage()}");
+            $context->getLogger()->warn("[SendAgentLegacyEmail] Error {$e->getMessage()}");
 
             return;
         }
@@ -187,7 +174,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         try {
             $template = $this->getEmailTemplateOption($ticket, $context, false);
         } catch (\InvalidArgumentException $e) {
-            $context->getLogger()->warn("[SendAgentEmail] Error {$e->getMessage()}");
+            $context->getLogger()->warn("[SendAgentLegacyEmail] Error {$e->getMessage()}");
 
             return;
         }
@@ -267,7 +254,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         foreach ($agents as $agent) {
             ++$sentCount;
 
-            $context->getLogger()->debug(sprintf('[SendAgentEmail] Sending to <Person:%d> %s', $agent->getId(), $agent->getDisplayName()));
+            $context->getLogger()->debug(sprintf('[SendAgentLegacyEmail] Sending to <Person:%d> %s', $agent->getId(), $agent->getDisplayName()));
             $vars = $defaultVars;
 
             $typeFlag = null;
@@ -286,15 +273,13 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                 $vars['is_my_mention'] = true;
             }
 
-            $vars['is_mention_email'] = $context->getVars()->has('mention_agents') ? true : false;
-
             try {
                 $ticketEmail = $emailBuilder->setToPerson($agent)->buildTicketEmail();
                 $ticketEmail->send($vars);
                 $this->recordEmailTicketLog($ticketEmail, $ticket, $context);
             } catch (\Exception $e) {
                 $context->getLogger()->error(
-                    sprintf('[SendAgentEmail] Exception: [%s] %s', $e->getCode(), $e->getMessage()),
+                    sprintf('[SendAgentLegacyEmail] Exception: [%s] %s', $e->getCode(), $e->getMessage()),
                     ['exception' => $e]
                 );
 
@@ -302,7 +287,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             }
         }
 
-        $context->getLogger()->info(sprintf('[SendAgentEmail] Send %d messages in %.3fs', $sentCount, microtime(true) - $startTime));
+        $context->getLogger()->info(sprintf('[SendAgentLegacyEmail] Send %d messages in %.3fs', $sentCount, microtime(true) - $startTime));
     }
 
     /**
@@ -311,13 +296,13 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
     public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
     {
         if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
-            $context->getLogger()->debug('[SendUserEmail] no outgoing email accounts are defined');
+            $context->getLogger()->debug('[SendAgentLegacyEmail] no outgoing email accounts are defined');
 
             return true;
         }
 
         if ($context->getVars()->get('mute_agent_emails')) {
-            $context->getLogger()->debug('[SendAgentEmail] mute_agent_emails = true');
+            $context->getLogger()->debug('[SendAgentLegacyEmail] mute_agent_emails = true');
 
             return true;
         }

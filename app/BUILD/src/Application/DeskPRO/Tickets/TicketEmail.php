@@ -26,12 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -351,21 +345,21 @@ class TicketEmail
         if ($this->userMode == self::MODE_USER && $this->doCcUsers) {
             foreach ($this->ticket->getUserParticipants() as $p) {
                 if ($p->getPrimaryEmailAddress()) {
-                    $cc_email = $p->getPrimaryEmailAddress();
-                    $cc_name  = $p->getDisplayName();
-                    if (!$cc_email) {
+                    $ccEmail = $p->getPrimaryEmailAddress();
+                    $ccName  = $p->getDisplayName();
+                    if (!$ccEmail) {
                         continue;
                     }
 
                     if ($this->isAuto && $p->disable_autoresponses) {
-                        $this->logger->info(sprintf('[TicketEmail] CC skipped because autoresponder: %s -- Name: %s', $cc_email, $cc_name));
+                        $this->logger->info(sprintf('[TicketEmail] CC skipped because autoresponder: %s -- Name: %s', $ccEmail, $ccName));
                         continue;
                     }
 
-                    $this->sentWithCcs[] = $cc_email;
+                    $this->sentWithCcs[] = $ccEmail;
 
-                    $message->addCc($cc_email, $cc_name);
-                    $this->logger->info(sprintf('[TicketEmail] CC: %s -- Name: %s', $cc_email, $cc_name));
+                    $message->addCc($ccEmail, $ccName);
+                    $this->logger->info(sprintf('[TicketEmail] CC: %s -- Name: %s', $ccEmail, $ccName));
                 }
             }
         }

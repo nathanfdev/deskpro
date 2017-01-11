@@ -52,7 +52,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option string[] emails            Email addresses to send to
  * @option bool     send_org_managers True to send to all org managers
  */
-class SendArbitraryUserEmail extends AbstractEmailAction
+class SendArbitraryUserLegacyEmail extends AbstractEmailAction
 {
     /**
      * {@inheritdoc}

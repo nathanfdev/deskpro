@@ -26,12 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
-
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -47,7 +41,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option bool from_account   The account to send from (falsey for ticket account)
  * @option bool do_cc_users    True to CC the email to other user parts in the ticket
  */
-class SendUserEmail extends AbstractEmailAction
+class SendUserLegacyEmail extends AbstractEmailAction
 {
     /**
      * {@inheritdoc}
@@ -65,13 +59,13 @@ class SendUserEmail extends AbstractEmailAction
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $context->getLogger()->debug('[SendUserEmail] Begin');
+        $context->getLogger()->debug('[SendUserLegacyEmail] Begin');
         $startTime = microtime(true);
 
         try {
             $fromAccount = $this->getFromEmailAccountOption($ticket, $context);
         } catch (\InvalidArgumentException $e) {
-            $context->getLogger()->warn("[SendUserEmail] Error {$e->getMessage()}");
+            $context->getLogger()->warn("[SendUserLegacyEmail] Error {$e->getMessage()}");
 
             return;
         }
@@ -79,7 +73,7 @@ class SendUserEmail extends AbstractEmailAction
         try {
             $template = $this->getEmailTemplateOption($ticket, $context, false);
         } catch (\InvalidArgumentException $e) {
-            $context->getLogger()->warn("[SendUserEmail] Error {$e->getMessage()}");
+            $context->getLogger()->warn("[SendUserLegacyEmail] Error {$e->getMessage()}");
 
             return;
         }
@@ -111,7 +105,7 @@ class SendUserEmail extends AbstractEmailAction
 
         // If this is from a user reply, then mark the email as auto and handle disable auto setting
         if ($context->getEventPerformer() == 'user' && $ticket->getStateChangeRecorder()->hasNewReply()) {
-            $context->getLogger()->info('[SendUserEmail] Identified as an automatic email');
+            $context->getLogger()->info('[SendUserLegacyEmail] Identified as an automatic email');
             $emailBuilder->setIsAuto();
 
             if ($context->getVars()->has('ticket_email')) {
@@ -155,7 +149,7 @@ class SendUserEmail extends AbstractEmailAction
             throw $e;
         }
 
-        $context->getLogger()->info(sprintf('[SendUserEmail] Sent message in %.3fs', microtime(true) - $startTime));
+        $context->getLogger()->info(sprintf('[SendUserLegacyEmail] Sent message in %.3fs', microtime(true) - $startTime));
     }
 
     /**
@@ -164,19 +158,13 @@ class SendUserEmail extends AbstractEmailAction
     public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
     {
         if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
-            $context->getLogger()->debug('[SendUserEmail] no outgoing email accounts are defined');
+            $context->getLogger()->debug('[SendUserLegacyEmail] no outgoing email accounts are defined');
 
             return true;
         }
 
         if ($context->getVars()->get('mute_user_emails')) {
-            $context->getLogger()->debug('[SendUserEmail] mute_user_emails = true');
-
-            return true;
-        }
-
-        if (!$ticket->getPerson()->getPrimaryEmail()) {
-            $context->getLogger()->debug("[SendUserEmail] person #{$ticket->getPerson()->getId()} has no email");
+            $context->getLogger()->debug('[SendUserLegacyEmail] mute_user_emails = true');
 
             return true;
         }

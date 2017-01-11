@@ -26,27 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Tickets\Actions;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-
-/**
- * Send an email to the user.
- *
- * @option bool     template          The template to send
- * @option bool     from_name         Who to send the email from
- * @option bool     from_account      The account to send from (falsey for ticket account)
- * @option string[] emails            Email addresses to send to
- * @option bool     send_org_managers True to send to all org managers
- */
-class SendSpecificUserEmail extends SendArbitraryUserEmail
+class Build1488459205 extends AbstractBuild
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    public function run()
     {
-        return false;
+        $this->out('Alter triggers to replace email sending by legacy actions');
+        $emailTriggers = [
+          'SendAgentEmail'        => 'SendAgentLegacyEmail',
+          'SendUserEmail'         => 'SendUserLegacyEmail',
+          'SendSpecificUserEmail' => 'SendSpecificUserLegacyEmail',
+        ];
+        foreach ($emailTriggers as $oldClass => $newClass) {
+            $this->execDbQuery('default', "UPDATE `ticket_triggers` SET `actions` = REPLACE(`actions`, '$oldClass', '$newClass')");
+        }
     }
 }
