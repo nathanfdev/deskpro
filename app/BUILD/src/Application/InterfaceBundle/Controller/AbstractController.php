@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -27,6 +27,9 @@
  */
 
 namespace Application\InterfaceBundle\Controller;
+
+use Application\DeskPRO\Service\CheckWhitelistedIP;
+use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -57,9 +60,40 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
     /**
      * Force a login.
+     *
+     * {@inheritdoc}
      */
-    public function preAction($action, $arguments = null)
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
+        if (!$this->_userHasPermissions()) {
+            if ($request->isXmlHttpRequest()) {
+                $data = ['error' => 'session_expired'];
+
+                return $this->createJsonResponse($data, 403);
+            }
+
+            return $this->redirectRoute('agent');
+        }
+
+        if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
+            if ($request->isXmlHttpRequest()) {
+                $data = [
+                    'error'          => 'invalid_request_token',
+                    'redirect_login' => $this->generateUrl('agent_login'),
+                ];
+
+                return $this->createJsonResponse($data, 403);
+            } else {
+                return $this->renderStandardPermissionError('The form you are trying to submit has expired. Please go back and try again.');
+            }
+        }
+
+        if (!CheckWhitelistedIP::checkIP($this->getRequest(), $this->container, $this->person)) {
+            return $this->render('AgentBundle:Login:whitelist-ip.html.twig', [
+                'ip' => $this->getRequest()->getClientIp(),
+            ]);
+        }
+
         return;
     }
 
