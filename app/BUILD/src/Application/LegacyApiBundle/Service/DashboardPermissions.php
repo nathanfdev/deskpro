@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,7 +33,7 @@
 namespace Application\LegacyApiBundle\Service;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\ReportDashboard as Dashboard;
+use Application\DeskPRO\Entity\ReportDashboard as DashboardEntity;
 use Application\DeskPRO\Entity\ReportDashboardPermission as Permission;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Doctrine\ORM\EntityManager;
@@ -55,12 +55,12 @@ class DashboardPermissions
     }
 
     /**
-     * @param Person    $person
-     * @param Dashboard $dashboard
+     * @param Person          $person
+     * @param DashboardEntity $dashboard
      *
      * @return mixed
      */
-    public function isAllowedToEdit(Person $person, Dashboard $dashboard)
+    public function isAllowedToEdit(Person $person, DashboardEntity $dashboard)
     {
         $person->loadHelper('DashboardPermissions');
 
@@ -68,12 +68,12 @@ class DashboardPermissions
     }
 
     /**
-     * @param Person    $person
-     * @param Dashboard $dashboard
+     * @param Person          $person
+     * @param DashboardEntity $dashboard
      *
      * @return mixed
      */
-    public function isAllowedToView(Person $person, Dashboard $dashboard)
+    public function isAllowedToView(Person $person, DashboardEntity $dashboard)
     {
         $person->loadHelper('DashboardPermissions');
 
@@ -81,9 +81,9 @@ class DashboardPermissions
     }
 
     /**
-     * @param Dashboard $dashboard
+     * @param DashboardEntity $dashboard
      */
-    public function getPermissions(Dashboard $dashboard)
+    public function getPermissions(DashboardEntity $dashboard)
     {
         $this->em
             ->getRepository(Permission::class)
@@ -95,12 +95,12 @@ class DashboardPermissions
     }
 
     /**
-     * @param Person    $person
-     * @param Dashboard $dashboard
+     * @param Person          $person
+     * @param DashboardEntity $dashboard
      *
      * @return Permission[]|Permission
      */
-    public function getPersonPermissions(Person $person, Dashboard $dashboard = null)
+    public function getPersonPermissions(Person $person, DashboardEntity $dashboard = null)
     {
         $criteria = [
             'person' => $person->getId(),
@@ -124,11 +124,11 @@ class DashboardPermissions
     }
 
     /**
-     * @param Person    $person
-     * @param Dashboard $dashboard
-     * @param string    $permission
+     * @param Person          $person
+     * @param DashboardEntity $dashboard
+     * @param string          $permission
      */
-    public function setPermissions(Person $person, Dashboard $dashboard, $permission)
+    public function setPermissions(Person $person, DashboardEntity $dashboard, $permission)
     {
         $personPermissions = $this->getPersonPermissions($person, $dashboard);
         if (!$personPermissions && $permission !== self::PERMISSION_NONE) {
@@ -153,6 +153,11 @@ class DashboardPermissions
         }
     }
 
+    /**
+     * @param $permissions
+     *
+     * @return int
+     */
     protected function mapPermissions($permissions)
     {
         switch ($permissions) {
@@ -166,11 +171,11 @@ class DashboardPermissions
     }
 
     /**
-     * @param Dashboard $dashboard
+     * @param DashboardEntity $dashboard
      *
      * @return Permission[]
      */
-    protected function getDashboardPermissions(Dashboard $dashboard)
+    protected function getDashboardPermissions(DashboardEntity $dashboard)
     {
         /** @var Permission[] $permissions */
         $permissions = $this->em->getRepository(Permission::class)->findBy(
@@ -180,6 +185,9 @@ class DashboardPermissions
         return $permissions;
     }
 
+    /**
+     * @return \Application\DeskPRO\Entity\Person[]
+     */
     protected function getAllAgents()
     {
         /** @var PersonRepository $personRepository */
@@ -202,6 +210,9 @@ class DashboardPermissions
         return $personRepository->getAgent($agent_id);
     }
 
+    /**
+     * @return array
+     */
     public function getNewDashboardPermissions()
     {
         $agents = $this->getAllAgents();
@@ -220,7 +231,12 @@ class DashboardPermissions
         return $data;
     }
 
-    public function getApiDashboardPermissions(Dashboard $dashboard)
+    /**
+     * @param DashboardEntity $dashboard
+     *
+     * @return array
+     */
+    public function getApiDashboardPermissions(DashboardEntity $dashboard)
     {
         $permissions = $this->getDashboardPermissions($dashboard);
         $agents      = $this->getAllAgents();
@@ -250,7 +266,11 @@ class DashboardPermissions
         return $data;
     }
 
-    public function clonePermissions(Dashboard $dashboard, Dashboard $prototype)
+    /**
+     * @param DashboardEntity $dashboard
+     * @param DashboardEntity $prototype
+     */
+    public function clonePermissions(DashboardEntity $dashboard, DashboardEntity $prototype)
     {
         $reportDashboardPermissions = $this->getDashboardPermissions($prototype);
         foreach ($reportDashboardPermissions as $permission_prototype) {
@@ -263,17 +283,28 @@ class DashboardPermissions
         }
     }
 
-    public function isEditableDashboard(Dashboard $dashboard)
+    /**
+     * @param DashboardEntity $dashboard
+     *
+     * @return bool
+     */
+    public function isEditableDashboard(DashboardEntity $dashboard)
     {
         return !$dashboard->isDefault();
     }
 
+    /**
+     * @param $permission
+     */
     public function save($permission)
     {
         $this->em->persist($permission);
         $this->em->flush();
     }
 
+    /**
+     * @param Permission $permission
+     */
     public function delete(Permission $permission)
     {
         $this->em->remove($permission);
