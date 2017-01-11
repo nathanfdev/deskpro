@@ -88,6 +88,7 @@ class Date extends HandlerAbstract
             return [];
         }
 
+        $date->modify('midnight');
         $date = \Orb\Util\Dates::convertToUtcDateTime($date);
 
         return [
