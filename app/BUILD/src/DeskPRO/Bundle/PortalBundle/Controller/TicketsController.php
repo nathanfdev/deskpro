@@ -492,8 +492,7 @@ class TicketsController extends AbstractController
         }
         if (null !== $request->get('setrating', null)) {
             // email links use "setrating" to signify we should record the feedback on the GET request, and ask for a comment
-            $rating             = $request->get('setrating');
-            $set_rating_via_get = true;
+            $rating = $request->get('setrating');
         }
 
         if ($rating !== null) {
