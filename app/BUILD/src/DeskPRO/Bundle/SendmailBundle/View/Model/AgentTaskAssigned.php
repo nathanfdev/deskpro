@@ -28,7 +28,54 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-class AgentTaskAssigned extends TicketEmailType
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Task;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+
+class AgentTaskAssigned extends EmailBaseType
 {
+    /**
+     * Email recipient.
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\Task")
+     *
+     * @var Task
+     */
+    protected $task;
+
+    /**
+     * Person that perform the password reset.
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\Person")
+     *
+     * @var Person
+     */
+    protected $performer;
+
+    /**
+     * Link to agent interface.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $loginLink;
+
     protected static $templateFile = 'emails_agent:task_assigned.html.twig';
+
+    /**
+     * AgentTaskAssigned constructor.
+     *
+     * @param RouterInterface $router
+     * @param Task            $task
+     * @param Person          $performer
+     */
+    public function __construct(RouterInterface $router, Task $task, Person $performer)
+    {
+        $this->task      = $task;
+        $this->performer = $performer;
+        $this->loginLink = $router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
 }

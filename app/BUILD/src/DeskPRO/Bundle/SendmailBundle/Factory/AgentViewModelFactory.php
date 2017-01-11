@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Task;
 use DateTime;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AdminNoResetPassword;
@@ -45,6 +46,8 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewComment;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewFeedback;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewRegistration;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentPasswordResetAlert;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskAssigned;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskDueReminder;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcome;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcomeUsersource;
 use Symfony\Component\HttpFoundation\Request;
@@ -166,6 +169,28 @@ class AgentViewModelFactory
     public function createAgentPasswordResetAlertModel(Person $performer, $newPassword)
     {
         return new AgentPasswordResetAlert($this->router, $performer, $newPassword);
+    }
+
+    /**
+     * @param Person|Task $task
+     * @param Person      $performer
+     *
+     * @return AgentTaskAssigned
+     */
+    public function createAgentTaskAssignedModel(Task $task, Person $performer)
+    {
+        return new AgentTaskAssigned($this->router, $task, $performer);
+    }
+
+    /**
+     * @param Person|Task $task
+     * @param Person      $performer
+     *
+     * @return AgentTaskDueReminder
+     */
+    public function createAgentTaskDueReminderModel(Task $task, Person $performer)
+    {
+        return new AgentTaskDueReminder($this->router, $task, $performer);
     }
 
     /**

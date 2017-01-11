@@ -90,9 +90,18 @@ class TaskAssignNotification extends AbstractAgentNotification
             'performer'   => App::getCurrentPerson(),
             'notify_data' => ['notify_type' => 'tasks'],
         ]);
-        $this->sendEmailNotifications('DeskPRO:emails_agent:task-assigned.html.twig', [
-            'task'      => $this->task,
-            'performer' => App::getCurrentPerson(),
-        ]);
+        if (App::$container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            $viewModel = App::$container->get('email.agent_viewmodel_factory')
+                ->createAgentTaskAssignedModel($this->task, App::getCurrentPerson());
+            $this->sendNewEmailNotifications($viewModel);
+        } else {
+            $this->sendEmailNotifications(
+                'DeskPRO:emails_agent:task-assigned.html.twig',
+                [
+                    'task'      => $this->task,
+                    'performer' => App::getCurrentPerson(),
+                ]
+            );
+        }
     }
 }
