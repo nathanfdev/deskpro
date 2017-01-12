@@ -96,6 +96,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		var self = this;
 		var $scope = this.$scope = DeskPRO_Window.$scope.$new();
 
+		this.oldFields = null;
+
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
 			el.data('$ngControllerController', self);
 			$compile(el.contents())(self.$scope);
@@ -174,6 +176,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 	},
 
 	updateDisplay: function() {
+		var self = this;
 		var fields = [], reader = this.ticketReader;
 		var $scope = this.$scope;
 		if (window.DESKPRO_TICKET_DISPLAY) {
@@ -222,7 +225,72 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 		}
 
+		var newFields = [];
+		Object.keys($scope.fields).forEach(function(fieldId) {
+			if ($scope.fields[fieldId]) {
+				newFields.push(fieldId);
+			}
+		});
+
 		$scope.hidden = this.no_value_fields.length;
+
+		if (this.oldFields) {
+			this.oldFields.forEach(function(name) {
+				if (newFields.indexOf(name) !== -1) {
+					return;
+				}
+
+				$scope.edit_fields.push(name);
+				self.display.find('.item.'+name).each(function(i, el) {
+					var $el = $(el);
+					var defaultValue = $el.data('default-value');
+					$el.find('input[type=text], textarea, select').val(defaultValue);
+					$el.find('.with-select2').select2('val', defaultValue);
+					$el.find('input[type=radio]').each(function(i, field) {
+						var $field = $(field);
+						if ($field.val() === String(defaultValue)) {
+							$field.prop('checked', true);
+						} else {
+							$field.prop('checked', false);
+						}
+					});
+					$el.find('input[type=checkbox]').each(function(i, field) {
+						var $field = $(field);
+						if ($field.attr('name') && $field.attr('name').indexOf('[]') !== -1) {
+							var vals = defaultValue ? String(defaultValue).split(',') : [];
+							if (vals.indexOf(String($field.val())) !== -1) {
+								$field.prop('checked', true);
+							} else {
+								$field.prop('checked', false);
+							}
+						} else {
+							$field.prop('checked', defaultValue);
+						}
+					});
+				});
+			});
+		}
+
+		var changed = false;
+		if (!this.oldFields) {
+			changed = true;
+		} else if (this.oldFields.length !== newFields.length) {
+			changed = true;
+		} else {
+			for (i = 0; i < newFields.length; i++) {
+				if (newFields[i] !== this.oldFields[i]) {
+					changed = true;
+					break;
+				}
+			}
+		}
+
+		this.oldFields = newFields;
+
+		// recursive update fields if they were changed
+		if (changed) {
+			this.updateDisplay();
+		}
 	},
 
 	initFieldWidgets: function() {
