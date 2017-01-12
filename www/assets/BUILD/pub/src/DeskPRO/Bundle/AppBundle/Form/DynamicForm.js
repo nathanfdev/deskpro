@@ -127,6 +127,7 @@ export class DynamicForm {
     this.ee.emit('preFieldsUpdated', evData);
     if (evData.cancel) return;
 
+    const oldFields = this.currentFields;
     this.currentFields = this.resolveFields(evData.fields);
 
     console.log('[DynamicForm] <setFieldSet> Fields: %o', fields);
@@ -146,6 +147,21 @@ export class DynamicForm {
         }
         $el.detach().appendTo(insertPoint);
       }
+    });
+
+    // unset values of hidden fields
+    oldFields.forEach((name) => {
+      if (this.currentFields.indexOf(name) !== -1) {
+        return;
+      }
+
+      const $el = this.fields.get(name);
+      if (!$el) {
+        console.warn('Unknown field: %s', name);
+      }
+
+      $el.find('input[type=text], textarea, select').val('').trigger('change');
+      $el.find('input[type=checkbox]').attr('checked', false).trigger('change');
     });
 
     evData = { inst: this };
