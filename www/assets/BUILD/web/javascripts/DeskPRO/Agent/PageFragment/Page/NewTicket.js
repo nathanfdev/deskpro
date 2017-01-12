@@ -257,9 +257,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.recordSnippetUse = recordSnippetUse;
 
 		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
+		this.oldFields = null;
+
 		self._updateFields = function() {
 			$('.ticket-field', self.getEl('fields_container')).removeClass('item-on').hide();
 			var fieldDisplay = fieldDisplayFetch.getFields(depSel.val());
+			var newFields = [];
 
 			Object.each(fieldDisplay, function(fields, section) {
 				Array.each(fields, function(f) {
@@ -276,16 +279,74 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						classname = f.field_type;
 					}
 
+					newFields.push(classname);
 					$('.ticket-field.' + classname, self.wrapper).not('.error-message').detach().appendTo(self.getEl('fields_container')).show().addClass('item-on');
 				});
 			});
 
 			var depId = depSel.val();
 
+			if (self.oldFields) {
+				self.oldFields.forEach(function(name) {
+					if (newFields.indexOf(name) !== -1) {
+						return;
+					}
+
+					$(self.wrapper).find('.ticket-field.'+name).not('.item-on').each(function(i, el) {
+						var $el = $(el);
+						var defaultValue = $el.data('default-value');
+						$el.find('input[type=text], textarea, select').val(defaultValue);
+						$el.find('.with-select2').select2('val', defaultValue);
+						$el.find('input[type=radio]').each(function(i, field) {
+							var $field = $(field);
+							if ($field.val() === String(defaultValue)) {
+								$field.prop('checked', true);
+							} else {
+								$field.prop('checked', false);
+							}
+						});
+						$el.find('input[type=checkbox]').each(function(i, field) {
+							var $field = $(field);
+							if ($field.attr('name') && $field.attr('name').indexOf('[]') !== -1) {
+								var vals = defaultValue ? String(defaultValue).split(',') : [];
+								if (vals.indexOf(String($field.val())) !== -1) {
+									$field.prop('checked', true);
+								} else {
+									$field.prop('checked', false);
+								}
+							} else {
+								$field.prop('checked', defaultValue);
+							}
+						});
+					});
+				});
+			}
+
 			self.getEl('fields_container').find('tbody').removeClass('last').filter(':visible').last().addClass('last');
       self.getEl('fields_container').find('select').dpMultiLevelSelect();
 
 			self.updateUi();
+
+			var changed = false;
+			if (!self.oldFields) {
+				changed = true;
+			} else if (self.oldFields.length !== newFields.length) {
+				changed = true;
+			} else {
+				for (var i = 0; i < newFields.length; i++) {
+					if (newFields[i] !== self.oldFields[i]) {
+						changed = true;
+						break;
+					}
+				}
+			}
+
+			self.oldFields = newFields;
+
+			// recursive update fields if they were changed
+			if (changed) {
+				self._updateFields();
+			}
 		};
 
 		depSel.on('change', function(ev) {
