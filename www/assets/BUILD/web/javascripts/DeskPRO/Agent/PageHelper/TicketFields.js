@@ -232,44 +232,52 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 		});
 
-		$scope.hidden = this.no_value_fields.length;
-
-		if (this.oldFields) {
-			this.oldFields.forEach(function(name) {
-				if (newFields.indexOf(name) !== -1) {
-					return;
-				}
-
-				$scope.edit_fields.push(name);
-				self.display.find('.item.'+name).each(function(i, el) {
-					var $el = $(el);
-					var defaultValue = $el.data('default-value');
-					$el.find('input[type=text], textarea, select').val(defaultValue);
-					$el.find('.with-select2').select2('val', defaultValue);
-					$el.find('input[type=radio]').each(function(i, field) {
-						var $field = $(field);
-						if ($field.val() === String(defaultValue)) {
+		var unsetField = function(name, allowDefaultValue) {
+			$scope.edit_fields.push(name);
+			self.display.find('.item.'+name).each(function(i, el) {
+				var $el = $(el);
+				var defaultValue = allowDefaultValue ? $el.data('default-value') : '';
+				$el.find('input[type=text], textarea, select').val(defaultValue);
+				$el.find('.with-select2').select2('val', defaultValue);
+				$el.find('input[type=radio]').each(function(i, field) {
+					var $field = $(field);
+					if ($field.val() === String(defaultValue)) {
+						$field.prop('checked', true);
+					} else {
+						$field.prop('checked', false);
+					}
+				});
+				$el.find('input[type=checkbox]').each(function(i, field) {
+					var $field = $(field);
+					if ($field.attr('name') && $field.attr('name').indexOf('[]') !== -1) {
+						var vals = defaultValue ? String(defaultValue).split(',') : [];
+						if (vals.indexOf(String($field.val())) !== -1) {
 							$field.prop('checked', true);
 						} else {
 							$field.prop('checked', false);
 						}
-					});
-					$el.find('input[type=checkbox]').each(function(i, field) {
-						var $field = $(field);
-						if ($field.attr('name') && $field.attr('name').indexOf('[]') !== -1) {
-							var vals = defaultValue ? String(defaultValue).split(',') : [];
-							if (vals.indexOf(String($field.val())) !== -1) {
-								$field.prop('checked', true);
-							} else {
-								$field.prop('checked', false);
-							}
-						} else {
-							$field.prop('checked', defaultValue);
-						}
-					});
+					} else {
+						$field.prop('checked', defaultValue);
+					}
 				});
 			});
+		};
+
+		$scope.hidden = this.no_value_fields.length;
+
+		if (this.oldFields) {
+			this.oldFields.forEach(function(name) {
+				if (newFields.indexOf(name) === -1) {
+					unsetField(name, false);
+				}
+			});
 		}
+
+		newFields.forEach(function(name) {
+			if (self.oldFields && self.oldFields.indexOf(name) === -1) {
+				unsetField(name, true);
+			}
+		});
 
 		var changed = false;
 		if (!this.oldFields) {
