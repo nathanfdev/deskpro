@@ -109,6 +109,9 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
         }
 
         $post = $this->in->getAll('req');
+        if (empty($post['title'])) {
+            return $this->createApiErrorResponse('validation_error', 'Empty title');
+        }
 
         $helper = new CustomFieldHelper($this);
         $helper->saveFormToField($field, $post);
