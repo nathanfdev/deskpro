@@ -100,6 +100,5 @@ class AddAgentNote extends AbstractContainerAwareAction implements ActionInterfa
 
         $ticket->addMessage($message);
         $em->persist($message);
-        $em->flush($message);
     }
 }
