@@ -38,8 +38,37 @@ class Build1488459205 extends AbstractBuild
           'SendUserEmail'         => 'SendUserLegacyEmail',
           'SendSpecificUserEmail' => 'SendSpecificUserLegacyEmail',
         ];
-        foreach ($emailTriggers as $oldClass => $newClass) {
-            $this->execDbQuery('default', "UPDATE `ticket_triggers` SET `actions` = REPLACE(`actions`, '$oldClass', '$newClass')");
+
+        $triggers      = $this->getDbConnection()->executeQuery('SELECT `id`,`actions` FROM `ticket_triggers`', []);
+        $templatesStmt = $this->getDbConnection()->executeQuery('SELECT `name` FROM `templates`', []);
+        $templates     = [];
+        foreach ($templatesStmt as $template) {
+            $templates[] = $template['name'];
+        }
+
+        foreach ($triggers as $trigger) {
+            $id      = $trigger['id'];
+            $changed = false;
+            try {
+                $actions = json_decode($trigger['actions'], true);
+            } catch (\Exception $e) {
+                $this->out('Error decoding json from trigger #'.$id);
+                continue;
+            }
+            foreach ($actions['@DATA']['actions'] as $actionId => $action) {
+                if ($action['type'] && isset($emailTriggers[$action['type']])) {
+                    if (in_array($action['options']['template'], $templates)) {
+                        $actions['@DATA']['actions'][$actionId]['type'] = $emailTriggers[$action['type']];
+                        $changed                                        = true;
+                    }
+                }
+            }
+            if ($changed) {
+                $this->getDbConnection()->executeQuery(
+                    'UPDATE `ticket_triggers` SET `actions` = ? WHERE `id` = ?',
+                    [json_encode($actions), $id]
+                );
+            }
         }
     }
 }
