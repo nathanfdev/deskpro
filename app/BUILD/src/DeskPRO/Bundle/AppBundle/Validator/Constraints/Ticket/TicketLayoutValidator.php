@@ -163,25 +163,25 @@ class TicketLayoutValidator extends ConstraintValidator
                     );
                     break;
                 case FormFields::TICKET_FIELD:
-                    $this->validateCustomField(
-                        $constraint,
-                        $value,
-                        $this->field_manager->getCustomTicketFieldById($field->getFieldId())
-                    );
+                    $def = $this->field_manager->getCustomTicketFieldById($field->getFieldId());
+                    if ($def) {
+                        $this->validateCustomField($constraint, $value, $def);
+                    }
+
                     break;
                 case FormFields::USER_FIELD:
-                    $this->validateCustomField(
-                        $constraint,
-                        $value,
-                        $this->field_manager->getCustomPersonFieldById($field->getFieldId())
-                    );
+                    $def = $this->field_manager->getCustomPersonFieldById($field->getFieldId());
+                    if ($def) {
+                        $this->validateCustomField($constraint, $value, $def);
+                    }
+
                     break;
                 case FormFields::ORG_FIELD:
-                    $this->validateCustomField(
-                        $constraint,
-                        $value,
-                        $this->field_manager->getCustomOrganizationFieldById($field->getFieldId())
-                    );
+                    $def = $this->field_manager->getCustomOrganizationFieldById($field->getFieldId());
+                    if ($def) {
+                        $this->validateCustomField($constraint, $value, $def);
+                    }
+
                     break;
             }
         }
