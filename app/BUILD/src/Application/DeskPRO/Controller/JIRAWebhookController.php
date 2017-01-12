@@ -57,14 +57,12 @@ class JIRAWebhookController extends Controller
         /** @var JIRA $js */
         $js = $this->get(JIRA::NAME);
         if (!$js->isEnabled()) {
-            $response->setStatusCode(Response::HTTP_NOT_FOUND);
             $response->setContent('JIRA app is not enabled');
 
             return $response;
         }
 
         if (!$json = json_decode($content, true)) {
-            $response->setStatusCode(Response::HTTP_BAD_REQUEST);
             $response->setContent('Failed to decode JSON payload');
 
             return $response;
@@ -74,7 +72,6 @@ class JIRAWebhookController extends Controller
         if ($handler->handle($json)) {
             $response->setContent('OK');
         } else {
-            $response->setStatusCode(Response::HTTP_BAD_REQUEST);
             $response->setContent('FAIL');
         }
 

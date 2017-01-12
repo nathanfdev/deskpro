@@ -99,6 +99,5 @@ class AddAgentReply extends AbstractContainerAwareAction implements ActionInterf
 
         $ticket->addMessage($message);
         $em->persist($message);
-        $em->flush($message);
     }
 }
