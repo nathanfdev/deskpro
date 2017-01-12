@@ -38,6 +38,7 @@ export class DynamicForm {
 
     this.fields = new Map();
     this.currentFields = [];
+    this.defaultValues = new Map();
 
     this.$formEl.find('.' + this.widgetClassName).each((x, el) => {
       el = $(el);
@@ -48,12 +49,18 @@ export class DynamicForm {
       }
     });
 
-    this.$tplEl.find('.' + this.widgetClassName).each((x, el) => {
-      el = $(el);
-      const name = el.data('field');
-      if (name && !el.hasClass('as-static') && !this.fields.has(name)) {
-        this.fields.set(name, el);
+    this.$tplEl.find(`.${this.widgetClassName}`).each((x, el) => {
+      const $el = $(el);
+      const name = $el.data('field');
+
+      if (name && !$el.hasClass('as-static') && !this.fields.has(name)) {
+        this.fields.set(name, $el);
       }
+    });
+
+    this.$tplEl.find('input, textarea, select').each((i, field) => {
+      const $field = $(field);
+      this.defaultValues.set($field.attr('id'), $field.is(':checkbox') ? $field.prop('checked') : $field.val());
     });
 
     if (options.onInit) {
@@ -160,8 +167,16 @@ export class DynamicForm {
         console.warn('Unknown field: %s', name);
       }
 
-      $el.find('input[type=text], textarea, select').val('').trigger('change');
-      $el.find('input[type=checkbox]').attr('checked', false).trigger('change');
+      $el.find('input, textarea, select').each((i, field) => {
+        const $field = $(field);
+        const defaultValue = this.defaultValues.get($field.attr('id'));
+
+        if ($field.is(':checkbox')) {
+          $field.prop('checked', defaultValue).trigger('change');
+        } else {
+          $field.val(defaultValue).trigger('change');
+        }
+      });
     });
 
     evData = { inst: this };
