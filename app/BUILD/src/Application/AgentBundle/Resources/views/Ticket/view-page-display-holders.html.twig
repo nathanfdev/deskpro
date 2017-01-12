@@ -239,6 +239,7 @@
 		   data-field-type="ticket_field"
 		   data-item-id="{{f.id}}"
 		   data-custom-field-handler="{{f.field_handler}}"
+		   data-default-value="{{f.field_def.getStringDefaultValue()}}"
 		   ng-show="fields['ticket_field_{{ f.id }}']"
 	>
 		<tr class="mode-display" ng-show="!isEditMode('ticket_field_{{ f.id }}')" ng-click="editField($event, 'ticket_field_{{ f.id }}')">
@@ -267,6 +268,7 @@
 		   data-field-type="person_field"
 		   data-item-id="{{f.id}}"
 		   data-custom-field-handler="{{f.field_handler}}"
+		   data-default-value="{{ f.field_def.getStringDefaultValue() }}"
 		   ng-show="fields['person_field_{{ f.id }}']"
 	>
     <tr class="mode-display" ng-show="!isEditMode('person_field_{{ f.id }}')" ng-click="editField($event, 'person_field_{{ f.id }}')">
@@ -295,6 +297,7 @@
 		   data-field-type="org_field"
 		   data-item-id="{{f.id}}"
 		   data-custom-field-handler="{{f.field_handler}}"
+		   data-default-value="{{ f.field_def.getStringDefaultValue() }}"
 		   ng-show="fields['org_field_{{ f.id }}']"
 	>
     <tr class="mode-display" ng-show="!isEditMode('org_field_{{ f.id }}')" ng-click="editField($event, 'org_field_{{ f.id }}')">
