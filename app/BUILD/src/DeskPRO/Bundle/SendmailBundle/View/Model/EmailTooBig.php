@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class EmailTooBig extends EmailBaseType
 {
-    protected static $templateFile = 'emails_user:email_too_big.html.twig';
+    protected $templateFile = 'emails_user:email_too_big.html.twig';
 
     public function __construct()
     {

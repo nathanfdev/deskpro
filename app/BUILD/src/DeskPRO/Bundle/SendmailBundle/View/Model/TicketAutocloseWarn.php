@@ -30,5 +30,5 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class TicketAutocloseWarn extends TicketEmailType
 {
-    protected static $templateFile = 'emails_user:ticket_autoclose_warn.html.twig';
+    protected $templateFile = 'emails_user:ticket_autoclose_warn.html.twig';
 }

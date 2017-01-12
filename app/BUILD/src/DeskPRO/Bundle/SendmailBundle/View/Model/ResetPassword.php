@@ -41,7 +41,7 @@ class ResetPassword extends EmailBaseType
      */
     protected $resetUrl;
 
-    protected static $templateFile = 'emails_user:reset_password.html.twig';
+    protected $templateFile = 'emails_user:reset_password.html.twig';
 
     /**
      * ResetPassword constructor.

@@ -44,7 +44,7 @@ class TicketReplyByAgent extends TicketEmailType
      */
     protected $reply;
 
-    protected static $templateFile = 'emails_user:ticket_reply_by_agent.html.twig';
+    protected $templateFile = 'emails_user:ticket_reply_by_agent.html.twig';
 
     /**
      * TicketReplyByAgent constructor.

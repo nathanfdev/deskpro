@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class AgentErrorInvalidForward extends EmailBaseType
 {
-    protected static $templateFile = 'emails_agent:error_invalid_forward.html.twig';
+    protected $templateFile = 'emails_agent:error_invalid_forward.html.twig';
 
     public function __construct()
     {

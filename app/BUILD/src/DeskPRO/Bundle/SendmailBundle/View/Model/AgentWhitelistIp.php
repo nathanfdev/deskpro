@@ -39,7 +39,7 @@ class AgentWhitelistIp extends EmailBaseType
      */
     protected $url;
 
-    protected static $templateFile = 'emails_agent:whitelist_ip.html.twig';
+    protected $templateFile = 'emails_agent:whitelist_ip.html.twig';
 
     public function __construct($url)
     {

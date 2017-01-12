@@ -53,7 +53,7 @@ class FeedbackSubscription extends UserEmailBaseType
      */
     protected $unsubscribeUrl;
 
-    protected static $templateFile = 'emails_user:feedback_subscription.html.twig';
+    protected $templateFile = 'emails_user:feedback_subscription.html.twig';
 
     /**
      * FeedbackSubscription constructor.

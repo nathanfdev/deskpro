@@ -41,7 +41,7 @@ class NewEmailValidatePrimary extends EmailBaseType
      */
     protected $verifyUrl;
 
-    protected static $templateFile = 'emails_user:new_email_validate_primary.html.twig';
+    protected $templateFile = 'emails_user:new_email_validate_primary.html.twig';
 
     /**
      * NewEmailValidatePrimary constructor.

@@ -30,5 +30,5 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class RegisterWelcome extends UserEmailBaseType
 {
-    protected static $templateFile = 'emails_user:register_welcome.html.twig';
+    protected $templateFile = 'emails_user:register_welcome.html.twig';
 }

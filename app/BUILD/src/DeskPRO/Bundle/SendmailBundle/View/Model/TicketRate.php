@@ -30,5 +30,5 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class TicketRate extends TicketEmailType
 {
-    protected static $templateFile = 'emails_user:ticket_rate.html.twig';
+    protected $templateFile = 'emails_user:ticket_rate.html.twig';
 }

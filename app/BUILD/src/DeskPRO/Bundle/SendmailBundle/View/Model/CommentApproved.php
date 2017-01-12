@@ -30,5 +30,5 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class CommentApproved extends CommentEmailType
 {
-    protected static $templateFile = 'emails_user:comment_approved.html.twig';
+    protected $templateFile = 'emails_user:comment_approved.html.twig';
 }

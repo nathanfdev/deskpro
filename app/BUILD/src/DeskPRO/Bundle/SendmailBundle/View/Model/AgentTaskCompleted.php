@@ -30,5 +30,5 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class AgentTaskCompleted extends TicketEmailType
 {
-    protected static $templateFile = 'emails_agent:task_completed.html.twig';
+    protected $templateFile = 'emails_agent:task_completed.html.twig';
 }

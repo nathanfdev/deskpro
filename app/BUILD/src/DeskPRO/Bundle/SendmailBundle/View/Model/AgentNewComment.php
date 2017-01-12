@@ -72,7 +72,7 @@ class AgentNewComment extends EmailBaseType
      */
     protected $loginLink;
 
-    protected static $templateFile = 'emails_agent:new_comment.html.twig';
+    protected $templateFile = 'emails_agent:new_comment.html.twig';
 
     /**
      * AgentNewComment constructor.

@@ -53,7 +53,7 @@ class AgentWelcomeUsersource extends EmailBaseType
      */
     protected $agentPassword;
 
-    protected static $templateFile = 'emails_agent:agent_welcome_usersource.html.twig';
+    protected $templateFile = 'emails_agent:agent_welcome_usersource.html.twig';
 
     /**
      * AgentWelcome constructor.

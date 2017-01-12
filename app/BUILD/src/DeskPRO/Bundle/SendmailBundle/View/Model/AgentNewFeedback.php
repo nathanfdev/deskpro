@@ -63,7 +63,7 @@ class AgentNewFeedback extends EmailBaseType
      */
     protected $loginLink;
 
-    protected static $templateFile = 'emails_agent:new_feedback.html.twig';
+    protected $templateFile = 'emails_agent:new_feedback.html.twig';
 
     public function __construct(RouterInterface $router, Feedback $feedback)
     {

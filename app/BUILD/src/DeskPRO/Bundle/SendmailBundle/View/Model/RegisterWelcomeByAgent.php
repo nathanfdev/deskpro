@@ -42,7 +42,7 @@ class RegisterWelcomeByAgent extends UserEmailBaseType
      */
     protected $newPassword;
 
-    protected static $templateFile = 'emails_user:register_welcome_by_agent.html.twig';
+    protected $templateFile = 'emails_user:register_welcome_by_agent.html.twig';
 
     public function __construct(RouterInterface $router, $newPassword)
     {

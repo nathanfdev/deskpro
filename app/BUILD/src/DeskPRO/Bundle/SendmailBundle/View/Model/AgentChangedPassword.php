@@ -52,7 +52,7 @@ class AgentChangedPassword extends EmailBaseType
      */
     protected $newPassword;
 
-    protected static $templateFile = 'emails_user:agent_changed_password.html.twig';
+    protected $templateFile = 'emails_user:agent_changed_password.html.twig';
 
     public function __construct(RouterInterface $router, $newPassword)
     {

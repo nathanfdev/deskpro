@@ -41,7 +41,7 @@ class SetPassword extends EmailBaseType
      */
     protected $resetUrl;
 
-    protected static $templateFile = 'emails_user:set_password.html.twig';
+    protected $templateFile = 'emails_user:set_password.html.twig';
 
     /**
      * SetPassword constructor.

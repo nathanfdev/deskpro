@@ -88,7 +88,7 @@ class AgentLoginAlert extends EmailBaseType
      */
     protected $success;
 
-    protected static $templateFile = 'emails_agent:login_alert.html.twig';
+    protected $templateFile = 'emails_agent:login_alert.html.twig';
 
     /**
      * LoginAlert constructor.

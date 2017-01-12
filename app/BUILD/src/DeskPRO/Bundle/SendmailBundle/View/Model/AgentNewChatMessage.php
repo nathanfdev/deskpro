@@ -37,7 +37,7 @@ class AgentNewChatMessage extends EmailBaseType
     /**
      * The chat message.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\ChatMessage")
+     * @JMS\Type("Application\DeskPRO\Entity\ChatMessage")
      *
      * @var ChatMessage
      */
@@ -46,13 +46,13 @@ class AgentNewChatMessage extends EmailBaseType
     /**
      * The author of the message.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+     * @JMS\Type("Application\DeskPRO\Entity\Person")
      *
      * @var Person
      */
     protected $author;
 
-    protected static $templateFile = 'emails_agent:new_agent_chat_message.html.twig';
+    protected $templateFile = 'emails_agent:new_agent_chat_message.html.twig';
 
     public function __construct(ChatMessage $chatMessage)
     {

@@ -30,5 +30,5 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class CommentDeleted extends CommentEmailType
 {
-    protected static $templateFile = 'emails_user:comment_deleted.html.twig';
+    protected $templateFile = 'emails_user:comment_deleted.html.twig';
 }

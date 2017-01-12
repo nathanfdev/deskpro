@@ -62,7 +62,7 @@ class DownloadSubscription extends UserEmailBaseType
      */
     protected $unsubscribeUrl;
 
-    protected static $templateFile = 'emails_user:download_subscription.html.twig';
+    protected $templateFile = 'emails_user:download_subscription.html.twig';
 
     /**
      * DownloadSubscription constructor.

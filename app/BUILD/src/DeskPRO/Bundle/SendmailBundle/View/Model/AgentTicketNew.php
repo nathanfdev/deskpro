@@ -30,5 +30,5 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class AgentTicketNew extends TicketEmailType
 {
-    protected static $templateFile = 'emails_agent:ticket_new.html.twig';
+    protected $templateFile = 'emails_agent:ticket_new.html.twig';
 }

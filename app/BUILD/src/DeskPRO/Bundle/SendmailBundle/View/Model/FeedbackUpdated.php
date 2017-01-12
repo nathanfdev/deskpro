@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class FeedbackUpdated extends EmailBaseType
 {
-    protected static $templateFile = 'emails_user:feedback_updated.html.twig';
+    protected $templateFile = 'emails_user:feedback_updated.html.twig';
 
     public function __construct()
     {

@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class NewTicketRegClosed extends EmailBaseType
 {
-    protected static $templateFile = 'emails_user:new_ticket_reg_closed.html.twig';
+    protected $templateFile = 'emails_user:new_ticket_reg_closed.html.twig';
 
     public function __construct()
     {

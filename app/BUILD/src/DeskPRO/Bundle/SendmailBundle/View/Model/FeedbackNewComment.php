@@ -37,7 +37,7 @@ class FeedbackNewComment extends EmailBaseType
     /**
      * The feedback.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback")
+     * @JMS\Type("Application\DeskPRO\Entity\Feedback")
      *
      * @var Feedback
      */
@@ -52,7 +52,7 @@ class FeedbackNewComment extends EmailBaseType
      */
     protected $feedbackLink;
 
-    protected static $templateFile = 'emails_user:feedback_new_comment.html.twig';
+    protected $templateFile = 'emails_user:feedback_new_comment.html.twig';
 
     /**
      * FeedbackNewComment constructor.

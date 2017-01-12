@@ -29,7 +29,9 @@
 namespace DeskPRO\Bundle\SendmailBundle\Sender;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\EmailBundle\SwiftMailer\Mailer;
+use Application\EmailBundle\SwiftMailer\Message\Message;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use Doctrine\ORM\EntityManager;
@@ -91,15 +93,19 @@ class EmailSender
 
     /**
      * @param EmailBaseType $model
-     * @param array         $args
+     * @param $args
      *
      * @throws \Exception
+     *
+     * @return Message
      */
-    public function send(EmailBaseType $model, $args)
+    public function prepareMessage(EmailBaseType $model, $args)
     {
         $message = $this->getMailer()->createMessage();
         if (is_string($args['to'])) {
-            $recipient = $this->getEntityManager()->getRepository(Person::class)->findOneByEmail($args['to']);
+            /** @var PersonRepository $personRepository */
+            $personRepository = $this->getEntityManager()->getRepository(Person::class);
+            $recipient        = $personRepository->findOneByEmail($args['to']);
         } elseif (is_a($args['to'], Person::class)) {
             $recipient = $args['to'];
         } else {
@@ -122,6 +128,19 @@ class EmailSender
                 $message->attach($attach);
             }
         }
+
+        return $message;
+    }
+
+    /**
+     * @param EmailBaseType $model
+     * @param array         $args
+     *
+     * @throws \Exception
+     */
+    public function send(EmailBaseType $model, $args)
+    {
+        $message = $this->prepareMessage($model, $args);
         $this->mailer->send($message);
     }
 }

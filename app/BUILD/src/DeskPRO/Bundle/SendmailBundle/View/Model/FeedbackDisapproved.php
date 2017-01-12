@@ -37,7 +37,7 @@ class FeedbackDisapproved extends EmailBaseType
     /**
      * The feedback that has been approved.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback")
+     * @JMS\Type("Application\DeskPRO\Entity\Feedback")
      *
      * @var Feedback
      */
@@ -46,7 +46,7 @@ class FeedbackDisapproved extends EmailBaseType
     /**
      * The agent that approved the feedback.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+     * @JMS\Type("Application\DeskPRO\Entity\Person")
      *
      * @var Person
      */
@@ -61,7 +61,7 @@ class FeedbackDisapproved extends EmailBaseType
      */
     protected $reason;
 
-    protected static $templateFile = 'emails_user:feedback_disapproved.html.twig';
+    protected $templateFile = 'emails_user:feedback_disapproved.html.twig';
 
     /**
      * FeedbackDisapproved constructor.

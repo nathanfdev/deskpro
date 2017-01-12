@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class AgentErrorMarkerMissing extends EmailBaseType
 {
-    protected static $templateFile = 'emails_agent:error_marker_missing.html.twig';
+    protected $templateFile = 'emails_agent:error_marker_missing.html.twig';
 
     public function __construct()
     {

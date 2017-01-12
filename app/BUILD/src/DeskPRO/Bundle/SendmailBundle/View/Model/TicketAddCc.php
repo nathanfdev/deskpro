@@ -30,5 +30,5 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class TicketAddCc extends TicketEmailType
 {
-    protected static $templateFile = 'emails_user:ticket_add_cc.html.twig';
+    protected $templateFile = 'emails_user:ticket_add_cc.html.twig';
 }

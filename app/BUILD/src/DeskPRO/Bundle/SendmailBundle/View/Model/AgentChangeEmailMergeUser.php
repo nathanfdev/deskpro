@@ -48,7 +48,7 @@ class AgentChangeEmailMergeUser extends EmailBaseType
      */
     protected $newEmail;
 
-    protected static $templateFile = 'emails_agent:agent_changeemail_mergeuser.html.twig';
+    protected $templateFile = 'emails_agent:agent_changeemail_mergeuser.html.twig';
 
     public function __construct($oldEmail, $newEmail)
     {

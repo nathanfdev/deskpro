@@ -30,5 +30,5 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class NewReplyRejectResolved extends TicketEmailType
 {
-    protected static $templateFile = 'emails_user:new_reply_reject_resolved.html.twig';
+    protected $templateFile = 'emails_user:new_reply_reject_resolved.html.twig';
 }

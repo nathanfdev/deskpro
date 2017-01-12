@@ -43,7 +43,7 @@ class TicketAwaitingWarn extends TicketEmailType
      */
     protected $ticketResolveLink;
 
-    protected static $templateFile = 'emails_user:ticket_awaiting_warn.html.twig';
+    protected $templateFile = 'emails_user:ticket_awaiting_warn.html.twig';
 
     public function __construct(ObjectRouter $router, Ticket $ticket)
     {

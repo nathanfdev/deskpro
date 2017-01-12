@@ -308,6 +308,8 @@ class TicketEmailBuilder
     public function disableUserCc()
     {
         $this->options->set('cc_users', false);
+
+        return $this;
     }
 
     /**

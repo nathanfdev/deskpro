@@ -33,7 +33,7 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PortalPageDisplay;
-use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
@@ -261,19 +261,12 @@ class TemplateController extends BaseController
         $viewModel = $request->request->get('template');
         $group     = $request->request->get('group');
         $factory   = $this->get('email.'.$group.'_viewmodel_factory');
-//        $ticket    = $this->getRepository(Ticket::class)->findOneBy([]);
-        $ticket = $this->getRepository(Download::class)->findBy([]);
+        $ticket    = $this->getRepository(Task::class)->findOneBy([]);
+//        $ticket = $this->getRepository(Download::class)->findBy([]);
         $action = 'create'.$viewModel.'Model';
         if (!is_callable([$factory, $action])) {
             throw $this->createNotFoundException('Missing method '.$action.' in factory');
         }
-        /** @var EmailBaseType $model */
-        $model = $factory->$action(
-            $request,
-            new \DateTime(),
-            true
-        );
-
         $recipient = new Person();
         $recipient->setFirstName('FirstName');
         $recipient->setLastName('LastName');
@@ -281,6 +274,12 @@ class TemplateController extends BaseController
         $email->setEmail('test@example.com');
         $recipient->setPrimaryEmail($email);
         $recipient->setPassword('Password1234');
+        /** @var EmailBaseType $model */
+        $model = $factory->$action(
+            $ticket,
+            $recipient
+        );
+
         $model->setRecipient($recipient);
 
         return new View($renderer->render($tplName, $model));

@@ -62,7 +62,7 @@ class AgentPasswordResetAlert extends EmailBaseType
      */
     protected $loginLink;
 
-    protected static $templateFile = 'emails_agent:password_reset_alert.html.twig';
+    protected $templateFile = 'emails_agent:password_reset_alert.html.twig';
 
     public function __construct(RouterInterface $router, Person $performer, $newPassword)
     {

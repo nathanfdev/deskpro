@@ -62,7 +62,7 @@ class KbSubscription extends UserEmailBaseType
      */
     protected $unsubscribeUrl;
 
-    protected static $templateFile = 'emails_user:kb_subscription.html.twig';
+    protected $templateFile = 'emails_user:kb_subscription.html.twig';
 
     /**
      * KbSubscription constructor.

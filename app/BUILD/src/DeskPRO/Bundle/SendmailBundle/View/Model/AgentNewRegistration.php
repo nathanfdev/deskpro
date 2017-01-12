@@ -43,7 +43,7 @@ class AgentNewRegistration extends EmailBaseType
      */
     protected $person;
 
-    protected static $templateFile = 'emails_agent:new_registration.html.twig';
+    protected $templateFile = 'emails_agent:new_registration.html.twig';
 
     public function __construct(RouterInterface $router, Person $person)
     {

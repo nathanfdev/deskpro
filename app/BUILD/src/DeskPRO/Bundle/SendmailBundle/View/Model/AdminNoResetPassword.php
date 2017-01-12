@@ -30,5 +30,5 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class AdminNoResetPassword extends EmailBaseType
 {
-    protected static $templateFile = 'emails_agent:admin_noreset_password.html.html.twig';
+    protected $templateFile = 'emails_agent:admin_noreset_password.html.html.twig';
 }

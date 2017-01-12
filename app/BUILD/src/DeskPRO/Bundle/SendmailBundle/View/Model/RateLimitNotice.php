@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class RateLimitNotice extends EmailBaseType
 {
-    protected static $templateFile = 'emails_user:rate_limit_notice.html.twig';
+    protected $templateFile = 'emails_user:rate_limit_notice.html.twig';
 
     public function __construct()
     {

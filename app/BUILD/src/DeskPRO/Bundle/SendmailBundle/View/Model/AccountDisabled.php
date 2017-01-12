@@ -30,5 +30,5 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class AccountDisabled extends EmailBaseType
 {
-    protected static $templateFile = 'emails_user:account_disabled.html.twig';
+    protected $templateFile = 'emails_user:account_disabled.html.twig';
 }

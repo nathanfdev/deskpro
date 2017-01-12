@@ -63,7 +63,7 @@ class NewsSubscription extends UserEmailBaseType
      */
     protected $unsubscribeUrl;
 
-    protected static $templateFile = 'emails_user:news_subscription.html.twig';
+    protected $templateFile = 'emails_user:news_subscription.html.twig';
 
     /**
      * NewsSubscription constructor.

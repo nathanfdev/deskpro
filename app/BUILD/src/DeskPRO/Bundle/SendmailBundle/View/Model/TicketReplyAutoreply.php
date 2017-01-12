@@ -30,5 +30,5 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class TicketReplyAutoreply extends TicketEmailType
 {
-    protected static $templateFile = 'emails_user:ticket_reply_autoreply.html.twig';
+    protected $templateFile = 'emails_user:ticket_reply_autoreply.html.twig';
 }

@@ -37,7 +37,7 @@ abstract class TicketEmailType extends EmailBaseType
     /**
      * The ticket.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket")
+     * @JMS\Type("Application\DeskPRO\Entity\Ticket")
      *
      * @var Ticket
      */

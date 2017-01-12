@@ -37,7 +37,7 @@ class ChatTranscript extends EmailBaseType
     /**
      * The chat conversation.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\Chat")
+     * @JMS\Type("Application\DeskPRO\Entity\ChatConversation")
      *
      * @var ChatConversation
      */
@@ -46,13 +46,13 @@ class ChatTranscript extends EmailBaseType
     /**
      * The chat messages.
      *
-     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\ChatMessage>")
+     * @JMS\Type("array<Application\DeskPRO\Entity\ChatMessage>")
      *
      * @var ChatMessage[]
      */
     protected $convoMessages;
 
-    protected static $templateFile = 'emails_user:chat_transcript.html.twig';
+    protected $templateFile = 'emails_user:chat_transcript.html.twig';
 
     /**
      * ChatTranscript constructor.

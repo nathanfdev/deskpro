@@ -63,7 +63,7 @@ class AgentTaskAssigned extends EmailBaseType
      */
     protected $loginLink;
 
-    protected static $templateFile = 'emails_agent:task_assigned.html.twig';
+    protected $templateFile = 'emails_agent:task_assigned.html.twig';
 
     /**
      * AgentTaskAssigned constructor.

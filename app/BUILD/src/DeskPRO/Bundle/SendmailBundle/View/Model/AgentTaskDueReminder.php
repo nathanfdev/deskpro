@@ -63,7 +63,7 @@ class AgentTaskDueReminder extends EmailBaseType
      */
     protected $loginLink;
 
-    protected static $templateFile = 'emails_agent:task_due_reminder.html.twig';
+    protected $templateFile = 'emails_agent:task_due_reminder.html.twig';
 
     /**
      * AgentTaskDueReminder constructor.

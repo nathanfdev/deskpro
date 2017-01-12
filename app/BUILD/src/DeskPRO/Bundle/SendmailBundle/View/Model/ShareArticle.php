@@ -38,7 +38,7 @@ class ShareArticle extends EmailBaseType
     /**
      * The article.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Article")
+     * @JMS\Type("Application\DeskPRO\Entity\Article")
      *
      * @var Article
      */
@@ -47,7 +47,7 @@ class ShareArticle extends EmailBaseType
     /**
      * The author.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+     * @JMS\Type("Application\DeskPRO\Entity\Person")
      *
      * @var Person
      */
@@ -62,7 +62,7 @@ class ShareArticle extends EmailBaseType
      */
     protected $articleLink;
 
-    protected static $templateFile = 'emails_user:share_article.html.twig';
+    protected $templateFile = 'emails_user:share_article.html.twig';
 
     public function __construct(ObjectRouter $router, Article $article, Person $author)
     {

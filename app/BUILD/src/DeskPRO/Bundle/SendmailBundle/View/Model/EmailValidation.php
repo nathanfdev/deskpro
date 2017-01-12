@@ -41,7 +41,7 @@ class EmailValidation extends EmailBaseType
      */
     protected $verifyUrl;
 
-    protected static $templateFile = 'emails_user:email_validation.html.twig';
+    protected $templateFile = 'emails_user:email_validation.html.twig';
 
     /**
      * EmailValidation constructor.

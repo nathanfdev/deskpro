@@ -53,7 +53,7 @@ class AgentWelcome extends EmailBaseType
      */
     protected $agentPassword;
 
-    protected static $templateFile = 'emails_agent:agent_welcome.html.twig';
+    protected $templateFile = 'emails_agent:agent_welcome.html.twig';
 
     /**
      * AgentWelcome constructor.

@@ -38,7 +38,7 @@ abstract class CommentEmailType extends EmailBaseType
     /**
      * The approved comment.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\CommentAbstract")
+     * @JMS\Type("Application\DeskPRO\Entity\CommentAbstract")
      *
      * @var CommentAbstract
      */
@@ -47,7 +47,7 @@ abstract class CommentEmailType extends EmailBaseType
     /**
      * The commented content.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract")
+     * @JMS\Type("Application\DeskPRO\Entity\ContentAbstract")
      *
      * @var ContentAbstract
      */

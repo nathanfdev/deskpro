@@ -44,18 +44,28 @@ abstract class EmailBaseType
      */
     protected $recipient;
 
-    protected static $templateFile = '';
+    protected $templateFile = '';
 
     public function getTemplate()
     {
         $reflect   = new ReflectionClass($this);
         $inflector = new CamelCaseToUnderscore();
 
-        if (static::$templateFile) {
-            return 'SendmailBundle:'.static::$templateFile;
+        if ($this->templateFile) {
+            return 'SendmailBundle:'.$this->templateFile;
         }
 
         return 'SendmailBundle:email.'.strtolower($inflector->filter($reflect->getShortName())).'.html.twig';
+    }
+
+    /**
+     * Should not be used in general cases.
+     *
+     * @param $templateFile
+     */
+    public function setTemplateFile($templateFile)
+    {
+        $this->templateFile = $templateFile;
     }
 
     public function setRecipient(Person $recipient)
