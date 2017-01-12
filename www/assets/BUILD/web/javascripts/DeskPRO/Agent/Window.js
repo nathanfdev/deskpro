@@ -950,8 +950,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			(function(key){
 				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/tickets/new', {
 					openCallback: function(page) {
-						page.draft._key = key;
-						page.draft.load();
+						if (page.draft) {
+              page.draft._key = key;
+              page.draft.load();
+						}
 					},
 					ignoreExist: true
 				});
