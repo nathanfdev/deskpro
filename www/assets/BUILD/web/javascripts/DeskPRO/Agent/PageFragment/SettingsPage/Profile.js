@@ -16,7 +16,9 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 		var form = $('form', this.el);
 
 		if (this.el.find('.dp-form-row.new-picture')[0]) {
-			DeskPRO_Window.util.fileupload(this.el.find('.dp-form-row.new-picture'));
+			DeskPRO_Window.util.fileupload(this.el.find('.dp-form-row.new-picture'), {
+				url: '/agent/misc/accept-upload?is_image=1'
+			});
 			this.el.find('.dp-form-row.new-picture').bind('fileuploadadd', function() {
 				$('.files', form).empty();
 			});
