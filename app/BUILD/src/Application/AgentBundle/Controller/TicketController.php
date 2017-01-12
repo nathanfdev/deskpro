@@ -4057,6 +4057,20 @@ class TicketController extends AbstractController
             $newTicket->billing_fields            = $this->request->request->get('billing_fields', []);
             $newTicket->status                    = $set_status;
 
+            $billingAmount = null;
+            $billingTime   = null;
+            if ($this->settings->get('core_tickets.enable_billing') || $this->settings->get('core_tickets.enable_timelog')) {
+                if ($this->in->getString('billing_type') == 'amount') {
+                    $billingAmount = $this->in->getFloat('amount');
+                } else {
+                    $billingTime = (
+                        3600 * $this->in->getUInt('hours')
+                        + 60 * $this->in->getUInt('minutes')
+                        + $this->in->getUInt('seconds')
+                    );
+                }
+            }
+
             // Validate based on department...
             $validator = new \Application\AgentBundle\Validator\NewTicketValidator();
             $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newTicket->department_id);
@@ -4070,7 +4084,7 @@ class TicketController extends AbstractController
             $newTicket->setLayout($layout);
 
             $all_billing_errors = [];
-            if ($post_billing_fields = $request->get('billing_fields', [])) {
+            if (($billingAmount || $billingTime) && ($post_billing_fields = $request->get('billing_fields', []))) {
                 $billing_field_manager = $this->container->getBillingFieldManager();
 
                 foreach ($billing_field_manager->getFields() as $field) {
@@ -4159,21 +4173,8 @@ class TicketController extends AbstractController
                 // Billing/time
                 //------------------------------
 
-                if ($this->settings->get('core_tickets.enable_billing') || $this->settings->get('core_tickets.enable_timelog')) {
-                    if ($this->in->getString('billing_type') == 'amount') {
-                        $amount = $this->in->getFloat('amount');
-                        $time   = null;
-                    } else {
-                        $amount = null;
-                        $time   = (
-                            3600 * $this->in->getUInt('hours')
-                            + 60 * $this->in->getUInt('minutes')
-                            + $this->in->getUInt('seconds')
-                        );
-                    }
-
-                    if ($amount || $time) {
-                        if ($charge = $ticket->addCharge($this->person, $time, $amount)) {
+                    if ($billingAmount || $billingTime) {
+                        if ($charge = $ticket->addCharge($this->person, $billingTime, $billingAmount)) {
                             $this->em->persist($charge);
                             $this->em->persist($ticket);
                             $this->em->flush();
@@ -4217,7 +4218,6 @@ class TicketController extends AbstractController
                             $this->em->flush();
                         }
                     }
-                }
 
                 //------------------------------
                 // Add CC's
