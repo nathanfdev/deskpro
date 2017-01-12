@@ -50,20 +50,33 @@ class JIRAWebhookController extends Controller
     public function handleAction(Request $request)
     {
         $response = new Response();
-        $content  = $request->getContent();
+        $response->headers->set('Content-Type', 'text/plain');
+
+        $content = $request->getContent();
 
         /** @var JIRA $js */
         $js = $this->get(JIRA::NAME);
         if (!$js->isEnabled()) {
+            $response->setStatusCode(Response::HTTP_NOT_FOUND);
+            $response->setContent('JIRA app is not enabled');
+
             return $response;
         }
 
-        if (!$json = json_decode($content, 1)) {
+        if (!$json = json_decode($content, true)) {
+            $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+            $response->setContent('Failed to decode JSON payload');
+
             return $response;
         }
 
         $handler = new WebhookHandler($this->container);
-        $handler->handle($json);
+        if ($handler->handle($json)) {
+            $response->setContent('OK');
+        } else {
+            $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+            $response->setContent('FAIL');
+        }
 
         return $response;
     }
