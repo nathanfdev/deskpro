@@ -26,6 +26,11 @@ img.emojione, svg.emojione {
 .ui.im.avatar {
   width: 24px;
   height: 24px;
+  > .text {
+    font-family: "Open Sans", serif;
+    font-size: 12px;
+    color: $dp-greyscale-850;
+  }
 }
 
 .ui.topbar > .item > .im-list {
@@ -42,9 +47,6 @@ img.emojione, svg.emojione {
         margin: 0 10px;
 
         .text {
-          font-family: "Open Sans", serif;
-          font-size: 12px;
-          color: $dp-greyscale-850;
           vertical-align: middle;
           display: inline-block;
           width: inherit;
@@ -61,6 +63,7 @@ img.emojione, svg.emojione {
           }
         }
       }
+
       > .knuckles.message-counter {
         position: absolute;
         top: -8px;
@@ -83,15 +86,14 @@ img.emojione, svg.emojione {
     padding-right: 15px;
     height: 40px;
 
-
     .icon.group.add {
       margin-left: 5px;
       cursor: pointer;
     }
 
     .wrapper {
-
       vertical-align: middle;
+
       .icon.search {
         &.enabled {
           background: $dp-sonic-midnight;
@@ -328,6 +330,7 @@ img.emojione, svg.emojione {
       .item {
         &:hover {
           background: $dp-morning-sky;
+
           &.agent, &.department, &.team {
             .content {
               .header, .description {
@@ -375,6 +378,7 @@ img.emojione, svg.emojione {
               font-weight: 600;
             }
           }
+
           &.agent {
             max-width: 190px;
           }
@@ -383,10 +387,12 @@ img.emojione, svg.emojione {
         &.department.recent {
           .content {
             line-height: 12px;
+
             .header {
               font-size: 10px;
               text-transform: uppercase;
             }
+
             .description {
               max-width: 185px;
             }
@@ -405,7 +411,6 @@ img.emojione, svg.emojione {
   }
 
   &.chat.drawer {
-
     height: initial;
     width: 320px;
 
@@ -471,7 +476,6 @@ img.emojione, svg.emojione {
       }
 
       &.expanded {
-
         padding: 8px 20px;
 
         .ui.im.avatar {
@@ -524,7 +528,6 @@ img.emojione, svg.emojione {
       }
 
       .ui.segments {
-
         padding: 0 20px;
         border: 0;
         box-shadow: none;
@@ -577,7 +580,6 @@ img.emojione, svg.emojione {
           }
 
           .message:before {
-
             bottom: -0.40714286em;
             left: 1em;
             right: auto;
@@ -598,11 +600,13 @@ img.emojione, svg.emojione {
 
           &.my {
             text-align: right;
+
             .message, .message:before {
               text-align: left;
               border-color: $dp-sonic-primary;
               background: $dp-morning-sky;
             }
+
             .message:before {
               right: 1em;
               left: auto;
@@ -628,6 +632,7 @@ img.emojione, svg.emojione {
                 color: $dp-sonic-primary;
                 background-color: $dp-morning-sky;
               }
+
               .ui.divider.horizontal.timestamp {
                 &:before, &:after {
                   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABaAAAAACCAYAAACuTHuKAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AoTEAozi5V7HgAAADJJREFUaN7t0DERACAMBDC4Y0UBOy7xWEePiY6JhMwkdwAAAAAAQLN1Xm0NAAAAAAB0+6sqBJ7q+V/NAAAAAElFTkSuQmCC');
