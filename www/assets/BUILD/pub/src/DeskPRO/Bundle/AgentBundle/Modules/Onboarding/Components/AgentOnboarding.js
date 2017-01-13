@@ -35,6 +35,46 @@ export class AgentOnboardingContainer extends SeparateComponent {
     this.props.dispatch(actions.updateCurrentStep(onboardingId, onboarding));
   };
 
+  checkTimezone = () => {
+    console.log('checkTimezone');
+    if (window.DESKPRO_TIME_OUT_OF_SYNC) {
+      window.DESKPRO_TIME_OUT_OF_SYNC = false;
+      window.$.ajax({
+        url:      `${window.BASE_URL}agent/misc/get-server-time`,
+        dataType: 'json',
+        success(data) {
+          window.$('#time_outofsync').find('.server_time').text(data.time_formatted);
+
+          const nowTs = ((new Date()).getTime() / 1000) - (new Date().getTimezoneOffset() * 60);
+          const diff = Math.abs(nowTs - data.timestamp);
+
+          if (diff > 1200) {
+            window.DESKPRO_TIME_OUT_OF_SYNC = diff;
+            console.log('(Recheck) Time is off by %s seconds', diff);
+
+            if (window.DESKPRO_TIME_OUT_OF_SYNC_IGNORE
+              && Math.abs(diff - window.DESKPRO_TIME_OUT_OF_SYNC_IGNORE) < 480) {
+              window.DESKPRO_TIME_OUT_OF_SYNC = null;
+              console.log('(Recheck) Time offset is ignored');
+            }
+          }
+
+          console.log(window.DESKPRO_TIME_OUT_OF_SYNC);
+          if (window.DESKPRO_TIME_OUT_OF_SYNC) {
+            window.$('#time_outofsync').trigger('dp_open');
+          }
+        }
+      });
+    }
+  };
+
+  componentDidMount() {
+    if (!this.props.onboardings.size || this.props.onboardings.first().get('status') > 0) {
+      this.checkTimezone();
+    }
+  }
+
+
   render() {
     let result = <div />;
     const props = {
@@ -45,7 +85,7 @@ export class AgentOnboardingContainer extends SeparateComponent {
 
     if (this.props.onboardings.size) {
       this.props.onboardings.map((onboarding) => {
-        result = <AgentOnboarding onboarding={onboarding} {...props} />;
+        result = <AgentOnboarding onboarding={onboarding} {...props} postOnboardingCallback={this.checkTimezone} />;
         return true;
       });
     }
@@ -55,10 +95,14 @@ export class AgentOnboardingContainer extends SeparateComponent {
 
 export class AgentOnboarding extends React.Component {
   static propTypes = {
-    onboarding:        PropTypes.object.isRequired,
-    pauseOnboarding:   PropTypes.func.isRequired,
-    resumeOnboarding:  PropTypes.func.isRequired,
-    updateCurrentStep: PropTypes.func.isRequired
+    onboarding:             PropTypes.object.isRequired,
+    pauseOnboarding:        PropTypes.func.isRequired,
+    resumeOnboarding:       PropTypes.func.isRequired,
+    updateCurrentStep:      PropTypes.func.isRequired,
+    postOnboardingCallback: PropTypes.func.isRequired
+  };
+  static defaultProps = {
+    postOnboardingCallback() {}
   };
 
   constructor(props) {
@@ -69,7 +113,8 @@ export class AgentOnboarding extends React.Component {
       type:         'continuous',
       force:        false,
       currentStep:  0,
-      intro:        false
+      intro:        false,
+      status:       0
     };
   }
 
@@ -90,10 +135,12 @@ export class AgentOnboarding extends React.Component {
       if (config) {
         this.loadConfig(config);
       }
-      if (!onboarding.get('status')) {
+      const status = onboarding.get('status');
+      if (!status) {
         this.startOnboarding(!config.intro);
       } else {
         this.setStep(onboarding.get('current_step'));
+        this.setStatus(status);
         this.startOnboarding();
         pauseOnboarding(this.resumeOnboarding);
       }
@@ -111,9 +158,13 @@ export class AgentOnboarding extends React.Component {
     this.setState({ currentStep: step });
   };
 
+  setStatus = (status) => {
+    this.setState({ status });
+  };
+
   getIntro = () => {
-    const { intro, currentStep } = this.state;
-    if (!intro || currentStep > 0) {
+    const { intro, status } = this.state;
+    if (!intro || status) {
       return null;
     }
 
@@ -182,45 +233,48 @@ export class AgentOnboarding extends React.Component {
   };
 
   callback = (data) => {
-    if (!data.index) {
-      return;
-    }
+    let index = data.index;
+    if (data.action === 'autostart' || data.type === 'step:after') {
+      if (data.type === 'step:after') {
+        index += 1;
+      }
+      const percentageComplete = Math.round((index / this.state.steps.length) * 100);
+      let onboarding;
 
-    const percentageComplete = parseFloat(((data.index / this.state.steps.length) * 100).toFixed(2).replace('.00', ''));
-    let onboarding;
-
-    switch (data.action) {
-      case 'close':
-        if (percentageComplete < 100) {
-          this.props.pauseOnboarding(this.resumeOnboarding);
-        } else {
-          this.finishOnboarding(data.index);
-        }
-        break;
-      case 'next':
-      case 'back':
-        onboarding = {
-          current_step: data.index
-        };
-        this.setState({ currentStep: data.index, intro: false });
-        if (percentageComplete === 0) {
-          onboarding.status = 0;
-        } else if (percentageComplete === 100) {
-          onboarding.status = 2;
-          onboarding.date_completion = moment().format();
-        } else {
-          onboarding.status = 1;
-        }
-        this.props.updateCurrentStep(this.state.onboardingId, onboarding);
-        break;
-      case 'beacon':
-        this.props.resumeOnboarding();
-        break;
-      case 'finished':
-        this.finishOnboarding(data.index);
-        break;
-      default:
-        break;
+      switch (data.action) {
+        case 'close':
+          if (percentageComplete < 100) {
+            this.props.pauseOnboarding(this.resumeOnboarding);
+          } else {
+            this.finishOnboarding(index);
+          }
+          break;
+        case 'autostart':
+        case 'next':
+        case 'back':
+          onboarding = {
+            current_step: index
+          };
+          this.setState({ currentStep: index, intro: false });
+          if (percentageComplete === 100) {
+            onboarding.status = 2;
+            onboarding.date_completion = moment().format();
+            this.finishOnboarding(index);
+            break;
+          } else {
+            onboarding.status = 1;
+          }
+          this.props.updateCurrentStep(this.state.onboardingId, onboarding);
+          break;
+        case 'beacon':
+          this.props.resumeOnboarding();
+          break;
+        case 'finished':
+          this.finishOnboarding(index);
+          break;
+        default:
+          break;
+      }
     }
   };
 
@@ -231,6 +285,7 @@ export class AgentOnboarding extends React.Component {
       date_completion: moment().format()
     };
     this.props.updateCurrentStep(this.state.onboardingId, onboarding);
+    this.props.postOnboardingCallback();
   };
 
   render() {

@@ -32,15 +32,15 @@ const topbar = {
       position: 'bottom'
     },
     {
-      title:    'agent.onboarding.topbar_chat_title',
-      text:     'agent.onboarding.topbar_chat_text',
-      selector: '#react_dp_agent_top_bar .chat',
-      position: 'bottom'
-    },
-    {
       title:    'agent.onboarding.topbar_profile_title',
       text:     'agent.onboarding.topbar_profile_text',
       selector: '#react_dp_agent_top_bar .user',
+      position: 'bottom'
+    },
+    {
+      title:    'agent.onboarding.topbar_chat_title',
+      text:     'agent.onboarding.topbar_chat_text',
+      selector: '#react_dp_agent_top_bar .chat',
       position: 'bottom'
     },
   ],

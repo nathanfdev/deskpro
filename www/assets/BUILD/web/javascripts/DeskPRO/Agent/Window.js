@@ -781,35 +781,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.messageChanneler.poller.send();
 
-		if (DESKPRO_TIME_OUT_OF_SYNC) {
-			DESKPRO_TIME_OUT_OF_SYNC = false;
-			$.ajax({
-				url: BASE_URL + 'agent/misc/get-server-time',
-				dataType: 'json',
-				success: function(data) {
-
-					$('#time_outofsync').find('.server_time').text(data.time_formatted);
-
-					var now_ts = ((new Date()).getTime() / 1000) - (new Date().getTimezoneOffset() * 60);
-					var diff = Math.abs(now_ts - data.timestamp);
-
-					if (diff > 1200) {
-						DESKPRO_TIME_OUT_OF_SYNC = diff;
-						console.log("(Recheck) Time is off by %s seconds", diff);
-
-						if (DESKPRO_TIME_OUT_OF_SYNC_IGNORE && Math.abs(diff - DESKPRO_TIME_OUT_OF_SYNC_IGNORE) < 480) {
-							DESKPRO_TIME_OUT_OF_SYNC = null;
-							console.log("(Recheck) Time offset is ignored");
-						}
-					}
-
-					if (DESKPRO_TIME_OUT_OF_SYNC) {
-						$('#time_outofsync').trigger('dp_open');
-					}
-				}
-			});
-		}
-
 		var fn;
 		while (fn = this.onloadStack.shift()) {
 			fn();
