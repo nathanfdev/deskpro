@@ -25,4 +25,4 @@ Feature: New ticket form validation
     When I select "Department 2" from "Department"
     And I fill in "ticket[cc]" with "person@deskpro.dev"
     And I press "Submit"
-    Then the response should contain "There are some errors with your submission."
+    Then the response should not contain "There are some errors with your submission."

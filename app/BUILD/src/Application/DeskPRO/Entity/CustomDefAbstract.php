@@ -904,6 +904,23 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @return string
+     */
+    public function getStringDefaultValue()
+    {
+        $defaultValue = $this->getDefaultValue();
+
+        if (is_array($defaultValue)) {
+            $defaultValue = implode(',', $defaultValue);
+        }
+        if (!$defaultValue) {
+            $defaultValue = '';
+        }
+
+        return $defaultValue;
+    }
+
+    /**
      * @return mixed
      */
     public function getDefaultValue()

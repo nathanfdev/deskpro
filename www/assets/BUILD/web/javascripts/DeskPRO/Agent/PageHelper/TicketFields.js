@@ -12,9 +12,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		this.mode = 'view';
 
-		this.initScope(this.page.getEl('field_holders'));
-		this.no_value_fields = [];
-
 		this.ticketReader = {
 			getDepartmentId: function() {
 				var catId = self.page.getEl('department_id').val();
@@ -69,6 +66,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 		};
 
+		this.initScope(this.page.getEl('field_holders'));
+		this.no_value_fields = [];
+
 		this.page.getEl('department').on('change', function() {
 			self.page.getEl('field_errors').hide();
 			self.updateDisplay();
@@ -94,8 +94,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 	initScope: function(el) {
 		var self = this;
-		var oldShowHidden = this.$scope ? this.$scope.show_hidden : 0;
 		var $scope = this.$scope = DeskPRO_Window.$scope.$new();
+
+		this.oldFields = null;
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
 			el.data('$ngControllerController', self);
@@ -109,13 +110,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			problem: 1
 		};
 
-		// keep all fields shown if the link was clicked on save changes
-		// to avoid re-load the page to proper get hidden fields w/o value
-		$scope.show_hidden = oldShowHidden;
+		$scope.show_hidden = 0;
+		$scope.is_saving = false;
 
 		$scope.editField = function($event, field) {
 			if (!$scope.editables[field]) return;
 			if ($scope.isEditMode(field)) return;
+			if ($event.target.tagName === 'A') return;
 
 			var getSelected = function() {
 				if (window.getSelection) {
@@ -163,7 +164,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		$scope.saveFields = function() {
 			self.saveChanges();
-			$scope.edit_fields.length = 0;
 		};
 
 		$scope.showHidden = function() {
@@ -176,6 +176,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 	},
 
 	updateDisplay: function() {
+		var self = this;
 		var fields = [], reader = this.ticketReader;
 		var $scope = this.$scope;
 		if (window.DESKPRO_TICKET_DISPLAY) {
@@ -194,7 +195,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		};
 
 		this.no_value_fields = [];
-		var $ctrls = this.display.find('.controls-row');
+		var $ctrls = this.display.find('.hidden-row');
 		$ctrls.removeClass('off').prev().removeClass('off');
 
 		for (var i = 0; i < fields.length; i++) {
@@ -204,7 +205,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			if (undefined === $scope.fields[f.id]) {
 				row.detach().removeClass('off').insertBefore($ctrls);
 			}
-			var noValue = row.hasClass('no-value');
+
+			var value = true;
+			if (f.field_type === 'ticket_field') {
+				value = this.ticketReader.getTicketFieldValue(f.field_id);
+			}
+
+			var noValue = !value || (value instanceof Array && value.length === 0);
 
 			if (f.isVisibleOnEdit) {
 				$scope.editables[f.id] = 1;
@@ -218,7 +225,80 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 		}
 
+		var newFields = [];
+		Object.keys($scope.fields).forEach(function(fieldId) {
+			if ($scope.fields[fieldId]) {
+				newFields.push(fieldId);
+			}
+		});
+
+		var unsetField = function(name, allowDefaultValue) {
+			$scope.edit_fields.push(name);
+			self.display.find('.item.'+name).each(function(i, el) {
+				var $el = $(el);
+				var defaultValue = allowDefaultValue ? $el.data('default-value') : '';
+				$el.find('input[type=text], textarea, select').val(defaultValue);
+				$el.find('.with-select2').select2('val', defaultValue);
+				$el.find('input[type=radio]').each(function(i, field) {
+					var $field = $(field);
+					if ($field.val() === String(defaultValue)) {
+						$field.prop('checked', true);
+					} else {
+						$field.prop('checked', false);
+					}
+				});
+				$el.find('input[type=checkbox]').each(function(i, field) {
+					var $field = $(field);
+					if ($field.attr('name') && $field.attr('name').indexOf('[]') !== -1) {
+						var vals = defaultValue ? String(defaultValue).split(',') : [];
+						if (vals.indexOf(String($field.val())) !== -1) {
+							$field.prop('checked', true);
+						} else {
+							$field.prop('checked', false);
+						}
+					} else {
+						$field.prop('checked', defaultValue);
+					}
+				});
+			});
+		};
+
 		$scope.hidden = this.no_value_fields.length;
+
+		if (this.oldFields) {
+			this.oldFields.forEach(function(name) {
+				if (newFields.indexOf(name) === -1) {
+					unsetField(name, false);
+				}
+			});
+		}
+
+		newFields.forEach(function(name) {
+			if (self.oldFields && self.oldFields.indexOf(name) === -1) {
+				unsetField(name, true);
+			}
+		});
+
+		var changed = false;
+		if (!this.oldFields) {
+			changed = true;
+		} else if (this.oldFields.length !== newFields.length) {
+			changed = true;
+		} else {
+			for (i = 0; i < newFields.length; i++) {
+				if (newFields[i] !== this.oldFields[i]) {
+					changed = true;
+					break;
+				}
+			}
+		}
+
+		this.oldFields = newFields;
+
+		// recursive update fields if they were changed
+		if (changed) {
+			this.updateDisplay();
+		}
 	},
 
 	initFieldWidgets: function() {
@@ -281,6 +361,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		}
 		customFieldData.unshift({name: 'custom_fields[]', value: ''});
 
+		this.$scope.is_saving = true;
+
 		changeManager.saveChanges(
 			customFieldData,
 			(function(data) {
@@ -313,6 +395,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		var old = this.display;
 		var newDisplay = $('<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table mode-edit-on">' + html + '</table>');
+		newDisplay.append(this.display.find('.hidden-row'));
+		newDisplay.append(this.display.find('.controls-row'));
 		this.page.rewriteRadioNames(newDisplay);
 		this.display = newDisplay;
     this.display.prepend(labels);
@@ -325,8 +409,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		this.initScope(this.page.getEl('field_holders'));
 
-		this.currentDisplay = [];
-		this.currentDisplayModify = [];
 		this.updateDisplay();
 		this.$scope.$apply();
 	}

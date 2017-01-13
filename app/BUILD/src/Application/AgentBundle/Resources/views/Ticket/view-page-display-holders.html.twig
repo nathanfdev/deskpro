@@ -30,6 +30,7 @@
 {% if app.getSetting('core.use_ticket_category') %}
 	<tbody class="category category_id standard-field item off {% if not ticket.category %}no-value{% endif %}"
 		   data-item-type="ticket_category"
+		   data-default-value="{{ app.getSetting('core.default_ticket_cat') }}"
 		   ng-show="fields['category']"
 	>
 		<tr class="mode-display" ng-show="!isEditMode('category')" ng-click="editField($event, 'category')">
@@ -140,6 +141,7 @@
 {% if app.getSetting('core.use_product') %}
 	<tbody class="product standard-field item off {% if not ticket.product %}no-value{% endif %}"
 		   data-item-type="product"
+		   data-default-value="{{ app.getSetting('core.default_prod_id') }}"
 		   ng-show="fields['product']"
 	>
 		<tr class="mode-display" ng-show="!isEditMode('product')" ng-click="editField($event, 'product')">
@@ -183,6 +185,7 @@
 {% if app.getSetting('core.use_ticket_priority') %}
 	<tbody class="priority priority_id standard-field item off {% if not ticket.priority %}no-value{% endif %}"
 		   data-item-type="ticket_priority"
+		   data-default-value="{{ app.getSetting('core.default_ticket_pri') }}"
 		   ng-show="fields['priority']"
 	>
 		<tr class="mode-display" ng-show="!isEditMode('priority')" ng-click="editField($event, 'priority')">
@@ -209,6 +212,7 @@
 {% if app.getSetting('core.use_ticket_workflow') %}
 	<tbody class="workflow workflow_id standard-field item off {% if not ticket.workflow %}no-value{% endif %}"
 		   data-item-type="ticket_workflow"
+		   data-default-value="{{ app.getSetting('core.default_ticket_work') }}"
 		   ng-show="fields['workflow']"
 	>
 		<tr class="mode-display" ng-show="!isEditMode('workflow')" ng-click="editField($event, 'workflow')">
@@ -239,6 +243,7 @@
 		   data-field-type="ticket_field"
 		   data-item-id="{{f.id}}"
 		   data-custom-field-handler="{{f.field_handler}}"
+		   data-default-value="{{f.field_def.getStringDefaultValue()}}"
 		   ng-show="fields['ticket_field_{{ f.id }}']"
 	>
 		<tr class="mode-display" ng-show="!isEditMode('ticket_field_{{ f.id }}')" ng-click="editField($event, 'ticket_field_{{ f.id }}')">
@@ -267,6 +272,7 @@
 		   data-field-type="person_field"
 		   data-item-id="{{f.id}}"
 		   data-custom-field-handler="{{f.field_handler}}"
+		   data-default-value="{{ f.field_def.getStringDefaultValue() }}"
 		   ng-show="fields['person_field_{{ f.id }}']"
 	>
     <tr class="mode-display" ng-show="!isEditMode('person_field_{{ f.id }}')" ng-click="editField($event, 'person_field_{{ f.id }}')">
@@ -295,6 +301,7 @@
 		   data-field-type="org_field"
 		   data-item-id="{{f.id}}"
 		   data-custom-field-handler="{{f.field_handler}}"
+		   data-default-value="{{ f.field_def.getStringDefaultValue() }}"
 		   ng-show="fields['org_field_{{ f.id }}']"
 	>
     <tr class="mode-display" ng-show="!isEditMode('org_field_{{ f.id }}')" ng-click="editField($event, 'org_field_{{ f.id }}')">

@@ -548,10 +548,9 @@ pageMeta.lang = {{ {
 
 					<tbody class="hidden-row off" ng-show="hidden && !show_hidden">
 					<tr>
-						<td></td>
-						<td>
+						<td colspan="2" style="padding-top: 4px; padding-bottom: 4px;">
 							<a ng-click="showHidden()">
-								{{ ng_var('hidden') }} hidden field<span ng-show="hidden !== 1">s</span> without a value
+								<span ng-bind-html="hidden"></span> hidden field<span ng-show="hidden !== 1">s</span> without a value
 							</a>
 						</td>
 					</tr>
@@ -559,8 +558,11 @@ pageMeta.lang = {{ {
 					<tbody class="controls-row off" ng-show="edit_fields.length">
 						<tr>
 							<td colspan="2" style="text-align: center; background: #eee;">
-								<button class="save clean-white" ng-click="saveFields()">Save</button>
-								<button class="cancel clean-white" ng-click="cancelEdit()">Cancel</button>
+								<span ng-hide="is_saving">
+									<button class="save clean-white" ng-click="saveFields()">Save</button>
+									<button class="cancel clean-white" ng-click="cancelEdit()">Cancel</button>
+								</span>
+								<i ng-show="is_saving" class="spinner-flat"></i>
 							</td>
 						</tr>
 					</tbody>

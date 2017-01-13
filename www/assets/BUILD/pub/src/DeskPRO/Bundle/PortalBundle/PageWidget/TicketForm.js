@@ -18,32 +18,66 @@ class TicketValueReader {
     return parseInt(f.val() || 0, 10) || 0;
   }
 
+  setHiddenFields(hiddenFields) {
+    this.hiddenFields = hiddenFields;
+  }
+
+  isFieldHidden(fieldName) {
+    return this.hiddenFields && this.hiddenFields.indexOf(fieldName) !== -1;
+  }
+
   getDepartmentId() {
     return TicketValueReader.parseIntSelect($('#ticket_department', this.$formEl));
   }
 
   getCategoryId() {
+    if (this.isFieldHidden('category')) {
+      return null;
+    }
+
     return TicketValueReader.parseIntSelect($('#ticket_category', this.$formEl));
   }
 
   getPriorityId() {
+    if (this.isFieldHidden('priority')) {
+      return null;
+    }
+
     return TicketValueReader.parseIntSelect($('#ticket_priority', this.$formEl));
   }
 
   getProductId() {
+    if (this.isFieldHidden('product')) {
+      return null;
+    }
+
     return TicketValueReader.parseIntSelect($('#ticket_product', this.$formEl));
   }
 
   getOrganizationId() {
+    if (this.isFieldHidden('user_organization')) {
+      return null;
+    }
+
     return TicketValueReader.parseIntSelect($('#ticket_user_organization', this.$formEl));
   }
 
   getWorkflowId() {
+    if (this.isFieldHidden('workflow')) {
+      return null;
+    }
+
     return TicketValueReader.parseIntSelect($('#ticket_workflow', this.$formEl));
   }
 
   getFieldValue(prefix, fieldId) {
-    const id = `#ticket_${prefix}_field_${fieldId}_data`;
+    const fieldName = `${prefix}_field_${fieldId}`;
+
+    if (this.isFieldHidden(fieldName)) {
+      return null;
+    }
+
+    const id = `#ticket_${fieldName}_data`;
     let $field = $(id, this.$formEl);
 
     // toggle
@@ -119,13 +153,14 @@ export default class TicketForm extends PageWidget {
           $formEl.find('input:visible, textarea:visible').first().focus();
         }
       },
-      fieldFilter: (fields) => {
+      fieldFilter: (fields, dynamicForm) => {
         if (!window.DESKPRO_TICKET_DISPLAY) {
           console.error('DESKPRO_TICKET_DISPLAY is not defined');
           return fields;
         }
 
         const layout = window.DESKPRO_TICKET_DISPLAY.getLayout(ticketReader.getDepartmentId());
+        ticketReader.setHiddenFields(dynamicForm.getHiddenFields());
 
         let newFields = layout.getMatchingFields(ticketReader);
         let filterFn;
