@@ -201,40 +201,41 @@ export class DynamicForm {
    * Update the form.
    */
   update() {
-    let didChange;
+    let didChange = false;
 
-    do {
-      didChange = false;
+    if (this._firePreUpdate().cancel) {
+      return;
+    }
 
-      if (this._firePreUpdate().cancel) {
-        break;
-      }
+    const r = this._fireUpdateFields(this.fieldFilter(this.fieldNames, this));
+    if (r.cancel) {
+      return;
+    }
 
-      const r = this._fireUpdateFields(this.fieldFilter(this.fieldNames, this));
-      if (r.cancel) {
-        break;
-      }
-
-      const newFields = this.resolveFields(r.newFields);
-      if (newFields.length !== this.currentFields.length) {
-        didChange = true;
-      } else {
-        for (let i = 0; i < newFields.length; i++) {
-          if (newFields[i] !== this.currentFields[i]) {
-            didChange = true;
-            break;
-          }
+    const newFields = this.resolveFields(r.newFields);
+    if (newFields.length !== this.currentFields.length) {
+      didChange = true;
+    } else {
+      for (let i = 0; i < newFields.length; i++) {
+        if (newFields[i] !== this.currentFields[i]) {
+          didChange = true;
+          break;
         }
       }
+    }
 
-      if (didChange) {
-        this.setFieldSet(newFields);
-      } else {
-        console.log('[DynamicForm] <update> No change. Fields: %o', this.currentFields);
-      }
+    if (didChange) {
+      this.setFieldSet(newFields);
+    } else {
+      console.log('[DynamicForm] <update> No change. Fields: %o', this.currentFields);
+    }
 
-      this._firePostUpdate(didChange);
-    } while (didChange);
+    this._firePostUpdate(didChange);
+
+    // recursive update fields until there will be no changes
+    if (didChange) {
+      this.update();
+    }
   }
 
   _firePreUpdate() {
