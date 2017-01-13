@@ -5,7 +5,7 @@ import {
   PersonAvatar,
   AgentTeamAvatar
 } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
-import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
+import { chooseColor, darkerColor, colorLuminance } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 
 class AvatarHelper
 {
@@ -27,12 +27,13 @@ class AvatarHelper
 
   static renderEveryoneAvatar() {
     const props = {
-      size:       24,
-      color:      '#DD00AA',
-      urlPattern: null,
-      gravatar:   null,
-      text:       'E',
-      className:  'ui avatar image im'
+      size:        24,
+      color:       '#DD00AA',
+      borderColor: colorLuminance('#DD00AA', 0.2),
+      urlPattern:  null,
+      gravatar:    null,
+      text:        'EO',
+      className:   'ui avatar image im'
     };
 
     return <Avatar {...props} />;
@@ -42,12 +43,13 @@ class AvatarHelper
     const name = chat.get('name');
     const text = (name && name.length ? name[0] : '');
     const props = {
-      size:       24,
-      color:      chooseColor(chat.get('id')),
-      urlPattern: null,
-      gravatar:   null,
-      text:       text || '?',
-      className:  'ui avatar image im'
+      size:        24,
+      color:       chooseColor(chat.get('id')),
+      borderColor: darkerColor(chat.get('id')),
+      urlPattern:  null,
+      gravatar:    null,
+      text:        text || '?',
+      className:   'ui avatar image im'
     };
 
     return <Avatar {...props} />;

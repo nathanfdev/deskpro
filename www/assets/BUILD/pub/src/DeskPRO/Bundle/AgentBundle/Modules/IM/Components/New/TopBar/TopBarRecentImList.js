@@ -7,7 +7,7 @@ import {
   AgentTeamAvatar
 } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 import classNames from 'classnames';
-import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
+import { chooseColor, darkerColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import { RecentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
 import AvatarHelper from '../IMTabs/AvatarHelper';
 
@@ -85,6 +85,7 @@ class TopBarRecentImList extends RecentList {
       >
         <PersonAvatar
           color={chooseColor(agent.get('id'))}
+          borderColor={darkerColor(agent.get('id'))}
           person={agent} size={24}
           className="ui avatar image im"
         />

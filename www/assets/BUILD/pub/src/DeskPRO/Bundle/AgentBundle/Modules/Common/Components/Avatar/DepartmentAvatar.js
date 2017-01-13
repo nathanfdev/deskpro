@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
 import { Avatar } from './Avatar';
-import { chooseColor } from './colors';
+import { chooseColor, darkerColor } from './colors';
 
 export class DepartmentAvatar extends React.Component {
 
@@ -17,8 +17,8 @@ export class DepartmentAvatar extends React.Component {
 
   getDepartmentFallbackText() {
     const department = this.props.department || Immutable.fromJS({});
-    const name = department.get('title');
-    const text = (name && name.length ? name[0] : '');
+    const name       = department.get('title');
+    const text       = (name && name.length ? name[0] : '');
 
     return text || '?';
   }
@@ -26,14 +26,15 @@ export class DepartmentAvatar extends React.Component {
   render() {
     const { size, className } = this.props;
     const department = this.props.department || Immutable.fromJS({});
-    const avatar = department.get('avatar') || Immutable.fromJS({});
+    const avatar     = department.get('avatar') || Immutable.fromJS({});
 
     const props = {
       size,
-      color:      chooseColor(department.get('id')),
-      url:        avatar.get('url'),
-      urlPattern: avatar.get('url_pattern'),
-      text:       this.getDepartmentFallbackText(),
+      color:       chooseColor(department.get('id')),
+      borderColor: darkerColor(department.get('id')),
+      url:         avatar.get('url'),
+      urlPattern:  avatar.get('url_pattern'),
+      text:        this.getDepartmentFallbackText(),
       className
     };
 
