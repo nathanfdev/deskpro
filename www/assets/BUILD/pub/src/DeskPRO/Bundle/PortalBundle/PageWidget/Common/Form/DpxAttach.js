@@ -28,8 +28,8 @@ export default class DpxAttach extends PageWidget {
       $file.remove();
     });
 
-    const $input = this.$element.find('input[type=file]');
-    const inputName = $input.attr('name').replace('[0][upload]', '');
+    const $input = $(this.$element.find(':not([data-prototype=""])').data('prototype'));
+    const inputName = $input.attr('name') ? $input.attr('name').replace('[__name__][upload]', '') : null;
     const maxFileSize = this.$element.data('maxFileSize') || null;
     const component = React.createElement(PortalAttach, {
       widgetOptions: this.options,

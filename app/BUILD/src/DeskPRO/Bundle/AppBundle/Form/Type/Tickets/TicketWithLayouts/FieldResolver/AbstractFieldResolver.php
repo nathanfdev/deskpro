@@ -434,7 +434,6 @@ abstract class AbstractFieldResolver
         }
 
         return new FormField(TicketMessageAttachmentCollectionType::class, [
-            'property_path'  => 'messages[0].attachments',
             'required'       => false,
             'person'         => $context->getPerson(),
             'ticket_message' => $context->getMessage(),

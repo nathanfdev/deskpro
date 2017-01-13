@@ -225,6 +225,7 @@ class TicketMessageAttachmentType extends AbstractType
                 $attachment->setPerson($person);
             }
 
+            /* @var TicketMessage $message */
             $message->addAttachment($attachment);
 
             if (!$attachment->getBlob()->getId()) {

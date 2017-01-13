@@ -29,9 +29,9 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -50,9 +50,9 @@ class TicketMessageAttachmentCollectionType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData'], 100);
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onRemoveTicketAttachments'], 50);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onLoadData'], 100);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onDeleteEmpty'], -1);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSaveData']);
     }
 
     /**
@@ -62,6 +62,7 @@ class TicketMessageAttachmentCollectionType extends AbstractType
     {
         $resolver
             ->setDefaults([
+                'mapped'        => false,
                 'entry_type'    => TicketMessageAttachmentType::class,
                 'entry_options' => function (Options $options) {
                     return [
@@ -93,52 +94,6 @@ class TicketMessageAttachmentCollectionType extends AbstractType
     }
 
     /**
-     * Ensure there is a collection of attachments on the message (even if empty).
-     *
-     * @param FormEvent $event
-     */
-    public function onPreSetData(FormEvent $event)
-    {
-        $data = $event->getData();
-        if (!$data instanceof Collection) {
-            $event->setData(new ArrayCollection());
-        }
-    }
-
-    /**
-     * Remove message attachments from the ticket entity.
-     *
-     * We have a collection of all ticket attachments as ticket property (including current message attachments).
-     * So we need to reset it to re-fill it via ticket message again or we can't delete attachments (they would be still assigned to the ticket).
-     *
-     * @param FormEvent $event
-     */
-    public function onRemoveTicketAttachments(FormEvent $event)
-    {
-        /** @var ArrayCollection $data */
-        $data = $event->getData();
-        $form = $event->getForm();
-
-        /** @var TicketMessage $ticketMessage */
-        $ticketMessage = $form->getConfig()->getOption('ticket_message');
-        if (!$ticketMessage) {
-            return;
-        }
-
-        $ticket = $ticketMessage->getTicket();
-        if ($ticket) {
-            /** @var ArrayCollection $attachments */
-            $attachments = $ticket->attachments;
-
-            foreach ($data as $attachment) {
-                if ($attachments->contains($attachment)) {
-                    $attachments->removeElement($attachment);
-                }
-            }
-        }
-    }
-
-    /**
      * @param FormEvent $event
      */
     public function onDeleteEmpty(FormEvent $event)
@@ -152,5 +107,60 @@ class TicketMessageAttachmentCollectionType extends AbstractType
         }
 
         $event->setData(new ArrayCollection($data->getValues()));
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onLoadData(FormEvent $event)
+    {
+        $message    = $this->getTicketMessage($event);
+        $collection = new ArrayCollection();
+
+        foreach ($message->getAttachments() as $attachment) {
+            $collection->add($attachment);
+        }
+
+        $event->setData($collection);
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSaveData(FormEvent $event)
+    {
+        /** @var ArrayCollection $data */
+        $data    = $event->getData();
+        $message = $this->getTicketMessage($event);
+
+        if (!$data instanceof ArrayCollection) {
+            return;
+        }
+
+        foreach ($data as $attachment) {
+            if ($attachment instanceof TicketAttachment) {
+                $message->addAttachment($attachment);
+            }
+        }
+
+        foreach ($message->getAttachments() as $attachment) {
+            if (!$data->contains($attachment)) {
+                $message->removeAttachment($attachment);
+            }
+        }
+    }
+
+    /**
+     * @param FormEvent $event
+     *
+     * @return TicketMessage
+     */
+    private function getTicketMessage(FormEvent $event)
+    {
+        return $event->getForm()->getConfig()->getOption('ticket_message');
     }
 }
