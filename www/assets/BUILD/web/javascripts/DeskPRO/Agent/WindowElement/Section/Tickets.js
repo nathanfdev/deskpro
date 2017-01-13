@@ -54,7 +54,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.limited_getUpdatedSlaCounts = _.throttle(function() {
 			self.getUpdatedSlaCounts();
-		}, 20000);
+		}, 35000);
 	},
 
 

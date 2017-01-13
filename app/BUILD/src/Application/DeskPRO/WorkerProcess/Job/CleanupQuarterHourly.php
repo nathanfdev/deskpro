@@ -85,7 +85,7 @@ class CleanupQuarterHourly extends AbstractJob
 
         if ($counts['tickets'] < 1000000) {
             $all_agents = App::getContainer()->getAgentData()->getAgents();
-            if (count($all_agents) < 250) {
+            if (count($all_agents) < 75) {
                 $did_per_agent_filters = true;
 
                 // Fetch in agent context
