@@ -2173,7 +2173,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					successFn(data);
 				}).bind(this),
 				noErrorOverride: true,
-				timeout: 180000
+				timeout: 60000
 			};
 
 			if (errorFn) {
@@ -2195,7 +2195,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					successFn(data);
 				}).bind(this),
 				noErrorOverride: true,
-				timeout: 180000
+				timeout: 60000
 			};
 
 			if (routeData.ignore_perm_error) {
