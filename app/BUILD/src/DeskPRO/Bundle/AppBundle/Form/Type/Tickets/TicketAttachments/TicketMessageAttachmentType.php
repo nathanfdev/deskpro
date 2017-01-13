@@ -48,7 +48,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\File;
 
 /**
  * Class TicketMessageAttachmentType.
@@ -262,19 +261,9 @@ class TicketMessageAttachmentType extends AbstractType
     private function setUploadFieldOnForm(FormInterface $form)
     {
         $form->add('upload', FileType::class, [
-            'mapped'      => false,
-            'required'    => false,
-            'label'       => false,
-            'constraints' => [
-                new File([
-                    'uploadErrorMessage'         => 'portal.forms.error_upload_general',
-                    'uploadFormSizeErrorMessage' => 'portal.forms.error_upload_html_size',
-                    'uploadIniSizeErrorMessage'  => 'portal.forms.error_upload_ini_size',
-                    'notFoundMessage'            => 'portal.forms.error_upload_general',
-                    'notReadableMessage'         => 'portal.forms.error_upload_general',
-                    'disallowEmptyMessage'       => 'portal.forms.error_upload_empty',
-                ]),
-            ],
+            'mapped'   => false,
+            'required' => false,
+            'label'    => false,
         ]);
 
         foreach (['blob_auth', 'is_inline', 'delete'] as $field_to_remove) {
