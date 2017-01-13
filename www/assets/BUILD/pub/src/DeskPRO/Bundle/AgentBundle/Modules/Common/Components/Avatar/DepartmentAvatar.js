@@ -18,7 +18,7 @@ export class DepartmentAvatar extends React.Component {
   getDepartmentFallbackText() {
     const department = this.props.department || Immutable.fromJS({});
     const name       = department.get('title');
-    const text       = (name && name.length ? name[0] : '');
+    const text       = (name && name.length ? name.substr(0, 2) : '');
 
     return text || '?';
   }

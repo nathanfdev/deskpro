@@ -41,7 +41,7 @@ class AvatarHelper
 
   static renderGroupAvatar(chat) {
     const name = chat.get('name');
-    const text = (name && name.length ? name[0] : '');
+    const text = (name && name.length ? name.substr(0, 2) : '');
     const props = {
       size:        24,
       color:       chooseColor(chat.get('id')),

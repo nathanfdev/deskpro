@@ -18,7 +18,7 @@ export class AgentTeamAvatar extends React.Component {
   getAgentTeamFallbackText() {
     const agentTeam = this.props.agentTeam || Immutable.fromJS({});
     const name      = agentTeam.get('name');
-    const text      = (name && name.length ? name[0] : '');
+    const text      = (name && name.length ? name.substr(0, 2) : '');
 
     return text || '?';
   }
