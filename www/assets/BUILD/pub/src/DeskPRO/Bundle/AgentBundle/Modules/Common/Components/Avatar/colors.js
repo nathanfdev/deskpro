@@ -12,12 +12,17 @@ const colors = [
   '#FF80FF'
 ];
 
-export function colorLuminance(hex, lum = 0) {
+function normalizeHex(hex) {
   let newHex = String(hex).replace(/[^0-9a-f]/gi, '');
   if (newHex.length < 6) {
     newHex = newHex[0] + newHex[0] + newHex[1] + newHex[1] + newHex[2] + newHex[2];
   }
 
+  return newHex;
+}
+
+export function colorLuminance(hex, lum = 0) {
+  const newHex = normalizeHex(hex);
   let rgb = '#';
   let c;
   let i;
@@ -42,3 +47,14 @@ export function lighterColor(number, lighter = 0.2) {
   return colorLuminance(colors[Number(number) % colors.length], lighter);
 }
 
+// see https://www.w3.org/TR/AERT#color-contrast
+export function isDarkBg(hex) {
+  const newHex = normalizeHex(hex);
+
+  const r = parseInt(newHex.substr(0, 2), 16);
+  const g = parseInt(newHex.substr(2, 2), 16);
+  const b = parseInt(newHex.substr(4, 2), 16);
+  const o = Math.round(((r * 299) + (g * 587) + (b * 114)) / 1000);
+
+  return o < 125;
+}

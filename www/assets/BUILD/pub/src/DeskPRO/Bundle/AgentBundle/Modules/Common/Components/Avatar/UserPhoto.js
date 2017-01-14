@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { isDarkBg, colorLuminance } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 
 export class UserPhoto extends React.Component {
 
@@ -44,14 +45,15 @@ export class UserPhoto extends React.Component {
   }
 
   getTextStyle() {
-    const { width, height } = this.props;
+    const { width, height, color } = this.props;
 
     return {
       width:      `${width}px`,
       height:     `${height}px`,
       lineHeight: `${height}px`,
       display:    'inline-block',
-      textAlign:  'center'
+      textAlign:  'center',
+      color:      isDarkBg(color) ? colorLuminance('#fff', -0.05) : '#4c4f50'
     };
   }
 

@@ -29,7 +29,7 @@ class AvatarHelper
     const props = {
       size:        24,
       color:       '#DD00AA',
-      borderColor: colorLuminance('#DD00AA', 0.2),
+      borderColor: colorLuminance('#DD00AA', -0.2),
       urlPattern:  null,
       gravatar:    null,
       text:        'EO',
