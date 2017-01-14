@@ -11,7 +11,8 @@ export class ImageAvatar extends React.Component {
 
   getUrl() {
     const { size, url, urlPattern } = this.props;
-    return size && urlPattern ? urlPattern.replace(/\{\{IMG_SIZE}}/, size) : url;
+    // just increase avatar size 4 times, so we don't be hit issue when gd scales it bad
+    return size && urlPattern ? urlPattern.replace(/\{\{IMG_SIZE}}/, size * 4) : url;
   }
 
   render() {
