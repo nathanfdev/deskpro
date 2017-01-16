@@ -304,16 +304,16 @@ JS;
 
     public function ajaxSavePrefsAction()
     {
-        $prefs_expire = $this->in->getCleanValueArray('prefs_expire', 'raw', 'string');
+        $prefsExpire = $this->in->getCleanValueArray('prefs_expire', 'raw', 'string');
 
-        foreach ($this->in->getCleanValueArray('prefs', 'raw', 'string') as $pref_name => $value) {
+        foreach ($this->in->getCleanValueArray('prefs', 'raw', 'string') as $prefName => $value) {
             $pref        = new Entity\PersonPref();
-            $pref->name  = $pref_name;
+            $pref->name  = $prefName;
             $pref->value = $value;
 
-            if (isset($prefs_expire[$pref_name])) {
+            if (isset($prefsExpire[$prefName])) {
                 try {
-                    $date              = new \DateTime($prefs_expire[$pref_name]);
+                    $date              = new \DateTime($prefsExpire[$prefName]);
                     $pref->date_expire = $date;
                 } catch (\Exception $e) {
                 }
@@ -321,7 +321,7 @@ JS;
 
             App::getDb()->replace('people_prefs', [
                 'person_id'   => $this->person->getId(),
-                'name'        => $pref_name,
+                'name'        => $prefName,
                 'date_expire' => $pref->date_expire ? $pref->date_expire->format('Y-m-d H:i:s') : null,
                 'value_str'   => $pref->value_str,
                 'value_array' => $pref->value_array ? serialize($pref->value_array) : null,
