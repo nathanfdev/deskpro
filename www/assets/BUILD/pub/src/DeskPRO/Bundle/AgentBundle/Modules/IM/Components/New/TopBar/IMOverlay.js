@@ -139,8 +139,8 @@ export default class IMOverlay extends React.Component {
               onParticipantClick={onParticipantClick}
               filter={this.state.filter}
             />
-            <div className="ui divider" />
-            <Header level={4} className="group-list" content="teams" />
+            { teams.size > 0 ? <div className="ui divider" /> : null }
+            { teams.size > 0 ? <Header level={4} className="group-list" content="teams" /> : null }
             { teams.size > 0
               ? <AgentTeamList
                 agents={agents}
