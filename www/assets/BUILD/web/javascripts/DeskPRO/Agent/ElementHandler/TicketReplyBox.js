@@ -137,6 +137,17 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				var ed = textarea.getEditor();
 				var lastH = ed.height();
 				if (DESKPRO_ENABLE_KB_SHORTCUTS) {
+					ed.on('keydown', function(e) {
+            var isCtrl = false;
+            if (e.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
+              isCtrl = true;
+            }
+
+						if (e.which === 13 && (isCtrl || e.metaKey)) {
+              self.page.shortcutSendReply();
+              return;
+						}
+					});
 					ed.on('keyup', function(ev) {
 						var isCtrl = false;
 						if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
