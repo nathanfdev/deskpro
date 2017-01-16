@@ -741,7 +741,10 @@ class TicketMessage extends DomainObject
 
     public function addAttachment(TicketAttachment $attach)
     {
-        $this->attachments->add($attach);
+        if (!$this->attachments->contains($attach)) {
+            $this->attachments->add($attach);
+        }
+
         $attach['message'] = $this;
     }
 
