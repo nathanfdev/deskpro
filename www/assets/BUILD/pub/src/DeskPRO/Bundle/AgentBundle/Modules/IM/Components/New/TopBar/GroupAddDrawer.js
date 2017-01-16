@@ -156,6 +156,7 @@ class GroupAddDrawer extends React.Component
     return (
       <Detached
         isOpen={isOpen}
+        zIndex={99999}
         positionTarget={target}
         positionMy="center-17 top-2"
       >

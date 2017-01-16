@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
 import { Avatar } from './Avatar';
-import { chooseColor } from './colors';
+import { chooseColor, darkerColor } from './colors';
 
 export class AgentTeamAvatar extends React.Component {
 
@@ -18,7 +18,7 @@ export class AgentTeamAvatar extends React.Component {
   getAgentTeamFallbackText() {
     const agentTeam = this.props.agentTeam || Immutable.fromJS({});
     const name      = agentTeam.get('name');
-    const text      = (name && name.length ? name[0] : '');
+    const text      = (name && name.length ? name.substr(0, 2) : '');
 
     return text || '?';
   }
@@ -30,10 +30,11 @@ export class AgentTeamAvatar extends React.Component {
 
     const props = {
       size,
-      color:      chooseColor(agentTeam.get('id')),
-      url:        avatar.get('url'),
-      urlPattern: avatar.get('url_pattern'),
-      text:       this.getAgentTeamFallbackText(),
+      color:       chooseColor(agentTeam.get('id')),
+      borderColor: darkerColor(agentTeam.get('id')),
+      url:         avatar.get('url'),
+      urlPattern:  avatar.get('url_pattern'),
+      text:        this.getAgentTeamFallbackText(),
       className
     };
 

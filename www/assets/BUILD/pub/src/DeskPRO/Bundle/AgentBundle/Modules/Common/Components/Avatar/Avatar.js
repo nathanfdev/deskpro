@@ -40,7 +40,7 @@ export class Avatar extends React.Component {
 
     return (
       <TextAvatar {...this.props}>
-        <UserPhoto type="text"className={className}  />
+        <UserPhoto type="text" className={className}  />
       </TextAvatar>
     );
   }

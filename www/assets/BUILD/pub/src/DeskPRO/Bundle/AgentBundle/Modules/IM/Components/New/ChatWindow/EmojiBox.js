@@ -22,7 +22,7 @@ class EmojiBox extends React.Component
       imagePathSVGSprites: './../assets/BUILD/pub/build/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg'
     };
 
-    return (<Detached isOpen={isOpen} positionTarget={emojiNode} positionMy="right+25 top+35">
+    return (<Detached zIndex={99999} isOpen={isOpen} positionTarget={emojiNode} positionMy="right+25 top+35">
       <ClickOut onClickOut={clickOut} ignoreNodes={['.emoji.trigger']}>
         <div className="emoji box">
           <EmojiPicker emojione={settings} onChange={this.props.emojiClick} />

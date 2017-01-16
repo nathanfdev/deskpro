@@ -24,8 +24,33 @@ img.emojione, svg.emojione {
 }
 
 .ui.im.avatar {
+
+  &#im-button, &#im-button svg {
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    -o-border-radius: 0px;
+    border-radius: 0px;
+  }
+
   width: 24px;
   height: 24px;
+
+  &.text-fallback {
+    border: 0.5px solid;
+  }
+
+  > .text {
+    font-family: "Open Sans", serif;
+    font-size: 12px;
+    color: $dp-greyscale-850;
+    font-weight: 600;
+  }
+
+  &.gravatar {
+    position: absolute;
+    top: 0;
+    left: 1px !important;
+  }
 }
 
 .ui.topbar > .item > .im-list {
@@ -39,12 +64,9 @@ img.emojione, svg.emojione {
       display: inline-block;
 
       > .im.avatar {
-        margin: 0 10px;
+        margin: 0 7px;
 
         .text {
-          font-family: "Open Sans", serif;
-          font-size: 12px;
-          color: $dp-greyscale-850;
           vertical-align: middle;
           display: inline-block;
           width: inherit;
@@ -54,13 +76,10 @@ img.emojione, svg.emojione {
           left: 0;
           top: 0;
 
-          &.gravatar {
-            position: absolute;
-            top: 0;
-            left: 1px !important;
-          }
+
         }
       }
+
       > .knuckles.message-counter {
         position: absolute;
         top: -8px;
@@ -83,15 +102,14 @@ img.emojione, svg.emojione {
     padding-right: 15px;
     height: 40px;
 
-
     .icon.group.add {
       margin-left: 5px;
       cursor: pointer;
     }
 
     .wrapper {
-
       vertical-align: middle;
+
       .icon.search {
         &.enabled {
           background: $dp-sonic-midnight;
@@ -328,6 +346,7 @@ img.emojione, svg.emojione {
       .item {
         &:hover {
           background: $dp-morning-sky;
+
           &.agent, &.department, &.team {
             .content {
               .header, .description {
@@ -375,6 +394,7 @@ img.emojione, svg.emojione {
               font-weight: 600;
             }
           }
+
           &.agent {
             max-width: 190px;
           }
@@ -383,10 +403,12 @@ img.emojione, svg.emojione {
         &.department.recent {
           .content {
             line-height: 12px;
+
             .header {
               font-size: 10px;
               text-transform: uppercase;
             }
+
             .description {
               max-width: 185px;
             }
@@ -405,7 +427,6 @@ img.emojione, svg.emojione {
   }
 
   &.chat.drawer {
-
     height: initial;
     width: 320px;
 
@@ -471,7 +492,6 @@ img.emojione, svg.emojione {
       }
 
       &.expanded {
-
         padding: 8px 20px;
 
         .ui.im.avatar {
@@ -524,7 +544,6 @@ img.emojione, svg.emojione {
       }
 
       .ui.segments {
-
         padding: 0 20px;
         border: 0;
         box-shadow: none;
@@ -577,7 +596,6 @@ img.emojione, svg.emojione {
           }
 
           .message:before {
-
             bottom: -0.40714286em;
             left: 1em;
             right: auto;
@@ -598,11 +616,13 @@ img.emojione, svg.emojione {
 
           &.my {
             text-align: right;
+
             .message, .message:before {
               text-align: left;
               border-color: $dp-sonic-primary;
               background: $dp-morning-sky;
             }
+
             .message:before {
               right: 1em;
               left: auto;
@@ -628,6 +648,7 @@ img.emojione, svg.emojione {
                 color: $dp-sonic-primary;
                 background-color: $dp-morning-sky;
               }
+
               .ui.divider.horizontal.timestamp {
                 &:before, &:after {
                   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABaAAAAACCAYAAACuTHuKAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AoTEAozi5V7HgAAADJJREFUaN7t0DERACAMBDC4Y0UBOy7xWEePiY6JhMwkdwAAAAAAQLN1Xm0NAAAAAAB0+6sqBJ7q+V/NAAAAAElFTkSuQmCC');

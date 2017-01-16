@@ -334,6 +334,7 @@ class Container extends React.Component {
 
     return (
       <Detached
+        zIndex={99999}
         isOpen={isOpen}
         positionTarget={document.getElementById(`chat-${current.get('id')}`)}
         positionMy="left-43 top-2"
