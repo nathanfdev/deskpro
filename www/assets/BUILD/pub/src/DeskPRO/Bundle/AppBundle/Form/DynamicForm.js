@@ -61,7 +61,13 @@ export class DynamicForm {
 
     this.$tplEl.find('input, textarea, select').each((i, field) => {
       const $field = $(field);
-      this.defaultValues.set($field.attr('id'), $field.is(':checkbox') ? $field.prop('checked') : $field.val());
+      const fieldId = $field.attr('id');
+
+      if ($field.is(':checkbox, :radio')) {
+        this.defaultValues.set(fieldId, $field.prop('checked'));
+      } else {
+        this.defaultValues.set(fieldId, $field.val());
+      }
     });
 
     if (options.onInit) {
@@ -174,6 +180,8 @@ export class DynamicForm {
 
         if ($field.is(':checkbox')) {
           $field.prop('checked', defaultValue).trigger('change');
+        } else if ($field.is(':radio') && defaultValue) {
+          $field.prop('checked', true);
         } else {
           $field.val(defaultValue).trigger('change');
         }
