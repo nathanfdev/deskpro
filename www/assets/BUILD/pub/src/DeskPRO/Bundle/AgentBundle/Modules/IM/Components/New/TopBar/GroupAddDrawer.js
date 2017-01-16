@@ -58,7 +58,8 @@ class GroupAddDrawer extends React.Component
     this.state = {
       checkedAgents:      props.checkedAgents,
       checkedAgentsCount: GroupAddDrawer.recalculateChecked(props.checkedAgents),
-      groupName:          ''
+      groupName:          '',
+      startedSelecting:   false
     };
     this.agentClick  = this.agentClick.bind(this);
     this.createGroup = this.createGroup.bind(this);
@@ -68,11 +69,13 @@ class GroupAddDrawer extends React.Component
   }
 
   componentWillReceiveProps(props) {
-    this.setState({
-      checkedAgents:      props.checkedAgents,
-      checkedAgentsCount: GroupAddDrawer.recalculateChecked(props.checkedAgents),
-      groupName:          props.editChat.get('name') || this.state.groupName
-    });
+    if (!this.state.startedSelecting) {
+      this.setState({
+        checkedAgents:      props.checkedAgents,
+        checkedAgentsCount: GroupAddDrawer.recalculateChecked(props.checkedAgents),
+        groupName:          props.editChat.get('name') || this.state.groupName
+      });
+    }
   }
 
   onChange(event) {
@@ -105,6 +108,7 @@ class GroupAddDrawer extends React.Component
 
     this.setState(
       {
+        startedSelecting:   true,
         checkedAgents:      newCheckedAgents,
         checkedAgentsCount: GroupAddDrawer.recalculateChecked(this.state.checkedAgents)
       }
