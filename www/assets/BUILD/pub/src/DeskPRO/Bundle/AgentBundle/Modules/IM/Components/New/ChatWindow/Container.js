@@ -11,7 +11,7 @@ import emojione from 'emojione';
 import MessageList from './MessageList';
 import EmojiBox from './EmojiBox';
 
-emojione.imagePathSVGSprites = './../assets/BUILD/pub/build/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg';
+emojione.imagePathSVGSprites = `./..${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg`;
 emojione.imageType = 'png';
 emojione.sprites = true;
 

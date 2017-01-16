@@ -31,7 +31,7 @@ class Message extends React.Component
 
   getMessage() {
     let message = this.props.message.message;
-    emojione.imagePathSVGSprites = './../assets/BUILD/pub/build/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg';
+    emojione.imagePathSVGSprites = `./..${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg`;
     emojione.imageType = 'svg';
     emojione.sprites = true;
 
