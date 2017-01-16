@@ -533,6 +533,7 @@ JS;
     public function acceptTempUploadAction()
     {
         $copy_blobauth = $this->in->getString('copy_blob');
+        $allowedImageExtensions = ['gif', 'png', 'jpg', 'jpeg'];
 
         if ($copy_blobauth) {
             $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($copy_blobauth);
@@ -547,7 +548,7 @@ JS;
             if ($this->in->getBool('is_image') && !$blob->isImage()) {
                 $error = [
                     'error_code'   => 'not_in_allowed_exts',
-                    'error_detail' => implode(',', ['gif', 'png', 'jpg', 'jpeg']),
+                    'error_detail' => implode(',', $allowedImageExtensions),
                 ];
                 $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
 
@@ -566,10 +567,11 @@ JS;
             $error = $accept->getError($file, 'agent');
             if (!$error && $this->in->getBool('is_image')) {
                 $set = new \Application\DeskPRO\Attachments\RestrictionSet();
-                $set->setAllowedExts(['gif', 'png', 'jpg', 'jpeg']);
+                $set->setAllowedExts($allowedImageExtensions);
                 $accept->addRestrictionSet('only_images', $set);
                 $error = $accept->getError($file, 'only_images');
             }
+
             if ($error) {
                 $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
 
@@ -619,14 +621,14 @@ JS;
         }
 
         $res = $this->createJsonResponse([[
-                                              'blob_id'           => $blob['id'],
-                                              'blob_auth'         => $blob->authcode,
-                                              'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
-                                              'download_url'      => $blob->getDownloadUrl(true, false),
-                                              'filename'          => $blob['filename'],
-                                              'filesize_readable' => $blob->getReadableFilesize(),
-                                              'is_image'          => $blob->isImage(),
-                                          ]]);
+            'blob_id'           => $blob['id'],
+            'blob_auth'         => $blob->authcode,
+            'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
+            'download_url'      => $blob->getDownloadUrl(true, false),
+            'filename'          => $blob['filename'],
+            'filesize_readable' => $blob->getReadableFilesize(),
+            'is_image'          => $blob->isImage(),
+        ]]);
 
         // Required for iframe transport on IE to prevent 'download' popup
         $res->headers->set('Content-Type', 'text/plain');
