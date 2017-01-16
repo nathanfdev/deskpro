@@ -630,7 +630,9 @@ class PortalSupportExtension extends \Twig_Extension
 
         $date->setTimezone($timezone);
 
-        return $date->format($format);
+        $translator = $this->container->get('language_manager')->getTranslator();
+
+        return $translator->date($format, $date, 'user.time.');
     }
 
     /**
