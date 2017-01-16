@@ -188,6 +188,7 @@ export default class IMOverlay extends React.Component {
         <SegmentsGroup className="im">
           <Segment className="search-wrapper">
             <SearchBox
+              focusOnMount
               onFocus={onFocus}
               onBlur={onBlur}
               onUserInput={this.onListFilter}
