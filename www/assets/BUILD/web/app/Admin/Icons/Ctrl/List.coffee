@@ -36,7 +36,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
               if rule instanceof CSSFontFaceRule
                 if rule.style.getPropertyValue
                   current = rule.style.getPropertyValue('font-family')
-                  content = rule.style.getPropertyValue('src')
+                  content = rule.style.cssText
                 else
                   current = rule.style['font-family']
                   content = rule.style['src']
