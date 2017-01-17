@@ -9,6 +9,7 @@ import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Component
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import emojione from 'emojione';
 import MessageList from './MessageList';
+import HeaderHelper from './HeaderHelper';
 import EmojiBox from './EmojiBox';
 
 emojione.imagePathSVGSprites = `./..${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg`;
@@ -82,53 +83,27 @@ class Container extends React.Component {
     }
   }
 
-  getAgentHeader(chat) {
-    const { agents, me, openGroupDrawer } = this.props;
-    let agentId;
-    for (const id of chat.get('agents')) {
-      if (id !== me.get('id')) {
-        agentId = id;
-        break;
-      }
+  getPath = (props) => {
+    let path;
+    if (!props.searchQuery) {
+      path = ['chatMessages', props.current.get('id')];
+    } else {
+      path = ['searchMessages', props.current.get('id')];
     }
-    const agent =  agents.get(agentId);
-    return [
-      agents.getIn([agentId, 'name']),
-      <i className="icon group add" onClick={() => { openGroupDrawer([agent.get('id')]); }} />
-    ];
-  }
-
-  getDepartmentHeader(chat) {
-    return this.props.departments.getIn([chat.getIn(['departments', 0]), 'title']);
-  }
-
-  getAgentTeamHeader(chat) {
-    return this.props.teams.getIn([chat.getIn(['agent_teams', 0]), 'name']);
-  }
+    return path;
+  };
 
   getHeader() {
-    const { current } = this.props;
-    let header;
-    switch (current.get('chat_type')) {
-      case 'agent':
-        header = this.getAgentHeader(current);
-        break;
-      case 'department':
-        header = this.getDepartmentHeader(current);
-        break;
-      case 'team':
-        header = this.getAgentTeamHeader(current);
-        break;
-      case 'group':
-        header = current.get('name');
-        break;
-      case 'everyone':
-        header = 'Everyone';
-        break;
-      default:
-        header = 'some im';
-        break;
+    const { agents, teams, departments, current, me, openGroupDrawer } = this.props;
+    const props = { agents, teams, departments, current, me, openGroupDrawer };
+
+    if (!this.headerHelper) {
+      this.headerHelper = new HeaderHelper(props);
+    } else {
+      this.headerHelper.setProps(props);
     }
+
+    const header = this.headerHelper.getHeaderText();
 
     return (
       <span className="wrapper">
@@ -140,16 +115,6 @@ class Container extends React.Component {
       </span>
     );
   }
-
-  getPath = (props) => {
-    let path;
-    if (!props.searchQuery) {
-      path = ['chatMessages', props.current.get('id')];
-    } else {
-      path = ['searchMessages', props.current.get('id')];
-    }
-    return path;
-  };
 
   toggleSearch() {
     if (this.state.searching) {
@@ -339,8 +304,9 @@ class Container extends React.Component {
   }
 
   render() {
-    const { current, isOpen, messages, me, agents, loadingMessages, searchQuery } = this.props;
-    const { onScroll, markNewMessages, onAgentClick } = this.props;
+    const { isOpen, loadingMessages, onScroll, markNewMessages, searchQuery, onAgentClick } = this.props;
+    const { current, messages, me, agents, teams, departments } = this.props;
+
     return (
       <Detached
         zIndex={99999}
@@ -360,6 +326,8 @@ class Container extends React.Component {
                 messages={messages}
                 me={me}
                 agents={agents}
+                temas={teams}
+                departments={departments}
                 searchQuery={searchQuery}
                 markNewMessages={markNewMessages}
                 onScroll={onScroll}
