@@ -63,3 +63,26 @@ Feature: New ticket form validation
       | Product        | product    | use_product         | prod                    |
       | TicketPriority | priority   | use_ticket_priority | pri                     |
       | TicketCategory | category   | use_ticket_category | cat                     |
+
+  Scenario Outline: I check leaf node validation
+    Given  the setting "core.<use_setting_name>" is set to 1
+    And only the following <entity_type> records exist:
+      | #  | Parent | Title   |
+      | p1 | NULL   | Title 1 |
+      | p2 | {p1}   | Title 2 |
+      | p3 | {p1}   | Title 3 |
+    And the only default ticket layout exists with fields:
+      | user_layout  |
+      | <field_name> |
+
+    When I go to "/new-ticket"
+    And I fill in "ticket[<field_name>]" with "{p1}"
+    And I press "Submit"
+
+    Then "ticket[<field_name>]" form field should have error with the phrase "portal.forms.error_<error_code>"
+    And "ticket[<field_name>]" form field should have 1 errors
+
+    Examples:
+      | entity_type    | field_name | use_setting_name    | error_code              |
+      | Product        | product    | use_product         | not_assignable_product  |
+      | TicketCategory | category   | use_ticket_category | not_assignable_category |

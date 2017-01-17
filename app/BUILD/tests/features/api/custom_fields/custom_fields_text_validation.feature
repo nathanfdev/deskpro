@@ -159,3 +159,33 @@ Feature: Custom fields
       | text     | user    | regex       |
       | textarea | agent   | agent_regex |
       | textarea | user    | regex       |
+
+  Scenario Outline: I check regex required option
+    Given only the following custom ticket fields exist:
+      | #  | Type   | Title      | Options                                        |
+      | t1 | <type> | Text field | {"<option>": "[0-9]+", "<option>_required": 0} |
+      | t2 | <type> | Text field | {"<option>": "[0-9]+", "<option>_required": 1} |
+    And the only default ticket layout exists with fields:
+      | <context>_layout  |
+      | ticket_field_{t1} |
+      | ticket_field_{t2} |
+
+    When I send a POST request to "/api/v2/ticket_forms/<context>" with body:
+    """
+{
+  "fields": {
+    "~t1~": "",
+    "~t2~": ""
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.fields.fields.fields_{t1}.errors[0].code" should not exist
+    And the JSON node "errors.fields.fields.fields.fields_{t2}.errors[0].code" should exist
+
+    Examples:
+      | type     | context | option      |
+      | text     | agent   | agent_regex |
+      | text     | user    | regex       |
+      | textarea | agent   | agent_regex |
+      | textarea | user    | regex       |

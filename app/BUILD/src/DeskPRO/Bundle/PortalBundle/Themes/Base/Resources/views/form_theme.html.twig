@@ -585,7 +585,6 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
             <option
                     {% if def.getOption('parent_id') is not null %} data-parent="{{ def.getOption('parent_id') }}"{% endif %}
                     {% if def.id is defined %} data-id="{{ def.id }}"{% endif %}
-                    {% if choice.data|length > 0 %} disabled="disabled"{% endif %}
                     {% if choice is selectedchoice(value) %} selected="selected"{% endif %}
                     data-name="{{ choice.label|trans({}, translation_domain) }}"
                     value="{{ choice.value }}"
@@ -652,7 +651,6 @@ END HEIRARCHY
             <option
                     {% if def.parent is not null %} data-parent="{{ def.parent.data.id }}"{% endif %}
                     {% if def.data.id is defined %} data-id="{{ def.data.id }}"{% endif %}
-                    {% if def|length > 0 %} disabled="disabled"{% endif %}
                     {% if choice is selectedchoice(value) %} selected="selected"{% endif %}
                     data-name="{{ choice.label|trans({}, translation_domain) }}"
                     value="{{ choice.value }}"

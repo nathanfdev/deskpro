@@ -26,19 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
 
 use Symfony\Component\Validator\Constraint;
 
 /**
- * Class LeafDepartment.
+ * Class TicketLeafProduct.
  *
  * @Annotation
  * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
  */
-class LeafDepartment extends Constraint
+class TicketLeafProduct extends Constraint
 {
-    const NOT_ASSIGNABLE_DEPARTMENT = 'not_assignable_department';
+    const NOT_ASSIGNABLE_PRODUCT = 'not_assignable_product';
 
-    public $message = 'Unable to select parent department.';
+    public $message = 'Unable to select parent product.';
 }

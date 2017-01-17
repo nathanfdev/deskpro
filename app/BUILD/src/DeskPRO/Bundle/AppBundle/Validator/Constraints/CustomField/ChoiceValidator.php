@@ -81,6 +81,11 @@ class ChoiceValidator extends AbstractCustomDefConstraintValidator
             $validators[] = new Assert\Count($count_options);
         }
 
+        // Leaf nodes
+        $validators[] = new LeafChoice([
+            'customDef' => $constraint->custom_def,
+        ]);
+
         return $validators;
     }
 
@@ -93,7 +98,7 @@ class ChoiceValidator extends AbstractCustomDefConstraintValidator
 
         /** @var CustomDataAbstract $choice */
         foreach ($value as $choice) {
-            $choices[] = $choice->field ? $choice->field->getId() : 0;
+            $choices[] = $choice->getField() ? $choice->getField()->getId() : 0;
         }
 
         if (!$constraint->getCustomDefOption('multiple', false)) {

@@ -441,6 +441,8 @@ class DataContext extends BaseContext
         $record = self::resolveReference($ref);
         if (self::isReference($value)) {
             $value = self::resolveReference($value);
+        } else {
+            $value = self::replace($value);
         }
 
         $value = ObjectsManager::preProcessValue($value);

@@ -239,7 +239,9 @@ class ObjectsManager
         if (is_scalar($value)) {
             $value = DataContext::replace($value, true);
 
-            if ($value === 'NULL') {
+            if (strpos($value, 'raw: ') === 0) {
+                $value = preg_replace('/^raw:\s/', '', $value);
+            } elseif ($value === 'NULL') {
                 $value = null;
             } elseif (preg_match('/^NOW\(\)(.*?)$/', $value, $matches)) {
                 $value = new \DateTime();

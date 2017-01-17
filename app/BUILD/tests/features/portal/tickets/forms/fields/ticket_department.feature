@@ -1,10 +1,16 @@
 @new
-Feature: New ticket form validation
-  I want to check department field validation
+Feature: New ticket form
+  I want to check department submission
 
   Background:
     Given I'm authenticated as user
     And I have only default brand
+    And the "{defaultBrand}" setting "core_tickets.use_ref" is set to "1"
+    And the following languages are enabled:
+      | default |
+    And the only default ticket layout exists with fields:
+      | user_layout |
+    And I disable anti-abuse rate limiting
     And I set permission "tickets.use" = 1 for "registered" usergroup
     And default everyone user group exists
     And only the following Department records exist:
@@ -18,20 +24,23 @@ Feature: New ticket form validation
     And I grant the "{d3}" department permission of tickets app for usergroup everyone
     And I grant the "{d4}" department permission of tickets app for usergroup everyone
 
-  Scenario: I check empty department
-    When I go to "/new-ticket"
-    And I press "Submit"
-    Then "ticket[department]" form field should have error with the phrase "portal.forms.error_required"
-    And "ticket[department]" form field should have 1 error
+  Scenario Outline: I check department submission
+    Given only the following Ticket records exist:
+      | #        | Person | Department | Ref | Subject        | Date Last User Reply |
+      | ticket_1 | {user} | {d2}       | ref | Ticket Subject | 2015-06-15 17:00:00  |
+    And only the following TicketMessage records exist:
+      | Ticket     | Person | Message |
+      | {ticket_1} | {user} | text    |
 
-  Scenario Outline: I check leaf department
-    When I go to "/new-ticket"
+    When I go to "/tickets/ref/edit"
     And I select "<department>" from "Department"
-    And I press "Submit"
-    Then "ticket[department]" form field should have error with the phrase "portal.forms.error_not_assignable_department"
-    And "ticket[department]" form field should have 1 error
+    And I press "Save"
+    Then I should be on "/tickets/ref"
+
+    When I go to "/tickets/ref/edit"
+    Then the "ticket[department]" field should contain "<department>"
 
     Examples:
       | department |
-      | {d1}       |
-      | {d2}       |
+      | {d3}       |
+      | {d4}       |

@@ -29,9 +29,9 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\ContactData;
 
 use DeskPRO\Component\Util\RegexUtils;
-use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
  * Class LinkedInValidator.

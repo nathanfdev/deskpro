@@ -113,26 +113,6 @@ class TicketWithLayoutsManipulatorType extends AbstractType
      */
     public function onPreData(FormEvent $event)
     {
-        /** @var \Application\DeskPRO\Entity\Ticket $data */
-        $data    = $event->getData();
-        $form    = $event->getForm();
-        $options = $form->getConfig()->getOptions();
-
-        // Setting ticket person if not defined
-        if (!$data->getPerson()) {
-            $data->setPerson($options['person']);
-        }
-
-        // if there is only one department we want to make sure to set it now...
-        $hierarchy = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($options['person']);
-
-        // if there is only one dep, and ticket has no dep, just set it on the ticket (we won't be showing the widget)
-        if (!$data->getDepartment()) {
-            if ($hierarchy->countSelectable() === 1) {
-                $data->setDepartment($hierarchy->getFirstSelectable());
-            }
-        }
-
         $context = TicketWithLayoutsContext::createOnPreSetData($event);
         TicketLayoutHelper::renderFormFields($context, function (LayoutField $field) use ($context) {
             return $field->getCriteria()->isTicketMatch($context->getTicket());

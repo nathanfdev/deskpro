@@ -33,6 +33,7 @@ use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CategoryAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
@@ -48,6 +49,7 @@ use Application\EmailBundle\Entity\SendmailSource;
 use Application\EmailBundle\EntityRepository\SendmailSourceRepository;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use DpBehat\Api\BrandContext;
+use DpBehat\Data\DataContext;
 
 class GenericContext extends BasePortalContext
 {
@@ -175,6 +177,31 @@ class GenericContext extends BasePortalContext
             'REPLACE INTO settings (name, value) VALUES (:name, :value)',
             ['name' => $setting_name, 'value' => $val]
         );
+    }
+
+    /**
+     * @Given the :brand setting :setting_name is set to :val
+     *
+     * @param string $brand
+     * @param string $setting_name
+     * @param string $val
+     *
+     * @throws \Exception
+     */
+    public function theBrandSettingIsSetTo($brand, $setting_name, $val)
+    {
+        $brand = DataContext::resolveReference($brand);
+        if (!$brand instanceof Brand) {
+            throw new \Exception('Brand not found');
+        }
+
+        $this->em()->getConnection()->executeUpdate(
+            'REPLACE INTO settings_brand (name, value, brand_id) VALUES (:name, :value, :brand_id)',
+            ['name' => $setting_name, 'value' => $val, 'brand_id' => $brand->getId()]
+        );
+
+        $this->container()->get('settings_resolver')->getBrandSettings($brand, true);
+        $this->container()->get('brand_stack')->push($brand, true);
     }
 
     /**

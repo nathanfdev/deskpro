@@ -4,6 +4,10 @@ Feature: /ticket_forms validation
 
   Background:
     Given I'm authenticated as admin
+    And no Product records exist
+    And no TicketCategory records exist
+    And no TicketPriority records exist
+    And no TicketWorkflow records exist
 
   Scenario Outline: I sent unknown choice:
     Given the setting "core.use_<setting_name>" is set to 1
@@ -96,3 +100,28 @@ Feature: /ticket_forms validation
       | TicketCategory | category   | ticket_category |
       | TicketWorkflow | workflow   | ticket_workflow |
       | TicketPriority | priority   | ticket_priority |
+
+  Scenario Outline: I want to check leaf node validation
+    Given the setting "core.use_<setting_name>" is set to 1
+    And the only default ticket layout exists with fields:
+      | agent_layout |
+      | <field_name> |
+    And only the following <entity_type> records exist:
+      | #  | Title   | Parent |
+      | p1 | Title 1 | NULL   |
+      | p2 | Title 2 | {p1}   |
+
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "<field_name>": ~p1~
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.<field_name>.errors" should have 1 element
+    And the JSON node "errors.fields.<field_name>.errors[0].code" should be equal to the string "<error_code>"
+
+    Examples:
+      | entity_type    | field_name | setting_name    | error_code              |
+      | Product        | product    | product         | not_assignable_product  |
+      | TicketCategory | category   | ticket_category | not_assignable_category |
