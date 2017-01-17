@@ -13,7 +13,8 @@ export class UserPhoto extends React.Component {
     color:       PropTypes.string,
     borderColor: PropTypes.string,
     children:    PropTypes.node,
-    className:   PropTypes.string
+    className:   PropTypes.string,
+    title:       PropTypes.string
   };
 
   static defaultProps = {
@@ -58,19 +59,23 @@ export class UserPhoto extends React.Component {
   }
 
   render() {
-    const { type, text, children, className } = this.props;
+    const { type, text, children, className, title } = this.props;
 
-    return (
-      <span
-        style={this.getStyle()}
-        className={classNames(
-        className,
-        'user-photo', {
+    const spanProps = {
+      style:     this.getStyle(),
+      className: classNames(className, 'user-photo',
+        {
           'text-fallback': type === 'text',
           gravatar:        type === 'gravatar'
-        })}
-      >
+        })
+    };
 
+    if (title) {
+      spanProps.title = title;
+    }
+
+    return (
+      <span {...spanProps}>
         {text && <span className="text" style={this.getTextStyle()}>{text}</span>}
         {children}
       </span>

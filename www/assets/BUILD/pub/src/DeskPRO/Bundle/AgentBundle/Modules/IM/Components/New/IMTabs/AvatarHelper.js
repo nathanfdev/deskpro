@@ -25,7 +25,7 @@ class AvatarHelper
     />);
   }
 
-  static renderEveryoneAvatar() {
+  static renderEveryoneAvatar(notificationsCount = false) {
     const props = {
       size:        24,
       color:       '#DD00AA',
@@ -35,11 +35,14 @@ class AvatarHelper
       text:        'EO',
       className:   'ui avatar image im'
     };
+    if (notificationsCount !== false) {
+      props.title = `Everyone chat. ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+    }
 
     return <Avatar {...props} />;
   }
 
-  static renderGroupAvatar(chat) {
+  static renderGroupAvatar(chat, notificationsCount = false) {
     const name = chat.get('name');
     const text = (name && name.length ? name.substr(0, 2) : '');
     const props = {
@@ -51,6 +54,11 @@ class AvatarHelper
       text:        text || '?',
       className:   'ui avatar image im'
     };
+
+    if (notificationsCount !== false) {
+      const participantsCount = chat.get('agents').size;
+      props.title = `${chat.get('name')} (${participantsCount} participant${participantsCount === 1 ? '' : 's'}). ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+    }
 
     return <Avatar {...props} />;
   }

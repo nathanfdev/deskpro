@@ -10,7 +10,8 @@ export class PersonAvatar extends React.Component {
     size:        PropTypes.number,
     className:   PropTypes.string,
     color:       PropTypes.string,
-    borderColor: PropTypes.string
+    borderColor: PropTypes.string,
+    title:       PropTypes.string
   };
 
   static defaultProps = {
@@ -29,7 +30,7 @@ export class PersonAvatar extends React.Component {
   }
 
   render() {
-    const { size, person, className, color, borderColor } = this.props;
+    const { size, person, className, color, borderColor, title } = this.props;
     const avatar = person && person.get('avatar') ? person.get('avatar') : Immutable.fromJS({});
 
     const props = {
@@ -39,6 +40,7 @@ export class PersonAvatar extends React.Component {
       urlPattern: avatar.get('url_pattern'),
       gravatar:   avatar.get('base_gravatar_url'),
       text:       this.getPersonFallbackText(),
+      title,
       className
     };
 

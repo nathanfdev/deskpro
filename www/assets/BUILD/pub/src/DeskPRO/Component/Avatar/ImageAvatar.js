@@ -6,7 +6,8 @@ export class ImageAvatar extends React.Component {
     children:   PropTypes.node,
     size:       PropTypes.number,
     url:        PropTypes.string,
-    urlPattern: PropTypes.string
+    urlPattern: PropTypes.string,
+    title:      PropTypes.string
   };
 
   getUrl() {
@@ -16,12 +17,12 @@ export class ImageAvatar extends React.Component {
   }
 
   render() {
-    const { size, children } = this.props;
+    const { size, children, title } = this.props;
     const childProps = children.props;
 
     return React.cloneElement(children, {
       ...childProps,
-
+      title,
       imageUrl: this.getUrl(),
       width:    size,
       height:   size
