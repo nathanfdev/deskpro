@@ -463,10 +463,12 @@ img.emojione, svg.emojione {
       padding: 8px 10px;
 
       .ui.im.avatar {
+        cursor: pointer;
+        margin-right: 3px;
+
         &.offline {
           opacity: 0.5;
         }
-        margin-right: 3px;
       }
 
       .control .icon.write.group-edit, .dots {

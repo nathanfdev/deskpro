@@ -264,48 +264,56 @@ class Container extends React.Component {
   }
 
   groupHeader() {
-    let agents = this.props.current.get('agents');
-    agents = this.state.expandGroupHeader ? agents : agents.slice(0, 9);
-    if (this.props.current.get('chat_type') === 'group' && !this.state.searching) {
+    const { current, agents, onAgentClick, openGroupDrawer, me } = this.props;
+    const { expandGroupHeader, searching } = this.state;
+
+    let localAgents = current.get('agents');
+    localAgents = expandGroupHeader ? localAgents : localAgents.slice(0, 9);
+
+    if (current.get('chat_type') === 'group' && !searching) {
       return (
-        <Segment vertical className={classNames('group participants', { expanded: this.state.expandGroupHeader })}>
+        <Segment vertical className={classNames('group participants', { expanded: expandGroupHeader })}>
           <span className="control">
             <i className="fa fa-times" onClick={() => this.setState({ expandGroupHeader: false })} />
             <i
               className="write icon group-edit"
               onClick={
                 () => {
-                  this.props.openGroupDrawer(
-                    this.props.current.get('agents').filter(item => item !== this.props.me.get('id')).toJS(),
-                    this.props.current
+                  openGroupDrawer(
+                    current.get('agents').filter(item => item !== me.get('id')).toJS(),
+                    current
                   );
                 }
               }
             />
           </span>
-          {agents.map(
+          {localAgents.map(
             (agentId) => {
-              if (agentId === this.props.me.get('id')) {
+              if (agentId === me.get('id')) {
                 return null;
               }
 
               const className = ['ui avatar image im'];
-              const agent = this.props.agents.get(agentId);
+              const agent = agents.get(agentId);
               if (!agent.get('online')) {
                 className.push('offline');
               }
 
-              return (<PersonAvatar
-                key={`agent_${agentId}`}
-                person={agent}
-                size={24}
-                className={classNames(className)}
-                color={chooseColor(agent)}
-              />);
+              return (
+                <span key={`agent_span_${agentId}`} onClick={() => onAgentClick(agentId, 'agent')}>
+                  <PersonAvatar
+                    key={`agent_${agentId}`}
+                    person={agent}
+                    size={24}
+                    className={classNames(className)}
+                    color={chooseColor(agent)}
+                  />
+                </span>
+              );
             }
           )}
           <span className="dots" onClick={() => this.setState({ expandGroupHeader: true })}>
-            {this.props.current.get('agents').size > 9 && !this.state.expandGroupHeader ? '...' : null}
+            {current.get('agents').size > 9 && !expandGroupHeader ? '...' : null}
           </span>
         </Segment>
       );
