@@ -124,7 +124,8 @@ define(['cutstring'], function (cutstring) {
         var d = $q.defer();
 
         if (!projectId) {
-          return d.resolve(null);
+          d.resolve(null);
+          return d.promise;
         }
 
         if (undefined !== this.create_meta[projectId]) {
@@ -135,14 +136,19 @@ define(['cutstring'], function (cutstring) {
 
         $http.get(window.DP_BASE_URL + 'agent/jira/createmeta' + query)
           .success(function (data, status, headers, config) {
-              if (!data.projects) return d.resolve(null);
-              data.projects.each(function(project){
-                meta.create_meta[project.id] = project;
-              });
-              d.resolve(meta.create_meta[projectId]);
+            if (data.errors) {
+              console.error(data.errors);
+              return d.resolve(null);
+            }
+            if (!data.projects) return d.resolve(null);
+            data.projects.each(function(project){
+              meta.create_meta[project.id] = project;
+            });
+            d.resolve(meta.create_meta[projectId]);
           })
           .error(function (data, status, headers, config) {
-              d.resolve(null);
+            console.error(status);
+            d.resolve(null);
           });
 
         return d.promise;
