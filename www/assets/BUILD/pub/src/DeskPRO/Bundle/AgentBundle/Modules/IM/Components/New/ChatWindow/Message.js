@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
-import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import classNames from 'classnames';
 import emojione from 'emojione';
+import { Segment } from 'DeskPRO/Component/Semantic/Segment';
+import { darkerColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import AvatarHelper from '../IMTabs/AvatarHelper';
 
 class Message extends React.Component
@@ -79,7 +80,17 @@ class Message extends React.Component
       {my || searchQuery ? this.timestamp() : null}
       <div className="message">
         {searchQuery ? <div className="avatar wrapper">{AvatarHelper.renderAgentAvatar(agent, 14)}</div> : null}
-        {!my && !searchQuery ? <div onClick={() => onAgentClick(agent.get('id'), 'agent')} className="agent name">{message.person_name}</div> : null}
+        {!my && !searchQuery
+          ? (
+            <div
+              style={{ color: darkerColor(agent.get('id'), 0.2) }}
+              onClick={() => onAgentClick(agent.get('id'), 'agent')}
+              className="agent name"
+            >
+              {message.person_name}
+            </div>
+            )
+          : null}
         <div className="content" dangerouslySetInnerHTML={this.getMessage()} />
       </div>
       {!my && !searchQuery ? this.timestamp() : null}
