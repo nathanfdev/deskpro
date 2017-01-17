@@ -14,7 +14,8 @@ class MessageList extends React.Component {
     loadingMessages: PropTypes.bool.isRequired,
     markNewMessages: PropTypes.func,
     agents:          PropTypes.object.isRequired,
-    onScroll:        PropTypes.func
+    onScroll:        PropTypes.func,
+    onAgentClick:    PropTypes.func.isRequired
   };
 
   static renderEmpty() {
@@ -54,17 +55,19 @@ class MessageList extends React.Component {
 
   renderList(msg) {
     let previous = false;
-    const { agents, searchQuery, me } = this.props;
+    const { agents, searchQuery, me, onAgentClick } = this.props;
+
     return (
       <SegmentsGroup vertical>
         {
-          msg.map((message, index) => {
+          msg.map((message) => {
             const agent = agents.get(message.person);
             const result = (
               <Message
-                key={index}
+                key={message.id}
                 agent={agent}
                 searchQuery={searchQuery}
+                onAgentClick={onAgentClick}
                 message={message}
                 previous={previous}
                 me={me}
@@ -83,9 +86,7 @@ class MessageList extends React.Component {
     const { onScroll, messages, loadingMessages } = this.props;
     let msg = messages.hasIn(path) ? messages.getIn(path).messages : [];
     msg     = msg.sort((first, second) => first.timestamp - second.timestamp);
-
     const loaded = !loadingMessages || msg.size > 0;
-
 
     return (
       <div className="dp-scrollable as-js-scrollbar as-vertical">

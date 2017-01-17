@@ -476,6 +476,7 @@ export class AgentTopBar extends React.Component {
           onScroll={onScroll}
           searchQuery={searchQuery}
           onChatSearch={onChatSearch}
+          onAgentClick={participantClick}
           agents={agents}
           departments={myDepartments}
           teams={myTeams}

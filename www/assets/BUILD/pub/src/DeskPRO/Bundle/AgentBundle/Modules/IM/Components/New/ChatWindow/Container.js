@@ -34,7 +34,8 @@ class Container extends React.Component {
     markNewMessages: PropTypes.func,
     openGroupDrawer: PropTypes.func,
     onScroll:        PropTypes.func,
-    onChatSearch:    PropTypes.func
+    onChatSearch:    PropTypes.func,
+    onAgentClick:    PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -330,8 +331,8 @@ class Container extends React.Component {
   }
 
   render() {
-    const { current, isOpen, messages, me, agents, loadingMessages, onScroll, markNewMessages, searchQuery } = this.props;
-
+    const { current, isOpen, messages, me, agents, loadingMessages, searchQuery } = this.props;
+    const { onScroll, markNewMessages, onAgentClick } = this.props;
     return (
       <Detached
         zIndex={99999}
@@ -354,6 +355,7 @@ class Container extends React.Component {
                 searchQuery={searchQuery}
                 markNewMessages={markNewMessages}
                 onScroll={onScroll}
+                onAgentClick={onAgentClick}
               />
             </div>
             <div className="reply">

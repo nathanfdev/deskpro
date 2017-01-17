@@ -8,11 +8,12 @@ import AvatarHelper from '../IMTabs/AvatarHelper';
 class Message extends React.Component
 {
   static propTypes = {
-    me:          PropTypes.object.isRequired,
-    message:     PropTypes.object.isRequired,
-    previous:    PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired,
-    searchQuery: PropTypes.string,
-    agent:       PropTypes.object
+    me:           PropTypes.object.isRequired,
+    message:      PropTypes.object.isRequired,
+    previous:     PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired,
+    searchQuery:  PropTypes.string,
+    agent:        PropTypes.object,
+    onAgentClick: PropTypes.func.isRequired
   };
 
   static renderSeparator(dateCreated) {
@@ -45,20 +46,23 @@ class Message extends React.Component
   }
 
   dateSep() {
-    const date = moment(this.props.message.date_created);
+    const { message, previous } = this.props;
+    const date = moment(message.date_created);
+    const previousDate = moment(previous.date_created);
 
-    const previousDate = moment(this.props.previous.date_created);
-    if ((this.props.previous && previousDate.dayOfYear() !== date.dayOfYear()) || !this.props.previous) {
-      return Message.renderSeparator(this.props.message.date_created);
+    if ((previous && previousDate.dayOfYear() !== date.dayOfYear()) || !previous) {
+      return Message.renderSeparator(message.date_created);
     }
 
     return null;
   }
 
   timestamp() {
-    const m = moment(this.props.message.date_created);
+    const { message, searchQuery } = this.props;
+
+    const m = moment(message.date_created);
     const classes = ['timestamp'];
-    if (this.props.searchQuery) {
+    if (searchQuery) {
       classes.push('ui fitted horizontal divider');
     }
 
@@ -68,14 +72,14 @@ class Message extends React.Component
   }
 
   render() {
-    const { searchQuery, message, me, agent } = this.props;
+    const { searchQuery, message, me, agent, onAgentClick } = this.props;
     const my = message.person === me.get('id') && !searchQuery;
     return (<Segment className={classNames('row', { search: searchQuery, result: searchQuery, my })}>
       {this.dateSep()}
       {my || searchQuery ? this.timestamp() : null}
       <div className="message">
         {searchQuery ? <div className="avatar wrapper">{AvatarHelper.renderAgentAvatar(agent, 14)}</div> : null}
-        {!my && !searchQuery ? <div className="agent name">{message.person_name}</div> : null}
+        {!my && !searchQuery ? <div onClick={() => onAgentClick(agent.get('id'), 'agent')} className="agent name">{message.person_name}</div> : null}
         <div className="content" dangerouslySetInnerHTML={this.getMessage()} />
       </div>
       {!my && !searchQuery ? this.timestamp() : null}
