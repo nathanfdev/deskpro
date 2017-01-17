@@ -858,8 +858,8 @@ img.emojione, svg.emojione {
   font-size: 12px;
   color: $dp-greyscale-850;
   background-color: white;
-  width: 302px;
-  height: 302px;
+  width: 278px;
+  height: 222px;
   border: 1px solid $dp-greyscale-350;
   position: relative;
   display: inline-block;
@@ -872,7 +872,7 @@ img.emojione, svg.emojione {
     bottom: auto;
     margin-left: 0em;
     box-shadow: none;
-    background: #FFFFFF;
+    background-color: #F5F7F9;
     position: absolute;
     content: '';
     width: 20px;
