@@ -56,8 +56,8 @@ class AutoAttendantForm extends React.Component {
           name:              autoAttendant ? autoAttendant.get('name') : '',
           audio_asset:       audioAsset ? audioAsset.toJS() : null,
           dial_numbers:      autoAttendant ? autoAttendant.get('dial_numbers').toJS() : [],
-          allow_repeat_menu: autoAttendant ? autoAttendant.get('allow_repeat_menu') : false,
-          allow_extension:   autoAttendant ? autoAttendant.get('allow_extension') : false
+          allow_repeat_menu: autoAttendant ? autoAttendant.get('allow_repeat_menu') : true,
+          allow_extension:   autoAttendant ? autoAttendant.get('allow_extension') : true
         },
         errorList: {},
         onChange:  this.onChange
