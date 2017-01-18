@@ -8,7 +8,8 @@ export class AgentTeamAvatar extends React.Component {
   static propTypes = {
     agentTeam: PropTypes.object.isRequired,
     size:      PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    className: PropTypes.string
+    className: PropTypes.string,
+    title:     PropTypes.string
   };
 
   static defaultProps = {
@@ -24,7 +25,7 @@ export class AgentTeamAvatar extends React.Component {
   }
 
   render() {
-    const { size, className } = this.props;
+    const { size, className, title } = this.props;
     const agentTeam = this.props.agentTeam || Immutable.fromJS({});
     const avatar    = agentTeam.get('avatar') || Immutable.fromJS({});
 
@@ -35,6 +36,7 @@ export class AgentTeamAvatar extends React.Component {
       url:         avatar.get('url'),
       urlPattern:  avatar.get('url_pattern'),
       text:        this.getAgentTeamFallbackText(),
+      title,
       className
     };
 

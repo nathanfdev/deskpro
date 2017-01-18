@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import { chooseColor, darkerColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import { RecentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
 import AvatarHelper from '../IMTabs/AvatarHelper';
+import HeaderHelper from '../ChatWindow/HeaderHelper';
 
 class TopBarRecentImList extends RecentList {
 
@@ -58,6 +59,19 @@ class TopBarRecentImList extends RecentList {
     return this.state.chats.slice(0, 10).map(agent => this.getItem(agent));
   }
 
+  getHeaderHelper(chat) {
+    const { agents, departments, teams, me } = this.props;
+    const props = { agents, departments, teams, me, current: chat };
+
+    if (!this.headerHelper) {
+      this.headerHelper = new HeaderHelper(props);
+    } else {
+      this.headerHelper.setProps(props);
+    }
+
+    return this.headerHelper;
+  }
+
   renderNotificationsBalloon(chat) {
     const notificationCount = this.getNotificationCount(chat);
     return notificationCount ? <div className="ui knuckles label message-counter">{notificationCount}</div> : null;
@@ -77,6 +91,9 @@ class TopBarRecentImList extends RecentList {
       className.push('offline');
     }
 
+    const header = this.getHeaderHelper(chat).getHeaderText(true);
+    const notificationsCount = this.getNotificationCount(chat);
+
     return (
       <span
         className="im wrapper"
@@ -84,6 +101,7 @@ class TopBarRecentImList extends RecentList {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
         <PersonAvatar
+          title={`${header}. ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`}
           color={chooseColor(agent.get('id'))}
           borderColor={darkerColor(agent.get('id'))}
           person={agent} size={24}
@@ -97,13 +115,23 @@ class TopBarRecentImList extends RecentList {
   renderDepartment(chat) {
     const department = this.props.departments.getIn(chat.get('departments', 0));
 
+    const header = this.getHeaderHelper(chat).getHeaderText(true);
+    const notificationsCount = this.getNotificationCount(chat);
+    const participantsCount = department.get('agents').size;
+    const title = `${header} (${participantsCount} participant${participantsCount === 1 ? '' : 's'}). ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+
     return (
       <span
         className="im wrapper"
         id={`chat-${chat.get('id')}`}
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
-        <DepartmentAvatar department={department} size={24} className="ui avatar image im" />
+        <DepartmentAvatar
+          department={department}
+          size={24}
+          className="ui avatar image im"
+          title={title}
+        />
         {this.renderNotificationsBalloon(chat)}
       </span>
     );
@@ -112,39 +140,48 @@ class TopBarRecentImList extends RecentList {
   renderTeam(chat) {
     const team = this.props.teams.get(chat.getIn(['agent_teams', 0]));
 
+    const header = this.getHeaderHelper(chat).getHeaderText(true);
+    const notificationsCount = this.getNotificationCount(chat);
+    const participantsCount = team.get('agents').size;
+    const title = `${header} (${participantsCount} participant${participantsCount === 1 ? '' : 's'}). ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+
     return (
       <span
         className="im wrapper"
         id={`chat-${chat.get('id')}`}
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
-        <AgentTeamAvatar agentTeam={team} size={24} className="ui avatar image im" />
+        <AgentTeamAvatar agentTeam={team} size={24} className="ui avatar image im" title={title} />
         {this.renderNotificationsBalloon(chat)}
       </span>
     );
   }
 
   renderEveryone(chat) {
+    const notificationsCount = this.getNotificationCount(chat);
+
     return (
       <span
         className="im wrapper"
         id={`chat-${chat.get('id')}`}
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
-        {AvatarHelper.renderEveryoneAvatar()}
+        {AvatarHelper.renderEveryoneAvatar(notificationsCount)}
         {this.renderNotificationsBalloon(chat)}
       </span>
     );
   }
 
   renderGroup(chat) {
+    const notificationsCount = this.getNotificationCount(chat);
+
     return (
       <span
         className="im wrapper"
         id={`chat-${chat.get('id')}`}
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
-        {AvatarHelper.renderGroupAvatar(chat)}
+        {AvatarHelper.renderGroupAvatar(chat, notificationsCount)}
         {this.renderNotificationsBalloon(chat)}
       </span>
     );

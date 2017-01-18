@@ -222,7 +222,7 @@ class RecentList extends React.Component {
   }
 
   renderEveryone(chat) {
-    return (
+    return 'everyone'.indexOf(this.props.filter.toLowerCase()) !== -1 ? (
       <ListElement
         onClick={() => this.props.onRecentClick(chat.get('id'))}
         key="everyone"
@@ -239,7 +239,7 @@ class RecentList extends React.Component {
           {AbstractList.getTimestamp(chat.get('date_last_message'))}
         </div>
       </ListElement>
-    );
+    ) : null;
   }
 
   render() {

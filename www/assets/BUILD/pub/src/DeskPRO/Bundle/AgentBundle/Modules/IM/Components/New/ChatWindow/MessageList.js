@@ -4,6 +4,7 @@ import { SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
 import Scrollarea from './Scrollarea';
 import Message from './Message';
+import HeaderHelper from './HeaderHelper';
 
 class MessageList extends React.Component {
   static propTypes = {
@@ -14,18 +15,11 @@ class MessageList extends React.Component {
     loadingMessages: PropTypes.bool.isRequired,
     markNewMessages: PropTypes.func,
     agents:          PropTypes.object.isRequired,
-    onScroll:        PropTypes.func
+    teams:           PropTypes.object.isRequired,
+    departments:     PropTypes.object.isRequired,
+    onScroll:        PropTypes.func,
+    onAgentClick:    PropTypes.func.isRequired
   };
-
-  static renderEmpty() {
-    return (
-      <Header
-        className="empty"
-        level={5}
-        content="Sorry, nothing found here"
-      />
-    );
-  }
 
   constructor(props) {
     super(props);
@@ -44,27 +38,51 @@ class MessageList extends React.Component {
 
   getPath = () => {
     let path;
-    if (!this.props.searchQuery) {
-      path = ['chatMessages', this.props.current.get('id')];
+    const { searchQuery, current } = this.props;
+    if (!searchQuery) {
+      path = ['chatMessages', current.get('id')];
     } else {
-      path = ['searchMessages', this.props.current.get('id')];
+      path = ['searchMessages', current.get('id')];
     }
     return path;
   };
 
+  renderEmpty() {
+    const { agents, teams, departments, current, me } = this.props;
+    const props = { agents, teams, departments, current, me };
+
+    if (!this.headerHelper) {
+      this.headerHelper = new HeaderHelper(props);
+    } else {
+      this.headerHelper.setProps(props);
+    }
+
+    const header = this.headerHelper.getHeaderText(true);
+
+    return (
+      <Header
+        className="empty"
+        level={5}
+        content={`Enter a message to start your first chat with ${header}!`}
+      />
+    );
+  }
+
   renderList(msg) {
     let previous = false;
-    const { agents, searchQuery, me } = this.props;
+    const { agents, searchQuery, me, onAgentClick } = this.props;
+
     return (
       <SegmentsGroup vertical>
         {
-          msg.map((message, index) => {
+          msg.map((message) => {
             const agent = agents.get(message.person);
             const result = (
               <Message
-                key={index}
+                key={message.id}
                 agent={agent}
                 searchQuery={searchQuery}
+                onAgentClick={onAgentClick}
                 message={message}
                 previous={previous}
                 me={me}
@@ -83,9 +101,7 @@ class MessageList extends React.Component {
     const { onScroll, messages, loadingMessages } = this.props;
     let msg = messages.hasIn(path) ? messages.getIn(path).messages : [];
     msg     = msg.sort((first, second) => first.timestamp - second.timestamp);
-
     const loaded = !loadingMessages || msg.size > 0;
-
 
     return (
       <div className="dp-scrollable as-js-scrollbar as-vertical">
@@ -96,7 +112,7 @@ class MessageList extends React.Component {
           onScroll={onScroll}
         >
           <Loader loaded={loaded} parentClassName="box">
-            {msg.size > 0 ? this.renderList(msg) : MessageList.renderEmpty()}
+            {msg.size > 0 ? this.renderList(msg) : this.renderEmpty()}
           </Loader>
         </Scrollarea>
       </div>

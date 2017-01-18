@@ -1,12 +1,14 @@
 /**
  * wrapper for pusher-app client
  */
-import { AbstractClient } from './AbstractClient';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { AbstractClient } from './AbstractClient';
 
 export class PollingClient extends AbstractClient {
 
-  getDefaultOptions() {
+  inProgress = false;
+
+  getDefaultOptions() { // eslint-disable-line class-methods-use-this
     return {
       polling_interval: 25000,
       me:               0,
@@ -22,8 +24,12 @@ export class PollingClient extends AbstractClient {
 
   sendPoll() {
     const that = this;
-    api.sendGet(`DP_API/notify/action-alerts/${that.options.last_alert}`)
-      .success((response) => that.handlePoll(response));
+    if (!that.inProgress) {
+      that.inProgress = true;
+      api.sendGet(`DP_API/notify/action-alerts/${that.options.last_alert}`)
+        .success(response => that.handlePoll(response))
+        .catch(() => that.handleError());
+    }
   }
 
   handlePoll(response) {
@@ -31,16 +37,22 @@ export class PollingClient extends AbstractClient {
     const last = response.data[response.data.length - 1];
     if (last && last.timestamp) {
       that.options.last_alert = last.timestamp;
-      response.data.map(datum => {
+      response.data.map((datum) => {
         if (datum.target_id === that.options.me) {
           that.options.dispatcher(that.options.eventName, datum);
         }
         return null;
       });
     }
+    that.inProgress = false;
+  }
+
+  handleError() {
+    this.inProgress = false;
   }
 
   stopPolling() {
     clearInterval(this.interval);
+    this.inProgress = false;
   }
 }

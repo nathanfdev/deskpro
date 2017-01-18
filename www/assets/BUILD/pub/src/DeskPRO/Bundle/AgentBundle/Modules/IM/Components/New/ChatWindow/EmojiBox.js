@@ -19,7 +19,7 @@ class EmojiBox extends React.Component
     const settings = {
       imageType:           'svg',
       sprites:             true,
-      imagePathSVGSprites: './../assets/BUILD/pub/build/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg'
+      imagePathSVGSprites: `./..${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg`
     };
 
     return (<Detached zIndex={99999} isOpen={isOpen} positionTarget={emojiNode} positionMy="right+25 top+35">
