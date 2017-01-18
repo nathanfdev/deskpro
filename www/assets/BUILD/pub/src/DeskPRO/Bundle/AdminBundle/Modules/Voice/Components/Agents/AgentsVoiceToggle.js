@@ -3,6 +3,19 @@ import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 import { Toggle } from 'DeskPRO/Component/Semantic/Form/index';
 import SectionHeader from '../../../Common/Components/SectionHeader';
 
+class AgentVoiceHeader extends React.Component {
+
+  render() {
+    return (
+      <SectionHeader
+        title="Agents Voice"
+        description="Select agents who can accept or make phone calls."
+        dividing
+      />
+    );
+  }
+}
+
 class AgentsVoiceToggle extends React.Component {
 
   static propTypes = {
@@ -17,7 +30,7 @@ class AgentsVoiceToggle extends React.Component {
 
     return (
       <div className="page">
-        <SectionHeader title="Agents Voice" dividing />
+        <AgentVoiceHeader />
 
         You currently have no accounts.
         <br /><br />
@@ -34,7 +47,7 @@ class AgentsVoiceToggle extends React.Component {
 
     return (
       <div className="page">
-        <SectionHeader title="Agents Voice" dividing />
+        <AgentVoiceHeader />
         <div className="voice-agents-table">
           <table>
             <tbody>
