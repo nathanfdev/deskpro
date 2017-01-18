@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
-import NumberOptionsFormContainer from './NumberOptionsFormContainer';
 import NumberTarget from '../../Common/NumberTarget/NumberTarget';
 import VoiceTargetNameContainer from '../../Common/NumberTarget/VoiceTargetNameContainer';
 
@@ -21,32 +20,19 @@ class NumberHeader extends React.Component {
 class NumberRow extends React.Component {
 
   static propTypes = {
-    number:     PropTypes.object,
-    queues:     PropTypes.object,
-    expanded:   PropTypes.bool,
-    onCollapse: PropTypes.func
+    number:       PropTypes.object,
+    onEditNumber: PropTypes.func
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      expanded: props.expanded || false
-    };
-  }
 
   onToggleOptions = (event) => {
     event.preventDefault();
 
-    const { number, onCollapse } = this.props;
-
-    onCollapse(number);
-    this.setState({
-      expanded: !this.state.expanded
-    });
+    const { number, onEditNumber } = this.props;
+    onEditNumber(number);
   };
 
   render() {
-    const { number, queues } = this.props;
+    const { number } = this.props;
 
     return (
       <div className="row" key={number.get('id')}>
@@ -55,26 +41,22 @@ class NumberRow extends React.Component {
             <div className={classNames('flag-icon', `flag-icon-${number.get('country_code')}`)} />
           </div>
           <div className="column number">{number.get('number')}</div>
-          {!this.state.expanded && <div className="column nickname">{number.get('nickname')}</div>}
-          {!this.state.expanded &&
-            <div className="column targets">
-              {number.get('target') &&
-                <VoiceTargetNameContainer target={number.get('target')}>
-                  <NumberTarget withType />
-                </VoiceTargetNameContainer>
-              }
-            </div>}
+          <div className="column nickname">
+            {number.get('nickname') ? number.get('nickname') : number.get('number')}
+          </div>
+          <div className="column targets">
+            {number.get('target') &&
+              <VoiceTargetNameContainer target={number.get('target')}>
+                <NumberTarget withType />
+              </VoiceTargetNameContainer>
+            }
+          </div>
           <div className="column options-button">
             <a onClick={this.onToggleOptions}>
               <i className="fa fa-gear" />
             </a>
           </div>
         </div>
-        {this.state.expanded &&
-          <div className="column options">
-            <NumberOptionsFormContainer number={number} queues={queues} />
-          </div>
-        }
       </div>
     );
   }
@@ -86,11 +68,10 @@ class NumberList extends React.Component {
     accounts:            PropTypes.object,
     numbers:             PropTypes.object,
     queues:              PropTypes.object,
-    expandedNumber:      PropTypes.number,
     onGoToAccounts:      PropTypes.func,
     onAddNumber:         PropTypes.func,
     onAddExistingNumber: PropTypes.func,
-    onCollapseNumber:    PropTypes.func
+    onEditNumber:        PropTypes.func
   };
 
   renderNoAccount() {
@@ -131,8 +112,8 @@ class NumberList extends React.Component {
   }
 
   renderTable() {
-    const { numbers, queues, expandedNumber } = this.props;
-    const { onAddNumber, onAddExistingNumber, onCollapseNumber } = this.props;
+    const { numbers, queues } = this.props;
+    const { onAddNumber, onEditNumber, onAddExistingNumber } = this.props;
 
     return (
       <div className="page">
@@ -158,8 +139,7 @@ class NumberList extends React.Component {
             <NumberRow
               number={number}
               queues={queues}
-              expanded={expandedNumber === number.get('id')}
-              onCollapse={onCollapseNumber}
+              onEditNumber={onEditNumber}
             />
           )}
         </div>

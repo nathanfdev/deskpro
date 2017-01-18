@@ -1,7 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Modal from 'DeskPRO/Component/Semantic/Modal';
 import { Select, RecordsChoiceWrapper } from 'DeskPRO/Component/Semantic/ReactForm';
 import { allQueuesSelector } from '../../../Selectors/queue';
+import NewQueueModalContainer from '../../Queues/Form/NewQueueModalContainer';
 
 @connect(state => ({
   queues: allQueuesSelector(state)
@@ -12,13 +14,43 @@ class QueuesSelectContainer extends React.Component {
     queues: PropTypes.object
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      formOpened: false
+    };
+  }
+
+  onAddNew = () => {
+    this.setState({
+      formOpened: true
+    });
+  };
+
+  onClose = () => {
+    this.setState({
+      formOpened: false
+    });
+  };
+
   render() {
     const { queues } = this.props;
+    const { formOpened } = this.state;
 
     return (
-      <RecordsChoiceWrapper records={queues}>
-        <Select {...this.props} clearable={false} />
-      </RecordsChoiceWrapper>
+      <div>
+        <RecordsChoiceWrapper records={queues}>
+          <Select
+            {...this.props}
+            clearable={false}
+            addNewLabel="Add a new queue..."
+            onAddNew={this.onAddNew}
+          />
+        </RecordsChoiceWrapper>
+        <Modal isOpen={formOpened} onClose={this.onClose} title="New Queue">
+          <NewQueueModalContainer onClose={this.onClose} />
+        </Modal>
+      </div>
     );
   }
 }

@@ -4,19 +4,40 @@ import Select from 'react-select';
 class SemanticSelect extends React.Component {
 
   static propTypes = {
-    choices:  PropTypes.array,
-    onChange: PropTypes.func
+    addNewLabel: PropTypes.string,
+    onAddNew:    PropTypes.func,
+    choices:     PropTypes.array,
+    onChange:    PropTypes.func
   };
 
   onChange = (item) => {
-    this.props.onChange(item && item.value);
+    const { onAddNew, onChange } = this.props;
+
+    if (item.addNew) {
+      onAddNew();
+    } else {
+      onChange(item && item.value);
+    }
   };
 
   render() {
-    const { choices } = this.props;
+    const { choices, addNewLabel, onAddNew } = this.props;
+
+    const newChoices = [...choices];
+    if (onAddNew) {
+      newChoices.unshift({
+        label:  addNewLabel || 'Add new',
+        value:  null,
+        addNew: true
+      });
+    }
 
     return (
-      <Select {...this.props} onChange={this.onChange} options={choices} />
+      <Select
+        {...this.props}
+        onChange={this.onChange}
+        options={newChoices}
+      />
     );
   }
 }

@@ -1,5 +1,6 @@
 import Accounts from './Accounts/List/AccountListContainer';
 import Numbers from './Numbers/List/NumberListContainer';
+import EditNumber from './Numbers/Form/EditNumberContainer';
 import AvailableNumbers from './Numbers/Search/AvailableNumbers/AvailableListContainer';
 import ExistingNumbers from './Numbers/Search/ExistingNumbers/ExistingListContainer';
 import Queues from './Queues/List/QueueListContainer';
@@ -16,6 +17,7 @@ import AgentsVoiceToggle from './Agents/AgentsVoiceToggleContainer';
 export {
   Accounts,
   Numbers,
+  EditNumber,
   AvailableNumbers,
   ExistingNumbers,
   Queues,

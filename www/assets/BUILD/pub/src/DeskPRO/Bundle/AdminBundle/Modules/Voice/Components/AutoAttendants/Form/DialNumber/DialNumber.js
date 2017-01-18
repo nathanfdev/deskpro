@@ -15,7 +15,6 @@ class DialNumber extends React.Component {
 
   onChangeType = (type) => {
     const { dialNum, onChange } = this.props;
-    console.log(type);
 
     if (type) {
       onChange(dialNum, { type });
