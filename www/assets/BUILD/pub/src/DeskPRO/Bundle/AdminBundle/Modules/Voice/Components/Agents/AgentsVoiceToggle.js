@@ -22,9 +22,43 @@ class AgentsVoiceToggle extends React.Component {
   static propTypes = {
     accounts:              PropTypes.object,
     agents:                PropTypes.object,
+    onToggleAll:           PropTypes.func,
     onToggleEnabled:       PropTypes.func,
     onToggleOutboundCalls: PropTypes.func,
     onGoToAccounts:        PropTypes.func
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      saving: false
+    };
+  }
+
+  onToggleAll = (event) => {
+    event.preventDefault();
+
+    const { onToggleAll } = this.props;
+    const { saving } = this.state;
+    if (saving) {
+      return;
+    }
+
+    this.setState({
+      saving: true
+    });
+
+    const promise = onToggleAll();
+    promise.success(() => {
+      this.setState({
+        saving: false
+      });
+    });
+    promise.error(() => {
+      this.setState({
+        saving: false
+      });
+    });
   };
 
   renderNoAccount() {
@@ -46,6 +80,7 @@ class AgentsVoiceToggle extends React.Component {
 
   renderList() {
     const { agents, onToggleEnabled, onToggleOutboundCalls } = this.props;
+    const { saving } = this.state;
 
     return (
       <div className="page">
@@ -53,12 +88,24 @@ class AgentsVoiceToggle extends React.Component {
         <div className="voice-agents-table">
           <table>
             <tbody>
+              <tr>
+                <td />
+                <td className="voice-table-mass-action">
+                  <span className="voice-table-mass-action-button" onClick={this.onToggleAll}>
+                    Toggle all
+                  </span>
+                </td>
+                <td />
+              </tr>
+            </tbody>
+            <tbody>
               {agents.map((agent, index) =>
                 <AgentVoiceToggle
                   key={index}
                   agent={agent}
                   onToggleEnabled={onToggleEnabled}
                   onToggleOutboundCalls={onToggleOutboundCalls}
+                  disabled={saving}
                 />
               )}
             </tbody>
@@ -79,6 +126,7 @@ class AgentVoiceToggle extends React.Component {
 
   static propTypes = {
     agent:                 PropTypes.object,
+    disabled:              PropTypes.bool,
     onToggleEnabled:       PropTypes.func,
     onToggleOutboundCalls: PropTypes.func
   };
@@ -91,9 +139,9 @@ class AgentVoiceToggle extends React.Component {
   }
 
   onToggleEnabled = () => {
-    const { agent, onToggleEnabled } = this.props;
+    const { agent, onToggleEnabled, disabled } = this.props;
     const { saving } = this.state;
-    if (saving) {
+    if (saving || disabled) {
       return;
     }
 
@@ -115,9 +163,9 @@ class AgentVoiceToggle extends React.Component {
   };
 
   onToggleOutboundCalls = () => {
-    const { agent, onToggleOutboundCalls } = this.props;
+    const { agent, onToggleOutboundCalls, disabled } = this.props;
     const { saving } = this.state;
-    if (saving) {
+    if (saving || disabled) {
       return;
     }
 
@@ -139,7 +187,7 @@ class AgentVoiceToggle extends React.Component {
   };
 
   render() {
-    const { agent } = this.props;
+    const { agent, disabled } = this.props;
     const { saving } = this.state;
     const voiceEnabled = agent.getIn(['agent_data', 'is_voice_enabled']);
     const outboundCallEnabled = agent.getIn(['agent_data', 'outbound_calls_enabled']);
@@ -154,7 +202,7 @@ class AgentVoiceToggle extends React.Component {
         </td>
         <td>
           <Toggle
-            disabled={saving}
+            disabled={saving || disabled}
             active={voiceEnabled}
             onChange={this.onToggleEnabled}
           />
@@ -165,7 +213,7 @@ class AgentVoiceToggle extends React.Component {
               label="Allow outbound calls"
               value={outboundCallEnabled}
               onChange={this.onToggleOutboundCalls}
-              disabled={saving}
+              disabled={saving || disabled}
             />}
         </td>
       </tr>

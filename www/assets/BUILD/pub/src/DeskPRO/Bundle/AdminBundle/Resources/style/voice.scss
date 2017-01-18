@@ -423,6 +423,14 @@
           font-weight: bold;
         }
       }
+
+      &.voice-table-mass-action {
+        .voice-table-mass-action-button {
+          font-size: 11px;
+          color: #888;
+          cursor: pointer;
+        }
+      }
     }
   }
 }
