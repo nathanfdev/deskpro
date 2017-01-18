@@ -39,7 +39,6 @@ use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCategoryType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketPriorityType;
@@ -427,18 +426,7 @@ abstract class AbstractFieldResolver
      *
      * @return FormField
      */
-    protected function createAttach(TicketWithLayoutsContext $context)
-    {
-        if (!$context->getMessage()) {
-            return false;
-        }
-
-        return new FormField(TicketMessageAttachmentCollectionType::class, [
-            'required'       => false,
-            'person'         => $context->getPerson(),
-            'ticket_message' => $context->getMessage(),
-        ]);
-    }
+    abstract protected function createAttach(TicketWithLayoutsContext $context);
 
     /**
      * @param TicketWithLayoutsContext $context

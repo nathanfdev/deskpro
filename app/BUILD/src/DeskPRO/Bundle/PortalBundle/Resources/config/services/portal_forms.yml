@@ -87,12 +87,6 @@ services:
     tags:
       - { name: form.type }
 
-  form.feedback_attachment:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackAttachmentType
-    arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
-    tags:
-      - { name: form.type }
-
   form.request_password_reset:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PasswordResetRequestType
     arguments:

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,12 +28,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\AppBundle\Form\Type\Attachments\AttachmentCollectionType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -41,9 +40,9 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TicketMessageAttachmentCollectionType.
+ * Class BaseTicketMessageAttachmentCollectionType.
  */
-class TicketMessageAttachmentCollectionType extends AbstractType
+class BaseTicketMessageAttachmentCollectionType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -51,7 +50,6 @@ class TicketMessageAttachmentCollectionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onLoadData'], 100);
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onDeleteEmpty'], -1);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSaveData']);
     }
 
@@ -63,25 +61,15 @@ class TicketMessageAttachmentCollectionType extends AbstractType
         $resolver
             ->setDefaults([
                 'mapped'        => false,
-                'entry_type'    => TicketMessageAttachmentType::class,
                 'entry_options' => function (Options $options) {
                     return [
-                        'ticket_message' => $options['ticket_message'],
-                        'person'         => $options['person'],
-                        'label'          => false,
+                        'person' => $options['person'],
+                        'label'  => false,
                     ];
                 },
-                'allow_add'      => true,
-                'allow_delete'   => true,
-                'label'          => false,
-                'error_bubbling' => false,
             ])
-            ->setRequired([
-                'ticket_message',
-                'person',
-            ])
+            ->setRequired(['ticket_message', 'entry_type'])
             ->setAllowedTypes('ticket_message', TicketMessage::class)
-            ->setAllowedTypes('person', Person::class)
         ;
     }
 
@@ -90,23 +78,7 @@ class TicketMessageAttachmentCollectionType extends AbstractType
      */
     public function getParent()
     {
-        return CollectionType::class;
-    }
-
-    /**
-     * @param FormEvent $event
-     */
-    public function onDeleteEmpty(FormEvent $event)
-    {
-        /** @var ArrayCollection $data */
-        $data = $event->getData();
-        foreach ($data as $key => $attachment) {
-            if (!$attachment) {
-                $data->remove($key);
-            }
-        }
-
-        $event->setData(new ArrayCollection($data->getValues()));
+        return AttachmentCollectionType::class;
     }
 
     /**
@@ -120,7 +92,9 @@ class TicketMessageAttachmentCollectionType extends AbstractType
         $collection = new ArrayCollection();
 
         foreach ($message->getAttachments() as $attachment) {
-            $collection->add($attachment);
+            if ($this->isMatchingCriteria($event, $attachment)) {
+                $collection->add($attachment);
+            }
         }
 
         $event->setData($collection);
@@ -148,7 +122,7 @@ class TicketMessageAttachmentCollectionType extends AbstractType
         }
 
         foreach ($message->getAttachments() as $attachment) {
-            if (!$data->contains($attachment)) {
+            if ($this->isMatchingCriteria($event, $attachment) && !$data->contains($attachment)) {
                 $message->removeAttachment($attachment);
             }
         }
@@ -162,5 +136,25 @@ class TicketMessageAttachmentCollectionType extends AbstractType
     private function getTicketMessage(FormEvent $event)
     {
         return $event->getForm()->getConfig()->getOption('ticket_message');
+    }
+
+    /**
+     * @param FormEvent        $event
+     * @param TicketAttachment $attachment
+     *
+     * @return bool
+     *
+     * @throws \Exception
+     */
+    public function isMatchingCriteria(FormEvent $event, TicketAttachment $attachment)
+    {
+        $entryType  = $event->getForm()->getConfig()->getOption('entry_type');
+        $reflection = new \ReflectionClass($entryType);
+
+        if (!$reflection->implementsInterface(TicketMessageAttachmentCollectionCriteriaInterface::class)) {
+            throw new \Exception('Attachment form entry type should be instance of TicketMessageAttachmentCollectionCriteriaInterface');
+        }
+
+        return call_user_func([$entryType, 'matchedCriteria'], $attachment);
     }
 }

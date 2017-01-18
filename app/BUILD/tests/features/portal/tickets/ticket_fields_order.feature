@@ -61,13 +61,13 @@ Feature: New ticket form
     When I select "Department 2" from "Department"
     And I press "Submit"
     Then I should see ".form-ticket" form fields in following order:
-      | name                           | class         |
-      | ticket[person][user_name]      |               |
-      |                                | email-present |
-      | ticket[message][message]       |               |
-      | ticket[message][format]        |               |
-      | ticket[attachments][0][upload] |               |
-      | ticket[department]             |               |
+      | name                                 | class         |
+      | ticket[person][user_name]            |               |
+      |                                      | email-present |
+      | ticket[message][message]             |               |
+      | ticket[message][format]              |               |
+      | ticket[attachments][0][blob][upload] |               |
+      | ticket[department]                   |               |
 
   Scenario: I check required fields
     Given the only default ticket layout exists with fields:
@@ -83,7 +83,7 @@ Feature: New ticket form
       | ticket[subject]                         |               |
       | ticket[message][message]                |               |
       | ticket[message][format]                 |               |
-      | ticket[attachments][0][upload]          |               |
+      | ticket[attachments][0][blob][upload]    |               |
       | ticket[person][user_name]               |               |
       |                                         | email-present |
       | ticket[displayed_fields]                |               |
