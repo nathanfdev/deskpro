@@ -74,6 +74,9 @@ class PersonAgentDataType extends AbstractType
             ->add('agent_calls_enabled', ApiBooleanType::class, [
                 'property_path' => 'agentCallsEnabled',
             ])
+            ->add('outbound_calls_enabled', ApiBooleanType::class, [
+                'property_path' => 'outboundCallsEnabled',
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onChangeAvailableStatus']);

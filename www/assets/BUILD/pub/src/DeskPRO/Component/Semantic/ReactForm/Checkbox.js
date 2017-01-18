@@ -4,6 +4,7 @@ import classNames from 'classnames';
 class Checkbox extends React.Component {
 
   static propTypes = {
+    disabled: PropTypes.bool,
     value:    PropTypes.bool,
     label:    PropTypes.string,
     onChange: PropTypes.func
@@ -15,14 +16,19 @@ class Checkbox extends React.Component {
   };
 
   render() {
-    const { value, label } = this.props;
+    const { value, label, disabled } = this.props;
 
     return (
       <div
         className={classNames('ui', { value }, 'checkbox')}
         onClick={this.onClick}
       >
-        <input type="checkbox" checked={value ? 'checked' : ''} className="hidden" />
+        <input
+          type="checkbox"
+          checked={value ? 'checked' : ''}
+          className="hidden"
+          disabled={disabled ? 'disabled' : ''}
+        />
         <label htmlFor="checkbox">{label}</label>
       </div>
     );
