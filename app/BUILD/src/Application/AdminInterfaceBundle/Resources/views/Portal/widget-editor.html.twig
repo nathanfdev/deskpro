@@ -204,15 +204,7 @@
                                     <p>
                                         {{ phrase('admin.widget.chat_request_person_desc') }}
                                     </p>
-                                    <div class="inline field" ng-if="brand_settings.chat.request_user_info">
-                                        <div class="ui toggle checkbox">
-                                            <input type="checkbox" id="require_department"
-                                                   ng-model="brand_settings.chat.allow_department_selection" class="hidden right">
-                                            <label for="require_department">
-                                                {{ phrase('admin.widget.chat_allow_department_selection') }}
-                                            </label>
-                                        </div>
-                                    </div>
+                                    <label ng-if="brand_settings.chat.request_user_info">{{ phrase('admin.widget.chat_show_fields_title') }}:</label>
                                     <div ng-if="brand_settings.chat.request_user_info">
                                         <div class="dp-item-list">
                                             <div class="inline field">
@@ -223,6 +215,7 @@
                                                         Name
                                                     </label>
                                                 </div>
+                                                <input type="checkbox" ng-model="brand_settings.chat.required_name" /> Required
                                             </div>
                                             <div class="inline field">
                                                 <div class="ui checkbox">
@@ -232,6 +225,38 @@
                                                         Email address
                                                     </label>
                                                 </div>
+                                                <input type="checkbox" ng-model="brand_settings.chat.required_email" /> Required
+                                            </div>
+                                            <div class="inline field" ng-if="chat_departments.length > 1">
+                                                <div class="ui checkbox">
+                                                    <input type="checkbox" id="chat_department"
+                                                           ng-model="brand_settings.chat.select_department"
+                                                           ng-true-value="custom"
+                                                           ng-false-value="default"
+                                                           class="hidden">
+                                                    <label for="chat_department">
+                                                        Department
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="inline field" ng-if="chat_departments.length > 1 && brand_settings.chat.select_department == 'default'">
+                                                <span>Chat will always be created in</span>
+                                                <select ng-model="brand_settings.chat.default_department">
+                                                    <option ng-repeat="option in chat_departments" ng-value="option.id" ng-selected="brand_settings.chat.default_department == option.id">
+                                                        {{ ng_var('option.title') }}
+                                                    </option>
+                                                </select>
+
+                                                <ul class="errors">
+                                                    <li ng-repeat="error in formErrors.settings.fields.brand.fields.chat.fields.select_department.errors">
+                                                        {{ ng_var('error.message') }}
+                                                    </li>
+                                                </ul>
+                                                <ul class="errors">
+                                                    <li ng-repeat="error in formErrors.settings.fields.brand.fields.chat.fields.default_department.errors">
+                                                        {{ ng_var('error.message') }}
+                                                    </li>
+                                                </ul>
                                             </div>
                                             <div ui-sortable="Ctrl.chatFieldsSortOptions" class="chat-custom-fields">
                                                 <div class="inline field with-drag-handle" ng-repeat="field in chat_custom_fields" data-id="{{ ng_var('field.id') }}">
@@ -243,6 +268,8 @@
                                                             <i class="fa fa-bars drag-handle"></i>
                                                         </label>
                                                     </div>
+                                                    <input type="checkbox" ng-model="brand_settings.chat.required_email" ng-checked="field.options.required || field.options.validation_type === 'required'" disabled /> Required
+                                                    (<a href="#/chat/fields/{{ ng_var('field.id') }}">change</a>)
                                                 </div>
                                             </div>
                                         </div>

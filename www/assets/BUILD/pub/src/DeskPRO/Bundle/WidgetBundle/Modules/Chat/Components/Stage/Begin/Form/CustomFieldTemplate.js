@@ -9,18 +9,24 @@ export class CustomFieldTemplate extends React.Component {
     description:  PropTypes.string,
     field:        PropTypes.node,
     isHidden:     PropTypes.bool,
-    formErrors:   PropTypes.object
+    formErrors:   PropTypes.object,
+    required:     PropTypes.bool
   };
 
   render() {
-    const { title, description, field, isHidden, propertyPath, formErrors } = this.props;
+    const { title, description, field, isHidden, propertyPath, formErrors, required } = this.props;
 
     if (isHidden) {
       return field;
     }
 
     return (
-      <FormItem label={title} errors={formErrors} field={propertyPath}>
+      <FormItem
+        label={title}
+        errors={formErrors}
+        field={propertyPath}
+        required={required}
+      >
         {description && <p className="field-description">{description}</p>}
         {field}
       </FormItem>

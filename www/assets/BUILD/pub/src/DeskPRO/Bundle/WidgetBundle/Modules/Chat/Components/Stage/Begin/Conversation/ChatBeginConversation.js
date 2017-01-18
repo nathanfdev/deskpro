@@ -67,6 +67,7 @@ export class ChatBeginConversation extends React.Component {
 
   prepareFormFields(props) {
     const { customFields, chatDepartments, widgetLanguage, errors, submit, loggedIn } = props;
+    const { chatRequiredName, chatRequiredEmail } = props;
 
     const hiddenFields = customFields.valueSeq().filter(this.isHiddenField).map(customField =>
       <CustomField config={customField} key={customField.get('id')}>
@@ -85,6 +86,7 @@ export class ChatBeginConversation extends React.Component {
           onSubmit={this.onSubmit}
           field="name"
           errors={errors}
+          required={chatRequiredName}
         >
           {hiddenFields}
           <Field select="name">
@@ -99,6 +101,7 @@ export class ChatBeginConversation extends React.Component {
           onSubmit={this.onSubmit}
           field="email"
           errors={errors}
+          required={chatRequiredEmail}
         >
           {hiddenFields}
           <Field select="email">

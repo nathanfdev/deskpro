@@ -30,14 +30,20 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\C
 
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
  * Class WidgetBrandChatSettings.
+ *
+ * @Assert\GroupSequenceProvider
  */
-class WidgetBrandChatSettings
+class WidgetBrandChatSettings implements GroupSequenceProviderInterface
 {
     const BEGIN_MODE_CONVERSATION = 'conversation';
     const BEGIN_MODE_FORM         = 'form';
+
+    const SELECT_DEFAULT = 'default';
+    const SELECT_CUSTOM  = 'custom';
 
     /**
      * @var bool
@@ -69,19 +75,42 @@ class WidgetBrandChatSettings
     private $beginMode = self::BEGIN_MODE_FORM;
 
     /**
-     * @var bool
+     * @var int
      *
-     * @JMS\Type("boolean")
+     * @JMS\Type("integer")
+     * @Assert\NotNull(groups={"DefaultDepartment"})
      */
-    private $allowDepartmentSelection = false;
+    private $defaultDepartment;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @Assert\NotBlank(groups={"Common"})
+     */
+    private $selectDepartment = self::SELECT_CUSTOM;
 
     /**
      * @var int
      *
      * @JMS\Type("integer")
-     * @Assert\GreaterThanOrEqual(30)
+     * @Assert\GreaterThanOrEqual(value=30, groups={"Common"})
      */
     private $waitingTimeout = 150;
+
+    /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $requiredName = false;
+
+    /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $requiredEmail = false;
 
     /**
      * Constructor.
@@ -172,26 +201,6 @@ class WidgetBrandChatSettings
     }
 
     /**
-     * @return bool
-     */
-    public function isAllowDepartmentSelection()
-    {
-        return $this->allowDepartmentSelection;
-    }
-
-    /**
-     * @param bool $allowDepartmentSelection
-     *
-     * @return $this
-     */
-    public function setAllowDepartmentSelection($allowDepartmentSelection)
-    {
-        $this->allowDepartmentSelection = (bool) $allowDepartmentSelection;
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getWaitingTimeout()
@@ -209,5 +218,98 @@ class WidgetBrandChatSettings
         $this->waitingTimeout = $waitingTimeout;
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDefaultDepartment()
+    {
+        return $this->defaultDepartment;
+    }
+
+    /**
+     * @param int $defaultDepartment
+     *
+     * @return $this
+     */
+    public function setDefaultDepartment($defaultDepartment)
+    {
+        $this->defaultDepartment = $defaultDepartment;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSelectDepartment()
+    {
+        return $this->selectDepartment;
+    }
+
+    /**
+     * @param string $selectDepartment
+     *
+     * @return $this
+     */
+    public function setSelectDepartment($selectDepartment)
+    {
+        $this->selectDepartment = $selectDepartment;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isRequiredName()
+    {
+        return $this->requiredName;
+    }
+
+    /**
+     * @param boolean $requiredName
+     *
+     * @return $this
+     */
+    public function setRequiredName($requiredName)
+    {
+        $this->requiredName = $requiredName;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isRequiredEmail()
+    {
+        return $this->requiredEmail;
+    }
+
+    /**
+     * @param boolean $requiredEmail
+     *
+     * @return $this
+     */
+    public function setRequiredEmail($requiredEmail)
+    {
+        $this->requiredEmail = $requiredEmail;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupSequence()
+    {
+        $groups = ['Common'];
+        if ($this->selectDepartment === self::SELECT_DEFAULT) {
+            $groups[] = 'DefaultDepartment';
+        }
+
+        return $groups;
     }
 }

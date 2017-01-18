@@ -173,11 +173,6 @@ export const widgetProactiveChatSelector = createSelector(
   options => (options.get('proactive') !== undefined ? options.get('proactive') : true)
 );
 
-export const widgetAllowDepartmentSelection = createSelector(
-  chatOptionsSelector,
-  options => (options.get('allow_department_selection') !== undefined ? options.get('allow_department_selection') : false)
-);
-
 export const chatBeginModeSelector = createSelector(
   chatOptionsSelector,
   options => (options.get('request_user_info') ? options.get('begin_mode') : 'simple')
@@ -251,6 +246,26 @@ export const chatEnabledCustomFieldsSelector = createSelector(
       ? options.get('enabled_custom_fields').map(id => parseInt(id, 10))
       : null
   )
+);
+
+export const chatDefaultDepartmentSelector = createSelector(
+  chatOptionsSelector,
+  options => parseInt(options.get('default_department'), 10)
+);
+
+export const chatSelectDepartmentTypeSelector = createSelector(
+  chatOptionsSelector,
+  options => options.get('select_department')
+);
+
+export const chatRequiredNameSelector = createSelector(
+  chatOptionsSelector,
+  options => !!options.get('required_name')
+);
+
+export const chatRequiredEmailSelector = createSelector(
+  chatOptionsSelector,
+  options => !!options.get('required_email')
 );
 
 // Ticket options selectors

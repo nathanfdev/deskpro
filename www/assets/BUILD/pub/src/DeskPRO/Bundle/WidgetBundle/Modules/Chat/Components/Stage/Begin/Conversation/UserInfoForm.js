@@ -9,21 +9,22 @@ export class UserInfoForm extends React.Component {
     field:    PropTypes.string,
     isSubmit: PropTypes.bool,
     onSubmit: PropTypes.func.isRequired,
-    children: PropTypes.any,
-    errors:   PropTypes.object
+    children: PropTypes.any, // eslint-disable-line react/forbid-prop-types
+    errors:   PropTypes.object,
+    required: PropTypes.bool
   };
 
-  onSubmit = event => {
+  onSubmit = (event) => {
     event.preventDefault();
     this.props.onSubmit();
   };
 
   render() {
-    const { field, title, children, errors, isSubmit } = this.props;
+    const { field, title, children, errors, isSubmit, required } = this.props;
 
     return (
       <div className={classNames('dpdesignportal-collect-user-info', { error: hasErrors(errors, field) })}>
-        <span className="title">{title}</span>
+        <span className="title">{title}{required ? ' *' : ''}</span>
         <form onSubmit={this.onSubmit}>
           {children}
           <FieldErrors errors={errors} name={field} />

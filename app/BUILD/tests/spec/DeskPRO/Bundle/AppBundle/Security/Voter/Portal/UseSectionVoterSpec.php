@@ -140,9 +140,11 @@ class UseSectionVoterSpec extends ObjectBehavior
         $brand_container->getSetting('core.apps_chat', Argument::any())->willReturn(true);
 
         $person_permission_bag->get('chat.use')->willReturn(true);
+        $person_permission_bag->getAllowedChatDepartmentIds()->willReturn(1);
         $this->verifyGrantedVote(UseSectionVoter::USE_CHAT, $token);
 
         $guest_permission_bag->get('chat.use')->willReturn(true);
+        $guest_permission_bag->getAllowedChatDepartmentIds()->willReturn(1);
         $this->verifyGrantedVote(UseSectionVoter::USE_CHAT, $guest_token);
     }
 

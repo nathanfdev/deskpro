@@ -29,7 +29,6 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.button.colors.background" should be equal to the string "#62ad8c"
     And the JSON node "data.settings.brand.button.colors.text" should be equal to the string "#ffffff"
     And the JSON node "data.settings.brand.chat.request_user_info" should be equal to 0
-    And the JSON node "data.settings.brand.chat.allow_department_selection" should be equal to 0
     And the JSON node "data.settings.brand.chat.proactive" should be equal to 1
     And the JSON node "data.settings.brand.chat.popup.translations[0].language" should be equal to 1
     And the JSON node "data.settings.brand.chat.popup.translations[0].title" should be equal to the string "Customer Support"
@@ -84,8 +83,8 @@ Feature: Widget Setup
       },
       "chat": {
         "begin_mode": "form",
-        "allow_department_selection": true,
         "waiting_timeout": 40,
+        "select_department": "custom",
         "popup": {
           "translations": [
             {
@@ -134,7 +133,6 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.button.translations[1].language" should be equal to 2
     And the JSON node "data.settings.brand.button.size" should be equal to the string "medium"
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to the string "form"
-    And the JSON node "data.settings.brand.chat.allow_department_selection" should be equal to 1
     And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 40
     And the JSON node "data.settings.brand.chat.popup.style" should be equal to the string "agent_text_input"
     And the JSON node "data.settings.brand.chat.popup.translations[0].language" should be equal to 1
@@ -180,8 +178,8 @@ Feature: Widget Setup
       },
       "chat": {
         "begin_mode": "conversation",
-        "allow_department_selection": true,
         "waiting_timeout": 40,
+        "select_department": "custom",
         "popup": {
           "translations": [
             {
@@ -220,7 +218,6 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.button.translations[0].name" should be equal to the string "Help (edited)"
     And the JSON node "data.settings.brand.button.size" should be equal to the string "large"
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to the string "conversation"
-    And the JSON node "data.settings.brand.chat.allow_department_selection" should be equal to 1
     And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 40
     And the JSON node "data.settings.brand.chat.popup.style" should be equal to the string "agent_text_input"
     And the JSON node "data.settings.brand.ticket.select_department" should be equal to the string "default"

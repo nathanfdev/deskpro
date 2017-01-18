@@ -108,9 +108,18 @@ class ChatCreateType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $brand   = $this->brandStack->getActive()->getBrand();
+        $brandOptions = $this->settingsResolver->getWidgetBrandOptions($brand);
+
+        $nameConstraints = [];
+        if ($brandOptions->getChat()->isRequiredName()) {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceName'], 100);
+            $nameConstraints[] = new Assert\NotBlank();
+        }
+
         $emailConstraints = [new Assert\Email(['strict' => true])];
-        if ($this->settingsResolver->isChatEmailValidation() && !$this->settingsResolver->isChatRequireLogin()) {
-            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceEmailSubmit'], 100);
+        if (($this->settingsResolver->isChatEmailValidation() || $brandOptions->getChat()->isRequiredEmail()) && !$this->settingsResolver->isChatRequireLogin()) {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceEmail'], 100);
             $emailConstraints[] = new Assert\NotBlank();
         }
 
@@ -118,6 +127,7 @@ class ChatCreateType extends AbstractType
             ->add('name', TextType::class, [
                 'property_path' => 'person_name',
                 'required'      => false,
+                'constraints'   => $nameConstraints,
             ])
             ->add('email', EmailType::class, [
                 'property_path' => 'person_email',
@@ -130,41 +140,39 @@ class ChatCreateType extends AbstractType
             ])
         ;
 
-        $brand = $this->brandStack->getActive()->getBrand();
-        if ($this->settingsResolver->getWidgetBrandOptions($brand)->getChat()->isAllowDepartmentSelection()) {
-            $permissionsBag       = $this->permissionsManager->getPortalPermissionsBag($options['person']);
-            $allowedDepartmentIds = $permissionsBag->getAllowedChatDepartmentIds();
+        $permissionsBag       = $this->permissionsManager->getPortalPermissionsBag($options['person']);
+        $allowedDepartmentIds = $permissionsBag->getAllowedChatDepartmentIds();
 
-            $builder->add('chat_department', EntityType::class, [
-                'class'         => Department::class,
-                'property_path' => 'department',
-                'query_builder' => function (EntityRepository $er) use ($allowedDepartmentIds, $brand) {
-                    $qb = $er
-                        ->createQueryBuilder('d')
-                        ->join('d.brands', 'b')
-                        ->where(
-                            'd.is_chat_enabled = true',
-                            'd.id IN (:allowed_department_ids)',
-                            'b.id IN(:brand)'
-                        )
-                        ->setParameter('allowed_department_ids', $allowedDepartmentIds)
-                        ->setParameter('brand', $brand)
-                    ;
+        $builder->add('chat_department', EntityType::class, [
+            'class'         => Department::class,
+            'property_path' => 'department',
+            'query_builder' => function (EntityRepository $er) use ($allowedDepartmentIds, $brand) {
+                $qb = $er
+                    ->createQueryBuilder('d')
+                    ->join('d.brands', 'b')
+                    ->where(
+                        'd.is_chat_enabled = true',
+                        'd.id IN (:allowed_department_ids)',
+                        'b.id IN(:brand)'
+                    )
+                    ->setParameter('allowed_department_ids', $allowedDepartmentIds)
+                    ->setParameter('brand', $brand)
+                ;
 
-                    return $qb;
-                },
-                'constraints' => [
-                    new Assert\NotNull(),
-                    new LeafDepartment(),
-                ],
-            ]);
-        }
+                return $qb;
+            },
+            'constraints' => [
+                new Assert\NotNull(),
+                new LeafDepartment(),
+            ],
+        ]);
 
         $builder->addEventSubscriber($this->personListener);
         $builder->addEventSubscriber(new AutoSetShouldSentTranscriptListener());
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonEmailFromSession']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckRequireLogin']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceDepartment']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetEmailValidationCode']);
     }
 
@@ -185,17 +193,51 @@ class ChatCreateType extends AbstractType
     }
 
     /**
+     * Force name field if it's required.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onForceName(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!isset($data['name'])) {
+            $data['name'] = '';
+        }
+
+        $event->setData($data);
+    }
+
+    /**
      * Form fields are optional but we need to handle email field anyway if chat email validation is enabled.
      *
      * @internal
      *
      * @param FormEvent $event
      */
-    public function onForceEmailSubmit(FormEvent $event)
+    public function onForceEmail(FormEvent $event)
     {
         $data = $event->getData();
         if (!isset($data['email'])) {
             $data['email'] = '';
+        }
+
+        $event->setData($data);
+    }
+
+    /**
+     * Ensure that department field was submitted.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onForceDepartment(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!isset($data['chat_department'])) {
+            $data['chat_department'] = null;
         }
 
         $event->setData($data);
