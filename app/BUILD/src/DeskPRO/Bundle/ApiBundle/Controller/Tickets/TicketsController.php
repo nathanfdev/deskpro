@@ -153,6 +153,7 @@ class TicketsController extends AbstractTicketsController
                 'count',
                 'page',
                 'ids_only',
+                'inline_sideloads',
                 JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM,
             ];
 

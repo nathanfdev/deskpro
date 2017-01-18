@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Common;
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\SerializerTypes;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineEntitySideload;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Component\Util\TypeUtils;
 use JMS\Serializer\GraphNavigator;
@@ -73,6 +74,10 @@ class EntityHandler implements SubscribingHandlerInterface
         $snake = TypeUtils::getSnakeCaseBaseTypeName($entity);
         if (in_array($snake, $context->getIncludes())) {
             $context->getSideloadStore()->addSideload($entity);
+
+            if ($context->isInlineSideloads()) {
+                return new InlineEntitySideload($snake, $entity->getId());
+            }
         }
 
         return $entity->getId();

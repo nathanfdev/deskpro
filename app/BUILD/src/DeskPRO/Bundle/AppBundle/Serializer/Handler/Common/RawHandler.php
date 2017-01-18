@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,23 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Common;
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\SerializerTypes;
+use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use JMS\Serializer\JsonSerializationVisitor;
 
 /**
- * Class SerializerTypes.
+ * Class RawHandler.
  */
-final class SerializerTypes
+class RawHandler implements SubscribingHandlerInterface
 {
-    const TYPE_RAW             = 'raw';
-    const TYPE_ENTITY          = 'entity';
-    const TYPE_TO_STRING       = 'to_string';
-    const TYPE_CUSTOM_DATA     = 'custom_data';
-    const TYPE_CUSTOM_PER_DATA = 'custom_per_data';
-    const TYPE_COLLECTION      = 'collection';
-    const TYPE_MAP             = 'map';
-    const TYPE_DEFERRED        = 'deferred';
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribingMethods()
+    {
+        return [
+            [
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'format'    => 'json',
+                'type'      => SerializerTypes::TYPE_RAW,
+                'method'    => 'serialize',
+            ],
+        ];
+    }
+
+    /**
+     * @param JsonSerializationVisitor $visitor
+     * @param mixed                    $value
+     *
+     * @return mixed
+     */
+    public function serialize(JsonSerializationVisitor $visitor, $value)
+    {
+        return $value;
+    }
 }

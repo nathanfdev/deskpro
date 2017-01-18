@@ -70,6 +70,11 @@ class SideloadSerializationContext extends SerializationContext
     protected $idsOnly = false;
 
     /**
+     * @var bool
+     */
+    protected $inlineSideloads = false;
+
+    /**
      * @var Request
      */
     protected $request;
@@ -96,12 +101,14 @@ class SideloadSerializationContext extends SerializationContext
      */
     public static function createContext(ContainerInterface $container)
     {
-        $request     = $container->get('request_stack')->getCurrentRequest();
-        $rawIncludes = $request->query->get('include');
-        $idsOnly     = $request->query->getBoolean('ids_only', false);
+        $request         = $container->get('request_stack')->getCurrentRequest();
+        $rawIncludes     = $request->query->get('include');
+        $idsOnly         = $request->query->getBoolean('ids_only', false);
+        $inlineSideloads = $request->query->getBoolean('inline_sideloads', false);
 
         $context = new self(self::cleanIncludes($rawIncludes), $container->get('security.token_storage'));
         $context->setIdsOnly($idsOnly);
+        $context->setInlineSideloads($inlineSideloads);
         $context->setRequest($request);
 
         return $context;
@@ -269,5 +276,21 @@ class SideloadSerializationContext extends SerializationContext
         }
 
         return $cleaned;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isInlineSideloads()
+    {
+        return $this->inlineSideloads;
+    }
+
+    /**
+     * @param boolean $inlineSideloads
+     */
+    public function setInlineSideloads($inlineSideloads)
+    {
+        $this->inlineSideloads = $inlineSideloads;
     }
 }
