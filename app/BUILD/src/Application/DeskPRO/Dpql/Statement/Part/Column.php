@@ -458,7 +458,9 @@ END)
             } elseif (isset(self::$_tableResolver[$assocTable])) {
                 $resolver = self::$_tableResolver[$assocTable];
 
-                if ($stack || in_array($section, ['order'])) {
+                if ($section === 'where') {
+                    $sql = "`$sqlTable`.`$resolver[0]`";
+                } elseif ($stack || in_array($section, ['order'])) {
                     // if we have a parent of any sort, act on the printed value
                     $sql = "`$sqlTable`.`$resolver[1]`";
                 } else {
