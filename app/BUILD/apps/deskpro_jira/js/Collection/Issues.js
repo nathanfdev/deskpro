@@ -48,6 +48,10 @@ define(function () {
 
         $http.get(window.DP_BASE_URL + 'agent/jira/ticket/' + $ticket.id + '/issue')
           .success(function (data, status, headers, config) {
+            if (data.errors) {
+              console.error(data.errors);
+              return d.reject();
+            }
             self.loading = false;
             data && self.push(data.issues);
             //d.resolve(self);
@@ -71,6 +75,10 @@ define(function () {
 
         $http.post(window.DP_BASE_URL + 'agent/jira/ticket/' + $ticket.id + '/issue', data)
           .success(function (data, status, headers, config) {
+            if (data.errors) {
+              console.error(data.errors);
+              return d.reject();
+            }
             data && self.push(data.issues);
             d.resolve(self.last());
           })
@@ -98,6 +106,10 @@ define(function () {
 
 		    $http.put(window.DP_BASE_URL + 'agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id, {fields: fields})
 				    .success(function (data, status, headers, config) {
+              if (data.errors) {
+                console.error(data.errors);
+                return d.reject();
+              }
 					    for (var i in fields) {
 						    if (undefined !== issue.fields[i]) {
 							    issue.fields[i] = fields[i];
@@ -125,6 +137,10 @@ define(function () {
 
         $http.post(window.DP_BASE_URL + 'agent/jira/ticket/' + $ticket.id + '/issue/' + issueId + '/comments', msg, {headers: {"Content-Type": "text/html"}})
           .success(function (data, status, headers, config) {
+            if (data.errors) {
+              console.error(data.errors);
+              return d.reject();
+            }
             if (!data) return d.resolve(data);
 
             // replace with rendered
@@ -168,6 +184,10 @@ define(function () {
 
         $http.get(window.DP_BASE_URL + 'agent/jira/search?q=' + $window.encodeURI(q))
           .success(function (data, status, headers, config) {
+            if (data.errors) {
+              console.error(data.errors);
+              return d.reject();
+            }
             d.resolve(data.issues);
           })
           .error(function (data, status, headers, config) {
@@ -188,6 +208,10 @@ define(function () {
 
         $http.post(window.DP_BASE_URL + 'agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id + '/link')
           .success(function (data, status, headers, config) {
+            if (data.errors) {
+              console.error(data.errors);
+              return d.reject();
+            }
             data && self.push(data.issues);
             d.resolve(self.last());
           })
@@ -209,6 +233,10 @@ define(function () {
 
         $http.delete(window.DP_BASE_URL + 'agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id + '/link')
           .success(function (data, status, headers, config) {
+            if (data.errors) {
+              console.error(data.errors);
+              return d.reject();
+            }
             self.splice(self.indexOf(issue), 1);
             d.resolve();
           })
