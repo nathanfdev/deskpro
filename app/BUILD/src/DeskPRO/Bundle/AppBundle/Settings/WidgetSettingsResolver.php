@@ -104,11 +104,6 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $languageManager;
 
     /**
-     * @var string
-     */
-    private $basePath;
-
-    /**
      * Constructor.
      *
      * @param BrandAwareSettingsResolver $settingsResolver
@@ -120,7 +115,6 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      * @param PortalModeStorage          $portalModeStorage
      * @param UrlCorrectorFactory        $urlCorrectorFactory
      * @param LanguageManager            $languageManager
-     * @param string                     $basePath
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
@@ -131,8 +125,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         PortalPermissionsManager   $permissionsManager,
         PortalModeStorage          $portalModeStorage,
         UrlCorrectorFactory        $urlCorrectorFactory,
-        LanguageManager            $languageManager,
-        $basePath
+        LanguageManager            $languageManager
     ) {
         parent::__construct($settingsResolver);
 
@@ -143,7 +136,6 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         $this->portalModeStorage   = $portalModeStorage;
         $this->urlCorrectorFactory = $urlCorrectorFactory;
         $this->languageManager     = $languageManager;
-        $this->basePath            = $basePath;
 
         if ($router instanceof PortalRouter) {
             $this->router = $router->getBaseRouter();
@@ -229,12 +221,13 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         $loaderUrl = $this->assetPackages->getUrl('widget_loader.min.js', 'app_assets');
         $widgetUrl = $this->assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets');
+        $basePath  = $request ? $request->getBasePath() : '';
 
         if (!preg_match('#^https?://#i', $loaderUrl)) {
-            $loaderUrl = rtrim(str_replace($this->basePath, '', $baseUrl), '/').$loaderUrl;
+            $loaderUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$loaderUrl;
         }
         if (!preg_match('#^https?://#i', $widgetUrl)) {
-            $widgetUrl = rtrim(str_replace($this->basePath, '', $baseUrl), '/').$widgetUrl;
+            $widgetUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$widgetUrl;
         }
 
         $model = new WidgetUrlSettings();
