@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
+import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Toggle } from 'DeskPRO/Component/Semantic/Form/index';
 import SectionHeader from '../../../Common/Components/SectionHeader';
 
@@ -19,10 +20,11 @@ class AgentVoiceHeader extends React.Component {
 class AgentsVoiceToggle extends React.Component {
 
   static propTypes = {
-    accounts:       PropTypes.object,
-    agents:         PropTypes.object,
-    onToggle:       PropTypes.func,
-    onGoToAccounts: PropTypes.func
+    accounts:              PropTypes.object,
+    agents:                PropTypes.object,
+    onToggleEnabled:       PropTypes.func,
+    onToggleOutboundCalls: PropTypes.func,
+    onGoToAccounts:        PropTypes.func
   };
 
   renderNoAccount() {
@@ -43,7 +45,7 @@ class AgentsVoiceToggle extends React.Component {
   }
 
   renderList() {
-    const { agents, onToggle } = this.props;
+    const { agents, onToggleEnabled, onToggleOutboundCalls } = this.props;
 
     return (
       <div className="page">
@@ -55,7 +57,8 @@ class AgentsVoiceToggle extends React.Component {
                 <AgentVoiceToggle
                   key={index}
                   agent={agent}
-                  onToggle={onToggle}
+                  onToggleEnabled={onToggleEnabled}
+                  onToggleOutboundCalls={onToggleOutboundCalls}
                 />
               )}
             </tbody>
@@ -75,8 +78,9 @@ class AgentsVoiceToggle extends React.Component {
 class AgentVoiceToggle extends React.Component {
 
   static propTypes = {
-    agent:    PropTypes.object,
-    onToggle: PropTypes.func
+    agent:                 PropTypes.object,
+    onToggleEnabled:       PropTypes.func,
+    onToggleOutboundCalls: PropTypes.func
   };
 
   constructor(props) {
@@ -86,13 +90,42 @@ class AgentVoiceToggle extends React.Component {
     };
   }
 
-  onToggle = () => {
-    const { agent, onToggle } = this.props;
+  onToggleEnabled = () => {
+    const { agent, onToggleEnabled } = this.props;
+    const { saving } = this.state;
+    if (saving) {
+      return;
+    }
+
     this.setState({
       saving: true
     });
 
-    const promise = onToggle(agent);
+    const promise = onToggleEnabled(agent);
+    promise.success(() => {
+      this.setState({
+        saving: false
+      });
+    });
+    promise.error(() => {
+      this.setState({
+        saving: false
+      });
+    });
+  };
+
+  onToggleOutboundCalls = () => {
+    const { agent, onToggleOutboundCalls } = this.props;
+    const { saving } = this.state;
+    if (saving) {
+      return;
+    }
+
+    this.setState({
+      saving: true
+    });
+
+    const promise = onToggleOutboundCalls(agent);
     promise.success(() => {
       this.setState({
         saving: false
@@ -108,6 +141,8 @@ class AgentVoiceToggle extends React.Component {
   render() {
     const { agent } = this.props;
     const { saving } = this.state;
+    const voiceEnabled = agent.getIn(['agent_data', 'is_voice_enabled']);
+    const outboundCallEnabled = agent.getIn(['agent_data', 'outbound_calls_enabled']);
 
     return (
       <tr>
@@ -120,9 +155,18 @@ class AgentVoiceToggle extends React.Component {
         <td>
           <Toggle
             disabled={saving}
-            active={agent.getIn(['agent_data', 'is_voice_enabled'])}
-            onChange={this.onToggle}
+            active={voiceEnabled}
+            onChange={this.onToggleEnabled}
           />
+        </td>
+        <td>
+          {voiceEnabled &&
+            <Checkbox
+              label="Allow outbound calls"
+              value={outboundCallEnabled}
+              onChange={this.onToggleOutboundCalls}
+              disabled={saving}
+            />}
         </td>
       </tr>
     );

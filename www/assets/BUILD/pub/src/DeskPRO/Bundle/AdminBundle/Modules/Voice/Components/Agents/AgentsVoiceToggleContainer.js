@@ -7,7 +7,7 @@ import { loadAgents } from '../../../Application/Actions/peopleActions';
 import { replaceRoute } from '../../../../Services/history';
 import { loadAccounts } from '../../Actions/accountActions';
 import { isAccountsLoadedSelector, allAccountsSelector } from '../../Selectors/account';
-import { toggleVoiceEnabled } from '../../Actions/agentActions';
+import { toggleVoiceEnabled, toggleOutboundCallsEnabled } from '../../Actions/agentActions';
 
 @connect(state => ({
   accounts:       allAccountsSelector(state),
@@ -30,7 +30,8 @@ class AgentsVoiceToggleContainer extends React.Component {
     dispatch(loadAgents());
   }
 
-  onToggle = agent => this.props.dispatch(toggleVoiceEnabled(agent));
+  onToggleEnabled = agent => this.props.dispatch(toggleVoiceEnabled(agent));
+  onToggleOutboundCalls = agent => this.props.dispatch(toggleOutboundCallsEnabled(agent));
 
   onGoToAccounts = () => {
     replaceRoute('/voice_channel/accounts');
@@ -46,7 +47,8 @@ class AgentsVoiceToggleContainer extends React.Component {
     return (
       <AgentsVoiceToggle
         {...this.props}
-        onToggle={this.onToggle}
+        onToggleEnabled={this.onToggleEnabled}
+        onToggleOutboundCalls={this.onToggleOutboundCalls}
         onGoToAccounts={this.onGoToAccounts}
       />
     );
