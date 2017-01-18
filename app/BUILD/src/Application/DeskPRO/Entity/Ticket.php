@@ -237,6 +237,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @var \Application\DeskPRO\Entity\TicketCategory
+     *
+     * @AppAssert\Ticket\TicketLeafCategory()
      */
     protected $category = null;
 
@@ -252,6 +254,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @var \Application\DeskPRO\Entity\Product
+     *
+     * @AppAssert\Ticket\TicketLeafProduct()
      */
     protected $product = null;
 

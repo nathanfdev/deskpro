@@ -26,51 +26,42 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
 
-use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
+use Application\DeskPRO\Entity\Product;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
- * Class ValidTermEngineTermValidator.
+ * Class LeafProductValidator.
  */
-class ValidTermEngineTermValidator extends ConstraintValidator
+class TicketLeafProductValidator extends ConstraintValidator
 {
     /**
      * {@inheritdoc}
      */
     public function validate($value, Constraint $constraint)
     {
-        if (!$value instanceof TermInterface) {
-            $this->context->addViolationAt('options', ErrorsCodes::INVALID_INPUT);
+        if (is_null($value)) {
+            return;
         }
 
-        if (!in_array($op = $value->getOp(), $supported = $value->getSupportedOps())) {
-            $this->context->addViolationAt(
-                'op',
-                ValidTermEngineTerm::ERROR_OP_NOT_SUPPORTED,
-                ['op' => $op, 'ops' => implode(', ', $supported)]
-            );
+        if (!$value instanceof Product) {
+            throw new UnexpectedTypeException($value, Product::class);
+        }
+        if (!$constraint instanceof TicketLeafProduct) {
+            throw new UnexpectedTypeException($constraint, TicketLeafProduct::class);
         }
 
-        $options = $value->getOptions();
-
-        if (!is_array($options)) {
-            throw new TransformationFailedException();
-        }
-
-        $options_resolver = $value::getOptionsResolver();
-
-        foreach ($options_resolver->getConstraints() as $option => $constraints) {
-            if (array_key_exists($option, $options)) {
-                $this->context->validateValue($options[$option], $constraints, sprintf('options[%s]', $option));
-            } else {
-                throw new UnexpectedTypeException($options, sprintf('key [%s] missing', $option));
-            }
+        if ($value->getChildren()->count()) {
+            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+            $context = $this->context;
+            $context
+                ->buildViolation($constraint->message)
+                ->setCode(TicketLeafProduct::NOT_ASSIGNABLE_PRODUCT)
+                ->addViolation()
+            ;
         }
     }
 }

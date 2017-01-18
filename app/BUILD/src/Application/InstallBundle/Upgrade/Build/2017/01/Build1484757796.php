@@ -26,19 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Component\Validator\Constraint;
-
-/**
- * Class LeafDepartment.
- *
- * @Annotation
- * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
- */
-class LeafDepartment extends Constraint
+class Build1484757796 extends AbstractBuild
 {
-    const NOT_ASSIGNABLE_DEPARTMENT = 'not_assignable_department';
-
-    public $message = 'Unable to select parent department.';
+    public function run()
+    {
+        $this->out('My Upgrade Class');
+        $this->execDbQuery('default', 'ALTER TABLE products DROP FOREIGN KEY FK_B3BA5A5A727ACA70');
+        $this->execDbQuery('default', 'ALTER TABLE products ADD CONSTRAINT FK_B3BA5A5A727ACA70 FOREIGN KEY (parent_id) REFERENCES products (id) ON DELETE SET NULL');
+    }
 }

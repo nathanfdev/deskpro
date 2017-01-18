@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\ApiTicketMessageAttachmentCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
@@ -57,7 +58,13 @@ class ApiFieldResolver extends AbstractFieldResolver
             return false;
         }
 
-        return parent::createDepartment($context);
+        return new FormField(TicketDepartmentChoiceType::class, [
+            'person'      => $context->getPerson(),
+            'ticket'      => $context->getTicket(),
+            'constraints' => [
+                new Assert\NotNull(),
+            ],
+        ]);
     }
 
     /**

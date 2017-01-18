@@ -29,56 +29,59 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
-use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
- * Class AbstractCustomDefConstraintValidator.
+ * Class LeafChoiceValidator.
  */
-abstract class AbstractCustomDefConstraintValidator extends ConstraintValidator
+class LeafChoiceValidator extends ConstraintValidator
 {
     /**
      * {@inheritdoc}
      */
     public function validate($value, Constraint $constraint)
     {
-        if (!$constraint instanceof AbstractCustomDefConstraint) {
-            throw new UnexpectedTypeException($constraint, AbstractCustomDefConstraint::class);
-        }
-        if (!$value instanceof Collection) {
-            throw new UnexpectedTypeException($value, Collection::class);
+        if (!$value) {
+            return;
         }
 
-        $custom_def = $constraint->custom_def;
-        if (!$custom_def instanceof CustomDefAbstract) {
-            throw new UnexpectedTypeException($custom_def, CustomDefAbstract::class);
+        if (!is_array($value)) {
+            $value = [$value];
         }
 
-        /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
-        $context = $this->context;
+        foreach ($value as $item) {
+            if (!is_scalar($item)) {
+                throw new UnexpectedTypeException($item, 'scalar');
+            }
+        }
 
-        $data       = $this->getData($value, $constraint);
-        $validators = $this->getValidators($data, $constraint);
+        if (!$constraint instanceof LeafChoice) {
+            throw new UnexpectedTypeException($constraint, CustomData::class);
+        }
 
-        $validator = $context->getValidator()->inContext($context);
-        $validator->validate($data, $validators);
+        $customDef = $constraint->customDef;
+        if (!$customDef instanceof CustomDefAbstract) {
+            throw new UnexpectedTypeException($constraint->customDef, CustomDefAbstract::class);
+        }
+
+        $parentNodes = [];
+        foreach ($customDef->getChildren() as $child) {
+            $parentChoiceId = $child->getOption('parent_id');
+            if ($parentChoiceId) {
+                $parentNodes[] = $parentChoiceId;
+            }
+        }
+
+        if (array_intersect($value, $parentNodes)) {
+            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+            $context = $this->context;
+            $context
+                ->buildViolation($constraint->message)
+                ->setCode(LeafChoice::NOT_ASSIGNABLE_CHOICE)
+                ->addViolation()
+            ;
+        }
     }
-
-    /**
-     * @param mixed                       $data
-     * @param AbstractCustomDefConstraint $constraint
-     *
-     * @return array
-     */
-    abstract protected function getValidators($data, AbstractCustomDefConstraint $constraint);
-
-    /**
-     * @param Collection                  $value
-     * @param AbstractCustomDefConstraint $constraint
-     *
-     * @return mixed
-     */
-    abstract protected function getData(Collection $value, AbstractCustomDefConstraint $constraint);
 }

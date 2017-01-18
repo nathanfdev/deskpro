@@ -5,7 +5,8 @@ Feature: /organizations endpoint
   I want an API endpoint
 
   Background:
-    Given I'm authenticated as admin
+    Given no Person records exist
+    And I'm authenticated as admin
     And there are no Blob records in the DB
     And I add the following Usergroup records:
       | #  | Sys name     | Title    |

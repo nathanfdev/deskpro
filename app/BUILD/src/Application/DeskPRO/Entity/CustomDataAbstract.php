@@ -38,7 +38,9 @@ namespace Application\DeskPRO\Entity;
  * Base class used for storing custom field data.
  *
  * @method $this setField(CustomDefAbstract $field)
+ * @method CustomDefAbstract getField()
  * @method $this setRootField(CustomDefAbstract $root_field)
+ * @method CustomDefAbstract getRootField()
  *
  * @property CustomDefAbstract $field
  * @property CustomDefAbstract $root_field
