@@ -7,7 +7,7 @@
 {% endset %}
 {% block content %}
 	{% if field_handler_name == 'Date' %}
-		<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} datepicker form {{ field_def.getOption('custom_css_classname', '') }} customfield" id="{{elId}}_form_wrap">
+		<div class="{{field_type}}_{{field_def.id}} {% if field_def.getOption('calendar', 'gregorian') == 'gregorian' %}{{field_handler_name}}{% endif %} {{ field_def.getOption('calendar') }} form {{ field_def.getOption('custom_css_classname', '') }} customfield" id="{{elId}}_form_wrap">
 			<div class="date-input">
 				{{- field_input }}{{ field_def.getHtmlOption()|raw -}}
 			</div>

@@ -34,6 +34,7 @@ namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Form\Type\CriteriaFilterField\DateType;
+use Fisharebest\ExtCalendar\ArabicCalendar;
 
 /**
  * Handles the date field.
@@ -50,7 +51,14 @@ class Date extends HandlerAbstract
             $data['value'] = time();
         }
 
-        $data['value'] = new \DateTime('@'.$data['value']);
+        switch ($this->field_def->getOption('calendar')) {
+            case 'hijri':
+                $calendar = new ArabicCalendar();
+                $data['value'] = implode('/', $calendar->jdToYmd(unixtojd($data['value'])));
+                break;
+            default:
+                $data['value'] = new \DateTime('@'.$data['value']);
+        }
 
         return parent::renderText($data, $template_vars);
     }
@@ -83,16 +91,27 @@ class Date extends HandlerAbstract
             return [];
         }
 
-        $date = \DateTime::createFromFormat('Y-m-d', $value, App::getCurrentPerson()->getDateTimezone());
-        if (!$date) {
-            return [];
+        switch ($this->field_def->getOption('calendar')) {
+            case 'hijri':
+                $calendar = new ArabicCalendar();
+                list($year, $month, $day) = explode('/', $value);
+                $jd = $calendar->ymdToJd($year, $month, $day);
+
+                $value = jdtounix($jd);
+                break;
+            default:
+                $date = \DateTime::createFromFormat('Y-m-d', $value, App::getCurrentPerson()->getDateTimezone());
+                if (!$date) {
+                    return [];
+                }
+
+                $date->modify('midnight');
+                $date = \Orb\Util\Dates::convertToUtcDateTime($date);
+                $value = $date->getTimestamp();
         }
 
-        $date->modify('midnight');
-        $date = \Orb\Util\Dates::convertToUtcDateTime($date);
-
         return [
-            [$this->field_def['id'], 'value', $date->getTimestamp()],
+            [$this->field_def['id'], 'value', $value],
         ];
     }
 
@@ -102,16 +121,13 @@ class Date extends HandlerAbstract
             try {
                 if (ctype_digit($data['value'])) {
                     $date = new \DateTime('@'.$data['value']);
-                    if ($date) {
-                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-                        $data['value'] = $date->format($this->getFormat());
-                    }
                 } else {
                     $date = \DateTime::createFromFormat($this->getFormat(), $data['value']);
-                    if ($date) {
-                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-                        $data['value'] = $date->format($this->getFormat());
-                    }
+                }
+
+                if ($date) {
+                    $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                    $data['value'] = $date->format($this->getFormat());
                 }
             } catch (\Exception $e) {
                 $data = null;
@@ -190,7 +206,7 @@ class Date extends HandlerAbstract
             }
         }
 
-        if ($data) {
+        if ($data && $this->isDefaultCalendar()) {
             $date = \DateTime::createFromFormat($this->getFormat(), $data);
             if (!$date) {
                 return $this->makeErrorArray(['date_invalid']);
@@ -201,7 +217,7 @@ class Date extends HandlerAbstract
         // Validate ranges
         //------------------------------
 
-        if ($data) {
+        if ($data && $this->isDefaultCalendar()) {
             try {
                 $admin_tz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
             } catch (\Exception $e) {
@@ -279,5 +295,13 @@ class Date extends HandlerAbstract
     public function getSearchType()
     {
         return 'value';
+    }
+
+    /**
+     * @return bool
+     */
+    private function isDefaultCalendar()
+    {
+        return 'gregorian' === $this->field_def->getOption('calendar', 'gregorian');
     }
 }
