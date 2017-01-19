@@ -57,6 +57,9 @@ export const startChat = createAction(
             const records = {};
             records[response.data.id] = response.data;
             dispatch(addToCollection('AgentChat', 'recent', records, [parseInt(response.data.id, 10)]));
+            if (response.data.chat_type === 'group') {
+              dispatch(addToCollection('AgentChat', 'group', records, [parseInt(response.data.id, 10)]));
+            }
             dispatch(markChatAsManuallyClosed(response.data.id));
             return resolve(response.data);
           })
