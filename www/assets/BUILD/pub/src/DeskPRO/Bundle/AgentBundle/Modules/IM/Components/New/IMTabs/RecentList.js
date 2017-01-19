@@ -110,14 +110,12 @@ class RecentList extends React.Component {
 
   renderNotificationsBalloon(chat) {
     const notificationCount = this.getNotificationCount(chat);
+    if (notificationCount < 1) {
+      return null;
+    }
     return (
-      <div
-        className={classNames(
-                ['ui', 'knuckles', 'label', 'message-counter'],
-                { grey: !notificationCount || notificationCount < 1 })
-            }
-      >
-        {notificationCount || 0}
+      <div className="ui knuckles label message-counter">
+        {notificationCount}
       </div>
     );
   }
