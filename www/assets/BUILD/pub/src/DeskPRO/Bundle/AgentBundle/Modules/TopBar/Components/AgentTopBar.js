@@ -131,7 +131,13 @@ export class AgentTopBarContainer extends SeparateComponent {
   }
 
   recentClick(chatId) {
-    this.props.dispatch(chatsActions.startChat(null, chatId));
+    const { current, dispatch } = this.props;
+
+    if (current && chatId === current.get('id')) {
+      dispatch(chatsActions.closeChat(chatId));
+    } else {
+      dispatch(chatsActions.startChat(null, chatId));
+    }
   }
 
   participantClick(id, type) {
@@ -165,7 +171,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     if (window.DP_HAS_NEW_IM) {
       this.props.dispatch(loadFromApi(
         'AgentChat',
-        'DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=5',
+        'DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=10',
         'recent'
       ));
       this.props.dispatch(loadFromApi(

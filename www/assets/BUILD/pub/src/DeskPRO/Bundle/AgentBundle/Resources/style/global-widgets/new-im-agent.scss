@@ -110,8 +110,28 @@ img.emojione, svg.emojione {
     .wrapper {
       vertical-align: middle;
 
-      .icon.search {
-        &.enabled {
+      .icon {
+        &.search, &.remove {
+
+          -webkit-border-radius: 2px;
+          -moz-border-radius: 2px;
+          border-radius: 2px;
+          -webkit-box-shadow: inset -1px 0 1px 1px rgba(255,255,255,0.5);
+          -moz-box-shadow: inset -1px 0 1px 1px rgba(255,255,255,0.5);
+          box-shadow: inset -1px 0 1px 1px rgba(255,255,255,0.5);
+
+          float: right;
+          cursor: pointer;
+          padding-top: 3px;
+          font-size: 12px;
+          display: inline-block;
+          position: relative;
+          vertical-align: middle;
+          height: 20px;
+          width: 20px;
+        }
+
+        &.search.enabled {
           background: $dp-sonic-midnight;
           -webkit-border-radius: 2px;
           -moz-border-radius: 2px;
@@ -121,15 +141,8 @@ img.emojione, svg.emojione {
           box-shadow: inset 1px 1px 1px 0 rgba(0,0,0,0.5);
         }
 
-        float: right;
-        cursor: pointer;
-        padding-top: 3px;
-        font-size: 12px;
-        display: inline-block;
-        position: relative;
-        vertical-align: middle;
-        height: 20px;
-        width: 20px;
+
+
       }
     }
   }
@@ -883,4 +896,8 @@ img.emojione, svg.emojione {
     border-right: none;
     border-bottom: none;
   }
+}
+
+.medium-editor-toolbar {
+  z-index: 99999;
 }

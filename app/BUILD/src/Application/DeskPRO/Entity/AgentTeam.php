@@ -159,7 +159,11 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
      */
     public function getPersonList()
     {
-        return $this->members;
+        return $this->members->filter(
+            function ($member) {
+                /* @var Person $member */
+                return $member->isActiveAgent();
+            });
     }
 
     /**

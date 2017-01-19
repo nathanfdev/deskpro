@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import RteEditor from 'DeskPRO/Component/Rte/RteEditor';
 import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
-import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
@@ -108,6 +107,10 @@ class Container extends React.Component {
     return (
       <span className="wrapper">
         {header}
+        <i
+          className={classNames('remove icon')}
+          onClick={() => { this.clickOut(); }}
+        />
         <i
           className={classNames('search icon', { enabled: this.state.searching })}
           onClick={() => { this.toggleSearch(); }}
@@ -314,70 +317,68 @@ class Container extends React.Component {
         positionTarget={document.getElementById(`chat-${current.get('id')}`)}
         positionMy="left-43 top-2"
       >
-        <ClickOut onClickOut={() => this.clickOut()} ignoreNodes={['.emoji.box', '.im.recent .im.wrapper']}>
-          <div className="ui popup left bottom im chat drawer">
-            <div className="im header">{this.getHeader()}</div>
-            {this.searchHeader()}
-            {this.groupHeader()}
-            <div className="box">
-              <MessageList
-                loadingMessages={loadingMessages}
-                current={current}
-                messages={messages}
-                me={me}
-                agents={agents}
-                temas={teams}
-                departments={departments}
-                searchQuery={searchQuery}
-                markNewMessages={markNewMessages}
-                onScroll={onScroll}
-                onAgentClick={onAgentClick}
-              />
-            </div>
-            <div className="reply">
-              <form onSubmit={this.handleSubmit}>
-                <RteEditor
-                  inline
-                  ref={(c) => { this.editor = c; }}
-                  value={this.state.message}
-                  onChange={this.handleChange}
-                  onSubmit={this.handleSubmit}
-                  onFocus={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; }}
-                  onBlur={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = false; }}
-                  className="textarea"
-                  options={{
-                    autoLink:      true,
-                    imageDragging: true,
-                    placeholder:   false,
-                    toolbar:       {
-                      buttons:                ['bold', 'italic', 'underline'],
-                      updateOnEmptySelection: true
-                    },
-                    paste: {
-                      forcePlainText:  false,
-                      cleanPastedHTML: false,
-                      cleanAttrs:      ['style', 'dir']
-                    }
-                  }}
-                />
-                <i className="fa fa-paperclip reply-icon" onClick={this.handleAttach} />
-                <i
-                  className="fa fa-smile-o reply-icon emoji trigger"
-                  onClick={this.openEmoji} ref={(c) => { this.emoji = c; }}
-                />
-              </form>
-              {this.emoji ?
-                <EmojiBox
-                  isOpen={this.state.emojiOpened}
-                  clickOut={this.closeEmoji}
-                  emojiNode={this.emoji}
-                  emojiClick={this.addEmoji}
-                />
-                : null
-              }
-            </div>
+        <div className="ui popup left bottom im chat drawer">
+          <div className="im header">{this.getHeader()}</div>
+          {this.searchHeader()}
+          {this.groupHeader()}
+          <div className="box">
+            <MessageList
+              loadingMessages={loadingMessages}
+              current={current}
+              messages={messages}
+              me={me}
+              agents={agents}
+              teams={teams}
+              departments={departments}
+              searchQuery={searchQuery}
+              markNewMessages={markNewMessages}
+              onScroll={onScroll}
+              onAgentClick={onAgentClick}
+            />
           </div>
-        </ClickOut>
+          <div className="reply">
+            <form onSubmit={this.handleSubmit}>
+              <RteEditor
+                inline
+                ref={(c) => { this.editor = c; }}
+                value={this.state.message}
+                onChange={this.handleChange}
+                onSubmit={this.handleSubmit}
+                onFocus={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; }}
+                onBlur={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = false; }}
+                className="textarea"
+                options={{
+                  autoLink:      true,
+                  imageDragging: true,
+                  placeholder:   false,
+                  toolbar:       {
+                    buttons:                ['bold', 'italic', 'underline'],
+                    updateOnEmptySelection: true
+                  },
+                  paste: {
+                    forcePlainText:  false,
+                    cleanPastedHTML: false,
+                    cleanAttrs:      ['style', 'dir']
+                  }
+                }}
+              />
+              <i className="fa fa-paperclip reply-icon" onClick={this.handleAttach} />
+              <i
+                className="fa fa-smile-o reply-icon emoji trigger"
+                onClick={this.openEmoji} ref={(c) => { this.emoji = c; }}
+              />
+            </form>
+            {this.emoji ?
+              <EmojiBox
+                isOpen={this.state.emojiOpened}
+                clickOut={this.closeEmoji}
+                emojiNode={this.emoji}
+                emojiClick={this.addEmoji}
+              />
+              : null
+            }
+          </div>
+        </div>
       </Detached>
     );
   }
