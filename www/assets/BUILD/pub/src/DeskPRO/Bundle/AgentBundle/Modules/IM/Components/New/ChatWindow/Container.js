@@ -328,7 +328,7 @@ class Container extends React.Component {
               messages={messages}
               me={me}
               agents={agents}
-              temas={teams}
+              teams={teams}
               departments={departments}
               searchQuery={searchQuery}
               markNewMessages={markNewMessages}
