@@ -51,8 +51,8 @@ class TopBarRecentImList extends RecentList {
         chats = chats.set(chatId, chat.set('added', chats.hasIn(path) ? chats.getIn(path) : Date.now()));
       });
     }
-    chats = chats.sort((a, b) => b.get('added') - a.get('added'));
-    this.setState({ chats });
+    const sorted = chats.sort((a, b) => b.get('added') - a.get('added'));
+    this.setState({ chats: sorted });
   }
 
   getItems() {
