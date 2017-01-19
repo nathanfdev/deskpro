@@ -322,9 +322,7 @@ img.emojione, svg.emojione {
       .im.item {
         color: $dp-greyscale-600;
         font-size: 16px;
-        padding-left: 15px;
-        padding-top: 20px;
-        padding-bottom: 20px;
+        padding: 20px 34px;
         border-left: none;
 
         .dp-im-tab-menu-icon {
@@ -542,10 +540,8 @@ img.emojione, svg.emojione {
 
     }
 
-
-
     .box {
-      min-width: 300px;
+      min-width: 420px;
       height: 425px;
       position: relative;
       background-color: $dp-greyscale-50;
