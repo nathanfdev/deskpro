@@ -3738,6 +3738,14 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @return PhoneNumber[]|ArrayCollection
+     */
+    public function getPhoneNumbers()
+    {
+        return $this->phone_numbers;
+    }
+
+    /**
      * Count of tickets person was assigned.
      *
      * @return int

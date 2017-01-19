@@ -61,6 +61,7 @@ class PhoneNumberValidator extends ConstraintValidator
             $context
                 ->buildViolation($constraint->message)
                 ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
+                ->atPath('number')
                 ->addViolation()
             ;
         }

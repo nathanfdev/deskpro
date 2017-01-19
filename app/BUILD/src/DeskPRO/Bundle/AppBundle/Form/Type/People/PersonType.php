@@ -39,7 +39,9 @@ use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail\PersonEmailType;
+use DeskPRO\Bundle\AppBundle\Form\Type\PhoneNumberType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppConstraints;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -139,6 +141,18 @@ class PersonType extends AbstractType
             ->add('agent_data', PersonAgentDataType::class, [
                 'property_path' => 'agentData',
                 'required'      => false,
+            ])
+            ->add('phone_numbers', CollectionType::class, [
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'entry_type'    => PhoneNumberType::class,
+                'entry_options' => [
+                    'error_bubbling' => false,
+                    'person'         => $builder->getData(),
+                    'constraints'    => [
+                        new AppConstraints\PhoneNumber(),
+                    ],
+                ],
             ])
         ;
 
