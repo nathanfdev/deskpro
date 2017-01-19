@@ -106,7 +106,7 @@ class TicketsController extends AbstractTicketsController
      *          {"name"="filter", "description"="TicketFilter ID option", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
      *          {"name"="star", "description"="star filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="status", "description"="status filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="status", "description"="status filter", "dataType"="integer", "pattern"="[\w+]"},
      *          {"name"="agent", "description"="agent filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="person", "description"="person filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="language", "description"="language filter", "dataType"="integer", "pattern"="\d+"},
@@ -119,7 +119,7 @@ class TicketsController extends AbstractTicketsController
      *                  Custom ticket field filter. To filter by a custom field with ID=1 you need to add
      *                  ?ticket_field.1=value to the query string",
      *              "dataType"="string",
-     *              "pattern"="\d+|\w"
+     *              "pattern"="\d+|\w+"
      *          }
      *      },
      *      statusCodes={
