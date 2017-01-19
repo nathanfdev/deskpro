@@ -4,7 +4,6 @@ import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 import ExtensionsHeader from '../ExtensionsHeader';
 import AudioWidget from '../../Common/AudioWidget/AudioWidget';
 import NumberTargetList from '../../Common/NumberTarget/NumberTargetList';
-import ExistingExtensionFormContainer from './ExistingExtensionFormContainer';
 import AudioWidgetContainer from './AudioWidgetContainer';
 
 class ExistingExtensionList extends React.Component {
@@ -12,7 +11,8 @@ class ExistingExtensionList extends React.Component {
   static propTypes = {
     agents:          PropTypes.object,
     queues:          PropTypes.object,
-    onAddExtensions: PropTypes.func
+    onAddExtensions: PropTypes.func,
+    onEditExtension: PropTypes.func
   };
 
   renderEmpty() {
@@ -32,7 +32,7 @@ class ExistingExtensionList extends React.Component {
   }
 
   renderTable() {
-    const { agents = Immutable.fromJS({}), queues, onAddExtensions } = this.props;
+    const { agents = Immutable.fromJS({}), queues, onAddExtensions, onEditExtension } = this.props;
     const existingAgents = agents.filter(agent => agent.getIn(['agent_data', 'extension_number']));
 
     return (
@@ -57,6 +57,7 @@ class ExistingExtensionList extends React.Component {
               key={index}
               agent={agent}
               queues={queues}
+              onEditExtension={onEditExtension}
             />
           )}
         </div>
@@ -75,27 +76,20 @@ class ExistingExtensionList extends React.Component {
 class ExistingExtensionRow extends React.Component {
 
   static propTypes = {
-    agent:  PropTypes.object,
-    queues: PropTypes.object
+    agent:           PropTypes.object,
+    queues:          PropTypes.object,
+    onEditExtension: PropTypes.func
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      expanded: false
-    };
-  }
 
   onToggleOptions = (event) => {
     event.preventDefault();
-    this.setState({
-      expanded: !this.state.expanded
-    });
+
+    const { onEditExtension, agent } = this.props;
+    onEditExtension(agent);
   };
 
   render() {
     const { agent, queues = Immutable.fromJS([]) } = this.props;
-    const { expanded } = this.state;
     const involvedQueues = [];
     queues.filter(queue => queue.get('agents').contains(agent.get('id'))).forEach((queue) => {
       involvedQueues.push({ name: queue.get('name') });
@@ -108,28 +102,21 @@ class ExistingExtensionRow extends React.Component {
             <PersonAvatar person={agent} size={36} />
             <span className="agent-name">{agent.get('name')}</span>
           </div>
-          {!expanded && <div className="column extension">{agent.getIn(['agent_data', 'extension_number'])}</div>}
-          {!expanded &&
-            <div className="column targets">
-              <NumberTargetList targets={involvedQueues} displayCount={2} />
-            </div>}
-          {!expanded &&
-            <div className="column asset">
-              <AudioWidgetContainer agent={agent}>
-                <AudioWidget />
-              </AudioWidgetContainer>
-            </div>}
+          <div className="column extension">{agent.getIn(['agent_data', 'extension_number'])}</div>
+          <div className="column targets">
+            <NumberTargetList targets={involvedQueues} displayCount={2} />
+          </div>
+          <div className="column asset">
+            <AudioWidgetContainer agent={agent}>
+              <AudioWidget />
+            </AudioWidgetContainer>
+          </div>
           <div className="column options-button">
             <a onClick={this.onToggleOptions}>
               <i className="fa fa-gear" />
             </a>
           </div>
         </div>
-        {expanded &&
-          <div className="column options">
-            <ExistingExtensionFormContainer agent={agent} />
-          </div>
-        }
       </div>
     );
   }

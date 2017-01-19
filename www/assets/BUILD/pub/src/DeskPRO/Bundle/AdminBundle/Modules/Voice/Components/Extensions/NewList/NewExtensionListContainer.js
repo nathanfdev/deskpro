@@ -26,7 +26,8 @@ class NewExtensionListContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false
+      loading: false,
+      errors:  {}
     };
   }
 
@@ -44,17 +45,22 @@ class NewExtensionListContainer extends React.Component {
   onAddExtension = (agent, extension) => {
     const { dispatch } = this.props;
     this.setState({
-      loading: true
+      loading: true,
+      errors:  {}
     });
 
-    const promise = dispatch(addExtension(agent.get('id'), extension));
+    const agentId = agent.get('id');
+    const promise = dispatch(addExtension(agentId, extension));
     promise.success(() => {
       this.setState({
         loading: false
       });
     });
-    promise.error(() => {
+    promise.error((result) => {
       this.setState({
+        errors: {
+          [agentId]: result.errors
+        },
         loading: false
       });
     });
@@ -67,8 +73,20 @@ class NewExtensionListContainer extends React.Component {
     });
 
     const promise = dispatch(addExtensions(data));
-    promise.success(() => {
+    promise.success(({ responses }) => {
+      const errors = {};
+
+      Object.keys(responses).forEach((agentId) => {
+        const response = responses[agentId];
+        const statusCode = response.headers['status-code'];
+
+        if (statusCode !== 204) {
+          errors[agentId] = response.errors;
+        }
+      });
+
       this.setState({
+        errors,
         loading: false
       });
     });

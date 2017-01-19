@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
 import _ from 'lodash';
+import { Fieldset, Input, createValue } from 'react-forms';
+import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
 import BackButton from '../../../../Common/Components/BackButton';
 import ExtensionsHeader from '../ExtensionsHeader';
@@ -15,17 +17,34 @@ class NewExtensionList extends React.Component {
   static propTypes = {
     agents:            PropTypes.object,
     queues:            PropTypes.object,
+    errors:            PropTypes.object,
     loading:           PropTypes.bool,
     onClickBack:       PropTypes.func,
     onAddExtension:    PropTypes.func,
     onAddAllSuggested: PropTypes.func
   };
 
+  componentWillReceiveProps(newProps) {
+    const { onClickBack } = this.props;
+
+    let hasNewAgents = false;
+    newProps.agents.forEach((agent) => {
+      if (!this.getExtensionNumber(agent)) {
+        hasNewAgents = true;
+      }
+    });
+
+    // last agent was added, redirect to main page
+    if (!hasNewAgents) {
+      onClickBack();
+    }
+  }
+
   onAddAllSuggested = () => {
     const { onAddAllSuggested } = this.props;
     const extensions = [];
     Object.keys(this.rows).forEach((agentId) => {
-      const extensionNumber = this.rows[agentId].state.extension;
+      const extensionNumber = this.rows[agentId].state.formData.value.agent_data.extension_number;
       if (extensionNumber) {
         extensions.push({ agentId, extensionNumber });
       }
@@ -50,7 +69,7 @@ class NewExtensionList extends React.Component {
   }
 
   renderTable() {
-    const { agents = Immutable.fromJS({}), queues, loading } = this.props;
+    const { agents = Immutable.fromJS({}), queues, errors, loading } = this.props;
     const { onClickBack, onAddExtension } = this.props;
 
     const newAgents = [];
@@ -100,6 +119,7 @@ class NewExtensionList extends React.Component {
                 key={index}
                 agent={agent}
                 queues={queues}
+                errors={errors[agent.get('id')]}
                 extension={availableNumbers.splice(0, 1)[0]}
                 onAddExtension={onAddExtension}
               />
@@ -123,39 +143,51 @@ class NewExtensionRow extends React.Component {
   static propTypes = {
     agent:          PropTypes.object,
     queues:         PropTypes.object,
-    extension:      PropTypes.number,
+    extension:      PropTypes.object,
     onAddExtension: PropTypes.func
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      extension: props.extension
+      formData: createValue({
+        value: {
+          agent_data: {
+            extension_number: props.extension
+          }
+        },
+        errorList: {},
+        onChange:  this.onChange
+      })
     };
   }
 
   componentWillReceiveProps(newProps) {
+    const { formData } = this.state;
+
     this.setState({
-      extension: newProps.extension
+      formData: createValue({
+        value:     formData.value,
+        errorList: newProps.errors || {},
+        onChange:  this.onChange
+      })
     });
   }
 
-  onChangeExtension = (event) => {
-    this.setState({
-      extension: event.target.value
-    });
+  onChange = (formData) => {
+    this.setState({ formData });
   };
 
   onSubmit = () => {
     const { agent, onAddExtension } = this.props;
+    const { formData } = this.state;
 
-    onAddExtension(agent, this.state.extension);
+    onAddExtension(agent, formData.value.agent_data.extension_number);
   };
 
   render() {
     const { agent, queues = Immutable.fromJS([]) } = this.props;
-    const { extension } = this.state;
-
+    const { formData } = this.state;
     const involvedQueues = [];
     queues.filter(queue => queue.get('agents').contains(agent.get('id'))).forEach((queue) => {
       involvedQueues.push({ name: queue.get('name') });
@@ -171,9 +203,15 @@ class NewExtensionRow extends React.Component {
           <NumberTargetList targets={involvedQueues} displayCount={2} />
         </td>
         <td className="extension">
-          <form className="ui form">
-            <input type="number" min={minNumber} max={maxNumber} value={extension} onChange={this.onChangeExtension} />
-          </form>
+          <Form onSubmit={this.onSubmit} formValue={formData}>
+            <Fieldset>
+              <Field select="agent_data">
+                <Field select="extension_number">
+                  <Input type="number" min={minNumber} max={maxNumber} />
+                </Field>
+              </Field>
+            </Fieldset>
+          </Form>
         </td>
         <td className="add-button">
           <button className="ui right floated basic button" onClick={this.onSubmit}>
