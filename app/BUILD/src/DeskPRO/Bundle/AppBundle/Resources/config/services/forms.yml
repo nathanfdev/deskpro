@@ -144,6 +144,12 @@ services:
     tags:
       - { name: form.type }
 
+  form.ticket_zapier:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketZapierType
+    arguments: ["@custom_field_manager", "@brand_form_helper"]
+    tags:
+      - { name: form.type }
+
   form.organization:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationType
     arguments: ["@custom_field_manager"]

@@ -41,6 +41,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessag
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -102,6 +103,11 @@ class TicketMessageType extends AbstractType
                 'choices'           => ['html', 'text'],
             ]);
         }
+
+        $builder
+            ->add('person', EntityType::class, [
+                'class' => Person::class,
+            ]);
 
         $ticketMessage = $options['ticket_message'] ?: $builder->getData();
 

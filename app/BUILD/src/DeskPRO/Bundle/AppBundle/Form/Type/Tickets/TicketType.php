@@ -150,8 +150,15 @@ class TicketType extends AbstractType
                 'ticket' => $builder->getData(),
                 'person' => $options['person'],
                 'inline' => true,
-            ])
-        ;
+            ]);
+        if ($options['allow_create_message']) {
+            $builder
+                    ->add('message', TicketMessageType::class, [
+                        'mapped' => false,
+                        'ticket' => $builder->getData(),
+                        'person' => $options['person'],
+                    ]);
+        }
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
     }
@@ -164,8 +171,9 @@ class TicketType extends AbstractType
         $resolver
             ->setRequired('person')
             ->setDefaults([
-                'data_class'      => Ticket::class,
-                'agent_interface' => false,
+                'data_class'           => Ticket::class,
+                'agent_interface'      => false,
+                'allow_create_message' => false,
             ])
             ->setAllowedTypes('person', Person::class)
         ;

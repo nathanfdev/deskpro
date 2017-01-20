@@ -57,6 +57,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @ApiDoc(
  *     target="listAction,countAction",
  *     filters={
+ *          {"name"="primary_email", "description"="primary email filter", "dataType"="\w+"},
+ *          {"name"="organization", "description"="Comma separated list of IDs", "dataType"="[\d+,]+"},
  *          {"name"="is_agent", "description"="agents filter", "dataType"="boolean"},
  *          {"name"="is_deleted", "description"="deleted filter", "dataType"="boolean"},
  *          {"name"="not_me", "description"="exclude yourself filter", "dataType"="boolean"},
@@ -214,6 +216,13 @@ class PeopleController extends CrudController
             } else {
                 $qb->andWhere('teams.id IS NULL');
             }
+        }
+
+        if (null !== $request->get('primary_email')) {
+            $email = $request->get('primary_email');
+            $qb->leftJoin("$alias.primary_email", 'primary_email');
+            $qb->andWhere('primary_email.email = :email');
+            $qb->setParameter('email', $email);
         }
     }
 
