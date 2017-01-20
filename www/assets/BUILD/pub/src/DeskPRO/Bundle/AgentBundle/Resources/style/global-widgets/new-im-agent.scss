@@ -355,18 +355,6 @@ img.emojione, svg.emojione {
       }
 
       .item {
-        &:hover {
-          background: $dp-morning-sky;
-
-          &.agent, &.department, &.team {
-            .content {
-              .header, .description {
-                color: $dp-sonic-primary;
-              }
-            }
-          }
-        }
-
         &.agent, &.department, &.team {
           padding: 8px 15px;
           margin-top: 2px;
@@ -385,11 +373,44 @@ img.emojione, svg.emojione {
           }
 
           .timestamp {
+
+            &:before {
+              content: '';
+              display: table-cell;
+              width: 200px;
+              height: 30px;
+              background-image: linear-gradient(to right, transparent, white);
+            }
+
+            span {
+              display: table-cell;
+              vertical-align: middle;
+            }
+
+            display: table;
+            position: absolute;
+            padding: 10px 0 10px 10px;
+            right: 15px;
+            top: 2px;
             font-size: 10px;
             font-weight: 400;
             color: $dp-greyscale-450;
             font-family: "Open Sans", serif;
-            margin-top: 10px;
+          }
+        }
+        &:hover {
+          background: $dp-morning-sky;
+
+          .timestamp:before {
+            background-image: linear-gradient(to right, transparent, $dp-morning-sky);
+          }
+
+          &.agent, &.department, &.team {
+            .content {
+              .header, .description {
+                color: $dp-sonic-primary;
+              }
+            }
           }
         }
         .content {
@@ -398,7 +419,7 @@ img.emojione, svg.emojione {
             height: 30px;
             line-height: 28px;
             white-space: nowrap;
-            max-width: 240px;
+            max-width: 275px;
 
             .header {
               font-family: "Open Sans", serif;
@@ -407,10 +428,6 @@ img.emojione, svg.emojione {
               color: $dp-greyscale-850;
               display: inline-block;
             }
-          }
-
-          &.agent {
-            max-width: 190px;
           }
         }
 
@@ -581,6 +598,7 @@ img.emojione, svg.emojione {
           }
 
           .timestamp {
+
             display: inline-block;
             white-space: nowrap;
             color: $dp-greyscale-450;

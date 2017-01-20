@@ -144,7 +144,7 @@ class RecentList extends React.Component {
           {this.renderNotificationsBalloon(chat)}
         </div>
         <div className="timestamp content right floated">
-          {AbstractList.getTimestamp(chat.get('date_last_message'))}
+          <span>{AbstractList.getTimestamp(chat.get('date_last_message'))}</span>
         </div>
       </ListElement>
     );
@@ -168,7 +168,7 @@ class RecentList extends React.Component {
           </div>
         </div>
         <div className="timestamp content right floated">
-          {AbstractList.getTimestamp(chat.get('date_last_message'))}
+          <span>{AbstractList.getTimestamp(chat.get('date_last_message'))}</span>
         </div>
       </ListElement>
     );
@@ -191,7 +191,7 @@ class RecentList extends React.Component {
           {this.renderNotificationsBalloon(chat)}
         </div>
         <div className="timestamp content right floated">
-          {AbstractList.getTimestamp(chat.get('date_last_message'))}
+          <span>{AbstractList.getTimestamp(chat.get('date_last_message'))}</span>
         </div>
       </ListElement>
     );
@@ -213,7 +213,7 @@ class RecentList extends React.Component {
           {this.renderNotificationsBalloon(chat)}
         </div>
         <div className="timestamp content right floated">
-          {AbstractList.getTimestamp(chat.get('date_last_message'))}
+          <span>{AbstractList.getTimestamp(chat.get('date_last_message'))}</span>
         </div>
       </ListElement>
     );
@@ -234,7 +234,7 @@ class RecentList extends React.Component {
           {this.renderNotificationsBalloon(chat)}
         </div>
         <div className="timestamp content right floated">
-          {AbstractList.getTimestamp(chat.get('date_last_message'))}
+          <span>{AbstractList.getTimestamp(chat.get('date_last_message'))}</span>
         </div>
       </ListElement>
     ) : null;
