@@ -28,7 +28,16 @@ Feature: /voice_auto_attendants endpoint
     Then the response status code should be 201
     And the JSON node "data.name" should be equal to the string "New auto attendant"
     And the JSON node "data.audio_asset" should be null
-    And the JSON node "data.dial_numbers" should have 0 elements
+    And the JSON node "data.targets" should have 9 elements
+    And the JSON node "data.targets.1" should be null
+    And the JSON node "data.targets.2" should be null
+    And the JSON node "data.targets.3" should be null
+    And the JSON node "data.targets.4" should be null
+    And the JSON node "data.targets.5" should be null
+    And the JSON node "data.targets.6" should be null
+    And the JSON node "data.targets.7" should be null
+    And the JSON node "data.targets.8" should be null
+    And the JSON node "data.targets.9" should be null
     And the JSON node "data.allow_repeat_menu" should be equal to 1
     And the JSON node "data.allow_extension" should be equal to 1
 
@@ -69,42 +78,38 @@ Feature: /voice_auto_attendants endpoint
     When I send a PUT request to "/api/v2/voice_auto_attendants/{a1}" with body:
     """
 {
-  "dial_numbers": [
-    {
-      "dial_num": 1,
-      "target": {
-        "type": "queue",
-        "queue": ~q1~
-      }
+  "targets": {
+    "1": {
+      "type": "queue",
+      "target": ~q1~
     },
-    {
-      "dial_num": 2,
-      "target": {
-        "type": "agent",
-        "agent": ~admin~
-      }
+    "2": {
+      "type": "agent",
+      "target": ~admin~
     },
-    {
-      "dial_num": 5,
-      "target": {
-        "type": "auto_attendant",
-        "auto_attendant": ~a2~
-      }
+    "5": {
+      "type": "auto_attendant",
+      "target": ~a2~
     }
-  ]
+  }
 }
     """
     Then the response status code should be 204
 
     When I send a GET request to "/api/v2/voice_auto_attendants/{a1}"
     Then the response status code should be 200
-    And the JSON node "data.dial_numbers" should have 3 elements
-    And the JSON node "data.dial_numbers[0].target.type" should be equal to the string "queue"
-    And the JSON node "data.dial_numbers[0].target.queue" should be equal to "{q1}"
-    And the JSON node "data.dial_numbers[1].target.type" should be equal to the string "agent"
-    And the JSON node "data.dial_numbers[1].target.agent" should be equal to "{admin}"
-    And the JSON node "data.dial_numbers[2].target.type" should be equal to the string "auto_attendant"
-    And the JSON node "data.dial_numbers[2].target.auto_attendant" should be equal to "{a2}"
+    And the JSON node "data.targets" should have 9 elements
+    And the JSON node "data.targets.1.type" should be equal to the string "queue"
+    And the JSON node "data.targets.1.target" should be equal to "{q1}"
+    And the JSON node "data.targets.2.type" should be equal to the string "agent"
+    And the JSON node "data.targets.2.target" should be equal to "{admin}"
+    And the JSON node "data.targets.5.type" should be equal to the string "auto_attendant"
+    And the JSON node "data.targets.5.target" should be equal to "{a2}"
+    And the JSON node "data.targets.3" should be null
+    And the JSON node "data.targets.4" should be null
+    And the JSON node "data.targets.6" should be null
+    And the JSON node "data.targets.8" should be null
+    And the JSON node "data.targets.9" should be null
 
   Scenario: I delete auto attendant
     Given only the following VoiceAutoAttendant records exist:
@@ -117,35 +122,6 @@ Feature: /voice_auto_attendants endpoint
     When I send a GET request to "/api/v2/voice_auto_attendants"
     And the JSON node "data" should have 0 elements
 
-  Scenario: dial number unique validation
-    Given only the following VoiceAutoAttendant records exist:
-      | #  | Name             |
-      | a1 | Auto attendant 1 |
-
-    When I send a PUT request to "/api/v2/voice_auto_attendants/{a1}" with body:
-    """
-{
-  "dial_numbers": [
-    {
-      "dial_num": 1,
-      "target": {
-        "type": "agent",
-        "agent": ~admin~
-      }
-    },
-    {
-      "dial_num": 1,
-      "target": {
-        "type": "agent",
-        "agent": ~admin~
-      }
-    }
-  ]
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.dial_numbers.errors[0].code" should be equal to the string "not_unique_collection"
-
   Scenario: dial number range validation
     Given only the following VoiceAutoAttendant records exist:
       | #  | Name             |
@@ -154,19 +130,16 @@ Feature: /voice_auto_attendants endpoint
     When I send a PUT request to "/api/v2/voice_auto_attendants/{a1}" with body:
     """
 {
-  "dial_numbers": [
-    {
-      "dial_num": 10,
-      "target": {
-        "type": "agent",
-        "agent": ~admin~
-      }
+  "targets": {
+    "10": {
+      "type": "agent",
+      "agent": ~admin~
     }
-  ]
+  }
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.dial_numbers.fields.dial_numbers_0.fields.dial_num.errors[0].code" should be equal to the string "too_high"
+    And the JSON node "errors.fields.targets.errors[0].code" should be equal to the string "extra_fields"
 
   Scenario: I set audio asset by id
     Given only the following VoiceAutoAttendant records exist:

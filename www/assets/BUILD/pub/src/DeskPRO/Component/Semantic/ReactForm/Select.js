@@ -13,7 +13,7 @@ class SemanticSelect extends React.Component {
   onChange = (item) => {
     const { onAddNew, onChange } = this.props;
 
-    if (item.addNew) {
+    if (item && item.addNew) {
       onAddNew();
     } else {
       onChange(item && item.value);

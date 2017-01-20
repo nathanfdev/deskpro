@@ -93,10 +93,6 @@ class VoiceAutoAttendant implements EntityInterface, NotifyPropertyChanged
      *     orphanRemoval=true
      * )
      *
-     * @JMS\Expose()
-     * @JMS\Type("collection<DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendantDialNumber>")
-     *
-     * @Assert\Valid()
      * @AppAssert\UniqueCollection(property="dialNum")
      *
      * @var VoiceAutoAttendantDialNumber[]|ArrayCollection
@@ -228,6 +224,21 @@ class VoiceAutoAttendant implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @param int $dialNum
+     *
+     * @return VoiceAutoAttendantDialNumber
+     */
+    public function getDialNumber($dialNum)
+    {
+        return $this->dialNumbers
+            ->filter(function (VoiceAutoAttendantDialNumber $dialNumber) use ($dialNum) {
+                return $dialNumber->getDialNum() === $dialNum;
+            })
+            ->first()
+        ;
+    }
+
+    /**
      * @param VoiceAutoAttendantDialNumber $dialNumber
      *
      * @return $this
@@ -250,5 +261,22 @@ class VoiceAutoAttendant implements EntityInterface, NotifyPropertyChanged
         $this->dialNumbers->removeElement($dialNumber);
 
         return $this;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\Type("array")
+     *
+     * @return array
+     */
+    public function getTargets()
+    {
+        $map = [];
+        foreach (range(1, 9) as $dialNum) {
+            $dialNumber    = $this->getDialNumber($dialNum);
+            $map[$dialNum] = $dialNumber ? $dialNumber->getTarget() : null;
+        }
+
+        return $map;
     }
 }

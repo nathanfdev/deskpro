@@ -1,53 +1,44 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
-import DialNumber from './DialNumber';
+import { Field } from 'DeskPRO/Component/Semantic/ReactForm';
+import NumberTargetSelect from '../../../Common/NumberTarget/NumberTargetSelect';
 
 class DialNumbers extends React.Component {
 
   static propTypes = {
-    autoAttendant: PropTypes.object,
     value:         PropTypes.array,
-    onChange:      PropTypes.func
+    onChange:      PropTypes.func,
+    autoAttendant: PropTypes.object
   };
 
-  onChangeDialNumber = (dialNum, target) => {
-    const { value, onChange } = this.props;
-    const filtered = value.filter(item => item.dial_num === dialNum);
+  onChange = (fieldValue, select) => {
+    if (fieldValue && fieldValue.type) {
+      return;
+    }
 
-    let dialNumValue = filtered.length > 0 ? filtered[0] : null;
-    if (target) {
-      if (dialNumValue) {
-        value[value.indexOf(dialNumValue)] = { ...dialNumValue, target };
-      } else {
-        dialNumValue = { dial_num: dialNum, target };
-        value.push(dialNumValue);
-      }
-    } else if (dialNumValue) {
-      value.splice(value.indexOf(dialNumValue), 1);
+    const { value, onChange } = this.props;
+    if (value && value[select]) {
+      delete value[select];
     }
 
     onChange(value);
   };
 
   render() {
-    const { value, autoAttendant } = this.props;
+    const { autoAttendant } = this.props;
 
     return (
       <div>
-        {_.range(1, 10).map((dialNum, index) => {
-          const filtered = value.filter(item => item.dial_num === dialNum);
-          const dialNumValue = filtered.length > 0 ? filtered[0] : null;
-          const dialNumTarget = dialNumValue ? dialNumValue.target : null;
-
-          return (
-            <DialNumber
-              key={index}
-              dialNum={dialNum}
-              value={dialNumTarget}
-              onChange={this.onChangeDialNumber}
-              autoAttendant={autoAttendant}
-            />);
-        })}
+        {_.range(1, 10).map((dialNum, index) =>
+          <div className="dial-number-target" key={index}>
+            <div className="dial-number">
+              {dialNum}
+            </div>
+            <Field select={String(dialNum)} onChangeCallback={this.onChange}>
+              <NumberTargetSelect excludeAutoAttendant={autoAttendant} />
+            </Field>
+          </div>
+        )}
       </div>
     );
   }

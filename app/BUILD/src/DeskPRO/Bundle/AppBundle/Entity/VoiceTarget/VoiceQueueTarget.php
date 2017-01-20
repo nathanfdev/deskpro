@@ -47,6 +47,7 @@ class VoiceQueueTarget extends AbstractVoiceTarget
      *
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoiceQueue>")
+     * @JMS\SerializedName("target")
      *
      * @Assert\NotNull()
      *

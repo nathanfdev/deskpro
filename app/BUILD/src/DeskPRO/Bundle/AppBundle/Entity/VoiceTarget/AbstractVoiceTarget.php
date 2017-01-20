@@ -56,7 +56,7 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @JMS\ExclusionPolicy("all")
  */
-abstract class AbstractVoiceTarget implements EntityInterface, NotifyPropertyChanged
+class AbstractVoiceTarget implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 

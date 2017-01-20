@@ -90,6 +90,7 @@ class VoiceAutoAttendantDialNumber implements EntityInterface, NotifyPropertyCha
      * @JMS\Expose()
      * @JMS\Type("integer")
      *
+     * @Assert\NotNull()
      * @Assert\Range(min="1", max="9")
      *
      * @var int

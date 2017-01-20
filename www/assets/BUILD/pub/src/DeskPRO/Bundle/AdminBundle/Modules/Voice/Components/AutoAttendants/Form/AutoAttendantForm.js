@@ -55,7 +55,7 @@ class AutoAttendantForm extends React.Component {
         value: {
           name:              autoAttendant ? autoAttendant.get('name') : '',
           audio_asset:       audioAsset ? audioAsset.toJS() : null,
-          dial_numbers:      autoAttendant ? autoAttendant.get('dial_numbers').toJS() : [],
+          targets:           autoAttendant ? autoAttendant.get('targets').toJS() : {},
           allow_repeat_menu: autoAttendant ? autoAttendant.get('allow_repeat_menu') : true,
           allow_extension:   autoAttendant ? autoAttendant.get('allow_extension') : true
         },
@@ -82,7 +82,7 @@ class AutoAttendantForm extends React.Component {
               <Field select="audio_asset" className="audio-asset" label="Audio">
                 <AudioWidgetFormContainer />
               </Field>
-              <Field select="dial_numbers" label="Dialpad inputs and targets">
+              <Field select="targets" label="Dialpad inputs and targets">
                 <DialNumbers autoAttendant={autoAttendant} />
               </Field>
 

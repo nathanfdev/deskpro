@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { Form, Field, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
-import QueuesSelectContainer from '../../Common/NumberTarget/QueuesSelectContainer';
+import NumberTargetSelect from '../../Common/NumberTarget/NumberTargetSelect';
 
 class NumberForm extends React.Component {
 
@@ -20,6 +20,16 @@ class NumberForm extends React.Component {
     this.state = this.getDefaultState();
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      formData: createValue({
+        value:     this.state.formData.value,
+        errorList: nextProps.errors,
+        onChange:  this.onChange
+      })
+    });
+  }
+
   onChange = (formData) => {
     this.setState({ formData });
   };
@@ -31,20 +41,8 @@ class NumberForm extends React.Component {
     const { formData } = this.state;
     const value = formData.value;
 
-    let submitData = {
-      nickname:               value.nickname,
-      outbound_calls_enabled: value.outbound_calls_enabled
-    };
-
-    if (value.target_queue) {
-      submitData = {
-        ...submitData,
-        target: {
-          queue: value.target_queue,
-          type:  'queue'
-        }
-      };
-    }
+    const submitData = { ...value };
+    delete submitData.number;
 
     onSubmit(submitData);
   };
@@ -56,14 +54,13 @@ class NumberForm extends React.Component {
 
   getDefaultState() {
     const { number } = this.props;
-    const targetType = number.getIn(['target', 'type']);
 
     return {
       formData: createValue({
         value: {
           number:                 number.get('number'),
           nickname:               number.get('nickname') || '',
-          target_queue:           targetType === 'queue' ? number.getIn(['target', 'queue']) : null,
+          target:                 number.get('target') && number.get('target').toJS(),
           outbound_calls_enabled: number.get('outbound_calls_enabled')
         },
         errorList: {},
@@ -81,13 +78,10 @@ class NumberForm extends React.Component {
         <BackButton onClick={onReturnBack} />
         <SectionHeader title="Update number" dividing />
 
-        <div className="twilio-queue-form">
+        <div className="twilio-number-form">
           <Form onSubmit={this.onSubmit} formValue={formData}>
             <Fieldset>
-              <Field
-                select="number"
-                label="Number"
-              >
+              <Field select="number" label="Number">
                 <Input disabled="disabled" />
               </Field>
               <Field
@@ -97,10 +91,10 @@ class NumberForm extends React.Component {
               >
                 <Input placeholder="My Nickname" />
               </Field>
-              <Field select="target_queue" label="Queue">
-                <QueuesSelectContainer />
+              <Field select="target" label="Target" className="number-target">
+                <NumberTargetSelect />
               </Field>
-              <Field select="outbound_calls_enabled">
+              <Field select="outbound_calls_enabled" className="allow-outbound-calls">
                 <Checkbox label="Allow outbound calls from this number" />
               </Field>
 

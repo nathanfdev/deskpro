@@ -28,6 +28,10 @@ class VoiceTargetNameContainer extends React.Component {
   componentDidMount() {
     const { dispatch, target } = this.props;
 
+    if (!target) {
+      return;
+    }
+
     switch (target.get('type')) {
       case 'agent':
         dispatch(loadAgents());
@@ -57,24 +61,28 @@ class VoiceTargetNameContainer extends React.Component {
     const { target } = this.props;
     const { agents, queues, autoAttendants } = this.props;
 
-    const targetType = target.get('type');
     let targetObject;
 
-    switch (targetType) {
-      case 'agent': {
-        targetObject = agents && agents.get(target.get('agent'));
-        break;
+    if (target) {
+      const targetType = target.get('type');
+      const targetId   = target.get('target');
+
+      switch (targetType) {
+        case 'agent': {
+          targetObject = agents && agents.get(targetId);
+          break;
+        }
+        case 'queue': {
+          targetObject = queues && queues.get(targetId);
+          break;
+        }
+        case 'auto_attendant': {
+          targetObject = autoAttendants && autoAttendants.get(targetId);
+          break;
+        }
+        default:
+          break;
       }
-      case 'queue': {
-        targetObject = queues && queues.get(target.get('queue'));
-        break;
-      }
-      case 'auto_attendant': {
-        targetObject = autoAttendants && autoAttendants.get(target.get('auto_attendant'));
-        break;
-      }
-      default:
-        break;
     }
 
     if (!targetObject) {
@@ -107,6 +115,10 @@ class VoiceTargetNameContainer extends React.Component {
 
   render() {
     const { target } = this.props;
+    if (!target) {
+      return null;
+    }
+
     const targetType = target.get('type');
     const targetName = this.getTargetObject().get('name');
 

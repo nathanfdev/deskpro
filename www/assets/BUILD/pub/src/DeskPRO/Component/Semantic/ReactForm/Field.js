@@ -48,14 +48,25 @@ class SemanticErrorList extends BaseErrorList {
 export class Field extends BaseField {
 
   static propTypes = {
-    className: PropTypes.string,
-    help:      PropTypes.string
+    select:           PropTypes.string,
+    className:        PropTypes.string,
+    help:             PropTypes.string,
+    onChangeCallback: PropTypes.func
   };
 
   constructor(props) {
     super(props);
     this.constructor.stylesheet.ErrorList = SemanticErrorList;
   }
+
+  onChangeField = (e) => {
+    this.onChange(e);
+
+    const { onChangeCallback, select } = this.props;
+    if (onChangeCallback) {
+      onChangeCallback(e, select);
+    }
+  };
 
   render() {
     let { children } = this.props;
@@ -67,9 +78,9 @@ export class Field extends BaseField {
     const showErrors = dirty || params.forceShowErrors;
 
     if (!children) {
-      children = <Input value={value} onChange={this.onChange} />;
+      children = <Input value={value} onChange={this.onChangeField} />;
     } else {
-      children = React.cloneElement(React.Children.only(children), { value, onChange: this.onChange });
+      children = React.cloneElement(React.Children.only(children), { value, onChange: this.onChangeField });
     }
     return (
       <Root

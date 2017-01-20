@@ -62,7 +62,7 @@ Feature: /voice_numbers endpoint
 {
   "target": {
     "type": "queue",
-    "queue": ~q2~
+    "target": ~q2~
   }
 }
     """
@@ -71,7 +71,7 @@ Feature: /voice_numbers endpoint
     When I send a GET request to "/api/v2/voice_numbers/{n1}"
     Then the response status code should be 200
     And the JSON node "data.target.type" should be equal to the string "queue"
-    And the JSON node "data.target.queue" should be equal to "{q2}"
+    And the JSON node "data.target.target" should be equal to "{q2}"
 
   Scenario: I set target agent
     Given only the following VoiceNumber records exist:
@@ -84,7 +84,7 @@ Feature: /voice_numbers endpoint
   "nickname": "new nickname",
   "target": {
     "type": "agent",
-    "agent": ~admin~
+    "target": ~admin~
   }
 }
     """
@@ -93,7 +93,7 @@ Feature: /voice_numbers endpoint
     When I send a GET request to "/api/v2/voice_numbers/{n1}"
     Then the response status code should be 200
     And the JSON node "data.target.type" should be equal to the string "agent"
-    And the JSON node "data.target.agent" should be equal to "{admin}"
+    And the JSON node "data.target.target" should be equal to "{admin}"
 
   Scenario: I change target type
     Given only the following VoiceQueue records exist:
@@ -112,7 +112,7 @@ Feature: /voice_numbers endpoint
   "nickname": "new nickname",
   "target": {
     "type": "agent",
-    "agent": ~admin~
+    "target": ~admin~
   }
 }
     """
@@ -121,7 +121,7 @@ Feature: /voice_numbers endpoint
     When I send a GET request to "/api/v2/voice_numbers/{n1}"
     Then the response status code should be 200
     And the JSON node "data.target.type" should be equal to the string "agent"
-    And the JSON node "data.target.agent" should be equal to "{admin}"
+    And the JSON node "data.target.target" should be equal to "{admin}"
 
   Scenario: I delete target
     Given only the following VoiceQueue records exist:
