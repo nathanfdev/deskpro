@@ -77,6 +77,17 @@ class TopBarRecentImList extends RecentList {
     return notificationCount ? <div className="ui knuckles label message-counter">{notificationCount}</div> : null;
   }
 
+  renderRemoveButton(chat) { // eslint-disable-line class-methods-use-this
+    return (
+      <i
+        className="close icon remove"
+        onClick={(event) => {
+          event.stopPropagation();
+          console.log(chat.get('id'));
+        }
+    } />);
+  }
+
   renderAgent(chat) {
     const { me, agents, onRecentClick } = this.props;
     let agentId;
@@ -108,6 +119,7 @@ class TopBarRecentImList extends RecentList {
           person={agent} size={24}
           className={classNames(className)}
         />
+        {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
       </span>
     );
@@ -133,6 +145,7 @@ class TopBarRecentImList extends RecentList {
           className="ui avatar image im"
           title={title}
         />
+        {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
       </span>
     );
@@ -153,6 +166,7 @@ class TopBarRecentImList extends RecentList {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
         <AgentTeamAvatar agentTeam={team} size={24} className="ui avatar image im" title={title} />
+        {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
       </span>
     );
@@ -168,6 +182,7 @@ class TopBarRecentImList extends RecentList {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
         {AvatarHelper.renderEveryoneAvatar(notificationsCount)}
+        {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
       </span>
     );
@@ -183,6 +198,7 @@ class TopBarRecentImList extends RecentList {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
         {AvatarHelper.renderGroupAvatar(chat, notificationsCount)}
+        {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
       </span>
     );
