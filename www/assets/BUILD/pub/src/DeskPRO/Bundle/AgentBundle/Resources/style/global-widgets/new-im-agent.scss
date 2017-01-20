@@ -370,6 +370,19 @@ img.emojione, svg.emojione {
         &.agent, &.department, &.team {
           padding: 8px 15px;
           margin-top: 2px;
+          position: relative;
+
+          .message-counter {
+            font-family: "Open Sans", serif;
+            font-size: 12px;
+            position: absolute;
+            left: 30px;
+            top: 2px;
+            border-radius: 2px;
+            display: block;
+            padding: 2px;
+            font-weight: 600;
+          }
 
           .timestamp {
             font-size: 10px;
@@ -393,16 +406,6 @@ img.emojione, svg.emojione {
               font-weight: 400;
               color: $dp-greyscale-850;
               display: inline-block;
-            }
-
-            .message-counter {
-              font-family: "Open Sans", serif;
-              font-size: 10px;
-              display: inline-block;
-              margin-left: 10px;
-              height: 14px;
-              padding: 2px 4px;
-              font-weight: 600;
             }
           }
 
