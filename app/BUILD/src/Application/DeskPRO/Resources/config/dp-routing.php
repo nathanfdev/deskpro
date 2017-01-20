@@ -82,16 +82,6 @@ $collection->create('serve_file_root', [
     'controller' => '(see: serve_file.php)',
 ]);
 
-$collection->create('serve_brand_asset', [
-    'path'         => '/file.php/brand-{brand_id}/{file}',
-    'controller'   => '(see: serve_file.php)',
-    'requirements' => [
-        'brand_id'     => '[0-9]+',
-        'blob_auth_id' => '\w+',
-        'filename'     => '.*+',
-    ],
-]);
-
 $collection->create('serve_blob', [
     'path'       => '/file.php/{blob_auth_id}/{filename}',
     'controller' => '(see: serve_file.php)',
