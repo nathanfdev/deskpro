@@ -66,6 +66,10 @@ img.emojione, svg.emojione {
       > .im.avatar {
         margin: 0 7px;
 
+        &.offline {
+          opacity: 0.5;
+        }
+
         .text {
           vertical-align: middle;
           display: inline-block;
@@ -75,8 +79,6 @@ img.emojione, svg.emojione {
           position: absolute;
           left: 0;
           top: 0;
-
-
         }
       }
 
