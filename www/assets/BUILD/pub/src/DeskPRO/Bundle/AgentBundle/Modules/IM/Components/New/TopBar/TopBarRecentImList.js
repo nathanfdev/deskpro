@@ -78,15 +78,16 @@ class TopBarRecentImList extends RecentList {
   }
 
   renderAgent(chat) {
+    const { me, agents, onRecentClick } = this.props;
     let agentId;
     for (const id of chat.get('agents')) {
-      if (id !== this.props.me.get('id')) {
+      if (id !== me.get('id')) {
         agentId = id;
         break;
       }
     }
-    const agent = this.props.agents.get(agentId);
-    const className = ['im', 'agent', 'recent'];
+    const agent = agents.get(agentId);
+    const className = ['ui avatar image im'];
     if (!agent.get('online')) {
       className.push('offline');
     }
@@ -98,14 +99,14 @@ class TopBarRecentImList extends RecentList {
       <span
         className="im wrapper"
         id={`chat-${chat.get('id')}`}
-        onClick={() => this.props.onRecentClick(chat.get('id'))}
+        onClick={() => onRecentClick(chat.get('id'))}
       >
         <PersonAvatar
           title={`${header}. ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`}
           color={chooseColor(agent.get('id'))}
           borderColor={darkerColor(agent.get('id'))}
           person={agent} size={24}
-          className="ui avatar image im"
+          className={classNames(className)}
         />
         {this.renderNotificationsBalloon(chat)}
       </span>
