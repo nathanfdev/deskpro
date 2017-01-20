@@ -33,6 +33,10 @@ class ExistingExtensionListContainer extends React.Component {
     replaceRoute('/voice_channel/extensions/new');
   };
 
+  onEditExtension = (agent) => {
+    replaceRoute(`/voice_channel/extensions/${agent.get('id')}`);
+  };
+
   render() {
     const { agentsLoaded, queuesLoaded } = this.props;
 
@@ -44,6 +48,7 @@ class ExistingExtensionListContainer extends React.Component {
       <ExistingExtensionList
         {...this.props}
         onAddExtensions={this.onAddExtensions}
+        onEditExtension={this.onEditExtension}
       />
     );
   }
