@@ -166,6 +166,9 @@ class ServeFileScript extends LowScriptAbstract
             } elseif (preg_match('#^/([0-9]+)([A-Z]+0)(?:/|\-)(.*?)$#', $pathinfo, $m)) {
                 $this->addLogMessage('handleDbBlobRequest: %s', implode(', ', $m));
                 $this->handleDbBlobRequest($m[1], $m[2], $m[3]);
+            } elseif (preg_match('#^/brand-[0-9]+/([0-9]+)([A-Z]+0)(?:/|\-)(.*?)$#', $pathinfo, $m)) {
+                $this->addLogMessage('handleDbBlobRequest: %s (legacy brand route)', implode(', ', $m));
+                $this->handleDbBlobRequest($m[1], $m[2], $m[3]);
             } elseif (preg_match('#^/gradient$#', $pathinfo)) {
                 $this->handleGradientRequest();
             } elseif (preg_match('#^/apps/([a-zA-Z0-9_\-\.]+)/(app|js|css|html|res)/(.*?)$#', $pathinfo, $m)) {
