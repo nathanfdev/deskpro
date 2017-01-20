@@ -49,7 +49,11 @@ define [
               if o then parentTitleSegs.push(o.title)
 
               childOps = []
-              addTree(options, opt.id || opt.value, childOps, parentTitleSegs)
+              recursive_parent_id = opt.id
+              # Prevent checkbox from recursive infinite loop
+              if (!recursive_parent_id && typeof opt.value == 'integer')
+                recursive_parent_id = opt.value
+              addTree(options, recursive_parent_id, childOps, parentTitleSegs)
 
               if o then parentTitleSegs.pop()
 
