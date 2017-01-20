@@ -225,6 +225,8 @@ class ProjectFileSet
             '%DP_APP_DIR%/vendor/fabpot/php-cs-fixer/',
             '%DP_APP_DIR%/vendor/mockery/',
             '%DP_APP_DIR%/vendor/zendframework/zend-ldap/src/Node.php', // because we patch it ourselves
+            '%DP_APP_DIR%/vendor/doctrine/orm/lib/Doctrine/ORM/UnitOfWork.php', // because we patch it ourselves
+            '%DP_APP_DIR%/vendor/doctrine/orm/lib/Doctrine/ORM/Event/PreUpdateEventArgs.php', // because we patch it ourselves
             '%DP_APP_KERNEL_CACHE%/dev/',
             '%DP_APP_KERNEL_CACHE%/test/',
         ];
