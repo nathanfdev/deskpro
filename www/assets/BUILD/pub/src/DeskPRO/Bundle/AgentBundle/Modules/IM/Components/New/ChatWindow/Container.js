@@ -134,6 +134,9 @@ class Container extends React.Component {
     ) {
       this.props.loadMessages();
     }
+    if (this.editor) {
+      this.editor.focus();
+    }
     this.setState({ mounted: true });
   }
 
