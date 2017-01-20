@@ -306,7 +306,10 @@ export class AgentTopBarContainer extends SeparateComponent {
   }
 
   loadMessages(page = 1) {
-    this.props.dispatch(messagesActions.loadMessages(this.props.current.get('id'), this.state.searchQuery, page));
+    const { current, dispatch } = this.props;
+    if (current.get('id')) {
+      dispatch(messagesActions.loadMessages(current.get('id'), this.state.searchQuery, page));
+    }
   }
 
   render() {
