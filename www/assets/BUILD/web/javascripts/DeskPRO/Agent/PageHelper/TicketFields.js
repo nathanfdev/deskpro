@@ -142,14 +142,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			// focus input field on open edit mode
 			var $editContainer = $($event.currentTarget).parent().find('.mode-edit');
 			var $simpleField = $editContainer.find('input[type=text], textarea, select');
-			var $select2Field = $editContainer.find('.with-select2');
 
 			setTimeout(function() {
 				if ($simpleField.length) {
 					$simpleField.focus();
-				}
-				if ($select2Field.length) {
-					$select2Field.select2('open');
 				}
 			}, 0);
 		};
