@@ -160,6 +160,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		$scope.cancelEdit = function() {
 			$scope.edit_fields.length = 0;
+			$scope.show_hidden = 0;
+			self.updateDisplay();
 		};
 
 		$scope.saveFields = function() {
