@@ -11,6 +11,7 @@ import { chooseColor, darkerColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Com
 import { RecentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
 import AvatarHelper from '../IMTabs/AvatarHelper';
 import HeaderHelper from '../ChatWindow/HeaderHelper';
+import * as chatActions from '../../../Actions/chatsActions';
 
 class TopBarRecentImList extends RecentList {
 
@@ -26,12 +27,20 @@ class TopBarRecentImList extends RecentList {
     teamsLoaded:       PropTypes.bool.isRequired,
     departmentsLoaded: PropTypes.bool.isRequired,
     agentsLoaded:      PropTypes.bool.isRequired,
-    counts:            PropTypes.object
+    counts:            PropTypes.object,
+    onHideChat:        PropTypes.func,
+    hiddenChats:       PropTypes.object
   };
 
   static defaultProps = {
+    onHideChat(chat) {
+      chatActions.hideChat(chat.get('id'), Date.now());
+    },
     counts: {
       nested: {}
+    },
+    hiddenChats: {
+
     }
   };
 
@@ -45,13 +54,22 @@ class TopBarRecentImList extends RecentList {
   componentWillReceiveProps(props) {
     let { chats } = this.state;
     if (props.chats) {
-      RecentList.sortList(props.chats).forEach((chat) => {
-        const chatId = chat.get('id');
-        const path   = [chatId, 'added'];
-        chats = chats.set(chatId, chat.set('added', chats.hasIn(path) ? chats.getIn(path) : Date.now()));
+      RecentList
+        .sortList(props.chats)
+        .forEach((chat) => {
+          const chatId = chat.get('id');
+          const path   = [chatId, 'added'];
+          chats = chats.set(chatId, chat.set('added', chats.hasIn(path) ? chats.getIn(path) : Date.now()));
+        });
+    }
+    let sorted = chats.sort((a, b) => b.get('added') - a.get('added'));
+    if (props.hiddenChats) {
+      sorted = sorted.filter((chat) => {
+        const date = chat.get('date_last_message') || chat.get('date_created');
+
+        return !props.hiddenChats[chat.get('id')] || props.hiddenChats[chat.get('id')] < (Date.parse(date));
       });
     }
-    const sorted = chats.sort((a, b) => b.get('added') - a.get('added'));
     this.setState({ chats: sorted });
   }
 
@@ -83,7 +101,7 @@ class TopBarRecentImList extends RecentList {
         className="close icon remove"
         onClick={(event) => {
           event.stopPropagation();
-          console.log(chat.get('id'));
+          this.props.onHideChat(chat);
         }
     } />);
   }
