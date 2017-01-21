@@ -67,6 +67,7 @@ use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\TransactionRequiredException;
+use DpSys\License;
 use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Auth\Adapter\CallbackInterface;
 use Orb\Auth\Adapter\SamlAdapterInterface;
@@ -522,11 +523,17 @@ HTML;
 
         $this->_doLoginSuccess();
 
+        // Check if license expired
+        $license = License::getLicense();
+        if ($license->isPastExpireDate() && $person->isAdmin()) {
+            return $this->redirect($this->generateUrl('admin_interface').'#/license');
+        }
+
         if ($return) {
             return $this->redirect($return);
-        } else {
-            return $this->redirectRoute($this->route_prefix);
         }
+
+        return $this->redirectRoute($this->route_prefix);
     }
 
     /**

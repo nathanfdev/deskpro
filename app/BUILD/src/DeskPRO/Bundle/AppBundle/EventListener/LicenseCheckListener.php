@@ -168,10 +168,16 @@ final class LicenseCheckListener implements EventSubscriberInterface
             || ($this->interfaceInfo->isUserInterface() && $lic->isPastExpireDate() >= 14)
         )) {
             $date = $lic->getExpireDate()->format('F jS');
-            $event->setResponse($this->getLicErrorPageResponse($request, "
-                Your helpdesk license expired on {$date}. To continue using your helpdesk,
-                an administrator needs to renew the license.
-            "));
+            $message = "Your helpdesk license expired on {$date}. To continue using your helpdesk,
+                an administrator needs to renew the license. Go to
+                <a href='{$this->container->get('router')->generate('admin_interface')}#/license'>billing settings</a>";
+
+            if ($this->container->get('session')->getPerson()->isAgent()) {
+                $message .= '<p>Note: You are not an administrator and cannot make this change yourself.
+                    Please get your administrator to log in and update the license.</p>';
+            }
+
+            $event->setResponse($this->getLicErrorPageResponse($request, $message));
             $event->stopPropagation();
 
             return;
