@@ -159,7 +159,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		};
 
 		$scope.cancelEdit = function() {
-			$scope.edit_fields.length = 0;
+      $scope.edit_fields.length = 0;
 		};
 
 		$scope.saveFields = function() {
@@ -183,9 +183,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			fields = window.DESKPRO_TICKET_DISPLAY.getLayout(reader.getDepartmentId()).getFields();
 		}
 
-		var isVisible = function(f) {
-			var visible = f.isVisibleOnView || f.isVisibleOnViewAlways;
-			return f.checkFn ? visible && f.checkFn(reader) : visible;
+		var isVisibleByCriteria = function(f) {
+      return f.checkFn ? f.checkFn(reader) && f.isVisibleOnView : f.isVisibleOnView;
 		};
 
 		$scope.hidden = 0;
@@ -217,10 +216,11 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				$scope.editables[f.id] = 1;
 			}
 
-			var show = isVisible(f) && (f.isVisibleOnViewAlways || !noValue || $scope.show_hidden);
+			var visibleByCriteria = isVisibleByCriteria(f);
+			var show = visibleByCriteria && (f.isVisibleOnViewAlways || !noValue || $scope.show_hidden);
 			$scope.fields[f.id] = !!show;
 
-			if (!f.isVisibleOnViewAlways && noValue) {
+			if (visibleByCriteria && !f.isVisibleOnViewAlways && noValue) {
 				this.no_value_fields.push(f.id);
 			}
 		}
@@ -366,18 +366,21 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		changeManager.saveChanges(
 			customFieldData,
 			(function(data) {
+        self.$scope.is_saving = false;
 				if (data.data && data.data.reload) {
 					this.page.closeSelf();
 					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + this.page.meta.ticket_id);
 				}
 			}).bind(this),
 			(function(xhr, code, message) {
+        self.$scope.is_saving = false;
         // this.closeEditMode();
         var div = $('<div><strong>Server error: </strong>' + message + '</div>');
         DeskPRO_Window.showAlert(div);
 				console.error(message);
 			}).bind(this),
 			function(data) {
+        self.$scope.is_saving = false;
 				if (!data.fields) return;
 				self.$scope.$apply(function(){
 					for (var i = 0; i < data.fields.length; i++) {
