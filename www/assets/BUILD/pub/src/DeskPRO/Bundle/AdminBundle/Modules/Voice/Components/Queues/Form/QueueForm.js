@@ -7,13 +7,6 @@ import BackButton from '../../../../Common/Components/BackButton';
 import AgentChoiceListWrapper from '../../Common/AgentChoiceListWrapper';
 import AccountChoiceWrapper from '../../Common/AccountChoiceWrapper';
 
-const routingModels = [
-  { value: 'round_robin', label: 'Round Robin' },
-  { value: 'least_utilized', label: 'Least Utilized' },
-  { value: 'least_idle', label: 'Least Idle' },
-  { value: 'random', label: 'Random' }
-];
-
 class QueueForm extends React.Component {
 
   static propTypes = {
@@ -111,10 +104,10 @@ class QueueForm extends React.Component {
                     <MultiSelect />
                   </AgentChoiceListWrapper>
                 </Field>}
-              <Field select="routing_model" label="Routing model">
-                <Select clearable={false} choices={routingModels} />
+              <Field select="routing_model" label="Routing model" className="routing-model">
+                <RoutingModel />
               </Field>
-              <Field className="queue-size" select="max_queue_size">
+              <Field select="max_queue_size" className="queue-size">
                 <MaxQueueSize />
               </Field>
 
@@ -134,6 +127,43 @@ class QueueForm extends React.Component {
                 </span>}
             </Fieldset>
           </Form>
+        </div>
+      </div>
+    );
+  }
+}
+
+class RoutingModel extends React.Component {
+
+  static propTypes = {
+    value:    PropTypes.number,
+    onChange: PropTypes.func
+  };
+
+  render() {
+    const { value, onChange } = this.props;
+    const choices = [
+      { value: 'round_robin', label: 'Round Robin', help: 'Assign a phone call to agent by "Round Robin".' },
+      { value: 'least_utilized', label: 'Least Utilized', help: 'Assign a phone call to least utilized agent.' },
+      { value: 'least_idle', label: 'Least Idle', help: 'Assign a phone call to least idle agent.' },
+      { value: 'random', label: 'Random', help: 'Assign a phone call to random agent.' }
+    ];
+
+    const help = {};
+    choices.forEach((choice) => {
+      help[choice.value] = choice.help;
+    });
+
+    return (
+      <div>
+        <Select
+          value={value}
+          onChange={onChange}
+          clearable={false}
+          choices={choices}
+        />
+        <div className="help">
+          {help[value]}
         </div>
       </div>
     );
