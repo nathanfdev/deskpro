@@ -109,7 +109,7 @@ class NewTicketController extends AbstractController
 
         if ($form->isValid()) {
             // dont process if user hit "more attachments"
-            if ($form->getClickedButton() && $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
+            if (!$form->getClickedButton() || $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
                 if (!$rerendering && !$rerendering_saved) {
                     // deal with guests via negotiating with PersonFactory
                     if ($person instanceof PersonGuest) {
