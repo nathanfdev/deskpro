@@ -288,6 +288,12 @@ class PersonMerge implements PersonContextInterface
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
         }
+
+        if ($this->person->isAgent() && $this->other_person->isAgent()) {
+            $this->_updateTablePersonId('tickets', 'agent_id');
+            $this->_updateTablePersonId('tickets_search_active', 'agent_id');
+        }
+
         foreach ($complex_tables as $table => $columns) {
             foreach ($columns as $column) {
                 $this->_updateTablePersonId($table, $column);
