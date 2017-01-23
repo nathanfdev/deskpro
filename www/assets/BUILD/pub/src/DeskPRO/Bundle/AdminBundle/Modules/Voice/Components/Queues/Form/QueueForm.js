@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { Fieldset, Input, createValue } from 'react-forms';
-import { Form, Field, Select, MultiSelect } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Form, Field, Select, MultiSelect, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
 import AgentChoiceListWrapper from '../../Common/AgentChoiceListWrapper';
@@ -114,13 +114,8 @@ class QueueForm extends React.Component {
               <Field select="routing_model" label="Routing model">
                 <Select clearable={false} choices={routingModels} />
               </Field>
-              <Field
-                className="queue-size"
-                select="max_queue_size"
-                label="Maximum queue size"
-                help="New calls exceeding this limit will be directed to voicemail."
-              >
-                <Input type="text" />
+              <Field className="queue-size" select="max_queue_size">
+                <MaxQueueSize />
               </Field>
 
               <button className={classNames('ui button', { loading: saving })}>
@@ -140,6 +135,31 @@ class QueueForm extends React.Component {
             </Fieldset>
           </Form>
         </div>
+      </div>
+    );
+  }
+}
+
+class MaxQueueSize extends React.Component {
+
+  static propTypes = {
+    value:    PropTypes.number,
+    onChange: PropTypes.func
+  };
+
+  onToggleExpand = () => {
+    const { value, onChange } = this.props;
+    onChange(value > 0 ? 0 : 1);
+  };
+
+  render() {
+    const { value, onChange } = this.props;
+    const expanded = value > 0;
+
+    return (
+      <div>
+        <Checkbox label="Enable a max queue size" value={expanded} onChange={this.onToggleExpand} />
+        {expanded && <Input type="text" value={value} onChange={onChange} />}
       </div>
     );
   }
