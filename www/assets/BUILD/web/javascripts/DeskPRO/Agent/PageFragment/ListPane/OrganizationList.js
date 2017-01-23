@@ -26,7 +26,7 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', '$http', function($compile, $rootScope, $q, $timeout, $http) {
 			self.$scope = $rootScope.$new();
 
-			self.$scope.$safeApply = function(fn) {
+			self.$scope.$safeApply = (function(fn) {
 				var phase = this.$root.$$phase;
 				if(phase == '$apply' || phase == '$digest') {
 					if(fn && (typeof(fn) === 'function')) {
@@ -35,7 +35,7 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 				} else {
 					this.$apply(fn);
 				}
-			};
+			}).bind(self.$scope);
 
 			self.$q = $q;
 			self.$timeout = $timeout;

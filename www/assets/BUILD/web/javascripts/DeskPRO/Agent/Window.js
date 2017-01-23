@@ -1073,16 +1073,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 			self.$timeout = $timeout;
 			self.$http = $http;
 
-			self.$scope.$safeApply = function(fn) {
+			self.$scope.$safeApply = (function(fn) {
 				var phase = this.$root.$$phase;
 				if(phase == '$apply' || phase == '$digest') {
 					if(fn && (typeof(fn) === 'function')) {
 						fn();
 					}
 				} else {
-					self.$scope.$apply(fn);
+					this.$apply(fn);
 				}
-			};
+			}).bind(self.$scope);
 		}]);
 		this.initScope();
 	},

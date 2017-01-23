@@ -135,6 +135,14 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		startTickets = eval(this.getEl('ticket_json').html());
 
+		$scope.ticketsMap = {};
+		$scope.$watch('tickets', function(tickets){
+      $scope.ticketsMap = {};
+			tickets.forEach(function(ticket){
+				$scope.ticketsMap[ticket.id] = ticket;
+			});
+		});
+
 		if (DP_DEBUG) {
 			console.log(startTickets);
 		}
@@ -153,6 +161,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		$scope.tickets              = startTickets;
 		$scope.checkedTickets       = {};
 		$scope.checkedTicketsCount  = 0;
+    $scope.checkedTicketsToggle = false;
+    $scope.changedTickets 			= {};
 		$scope.display_fields       = this.meta.display_fields || [];
 		$scope.openTickets          = {};
 		$scope.listType             = 'list';
@@ -253,7 +263,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		$scope.hasPrevPage = ($scope.pageCursorStart !== 1);
 
-		$scope.hasNextPage = ($scope.pageCursorEnd < $scope.ticketCount); 
+		$scope.hasNextPage = ($scope.pageCursorEnd < $scope.ticketCount);
 	},
 
 	//#########################################################################
@@ -987,81 +997,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 
 	/**
-	 * Applies data from getTicketChangePreviewRows to the current ticket array so the changes
-	 * are visible.
-	 *
-	 * @param {Array} tickets
-	 */
-	applyTicketChangePreviews: function(tickets) {
-		var ticketMap = {};
-		tickets.forEach(function(t) { ticketMap[t.id] = t; });
-
-		this.$scope.tickets.forEach(function(ticket) {
-			if (ticketMap[ticket.id]) {
-				ticket.preview_changes = ticketMap[ticket.id];
-
-				if (!ticket.version_id) {
-					ticket.version_id = 0;
-				}
-				ticket.version_id++;
-			}
-		});
-	},
-
-
-	/**
-	 * Clear preview data from all tickets
-	 */
-	clearAllTicketChangePreviews: function() {
-		this.$scope.tickets.forEach(function(ticket) {
-			if (ticket.preview_changes) {
-				ticket.preview_changes = null;
-				delete ticket.preview_changes;
-
-				if (!ticket.version_id) {
-					ticket.version_id = 0;
-				}
-				ticket.version_id++;
-			}
-		});
-	},
-
-
-	/**
-	 * Clear preview data from specific tickets
-	 *
-	 * @param {Array} ticketIds      Clear these ticket IDs
-	 * @param {Array} notTicketIds   Clear tickets that are not these IDs
-	 */
-	clearTicketChangePreviews: function(ticketIds, notTicketIds) {
-		var map = null, notMap = null;
-
-		if (ticketIds) {
-			map = {};
-			ticketIds.forEach(function(t) { map[t] = true; });
-		}
-		if (notTicketIds) {
-			notMap = {};
-			notTicketIds.forEach(function(t) { notMap[t] = true; });
-		}
-
-		this.$scope.tickets.forEach(function(ticket) {
-			if ((map && map[ticket.id]) || (notMap && !notMap[ticket.id])) {
-				if (ticket.preview_changes) {
-					ticket.preview_changes = null;
-					delete ticket.preview_changes;
-
-					if (!ticket.version_id) {
-						ticket.version_id = 0;
-					}
-					ticket.version_id++;
-				}
-			}
-		});
-	},
-
-
-	/**
 	 * Updates grouping bubble with some info about what happened.
 	 * This is called automatically when a ticket is updated. If we know how to handle
 	 * a grouping field, we can update the grouping counts now. Otherwise, we need to
@@ -1187,113 +1122,126 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		//------------------------------
 
 		$scope.uncheckTicketId = function(ticketId) {
-			ticketId = parseInt(ticketId);
-			if ($scope.checkedTickets[ticketId]) {
-				$scope.checkedTickets[ticketId] = false;
-				delete $scope.checkedTickets[ticketId];
-				$scope.checkedTicketsCount--;
+			if ($scope.checkedTickets[ticketid]) {
+				delete $scope.checkedTickets[ticketid];
+				$scope.onToggleTicket(ticketid);
 			}
 		};
 
-		$scope.$watch('checkedTickets', function(x) {
-			$scope.checkedTicketsCount = 0;
-			for (var key in x) {
-				if (x[key] === true) {
-					$scope.checkedTicketsCount++;
-				}
+		$scope.addTicketChanges = function(changedTicket) {
+      var ticket = $scope.ticketsMap[changedTicket.id];
+      if (!ticket) return;
+      $scope.changedTickets[changedTicket.id] = true;
+      ticket.preview_changes = changedTicket;
+
+      if (!ticket.version_id) {
+        ticket.version_id = 0;
+      }
+      ticket.version_id++;
+		};
+
+		$scope.removeTicketChanges = function(id) {
+			var ticket = $scope.ticketsMap[id];
+			if (!ticket || !$scope.changedTickets[id]) return;
+
+			delete ticket.preview_changes;
+			delete $scope.changedTickets[id];
+			if (!ticket.version_id) {
+				ticket.version_id = 0;
+			}
+			ticket.version_id++;
+		};
+
+    $scope.removeAllTicketsChanges = function() {
+    	for (var id in $scope.changedTickets) {
+        $scope.removeTicketChanges(id);
+      }
+		};
+
+		$scope.onToggleTicket = function(id) {
+			if ($scope.checkedTickets[id]) {
+        $scope.checkedTicketsCount++;
+			} else {
+        $scope.checkedTicketsCount--;
+        $scope.removeTicketChanges(id);
 			}
 
 			$scope.checkedTicketsToggle = ($scope.checkedTicketsCount === $scope.tickets.length);
-
-			if ($scope.checkedTicketsCount && !self.massActions && DeskPRO_Window.paneVis.tabs) {
-				$scope.openMassActions();
-			} else if (!$scope.checkedTicketsCount && self.massActions) {
-				self.massActions.close();
-			}
-
-			self.updateMassActionPreviewsStatus();
-		}, true);
-
-		$scope.checkAllTickets = function(isChecked) {
-			if (isChecked) {
-				$scope.checkedTickets = {};
-				$scope.tickets.forEach(function(x) { $scope.checkedTickets[parseInt(x.id)] = true; });
-			} else {
-				$scope.checkedTickets = {};
-			}
 		};
+
+    $scope.$watch('checkedTicketsToggle', function(isChecked) {
+    	if (isChecked) {
+        if ($scope.checkedTicketsCount === $scope.tickets.length) return;
+        $scope.checkedTicketsCount = 0;
+        $scope.tickets.forEach(function(x) {
+          $scope.checkedTickets[parseInt(x.id)] = true;
+          $scope.checkedTicketsCount++;
+        });
+			} else {
+        if ($scope.checkedTicketsCount !== $scope.tickets.length) return;
+        $scope.checkedTickets = {};
+        $scope.checkedTicketsCount = 0;
+        $scope.removeAllTicketsChanges();
+			}
+    });
+
+    $scope.$watch('checkedTicketsCount', function(count){
+      if (count && DeskPRO_Window.paneVis.tabs) {
+        $scope.openMassActions();
+      }
+      if (0 === count && self.massActions) {
+        self.massActions.close();
+      }
+		});
 
 		//------------------------------
 		// Mass actions overlay
 		//------------------------------
+    $scope.openMassActions = function() {
+      setTimeout(function () {
+        if (!self.massActions) {
+          self.massActions = new DeskPRO.Agent.PageFragment.List.TicketList.MassActions({
+            "$scope":      self.$scope,
+            onPostApply:   function (inst, data, info) {
+              $scope.$safeApply(function () {
+                $scope.checkedTickets = {};
+                $scope.checkedTicketsCount = 0;
+                $scope.removeAllTicketsChanges();
 
-		$scope.openMassActions = function() {
-			if (!self.massActions) {
-				self.massActions = new DeskPRO.Agent.PageFragment.List.TicketList.MassActions({
-					"$scope": self.$scope,
-					onPostApply: function(inst, data, info) {
-						$scope.$safeApply(function() {
-							$scope.checkedTickets = {};
-							self.clearAllTicketChangePreviews();
+                if (data.ticket_data) {
+                  self.applyTicketData(data.ticket_data);
+                }
+              });
+            },
+            getCheckedIds: function () {
+              var ids = [];
+              for (var tid in $scope.checkedTickets) {
+                if ($scope.checkedTickets[tid] === true) {
+                  ids.push(tid);
+                }
+              }
 
-							if (data.ticket_data) {
-								self.applyTicketData(data.ticket_data);
-							}
-						});
-					},
-					getCheckedIds: function() {
-						var ids = [];
-						for (var tid in $scope.checkedTickets) {
-							if ($scope.checkedTickets[tid] === true) {
-								ids.push(tid);
-							}
-						}
+              return ids;
+            },
+            onClosed:      function () {
+              $scope.$safeApply(function () {
+                $scope.checkedTickets = {};
+                $scope.checkedTicketsCount = 0;
+                $scope.removeAllTicketsChanges();
+              });
+            },
+            onFormUpdated: function (changes) {
+              self.updateMassActionPreviews(changes);
+            }
+          });
+        }
+        self.massActions.open();
 
-						return ids;
-					},
-					onClosed: function() {
-						if (self.massActions) {
-							self.massActions.destroy();
-						}
-
-						$scope.$safeApply(function() {
-							self.clearAllTicketChangePreviews();
-							$scope.checkedTickets = {};
-						});
-
-						self.massActions = null;
-					},
-					onFormUpdated: function(changes) {
-						self.updateMassActionPreviews(changes);
-					}
-				});
-			}
-
-			self.massActions.open();
-		};
-
-		this.updateMassActionPreviewsDebounced = _.debounce(this.updateMassActionPreviews, 500);
+        self.updateMassActionPreviewsDebounced = _.debounce(self.updateMassActionPreviews, 500);
+      }, 0);
+    };
 	},
 
-	updateMassActionPreviewsStatus: function() {
-		var $scope = this.$scope,
-			ids = [],
-			self = this;
-
-		for (var i in $scope.checkedTickets) {
-			if ($scope.checkedTickets.hasOwnProperty(i) && $scope.checkedTickets[i] === true) {
-				ids.push(parseInt(i));
-			}
-		}
-
-		$scope.$safeApply(function() {
-			if (!ids.length) {
-				self.clearAllTicketChangePreviews();
-			} else {
-				self.clearTicketChangePreviews(null, ids);
-			}
-		});
-	},
 
 	updateMassActionPreviews: function(changes) {
 		var $scope = this.$scope,
@@ -1301,25 +1249,25 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			self = this;
 
 		for (var i in $scope.checkedTickets) {
-			if ($scope.checkedTickets.hasOwnProperty(i) && $scope.checkedTickets[i] === true) {
+			if ($scope.checkedTickets[i] === true) {
 				ids.push(parseInt(i));
 			}
 		}
 
 		if (!ids.length || !changes.length) {
 			$scope.$safeApply(function() {
-				self.clearAllTicketChangePreviews();
+				$scope.removeAllTicketsChanges();
 			});
 			return;
 		}
 
 		// Clear all previews except for ones we want
-		this.clearTicketChangePreviews(null, ids);
+		$scope.removeAllTicketsChanges();
 
 		// Load preview data for selected tickets
 		this.getTicketChangePreviewRows(ids, changes, true).then(function(data) {
 			$scope.$safeApply(function() {
-				self.applyTicketChangePreviews(data);
+				(data || []).forEach(this.$scope.addTicketChanges);
 			});
 		});
 	},
@@ -1454,7 +1402,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				// update the display fields and angular will update the view
 				} else {
 					$scope.display_fields = info.displayFields;
-					$scope.$apply();
+					$scope.$safeApply();
 				}
 			}
 		});
@@ -1531,7 +1479,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			}
 
 			DeskPRO_Window.sections.agent_chat_section.newChatWindow([agentId]);
-		}
+		};
 
 		//------------------------------
 		// Export
@@ -1569,15 +1517,15 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			}
 		};
 
-		$scope.loadPrevCursorPage = function() { 
+		$scope.loadPrevCursorPage = function() {
 			if ($scope.hasPrevPage) {
 				self.loadPrevCursorPage();
-			} 
+			}
 		};
-		$scope.loadNextCursorPage = function() { 
+		$scope.loadNextCursorPage = function() {
 			if ($scope.hasNextPage) {
 				self.loadNextCursorPage();
-			} 
+			}
 		};
 	},
 

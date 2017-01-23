@@ -9,7 +9,7 @@
 		</header>
 		<header class="view-subheader">
 			<header class="list-selection-bar">
-				<input class="selection-control" type="checkbox" ng-model="checkedTicketsToggle" ng-change="checkAllTickets(checkedTicketsToggle)" />
+				<input class="selection-control" type="checkbox" ng-model="checkedTicketsToggle" />
 				{{ phrase('agent.general.x_selected', {'num_placeholder': '{{ checkedTicketsCount }}'}, true) }}
 
 				<span ng-show="!paneVis.tabs && checkedTicketsCount > 0">
