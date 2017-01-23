@@ -26,6 +26,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   chatDepartments:     collectionSelectorFactory('Department', 'all_tickets')(state),
   recentChats:         collectionSelectorFactory('AgentChat', 'recent')(state),
   groupChats:          collectionSelectorFactory('AgentChat', 'group')(state),
+  hiddenChats:         state.IM.chats.get('hiddenChats'),
   myDepartments:       collectionSelectorFactory('Department', 'my_tickets')(state),
   myTeams:             collectionSelectorFactory('AgentTeam', 'my')(state),
   me:                  meSelector(state),
@@ -59,6 +60,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     myTeams:             PropTypes.object.isRequired,
     recentChats:         PropTypes.object.isRequired,
     groupChats:          PropTypes.object.isRequired,
+    hiddenChats:         PropTypes.object.isRequired,
     messages:            PropTypes.object,
     counts:              PropTypes.object,
     current:             PropTypes.object,
@@ -100,6 +102,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.onScroll         = this.onScroll.bind(this);
     this.loadMessages     = this.loadMessages.bind(this);
     this.onChatSearch     = this.onChatSearch.bind(this);
+    this.onHideChat       = this.onHideChat.bind(this);
   }
 
   refreshCounts() {
@@ -146,6 +149,10 @@ export class AgentTopBarContainer extends SeparateComponent {
 
   chatClickOut(chatId) {
     this.props.dispatch(chatsActions.closeChat(chatId));
+  }
+
+  onHideChat(chat) {
+    this.props.dispatch(chatsActions.hideChat(chat.get('id'), Date.now()));
   }
 
   onSubmit(message) {
@@ -306,7 +313,10 @@ export class AgentTopBarContainer extends SeparateComponent {
   }
 
   loadMessages(page = 1) {
-    this.props.dispatch(messagesActions.loadMessages(this.props.current.get('id'), this.state.searchQuery, page));
+    const { current, dispatch } = this.props;
+    if (current.get('id')) {
+      dispatch(messagesActions.loadMessages(current.get('id'), this.state.searchQuery, page));
+    }
   }
 
   render() {
@@ -335,8 +345,8 @@ export class AgentTopBarContainer extends SeparateComponent {
       loadMessages:       this.loadMessages,
       onChatSearch:       this.onChatSearch,
       searchQuery:        this.state.searchQuery,
-      shouldScrollBottom: this.state.shouldScrollBottom,
-      onToggleChat:       this.onToggleChat
+      onToggleChat:       this.onToggleChat,
+      onHideChat:         this.onHideChat
     };
     return <AgentTopBar {...props} ref={(c) => { this.agentTopBar = c; }} />;
   }
@@ -351,6 +361,7 @@ export class AgentTopBar extends React.Component {
     me:                  PropTypes.object.isRequired,
     recentChats:         PropTypes.object.isRequired,
     groupChats:          PropTypes.object.isRequired,
+    hiddenChats:         PropTypes.object.isRequired,
     notificationCount:   PropTypes.number,
     dispatch:            PropTypes.func.isRequired,
     updateVolume:        PropTypes.func,
@@ -392,7 +403,8 @@ export class AgentTopBar extends React.Component {
     voiceEnabled:        PropTypes.bool,
     userChatEnabled:     PropTypes.bool,
     onlineAgents:        PropTypes.object,
-    onToggleChat:        PropTypes.func
+    onToggleChat:        PropTypes.func,
+    onHideChat:          PropTypes.func
   };
 
   onChatVolumeUpdate = (newVal) => {
@@ -424,7 +436,7 @@ export class AgentTopBar extends React.Component {
     const { onChatSearch, onScroll, openGroupDrawer, markNewMessages, onSubmit, toggleImOverlay } = this.props;
     const { searchQuery, counts, groupChats, checkedAgents, me, myDepartments, myTeams, recentChats } = this.props;
     const { agents, onSearchFocus, onSearchBlur, editChat, updateGroup, loadMessages } = this.props;
-    const { recentLoaded, groupLoaded, overlayShown }  = this.props;
+    const { recentLoaded, groupLoaded, overlayShown, hiddenChats, onHideChat }  = this.props;
     const groupDrawerTarget = document.getElementById('im-button');
 
     return (<TopBarItem childrenWrapper="im-list">
@@ -434,12 +446,14 @@ export class AgentTopBar extends React.Component {
         departments={myDepartments}
         teams={myTeams}
         chats={recentChats}
+        hiddenChats={hiddenChats}
         counts={counts}
         onRecentClick={recentClick}
         teamsLoaded={myTeamsLoaded}
         departmentsLoaded={myDepartmentsLoaded}
         agentsLoaded={agentsLoaded}
         recentLoaded={recentLoaded}
+        onHideChat={onHideChat}
       >
         <IMOverlay
           counts={counts}

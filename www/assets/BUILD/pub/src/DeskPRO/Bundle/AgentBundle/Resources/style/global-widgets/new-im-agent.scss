@@ -63,8 +63,28 @@ img.emojione, svg.emojione {
       position: relative;
       display: inline-block;
 
+      .icon.close {
+        position: absolute;
+        display: none;
+        width: 14px;
+        height: 14px;
+        top: -9px;
+        right: -5px;
+        color: $dp-greyscale-850;
+      }
+
+      &:hover {
+        .icon.close {
+          display: block;
+        }
+      }
+
       > .im.avatar {
         margin: 0 7px;
+
+        &.offline {
+          opacity: 0.5;
+        }
 
         .text {
           vertical-align: middle;
@@ -75,12 +95,13 @@ img.emojione, svg.emojione {
           position: absolute;
           left: 0;
           top: 0;
-
-
         }
       }
 
       > .knuckles.message-counter {
+        &:hover {
+          display: none;
+        }
         position: absolute;
         top: -8px;
         left: 25px;
@@ -322,9 +343,7 @@ img.emojione, svg.emojione {
       .im.item {
         color: $dp-greyscale-600;
         font-size: 16px;
-        padding-left: 15px;
-        padding-top: 20px;
-        padding-bottom: 20px;
+        padding: 20px 34px;
         border-left: none;
 
         .dp-im-tab-menu-icon {
@@ -357,8 +376,55 @@ img.emojione, svg.emojione {
       }
 
       .item {
+        &.agent, &.department, &.team {
+          padding: 8px 15px;
+          margin-top: 2px;
+          position: relative;
+
+          .message-counter {
+            font-family: "Open Sans", serif;
+            font-size: 12px;
+            position: absolute;
+            left: 30px;
+            top: 2px;
+            border-radius: 2px;
+            display: block;
+            padding: 2px;
+            font-weight: 600;
+          }
+
+          .timestamp {
+
+            &:before {
+              content: '';
+              display: table-cell;
+              width: 200px;
+              height: 30px;
+              background-image: linear-gradient(to right, transparent, white);
+            }
+
+            span {
+              display: table-cell;
+              vertical-align: middle;
+            }
+
+            display: table;
+            position: absolute;
+            padding: 10px 0 10px 10px;
+            right: 15px;
+            top: 2px;
+            font-size: 10px;
+            font-weight: 400;
+            color: $dp-greyscale-450;
+            font-family: "Open Sans", serif;
+          }
+        }
         &:hover {
           background: $dp-morning-sky;
+
+          .timestamp:before {
+            background-image: linear-gradient(to right, transparent, $dp-morning-sky);
+          }
 
           &.agent, &.department, &.team {
             .content {
@@ -368,26 +434,13 @@ img.emojione, svg.emojione {
             }
           }
         }
-
-        &.agent, &.department, &.team {
-          padding: 8px 15px;
-          margin-top: 2px;
-
-          .timestamp {
-            font-size: 10px;
-            font-weight: 400;
-            color: $dp-greyscale-450;
-            font-family: "Open Sans", serif;
-            margin-top: 10px;
-          }
-        }
         .content {
           &.agent, &.department, &.team {
             overflow: hidden;
             height: 30px;
             line-height: 28px;
             white-space: nowrap;
-            max-width: 240px;
+            max-width: 275px;
 
             .header {
               font-family: "Open Sans", serif;
@@ -396,20 +449,6 @@ img.emojione, svg.emojione {
               color: $dp-greyscale-850;
               display: inline-block;
             }
-
-            .message-counter {
-              font-family: "Open Sans", serif;
-              font-size: 10px;
-              display: inline-block;
-              margin-left: 10px;
-              height: 14px;
-              padding: 2px 4px;
-              font-weight: 600;
-            }
-          }
-
-          &.agent {
-            max-width: 190px;
           }
         }
 
@@ -542,10 +581,8 @@ img.emojione, svg.emojione {
 
     }
 
-
-
     .box {
-      min-width: 300px;
+      min-width: 420px;
       height: 425px;
       position: relative;
       background-color: $dp-greyscale-50;
@@ -582,6 +619,7 @@ img.emojione, svg.emojione {
           }
 
           .timestamp {
+
             display: inline-block;
             white-space: nowrap;
             color: $dp-greyscale-450;
@@ -739,10 +777,10 @@ img.emojione, svg.emojione {
                   }
 
                   .text {
-                    font-size: 6px;
+                    font-size: 10px;
                     position: absolute;
-                    left: 0;
-                    top: 0;
+                    left: -1px;
+                    top: -1px;
                   }
                 }
               }

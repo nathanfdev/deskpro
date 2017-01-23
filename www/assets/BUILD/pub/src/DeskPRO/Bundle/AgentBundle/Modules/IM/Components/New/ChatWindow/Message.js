@@ -79,7 +79,7 @@ class Message extends React.Component
       {this.dateSep()}
       {my || searchQuery ? this.timestamp() : null}
       <div className="message">
-        {searchQuery ? <div className="avatar wrapper">{AvatarHelper.renderAgentAvatar(agent, 14)}</div> : null}
+        {searchQuery ? <div className="avatar wrapper">{AvatarHelper.renderAgentAvatar(agent, 20)}</div> : null}
         {!my && !searchQuery
           ? (
             <div

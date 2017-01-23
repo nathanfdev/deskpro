@@ -134,7 +134,11 @@ class Container extends React.Component {
     ) {
       this.props.loadMessages();
     }
-    this.setState({ mounted: true });
+    if (this.editor) {
+      this.editor.focus();
+    }
+    this.setState({ mounted: true, searching: false, expandedHeader: false });
+    this.props.onChatSearch('');
   }
 
   openEmoji() {

@@ -34,6 +34,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\Service\CheckWhitelistedIP;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -135,7 +136,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Create a reponse that indicates a permissions error.
+     * Create a response that indicates a permissions error.
      *
      * @param string $message The message to show the user
      *
