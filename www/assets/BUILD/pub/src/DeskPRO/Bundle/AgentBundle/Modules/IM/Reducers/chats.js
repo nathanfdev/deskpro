@@ -11,7 +11,8 @@ const initialState = {
   chating:        false,
   groupCreation:  false,
   manuallyClosed: {},
-  checkedAgents:  {}
+  checkedAgents:  {},
+  hiddenChats:    {}
 };
 
 export default createReducer(initialState, {
@@ -46,5 +47,7 @@ export default createReducer(initialState, {
       payload.agentIds.forEach((item) => { diff.checkedAgents[item] = true; return null; });
     }
     return state.mergeIn([], diff);
-  }
+  },
+  [actions.hideChat]:   (state, payload) => state.set('hiddenChats', payload),
+  [actions.revealChat]: (state, payload) => state.set('hiddenChats', payload)
 });

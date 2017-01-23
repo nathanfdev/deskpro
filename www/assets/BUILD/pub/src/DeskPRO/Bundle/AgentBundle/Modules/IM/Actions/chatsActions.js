@@ -33,6 +33,29 @@ export const openGroupDrawer = createAction(
 
 export const closeGroupDrawer = createAction('IM_CLOSE_GROUP_ADD_DRAWER');
 
+export const hideChat = createAction(
+  'IM_HIDE_CHAT',
+  (chatId, hideTime) => (dispatch) => {
+    dispatch(closeChat(chatId));
+    const hiddenChats = localStorage.getItem('hiddenChats') ? JSON.parse(localStorage.getItem('hiddenChats')) : {};
+    hiddenChats[chatId] = hideTime;
+    localStorage.setItem('hiddenChats', JSON.stringify(hiddenChats));
+    return hiddenChats;
+  }
+);
+
+export const revealChat = createAction(
+  'IM_REVEAL_CHAT',
+  (chatId) => {
+    const hiddenChats = localStorage.getItem('hiddenChats') ? JSON.parse(localStorage.getItem('hiddenChats')) : {};
+    if (hiddenChats[chatId]) {
+      delete hiddenChats[chatId];
+      localStorage.setItem('hiddenChats', JSON.stringify(hiddenChats));
+    }
+    return hiddenChats;
+  }
+);
+
 export const startChat = createAction(
   'IM_START_CHAT',
   (targetParams, chatId = null, forced = false) => (dispatch, getState) => {
@@ -44,6 +67,7 @@ export const startChat = createAction(
       (resolve, reject) => {
         const store = getState().RecordsStore.store.get('AgentChat');
         if (chatId && store.get('records').toJS()[chatId]) {
+          dispatch(revealChat(chatId));
           return resolve(store.get('records').toJS()[chatId]);
         }
         let method;
@@ -57,6 +81,10 @@ export const startChat = createAction(
             const records = {};
             records[response.data.id] = response.data;
             dispatch(addToCollection('AgentChat', 'recent', records, [parseInt(response.data.id, 10)]));
+            dispatch(revealChat(response.data.id));
+            if (response.data.chat_type === 'group') {
+              dispatch(addToCollection('AgentChat', 'group', records, [parseInt(response.data.id, 10)]));
+            }
             dispatch(markChatAsManuallyClosed(response.data.id));
             return resolve(response.data);
           })

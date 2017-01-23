@@ -5,11 +5,16 @@ class Scrollarea extends ScrollArea {
   constructor(props) {
     super(props);
     this.autoscroll = true;
+    this.edgeIncrease = true;
   }
 
   componentWillReceiveProps() {
     if (this.state.topPosition === this.state.realHeight - this.state.containerHeight) {
       this.autoscroll = true;
+    }
+    if (this.edgeIncrease && this.state.realHeight > this.state.containerHeight) {
+      this.autoscroll = true;
+      this.edgeIncrease = false;
     }
   }
 
