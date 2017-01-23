@@ -48,8 +48,18 @@
 						<tr class="header-row">
 							<td class="first">&nbsp;</td>
 							<td colspan="2"><div class="switcher-wrap">
+								{% set switch_disabled = person.isAgent() and not other_person.isAgent() %}
 								<div class="left-text merge-target-button" data-merge-id="{{ person.id }}" data-keep="1">{{ phrase('agent.general.merge_keep_this') }}</div>
-								<button class="switch-trigger clean-white" style="margin-top: 1px;">&lsaquo; {{ phrase('agent.general.merge_switch_btn') }} &rsaquo;</button>
+								<button class="switch-trigger clean-white" style="margin-top: 1px;" {% if switch_disabled %}disabled{% endif %}>
+									&lsaquo; {{ phrase('agent.general.merge_switch_btn') }} &rsaquo;
+								</button>
+								{% if switch_disabled %}
+								<br />
+								<span style="color: #9C0400;">
+									Switch is disabled because of forbidden merging agent into non-agent
+								</span>
+
+								{% endif %}
 								<div class="right-text merge-target-button" data-merge-id="{{ other_person.id }}">{{ phrase('agent.general.merge_merge_this') }}</div>
 							</div></td>
 						</tr>
