@@ -388,7 +388,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         // We are specifically requestinga local url,
         // make sure serve_file doesn't redirect.
         if ($this->file_url && !$use_file_url) {
-            $url .= strpos($url, '?') ? '&local' : '?local';
+            $url = str_replace('/file.php/', '/file.php/local/', $url);
         }
 
         return $url;
@@ -646,7 +646,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isTemp()
     {
@@ -654,7 +654,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param boolean $is_temp
+     * @param bool $is_temp
      *
      * @return $this
      */
