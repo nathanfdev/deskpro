@@ -38,6 +38,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   groupCreation:       state.IM.chats.get('groupCreation'),
   checkedAgents:       state.IM.chats.get('checkedAgents'),
   messages:            state.IM.messages,
+  drafts:              state.IM.messages.get('drafts'),
   loadingMessages:     state.IM.messages.get('loadingMessages'),
   updatingMessages:    state.IM.messages.get('updatingMessages'),
   recentLoaded:        isLoadedCollectionSelectorFactory('AgentChat', 'recent')(state),
@@ -62,6 +63,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     groupChats:          PropTypes.object.isRequired,
     hiddenChats:         PropTypes.object.isRequired,
     messages:            PropTypes.object,
+    drafts:              PropTypes.object,
     counts:              PropTypes.object,
     current:             PropTypes.object,
     editChat:            PropTypes.object,
@@ -94,6 +96,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.recentClick      = this.recentClick.bind(this);
     this.participantClick = this.participantClick.bind(this);
     this.chatClickOut     = this.chatClickOut.bind(this);
+    this.saveDraft        = this.saveDraft.bind(this);
     this.onSubmit         = this.onSubmit.bind(this);
     this.markNewMessages  = this.markNewMessages.bind(this);
     this.openGroupDrawer  = this.openGroupDrawer.bind(this);
@@ -150,6 +153,11 @@ export class AgentTopBarContainer extends SeparateComponent {
   chatClickOut(chatId) {
     this.props.dispatch(chatsActions.closeChat(chatId));
   }
+
+  saveDraft(chatId, draft) {
+    this.props.dispatch(messagesActions.saveDraft(chatId, draft));
+  }
+
 
   onHideChat(chat) {
     this.props.dispatch(chatsActions.hideChat(chat.get('id'), Date.now()));
@@ -334,6 +342,7 @@ export class AgentTopBarContainer extends SeparateComponent {
       notificationCount:  this.state.notificationCount,
       toggleImOverlay:    this.toggleImOverlay,
       chatClickOut:       this.chatClickOut,
+      saveDraft:          this.saveDraft,
       recentClick:        this.recentClick,
       participantClick:   this.participantClick,
       onSubmit:           this.onSubmit,
@@ -375,6 +384,7 @@ export class AgentTopBar extends React.Component {
     toggleImOverlay:     PropTypes.func,
     openGroupDrawer:     PropTypes.func,
     chatClickOut:        PropTypes.func,
+    saveDraft:           PropTypes.func,
     recentClick:         PropTypes.func,
     participantClick:    PropTypes.func,
     createGroup:         PropTypes.func,
@@ -385,6 +395,7 @@ export class AgentTopBar extends React.Component {
     loadMessages:        PropTypes.func,
     onChatSearch:        PropTypes.func,
     messages:            PropTypes.object,
+    drafts:              PropTypes.object,
     counts:              PropTypes.object,
     current:             PropTypes.object,
     editChat:            PropTypes.object,
@@ -436,7 +447,7 @@ export class AgentTopBar extends React.Component {
     const { onChatSearch, onScroll, openGroupDrawer, markNewMessages, onSubmit, toggleImOverlay } = this.props;
     const { searchQuery, counts, groupChats, checkedAgents, me, myDepartments, myTeams, recentChats } = this.props;
     const { agents, onSearchFocus, onSearchBlur, editChat, updateGroup, loadMessages } = this.props;
-    const { recentLoaded, groupLoaded, overlayShown, hiddenChats, onHideChat }  = this.props;
+    const { recentLoaded, groupLoaded, overlayShown, hiddenChats, onHideChat, drafts, saveDraft }  = this.props;
     const groupDrawerTarget = document.getElementById('im-button');
 
     return (<TopBarItem childrenWrapper="im-list">
@@ -502,9 +513,11 @@ export class AgentTopBar extends React.Component {
           teams={myTeams}
           me={me}
           messages={messages}
+          drafts={drafts}
           current={current}
           onSubmit={onSubmit}
           clickOut={chatClickOut}
+          saveDraft={saveDraft}
           loadMessages={loadMessages}
           loadingMessages={loadingMessages}
           markNewMessages={markNewMessages}

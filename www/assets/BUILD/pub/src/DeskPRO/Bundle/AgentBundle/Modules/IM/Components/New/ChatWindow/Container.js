@@ -25,6 +25,7 @@ class Container extends React.Component {
     searchQuery:     PropTypes.string,
     isOpen:          PropTypes.bool.isRequired,
     clickOut:        PropTypes.func,
+    saveDraft:       PropTypes.func,
     onSubmit:        PropTypes.func,
     onChange:        PropTypes.func,
     onAttach:        PropTypes.func,
@@ -54,6 +55,9 @@ class Container extends React.Component {
     },
     openGroupDrawer() {
 
+    },
+    saveDraft() {
+
     }
   };
 
@@ -62,7 +66,8 @@ class Container extends React.Component {
     this.state = {
       emojiOpened:       false,
       expandGroupHeader: false,
-      searching:         false
+      searching:         false,
+      message:           ''
     };
 
     this.openEmoji    = this.openEmoji.bind(this);
@@ -78,6 +83,7 @@ class Container extends React.Component {
 
   componentWillReceiveProps(props) {
     if (props.current.get('id') !== this.props.current.get('id')) {
+      this.props.saveDraft(this.props.current.get('id'), this.state.message);
       this.refresh(props);
     }
   }
@@ -137,7 +143,14 @@ class Container extends React.Component {
     if (this.editor) {
       this.editor.focus();
     }
-    this.setState({ mounted: true, searching: false, expandedHeader: false });
+    const newState = { mounted: true, searching: false, expandedHeader: false };
+    if (props.drafts && props.drafts[props.current.get('id')]) {
+      newState.message = props.drafts[props.current.get('id')];
+    } else {
+      newState.message = '';
+    }
+
+    this.setState(newState);
     this.props.onChatSearch('');
   }
 

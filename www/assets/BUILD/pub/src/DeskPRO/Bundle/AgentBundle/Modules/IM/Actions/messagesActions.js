@@ -85,3 +85,26 @@ export const markMessages = createAction(
     )
 );
 
+export const saveDraft = createAction(
+  'IM_SAVE_DRAFT',
+  (chatId, message) => {
+    const drafts = localStorage.getItem('drafts') ? JSON.parse(localStorage.getItem('drafts')) : {};
+    drafts[chatId] = message;
+    localStorage.setItem('drafts', JSON.stringify(drafts));
+    return drafts;
+  }
+);
+
+export const loadDrafts = createAction(
+  'IM_LOAD_DRAFTS',
+  () => {
+    let drafts = localStorage.getItem('drafts');
+    if (drafts) {
+      drafts = JSON.parse(localStorage.getItem('drafts'));
+    } else {
+      drafts = {};
+    }
+
+    return drafts;
+  }
+);

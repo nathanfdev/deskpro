@@ -13,7 +13,8 @@ const initialState = {
   loadingMessages:  true,
   loadingCounts:    true,
   updatingMessages: false,
-  searching:        false
+  searching:        false,
+  drafts:           {}
 };
 
 export default createReducer(initialState, {
@@ -64,6 +65,8 @@ export default createReducer(initialState, {
       done:    state => state.set('loadingCounts', false)
     }
   ),
+  [actions.saveDraft]:  (state, payload) => state.set('drafts', payload),
+  [actions.loadDrafts]: (state, payload) => state.set('drafts', payload),
 
   [newActionAlerts]: MessagesHelper.handleActionAlerts
 });
