@@ -170,7 +170,14 @@ class TicketWithLayoutsWebType extends AbstractType
         $context = TicketWithLayoutsContext::createOnPreSubmit($event);
 
         $hasNotSubmitted = false;
-        $displayedFields = isset($data['displayed_fields']) ? array_flip(explode(',', $data['displayed_fields'])) : [];
+
+        $displayedFields = [];
+        if (isset($data['displayed_fields'])) {
+            if (is_string($data['displayed_fields'])) {
+                $data['displayed_fields'] = explode(',', $data['displayed_fields']);
+            }
+            $displayedFields = array_flip($data['displayed_fields']);
+        }
 
         foreach (TicketLayoutHelper::getLayoutFields($context) as $field) {
             // the form was already updated via the form manipulator pre submit callback
