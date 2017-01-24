@@ -80,51 +80,6 @@ class TicketsController extends AbstractTicketsController
 
     /**
      * @ApiDoc(
-     *      description="Create a new resource",
-     *      tags={"CRUD"="#ffa500"},
-     *      statusCodes={
-     *          201="Returned in case of successful resource creation",
-     *          400="We will return this in case your request was malformed",
-     *      }
-     * )
-     *
-     * @Rest\Post("/zapier")
-     */
-    public function postZapierAction(Request $request)
-    {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
-
-        $options = array_merge([
-            'agent_interface'      => true,
-            'allow_create_message' => true,
-            'person'               => $this->getUser(),
-        ]);
-
-        return $this->handleForm($this->instantiateEntity($request), $request, $options);
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="Create a new resource",
-     *      tags={"CRUD"="#ffa500"},
-     *      statusCodes={
-     *          201="Returned in case of successful resource creation",
-     *          400="We will return this in case your request was malformed",
-     *      }
-     * )
-     *
-     * @deprecated
-     * @Rest\Post("")
-     */
-    public function postAction(Request $request)
-    {
-        $this->get('logger')->warning('POST /tickets is deprecated, use /ticket_forms to create tickets');
-
-        return parent::postAction($request);
-    }
-
-    /**
-     * @ApiDoc(
      *      description="Get a list of tickets (see parameters description for additional information)",
      *      filters={
      *          {

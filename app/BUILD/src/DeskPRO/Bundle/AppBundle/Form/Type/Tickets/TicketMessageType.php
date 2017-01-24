@@ -36,12 +36,12 @@ use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\ApiTicketMessageAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessageInlineAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -84,12 +84,17 @@ class TicketMessageType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('message', HtmlTextareaType::class, [
-            'property_path' => 'message_html',
-            'label'         => $options['message_label'],
-            'required'      => $options['required'],
-            'constraints'   => $options['message_constraints'],
-        ]);
+        $builder
+            ->add('message', HtmlTextareaType::class, [
+                'property_path' => 'message_html',
+                'label'         => $options['message_label'],
+                'required'      => $options['required'],
+                'constraints'   => $options['message_constraints'],
+            ])
+            ->add('person', PersonAssignType::class, [
+                'mapped' => false,
+            ])
+        ;
 
         if ($options['format']) {
             $builder->add('format', DpHiddenType::class, [
@@ -103,11 +108,6 @@ class TicketMessageType extends AbstractType
                 'choices'           => ['html', 'text'],
             ]);
         }
-
-        $builder
-            ->add('person', EntityType::class, [
-                'class' => Person::class,
-            ]);
 
         $ticketMessage = $options['ticket_message'] ?: $builder->getData();
 
@@ -260,8 +260,9 @@ class TicketMessageType extends AbstractType
      */
     public function onSetRelations(FormEvent $event)
     {
+        $form   = $event->getForm();
         $data   = $event->getData();
-        $config = $event->getForm()->getConfig();
+        $config = $form->getConfig();
 
         /** @var Ticket $ticket */
         $ticket = $config->getOption('ticket');
@@ -271,9 +272,14 @@ class TicketMessageType extends AbstractType
                 $ticket->addMessage($data);
             }
 
-            $person = $config->getOption('person');
-            if ($person) {
-                $data->setPerson($person);
+            $optionPerson = $config->getOption('person');
+            if ($optionPerson) {
+                $data->setPerson($optionPerson);
+            }
+
+            $formPerson = $form->get('person')->getData();
+            if ($formPerson) {
+                $data->setPerson($formPerson);
             }
         }
     }
