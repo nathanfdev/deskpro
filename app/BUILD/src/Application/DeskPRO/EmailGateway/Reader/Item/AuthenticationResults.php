@@ -123,6 +123,8 @@ class AuthenticationResults
             $authenticationResults->spf = $matches[1];
             if (!empty($matches[3])) {
                 $authenticationResults->authservId = $matches[3];
+            } else {
+                $authenticationResults->authservId = 'Received_SPF';
             }
         }
 

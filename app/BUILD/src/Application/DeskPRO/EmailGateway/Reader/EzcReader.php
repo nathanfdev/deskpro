@@ -214,8 +214,8 @@ class EzcReader extends AbstractReader
             $receivedSpf = $this->mail->getHeader('Received-SPF', true);
             if ($receivedSpf) {
                 foreach ($receivedSpf as $value) {
-                    $authenticationResult    = AuthenticationResults::parseReceivedSpf($value);
-                    $authenticationResults[] = $authenticationResult;
+                    $authenticationResult                                          = AuthenticationResults::parseReceivedSpf($value);
+                    $authenticationResults[$authenticationResult->getAuthservId()] = $authenticationResult;
                 }
             }
         }

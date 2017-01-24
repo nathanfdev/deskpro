@@ -114,8 +114,8 @@ class ValueReader extends AbstractReader
             $receivedSpf = isset($this->values['headers']['Received-SPF']) ? $this->values['headers']['Received-SPF'] : [];
             if ($receivedSpf) {
                 foreach ($receivedSpf as $value) {
-                    $authenticationResult    = AuthenticationResults::parseReceivedSpf($value);
-                    $authenticationResults[] = $authenticationResult;
+                    $authenticationResult                                          = AuthenticationResults::parseReceivedSpf($value);
+                    $authenticationResults[$authenticationResult->getAuthservId()] = $authenticationResult;
                 }
             }
         }
