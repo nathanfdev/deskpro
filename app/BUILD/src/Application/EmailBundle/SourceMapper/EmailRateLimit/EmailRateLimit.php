@@ -108,7 +108,7 @@ class EmailRateLimit implements EmailRateLimitInterface
                 $date = $this->reset_date;
             }
 
-            $count = $this->sourceRepository->countSendingBetween($date, null, $this->in_account_ids);
+            $count = $this->sourceRepository->countSendingBetween($date, null, $this->in_account_ids, $limit);
             if ($count > $limit) {
                 return true;
             }

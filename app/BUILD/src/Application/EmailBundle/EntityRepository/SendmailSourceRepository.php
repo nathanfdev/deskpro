@@ -65,28 +65,49 @@ class SendmailSourceRepository extends AbstractEntityRepository
     /**
      * @param \DateTime      $start
      * @param \DateTime|null $end
+     * @param array|null     $in_accounts
+     * @param null           $limitHint   Hint at what the max count we care about. We stop if we go over this to save time
      *
-     * @return int
+     * @return int|mixed
      */
-    public function countSendingBetween(\DateTime $start, \DateTime $end = null, array $in_accounts = null)
+    public function countSendingBetween(\DateTime $start, \DateTime $end = null, array $in_accounts = null, $limitHint = null)
     {
         if (!$end) {
             $end = new \DateTime();
         }
 
+        $countSelects = [
+            'COUNT(*) AS count',
+
+            // counts how many actual recipients (e.g. multiple TOs or BCCs)
+            'SUM((LENGTH(to_emails)-LENGTH(REPLACE(to_emails, "@", ""))) + COALESCE(LENGTH(bcc_emails)-LENGTH(REPLACE(bcc_emails, "@", "")), 0)) AS count',
+        ];
+
+        $result = 0;
+
         if ($in_accounts) {
-            return $this->getEntityManager()->getConnection()->fetchColumn("
-                SELECT COUNT(*)
-                FROM sendmail_sources
-                WHERE
-                  status IN ('complete', 'pending', 'processing', 'retry')
-                  AND date_created > ?
-                  AND date_status BETWEEN ? AND ?
-            ", [
-                $start->format('Y-m-d H:i:s'),
-                $start->format('Y-m-d H:i:s'),
-                $end->format('Y-m-d H:i:s'),
-            ]);
+            $prevResult = 0;
+            foreach ($countSelects as $s) {
+                $result = $this->getEntityManager()->getConnection()->fetchColumn("
+                    SELECT $s
+                    FROM sendmail_sources
+                    WHERE
+                      status IN ('complete', 'pending', 'processing', 'retry')
+                      AND date_created > ?
+                      AND date_status BETWEEN ? AND ?
+                ", [
+                    $start->format('Y-m-d H:i:s'),
+                    $start->format('Y-m-d H:i:s'),
+                    $end->format('Y-m-d H:i:s'),
+                ]);
+
+                if ($limitHint && $result >= $limitHint) {
+                    return $result;
+                }
+
+                $result     = max($result, $prevResult);
+                $prevResult = $result;
+            }
         } else {
             $in_accounts = array_map('intval', $in_accounts);
             if (!$in_accounts) {
@@ -94,19 +115,31 @@ class SendmailSourceRepository extends AbstractEntityRepository
             }
             $in_accounts = implode(',', $in_accounts);
 
-            return $this->getEntityManager()->getConnection()->fetchColumn("
-                SELECT COUNT(*)
-                FROM sendmail_sources
-                WHERE
-                  status IN ('complete', 'pending', 'processing', 'retry')
-                  AND date_created > ?
-                  AND date_status BETWEEN ? AND ?
-                  AND account_id IN ($in_accounts)
-            ", [
-                $start->format('Y-m-d H:i:s'),
-                $start->format('Y-m-d H:i:s'),
-                $end->format('Y-m-d H:i:s'),
-            ]);
+            $prevResult = 0;
+            foreach ($countSelects as $s) {
+                $result = $this->getEntityManager()->getConnection()->fetchColumn("
+                    SELECT $s
+                    FROM sendmail_sources
+                    WHERE
+                      status IN ('complete', 'pending', 'processing', 'retry')
+                      AND date_created > ?
+                      AND date_status BETWEEN ? AND ?
+                      AND account_id IN ($in_accounts)
+                ", [
+                    $start->format('Y-m-d H:i:s'),
+                    $start->format('Y-m-d H:i:s'),
+                    $end->format('Y-m-d H:i:s'),
+                ]);
+
+                if ($limitHint && $result >= $limitHint) {
+                    return $result;
+                }
+
+                $result     = max($result, $prevResult);
+                $prevResult = $result;
+            }
         }
+
+        return $result;
     }
 }
