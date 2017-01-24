@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
@@ -38,6 +39,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -101,6 +104,8 @@ class VoiceQueueType extends AbstractType
                 'property_path' => 'maxQueueSize',
             ])
         ;
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onEnsureAgentVoiceEnabled']);
     }
 
     /**
@@ -111,5 +116,26 @@ class VoiceQueueType extends AbstractType
         $resolver->setDefaults([
             'data_class' => VoiceQueue::class,
         ]);
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onEnsureAgentVoiceEnabled(FormEvent $event)
+    {
+        $data = $event->getData();
+        if ($data instanceof VoiceQueue) {
+            foreach ($data->getAgents() as $agent) {
+                $agentData = $agent->getAgentData();
+                if (!$agentData) {
+                    $agentData = new AgentData();
+                    $agent->setAgentData($agentData);
+                }
+
+                $agentData->setIsVoiceEnabled(true);
+            }
+        }
     }
 }

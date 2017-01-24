@@ -185,6 +185,22 @@ class TwilioNullAdapter extends TwilioAdapter
      */
     public function createWorker(VoiceAccount $account, Person $person, $activityName = null)
     {
+        $payload = [
+            'account_sid'         => 'account_sid',
+            'activity_name'       => 'activity_name',
+            'activity_sid'        => 'activity_sid',
+            'attributes'          => 'attributes',
+            'available'           => 'available',
+            'date_created'        => 'date_created',
+            'date_status_changed' => 'date_status_changed',
+            'date_updated'        => 'date_updated',
+            'friendly_name'       => 'friendly_name',
+            'sid'                 => 'sid'.(++self::$uuid),
+            'workspace_sid'       => 'workspace_sid',
+
+        ];
+
+        return new Taskrouter\V1\Workspace\WorkerInstance($this->getVersion(), $payload, 'workspace_sid');
     }
 
     /**
