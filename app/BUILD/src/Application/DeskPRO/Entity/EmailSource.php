@@ -84,6 +84,8 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     const ERR_INVALID_ADDRESS   = 'invalid_address';
     const ERR_RATE_LIMIT        = 'rate_limit';
     const ERR_USER_VALIDATING   = 'user_validating';
+    const ERR_SPF_REJECT        = 'spf_rejected';
+    const ERR_DKIM_REJECT       = 'dkim_rejected';
 
     /**
      * @var int

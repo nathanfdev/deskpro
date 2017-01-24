@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\Reader\Item\AuthenticationResults;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\TicketMessage;
 
@@ -182,6 +183,35 @@ class PreProcessor extends AbstractGatewayProcessor
                 $this->source_info[] = 'Message date: '.$email_date->format(\DateTime::RFC2822);
 
                 return;
+            }
+        }
+
+        //--------------------------------
+        // Validate email SPF and DKIM header
+        //--------------------------------
+
+        if (App::getSetting('core_tickets.reject_spf_level') || App::getSetting('core_tickets.reject_dkim_level')) {
+            $authenticationResults = $this->reader->getAuthenticationResults();
+
+            $spfLevel  = App::getSetting('core_tickets.reject_spf_level');
+            $dkimLevel = App::getSetting('core_tickets.reject_dkim_level');
+
+            /** @var AuthenticationResults $authenticationResult */
+            foreach ($authenticationResults as $authenticationResult) {
+                if ($spfLevel && in_array($authenticationResult->getSpfResult(), explode(',', $spfLevel))) {
+                    $this->error         = EmailSource::ERR_SPF_REJECT;
+                    $this->source_info[] = 'SPF servId: '.$authenticationResult->getAuthservId();
+                    $this->source_info[] = 'SPF result: '.$authenticationResult->getSpfResult();
+
+                    return;
+                }
+                if ($dkimLevel && in_array($authenticationResult->getDkimResult(), explode(',', $dkimLevel))) {
+                    $this->error         = EmailSource::ERR_DKIM_REJECT;
+                    $this->source_info[] = 'DKIM servId: '.$authenticationResult->getAuthservId();
+                    $this->source_info[] = 'DKIM result: '.$authenticationResult->getDkimResult();
+
+                    return;
+                }
             }
         }
 

@@ -32,6 +32,8 @@
 
 namespace Application\DeskPRO\EmailGateway\Reader;
 
+use Application\DeskPRO\EmailGateway\Reader\Item\AuthenticationResults;
+
 class ValueReader extends AbstractReader
 {
     /** @var array */
@@ -93,6 +95,24 @@ class ValueReader extends AbstractReader
         }
 
         return $header;
+    }
+
+    /**
+     * @return AuthenticationResults[]
+     */
+    protected function _getAuthenticationResults()
+    {
+        $headers = isset($this->values['headers']['Authentication-Results']) ? $this->values['headers']['Authentication-Results'] : [];
+
+        $authenticationResults = [];
+        if ($headers) {
+            foreach ($headers as $header) {
+                $authenticationResult                                          = AuthenticationResults::parseHeader($header);
+                $authenticationResults[$authenticationResult->getAuthservId()] = $authenticationResult;
+            }
+        }
+
+        return $authenticationResults;
     }
 
     protected function _getCcAddresses()

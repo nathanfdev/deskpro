@@ -259,6 +259,48 @@
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="panel panel-innertable">
+                        <div class="panel-heading">
+                            <h3>
+                                <span>{{ phrase('adm.ticket_accounts.spf_and_dkim') }}</span>
+                            </h3>
+                        </div>
+                        <div class="inner-group">
+                            <span class="help-block">{{ phrase('adm.ticket_accounts.spf_and_dkim_help') }}</span>
+                            <label>
+                                <h4>
+                                    <label>
+                                        <input type="checkbox" ng-model="settings.core_tickets_reject_fail_spf">
+                                        {{ phrase('adm.ticket_accounts.spf_level') }}
+                                        <select ui-select2 ng-model="settings.core_tickets_reject_spf_level" style="width:185px; margin-left: 8px;" ng-show="settings.core_tickets_reject_fail_spf">
+                                            <option value="hardfail">Fail</option>
+                                            <option value="hardfail,softfail">Fail and Soft fail</option>
+                                        </select>
+                                    </label>
+                                </h4>
+                            </label>
+                        </div>
+
+                        <div class="inner-group">
+                            <label>
+                                <h4>
+                                    <label>
+                                        <input type="checkbox" ng-model="settings.core_tickets_reject_fail_dkim">
+                                        {{ phrase('adm.ticket_accounts.dkim_level') }}
+                                        <select ui-select2 ng-model="settings.core_tickets_reject_dkim_level" style="width:185px; margin-left: 8px;" ng-show="settings.core_tickets_reject_fail_dkim">
+                                            <option value="fail">Fail</option>
+                                            <option value="fail,discard">Fail and Soft fail</option>
+                                        </select>
+                                    </label>
+                                </h4>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </article>
 
         <footer>

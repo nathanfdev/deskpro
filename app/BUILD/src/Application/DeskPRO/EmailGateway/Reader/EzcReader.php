@@ -34,6 +34,7 @@ namespace Application\DeskPRO\EmailGateway\Reader;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
+use Application\DeskPRO\EmailGateway\Reader\Item\AuthenticationResults;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\EmailAccount;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
@@ -194,6 +195,24 @@ class EzcReader extends AbstractReader
         }
 
         return $header;
+    }
+
+    /**
+     * @return AuthenticationResults[]
+     */
+    protected function _getAuthenticationResults()
+    {
+        $headers = $this->mail->getHeader('Authentication-Results', true);
+
+        $authenticationResults = [];
+        if ($headers) {
+            foreach ($headers as $header) {
+                $authenticationResult                                          = AuthenticationResults::parseHeader($header);
+                $authenticationResults[$authenticationResult->getAuthservId()] = $authenticationResult;
+            }
+        }
+
+        return $authenticationResults;
     }
 
     /**
