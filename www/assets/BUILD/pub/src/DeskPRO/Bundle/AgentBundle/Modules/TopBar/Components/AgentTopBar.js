@@ -559,7 +559,6 @@ export class AgentTopBar extends React.Component {
           />
         </TopBarItem>
         <TopBarItem>
-          {window.DP_HAS_VOICE && voiceEnabled && <VoiceMenu />}
           <User src={this.getUserPicture()} />
           <Chat
             activeChat={userChatEnabled}
@@ -570,6 +569,7 @@ export class AgentTopBar extends React.Component {
             volume={8}
             onToggleChat={onToggleChat}
           />
+          {window.DP_HAS_VOICE && voiceEnabled && <VoiceMenu />}
         </TopBarItem>
       </TopBarRightMenu>
     </TopBar>
