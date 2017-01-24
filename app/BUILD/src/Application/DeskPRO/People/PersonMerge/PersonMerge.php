@@ -310,6 +310,32 @@ class PersonMerge implements PersonContextInterface
             'searchlog',
         ];
 
+        if ($this->person->isAgent() && $this->other_person->isAgent()) {
+            $simple_tables = array_merge($simple_tables, [
+
+                'department_permissions',
+                'permissions',
+                'person2usergroups',
+                'app_instance_permissions',
+
+                'agent_team_members',
+
+                'filter_set_agents',
+                'ticket_filters',
+                'ticket_filter_subscriptions',
+                'ticket_filter_sets',
+                'ticket_filter_preferences',
+
+                'text_snippet_categories',
+                'text_snippets',
+
+                'tickets_flagged',
+
+            ]);
+
+            $this->_updateTablePersonId('tasks', 'assigned_agent_id');
+        }
+
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
         }
