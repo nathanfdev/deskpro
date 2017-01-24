@@ -1122,9 +1122,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		//------------------------------
 
 		$scope.uncheckTicketId = function(ticketId) {
-			if ($scope.checkedTickets[ticketid]) {
-				delete $scope.checkedTickets[ticketid];
-				$scope.onToggleTicket(ticketid);
+			if ($scope.checkedTickets[ticketId]) {
+				delete $scope.checkedTickets[ticketId];
+				$scope.onToggleTicket(ticketId);
 			}
 		};
 
