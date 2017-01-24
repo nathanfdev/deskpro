@@ -52,7 +52,7 @@ class AuthenticationResults
     /**
      * @var string
      */
-    public $authservId;
+    public $authservId = '';
 
     /**
      * @var string|null
@@ -110,6 +110,19 @@ class AuthenticationResults
             foreach ($matches[0] as $match) {
                 list($key, $value)           = explode('=', $match);
                 $authenticationResults->$key = $value;
+            }
+        }
+
+        return $authenticationResults;
+    }
+
+    public static function parseReceivedSpf($value)
+    {
+        $authenticationResults = new self();
+        if (preg_match('/^([a-z]+)(\s+\(([^:]+):)?/', $value, $matches)) {
+            $authenticationResults->spf = $matches[1];
+            if (!empty($matches[3])) {
+                $authenticationResults->authservId = $matches[3];
             }
         }
 

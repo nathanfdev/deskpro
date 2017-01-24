@@ -276,7 +276,7 @@
                                         {{ phrase('adm.ticket_accounts.spf_level') }}
                                         <select ui-select2 ng-model="settings.core_tickets_reject_spf_level" style="width:185px; margin-left: 8px;" ng-show="settings.core_tickets_reject_fail_spf">
                                             <option value="hardfail">Fail</option>
-                                            <option value="hardfail,softfail">Fail and Soft fail</option>
+                                            <option value="hardfail,softfail">Hard fail and Soft fail</option>
                                         </select>
                                     </label>
                                 </h4>
@@ -291,7 +291,7 @@
                                         {{ phrase('adm.ticket_accounts.dkim_level') }}
                                         <select ui-select2 ng-model="settings.core_tickets_reject_dkim_level" style="width:185px; margin-left: 8px;" ng-show="settings.core_tickets_reject_fail_dkim">
                                             <option value="fail">Fail</option>
-                                            <option value="fail,discard">Fail and Soft fail</option>
+                                            <option value="fail,discard">Fail and Discard</option>
                                         </select>
                                     </label>
                                 </h4>

@@ -210,6 +210,14 @@ class EzcReader extends AbstractReader
                 $authenticationResult                                          = AuthenticationResults::parseHeader($header);
                 $authenticationResults[$authenticationResult->getAuthservId()] = $authenticationResult;
             }
+        } else {
+            $receivedSpf = $this->mail->getHeader('Received-SPF', true);
+            if ($receivedSpf) {
+                foreach ($receivedSpf as $value) {
+                    $authenticationResult    = AuthenticationResults::parseReceivedSpf($value);
+                    $authenticationResults[] = $authenticationResult;
+                }
+            }
         }
 
         return $authenticationResults;
@@ -380,13 +388,13 @@ class EzcReader extends AbstractReader
     }
 
     /**
-     * @return Item\Subject|void
+     * @return Item\Subject|null
      */
     protected function _getOriginalSubject()
     {
         $header = $this->getHeader('Thread-Topic');
         if (!$header || empty($header->header_parts)) {
-            return;
+            return null;
         }
 
         $subject                   = new Item\Subject();
@@ -457,8 +465,8 @@ class EzcReader extends AbstractReader
                         // ezc does charset conversion that makes the charset think its utf8
                         // but it may not be. we need to copy the original
                         if (isset($part->mail->body->originalCharset)) {
-                            $body_charset             = $part->mail->body->originalCharset;
-                            $attach->original_charset = $body_charset;
+                            $bodyCharset              = $part->mail->body->originalCharset;
+                            $attach->original_charset = $bodyCharset;
                         }
 
                         $attach->tmp_file = tempnam(dp_get_tmp_dir(), 'eml');

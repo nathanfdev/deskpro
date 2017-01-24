@@ -133,12 +133,12 @@ class PreProcessor extends AbstractGatewayProcessor
         // From is a know gateway address
         //------------------------------
 
-        $account_manager = App::$container->getEmailAccountManager();
-        if ($found_account = $account_manager->findAccountForEmailAddress($from)) {
+        $accountManager = App::$container->getEmailAccountManager();
+        if ($foundAccount = $accountManager->findAccountForEmailAddress($from)) {
             $this->error         = EmailSource::ERR_FROM_GATEWAY;
             $this->source_info[] = 'Read from address: '.$from;
-            $this->source_info[] = 'Matched account: '.$found_account->id;
-            $this->source_info[] = 'Account addresses: '.implode(', ', $found_account->getAllAddresses());
+            $this->source_info[] = 'Matched account: '.$foundAccount->id;
+            $this->source_info[] = 'Account addresses: '.implode(', ', $foundAccount->getAllAddresses());
 
             return;
         }
@@ -176,11 +176,11 @@ class PreProcessor extends AbstractGatewayProcessor
         // on the account
         //------------------------------
 
-        if ($this->account->date_read_start && $email_date = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
-            if ($email_date < $this->account->date_read_start) {
+        if ($this->account->date_read_start && $emailDate = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
+            if ($emailDate < $this->account->date_read_start) {
                 $this->error         = EmailSource::ERR_DATE_LIMIT;
                 $this->source_info[] = 'Gateway date limit: '.$this->account->date_read_start->format(\DateTime::RFC2822);
-                $this->source_info[] = 'Message date: '.$email_date->format(\DateTime::RFC2822);
+                $this->source_info[] = 'Message date: '.$emailDate->format(\DateTime::RFC2822);
 
                 return;
             }
