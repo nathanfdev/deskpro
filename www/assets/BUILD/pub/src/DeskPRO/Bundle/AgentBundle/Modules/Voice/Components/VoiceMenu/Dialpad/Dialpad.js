@@ -10,7 +10,7 @@ import DialGrid from '../../Common/DialGrid';
 class Dialpad extends React.Component {
 
   static propTypes = {
-    callFromNumbers: PropTypes.object
+    numbers: PropTypes.object
   };
 
   constructor(props) {
@@ -48,7 +48,7 @@ class Dialpad extends React.Component {
   };
 
   render() {
-    const { callFromNumbers = Immutable.fromJS({}) } = this.props;
+    const { numbers = Immutable.fromJS({}) } = this.props;
     const { formData } = this.state;
 
     return (
@@ -56,7 +56,7 @@ class Dialpad extends React.Component {
         <Form formValue={formData} onSubmit={this.onSubmit}>
           <Fieldset>
             <Field select="call_from" label="Call from">
-              <NumberSelect numbers={callFromNumbers} />
+              <NumberSelect numbers={numbers} />
             </Field>
 
             <div className="ui icon input">

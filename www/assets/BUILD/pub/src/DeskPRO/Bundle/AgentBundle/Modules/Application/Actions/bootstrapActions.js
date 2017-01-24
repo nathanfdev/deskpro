@@ -56,6 +56,7 @@ export const preloadData    = createAction(
       if (window.DP_HAS_VOICE) {
         batchComponents.voice_tokens     = { endpoint: 'voice_client/tokens' };
         batchComponents.voice_activities = { endpoint: 'voice_client/activities' };
+        batchComponents.voice_numbers    = { endpoint: 'voice_numbers' };
       }
 
       if (window.DP_HAS_NEW_IM) {
@@ -106,6 +107,7 @@ export const preloadData    = createAction(
           if (window.DP_HAS_VOICE) {
             dispatch(setVoiceTokens(data.voice_tokens));
             dispatch(setVoiceActivities(data.voice_activities));
+            dispatch(setCollection('VoiceNumber', 'all', data.voice_numbers));
           }
 
           dispatch(donePreloading());
