@@ -55,10 +55,11 @@ class BuildNewAgent_0021_validatingpublish extends AbstractBuild
         $this->out('Resetting status on validating comments');
 
         foreach (['article_comments', 'download_comments', 'feedback_comments', 'news_comments'] as $t) {
-            $db->update($t, ['status' => 'deleted'], ['validating' => '1']);
-            $db->update($t, ['status' => 'deleted'], ['status' => 'user_validating']);
-            $db->update($t, ['status' => 'deleted'], ['status' => 'validating']);
-            $db->update($t, ['status' => 'deleted'], ['status' => 'tmp']);
+            $db->update($t, ['status' => 'deleted', 'is_reviewed' => 1], ['validating' => '1']);
+            $db->update($t, ['status' => 'deleted', 'is_reviewed' => 1], ['status' => 'user_validating']);
+            $db->update($t, ['status' => 'deleted', 'is_reviewed' => 1], ['status' => 'validating']);
+            $db->update($t, ['status' => 'deleted', 'is_reviewed' => 1], ['status' => 'tmp']);
+            $db->update($t, ['status' => 'deleted', 'is_reviewed' => 1], ['status' => 'deleted']);
         }
     }
 }

@@ -30,6 +30,7 @@ namespace Application\DeskPRO\JIRA;
 
 use Application\DeskPRO\Service\JIRA;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
 
 class Api

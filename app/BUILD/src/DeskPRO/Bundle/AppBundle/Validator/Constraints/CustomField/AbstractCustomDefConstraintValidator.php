@@ -30,9 +30,9 @@ namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
  * Class AbstractCustomDefConstraintValidator.

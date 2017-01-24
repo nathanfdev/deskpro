@@ -519,7 +519,14 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
                 }
             }
 
-            $this->_people = App::getOrm()->getRepository(Person::class)->findBy(['id' => $personIds]);
+            $people        = App::getOrm()->getRepository(Person::class)->findBy(['id' => $personIds]);
+            $this->_people = array_filter(
+                $people,
+                function ($person) {
+                    /* @var Person $person */
+                    return $person->isActiveAgent();
+                }
+            );
         }
 
         return $this->_people;

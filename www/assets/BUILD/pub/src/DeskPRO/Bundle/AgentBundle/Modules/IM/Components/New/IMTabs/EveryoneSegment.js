@@ -28,7 +28,7 @@ class EveryoneSegment extends React.Component {
         vertical
       >
         <div onClick={() => this.props.onParticipantClick(0, 'everyone')}>
-          {this.props.agents.slice(0, 9).map(agent => EveryoneSegment.getAvatar(agent))}
+          {this.props.agents.slice(0, 13).map(agent => EveryoneSegment.getAvatar(agent))}
         </div>
       </Segment>);
   }

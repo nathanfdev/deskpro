@@ -13,6 +13,8 @@ export default class DpxAttach extends PageWidget {
     const files = [];
     $(this.$element).find('.attach-row').each((i, file) => {
       const $file = $(file);
+      const errors = $file.find('.attach-row-errors').html();
+
       files.push({
         info: {
           id:        $file.data('blob-id'),
@@ -22,14 +24,14 @@ export default class DpxAttach extends PageWidget {
           size:      $file.data('blob-filesize'),
           icon_html: $file.find('.attach-row-icon').html()
         },
-        errors: $file.find('.attach-row-errors').html().trim()
+        errors: errors ? errors.trim() : ''
       });
 
       $file.remove();
     });
 
-    const $input = this.$element.find('input[type=file]');
-    const inputName = $input.attr('name').replace('[0][upload]', '');
+    const $input = $(this.$element.find(':not([data-prototype=""])').data('prototype')).find('input[type=file]');
+    const inputName = $input.attr('name') ? $input.attr('name').replace('[__name__][blob][upload]', '') : null;
     const maxFileSize = this.$element.data('maxFileSize') || null;
     const component = React.createElement(PortalAttach, {
       widgetOptions: this.options,

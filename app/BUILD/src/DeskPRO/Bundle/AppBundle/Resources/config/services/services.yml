@@ -28,7 +28,6 @@ services:
       - "@portal_mode_storage"
       - "@url_corrector_factory"
       - "@language_manager"
-      - "@=service('request_stack').getCurrentRequest().getBasePath()"
 
   captcha_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\CaptchaSettingsResolver

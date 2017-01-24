@@ -576,8 +576,8 @@ class FilterChangeDetector
         foreach ($result as $filter) {
             $filter['terms'] = json_decode($filter['terms'], true);
 
-            $filters[$filter['id']]                          = $filter;
-            $this->cachedUserFilters[$filter['person_id']][] = $filter;
+            $filters[$filter['id']]                                       = $filter;
+            $this->cachedUserFilters[$filter['person_id']][$filter['id']] = $filter;
         }
 
         return $filters;

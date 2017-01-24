@@ -117,7 +117,7 @@ class AutoAttendantRow extends React.Component {
 
           <div className="column options-button">
             <a onClick={this.onEdit}>
-              <i className="write icon" />
+              <i className="fa fa-gear" />
             </a>
           </div>
           {autoAttendant.get('audio_asset') &&
@@ -133,15 +133,16 @@ class AutoAttendantRow extends React.Component {
 class AutoAttendantDialNumber extends React.Component {
 
   static propTypes = {
-    targetName: PropTypes.string,
-    dialNumber: PropTypes.object
+    targetName:         PropTypes.string,
+    dialNumber:         PropTypes.object,
+    onRedirectToTarget: PropTypes.func
   };
 
   renderButton() {
-    const { dialNumber } = this.props;
+    const { dialNumber, onRedirectToTarget } = this.props;
 
     return (
-      <div className="dial-number">
+      <div className="dial-number" onClick={onRedirectToTarget}>
         {dialNumber.get('dial_num')}
       </div>
     );

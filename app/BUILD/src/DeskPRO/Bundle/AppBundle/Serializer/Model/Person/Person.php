@@ -392,7 +392,7 @@ class Person
     /**
      * Phone numbers belong to user.
      *
-     * @JMS\Type("array<array<string>>")
+     * @JMS\Type("collection<Application\DeskPRO\Entity\PhoneNumber>")
      *
      * @var array
      */
@@ -505,7 +505,7 @@ class Person
         $this->primaryEmail            = $person->getPrimaryEmail();
         $this->ticketsCount            = $person->getTicketsCount();
         $this->chatsCount              = $person->getChatsCount();
-        $this->phoneNumbers            = $person->getPhoneNumbersArray();
+        $this->phoneNumbers            = $person->getPhoneNumbers();
         $this->fields                  = $person->custom_data;
         $this->contactData             = $person->getContactData();
         $this->emails                  = $person->getEmails();

@@ -13,7 +13,7 @@
 	} %>
 	<div class="item-hover-over-indicator"></div>
 	<div class="loading-arrow">{{ phrase('agent.general.loading') }}</div>
-	<input type="checkbox" class="item-select" ng-model="checkedTickets[<%= ticket.id %>]" />
+	<input type="checkbox" class="item-select" ng-model="checkedTickets[<%= ticket.id %>]" ng-change="onToggleTicket(<%= ticket_display.id %>)" />
 	<div class="top-row">
 		<div class="top-row-left">
 			<h3>

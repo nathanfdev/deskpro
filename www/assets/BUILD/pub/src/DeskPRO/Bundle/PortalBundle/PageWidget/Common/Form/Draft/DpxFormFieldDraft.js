@@ -9,10 +9,8 @@ export class DpxFormFieldDraft extends PageWidget {
 
     if (value) {
       formDrafts[name] = value;
-    } else {
-      if (formDrafts.hasOwnProperty(name)) {
-        delete formDrafts[name];
-      }
+    } else if (Object.prototype.hasOwnProperty.call(formDrafts, name)) {
+      delete formDrafts[name];
     }
 
     this.parent.updateFormDrafts(formDrafts);
@@ -25,7 +23,7 @@ export class DpxFormFieldDraft extends PageWidget {
 
     const storedValue = this.getStoredValue();
     if (storedValue) {
-      setTimeout(() => this.restoreValue(storedValue), 0);
+      setTimeout(() => this.restoreValue(storedValue), 1);
     }
 
     this.addListeners();

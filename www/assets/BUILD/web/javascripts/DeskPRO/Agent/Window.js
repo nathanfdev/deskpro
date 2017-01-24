@@ -781,35 +781,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.messageChanneler.poller.send();
 
-		if (DESKPRO_TIME_OUT_OF_SYNC) {
-			DESKPRO_TIME_OUT_OF_SYNC = false;
-			$.ajax({
-				url: BASE_URL + 'agent/misc/get-server-time',
-				dataType: 'json',
-				success: function(data) {
-
-					$('#time_outofsync').find('.server_time').text(data.time_formatted);
-
-					var now_ts = ((new Date()).getTime() / 1000) - (new Date().getTimezoneOffset() * 60);
-					var diff = Math.abs(now_ts - data.timestamp);
-
-					if (diff > 1200) {
-						DESKPRO_TIME_OUT_OF_SYNC = diff;
-						console.log("(Recheck) Time is off by %s seconds", diff);
-
-						if (DESKPRO_TIME_OUT_OF_SYNC_IGNORE && Math.abs(diff - DESKPRO_TIME_OUT_OF_SYNC_IGNORE) < 480) {
-							DESKPRO_TIME_OUT_OF_SYNC = null;
-							console.log("(Recheck) Time offset is ignored");
-						}
-					}
-
-					if (DESKPRO_TIME_OUT_OF_SYNC) {
-						$('#time_outofsync').trigger('dp_open');
-					}
-				}
-			});
-		}
-
 		var fn;
 		while (fn = this.onloadStack.shift()) {
 			fn();
@@ -950,8 +921,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			(function(key){
 				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/tickets/new', {
 					openCallback: function(page) {
-						page.draft._key = key;
-						page.draft.load();
+						if (page.draft) {
+              page.draft._key = key;
+              page.draft.load();
+						}
 					},
 					ignoreExist: true
 				});
@@ -1100,16 +1073,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 			self.$timeout = $timeout;
 			self.$http = $http;
 
-			self.$scope.$safeApply = function(fn) {
+			self.$scope.$safeApply = (function(fn) {
 				var phase = this.$root.$$phase;
 				if(phase == '$apply' || phase == '$digest') {
 					if(fn && (typeof(fn) === 'function')) {
 						fn();
 					}
 				} else {
-					self.$scope.$apply(fn);
+					this.$apply(fn);
 				}
-			};
+			}).bind(self.$scope);
 		}]);
 		this.initScope();
 	},
@@ -2200,7 +2173,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					successFn(data);
 				}).bind(this),
 				noErrorOverride: true,
-				timeout: 180000
+				timeout: 60000
 			};
 
 			if (errorFn) {
@@ -2222,7 +2195,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					successFn(data);
 				}).bind(this),
 				noErrorOverride: true,
-				timeout: 180000
+				timeout: 60000
 			};
 
 			if (routeData.ignore_perm_error) {

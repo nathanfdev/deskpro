@@ -2,16 +2,16 @@ import React, { PropTypes } from 'react';
 import RteEditor from 'DeskPRO/Component/Rte/RteEditor';
 import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
-import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import emojione from 'emojione';
 import MessageList from './MessageList';
+import HeaderHelper from './HeaderHelper';
 import EmojiBox from './EmojiBox';
 
-emojione.imagePathSVGSprites = './../assets/BUILD/pub/build/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg';
+emojione.imagePathSVGSprites = `./..${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg`;
 emojione.imageType = 'png';
 emojione.sprites = true;
 
@@ -34,7 +34,8 @@ class Container extends React.Component {
     markNewMessages: PropTypes.func,
     openGroupDrawer: PropTypes.func,
     onScroll:        PropTypes.func,
-    onChatSearch:    PropTypes.func
+    onChatSearch:    PropTypes.func,
+    onAgentClick:    PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -81,65 +82,6 @@ class Container extends React.Component {
     }
   }
 
-  getAgentHeader(chat) {
-    const { agents, me, openGroupDrawer } = this.props;
-    let agentId;
-    for (const id of chat.get('agents')) {
-      if (id !== me.get('id')) {
-        agentId = id;
-        break;
-      }
-    }
-    const agent =  agents.get(agentId);
-    return [
-      agents.getIn([agentId, 'name']),
-      <i className="icon group add" onClick={() => { openGroupDrawer([agent.get('id')]); }} />
-    ];
-  }
-
-  getDepartmentHeader(chat) {
-    return this.props.departments.getIn([chat.getIn(['departments', 0]), 'title']);
-  }
-
-  getAgentTeamHeader(chat) {
-    return this.props.teams.getIn([chat.getIn(['agent_teams', 0]), 'name']);
-  }
-
-  getHeader() {
-    const { current } = this.props;
-    let header;
-    switch (current.get('chat_type')) {
-      case 'agent':
-        header = this.getAgentHeader(current);
-        break;
-      case 'department':
-        header = this.getDepartmentHeader(current);
-        break;
-      case 'team':
-        header = this.getAgentTeamHeader(current);
-        break;
-      case 'group':
-        header = current.get('name');
-        break;
-      case 'everyone':
-        header = 'Everyone';
-        break;
-      default:
-        header = 'some im';
-        break;
-    }
-
-    return (
-      <span className="wrapper">
-        {header}
-        <i
-          className={classNames('search icon', { enabled: this.state.searching })}
-          onClick={() => { this.toggleSearch(); }}
-        />
-      </span>
-    );
-  }
-
   getPath = (props) => {
     let path;
     if (!props.searchQuery) {
@@ -149,6 +91,33 @@ class Container extends React.Component {
     }
     return path;
   };
+
+  getHeader() {
+    const { agents, teams, departments, current, me, openGroupDrawer } = this.props;
+    const props = { agents, teams, departments, current, me, openGroupDrawer };
+
+    if (!this.headerHelper) {
+      this.headerHelper = new HeaderHelper(props);
+    } else {
+      this.headerHelper.setProps(props);
+    }
+
+    const header = this.headerHelper.getHeaderText();
+
+    return (
+      <span className="wrapper">
+        {header}
+        <i
+          className={classNames('remove icon')}
+          onClick={() => { this.clickOut(); }}
+        />
+        <i
+          className={classNames('search icon', { enabled: this.state.searching })}
+          onClick={() => { this.toggleSearch(); }}
+        />
+      </span>
+    );
+  }
 
   toggleSearch() {
     if (this.state.searching) {
@@ -165,7 +134,11 @@ class Container extends React.Component {
     ) {
       this.props.loadMessages();
     }
-    this.setState({ mounted: true });
+    if (this.editor) {
+      this.editor.focus();
+    }
+    this.setState({ mounted: true, searching: false, expandedHeader: false });
+    this.props.onChatSearch('');
   }
 
   openEmoji() {
@@ -263,48 +236,56 @@ class Container extends React.Component {
   }
 
   groupHeader() {
-    let agents = this.props.current.get('agents');
-    agents = this.state.expandGroupHeader ? agents : agents.slice(0, 9);
-    if (this.props.current.get('chat_type') === 'group' && !this.state.searching) {
+    const { current, agents, onAgentClick, openGroupDrawer, me } = this.props;
+    const { expandGroupHeader, searching } = this.state;
+
+    let localAgents = current.get('agents');
+    localAgents = expandGroupHeader ? localAgents : localAgents.slice(0, 9);
+
+    if (current.get('chat_type') === 'group' && !searching) {
       return (
-        <Segment vertical className={classNames('group participants', { expanded: this.state.expandGroupHeader })}>
+        <Segment vertical className={classNames('group participants', { expanded: expandGroupHeader })}>
           <span className="control">
             <i className="fa fa-times" onClick={() => this.setState({ expandGroupHeader: false })} />
             <i
               className="write icon group-edit"
               onClick={
                 () => {
-                  this.props.openGroupDrawer(
-                    this.props.current.get('agents').filter(item => item !== this.props.me.get('id')).toJS(),
-                    this.props.current
+                  openGroupDrawer(
+                    current.get('agents').filter(item => item !== me.get('id')).toJS(),
+                    current
                   );
                 }
               }
             />
           </span>
-          {agents.map(
+          {localAgents.map(
             (agentId) => {
-              if (agentId === this.props.me.get('id')) {
+              if (agentId === me.get('id')) {
                 return null;
               }
 
               const className = ['ui avatar image im'];
-              const agent = this.props.agents.get(agentId);
+              const agent = agents.get(agentId);
               if (!agent.get('online')) {
                 className.push('offline');
               }
 
-              return (<PersonAvatar
-                key={`agent_${agentId}`}
-                person={agent}
-                size={24}
-                className={classNames(className)}
-                color={chooseColor(agent)}
-              />);
+              return (
+                <span key={`agent_span_${agentId}`} onClick={() => onAgentClick(agentId, 'agent')}>
+                  <PersonAvatar
+                    key={`agent_${agentId}`}
+                    person={agent}
+                    size={24}
+                    className={classNames(className)}
+                    color={chooseColor(agent)}
+                  />
+                </span>
+              );
             }
           )}
           <span className="dots" onClick={() => this.setState({ expandGroupHeader: true })}>
-            {this.props.current.get('agents').size > 9 && !this.state.expandGroupHeader ? '...' : null}
+            {current.get('agents').size > 9 && !expandGroupHeader ? '...' : null}
           </span>
         </Segment>
       );
@@ -330,75 +311,78 @@ class Container extends React.Component {
   }
 
   render() {
-    const { current, isOpen, messages, me, agents, loadingMessages, onScroll, markNewMessages, searchQuery } = this.props;
+    const { isOpen, loadingMessages, onScroll, markNewMessages, searchQuery, onAgentClick } = this.props;
+    const { current, messages, me, agents, teams, departments } = this.props;
 
     return (
       <Detached
+        zIndex={99999}
         isOpen={isOpen}
         positionTarget={document.getElementById(`chat-${current.get('id')}`)}
         positionMy="left-43 top-2"
       >
-        <ClickOut onClickOut={() => this.clickOut()} ignoreNodes={['.emoji.box', '.im.recent .im.wrapper']}>
-          <div className="ui popup left bottom im chat drawer">
-            <div className="im header">{this.getHeader()}</div>
-            {this.searchHeader()}
-            {this.groupHeader()}
-            <div className="box">
-              <MessageList
-                loadingMessages={loadingMessages}
-                current={current}
-                messages={messages}
-                me={me}
-                agents={agents}
-                searchQuery={searchQuery}
-                markNewMessages={markNewMessages}
-                onScroll={onScroll}
-              />
-            </div>
-            <div className="reply">
-              <form onSubmit={this.handleSubmit}>
-                <RteEditor
-                  inline
-                  ref={(c) => { this.editor = c; }}
-                  value={this.state.message}
-                  onChange={this.handleChange}
-                  onSubmit={this.handleSubmit}
-                  onFocus={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; }}
-                  onBlur={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = false; }}
-                  className="textarea"
-                  options={{
-                    autoLink:      true,
-                    imageDragging: true,
-                    placeholder:   false,
-                    toolbar:       {
-                      buttons:                ['bold', 'italic', 'underline'],
-                      updateOnEmptySelection: true
-                    },
-                    paste: {
-                      forcePlainText:  false,
-                      cleanPastedHTML: false,
-                      cleanAttrs:      ['style', 'dir']
-                    }
-                  }}
-                />
-                <i className="fa fa-paperclip reply-icon" onClick={this.handleAttach} />
-                <i
-                  className="fa fa-smile-o reply-icon emoji trigger"
-                  onClick={this.openEmoji} ref={(c) => { this.emoji = c; }}
-                />
-              </form>
-              {this.emoji ?
-                <EmojiBox
-                  isOpen={this.state.emojiOpened}
-                  clickOut={this.closeEmoji}
-                  emojiNode={this.emoji}
-                  emojiClick={this.addEmoji}
-                />
-                : null
-              }
-            </div>
+        <div className="ui popup left bottom im chat drawer">
+          <div className="im header">{this.getHeader()}</div>
+          {this.searchHeader()}
+          {this.groupHeader()}
+          <div className="box">
+            <MessageList
+              loadingMessages={loadingMessages}
+              current={current}
+              messages={messages}
+              me={me}
+              agents={agents}
+              teams={teams}
+              departments={departments}
+              searchQuery={searchQuery}
+              markNewMessages={markNewMessages}
+              onScroll={onScroll}
+              onAgentClick={onAgentClick}
+            />
           </div>
-        </ClickOut>
+          <div className="reply">
+            <form onSubmit={this.handleSubmit}>
+              <RteEditor
+                inline
+                ref={(c) => { this.editor = c; }}
+                value={this.state.message}
+                onChange={this.handleChange}
+                onSubmit={this.handleSubmit}
+                onFocus={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; }}
+                onBlur={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = false; }}
+                className="textarea"
+                options={{
+                  autoLink:      true,
+                  imageDragging: true,
+                  placeholder:   false,
+                  toolbar:       {
+                    buttons:                ['bold', 'italic', 'underline'],
+                    updateOnEmptySelection: true
+                  },
+                  paste: {
+                    forcePlainText:  false,
+                    cleanPastedHTML: false,
+                    cleanAttrs:      ['style', 'dir']
+                  }
+                }}
+              />
+              <i className="fa fa-paperclip reply-icon" onClick={this.handleAttach} />
+              <i
+                className="fa fa-smile-o reply-icon emoji trigger"
+                onClick={this.openEmoji} ref={(c) => { this.emoji = c; }}
+              />
+            </form>
+            {this.emoji ?
+              <EmojiBox
+                isOpen={this.state.emojiOpened}
+                clickOut={this.closeEmoji}
+                emojiNode={this.emoji}
+                emojiClick={this.addEmoji}
+              />
+              : null
+            }
+          </div>
+        </div>
       </Detached>
     );
   }

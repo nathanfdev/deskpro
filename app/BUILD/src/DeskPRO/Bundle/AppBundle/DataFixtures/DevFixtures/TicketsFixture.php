@@ -242,7 +242,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $batch = [];
 
         for ($i = 0; $i < $this->numLabels; ++$i) {
-            $l = $this->faker->unique()->company;
+            $l = str_replace(',', '', $this->faker->unique()->company);
             if ($l) {
                 $l       = strtolower($l);
                 $batch[] = [

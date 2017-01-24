@@ -85,17 +85,19 @@ class TextSnippetHandler extends AbstractEntityHandler
         /** @var Person $user */
         $user  = $context->getUser();
         $title = $entity->getObjectPropLanguageTranslationValue('title', $user->getLanguage());
+        $model = new TextSnippetModel($entity, $title);
 
         if ($entity->getCategory()) {
             $sideloads = $context->getSideloadStore();
             $sideloads->addCustomSideload(
                 'text_snippet_content',
                 $entity->getId(),
-                new CallbackDeferredProperty([$this, 'getSnippetContent'], [$entity, $context])
+                new CallbackDeferredProperty([$this, 'getSnippetContent'], [$entity, $context]),
+                $model
             );
         }
 
-        return new TextSnippetModel($entity, $title);
+        return $model;
     }
 
     /**

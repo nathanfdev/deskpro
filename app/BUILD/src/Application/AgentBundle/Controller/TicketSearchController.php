@@ -1946,6 +1946,7 @@ class TicketSearchController extends AbstractController
 
         if (($actions || $actions_set || $macro) && $tickets) {
             $ticketManager = $this->container->getTicketManager();
+            $contextType   = 'update';
 
             if ($macro) {
                 /** @var Ticket $ticket */
@@ -1973,7 +1974,7 @@ class TicketSearchController extends AbstractController
                             continue;
                         }
 
-                        $context = $ticketManager->createAgentExecutorContext($this->person, 'update', 'web');
+                        $context = $ticketManager->createAgentExecutorContext($this->person, $contextType, 'web');
                         $ticketManager->saveTicket($ticket, $context);
 
                         $this->em->flush();
@@ -1994,6 +1995,7 @@ class TicketSearchController extends AbstractController
                         $new_message       = Strings::trimHtml($new_message);
                         $new_message       = Strings::prepareWysiwygHtml($new_message);
                         $opt['reply_text'] = $new_message;
+                        $contextType       = 'newreply';
                     }
 
                     $action = $factory->createFromForm($name, $opt);
@@ -2031,7 +2033,7 @@ class TicketSearchController extends AbstractController
                             continue;
                         }
 
-                        $context = $ticketManager->createAgentExecutorContext($this->person, 'update', 'web');
+                        $context = $ticketManager->createAgentExecutorContext($this->person, $contextType, 'web');
                         $ticketManager->saveTicket($ticket, $context);
 
                         if ($snippet_ids) {

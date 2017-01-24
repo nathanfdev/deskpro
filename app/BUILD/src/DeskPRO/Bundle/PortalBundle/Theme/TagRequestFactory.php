@@ -96,7 +96,10 @@ class TagRequestFactory
         $tr->attributes->add($this->makeAttributes($tag, $arguments));
 
         $tr->setOptionsResolver(new OptionsResolver());
-        $tr->setSession($currentRequest->getSession());
+        // we don't have session on preflight request (OPTIONS)
+        if ($currentRequest->hasSession()) {
+            $tr->setSession($currentRequest->getSession());
+        }
         $tr->headers->replace($currentRequest->headers->all());
 
         // set base url from main request

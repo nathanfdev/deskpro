@@ -282,14 +282,19 @@ class JIRA
 
     public function getCreateMeta($projectId = null)
     {
-        if ($api = $this->getApi()) {
-            $projectId = (int) $projectId;
-            $params    = ['expand' => 'projects.issuetypes.fields'];
-            if ($projectId) {
-                $params['projectIds'] = $projectId;
-            }
+        try {
+            if ($api = $this->getApi()) {
+                $projectId = (int) $projectId;
+                $params    = ['expand' => 'projects.issuetypes.fields'];
+                if ($projectId) {
+                    $params['projectIds'] = $projectId;
+                }
 
-            return $api->get('/issue/createmeta', $params);
+                return $api->get('/issue/createmeta', $params);
+            }
+        } catch (\Exception $e) {
+            $this->logException($e);
+            throw $e;
         }
 
         return [];
@@ -335,7 +340,7 @@ class JIRA
 
             return $this->getApi()->searchIssues($query, array_merge($meta->getAllFields(), $meta->getSystemFields()));
         } catch (\Exception $e) {
-            return;
+            $this->logException($e);
         }
     }
 
@@ -349,6 +354,7 @@ class JIRA
         try {
             return $this->getApi()->searchIssues(sprintf('id IN (%s)', implode(',', $ids)), $this->getMeta()->getAllFields());
         } catch (\Exception $e) {
+            $this->logException($e);
         }
     }
 

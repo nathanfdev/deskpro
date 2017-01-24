@@ -24,7 +24,6 @@ Feature: Widget Chat
   Scenario: Check leaf department
     # This need to be done because otherwise there wouldn't be request in request stack
     Given I send a GET request to "/"
-    And "allowDepartmentSelection" widget brand chat setting is set to 1 for "defaultBrand"
     And "requestUserInfo" widget brand chat setting is set to 1 for "defaultBrand"
     When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
       | key             | value |
@@ -36,7 +35,6 @@ Feature: Widget Chat
   Scenario: Check bad department
      # This need to be done because otherwise there wouldn't be request in request stack
     Given I send a GET request to "/"
-    And "allowDepartmentSelection" widget brand chat setting is set to 1 for "defaultBrand"
     And "requestUserInfo" widget brand chat setting is set to 1 for "defaultBrand"
     When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
       | key             | value |
@@ -48,7 +46,6 @@ Feature: Widget Chat
   Scenario: Check valid department
      # This need to be done because otherwise there wouldn't be request in request stack
     Given I send a GET request to "/"
-    And "allowDepartmentSelection" widget brand chat setting is set to 1 for "defaultBrand"
     And "requestUserInfo" widget brand chat setting is set to 1 for "defaultBrand"
     When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
       | key             | value |

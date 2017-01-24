@@ -82,6 +82,20 @@ services:
     tags:
       - { name: form.type }
 
+  form.dp_date:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DpDateType
+    arguments:
+      - "@security.token_storage"
+    tags:
+      - { name: form.type }
+
+  form.dp_datetime:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType
+    arguments:
+      - "@security.token_storage"
+    tags:
+      - { name: form.type }
+
   form.entity_hierarchy:
     class: DeskPRO\Bundle\AppBundle\Form\Type\EntityHierarchyType
     arguments: ["@form_hierarchy_generator"]
@@ -166,15 +180,15 @@ services:
     arguments:
       - "@term_to_json_converter"
 
-  form.ticket_message_attachment:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentType
-    arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
+  form.attachment_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Attachments\BaseAttachmentType
+    arguments: ["@blob_repository"]
     tags:
       - { name: form.type }
 
-  form.ticket_message_inline_attachment:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageInlineAttachmentType
-    arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
+  form.web_attachment_accepter:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Attachments\WebAcceptAttachmentType
+    arguments: ["@blob.storage", "@attachment_accepter"]
     tags:
       - { name: form.type }
 
@@ -246,6 +260,13 @@ services:
   form.ticket_message:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType
     arguments: ["@language_manager", "@?api_client_info"]
+    tags:
+      - { name: form.type }
+
+  form.widget_brand_chat_settings:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat\WidgetBrandChatSettingsType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: form.type }
 

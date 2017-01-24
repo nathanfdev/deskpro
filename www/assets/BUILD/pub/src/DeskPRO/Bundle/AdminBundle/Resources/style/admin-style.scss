@@ -21,6 +21,8 @@ $flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
 }
 
 .Select-input {
+  padding-left: 0;
+
   input {
     border: 0 !important;
   }

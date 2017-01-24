@@ -304,16 +304,16 @@ JS;
 
     public function ajaxSavePrefsAction()
     {
-        $prefs_expire = $this->in->getCleanValueArray('prefs_expire', 'raw', 'string');
+        $prefsExpire = $this->in->getCleanValueArray('prefs_expire', 'raw', 'string');
 
-        foreach ($this->in->getCleanValueArray('prefs', 'raw', 'string') as $pref_name => $value) {
+        foreach ($this->in->getCleanValueArray('prefs', 'raw', 'string') as $prefName => $value) {
             $pref        = new Entity\PersonPref();
-            $pref->name  = $pref_name;
+            $pref->name  = $prefName;
             $pref->value = $value;
 
-            if (isset($prefs_expire[$pref_name])) {
+            if (isset($prefsExpire[$prefName])) {
                 try {
-                    $date              = new \DateTime($prefs_expire[$pref_name]);
+                    $date              = new \DateTime($prefsExpire[$prefName]);
                     $pref->date_expire = $date;
                 } catch (\Exception $e) {
                 }
@@ -321,7 +321,7 @@ JS;
 
             App::getDb()->replace('people_prefs', [
                 'person_id'   => $this->person->getId(),
-                'name'        => $pref_name,
+                'name'        => $prefName,
                 'date_expire' => $pref->date_expire ? $pref->date_expire->format('Y-m-d H:i:s') : null,
                 'value_str'   => $pref->value_str,
                 'value_array' => $pref->value_array ? serialize($pref->value_array) : null,
@@ -533,6 +533,7 @@ JS;
     public function acceptTempUploadAction()
     {
         $copy_blobauth = $this->in->getString('copy_blob');
+        $allowedImageExtensions = ['gif', 'png', 'jpg', 'jpeg'];
 
         if ($copy_blobauth) {
             $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($copy_blobauth);
@@ -547,7 +548,7 @@ JS;
             if ($this->in->getBool('is_image') && !$blob->isImage()) {
                 $error = [
                     'error_code'   => 'not_in_allowed_exts',
-                    'error_detail' => implode(',', ['gif', 'png', 'jpg', 'jpeg']),
+                    'error_detail' => implode(',', $allowedImageExtensions),
                 ];
                 $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
 
@@ -566,10 +567,11 @@ JS;
             $error = $accept->getError($file, 'agent');
             if (!$error && $this->in->getBool('is_image')) {
                 $set = new \Application\DeskPRO\Attachments\RestrictionSet();
-                $set->setAllowedExts(['gif', 'png', 'jpg', 'jpeg']);
+                $set->setAllowedExts($allowedImageExtensions);
                 $accept->addRestrictionSet('only_images', $set);
                 $error = $accept->getError($file, 'only_images');
             }
+
             if ($error) {
                 $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
 
@@ -619,14 +621,14 @@ JS;
         }
 
         $res = $this->createJsonResponse([[
-                                              'blob_id'           => $blob['id'],
-                                              'blob_auth'         => $blob->authcode,
-                                              'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
-                                              'download_url'      => $blob->getDownloadUrl(true, false),
-                                              'filename'          => $blob['filename'],
-                                              'filesize_readable' => $blob->getReadableFilesize(),
-                                              'is_image'          => $blob->isImage(),
-                                          ]]);
+            'blob_id'           => $blob['id'],
+            'blob_auth'         => $blob->authcode,
+            'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
+            'download_url'      => $blob->getDownloadUrl(true, false),
+            'filename'          => $blob['filename'],
+            'filesize_readable' => $blob->getReadableFilesize(),
+            'is_image'          => $blob->isImage(),
+        ]]);
 
         // Required for iframe transport on IE to prevent 'download' popup
         $res->headers->set('Content-Type', 'text/plain');

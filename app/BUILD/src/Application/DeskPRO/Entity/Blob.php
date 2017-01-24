@@ -388,7 +388,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         // We are specifically requestinga local url,
         // make sure serve_file doesn't redirect.
         if ($this->file_url && !$use_file_url) {
-            $url .= strpos($url, '?') ? '&local' : '?local';
+            $url = str_replace('/file.php/', '/file.php/local/', $url);
         }
 
         return $url;
@@ -641,6 +641,26 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     public function setStorageLoc($storage_loc)
     {
         $this->setModelField('storage_loc', $storage_loc);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTemp()
+    {
+        return $this->is_temp;
+    }
+
+    /**
+     * @param bool $is_temp
+     *
+     * @return $this
+     */
+    public function setIsTemp($is_temp)
+    {
+        $this->setModelField('is_temp', $is_temp);
 
         return $this;
     }

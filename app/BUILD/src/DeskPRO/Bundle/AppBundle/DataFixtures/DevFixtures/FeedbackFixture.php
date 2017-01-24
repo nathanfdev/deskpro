@@ -199,7 +199,7 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
         $batch = [];
 
         for ($i = 0; $i < self::NUM_LABELS; ++$i) {
-            $l = $this->faker->unique()->company;
+            $l = str_replace(',', '', $this->faker->unique()->company);
             if ($l) {
                 $l       = strtolower($l);
                 $batch[] = [

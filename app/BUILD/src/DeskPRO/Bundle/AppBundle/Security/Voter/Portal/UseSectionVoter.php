@@ -79,7 +79,9 @@ class UseSectionVoter extends AbstractVoter
             case static::USE_FEEDBACK:
                 return $this->getActiveBrandSetting('core.apps_feedback') && $permissionBag->get('feedback.use');
             case static::USE_CHAT:
-                return $this->getActiveBrandSetting('core.apps_chat') && $permissionBag->get('chat.use');
+                return $this->getActiveBrandSetting('core.apps_chat')
+                    && $permissionBag->get('chat.use')
+                    && $permissionBag->getAllowedChatDepartmentIds();
             case static::USE_DOWNLOADS:
                 return $this->getActiveBrandSetting('core.apps_downloads') && $permissionBag->get('downloads.use');
             case static::USE_NEWS:

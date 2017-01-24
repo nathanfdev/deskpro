@@ -81,6 +81,7 @@ class PersonProfileType extends AbstractType
                 'property_path'  => 'primaryPhoneNumber',
                 'error_bubbling' => false,
                 'required'       => false,
+                'person'         => $builder->getData(),
                 'constraints'    => [
                     new AppConstraints\PhoneNumber(),
                 ],

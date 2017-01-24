@@ -73,11 +73,8 @@ export function getError(response, name) {
   return error ? error.message : null;
 }
 
-/**
- * @deprecated use getErrorsByPropertyPath instead
- */
 export function getLastError(response, name) {
-  const errors = getErrors(response, name);
+  const errors = getErrorsByPropertyPath(response, name);
   const error = errors.length ? errors.slice(-1)[0] : null;
 
   return error ? error.message : null;

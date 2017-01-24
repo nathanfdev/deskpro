@@ -156,12 +156,12 @@ class TicketWithLayoutsType extends AbstractType
     public function onSetDefaultDepartment(FormEvent $event)
     {
         /** @var Ticket $data */
-        $data   = $event->getData();
-        $config = $event->getForm()->getConfig();
+        $data    = $event->getData();
+        $config  = $event->getForm()->getConfig();
+        $options = $config->getOptions();
 
         // Setting ticket person if not defined
         if ($data && !$data->getPerson()) {
-            $options = $config->getOptions();
             $data->setPerson($options['person']);
         }
 
@@ -180,6 +180,16 @@ class TicketWithLayoutsType extends AbstractType
             }
         } else {
             $data->setDepartment($this->brandHelper->getDefaultDepartment(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE));
+        }
+
+        // if there is only one department we want to make sure to set it now...
+        $hierarchy = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($options['person']);
+
+        // if there is only one dep, and ticket has no dep, just set it on the ticket (we won't be showing the widget)
+        if (!$data->getDepartment()) {
+            if ($hierarchy->countSelectable() === 1) {
+                $data->setDepartment($hierarchy->getFirstSelectable());
+            }
         }
     }
 }

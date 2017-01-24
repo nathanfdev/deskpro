@@ -21,6 +21,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       @$scope.enabled_on_portal = false
       @$scope.widgetLoaded = false
       @$scope.departments = []
+      @$scope.chat_departments = []
       @$scope.languages = []
       @$scope.saving_code = false
       @$scope.applying_to_portal = false
@@ -110,6 +111,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       promise = @Api2.sendGet('/ticket_departments?selectable=1')
       promise.then (res) =>
         @$scope.departments = res.data.data
+      promises.push(promise)
+
+      promise = @Api2.sendGet('/chat_departments?selectable=1')
+      promise.then (res) =>
+        @$scope.chat_departments = res.data.data
       promises.push(promise)
 
       promise = @Api2.sendGet('/widget/live_demo/sample_state')

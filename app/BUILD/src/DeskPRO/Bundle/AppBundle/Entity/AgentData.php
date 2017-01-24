@@ -144,6 +144,16 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     private $agentCallsEnabled = false;
 
     /**
+     * @ORM\Column(name="outbound_calls_enabled", type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $outboundCallsEnabled = false;
+
+    /**
      * @return int
      */
     public function getId()
@@ -287,6 +297,26 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     public function setAgentCallsEnabled($agentCallsEnabled)
     {
         $this->setModelField('agentCallsEnabled', $agentCallsEnabled);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutboundCallsEnabled()
+    {
+        return $this->outboundCallsEnabled;
+    }
+
+    /**
+     * @param bool $outboundCallsEnabled
+     *
+     * @return $this
+     */
+    public function setOutboundCallsEnabled($outboundCallsEnabled)
+    {
+        $this->setModelField('outboundCallsEnabled', $outboundCallsEnabled);
 
         return $this;
     }

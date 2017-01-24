@@ -354,25 +354,13 @@ class CustomDataType extends AbstractType
      */
     protected function filterCustomDefData(Collection $allCustomData, CustomDefAbstract $customDef)
     {
+        $defaultValue  = $this->getDefaultValue($customDef);
         $customDefData = $allCustomData->filter(function (CustomDataAbstract $custom_data) use ($customDef) {
             return $custom_data->root_field === $customDef && null !== $custom_data->field;
         });
 
         if (!$customDefData->count()) {
             if (!$customDef->isChoiceType()) {
-                $defaultValue = $customDef->getDefaultValue();
-
-                // datetime default value stored as string, convert to timestamp
-                if ($customDef->isDateType()) {
-                    if ($defaultValue) {
-                        try {
-                            $defaultValue = (new \DateTime($defaultValue))->getTimestamp();
-                        } catch (\Exception $e) {
-                            $defaultValue = null;
-                        }
-                    }
-                }
-
                 if ($defaultValue) {
                     $defaultCustomData = $customDef->createCustomData();
                     $defaultCustomData
@@ -384,8 +372,7 @@ class CustomDataType extends AbstractType
                     $customDefData->add($defaultCustomData);
                 }
             } else {
-                $defaultIds = (array) $customDef->getDefaultValue();
-                foreach ($defaultIds as $defaultId) {
+                foreach ($defaultValue as $defaultId) {
                     $choiceDef = $customDef->getChildById($defaultId);
                     if (!$choiceDef) {
                         continue;
@@ -404,6 +391,33 @@ class CustomDataType extends AbstractType
         }
 
         return $customDefData;
+    }
+
+    /**
+     * @param CustomDefAbstract $customDef
+     *
+     * @return mixed
+     */
+    protected function getDefaultValue(CustomDefAbstract $customDef)
+    {
+        if (!$customDef->isChoiceType()) {
+            $defaultValue = $customDef->getDefaultValue();
+
+            // datetime default value stored as string, convert to timestamp
+            if ($customDef->isDateType()) {
+                if ($defaultValue) {
+                    try {
+                        $defaultValue = (new \DateTime($defaultValue))->getTimestamp();
+                    } catch (\Exception $e) {
+                        $defaultValue = null;
+                    }
+                }
+            }
+        } else {
+            $defaultValue = (array) $customDef->getDefaultValue();
+        }
+
+        return $defaultValue;
     }
 
     /**

@@ -24,8 +24,33 @@ img.emojione, svg.emojione {
 }
 
 .ui.im.avatar {
+
+  &#im-button, &#im-button svg {
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    -o-border-radius: 0px;
+    border-radius: 0px;
+  }
+
   width: 24px;
   height: 24px;
+
+  &.text-fallback {
+    border: 0.5px solid;
+  }
+
+  > .text {
+    font-family: "Open Sans", serif;
+    font-size: 12px;
+    color: $dp-greyscale-850;
+    font-weight: 600;
+  }
+
+  &.gravatar {
+    position: absolute;
+    top: 0;
+    left: 1px !important;
+  }
 }
 
 .ui.topbar > .item > .im-list {
@@ -38,13 +63,30 @@ img.emojione, svg.emojione {
       position: relative;
       display: inline-block;
 
+      .icon.close {
+        position: absolute;
+        display: none;
+        width: 14px;
+        height: 14px;
+        top: -9px;
+        right: -5px;
+        color: $dp-greyscale-850;
+      }
+
+      &:hover {
+        .icon.close {
+          display: block;
+        }
+      }
+
       > .im.avatar {
-        margin: 0 10px;
+        margin: 0 7px;
+
+        &.offline {
+          opacity: 0.5;
+        }
 
         .text {
-          font-family: "Open Sans", serif;
-          font-size: 12px;
-          color: $dp-greyscale-850;
           vertical-align: middle;
           display: inline-block;
           width: inherit;
@@ -53,15 +95,13 @@ img.emojione, svg.emojione {
           position: absolute;
           left: 0;
           top: 0;
-
-          &.gravatar {
-            position: absolute;
-            top: 0;
-            left: 1px !important;
-          }
         }
       }
+
       > .knuckles.message-counter {
+        &:hover {
+          display: none;
+        }
         position: absolute;
         top: -8px;
         left: 25px;
@@ -83,17 +123,36 @@ img.emojione, svg.emojione {
     padding-right: 15px;
     height: 40px;
 
-
     .icon.group.add {
       margin-left: 5px;
       cursor: pointer;
     }
 
     .wrapper {
-
       vertical-align: middle;
-      .icon.search {
-        &.enabled {
+
+      .icon {
+        &.search, &.remove {
+
+          -webkit-border-radius: 2px;
+          -moz-border-radius: 2px;
+          border-radius: 2px;
+          -webkit-box-shadow: inset -1px 0 1px 1px rgba(255,255,255,0.5);
+          -moz-box-shadow: inset -1px 0 1px 1px rgba(255,255,255,0.5);
+          box-shadow: inset -1px 0 1px 1px rgba(255,255,255,0.5);
+
+          float: right;
+          cursor: pointer;
+          padding-top: 3px;
+          font-size: 12px;
+          display: inline-block;
+          position: relative;
+          vertical-align: middle;
+          height: 20px;
+          width: 20px;
+        }
+
+        &.search.enabled {
           background: $dp-sonic-midnight;
           -webkit-border-radius: 2px;
           -moz-border-radius: 2px;
@@ -103,15 +162,8 @@ img.emojione, svg.emojione {
           box-shadow: inset 1px 1px 1px 0 rgba(0,0,0,0.5);
         }
 
-        float: right;
-        cursor: pointer;
-        padding-top: 3px;
-        font-size: 12px;
-        display: inline-block;
-        position: relative;
-        vertical-align: middle;
-        height: 20px;
-        width: 20px;
+
+
       }
     }
   }
@@ -291,9 +343,7 @@ img.emojione, svg.emojione {
       .im.item {
         color: $dp-greyscale-600;
         font-size: 16px;
-        padding-left: 15px;
-        padding-top: 20px;
-        padding-bottom: 20px;
+        padding: 20px 34px;
         border-left: none;
 
         .dp-im-tab-menu-icon {
@@ -326,8 +376,56 @@ img.emojione, svg.emojione {
       }
 
       .item {
+        &.agent, &.department, &.team {
+          padding: 8px 15px;
+          margin-top: 2px;
+          position: relative;
+
+          .message-counter {
+            font-family: "Open Sans", serif;
+            font-size: 12px;
+            position: absolute;
+            left: 30px;
+            top: 2px;
+            border-radius: 2px;
+            display: block;
+            padding: 2px;
+            font-weight: 600;
+          }
+
+          .timestamp {
+
+            &:before {
+              content: '';
+              display: table-cell;
+              width: 200px;
+              height: 30px;
+              background-image: linear-gradient(to right, transparent, white);
+            }
+
+            span {
+              display: table-cell;
+              vertical-align: middle;
+            }
+
+            display: table;
+            position: absolute;
+            padding: 10px 0 10px 10px;
+            right: 15px;
+            top: 2px;
+            font-size: 10px;
+            font-weight: 400;
+            color: $dp-greyscale-450;
+            font-family: "Open Sans", serif;
+          }
+        }
         &:hover {
           background: $dp-morning-sky;
+
+          .timestamp:before {
+            background-image: linear-gradient(to right, transparent, $dp-morning-sky);
+          }
+
           &.agent, &.department, &.team {
             .content {
               .header, .description {
@@ -336,26 +434,13 @@ img.emojione, svg.emojione {
             }
           }
         }
-
-        &.agent, &.department, &.team {
-          padding: 8px 15px;
-          margin-top: 2px;
-
-          .timestamp {
-            font-size: 10px;
-            font-weight: 400;
-            color: $dp-greyscale-450;
-            font-family: "Open Sans", serif;
-            margin-top: 10px;
-          }
-        }
         .content {
           &.agent, &.department, &.team {
             overflow: hidden;
             height: 30px;
             line-height: 28px;
             white-space: nowrap;
-            max-width: 240px;
+            max-width: 275px;
 
             .header {
               font-family: "Open Sans", serif;
@@ -364,29 +449,18 @@ img.emojione, svg.emojione {
               color: $dp-greyscale-850;
               display: inline-block;
             }
-
-            .message-counter {
-              font-family: "Open Sans", serif;
-              font-size: 10px;
-              display: inline-block;
-              margin-left: 10px;
-              height: 14px;
-              padding: 2px 4px;
-              font-weight: 600;
-            }
-          }
-          &.agent {
-            max-width: 190px;
           }
         }
 
         &.department.recent {
           .content {
             line-height: 12px;
+
             .header {
               font-size: 10px;
               text-transform: uppercase;
             }
+
             .description {
               max-width: 185px;
             }
@@ -405,7 +479,6 @@ img.emojione, svg.emojione {
   }
 
   &.chat.drawer {
-
     height: initial;
     width: 320px;
 
@@ -442,10 +515,12 @@ img.emojione, svg.emojione {
       padding: 8px 10px;
 
       .ui.im.avatar {
+        cursor: pointer;
+        margin-right: 3px;
+
         &.offline {
           opacity: 0.5;
         }
-        margin-right: 3px;
       }
 
       .control .icon.write.group-edit, .dots {
@@ -471,7 +546,6 @@ img.emojione, svg.emojione {
       }
 
       &.expanded {
-
         padding: 8px 20px;
 
         .ui.im.avatar {
@@ -507,10 +581,8 @@ img.emojione, svg.emojione {
 
     }
 
-
-
     .box {
-      min-width: 300px;
+      min-width: 420px;
       height: 425px;
       position: relative;
       background-color: $dp-greyscale-50;
@@ -524,7 +596,6 @@ img.emojione, svg.emojione {
       }
 
       .ui.segments {
-
         padding: 0 20px;
         border: 0;
         box-shadow: none;
@@ -548,6 +619,7 @@ img.emojione, svg.emojione {
           }
 
           .timestamp {
+
             display: inline-block;
             white-space: nowrap;
             color: $dp-greyscale-450;
@@ -562,6 +634,7 @@ img.emojione, svg.emojione {
             font-size: 10px;
             color: $dp-sonic-primary;
             font-weight: 600;
+            cursor: pointer;
           }
 
           .message {
@@ -577,7 +650,6 @@ img.emojione, svg.emojione {
           }
 
           .message:before {
-
             bottom: -0.40714286em;
             left: 1em;
             right: auto;
@@ -598,11 +670,13 @@ img.emojione, svg.emojione {
 
           &.my {
             text-align: right;
+
             .message, .message:before {
               text-align: left;
               border-color: $dp-sonic-primary;
               background: $dp-morning-sky;
             }
+
             .message:before {
               right: 1em;
               left: auto;
@@ -628,6 +702,7 @@ img.emojione, svg.emojione {
                 color: $dp-sonic-primary;
                 background-color: $dp-morning-sky;
               }
+
               .ui.divider.horizontal.timestamp {
                 &:before, &:after {
                   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABaAAAAACCAYAAACuTHuKAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AoTEAozi5V7HgAAADJJREFUaN7t0DERACAMBDC4Y0UBOy7xWEePiY6JhMwkdwAAAAAAQLN1Xm0NAAAAAAB0+6sqBJ7q+V/NAAAAAElFTkSuQmCC');
@@ -702,10 +777,10 @@ img.emojione, svg.emojione {
                   }
 
                   .text {
-                    font-size: 6px;
+                    font-size: 10px;
                     position: absolute;
-                    left: 0;
-                    top: 0;
+                    left: -1px;
+                    top: -1px;
                   }
                 }
               }
@@ -834,8 +909,8 @@ img.emojione, svg.emojione {
   font-size: 12px;
   color: $dp-greyscale-850;
   background-color: white;
-  width: 302px;
-  height: 302px;
+  width: 278px;
+  height: 222px;
   border: 1px solid $dp-greyscale-350;
   position: relative;
   display: inline-block;
@@ -848,7 +923,7 @@ img.emojione, svg.emojione {
     bottom: auto;
     margin-left: 0em;
     box-shadow: none;
-    background: #FFFFFF;
+    background-color: #F5F7F9;
     position: absolute;
     content: '';
     width: 20px;
@@ -859,4 +934,8 @@ img.emojione, svg.emojione {
     border-right: none;
     border-bottom: none;
   }
+}
+
+.medium-editor-toolbar {
+  z-index: 99999;
 }

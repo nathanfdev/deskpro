@@ -5,7 +5,7 @@ import {
   PersonAvatar,
   AgentTeamAvatar
 } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
-import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
+import { chooseColor, darkerColor, colorLuminance } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 
 class AvatarHelper
 {
@@ -25,30 +25,40 @@ class AvatarHelper
     />);
   }
 
-  static renderEveryoneAvatar() {
+  static renderEveryoneAvatar(notificationsCount = false) {
     const props = {
-      size:       24,
-      color:      '#DD00AA',
-      urlPattern: null,
-      gravatar:   null,
-      text:       'E',
-      className:  'ui avatar image im'
+      size:        24,
+      color:       '#DD00AA',
+      borderColor: colorLuminance('#DD00AA', -0.2),
+      urlPattern:  null,
+      gravatar:    null,
+      text:        'EO',
+      className:   'ui avatar image im'
     };
+    if (notificationsCount !== false) {
+      props.title = `Everyone chat. ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+    }
 
     return <Avatar {...props} />;
   }
 
-  static renderGroupAvatar(chat) {
+  static renderGroupAvatar(chat, notificationsCount = false) {
     const name = chat.get('name');
-    const text = (name && name.length ? name[0] : '');
+    const text = (name && name.length ? name.substr(0, 2) : '');
     const props = {
-      size:       24,
-      color:      chooseColor(chat.get('id')),
-      urlPattern: null,
-      gravatar:   null,
-      text:       text || '?',
-      className:  'ui avatar image im'
+      size:        24,
+      color:       chooseColor(chat.get('id')),
+      borderColor: darkerColor(chat.get('id')),
+      urlPattern:  null,
+      gravatar:    null,
+      text:        text || '?',
+      className:   'ui avatar image im'
     };
+
+    if (notificationsCount !== false) {
+      const participantsCount = chat.get('agents').size;
+      props.title = `${chat.get('name')} (${participantsCount} participant${participantsCount === 1 ? '' : 's'}). ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+    }
 
     return <Avatar {...props} />;
   }

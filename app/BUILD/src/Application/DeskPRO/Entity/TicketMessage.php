@@ -739,10 +739,20 @@ class TicketMessage extends DomainObject
         return $this;
     }
 
+    /**
+     * @param TicketAttachment $attach
+     *
+     * @return $this
+     */
     public function addAttachment(TicketAttachment $attach)
     {
-        $this->attachments->add($attach);
-        $attach['message'] = $this;
+        if (!$this->attachments->contains($attach)) {
+            $this->attachments->add($attach);
+        }
+
+        $attach->setMessage($this);
+
+        return $this;
     }
 
     /**

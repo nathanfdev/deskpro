@@ -39,9 +39,12 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HiddenEntityType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessageAttachmentCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsWebType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -67,7 +70,16 @@ class WebFieldResolver extends AbstractFieldResolver
             ]);
         }
 
-        return parent::createDepartment($context);
+        return new FormField(TicketDepartmentChoiceType::class, [
+            'label'       => $this->phrase('portal.forms.label_department'),
+            'person'      => $context->getPerson(),
+            'ticket'      => $context->getTicket(),
+            'placeholder' => '',
+            'constraints' => [
+                new Assert\NotNull(),
+                new AppAssert\LeafDepartment(),
+            ],
+        ]);
     }
 
     /**
@@ -164,6 +176,22 @@ class WebFieldResolver extends AbstractFieldResolver
             'message_label'  => $context->isWidgetType()
                 ? $this->phrase('portal.widget.label_message')
                 : $this->phrase('portal.forms.label_message'),
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function createAttach(TicketWithLayoutsContext $context)
+    {
+        if (!$context->getMessage()) {
+            return false;
+        }
+
+        return new FormField(WebTicketMessageAttachmentCollectionType::class, [
+            'required'       => false,
+            'person'         => $context->getPerson(),
+            'ticket_message' => $context->getMessage(),
         ]);
     }
 

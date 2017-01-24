@@ -1,11 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import { loadAgents } from '../../../../Application/Actions/peopleActions';
 import { loadQueues } from '../../../Actions/queueActions';
 import { loadAutoAttendants } from '../../../Actions/autoAttendantActions';
 import { allAgentsSelector } from '../../../../Application/Selectors/people';
 import { allQueuesSelector } from '../../../Selectors/queue';
 import { allAutoAttendantsSelector } from '../../../Selectors/autoAttendant';
+import { replaceRoute } from '../../../../../Services/history';
 
 @connect(state => ({
   agents:         allAgentsSelector(state),
@@ -41,39 +43,83 @@ class VoiceTargetNameContainer extends React.Component {
     }
   }
 
-  render() {
+  onRedirectToTarget = (event) => {
+    event.preventDefault();
+    const targetUrl = this.getTargetUrl();
+    if (!targetUrl) {
+      return;
+    }
+
+    replaceRoute(targetUrl);
+  };
+
+  getTargetObject() {
     const { target } = this.props;
     const { agents, queues, autoAttendants } = this.props;
-    const targetType = target.get('type');
 
-    let targetName;
-    switch (target.get('type')) {
+    const targetType = target.get('type');
+    let targetObject;
+
+    switch (targetType) {
       case 'agent': {
-        const agent = agents && agents.get(target.get('agent'));
-        targetName = agent ? agent.get('name') : '';
+        targetObject = agents && agents.get(target.get('agent'));
         break;
       }
       case 'queue': {
-        const queue = queues && queues.get(target.get('queue'));
-        targetName = queue ? queue.get('name') : '';
+        targetObject = queues && queues.get(target.get('queue'));
         break;
       }
       case 'auto_attendant': {
-        const autoAttendant = autoAttendants && autoAttendants.get(target.get('auto_attendant'));
-        targetName = autoAttendant ? autoAttendant.get('name') : '';
+        targetObject = autoAttendants && autoAttendants.get(target.get('auto_attendant'));
         break;
       }
       default:
-        targetName = '';
         break;
     }
+
+    if (!targetObject) {
+      targetObject = Immutable.fromJS({});
+    }
+
+    return targetObject;
+  }
+
+  getTargetUrl() {
+    const { target } = this.props;
+    const targetObject = this.getTargetObject();
+    const targetId = targetObject.get('id');
+
+    if (!targetId) {
+      return '';
+    }
+
+    switch (target.get('type')) {
+      case 'agent':
+        return `/agents/agents/${targetId}`;
+      case 'queue':
+        return `/voice_channel/queues/${targetId}`;
+      case 'auto_attendant':
+        return `/voice_channel/auto_attendants/${targetId}`;
+      default:
+        return '';
+    }
+  }
+
+  render() {
+    const { target } = this.props;
+    const targetType = target.get('type');
+    const targetName = this.getTargetObject().get('name');
 
     let { children } = this.props;
     if (!children) {
       children = <VoiceTargetName />;
     }
 
-    return React.cloneElement(children, { targetName, targetType });
+    return React.cloneElement(children, {
+      targetName,
+      targetType,
+      onRedirectToTarget: this.onRedirectToTarget
+    });
   }
 }
 

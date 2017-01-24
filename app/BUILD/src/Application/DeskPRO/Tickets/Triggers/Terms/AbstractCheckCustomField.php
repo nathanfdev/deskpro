@@ -271,10 +271,11 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         $type        = $options->get('type_name');
         $value       = $this->getTicketFieldValueJs($id);
 
+        // if value is null then the field is not present on the form
         if ($op === AbstractTriggerTerm::OP_ISSET) {
-            return "function (ticket) { return !!($value ? ($value).length : $value); }";
+            return "function (ticket) { return $value !== null; }";
         } elseif ($op === AbstractTriggerTerm::OP_NOTISSET) {
-            return "function (ticket) { return !$value || 0 === ($value).length; }";
+            return "function (ticket) { return $value === null; }";
         }
 
         $op_is          = AbstractTriggerTerm::OP_IS;

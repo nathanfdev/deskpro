@@ -1,14 +1,13 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import $ from 'jquery';
 
-export class ChatPopup extends React.Component {
+export default class ChatPopup extends React.Component {
 
   static propTypes = {
     small:          PropTypes.bool,
     widgetPosition: PropTypes.string,
-    children:       PropTypes.any,
+    children:       PropTypes.any, // eslint-disable-line react/forbid-prop-types
     liveDemo:       PropTypes.bool,
     onClose:        PropTypes.func,
     popupStyle:     PropTypes.string,
@@ -23,22 +22,22 @@ export class ChatPopup extends React.Component {
     this.updateInlineOffset();
   }
 
-  onClose = event => {
+  onClose = (event) => {
     event.preventDefault();
     this.props.onClose();
   };
 
   updateInlineOffset() {
-    const { popupStyle, getButton } = this.props;
-    const $triggerFrame = $(parent.window.widget_trigger_iframe);
-    const $popup = $(ReactDOM.findDOMNode(this.refs.popup), $triggerFrame);
+    setTimeout(() => {
+      const { popupStyle, getButton } = this.props;
+      const $popup = $(this.popup);
 
-    if (popupStyle === 'widget_button_agent') {
-      const $button = $(ReactDOM.findDOMNode(getButton()), $triggerFrame).find('.preemtive-button');
-      $popup.css('right', $button.width() + 10);
-    } else {
-      $popup.css('right', 0);
-    }
+      if (popupStyle === 'widget_button_agent') {
+        $popup.css('right', $(getButton()).width() + 10);
+      } else {
+        $popup.css('right', 1);
+      }
+    }, 0);
   }
 
   render() {
@@ -55,8 +54,11 @@ export class ChatPopup extends React.Component {
           'hidden-popup':                 hiddenPopup
         })}
       >
-        <div ref="popup" className={classNames('preemtive-chat', { small, 'position-left': leftPosition }, popupStyle)}>
-          <a href="#" className="close-panel" onClick={this.onClose}>
+        <div
+          ref={(node) => { this.popup = node; }}
+          className={classNames('preemtive-chat', { small, 'position-left': leftPosition }, popupStyle)}
+        >
+          <a href="#close-panel" className="close-panel" onClick={this.onClose}>
             <i className="fa fa-times" />
           </a>
           {children}

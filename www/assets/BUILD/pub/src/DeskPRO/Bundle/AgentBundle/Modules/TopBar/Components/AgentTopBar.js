@@ -26,8 +26,9 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   chatDepartments:     collectionSelectorFactory('Department', 'all_tickets')(state),
   recentChats:         collectionSelectorFactory('AgentChat', 'recent')(state),
   groupChats:          collectionSelectorFactory('AgentChat', 'group')(state),
+  hiddenChats:         state.IM.chats.get('hiddenChats'),
   myDepartments:       collectionSelectorFactory('Department', 'my_tickets')(state),
-  teams:               collectionSelectorFactory('AgentTeam', 'all')(state),
+  myTeams:             collectionSelectorFactory('AgentTeam', 'my')(state),
   me:                  meSelector(state),
   counts:              state.IM.messages.get('counts'),
   current:             state.IM.chats.get('current'),
@@ -41,7 +42,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   updatingMessages:    state.IM.messages.get('updatingMessages'),
   recentLoaded:        isLoadedCollectionSelectorFactory('AgentChat', 'recent')(state),
   groupLoaded:         isLoadedCollectionSelectorFactory('AgentChat', 'group')(state),
-  teamsLoaded:         isLoadedCollectionSelectorFactory('AgentTeam', 'my')(state),
+  myTeamsLoaded:       isLoadedCollectionSelectorFactory('AgentTeam', 'my')(state),
   myDepartmentsLoaded: isLoadedCollectionSelectorFactory('Department', 'my_tickets')(state),
   agentsLoaded:        isLoadedCollectionSelectorFactory('Person', 'agents')(state),
   voiceEnabled:        isVoiceEnabledSelector(state),
@@ -56,9 +57,10 @@ export class AgentTopBarContainer extends SeparateComponent {
     agents:              PropTypes.object.isRequired,
     chatDepartments:     PropTypes.object.isRequired,
     myDepartments:       PropTypes.object.isRequired,
-    teams:               PropTypes.object.isRequired,
+    myTeams:             PropTypes.object.isRequired,
     recentChats:         PropTypes.object.isRequired,
     groupChats:          PropTypes.object.isRequired,
+    hiddenChats:         PropTypes.object.isRequired,
     messages:            PropTypes.object,
     counts:              PropTypes.object,
     current:             PropTypes.object,
@@ -70,7 +72,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     updatingMessages:    PropTypes.bool.isRequired,
     chating:             PropTypes.bool.isRequired,
     overlayShown:        PropTypes.bool.isRequired,
-    teamsLoaded:         PropTypes.bool.isRequired,
+    myTeamsLoaded:       PropTypes.bool.isRequired,
     myDepartmentsLoaded: PropTypes.bool.isRequired,
     agentsLoaded:        PropTypes.bool.isRequired,
     groupCreation:       PropTypes.bool.isRequired
@@ -100,6 +102,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.onScroll         = this.onScroll.bind(this);
     this.loadMessages     = this.loadMessages.bind(this);
     this.onChatSearch     = this.onChatSearch.bind(this);
+    this.onHideChat       = this.onHideChat.bind(this);
   }
 
   refreshCounts() {
@@ -131,7 +134,13 @@ export class AgentTopBarContainer extends SeparateComponent {
   }
 
   recentClick(chatId) {
-    this.props.dispatch(chatsActions.startChat(null, chatId));
+    const { current, dispatch } = this.props;
+
+    if (current && chatId === current.get('id')) {
+      dispatch(chatsActions.closeChat(chatId));
+    } else {
+      dispatch(chatsActions.startChat(null, chatId));
+    }
   }
 
   participantClick(id, type) {
@@ -140,6 +149,10 @@ export class AgentTopBarContainer extends SeparateComponent {
 
   chatClickOut(chatId) {
     this.props.dispatch(chatsActions.closeChat(chatId));
+  }
+
+  onHideChat(chat) {
+    this.props.dispatch(chatsActions.hideChat(chat.get('id'), Date.now()));
   }
 
   onSubmit(message) {
@@ -165,7 +178,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     if (window.DP_HAS_NEW_IM) {
       this.props.dispatch(loadFromApi(
         'AgentChat',
-        'DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=5',
+        'DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=10',
         'recent'
       ));
       this.props.dispatch(loadFromApi(
@@ -180,7 +193,7 @@ export class AgentTopBarContainer extends SeparateComponent {
 
   onSearchFocus = () => {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
-    if (this.agentTopBar.searchBox.textInput.value) {
+    if (this.agentTopBar && this.agentTopBar.searchBox.textInput.value) {
       window.$('.dp-omnibox-results').show();
     }
   };
@@ -300,7 +313,10 @@ export class AgentTopBarContainer extends SeparateComponent {
   }
 
   loadMessages(page = 1) {
-    this.props.dispatch(messagesActions.loadMessages(this.props.current.get('id'), this.state.searchQuery, page));
+    const { current, dispatch } = this.props;
+    if (current.get('id')) {
+      dispatch(messagesActions.loadMessages(current.get('id'), this.state.searchQuery, page));
+    }
   }
 
   render() {
@@ -329,8 +345,8 @@ export class AgentTopBarContainer extends SeparateComponent {
       loadMessages:       this.loadMessages,
       onChatSearch:       this.onChatSearch,
       searchQuery:        this.state.searchQuery,
-      shouldScrollBottom: this.state.shouldScrollBottom,
-      onToggleChat:       this.onToggleChat
+      onToggleChat:       this.onToggleChat,
+      onHideChat:         this.onHideChat
     };
     return <AgentTopBar {...props} ref={(c) => { this.agentTopBar = c; }} />;
   }
@@ -341,10 +357,11 @@ export class AgentTopBar extends React.Component {
     agents:              PropTypes.object.isRequired,
     chatDepartments:     PropTypes.object.isRequired,
     myDepartments:       PropTypes.object.isRequired,
-    teams:               PropTypes.object.isRequired,
+    myTeams:             PropTypes.object.isRequired,
     me:                  PropTypes.object.isRequired,
     recentChats:         PropTypes.object.isRequired,
     groupChats:          PropTypes.object.isRequired,
+    hiddenChats:         PropTypes.object.isRequired,
     notificationCount:   PropTypes.number,
     dispatch:            PropTypes.func.isRequired,
     updateVolume:        PropTypes.func,
@@ -379,14 +396,15 @@ export class AgentTopBar extends React.Component {
     overlayShown:        PropTypes.bool.isRequired,
     recentLoaded:        PropTypes.bool.isRequired,
     groupLoaded:         PropTypes.bool.isRequired,
-    teamsLoaded:         PropTypes.bool.isRequired,
+    myTeamsLoaded:       PropTypes.bool.isRequired,
     myDepartmentsLoaded: PropTypes.bool.isRequired,
     agentsLoaded:        PropTypes.bool.isRequired,
     onClearSearchInput:  PropTypes.func,
     voiceEnabled:        PropTypes.bool,
     userChatEnabled:     PropTypes.bool,
     onlineAgents:        PropTypes.object,
-    onToggleChat:        PropTypes.func
+    onToggleChat:        PropTypes.func,
+    onHideChat:          PropTypes.func
   };
 
   onChatVolumeUpdate = (newVal) => {
@@ -413,11 +431,12 @@ export class AgentTopBar extends React.Component {
   renderIM() {
     if (!window.DP_HAS_NEW_IM) return null;
 
-    const { groupLoaded, groupCreation, teamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
+    const { groupCreation, myTeamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
     const { current, chating, messages, chatClickOut, participantClick, recentClick, createGroup } = this.props;
-    const { editChat, updateGroup, loadMessages, onChatSearch, onScroll, openGroupDrawer, markNewMessages, onSubmit, toggleImOverlay } = this.props;
-    const { searchQuery, counts, groupChats, checkedAgents, me, myDepartments, teams, recentChats, recentLoaded, overlayShown } = this.props;
-    const { agents, onSearchFocus, onSearchBlur } = this.props;
+    const { onChatSearch, onScroll, openGroupDrawer, markNewMessages, onSubmit, toggleImOverlay } = this.props;
+    const { searchQuery, counts, groupChats, checkedAgents, me, myDepartments, myTeams, recentChats } = this.props;
+    const { agents, onSearchFocus, onSearchBlur, editChat, updateGroup, loadMessages } = this.props;
+    const { recentLoaded, groupLoaded, overlayShown, hiddenChats, onHideChat }  = this.props;
     const groupDrawerTarget = document.getElementById('im-button');
 
     return (<TopBarItem childrenWrapper="im-list">
@@ -425,24 +444,26 @@ export class AgentTopBar extends React.Component {
         me={me}
         agents={agents}
         departments={myDepartments}
-        teams={teams}
+        teams={myTeams}
         chats={recentChats}
+        hiddenChats={hiddenChats}
         counts={counts}
         onRecentClick={recentClick}
-        teamsLoaded={teamsLoaded}
+        teamsLoaded={myTeamsLoaded}
         departmentsLoaded={myDepartmentsLoaded}
         agentsLoaded={agentsLoaded}
         recentLoaded={recentLoaded}
+        onHideChat={onHideChat}
       >
         <IMOverlay
           counts={counts}
-          teamsLoaded={teamsLoaded}
+          teamsLoaded={myTeamsLoaded}
           myDepartmentsLoaded={myDepartmentsLoaded}
           agentsLoaded={agentsLoaded}
           me={me}
           agents={agents}
           departments={myDepartments}
-          teams={teams}
+          teams={myTeams}
           onRecentClick={recentClick}
           onParticipantClick={participantClick}
           createNewGroup={() => openGroupDrawer()}
@@ -475,9 +496,10 @@ export class AgentTopBar extends React.Component {
           onScroll={onScroll}
           searchQuery={searchQuery}
           onChatSearch={onChatSearch}
+          onAgentClick={participantClick}
           agents={agents}
           departments={myDepartments}
-          teams={teams}
+          teams={myTeams}
           me={me}
           messages={messages}
           current={current}
@@ -494,8 +516,8 @@ export class AgentTopBar extends React.Component {
 
   render() {
     const { agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
-    const { onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent, onNotification, onToggleChat } = this.props;
-    const { closeIframes, toggleViewMode } = this.props;
+    const { onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent } = this.props;
+    const { closeIframes, toggleViewMode, onNotification, onToggleChat } = this.props;
 
     return (<TopBar>
       <TopBarItem className="search-box legacy-omnibox">

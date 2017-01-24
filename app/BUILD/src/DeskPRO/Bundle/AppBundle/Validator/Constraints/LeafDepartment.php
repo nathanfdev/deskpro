@@ -41,12 +41,4 @@ class LeafDepartment extends Constraint
     const NOT_ASSIGNABLE_DEPARTMENT = 'not_assignable_department';
 
     public $message = 'Unable to select parent department.';
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validatedBy()
-    {
-        return 'leaf_department_validator';
-    }
 }

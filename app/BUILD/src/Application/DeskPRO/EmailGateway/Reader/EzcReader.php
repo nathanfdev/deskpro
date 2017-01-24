@@ -395,7 +395,7 @@ class EzcReader extends AbstractReader
                 || ($part instanceof \ezcMailRfc822Digest)
             ) {
                 // We already analysed the signature or the encrypted content so we don't had it as an attachment
-                if ($part->mimeType === 'pkcs7-signature' || $part->mimeType === 'pkcs7-mime') {
+                if (isset($part->mimeType) && ($part->mimeType === 'pkcs7-signature' || $part->mimeType === 'pkcs7-mime')) {
                     continue;
                 }
                 $attach = new Item\Attachment();

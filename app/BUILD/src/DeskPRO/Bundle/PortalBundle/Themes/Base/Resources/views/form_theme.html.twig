@@ -314,9 +314,9 @@
 
 {# TICKET ATTACHMENTS #}
 {% block ticket_message_attachment_widget %}
-    {% if form.upload is defined %}
-        {{ form_widget(form.upload) }}
-        {{ form_errors(form.upload) }}
+    {% if form.blob is defined %}
+        {{ form_widget(form.blob) }}
+        {{ form_errors(form.blob) }}
     {% else %}
         <div
             class="attach-row"
@@ -371,9 +371,9 @@
 
 {# FEEDBACK ATTACHMENTS #}
 {% block feedback_attachment_widget %}
-    {% if form.upload is defined %}
-        {{ form_widget(form.upload) }}
-        {{ form_errors(form.upload) }}
+    {% if form.blob is defined %}
+        {{ form_widget(form.blob) }}
+        {{ form_errors(form.blob) }}
     {% else %}
         <div
                 class="attach-row"
@@ -381,8 +381,15 @@
                 data-blob-auth="{{ form.vars.data.blob.authcode }}"
                 data-blob-filename="{{ form.vars.data.blob.filename }}"
                 data-blob-download-url="{{ form.vars.data.blob.downloadUrl }}"
+                data-blob-filesize="{{ form.vars.data.blob.readableFilesize }}"
                 {% if form.vars.data.blob.is_image %}data-blob-thumb-url="{{ form.vars.data.blob.thumbnailUrl }}"{% endif %}
         >
+            <div class="attach-row-icon" style="display: none;">
+                {{ file_icon(form.vars.data.blob) }}
+            </div>
+            <div class="attach-row-errors">
+                {{ form_errors(form) }}
+            </div>
             <a href="{{ form.vars.data.blob.downloadUrl }}">
                 {% if form.vars.data.blob.is_image %}
                     <img src="{{ form.vars.data.blob.thumbnailUrl }}" alt=""/>
@@ -578,7 +585,6 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
             <option
                     {% if def.getOption('parent_id') is not null %} data-parent="{{ def.getOption('parent_id') }}"{% endif %}
                     {% if def.id is defined %} data-id="{{ def.id }}"{% endif %}
-                    {% if choice.data|length > 0 %} disabled="disabled"{% endif %}
                     {% if choice is selectedchoice(value) %} selected="selected"{% endif %}
                     data-name="{{ choice.label|trans({}, translation_domain) }}"
                     value="{{ choice.value }}"
@@ -645,7 +651,6 @@ END HEIRARCHY
             <option
                     {% if def.parent is not null %} data-parent="{{ def.parent.data.id }}"{% endif %}
                     {% if def.data.id is defined %} data-id="{{ def.data.id }}"{% endif %}
-                    {% if def|length > 0 %} disabled="disabled"{% endif %}
                     {% if choice is selectedchoice(value) %} selected="selected"{% endif %}
                     data-name="{{ choice.label|trans({}, translation_domain) }}"
                     value="{{ choice.value }}"

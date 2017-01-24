@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { AgentAvatars } from './AgentAvatars';
-import { ChatPopup } from './ChatPopup';
+import ChatPopup from './ChatPopup';
 
 export class OnlineAgentsPopup extends React.Component {
 

@@ -40,10 +40,10 @@ use Psr\Log\NullLogger;
 class DbVerify implements DbVerifyInterface, LoggerAwareInterface
 {
     /**
-     * The min size of any DB dump is 8 MB which is just the schema and
+     * The min size of any DB dump is ~6 MB which is just the schema and
      * initial records.
      */
-    const MIN_SIZE = 8388608;
+    const MIN_SIZE = 6000000;
 
     /**
      * @var LoggerInterface

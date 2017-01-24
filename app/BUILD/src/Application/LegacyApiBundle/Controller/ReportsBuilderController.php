@@ -32,6 +32,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Dpql\SqlSelect;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Reports\Builder;
@@ -250,12 +251,16 @@ class ReportsBuilderController extends AbstractController
         $reportsBuilder = $this->container->getSystemService('reports_builder');
 
         if ($error = $reportsBuilder->getErrors($id, 'from_request')) {
-            return $this->createApiResponse(['error' => $error]);
+            return $this->createApiResponse([
+                'error' => $error,
+                'sql'   => SqlSelect::getLastCompiledSql(),
+            ]);
         } else {
             $rendered_result = $reportsBuilder->getRenderedResult($id, 'from_request');
 
             return $this->createApiResponse([
                 'rendered_result' => $rendered_result,
+                'sql'             => SqlSelect::getLastCompiledSql(),
             ]);
         }
     }

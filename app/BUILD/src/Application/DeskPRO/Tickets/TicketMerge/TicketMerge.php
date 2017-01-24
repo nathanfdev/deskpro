@@ -253,7 +253,7 @@ class TicketMerge implements PersonContextInterface
             'product'       => 'title',
             'workflow'      => 'title',
             'priority'      => 'title',
-            'parent_ticket' => 'parent_ticket',
+            'parent_ticket' => 'id',
         ];
         foreach ($standard_prop_names as $prop_name => $title_field) {
             if ($this->ticket[$prop_name] && $this->other_ticket[$prop_name]) {

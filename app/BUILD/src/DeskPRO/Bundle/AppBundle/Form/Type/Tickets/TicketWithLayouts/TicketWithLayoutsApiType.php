@@ -116,19 +116,20 @@ class TicketWithLayoutsApiType extends AbstractType
     {
         $ticket = $event->getForm()->getData();
         $data   = $event->getData();
+        $form   = $event->getForm();
 
         // should applied for new tickets only
         if (!$ticket instanceof Ticket || $ticket->getId()) {
             return;
         }
 
-        if (!isset($data[FormFields::DEPARTMENT])) {
+        if ($form->has(FormFields::DEPARTMENT) && !isset($data[FormFields::DEPARTMENT])) {
             $data[FormFields::DEPARTMENT] = '';
         }
-        if (!isset($data[FormFields::SUBJECT])) {
+        if ($form->has(FormFields::SUBJECT) && !isset($data[FormFields::SUBJECT])) {
             $data[FormFields::SUBJECT] = '';
         }
-        if (!isset($data[FormFields::MESSAGE])) {
+        if ($form->has(FormFields::MESSAGE) && !isset($data[FormFields::MESSAGE])) {
             $data[FormFields::MESSAGE] = ['message' => ''];
         }
 

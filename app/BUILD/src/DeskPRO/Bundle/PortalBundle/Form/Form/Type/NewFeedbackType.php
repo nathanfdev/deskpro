@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Feedback\FeedbackAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
@@ -130,7 +131,8 @@ class NewFeedbackType extends AbstractType
                 'forms' => $this->getCustomDataForms(),
             ])
             ->add('attachments', FeedbackAttachmentCollectionType::class, [
-                'person' => $options['person'],
+                'person'   => $options['person'],
+                'feedback' => $builder->getData(),
             ])
             ->add('more_attachments', SubmitType::class, [
                 'validation_groups' => false,

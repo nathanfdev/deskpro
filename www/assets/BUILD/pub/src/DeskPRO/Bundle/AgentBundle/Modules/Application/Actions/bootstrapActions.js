@@ -6,6 +6,7 @@ import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 import { setImMe } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
+import { hideChat } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/chatsActions';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { setVoiceTokens, setVoiceActivities } from '../../Voice/Actions/clientActions';
 
@@ -95,8 +96,13 @@ export const preloadData    = createAction(
           if (window.DP_HAS_NEW_IM) {
             dispatch(setImMe(data.me.person));
             dispatch(setupActionAlerts(data.alerts));
+            const hiddenChats = localStorage.getItem('hiddenChats') ? JSON.parse(localStorage.getItem('hiddenChats')) : {};
+            Object.keys(hiddenChats).forEach((key) => {
+              if (Object.prototype.hasOwnProperty.call(hiddenChats, key)) {
+                dispatch(hideChat(key, hiddenChats[key]));
+              }
+            });
           }
-
           if (window.DP_HAS_VOICE) {
             dispatch(setVoiceTokens(data.voice_tokens));
             dispatch(setVoiceActivities(data.voice_activities));

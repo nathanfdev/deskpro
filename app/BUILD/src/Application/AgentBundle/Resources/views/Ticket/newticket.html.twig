@@ -230,7 +230,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 
 				{% if app.getSetting('core.use_ticket_category') %}
-					<tbody class="col fieldprop ticket-field item-on category inline-field" style="display: none;">
+					<tbody class="col fieldprop ticket-field item-on category inline-field" style="display: none;" data-default-value="{{ app.getSetting('core.default_ticket_cat') }}">
 						<tr>
 							<th>{{ phrase('agent.general.category') }}</th>
 							<td>
@@ -249,7 +249,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 
 				{% if app.getSetting('core.use_ticket_priority') %}
-					<tbody class="col fieldprop ticket-field item-on priority inline-field" style="display: none;">
+					<tbody class="col fieldprop ticket-field item-on priority inline-field" style="display: none;" data-default-value="{{ app.getSetting('core.default_ticket_pri') }}">
 						<tr>
 							<th>{{ phrase('agent.general.priority') }}</th>
 							<td>
@@ -267,7 +267,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 
 				{% if app.getSetting('core.use_ticket_workflow') %}
-					<tbody class="col fieldprop ticket-field item-on workflow inline-field" style="clear:both;display: none;">
+					<tbody class="col fieldprop ticket-field item-on workflow inline-field" style="clear:both;display: none;" data-default-value="{{ app.getSetting('core.default_ticket_work') }}">
 						<tr>
 							<th>{{ phrase('agent.general.workflow') }}</th>
 							<td>
@@ -285,7 +285,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 
 				{% if app.getSetting('core.use_product') %}
-					<tbody class="col fieldprop ticket-field item-on product inline-field" style="clear:both;display: none;">
+					<tbody class="col fieldprop ticket-field item-on product inline-field" style="clear:both;display: none;" data-default-value="{{ app.getSetting('core.default_prod_id') }}">
 						<tr>
 							<th>{{ phrase('agent.general.product') }}</th>
 							<td>
@@ -305,7 +305,7 @@ pageMeta.baseId = '{{ baseId }}';
                 {# todo why tbody included into loop? #}
 				{% if custom_fields %}
 					{% for f in custom_fields if f.field_def.getTypeName() != 'hidden' %}
-						<tbody class="col fieldprop ticket-field item-on ticket-field-{{f.field_def.id}} item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;">
+						<tbody class="col fieldprop ticket-field item-on ticket-field-{{f.field_def.id}} item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;" data-default-value="{{ f.field_def.getStringDefaultValue() }}">
 							<tr>
 								<th>{{ f.title }}</th>
 								<td>

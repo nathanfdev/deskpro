@@ -2158,6 +2158,13 @@ define(function() {
   });
 
   routes.push({
+    id:           'voice-channel.extensions_edit',
+    url:          '/extensions/{id:\\d+}',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
     id:           'voice-channel.queues',
     url:          '/queues',
     templateName: 'VoiceChannel/react_component.html',

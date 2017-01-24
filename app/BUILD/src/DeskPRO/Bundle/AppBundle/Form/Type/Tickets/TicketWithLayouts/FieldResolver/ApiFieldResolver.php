@@ -35,6 +35,8 @@ use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\ApiTicketMessageAttachmentCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
@@ -56,7 +58,13 @@ class ApiFieldResolver extends AbstractFieldResolver
             return false;
         }
 
-        return parent::createDepartment($context);
+        return new FormField(TicketDepartmentChoiceType::class, [
+            'person'      => $context->getPerson(),
+            'ticket'      => $context->getTicket(),
+            'constraints' => [
+                new Assert\NotNull(),
+            ],
+        ]);
     }
 
     /**
@@ -120,6 +128,22 @@ class ApiFieldResolver extends AbstractFieldResolver
             'message_constraints' => [
                 new Assert\Length(['min' => 10]),
             ],
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function createAttach(TicketWithLayoutsContext $context)
+    {
+        if (!$context->getMessage()) {
+            return false;
+        }
+
+        return new FormField(ApiTicketMessageAttachmentCollectionType::class, [
+            'required'       => false,
+            'person'         => $context->getPerson(),
+            'ticket_message' => $context->getMessage(),
         ]);
     }
 

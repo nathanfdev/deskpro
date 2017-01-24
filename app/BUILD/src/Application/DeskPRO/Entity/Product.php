@@ -393,6 +393,7 @@ class Product extends CategoryAbstract implements HasPhraseName
                 0 => [
                     'name'                 => 'parent_id',
                     'referencedColumnName' => 'id',
+                    'onDelete'             => 'SET NULL',
                 ],
             ],
         ]);

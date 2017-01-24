@@ -82,7 +82,8 @@ export class CustomField extends React.Component {
       formErrors,
       propertyPath: CustomField.getFieldPropertyPath(this.props),
       field:        this.renderCustomField(),
-      isHidden:     widgetType === 'hidden'
+      isHidden:     widgetType === 'hidden',
+      required:     config.getIn(['options', 'required']) || config.getIn(['options', 'validation_type']) === 'required'
     });
   }
 }
