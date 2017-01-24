@@ -196,6 +196,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
       	delete $scope.savedValues[id];
 			});
       $scope.edit_fields.length = 0;
+      $scope.show_hidden = 0;
       self.updateDisplay();
 		};
 
