@@ -84,17 +84,18 @@ class TicketMessageType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('message', HtmlTextareaType::class, [
-                'property_path' => 'message_html',
-                'label'         => $options['message_label'],
-                'required'      => $options['required'],
-                'constraints'   => $options['message_constraints'],
-            ])
-            ->add('person', PersonAssignType::class, [
+        $builder->add('message', HtmlTextareaType::class, [
+            'property_path' => 'message_html',
+            'label'         => $options['message_label'],
+            'required'      => $options['required'],
+            'constraints'   => $options['message_constraints'],
+        ]);
+
+        if ($options['allow_set_person']) {
+            $builder->add('person', PersonAssignType::class, [
                 'mapped' => false,
-            ])
-        ;
+            ]);
+        }
 
         if ($options['format']) {
             $builder->add('format', DpHiddenType::class, [
@@ -186,6 +187,7 @@ class TicketMessageType extends AbstractType
                 'format'                 => '',
                 'with_ticket_validation' => false,
                 'ctrl_enter_submit'      => false,
+                'allow_set_person'       => false,
                 'message_constraints'    => [],
                 'error_mapping'          => [
                     // we use custom setters to modify message,
@@ -206,6 +208,7 @@ class TicketMessageType extends AbstractType
             ->setAllowedTypes('ticket_message', ['null', TicketMessage::class])
             ->setAllowedValues('format', ['', 'html', 'text'])
             ->setAllowedTypes('ctrl_enter_submit', 'bool')
+            ->setAllowedTypes('allow_set_person', 'bool')
         ;
     }
 
@@ -277,9 +280,11 @@ class TicketMessageType extends AbstractType
                 $data->setPerson($optionPerson);
             }
 
-            $formPerson = $form->get('person')->getData();
-            if ($formPerson) {
-                $data->setPerson($formPerson);
+            if ($form->has('person')) {
+                $formPerson = $form->get('person')->getData();
+                if ($formPerson) {
+                    $data->setPerson($formPerson);
+                }
             }
         }
     }

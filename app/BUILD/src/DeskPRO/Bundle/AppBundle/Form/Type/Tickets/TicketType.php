@@ -198,10 +198,11 @@ class TicketType extends AbstractType
             }
 
             $form->add('message', TicketMessageType::class, [
-                'mapped'         => false,
-                'ticket'         => $form->getData(),
-                'person'         => $form->getConfig()->getOption('person'),
-                'ticket_message' => $message,
+                'mapped'           => false,
+                'ticket'           => $form->getData(),
+                'person'           => $form->getConfig()->getOption('person'),
+                'ticket_message'   => $message,
+                'allow_set_person' => true,
             ]);
         }
     }
