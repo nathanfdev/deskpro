@@ -99,7 +99,7 @@ class QueueForm extends React.Component {
                 <Input type="text" placeholder="Queue Name" />
               </Field>
               {agents && agents.size > 0 &&
-                <Field select="agents">
+                <Field select="agents" label="Agents">
                   <AgentChoiceListWrapper agents={agents}>
                     <MultiSelect />
                   </AgentChoiceListWrapper>
