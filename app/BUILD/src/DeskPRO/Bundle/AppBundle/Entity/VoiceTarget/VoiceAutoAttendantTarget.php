@@ -74,4 +74,12 @@ class VoiceAutoAttendantTarget extends AbstractVoiceTarget
 
         return $this;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTargetName()
+    {
+        return $this->autoAttendant->getName();
+    }
 }
