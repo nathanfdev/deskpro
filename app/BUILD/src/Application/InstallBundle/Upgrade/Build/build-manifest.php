@@ -1855,12 +1855,12 @@ return [
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2017/01/Build1484757796.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1484757796',
     ],
-    1484761303 => [
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2017/01/Build1484761303.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1484761303',
-    ],
     1485274086 => [
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2017/01/Build1485274086.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1485274086',
+    ],
+    1485353354 => [
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2017/01/Build1485353354.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1485353354',
     ],
 ];
