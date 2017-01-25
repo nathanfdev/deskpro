@@ -28,6 +28,12 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         else
           @$scope.attach_agent_exts_limitmode = 'any'
 
+        if @$scope.settings.core_tickets_reject_spf_level
+          @$scope.settings.core_tickets_reject_fail_spf = true
+
+        if @$scope.settings.core_tickets_reject_dkim_level
+          @$scope.settings.core_tickets_reject_fail_dkim = true
+
 
 
     save: ->
@@ -46,6 +52,18 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       else
         @$scope.settings.attach_agent_not_exts = []
         @$scope.settings.attach_agent_must_exts = []
+
+      if !@$scope.settings.core_tickets_reject_fail_spf
+        @$scope.settings.core_tickets_reject_spf_level = null
+
+      if !@$scope.settings.core_tickets_reject_spf_level
+        @$scope.settings.core_tickets_reject_fail_spf = false
+
+      if !@$scope.settings.core_tickets_reject_fail_dkim
+        @$scope.settings.core_tickets_reject_dkim_level = null
+
+      if !@$scope.settings.core_tickets_reject_dkim_level
+        @$scope.settings.core_tickets_reject_fail_dkim = false
 
       postData = {
         settings: @$scope.settings

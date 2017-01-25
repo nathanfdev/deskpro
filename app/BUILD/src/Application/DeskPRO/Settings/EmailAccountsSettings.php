@@ -64,12 +64,14 @@ class EmailAccountsSettings
     /**
      * @var array
      */
-    protected $other_values = [
+    protected $otherValues = [
         'core_tickets.enable_dupe_checking'                 => true,
         'core_tickets.enable_email_preview'                 => true,
         'core_tickets.gateway_enable_subject_match'         => true,
         'core_tickets.enable_same_account_subject_matching' => false,
         'core_tickets.enable_exact_subject_matching'        => false,
+        'core_tickets.reject_spf_level'                     => false,
+        'core_tickets.reject_dkim_level'                    => false,
     ];
 
     /**
@@ -104,8 +106,12 @@ class EmailAccountsSettings
             $data[$k] = $this->values[$k] = $storedValue ?: $v;
         }
 
-        foreach ($this->other_values as $k => $v) {
-            $data[str_replace('.', '_', $k)] = (bool) $this->settings->get($k);
+        foreach ($this->otherValues as $k => $v) {
+            if (preg_match('|level$|', $k)) {
+                $data[str_replace('.', '_', $k)] = $this->settings->get($k);
+            } else {
+                $data[str_replace('.', '_', $k)] = (bool) $this->settings->get($k);
+            }
         }
 
         return $data;
@@ -141,13 +147,15 @@ class EmailAccountsSettings
 
         foreach ($data as $k => $v) {
             $k = str_replace('core_tickets_', 'core_tickets.', $k);
-            if (!isset($this->other_values[$k])) {
+            if (!isset($this->otherValues[$k])) {
                 continue;
             }
 
-            $v = (int) ((bool) $v);
+            if (!preg_match('|level$|', $k)) {
+                $v = (int) ((bool) $v);
+            }
             $this->settings->setSetting($k, $v);
-            $this->other_values[$k] = $v;
+            $this->otherValues[$k] = $v;
         }
     }
 }
