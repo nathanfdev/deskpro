@@ -37,6 +37,7 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @ORM\Entity()
  * @ORM\Table(name="zapier_hooks")
+ * @ORM\EntityListeners({"DeskPRO\Bundle\AppBundle\EventListener\Doctrine\ZapierListener"})
  *
  * @JMS\ExclusionPolicy("all")
  */
