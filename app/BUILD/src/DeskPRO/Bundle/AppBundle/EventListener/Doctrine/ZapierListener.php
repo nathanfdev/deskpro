@@ -79,17 +79,16 @@ class ZapierListener
         $options = [];
         switch ($zapierHook->getEvent()) {
             case 'ticket_created':
-                $ticket = $this->entityManager->getRepository(Ticket::class)->findOneBy([]);
-                $body   = $this->serializer->serialize($ticket, 'json', $serializationContext);
+                $ticket          = $this->entityManager->getRepository(Ticket::class)->findOneBy([]);
+                $options['body'] = $this->serializer->serialize($ticket, 'json', $serializationContext);
                 break;
             case 'new_ticket_reply':
-                $ticket = $this->entityManager->getRepository(TicketMessage::class)->findOneBy([]);
-                $body   = $this->serializer->serialize($ticket, 'json', $serializationContext);
+                $ticket          = $this->entityManager->getRepository(TicketMessage::class)->findOneBy([]);
+                $options['body'] = $this->serializer->serialize($ticket, 'json', $serializationContext);
                 break;
             default:
                 throw new \Exception('Unknown event '.$zapierHook->getEvent());
         }
-        $options['body'] = \GuzzleHttp\json_encode($body);
         $httpClient->request('POST', $zapierHook->getTargetUrl(), $options);
     }
 }
