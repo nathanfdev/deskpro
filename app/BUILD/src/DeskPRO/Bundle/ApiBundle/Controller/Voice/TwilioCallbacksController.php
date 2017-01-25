@@ -47,6 +47,8 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantAgent;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -236,22 +238,9 @@ class TwilioCallbacksController extends BaseController
 
         $callSid   = $request->request->get('CallSid');
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy(['callSid' => $callSid]);
-        $statusUrl = $this->get('router')->generate('twilio_conference_status_callback', [
-            'account'     => $account->getId(),
-            'accountAuth' => $accountAuth,
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
-
-        if (!$phoneCall) {
-            throw $this->createBadRequestException('Phone call not found');
-        }
 
         $twiml = new Twiml();
-        $twiml->dial()->conference($this->getConferenceName($phoneCall), [
-            'endConferenceOnExit'  => true,
-            'statusCallback'       => $statusUrl,
-            'statusCallbackMethod' => 'POST',
-            'statusCallbackEvent'  => 'join leave start end mute hold',
-        ]);
+        $this->createConference($phoneCall, $twiml);
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -572,7 +561,7 @@ class TwilioCallbacksController extends BaseController
             'account' => $account,
         ]);
 
-        if (!$number || !$number->getTarget() instanceof VoiceQueueTarget) {
+        if (!$number || !$number->getTarget()) {
             $twiml = new Twiml();
             $twiml->say(sprintf('Thank you for calling, %s', $this->getHelpdeskName()));
             $twiml->say('Required phone number is out of service.');
@@ -651,19 +640,40 @@ class TwilioCallbacksController extends BaseController
             $twiml->say(sprintf('Thank you for calling, %s', $this->getHelpdeskName()));
 
             if ($account->getQueueWorkflowSid()) {
-                /** @var VoiceQueueTarget $target */
                 $target = $number->getTarget();
-                $twiml
-                    ->enqueue([
-                        'workflowSid' => $account->getQueueWorkflowSid(),
-                    ])->task(json_encode([
-                        'deskpro_call_id'   => $phoneCall->getId(),
-                        'deskpro_queue_id'  => $target->getQueue()->getId(),
-                        'deskpro_person_id' => $person ? $person->getId() : null,
-                        'deskpro_ticket_id' => $ticket->getId(),
-                        'rejected_workers'  => [],
-                    ]))
-                ;
+
+                if ($target instanceof VoiceQueueTarget) {
+                    $twiml
+                        ->enqueue([
+                            'workflowSid' => $account->getQueueWorkflowSid(),
+                        ])->task(json_encode([
+                            'deskpro_call_id'   => $phoneCall->getId(),
+                            'deskpro_queue_id'  => $target->getQueue()->getId(),
+                            'deskpro_person_id' => $person ? $person->getId() : null,
+                            'deskpro_ticket_id' => $ticket->getId(),
+                            'rejected_workers'  => [],
+                        ]))
+                    ;
+                } elseif ($target instanceof VoiceAgentTarget) {
+                    $this->createConference($phoneCall, $twiml);
+
+                    // send agent invite
+                    $cm = new ClientMessage();
+                    $cm->setChannel('agent.voice.conference.participant-invite');
+                    $cm->setForPerson($target->getAgent());
+                    $cm->setData([
+                        'number'           => $phoneCall->getFromNumber(),
+                        'caller_person_id' => $phoneCall->getPerson() ? $phoneCall->getPerson()->getId() : null,
+                        'call_id'          => $phoneCall->getId(),
+                        'conference_sid'   => $phoneCall->getConferenceSid(),
+                        'ticket_id'        => $ticket->getId(),
+                    ]);
+
+                    $em->persist($cm);
+                    $em->flush();
+                } elseif ($target instanceof VoiceAutoAttendantTarget) {
+                    // todo
+                }
             }
         }
 
@@ -681,5 +691,29 @@ class TwilioCallbacksController extends BaseController
     private function getConferenceName(VoicePhoneCall $phoneCall)
     {
         return 'conference'.$phoneCall->getId();
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     * @param Twiml          $twiml
+     */
+    private function createConference(VoicePhoneCall $phoneCall, Twiml $twiml)
+    {
+        $account   = $phoneCall->getNumber()->getAccount();
+        $statusUrl = $this->get('router')->generate('twilio_conference_status_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        if (!$phoneCall) {
+            throw $this->createBadRequestException('Phone call not found');
+        }
+
+        $twiml->dial()->conference($this->getConferenceName($phoneCall), [
+            'endConferenceOnExit'  => true,
+            'statusCallback'       => $statusUrl,
+            'statusCallbackMethod' => 'POST',
+            'statusCallbackEvent'  => 'join leave start end mute hold',
+        ]);
     }
 }
