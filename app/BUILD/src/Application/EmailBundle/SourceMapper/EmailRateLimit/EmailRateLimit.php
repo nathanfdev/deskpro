@@ -39,11 +39,17 @@ class EmailRateLimit implements EmailRateLimitInterface
     private $sourceRepository;
 
     /**
-     * Array of hours => limit which defines the max messages in that time period.
+     * Array of seconds => limit which defines the max messages in that time period.
      *
      * For example:
-     *      [24 => 50, 336 => 300]
-     * Means at most 50 in a day, or 300 in the last 14 days.
+     *
+     * <code>
+     * $limits = [
+     *     900     => 20,  // 15 minutes
+     *     86400   => 50,  // 24 hours
+     *     1209600 => 300, // 14 days
+     * ];
+     * </code>
      *
      * @var array
      */
@@ -106,7 +112,7 @@ class EmailRateLimit implements EmailRateLimitInterface
             + substr_count($message['cc_emails'] ?: '', '@')
             + substr_count($message['bcc_emails'] ?: '', '@');
 
-        foreach ($this->limits as $days => $limit) {
+        foreach ($this->limits as $seconds => $limit) {
 
             // case where this message itself has enough
             // recipients to go over the limit
@@ -114,7 +120,7 @@ class EmailRateLimit implements EmailRateLimitInterface
                 return true;
             }
 
-            $date = new \DateTime('-'.$days.' days');
+            $date = new \DateTime('@'.(time() - $seconds));
             if ($this->reset_date && $this->reset_date > $date) {
                 $date = $this->reset_date;
             }

@@ -73,8 +73,9 @@ class EmailRateLimitFactory
             }
 
             $limits = [
-                24  => 50,
-                336 => 300,
+                900     => 20,  // 15 minutes
+                86400   => 50,  // 24 hours
+                1209600 => 300, // 14 days
             ];
 
             return new EmailRateLimit(
