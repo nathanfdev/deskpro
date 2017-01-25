@@ -112,6 +112,32 @@ class EmailRateLimit implements EmailRateLimitInterface
             + substr_count($message['cc_emails'] ?: '', '@')
             + substr_count($message['bcc_emails'] ?: '', '@');
 
+        // TODO [cloudspam] proper cloud spam checker/handling
+        if (defined('DPC_IS_CLOUD') && \DpSys\License::getLicense()->isDemo()) {
+            if ($messageCount >= 15) {
+                \DpShutdown::add(function () use ($em) {
+                    $tmpdata = new \Application\DeskPRO\Entity\TmpData();
+                    $tmpdata->setType('cancel_for_abuse');
+                    $tmpdata->date_expire = new \DateTime('+30 minutes');
+                    $em->persist($tmpdata);
+                    $em->flush();
+
+                    $url = DP_MA_SERVER_SECURE.'/cloud/call/'.DPC_SITE_ID.'/'.$tmpdata->getCode();
+
+                    try {
+                        $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
+                        $client->setMethod(\Zend\Http\Request::METHOD_GET);
+                        $client->setUri($url);
+                        $r = $client->send();
+                    } catch (\Exception $e) {
+                        error_log('Failed to cancel site: '.$e->getMessage());
+                    }
+                });
+
+                return true;
+            }
+        }
+
         foreach ($this->limits as $seconds => $limit) {
 
             // case where this message itself has enough
