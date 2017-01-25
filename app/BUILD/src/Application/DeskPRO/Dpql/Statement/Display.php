@@ -409,8 +409,8 @@ class Display
                 }
 
                 if ($previousValue === null) {
-                    $previousValue = $row[$order] + 0;
-                    $startRowValue = $row[$order] + 0;
+                    $previousValue = (int) $row[$order] + 0;
+                    $startRowValue = (int) $row[$order] + 0;
                     $startRow      = $rowKey;
                 }
             }
