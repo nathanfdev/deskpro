@@ -973,6 +973,11 @@ $voice-green-border-color: #47BF61;
       background-color: #FFFFFF;
       border: 1px solid #CCCCCC;
       border-top: 0;
+      height: 38px;
+
+      .voice-ticket-message-media-controls {
+        display: inline-block;
+      }
 
       .voice-ticket-message-timeline {
         display: inline-block;

@@ -7,9 +7,10 @@ import VoiceMenu from './VoiceMenu';
 class VoiceMenuDropdown extends React.Component {
 
   static propTypes = {
-    incomingCall: PropTypes.object,
-    onlineAgents: PropTypes.object,
-    voiceEnabled: PropTypes.bool
+    incomingCall:   PropTypes.object,
+    onlineAgents:   PropTypes.object,
+    voiceEnabled:   PropTypes.bool,
+    outboundNumber: PropTypes.string
   };
 
   componentDidMount() {
@@ -21,9 +22,9 @@ class VoiceMenuDropdown extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const { incomingCall } = this.props;
+    const { incomingCall, outboundNumber } = this.props;
 
-    if (!incomingCall && newProps.incomingCall) {
+    if ((!incomingCall && newProps.incomingCall) || (!outboundNumber && newProps.outboundNumber)) {
       this.popup.openPopup();
     }
   }

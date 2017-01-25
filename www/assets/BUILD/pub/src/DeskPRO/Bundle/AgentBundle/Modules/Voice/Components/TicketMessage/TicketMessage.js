@@ -9,15 +9,16 @@ import Avatar from '../Common/Avatar';
 class TicketMessage extends React.Component {
 
   static propTypes = {
-    people:         PropTypes.object,
-    message:        PropTypes.object,
-    phoneCall:      PropTypes.object,
-    connection:     PropTypes.object,
-    transcript:     PropTypes.string,
-    onCall:         PropTypes.func,
-    onPlay:         PropTypes.func,
-    onMove:         PropTypes.func,
-    onStepBackward: PropTypes.func
+    people:               PropTypes.object,
+    message:              PropTypes.object,
+    phoneCall:            PropTypes.object,
+    connection:           PropTypes.object,
+    transcript:           PropTypes.string,
+    onCall:               PropTypes.func,
+    onPlay:               PropTypes.func,
+    onMove:               PropTypes.func,
+    onStepBackward:       PropTypes.func,
+    outboundCallsEnabled: PropTypes.bool
   };
 
   static defaultProps = {
@@ -52,7 +53,7 @@ class TicketMessage extends React.Component {
 
   render() {
     const { message = {}, phoneCall = Immutable.fromJS({}), people, connection } = this.props;
-    const { transcript } = this.props;
+    const { transcript, outboundCallsEnabled } = this.props;
     const { onCall, onPlay, onMove, onStepBackward } = this.props;
     const { transcriptExpanded, logExpanded } = this.state;
     const participants = phoneCall.get('participants') || [];
@@ -90,24 +91,28 @@ class TicketMessage extends React.Component {
                 Call in progress
               </div>
             : <div className="voice-ticket-message-controls">
-              <Button className="basic icon disabled" onClick={onStepBackward}>
-                <i className="icon step backward" />
-              </Button>
-              <Button className="basic icon disabled" onClick={onPlay}>
-                <i className="icon play" />
-              </Button>
-              <div className="voice-ticket-message-timeline">
-                <Range onChange={onMove} />
-              </div>
-              <span className="voice-ticket-message-time">
-                00.41 / 02.13
-              </span>
-              <span className="voice-ticket-message-size">
-                <i className="icon download" /> 1.2MB
-              </span>
+              {false && // hidden for now
+              <div className="voice-ticket-message-media-controls">
+                <Button className="basic icon disabled" onClick={onStepBackward}>
+                  <i className="icon step backward" />
+                </Button>
+                <Button className="basic icon disabled" onClick={onPlay}>
+                  <i className="icon play" />
+                </Button>
+                <div className="voice-ticket-message-timeline">
+                  <Range onChange={onMove} />
+                </div>
+                <span className="voice-ticket-message-time">
+                  00.41 / 02.13
+                </span>
+                <span className="voice-ticket-message-size">
+                  <i className="icon download" /> 1.2MB
+                </span>
+              </div>}
+              {outboundCallsEnabled &&
               <Button className="basic call-button" onClick={onCall}>
                 <i className="icon call" /> Call {phoneCall.get('from_number')}
-              </Button>
+              </Button>}
             </div>}
           {transcript &&
             <div className="voice-ticket-message-transcript">

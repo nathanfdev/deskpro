@@ -6,10 +6,10 @@ import { createQueue } from '../../../Actions/queueActions';
 import { isAccountsLoadedSelector, allAccountsSelector } from '../../../Selectors/account';
 import { loadAccounts } from '../../../Actions/accountActions';
 import { loadAgents } from '../../../../Application/Actions/peopleActions';
-import { voicePeopleSelector, isAgentsLoadedSelector } from '../../../../Application/Selectors/people';
+import { allAgentsSelector, isAgentsLoadedSelector } from '../../../../Application/Selectors/people';
 
 @connect(state => ({
-  agents:         voicePeopleSelector(state),
+  agents:         allAgentsSelector(state),
   agentsLoaded:   isAgentsLoadedSelector(state),
   accounts:       allAccountsSelector(state),
   accountsLoaded: isAccountsLoadedSelector(state)
@@ -70,7 +70,7 @@ class NewQueueModalContainer extends React.Component {
 
   render() {
     return (
-      <div className="page page-modal-window" style={{ height: '500px' }}>
+      <div className="page page-modal-window" style={{ height: '525px' }}>
         {this.renderContent()}
       </div>
     );

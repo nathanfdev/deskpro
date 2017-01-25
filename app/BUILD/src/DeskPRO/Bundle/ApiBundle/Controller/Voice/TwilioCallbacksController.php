@@ -752,6 +752,7 @@ class TwilioCallbacksController extends BaseController
             $ticketMessage->setPerson($person);
             $ticketMessage->addAttribute($ticketMessageCall);
             $ticketMessage->setMessage('Call from '.$phoneNumber);
+            $ticketMessage->setAsAgentNote(true);
 
             $ticket = new Ticket();
             $ticket->disableAutoTicketProcess();
