@@ -58,7 +58,14 @@ class UserSearchProxy implements UserSearchInterface
     {
         if ($this->c->getSetting('elastica.enabled')) {
             try {
-                return $this->es()->search($context, $query, $options);
+                try {
+                    return $this->es()->search($context, $query, $options);
+                } catch (\Exception $e) {
+                    $elasticsearch = $this->c->get('deskpro.search_manager.elasticsearch');
+                    $elasticsearch->testVersion();
+
+                    throw $e;
+                }
             } catch (\Exception $e) {
                 SystemErrorHandler::logException($e);
 

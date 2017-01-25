@@ -188,33 +188,33 @@ class SystemErrorHandler
             return;
         }
 
-        static $got_unique_ids = [];
+        static $gotUniqueIds = [];
 
         /* @var \DpRun\DpEnv */
         global $DP_ENV;
 
         if ($unique_id && defined('DP_BUILD_TIME') && !defined('DP_BUILDING')) {
-            if (isset($got_unique_ids[$unique_id])) {
+            if (isset($gotUniqueIds[$unique_id])) {
                 return;
             }
-            $got_unique_ids[$unique_id] = true;
+            $gotUniqueIds[$unique_id] = true;
 
             try {
-                $unique_exceptions = $DP_ENV->getDatManager()->readDatFile('unique_exceptions', []);
-                $found             = false;
-                $save_new          = [];
-                foreach ($unique_exceptions as $hash => $info) {
+                $uniqueExceptions = $DP_ENV->getDatManager()->readDatFile('unique_exceptions', []);
+                $found            = false;
+                $saveNew          = [];
+                foreach ($uniqueExceptions as $hash => $info) {
                     if ($info['ts'] > (time() - 604800)) {
-                        $save_new[$hash] = $info;
+                        $saveNew[$hash] = $info;
                         if ($hash === $unique_id) {
                             $found = true;
                         }
                     }
                 }
                 if (!$found) {
-                    $save_new[$unique_id] = ['ts' => time(), 'message' => $exception->getMessage()];
+                    $saveNew[$unique_id] = ['ts' => time(), 'message' => $exception->getMessage()];
                 }
-                if ($found || count($save_new) != $unique_exceptions) {
+                if ($found || count($saveNew) != $uniqueExceptions) {
                 }
             } catch (\Exception $e) {
             }
@@ -279,22 +279,22 @@ class SystemErrorHandler
         $errfile = self::stripPathPrefix($exception->getFile());
         $errline = $exception->getLine();
 
-        $backtrace    = $exception->getTrace();
-        $trace        = self::formatBacktrace($backtrace);
-        $context_data = '';
+        $backtrace   = $exception->getTrace();
+        $trace       = self::formatBacktrace($backtrace);
+        $contextData = '';
 
         if (isset($exception->_dp_query)) {
             $errstr .= ' -- Query: '.substr($exception->_dp_query, 0, 2000);
 
-            $context_data .= 'Query: '.substr($exception->_dp_query, 0, 2000);
+            $contextData .= 'Query: '.substr($exception->_dp_query, 0, 2000);
 
             if (!empty($exception->_dp_query_params)) {
-                $context_data .= "\n\n".self::varToString($exception->_dp_query_params);
+                $contextData .= "\n\n".self::varToString($exception->_dp_query_params);
             }
         }
 
-        if (!$context_data && isset($exception->_dp_context_data)) {
-            $context_data = $exception->_dp_context_data;
+        if (!$contextData && isset($exception->_dp_context_data)) {
+            $contextData = $exception->_dp_context_data;
         }
 
         $type    = get_class($exception);
@@ -322,7 +322,7 @@ class SystemErrorHandler
             'errline'           => $errline,
             'build'             => self::getDpEnv()->getAppName(),
             'process_log'       => implode("\n", self::$processLog),
-            'context_data'      => $context_data,
+            'context_data'      => $contextData,
             'error_time'        => microtime(true),
             'time_to_error'     => defined('DP_START_TIME') ? sprintf('%0.4f', microtime(true) - DP_START_TIME) : 0,
             'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
