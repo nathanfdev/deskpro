@@ -45,10 +45,14 @@ class ZapierHookType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('target_url', TextType::class)
-            ->add('event', TextType::class)
+            ->add('target_url', TextType::class, [
+                'required' => true,
+            ])
+            ->add('event', TextType::class, [
+                'required' => true,
+            ])
             ->add('subscription_url', TextType::class, [
-                'required' => false,
+                'mapped' => false,
             ])
         ;
     }
@@ -58,7 +62,8 @@ class ZapierHookType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
+        $resolver
+            ->setDefaults([
             'data_class' => ZapierHook::class,
         ]);
     }

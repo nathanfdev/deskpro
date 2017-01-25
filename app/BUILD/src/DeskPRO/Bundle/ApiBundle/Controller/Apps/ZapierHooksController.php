@@ -35,32 +35,43 @@ use DeskPRO\Bundle\AppBundle\Entity\ZapierHook;
 use DeskPRO\Bundle\AppBundle\Form\Type\ZapierHookType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * Class ZapierController.
+ * Class PeopleController.
  *
  * @ApiModes("all")
- * @Rest\Route("/apps/zapier")
+ * @Rest\Route("/apps/zapier/hooks")
+ * @ApiDoc(target="deleteAction", section="Apps")
  */
-class ZapierController extends CrudController
+class ZapierHooksController extends CrudController
 {
     public static $entity = ZapierHook::class;
     public static $type   = ZapierHookType::class;
 
     /**
-     * Gather specific info about authentication.
+     * Allow Zapier to subscribe to hooks.
      *
      * @ApiDoc(
      *     section="Apps",
-     *     description="ping and if it not the case install Zapier app",
+     *     description="Called by Zapier when subscribing to hooks",
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
      * )
-     * @Rest\Get("/ping")
+     * @Rest\Post("")
+     *
+     * @param Request $request
+     *
+     * @return View|BadRequestHttpException
      */
-    public function pingAction()
+    public function postAction(Request $request)
     {
-        return View::create([], 200);
+        $zapierHook = new ZapierHook();
+
+        $this->handleForm($zapierHook, $request);
+
+        return View::create(['id' => $zapierHook->getId()]);
     }
 }

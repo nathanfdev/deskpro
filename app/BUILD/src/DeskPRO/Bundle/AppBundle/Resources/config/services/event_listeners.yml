@@ -58,6 +58,12 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
+  event_listener.zapier:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\ZapierListener
+    arguments: ["@doctrine.orm.default_entity_manager", "@jms_serializer.serializer"]
+    tags:
+      - { name: doctrine.entity_listener }
+
   event_listener.custom_data_ticket:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDataChangeListener
     tags:

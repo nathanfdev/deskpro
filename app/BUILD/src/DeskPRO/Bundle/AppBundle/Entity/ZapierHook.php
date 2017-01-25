@@ -76,13 +76,6 @@ class ZapierHook implements EntityInterface, NotifyPropertyChanged
     private $event;
 
     /**
-     * Unused legacy field.
-     *
-     * @var string
-     */
-    private $subscriptionUrl;
-
-    /**
      * @return int
      */
     public function getId()
@@ -138,26 +131,6 @@ class ZapierHook implements EntityInterface, NotifyPropertyChanged
     public function setEvent($event)
     {
         $this->setModelField('event', $event);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSubscriptionUrl()
-    {
-        return $this->subscriptionUrl;
-    }
-
-    /**
-     * @param string $subscriptionUrl
-     *
-     * @return ZapierHook
-     */
-    public function setSubscriptionUrl($subscriptionUrl)
-    {
-        $this->subscriptionUrl = $subscriptionUrl;
 
         return $this;
     }
