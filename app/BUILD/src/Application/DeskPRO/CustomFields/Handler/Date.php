@@ -41,6 +41,37 @@ use Fisharebest\ExtCalendar\ArabicCalendar;
  */
 class Date extends HandlerAbstract
 {
+    /**
+     * @param $value
+     * @param $calendar
+     *
+     * @return \DateTime|string
+     */
+    public static function getDisplayValue($value, $calendar)
+    {
+        switch ($calendar) {
+            case 'hijri':
+                $calendar = new ArabicCalendar();
+                return implode('/', $calendar->jdToYmd(unixtojd($value)));
+            default:
+                try {
+                    if ($value) {
+                        if (is_numeric($value)) {
+                            $datetime = new \DateTime('@'.$value);
+                        } else {
+                            $datetime = new \DateTime($value);
+                        }
+
+                        return date('F j, Y', $datetime->getTimestamp());
+                    } else {
+                        return '';
+                    }
+                } catch (\Exception $e) {
+                    return '';
+                }
+        }
+    }
+
     public function renderHtml($data = null, array $template_vars = [])
     {
         if ($data === null) {
@@ -51,14 +82,7 @@ class Date extends HandlerAbstract
             $data['value'] = time();
         }
 
-        switch ($this->field_def->getOption('calendar')) {
-            case 'hijri':
-                $calendar = new ArabicCalendar();
-                $data['value'] = implode('/', $calendar->jdToYmd(unixtojd($data['value'])));
-                break;
-            default:
-                $data['value'] = new \DateTime('@'.$data['value']);
-        }
+        $data['value'] = self::getDisplayValue($data['value'], $this->field_def->getOption('calendar'));
 
         return parent::renderText($data, $template_vars);
     }
