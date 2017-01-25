@@ -63,50 +63,84 @@ class SendmailSourceRepository extends AbstractEntityRepository
     }
 
     /**
-     * @param \DateTime      $start
-     * @param \DateTime|null $end
+     * @param \DateTime      $start      Start of the date range to check in
+     * @param \DateTime|null $end        End of the date range to check in
+     * @param array|null     $inAccounts Specific accounts to look at
+     * @param null           $limitHint  Hint at what the max count we care about. We stop if we go over this to save time
      *
-     * @return int
+     * @return int|mixed
      */
-    public function countSendingBetween(\DateTime $start, \DateTime $end = null, array $in_accounts = null)
+    public function countSendingBetween(\DateTime $start, \DateTime $end = null, array $inAccounts = null, $limitHint = null)
     {
         if (!$end) {
             $end = new \DateTime();
         }
 
-        if ($in_accounts) {
-            return $this->getEntityManager()->getConnection()->fetchColumn("
-                SELECT COUNT(*)
-                FROM sendmail_sources
-                WHERE
-                  status IN ('complete', 'pending', 'processing', 'retry')
-                  AND date_created > ?
-                  AND date_status BETWEEN ? AND ?
-            ", [
-                $start->format('Y-m-d H:i:s'),
-                $start->format('Y-m-d H:i:s'),
-                $end->format('Y-m-d H:i:s'),
-            ]);
-        } else {
-            $in_accounts = array_map('intval', $in_accounts);
-            if (!$in_accounts) {
-                $in_accounts = [0];
-            }
-            $in_accounts = implode(',', $in_accounts);
+        $countSelects = [
+            'COUNT(*) AS count',
 
-            return $this->getEntityManager()->getConnection()->fetchColumn("
-                SELECT COUNT(*)
-                FROM sendmail_sources
-                WHERE
-                  status IN ('complete', 'pending', 'processing', 'retry')
-                  AND date_created > ?
-                  AND date_status BETWEEN ? AND ?
-                  AND account_id IN ($in_accounts)
-            ", [
-                $start->format('Y-m-d H:i:s'),
-                $start->format('Y-m-d H:i:s'),
-                $end->format('Y-m-d H:i:s'),
-            ]);
+            // counts how many actual recipients (e.g. multiple TOs or BCCs)
+            // we do this after the simple count query above to avoid doing an expensive query if possible
+            'SUM(COALESCE(LENGTH(to_emails)-LENGTH(REPLACE(to_emails, "@", "")), 0) + COALESCE(LENGTH(cc_emails)-LENGTH(REPLACE(cc_emails, "@", "")), 0) + COALESCE(LENGTH(bcc_emails)-LENGTH(REPLACE(bcc_emails, "@", "")), 0)) AS count',
+        ];
+
+        $result = 0;
+
+        if (!$inAccounts) {
+            $prevResult = 0;
+            foreach ($countSelects as $s) {
+                $result = $this->getEntityManager()->getConnection()->fetchColumn("
+                    SELECT $s
+                    FROM sendmail_sources
+                    WHERE
+                      status IN ('complete', 'pending', 'processing', 'retry')
+                      AND date_created > ?
+                      AND date_status BETWEEN ? AND ?
+                ", [
+                    $start->format('Y-m-d H:i:s'),
+                    $start->format('Y-m-d H:i:s'),
+                    $end->format('Y-m-d H:i:s'),
+                ]);
+
+                if ($limitHint && $result >= $limitHint) {
+                    return $result;
+                }
+
+                $result     = max($result, $prevResult);
+                $prevResult = $result;
+            }
+        } else {
+            $inAccounts = array_map('intval', $inAccounts);
+            if (!$inAccounts) {
+                $inAccounts = [0];
+            }
+
+            $prevResult = 0;
+            foreach ($countSelects as $s) {
+                $result = $this->getEntityManager()->getConnection()->fetchColumn("
+                    SELECT $s
+                    FROM sendmail_sources
+                    WHERE
+                      status IN ('complete', 'pending', 'processing', 'retry')
+                      AND date_created > ?
+                      AND date_status BETWEEN ? AND ?
+                      AND email_account_id IN (?)
+                ", [
+                    $start->format('Y-m-d H:i:s'),
+                    $start->format('Y-m-d H:i:s'),
+                    $end->format('Y-m-d H:i:s'),
+                    $inAccounts,
+                ], 0, [\PDO::PARAM_STR, \PDO::PARAM_STR, \PDO::PARAM_STR, Connection::PARAM_INT_ARRAY]);
+
+                if ($limitHint && $result >= $limitHint) {
+                    return $result;
+                }
+
+                $result     = max($result, $prevResult);
+                $prevResult = $result;
+            }
         }
+
+        return $result;
     }
 }
