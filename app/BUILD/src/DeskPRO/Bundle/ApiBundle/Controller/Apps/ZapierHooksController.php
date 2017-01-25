@@ -40,10 +40,11 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *
  * @ApiModes("all")
  * @Rest\Route("/apps/zapier/hooks")
- * @ApiDoc(target="deleteAction,postAction", section="Apps")
+ * @ApiDoc(target="all", section="Apps")
  */
 class ZapierHooksController extends CrudController
 {
-    public static $entity = ZapierHook::class;
-    public static $type   = ZapierHookType::class;
+    public static $exposeOnly = ['post', 'delete'];
+    public static $entity     = ZapierHook::class;
+    public static $type       = ZapierHookType::class;
 }
