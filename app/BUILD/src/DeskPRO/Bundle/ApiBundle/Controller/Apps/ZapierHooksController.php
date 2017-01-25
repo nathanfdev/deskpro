@@ -34,44 +34,16 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\ZapierHook;
 use DeskPRO\Bundle\AppBundle\Form\Type\ZapierHookType;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class PeopleController.
  *
  * @ApiModes("all")
  * @Rest\Route("/apps/zapier/hooks")
- * @ApiDoc(target="deleteAction", section="Apps")
+ * @ApiDoc(target="deleteAction,postAction", section="Apps")
  */
 class ZapierHooksController extends CrudController
 {
     public static $entity = ZapierHook::class;
     public static $type   = ZapierHookType::class;
-
-    /**
-     * Allow Zapier to subscribe to hooks.
-     *
-     * @ApiDoc(
-     *     section="Apps",
-     *     description="Called by Zapier when subscribing to hooks",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     * )
-     * @Rest\Post("")
-     *
-     * @param Request $request
-     *
-     * @return View|BadRequestHttpException
-     */
-    public function postAction(Request $request)
-    {
-        $zapierHook = new ZapierHook();
-
-        $this->handleForm($zapierHook, $request);
-
-        return View::create(['id' => $zapierHook->getId()]);
-    }
 }

@@ -29,10 +29,8 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Entity\ZapierHook;
-use DeskPRO\Bundle\AppBundle\Form\Type\ZapierHookType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 
@@ -42,11 +40,8 @@ use FOS\RestBundle\View\View;
  * @ApiModes("all")
  * @Rest\Route("/apps/zapier")
  */
-class ZapierController extends CrudController
+class ZapierController extends BaseController
 {
-    public static $entity = ZapierHook::class;
-    public static $type   = ZapierHookType::class;
-
     /**
      * Gather specific info about authentication.
      *

@@ -68,8 +68,7 @@ class ZapierWebHook implements TicketSaveActionInterface
 
             $serializationContext = new SideloadSerializationContext();
 
-            $body            = $this->serializer->serialize($ticket, 'json', $serializationContext);
-            $options['body'] = \GuzzleHttp\json_encode($body);
+            $options['body'] = $this->serializer->serialize($ticket, 'json', $serializationContext);
 
             $hooks = $this->em->getRepository(ZapierHook::class)->findBy(['event' => 'ticket_created']);
 
@@ -94,8 +93,7 @@ class ZapierWebHook implements TicketSaveActionInterface
 
             $ticketMessage = $this->em->getRepository(TicketMessage::class)->getLastReply($ticket);
 
-            $body            = $this->serializer->serialize($ticketMessage, 'json', $serializationContext);
-            $options['body'] = \GuzzleHttp\json_encode($body);
+            $options['body'] = $this->serializer->serialize($ticketMessage, 'json', $serializationContext);
 
             $hooks = $this->em->getRepository(ZapierHook::class)->findBy(['event' => 'new_ticket_reply']);
 
