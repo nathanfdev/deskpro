@@ -477,10 +477,7 @@ class TwilioAdapter
      */
     public function createOrUpdateWorkflow(VoiceAccount $account, $assignmentCallbackUrl)
     {
-        $queues = $this->em->getRepository(VoiceQueue::class)->findBy([
-            'account' => $account,
-        ]);
-
+        $queues  = $account->getQueues();
         $filters = [];
         foreach ($queues as $queue) {
             $filters[] = [

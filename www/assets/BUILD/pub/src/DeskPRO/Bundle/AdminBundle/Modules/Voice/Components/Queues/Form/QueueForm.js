@@ -1,18 +1,11 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { Fieldset, Input, createValue } from 'react-forms';
-import { Form, Field, Select, MultiSelect } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Form, Field, Select, MultiSelect, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
 import AgentChoiceListWrapper from '../../Common/AgentChoiceListWrapper';
 import AccountChoiceWrapper from '../../Common/AccountChoiceWrapper';
-
-const routingModels = [
-  { value: 'round_robin', label: 'Round Robin' },
-  { value: 'least_utilized', label: 'Least Utilized' },
-  { value: 'least_idle', label: 'Least Idle' },
-  { value: 'random', label: 'Random' }
-];
 
 class QueueForm extends React.Component {
 
@@ -106,21 +99,16 @@ class QueueForm extends React.Component {
                 <Input type="text" placeholder="Queue Name" />
               </Field>
               {agents && agents.size > 0 &&
-                <Field select="agents">
+                <Field select="agents" label="Agents">
                   <AgentChoiceListWrapper agents={agents}>
                     <MultiSelect />
                   </AgentChoiceListWrapper>
                 </Field>}
-              <Field select="routing_model" label="Routing model">
-                <Select clearable={false} choices={routingModels} />
+              <Field select="routing_model" label="Routing model" className="routing-model">
+                <RoutingModel />
               </Field>
-              <Field
-                className="queue-size"
-                select="max_queue_size"
-                label="Maximum queue size"
-                help="New calls exceeding this limit will be directed to voicemail."
-              >
-                <Input type="text" />
+              <Field select="max_queue_size" className="queue-size">
+                <MaxQueueSize />
               </Field>
 
               <button className={classNames('ui button', { loading: saving })}>
@@ -140,6 +128,68 @@ class QueueForm extends React.Component {
             </Fieldset>
           </Form>
         </div>
+      </div>
+    );
+  }
+}
+
+class RoutingModel extends React.Component {
+
+  static propTypes = {
+    value:    PropTypes.number,
+    onChange: PropTypes.func
+  };
+
+  render() {
+    const { value, onChange } = this.props;
+    const choices = [
+      { value: 'round_robin', label: 'Round Robin', help: 'Assign a phone call to agent by "Round Robin".' },
+      { value: 'least_utilized', label: 'Least Utilized', help: 'Assign a phone call to least utilized agent.' },
+      { value: 'least_idle', label: 'Least Idle', help: 'Assign a phone call to least idle agent.' },
+      { value: 'random', label: 'Random', help: 'Assign a phone call to random agent.' }
+    ];
+
+    const help = {};
+    choices.forEach((choice) => {
+      help[choice.value] = choice.help;
+    });
+
+    return (
+      <div>
+        <Select
+          value={value}
+          onChange={onChange}
+          clearable={false}
+          choices={choices}
+        />
+        <div className="help">
+          {help[value]}
+        </div>
+      </div>
+    );
+  }
+}
+
+class MaxQueueSize extends React.Component {
+
+  static propTypes = {
+    value:    PropTypes.number,
+    onChange: PropTypes.func
+  };
+
+  onToggleExpand = () => {
+    const { value, onChange } = this.props;
+    onChange(value > 0 ? 0 : 1);
+  };
+
+  render() {
+    const { value, onChange } = this.props;
+    const expanded = value > 0;
+
+    return (
+      <div>
+        <Checkbox label="Enable a max queue size" value={expanded} onChange={this.onToggleExpand} />
+        {expanded && <Input type="text" value={value} onChange={onChange} />}
       </div>
     );
   }

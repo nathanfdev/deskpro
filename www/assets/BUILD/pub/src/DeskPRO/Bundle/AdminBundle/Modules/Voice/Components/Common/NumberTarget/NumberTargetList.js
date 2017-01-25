@@ -22,7 +22,7 @@ class NumberTargetList extends React.Component {
           <NumberTarget
             key={index}
             id={target.id}
-            name={target.name}
+            targetName={target.name}
             onRemove={onRemove}
           />
         ))}

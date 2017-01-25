@@ -128,7 +128,7 @@ class BatchController extends BaseController
         $json_serialized = null;
         if ($info['data']) {
             $json            = $info['data'];
-            $json_serialized = $this->get('serializer')->serialize($json, 'json');
+            $json_serialized = @json_encode($json);
         }
 
         $subRequest = Request::create(

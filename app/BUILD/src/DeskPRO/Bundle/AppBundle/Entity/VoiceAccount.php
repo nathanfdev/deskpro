@@ -325,4 +325,20 @@ class VoiceAccount implements EntityInterface, NotifyPropertyChanged
 
         return $this;
     }
+
+    /**
+     * @return VoiceQueue[]|ArrayCollection
+     */
+    public function getQueues()
+    {
+        return $this->queues;
+    }
+
+    /**
+     * @return VoiceNumber[]|ArrayCollection
+     */
+    public function getNumbers()
+    {
+        return $this->numbers;
+    }
 }
