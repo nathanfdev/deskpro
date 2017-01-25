@@ -319,8 +319,8 @@ class Article extends AbstractEntityRepository
     {
         return [
             'views' => [
-                'conditions'   => '%1$s.object_type = 1 AND %1$s.object_id = %2$s.id',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog',
+                'conditions'   => '%1$s.page_type = "deskpro.kb_view" AND %1$s.page_id = %2$s.id',
+                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\HitRecord',
             ],
             'ratings' => [
                 'conditions'   => '%1$s.object_type = \'article\' AND %1$s.object_id = %2$s.id',
