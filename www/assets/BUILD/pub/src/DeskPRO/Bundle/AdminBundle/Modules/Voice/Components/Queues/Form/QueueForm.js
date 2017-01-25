@@ -2,21 +2,18 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { Fieldset, Input, createValue } from 'react-forms';
 import { Form, Field, Select, MultiSelect, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
-import SectionHeader from '../../../../Common/Components/SectionHeader';
-import BackButton from '../../../../Common/Components/BackButton';
 import AgentChoiceListWrapper from '../../Common/AgentChoiceListWrapper';
 import AccountChoiceWrapper from '../../Common/AccountChoiceWrapper';
 
 class QueueForm extends React.Component {
 
   static propTypes = {
-    queue:        PropTypes.object,
-    accounts:     PropTypes.object,
-    agents:       PropTypes.object,
-    onSubmit:     PropTypes.func.isRequired,
-    onReturnBack: PropTypes.func.isRequired,
-    onDelete:     PropTypes.func,
-    saving:       PropTypes.bool
+    queue:    PropTypes.object,
+    accounts: PropTypes.object,
+    agents:   PropTypes.object,
+    onSubmit: PropTypes.func.isRequired,
+    onDelete: PropTypes.func,
+    saving:   PropTypes.bool
   };
 
   constructor(props) {
@@ -79,55 +76,50 @@ class QueueForm extends React.Component {
   }
 
   render() {
-    const { queue, accounts, agents, onReturnBack, saving } = this.props;
+    const { queue, accounts, agents, saving } = this.props;
 
     return (
-      <div className="page">
-        <BackButton onClick={onReturnBack} />
-        <SectionHeader title={queue ? 'Update queue' : 'Create new queue'} dividing />
+      <div className="twilio-queue-form">
+        <Form onSubmit={this.onSubmit} formValue={this.state.formData}>
+          <Fieldset>
+            {!queue && accounts && accounts.size > 1 &&
+              <Field select="account" label="Choose account *">
+                <AccountChoiceWrapper accounts={accounts}>
+                  <Select clearable={false} />
+                </AccountChoiceWrapper>
+              </Field>}
+            <Field select="name" label="Queue Name">
+              <Input type="text" placeholder="Queue Name" />
+            </Field>
+            {agents && agents.size > 0 &&
+              <Field select="agents" label="Agents">
+                <AgentChoiceListWrapper agents={agents}>
+                  <MultiSelect />
+                </AgentChoiceListWrapper>
+              </Field>}
+            <Field select="routing_model" label="Routing model" className="routing-model">
+              <RoutingModel />
+            </Field>
+            <Field select="max_queue_size" className="queue-size">
+              <MaxQueueSize />
+            </Field>
 
-        <div className="twilio-queue-form">
-          <Form onSubmit={this.onSubmit} formValue={this.state.formData}>
-            <Fieldset>
-              {!queue && accounts && accounts.size > 1 &&
-                <Field select="account" label="Choose account *">
-                  <AccountChoiceWrapper accounts={accounts}>
-                    <Select clearable={false} />
-                  </AccountChoiceWrapper>
-                </Field>}
-              <Field select="name" label="Queue Name">
-                <Input type="text" placeholder="Queue Name" />
-              </Field>
-              {agents && agents.size > 0 &&
-                <Field select="agents" label="Agents">
-                  <AgentChoiceListWrapper agents={agents}>
-                    <MultiSelect />
-                  </AgentChoiceListWrapper>
-                </Field>}
-              <Field select="routing_model" label="Routing model" className="routing-model">
-                <RoutingModel />
-              </Field>
-              <Field select="max_queue_size" className="queue-size">
-                <MaxQueueSize />
-              </Field>
+            <button className={classNames('ui button', { loading: saving })}>
+              {queue ? 'Update' : 'Create'}
+            </button>
+            <button
+              className={classNames('ui basic button cancel-button', { disabled: saving })}
+              onClick={this.onCancel}
+            >
+              Cancel
+            </button>
 
-              <button className={classNames('ui button', { loading: saving })}>
-                {queue ? 'Update' : 'Create'}
-              </button>
-              <button
-                className={classNames('ui basic button cancel-button', { disabled: saving })}
-                onClick={this.onCancel}
-              >
-                Cancel
-              </button>
-
-              {queue &&
-                <span className="voice-delete-button" onClick={this.onDelete}>
-                  Delete this queue
-                </span>}
-            </Fieldset>
-          </Form>
-        </div>
+            {queue &&
+              <span className="voice-delete-button" onClick={this.onDelete}>
+                Delete this queue
+              </span>}
+          </Fieldset>
+        </Form>
       </div>
     );
   }

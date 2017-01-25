@@ -48,6 +48,7 @@ class VoiceAgentTarget extends AbstractVoiceTarget
      *
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     * @JMS\SerializedName("target")
      *
      * @Assert\NotNull()
      * @AppAssert\Person\PersonType(type="agent")

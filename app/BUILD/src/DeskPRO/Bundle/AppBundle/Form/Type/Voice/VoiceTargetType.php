@@ -39,7 +39,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class VoiceTargetType.
@@ -70,16 +69,6 @@ class VoiceTargetType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class' => AbstractVoiceTarget::class,
-        ]);
-    }
-
-    /**
      * @internal
      *
      * @param FormEvent $event
@@ -93,13 +82,15 @@ class VoiceTargetType extends AbstractType
 
         switch ($targetType) {
             case AbstractVoiceTarget::TYPE_QUEUE:
-                $form->add('queue', EntityType::class, [
-                    'class' => VoiceQueue::class,
+                $form->add('target', EntityType::class, [
+                    'property_path' => 'queue',
+                    'class'         => VoiceQueue::class,
                 ]);
 
                 break;
             case AbstractVoiceTarget::TYPE_AGENT:
-                $form->add('agent', EntityType::class, [
+                $form->add('target', EntityType::class, [
+                    'property_path' => 'agent',
                     'class'         => Person::class,
                     'query_builder' => function (EntityRepository $er) {
                         return $er
@@ -111,7 +102,7 @@ class VoiceTargetType extends AbstractType
 
                 break;
             case AbstractVoiceTarget::TYPE_AUTO_ATTENDANT:
-                $form->add('auto_attendant', EntityType::class, [
+                $form->add('target', EntityType::class, [
                     'class'         => VoiceAutoAttendant::class,
                     'property_path' => 'autoAttendant',
                 ]);
@@ -160,25 +151,8 @@ class VoiceTargetType extends AbstractType
     {
         $data = $event->getData();
         if (isset($data['type'])) {
-            switch ($data['type']) {
-                case AbstractVoiceTarget::TYPE_QUEUE:
-                    if (!isset($data['queue'])) {
-                        $data['queue'] = null;
-                    }
-
-                    break;
-                case AbstractVoiceTarget::TYPE_AGENT:
-                    if (!isset($data['agent'])) {
-                        $data['agent'] = null;
-                    }
-
-                    break;
-                case AbstractVoiceTarget::TYPE_AUTO_ATTENDANT:
-                    if (!isset($data['auto_attendant'])) {
-                        $data['auto_attendant'] = null;
-                    }
-
-                    break;
+            if (!isset($data['target'])) {
+                $data['target'] = null;
             }
         }
 

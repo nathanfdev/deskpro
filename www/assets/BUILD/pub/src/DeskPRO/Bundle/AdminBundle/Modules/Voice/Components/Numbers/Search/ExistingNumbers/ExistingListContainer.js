@@ -40,10 +40,10 @@ class ExistingNumbersContainer extends BaseSearchContainer {
     });
 
     const promise = this.props.dispatch(addExistingNumber(number));
-    promise.success(() => {
+    promise.success((response) => {
       this.setState({
         loading: false
-      }, () => replaceRoute('/voice_channel/numbers'));
+      }, () => replaceRoute(`/voice_channel/numbers/${response.data.id}`));
     });
     promise.error(() => {
       this.setState({

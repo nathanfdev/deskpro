@@ -1,28 +1,28 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
-import QueuePageForm from './QueuePageForm';
-import BaseQueueFormContainer from './BaseQueueFormContainer';
+import QueueForm from './QueueForm';
 import { createQueue } from '../../../Actions/queueActions';
 import { isAccountsLoadedSelector, allAccountsSelector } from '../../../Selectors/account';
 import { loadAccounts } from '../../../Actions/accountActions';
 import { loadAgents } from '../../../../Application/Actions/peopleActions';
-import { allAgentsSelector, isAgentsLoadedSelector } from '../../../../Application/Selectors/people';
+import { voicePeopleSelector, isAgentsLoadedSelector } from '../../../../Application/Selectors/people';
 
 @connect(state => ({
-  agents:         allAgentsSelector(state),
+  agents:         voicePeopleSelector(state),
   agentsLoaded:   isAgentsLoadedSelector(state),
   accounts:       allAccountsSelector(state),
   accountsLoaded: isAccountsLoadedSelector(state)
 }))
-class NewQueueContainer extends BaseQueueFormContainer {
+class NewQueueModalContainer extends React.Component {
 
   static propTypes = {
     dispatch:       PropTypes.func,
     agents:         PropTypes.object,
     agentsLoaded:   PropTypes.bool,
     accounts:       PropTypes.object,
-    accountsLoaded: PropTypes.bool
+    accountsLoaded: PropTypes.bool,
+    onClose:        PropTypes.func
   };
 
   componentDidMount() {
@@ -32,9 +32,25 @@ class NewQueueContainer extends BaseQueueFormContainer {
     dispatch(loadAccounts());
   }
 
-  submitData = data => this.props.dispatch(createQueue(data));
+  onSubmit = (data) => {
+    const { dispatch, onClose } = this.props;
 
-  render() {
+    this.setState({
+      saving: true,
+      errors: {}
+    });
+
+    const promise = dispatch(createQueue(data));
+    promise.success(() => onClose());
+    promise.error((result) => {
+      this.setState({
+        errors: result.errors,
+        saving: false
+      });
+    });
+  };
+
+  renderContent() {
     const { agents, accounts, agentsLoaded, accountsLoaded } = this.props;
 
     if (!agentsLoaded || !accountsLoaded) {
@@ -42,7 +58,7 @@ class NewQueueContainer extends BaseQueueFormContainer {
     }
 
     return (
-      <QueuePageForm
+      <QueueForm
         {...this.state}
         agents={agents}
         accounts={accounts}
@@ -51,6 +67,14 @@ class NewQueueContainer extends BaseQueueFormContainer {
       />
     );
   }
+
+  render() {
+    return (
+      <div className="page page-modal-window" style={{ height: '500px' }}>
+        {this.renderContent()}
+      </div>
+    );
+  }
 }
 
-export default NewQueueContainer;
+export default NewQueueModalContainer;

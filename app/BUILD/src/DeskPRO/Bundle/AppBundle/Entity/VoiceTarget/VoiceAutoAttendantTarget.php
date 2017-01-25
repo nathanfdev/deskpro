@@ -47,6 +47,7 @@ class VoiceAutoAttendantTarget extends AbstractVoiceTarget
      *
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant>")
+     * @JMS\SerializedName("target")
      *
      * @Assert\NotNull()
      *

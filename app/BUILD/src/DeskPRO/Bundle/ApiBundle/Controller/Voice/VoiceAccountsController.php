@@ -214,7 +214,6 @@ class VoiceAccountsController extends AbstractVoiceCrudController
                 ->setAccount($account)
                 ->setSid($apiNumber->sid)
                 ->setNumber($apiNumber->phoneNumber)
-                ->setNickname($apiNumber->friendlyName)
                 ->setCountryCode(strtolower($phoneUtil->getRegionCodeForNumber($phoneNumber)))
             ;
 

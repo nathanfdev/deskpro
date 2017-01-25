@@ -350,6 +350,52 @@
   }
 }
 
+.twilio-number-form {
+  width: 425px;
+
+  .number-target {
+    clear: both;
+    margin: 10px 0;
+    min-height: 36px;
+
+    .field {
+      clear: none !important;
+    }
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .dial-number {
+      float: left;
+      border-right: 0;
+    }
+
+    .Select {
+      float: left;
+      width: 200px;
+      height: 35px;
+      margin-right: 10px;
+
+      .Select-control {
+        border: 1px solid #e3e3e3;
+      }
+    }
+  }
+
+  .allow-outbound-calls {
+    padding-top: 10px;
+  }
+
+  .cancel-button {
+    margin-left: 15px !important;
+  }
+}
+
 .twilio-queue-form {
   width: 425px;
 
@@ -511,7 +557,11 @@
     .dial-number-target {
       clear: both;
       margin: 10px 0;
-      height: 36px;
+      min-height: 36px;
+
+      .field {
+        clear: none !important;
+      }
 
       &:first-child {
         margin-top: 0;

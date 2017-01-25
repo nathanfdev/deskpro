@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -52,13 +51,8 @@ class VoiceAutoAttendantType extends AbstractType
                 'property_path' => 'audioAsset',
                 'required'      => false,
             ])
-            ->add('dial_numbers', CollectionType::class, [
-                'property_path'  => 'dialNumbers',
-                'type'           => VoiceAutoAttendantDialNumberType::class,
-                'allow_add'      => true,
-                'allow_delete'   => true,
-                'by_reference'   => false,
-                'error_bubbling' => false,
+            ->add('targets', VoiceAutoAttendantDialNumberCollectionType::class, [
+                'auto_attendant' => $builder->getData(),
             ])
             ->add('allow_repeat_menu', ApiBooleanType::class, [
                 'property_path' => 'allowRepeatMenu',

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
-import QueueForm from './QueueForm';
+import QueuePageForm from './QueuePageForm';
 import BaseQueueFormContainer from './BaseQueueFormContainer';
 import { updateQueue, loadQueues, deleteQueue } from '../../../Actions/queueActions';
 import { allQueuesSelector } from '../../../Selectors/queue';
@@ -64,7 +64,7 @@ class EditQueueContainer extends BaseQueueFormContainer {
     }
 
     return (
-      <QueueForm
+      <QueuePageForm
         {...this.state}
         queue={queue}
         agents={agents}

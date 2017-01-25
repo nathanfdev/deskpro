@@ -8,7 +8,7 @@ const voiceTargetTypes = [
   { value: 'auto_attendant', label: 'Auto Attendant', icon: 'fa-sitemap' }
 ];
 
-class TargetSelect extends React.Component {
+class TargetTypeSelect extends React.Component {
 
   renderValue = option => (
     <span>
@@ -29,4 +29,4 @@ class TargetSelect extends React.Component {
   }
 }
 
-export default TargetSelect;
+export default TargetTypeSelect;

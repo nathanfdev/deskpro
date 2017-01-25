@@ -48,6 +48,7 @@ class AppContainer extends React.Component {
               <Route path="numbers" component={Voice.Numbers} />
               <Route path="numbers/available" component={Voice.AvailableNumbers} />
               <Route path="numbers/existing" component={Voice.ExistingNumbers} />
+              <Route path="numbers/:numberId" component={Voice.EditNumber} />
               <Route path="queues" component={Voice.Queues} />
               <Route path="queues/new" component={Voice.NewQueue} />
               <Route path="queues/:queueId" component={Voice.EditQueue} />

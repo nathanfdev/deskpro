@@ -6,14 +6,16 @@ import { voiceAgentsSelector, voiceOnlineAgentsSelector, callsEnabledSelector } 
 import VoiceMenuDropdown from './VoiceMenuDropdown';
 import { acceptPhoneCall, declinePhoneCall } from '../../Actions/clientActions';
 import { incomingCallSelector } from '../../Selectors/client';
+import { outboundNumbersSelector } from '../../Selectors/numbers';
 
 @connect(state => ({
-  me:           meSelector(state),
-  agents:       voiceAgentsSelector(state),
-  onlineAgents: voiceOnlineAgentsSelector(state),
-  people:       collectionSelectorFactory('Person', 'all')(state),
-  incomingCall: incomingCallSelector(state),
-  voiceEnabled: callsEnabledSelector(state)
+  me:              meSelector(state),
+  agents:          voiceAgentsSelector(state),
+  onlineAgents:    voiceOnlineAgentsSelector(state),
+  people:          collectionSelectorFactory('Person', 'all')(state),
+  incomingCall:    incomingCallSelector(state),
+  voiceEnabled:    callsEnabledSelector(state),
+  outboundNumbers: outboundNumbersSelector(state)
 }))
 class VoiceMenuContainer extends React.Component {
 

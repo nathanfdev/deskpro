@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -60,6 +61,9 @@ class VoiceNumberType extends AbstractType
             ])
             ->add('target', VoiceTargetType::class, [
                 'required' => false,
+            ])
+            ->add('outbound_calls_enabled', ApiBooleanType::class, [
+                'property_path' => 'outboundCallsEnabled',
             ])
         ;
 

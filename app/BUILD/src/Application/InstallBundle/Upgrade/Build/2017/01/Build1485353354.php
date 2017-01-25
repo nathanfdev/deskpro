@@ -26,40 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendantDialNumber;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
-/**
- * Class VoiceAutoAttendantDialNumberType.
- */
-class VoiceAutoAttendantDialNumberType extends AbstractType
+class Build1485353354 extends AbstractBuild
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function run()
     {
-        $builder
-            ->add('dial_num', IntegerType::class, [
-                'property_path' => 'dialNum',
-            ])
-            ->add('target', VoiceTargetType::class)
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class'     => VoiceAutoAttendantDialNumber::class,
-            'error_bubbling' => false,
-        ]);
+        $this->out('My Upgrade Class');
+        $this->execDbQuery('default', 'ALTER TABLE voice_numbers CHANGE nickname nickname VARCHAR(255) DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE voice_numbers ADD outbound_calls_enabled TINYINT(1) NOT NULL;');
     }
 }

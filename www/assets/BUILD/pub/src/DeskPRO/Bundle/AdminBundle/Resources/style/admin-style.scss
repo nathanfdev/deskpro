@@ -37,6 +37,10 @@ $flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
   font-size: 16px;
   color: #4D4D4D;
 
+  &.page-modal-window {
+    padding: 0;
+  }
+
   .ui.text.loader {
     transform: initial;
   }

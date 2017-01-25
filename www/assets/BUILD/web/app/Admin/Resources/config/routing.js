@@ -2144,6 +2144,13 @@ define(function() {
   });
 
   routes.push({
+    id:           'voice-channel.numbers_edit',
+    url:          '/numbers/{id:\\d+}',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
     id:           'voice-channel.extensions',
     url:          '/extensions',
     templateName: 'VoiceChannel/react_component.html',

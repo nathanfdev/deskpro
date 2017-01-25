@@ -15,8 +15,3 @@ export const availableNumbersFilterSelector = createSelector(
   stateSelector,
   state => state.get('availableFilter').toJS()
 );
-
-export const expandedNumberSelector = createSelector(
-  stateSelector,
-  state => state.get('expandedNumber')
-);
