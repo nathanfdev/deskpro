@@ -77,6 +77,11 @@ class AuthenticationResults
      */
     public function getSpfResult()
     {
+        // Received-SPF can contain just 'fail'
+        if ($this->spf === 'fail') {
+            return self::SPF_HARDFAIL;
+        }
+
         return $this->spf;
     }
 
