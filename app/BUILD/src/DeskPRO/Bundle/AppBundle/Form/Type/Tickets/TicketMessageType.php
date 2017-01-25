@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\ApiTicketMessageAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessageInlineAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
@@ -89,6 +90,12 @@ class TicketMessageType extends AbstractType
             'required'      => $options['required'],
             'constraints'   => $options['message_constraints'],
         ]);
+
+        if ($options['allow_set_person']) {
+            $builder->add('person', PersonAssignType::class, [
+                'mapped' => false,
+            ]);
+        }
 
         if ($options['format']) {
             $builder->add('format', DpHiddenType::class, [
@@ -180,6 +187,7 @@ class TicketMessageType extends AbstractType
                 'format'                 => '',
                 'with_ticket_validation' => false,
                 'ctrl_enter_submit'      => false,
+                'allow_set_person'       => false,
                 'message_constraints'    => [],
                 'error_mapping'          => [
                     // we use custom setters to modify message,
@@ -200,6 +208,7 @@ class TicketMessageType extends AbstractType
             ->setAllowedTypes('ticket_message', ['null', TicketMessage::class])
             ->setAllowedValues('format', ['', 'html', 'text'])
             ->setAllowedTypes('ctrl_enter_submit', 'bool')
+            ->setAllowedTypes('allow_set_person', 'bool')
         ;
     }
 
@@ -254,8 +263,9 @@ class TicketMessageType extends AbstractType
      */
     public function onSetRelations(FormEvent $event)
     {
+        $form   = $event->getForm();
         $data   = $event->getData();
-        $config = $event->getForm()->getConfig();
+        $config = $form->getConfig();
 
         /** @var Ticket $ticket */
         $ticket = $config->getOption('ticket');
@@ -265,9 +275,16 @@ class TicketMessageType extends AbstractType
                 $ticket->addMessage($data);
             }
 
-            $person = $config->getOption('person');
-            if ($person) {
-                $data->setPerson($person);
+            $optionPerson = $config->getOption('person');
+            if ($optionPerson) {
+                $data->setPerson($optionPerson);
+            }
+
+            if ($form->has('person')) {
+                $formPerson = $form->get('person')->getData();
+                if ($formPerson) {
+                    $data->setPerson($formPerson);
+                }
             }
         }
     }

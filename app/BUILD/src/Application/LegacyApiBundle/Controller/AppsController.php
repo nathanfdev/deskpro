@@ -250,12 +250,12 @@ class AppsController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $package         = $manager->getPackage($name);
-        $inputTitle      = $this->in->getString('settings.dp_app.title');
-        $settings        = $this->in->getCleanValueArray('settings');
-        $usersource_type = $this->in->getString('usersource_type');
+        $package        = $manager->getPackage($name);
+        $inputTitle     = $this->in->getString('settings.dp_app.title');
+        $settings       = $this->in->getCleanValueArray('settings');
+        $usersourceType = $this->in->getString('usersource_type');
 
-        if ($package->isUsersource() && !$usersource_type) {
+        if ($package->isUsersource() && !$usersourceType) {
             return $this->createApiErrorResponse(
                 'invalid_argument', "$name is a usersource app and therefore you must provide the 'usersource_type' param in your request"
             );
@@ -266,7 +266,7 @@ class AppsController extends AbstractController
         }
 
         $context = new AppManipulatorContext($settings, $inputTitle);
-        $context->setUsersourceType($usersource_type);
+        $context->setUsersourceType($usersourceType);
 
         $app = $this->getAppManipulator()->installInstance($package, $context);
 
@@ -865,10 +865,10 @@ class AppsController extends AbstractController
      */
     protected function getAppManipulator()
     {
-        /** @var \Application\Deskpro\App\AppManipulator $app_manipulator */
-        $app_manipulator = $this->container->getSystemService('app_manipulator');
+        /** @var \Application\Deskpro\App\AppManipulator $appManipulator */
+        $appManipulator = $this->container->getSystemService('app_manipulator');
 
-        return $app_manipulator;
+        return $appManipulator;
     }
 
     public function jiraSettingsAction()

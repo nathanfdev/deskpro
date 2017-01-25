@@ -35,6 +35,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\CustomDataHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\FieldHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\LabelHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
@@ -55,6 +56,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiDoc(
  *     target="listAction,countAction",
  *     filters={
+ *          {"name"="name", "description"="name filter", "dataType"="string", "pattern"="\w+"},
  *          {"name"="period_created", "description"="period created filter", "dataType"="string", "pattern"="\w+"},
  *          {"name"="user_group", "description"="usergroups filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
  *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
@@ -117,6 +119,7 @@ class OrganizationsController extends CrudController
         UsergroupsHelper::applyUsergroupsFilters($context);
         LabelHelper::applyLabelFilters($context, static::$entity);
         CustomDataHelper::applyCustomDataFilters($context, 'org', CustomDefOrganization::class);
+        FieldHelper::applyFieldFilter($context, 'name');
 
         // parent filters
         ListHelper::applyInListFilter($context, 'parent');

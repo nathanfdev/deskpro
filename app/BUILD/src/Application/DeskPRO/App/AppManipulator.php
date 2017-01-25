@@ -67,9 +67,9 @@ class AppManipulator
 
     public function installInstance(AppPackage $package, AppManipulatorContext $context)
     {
-        $instance_installer = new InstanceInstaller($this->manager, $package, $this->em);
+        $instanceInstaller = new InstanceInstaller($this->manager, $package, $this->em);
 
-        $app = $instance_installer->install(
+        $app = $instanceInstaller->install(
             $context->getInputTitle(),
             $context->getSettings(),
             $this->container,

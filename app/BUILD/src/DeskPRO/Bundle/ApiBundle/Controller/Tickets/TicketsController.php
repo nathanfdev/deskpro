@@ -79,28 +79,17 @@ class TicketsController extends AbstractTicketsController
     }
 
     /**
-     * @deprecated
-     * @Rest\Post("")
-     */
-    public function postAction(Request $request)
-    {
-        $this->get('logger')->warning('POST /tickets is deprecated, use /ticket_forms to create tickets');
-
-        return parent::postAction($request);
-    }
-
-    /**
      * @ApiDoc(
      *      description="Get a list of tickets (see parameters description for additional information)",
      *      filters={
      *          {
-     *              "name"="sort",
+     *              "name"="order_by",
      *              "description"="tickets list sort",
      *              "pattern"="id|urgency|date_created|date_last_agent_reply|date_last_user_reply|date_last_reply|date_user_waiting|total_user_waiting|subject|status",
      *              "dataType"="string",
      *          },
      *          {"name"="ids", "description"="ticket list to fetch, comma separated list", "dataType"="string", "pattern"="[\d+,]+"},
-     *          {"name"="order", "description"="tickets list sort order", "dataType"="string", "pattern"="asc|desc"},
+     *          {"name"="order_dir", "description"="tickets list sort order", "dataType"="string", "pattern"="asc|desc"},
      *          {"name"="page", "description"="pagination page parameter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="count", "description"="pagination results per page parameter.", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="filter", "description"="TicketFilter ID option", "dataType"="integer", "pattern"="\d+"},
