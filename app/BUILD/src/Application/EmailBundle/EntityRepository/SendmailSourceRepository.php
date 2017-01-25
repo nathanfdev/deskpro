@@ -63,14 +63,14 @@ class SendmailSourceRepository extends AbstractEntityRepository
     }
 
     /**
-     * @param \DateTime      $start
-     * @param \DateTime|null $end
-     * @param array|null     $in_accounts
-     * @param null           $limitHint   Hint at what the max count we care about. We stop if we go over this to save time
+     * @param \DateTime      $start      Start of the date range to check in
+     * @param \DateTime|null $end        End of the date range to check in
+     * @param array|null     $inAccounts Specific accounts to look at
+     * @param null           $limitHint  Hint at what the max count we care about. We stop if we go over this to save time
      *
      * @return int|mixed
      */
-    public function countSendingBetween(\DateTime $start, \DateTime $end = null, array $in_accounts = null, $limitHint = null)
+    public function countSendingBetween(\DateTime $start, \DateTime $end = null, array $inAccounts = null, $limitHint = null)
     {
         if (!$end) {
             $end = new \DateTime();
@@ -80,12 +80,13 @@ class SendmailSourceRepository extends AbstractEntityRepository
             'COUNT(*) AS count',
 
             // counts how many actual recipients (e.g. multiple TOs or BCCs)
-            'SUM((LENGTH(to_emails)-LENGTH(REPLACE(to_emails, "@", ""))) + COALESCE(LENGTH(cc_emails)-LENGTH(REPLACE(cc_emails, "@", "")), 0) + COALESCE(LENGTH(bcc_emails)-LENGTH(REPLACE(bcc_emails, "@", "")), 0)) AS count',
+            // we do this after the simple count query above to avoid doing an expensive query if possible
+            'SUM(COALESCE(LENGTH(to_emails)-LENGTH(REPLACE(to_emails, "@", "")), 0) + COALESCE(LENGTH(cc_emails)-LENGTH(REPLACE(cc_emails, "@", "")), 0) + COALESCE(LENGTH(bcc_emails)-LENGTH(REPLACE(bcc_emails, "@", "")), 0)) AS count',
         ];
 
         $result = 0;
 
-        if ($in_accounts) {
+        if (!$inAccounts) {
             $prevResult = 0;
             foreach ($countSelects as $s) {
                 $result = $this->getEntityManager()->getConnection()->fetchColumn("
@@ -109,11 +110,10 @@ class SendmailSourceRepository extends AbstractEntityRepository
                 $prevResult = $result;
             }
         } else {
-            $in_accounts = array_map('intval', $in_accounts);
-            if (!$in_accounts) {
-                $in_accounts = [0];
+            $inAccounts = array_map('intval', $inAccounts);
+            if (!$inAccounts) {
+                $inAccounts = [0];
             }
-            $in_accounts = implode(',', $in_accounts);
 
             $prevResult = 0;
             foreach ($countSelects as $s) {
@@ -124,12 +124,13 @@ class SendmailSourceRepository extends AbstractEntityRepository
                       status IN ('complete', 'pending', 'processing', 'retry')
                       AND date_created > ?
                       AND date_status BETWEEN ? AND ?
-                      AND account_id IN ($in_accounts)
+                      AND email_account_id IN (?)
                 ", [
                     $start->format('Y-m-d H:i:s'),
                     $start->format('Y-m-d H:i:s'),
                     $end->format('Y-m-d H:i:s'),
-                ]);
+                    $inAccounts,
+                ], 0, [\PDO::PARAM_STR, \PDO::PARAM_STR, \PDO::PARAM_STR, Connection::PARAM_INT_ARRAY]);
 
                 if ($limitHint && $result >= $limitHint) {
                     return $result;
