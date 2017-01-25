@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { voiceAgentsSelector } from '../../Selectors/agents';
+import { voiceAgentsSelector, voiceOnlineAgentsSelector, callsEnabledSelector } from '../../Selectors/agents';
 import VoiceMenuDropdown from './VoiceMenuDropdown';
 import { acceptPhoneCall, declinePhoneCall } from '../../Actions/clientActions';
 import { incomingCallSelector } from '../../Selectors/client';
@@ -10,8 +10,10 @@ import { incomingCallSelector } from '../../Selectors/client';
 @connect(state => ({
   me:           meSelector(state),
   agents:       voiceAgentsSelector(state),
+  onlineAgents: voiceOnlineAgentsSelector(state),
   people:       collectionSelectorFactory('Person', 'all')(state),
-  incomingCall: incomingCallSelector(state)
+  incomingCall: incomingCallSelector(state),
+  voiceEnabled: callsEnabledSelector(state)
 }))
 class VoiceMenuContainer extends React.Component {
 
