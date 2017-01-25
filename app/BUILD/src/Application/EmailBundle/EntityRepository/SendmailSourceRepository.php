@@ -80,7 +80,7 @@ class SendmailSourceRepository extends AbstractEntityRepository
             'COUNT(*) AS count',
 
             // counts how many actual recipients (e.g. multiple TOs or BCCs)
-            'SUM((LENGTH(to_emails)-LENGTH(REPLACE(to_emails, "@", ""))) + COALESCE(LENGTH(bcc_emails)-LENGTH(REPLACE(bcc_emails, "@", "")), 0)) AS count',
+            'SUM((LENGTH(to_emails)-LENGTH(REPLACE(to_emails, "@", ""))) + COALESCE(LENGTH(cc_emails)-LENGTH(REPLACE(cc_emails, "@", "")), 0) + COALESCE(LENGTH(bcc_emails)-LENGTH(REPLACE(bcc_emails, "@", "")), 0)) AS count',
         ];
 
         $result = 0;

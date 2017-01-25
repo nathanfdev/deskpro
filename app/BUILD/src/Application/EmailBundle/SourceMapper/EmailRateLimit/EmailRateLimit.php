@@ -102,14 +102,25 @@ class EmailRateLimit implements EmailRateLimitInterface
             return false;
         }
 
+        $messageCount = substr_count($message['to_emails'] ?: '', '@')
+            + substr_count($message['cc_emails'] ?: '', '@')
+            + substr_count($message['bcc_emails'] ?: '', '@');
+
         foreach ($this->limits as $days => $limit) {
+
+            // case where this message itself has enough
+            // recipients to go over the limit
+            if ($messageCount > $limit) {
+                return true;
+            }
+
             $date = new \DateTime('-'.$days.' days');
             if ($this->reset_date && $this->reset_date > $date) {
                 $date = $this->reset_date;
             }
 
             $count = $this->sourceRepository->countSendingBetween($date, null, $this->in_account_ids, $limit);
-            if ($count > $limit) {
+            if (($count + $messageCount) > $limit) {
                 return true;
             }
 
