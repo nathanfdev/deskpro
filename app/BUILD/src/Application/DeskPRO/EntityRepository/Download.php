@@ -198,8 +198,8 @@ class Download extends AbstractEntityRepository
     {
         return [
             'views' => [
-                'conditions'   => '%1$s.object_type = 2 AND %1$s.object_id = %2$s.id',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog',
+                'conditions'   => '%1$s.page_type = "deskpro.download_view" AND %1$s.page_id = %2$s.id',
+                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\HitRecord',
             ],
         ];
     }

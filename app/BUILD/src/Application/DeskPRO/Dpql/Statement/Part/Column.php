@@ -287,7 +287,7 @@ END)
             foreach ($repository->getReportAssociations() as $name => $association) {
                 if (strtolower($name) == $part) {
                     $target          = $association['targetEntity'];
-                    $childRepository = $target::getRepository();
+                    $childRepository = App::getEntityRepository($target);
 
                     if (!($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)) {
                         throw new Exception("$partsString cannot be accessed via DPQL.");
@@ -313,7 +313,7 @@ END)
                 // are we referencing an association?
                 if (strtolower($association['fieldName']) == $part) {
                     $target          = $association['targetEntity'];
-                    $childRepository = $target::getRepository();
+                    $childRepository = App::getEntityRepository($target);
 
                     if ((isset($association['dpqlAccess']) && !$association['dpqlAccess'])
                         || !($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)
