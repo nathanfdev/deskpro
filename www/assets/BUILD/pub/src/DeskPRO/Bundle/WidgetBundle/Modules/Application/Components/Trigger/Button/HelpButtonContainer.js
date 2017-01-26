@@ -159,7 +159,7 @@ export default class HelpButtonContainer extends React.Component {
       helpPopupStartButton,
       onClick:   this.onClick,
       onClose:   this.onClosePopup,
-      getButton: () => this.button
+      getButton: () => this.button.node
     };
 
     if (popupStyle === 'agents_button') {

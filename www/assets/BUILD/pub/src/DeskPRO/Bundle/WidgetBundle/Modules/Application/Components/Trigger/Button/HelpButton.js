@@ -37,7 +37,7 @@ export class HelpButton extends React.Component {
     }
 
     return (
-      <div className="dpdesignportal-state-buttons">
+      <div className="dpdesignportal-state-buttons" ref={(node) => { this.node = node; }}>
         <a
           href="#open-widget"
           onClick={this.onClick}
