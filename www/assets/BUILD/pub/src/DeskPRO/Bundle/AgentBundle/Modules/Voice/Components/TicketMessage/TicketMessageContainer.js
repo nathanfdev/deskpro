@@ -37,18 +37,6 @@ class TicketMessageContainer extends React.Component {
     this.props.dispatch(openDialpad(phoneCall.get('from_number')));
   };
 
-  onPlay = () => {
-    console.log('onPlay');
-  };
-
-  onMove = () => {
-    console.log('onMove');
-  };
-
-  onStepBackward = () => {
-    console.log('onStepBackward');
-  };
-
   onOpenSettings = () => {
     console.log('onOpenSettings');
   };
@@ -102,9 +90,6 @@ class TicketMessageContainer extends React.Component {
         phoneCall={this.getPhoneCall()}
         connection={this.getConnection()}
         onCall={this.onCall}
-        onPlay={this.onPlay}
-        onMove={this.onMove}
-        onStepBackward={this.onStepBackward}
         onOpenSettings={this.onOpenSettings}
       />
     );

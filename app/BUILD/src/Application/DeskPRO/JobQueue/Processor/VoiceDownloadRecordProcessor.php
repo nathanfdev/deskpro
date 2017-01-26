@@ -84,7 +84,7 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
                 throw new \Exception('Phone call not found');
             }
 
-            $data = base64_encode($client->send(new Request('GET', $callData['RecordingUrl']))->getBody()->getContents());
+            $data = $client->send(new Request('GET', $callData['RecordingUrl']))->getBody()->getContents();
             $blob = $this->blobStorage->createBlobRecordFromString($data, 'call_record_'.$callId, 'mp3');
 
             $phoneCall->setRecording($blob);

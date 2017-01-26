@@ -77,7 +77,7 @@ class BaseFormat extends React.Component {
   };
 }
 
-class WaitingFormat extends BaseFormat {
+export class WaitingFormat extends BaseFormat {
 
   render() {
     const { hours, minutes, seconds } = this.props;
@@ -92,7 +92,7 @@ class WaitingFormat extends BaseFormat {
   }
 }
 
-class TimerFormat extends BaseFormat {
+export class TimerFormat extends BaseFormat {
 
   render() {
     let { hours, minutes, seconds } = this.props;
