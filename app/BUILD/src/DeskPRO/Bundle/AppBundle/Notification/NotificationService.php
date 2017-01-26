@@ -122,15 +122,35 @@ class NotificationService
         return new NotificationConfiguration($setup);
     }
 
+    /**
+     * @param Person $person
+     * @param array  $ids
+     * @param string $noteText
+     */
     public function sendNote(Person $person, $ids, $noteText)
     {
+        $participantsCount   = count($ids);
         $agentChatRepository = $this->em->getRepository(AgentChat::class);
-        if (!$chat = $agentChatRepository->findGroupChat($person, $ids)) {
+        $personRepository    = $this->em->getRepository(Person::class);
+
+        $chat = null;
+        if ($participantsCount == 1) {
+            $chat = $agentChatRepository->findChatWithAgent($personRepository->find(current($ids)), $person);
+        } elseif ($participantsCount > 1) {
+            $chat = $agentChatRepository->findGroupChat($person, $ids);
+        }
+
+        if (!$chat) {
             $chat = new AgentChat();
-            $chat
-                ->setType(AgentChat::TYPE_GROUP)
-                ->setName('Notification from: '.$person->getDisplayName());
-            $participants = $this->em->getRepository(Person::class)->findBy(['id' => $ids]);
+            if ($participantsCount == 1) {
+                $chat->setType(AgentChat::TYPE_AGENT);
+            } else {
+                $chat
+                    ->setType(AgentChat::TYPE_GROUP)
+                    ->setName('Notification from: '.$person->getDisplayName());
+            }
+
+            $participants = $personRepository->findBy(['id' => $ids]);
             foreach ($participants as $participant) {
                 $chat->addParticipant($participant);
             }
