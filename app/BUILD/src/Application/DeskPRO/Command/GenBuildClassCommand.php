@@ -49,6 +49,7 @@ class GenBuildClassCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $time   = time();
+        $year   = date('Y');
         $indent = '    ';
 
         if (!$input->getOption('no-schema')) {
@@ -77,14 +78,14 @@ class GenBuildClassCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
             $defaultcode = $indent.$indent.'//$this->execDbQuery(\'default\', "...");';
         }
 
-        $header = <<<'HEADER'
+        $header = <<<HEADER
 <?php
 
 /*
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) $year, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
