@@ -70,6 +70,7 @@ $container->setDefinition('settings_resolver', $definition);
 
 $definition = new Definition();
 $definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\SecurityHeadersResponseListener');
+$definition->setArguments([new Reference('service_container')]);
 $definition->addTag('kernel.event_subscriber');
 $container->setDefinition('listener.security_headers', $definition);
 
