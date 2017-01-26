@@ -265,7 +265,18 @@
     <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/new-admin.css') }}"/>
     <link rel="stylesheet" href="{{ asset('vendor/redactor/redactor.css') }}" type="text/css" />
 
-    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,900,100,300' rel='stylesheet' type='text/css'>
+        <script>
+          (function() {
+            var link = document.createElement('link');
+            link.rel = "stylesheet";
+            {% if not app.isCloud() %}
+                link.href = "{{ asset('fonts/lato.css') }}";
+            {%  else %}
+                link.href = "//fonts.googleapis.com/css?family=Lato:900,700,400,300,100";
+            {%  endif %}
+            document.querySelector("head").appendChild(link);
+          })();
+        </script>
 
     <!-- legacy: portal editor -->
     <link rel="stylesheet" href="{{ asset('vendor/colorpicker/css/colorpicker.css') }}" type="text/css" />
