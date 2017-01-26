@@ -74,4 +74,12 @@ class VoiceQueueTarget extends AbstractVoiceTarget
 
         return $this;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTargetName()
+    {
+        return $this->queue->getName();
+    }
 }

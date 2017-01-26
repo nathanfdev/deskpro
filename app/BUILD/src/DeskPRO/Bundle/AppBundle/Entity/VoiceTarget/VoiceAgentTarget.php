@@ -76,4 +76,12 @@ class VoiceAgentTarget extends AbstractVoiceTarget
 
         return $this;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTargetName()
+    {
+        return $this->agent->getName();
+    }
 }
