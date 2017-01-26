@@ -99,7 +99,7 @@ class VoiceQueueListener
      */
     public function onUpdate(VoiceQueue $queue, PreUpdateEventArgs $args)
     {
-        if ($args->hasChangedField('name')) {
+        if ($args->hasChangedField('name') || $args->hasChangedField('routingModel')) {
             $this->twilioAdapter->updateTaskQueue($queue);
         }
 
