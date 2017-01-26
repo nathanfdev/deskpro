@@ -42,6 +42,7 @@ use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
 use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
+use Application\DeskPRO\JobQueue\Processor\VoiceDownloadRecordProcessor;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
 use Application\DeskPRO\Sms\Detector\TicketDetector;
@@ -122,6 +123,15 @@ class JobRouterService
         }
 
         $router->addProcessor(new UsersImportProcessor($container));
+
+        // voice records processor
+        $router->addProcessor(
+            new VoiceDownloadRecordProcessor(
+                $conn,
+                $container->getEm(),
+                $container->getBlobStorage()
+            )
+        );
 
         return $router;
     }

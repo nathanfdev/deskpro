@@ -29,10 +29,12 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
 use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\JobQueue\Processor\VoiceDownloadRecordProcessor;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
@@ -583,6 +585,48 @@ class TwilioCallbacksController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Recording status callback",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Rest\Post("/recording_status_callback", name="twilio_recording_status_callback")
+     *
+     * @param VoiceAccount $account
+     * @param string       $accountAuth
+     * @param Request      $request
+     *
+     * @return Response
+     */
+    public function recordingStatusCallbackAction(VoiceAccount $account, $accountAuth, Request $request)
+    {
+        if ($account->getAccountAuth() !== $accountAuth) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+            'conferenceSid' => $request->request->get('ConferenceSid'),
+        ]);
+        if (!$phoneCall) {
+            throw $this->createBadRequestException('Phone call not found');
+        }
+
+        $phoneCall->setData(array_merge($phoneCall->getData(), [
+            'RecordingUrl' => $request->request->get('RecordingUrl'),
+        ]));
+
+        $em = $this->getManager();
+        $em->persist($phoneCall);
+        $em->flush();
+
+        $this->getContainer()->getJobQueue()->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
+            'call_id' => $phoneCall->getId(),
+        ]));
+    }
+
+    /**
      * @return string
      */
     private function getHelpdeskName()
@@ -796,10 +840,13 @@ class TwilioCallbacksController extends BaseController
         $account = $phoneCall->getNumber()->getAccount();
 
         $twiml->dial()->conference($this->getConferenceName($phoneCall), [
-            'endConferenceOnExit'  => true,
-            'statusCallback'       => $this->getConferenceStatusCallbackUrl($account),
-            'statusCallbackMethod' => 'POST',
-            'statusCallbackEvent'  => 'join leave start end mute hold',
+            'endConferenceOnExit'           => true,
+            'statusCallback'                => $this->getConferenceStatusCallbackUrl($account),
+            'statusCallbackMethod'          => 'POST',
+            'statusCallbackEvent'           => 'join leave start end mute hold',
+            'record'                        => 'record-from-start',
+            'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account),
+            'recordingStatusCallbackMethod' => 'POST',
         ]);
     }
 
@@ -932,6 +979,19 @@ class TwilioCallbacksController extends BaseController
     private function getAgentExtensionCallbackUrl(VoiceAccount $account)
     {
         return $this->get('router')->generate('twilio_agent_extension_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param VoiceAccount $account
+     *
+     * @return string
+     */
+    private function getRecordingStatusCallbackUrl(VoiceAccount $account)
+    {
+        return $this->get('router')->generate('twilio_recording_status_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);

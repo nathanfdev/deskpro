@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
@@ -205,6 +206,16 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      * @var \DateTime
      */
     private $dateEnded;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Blob", cascade={"persist", "remove"})
+     *
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     *
+     * @var Blob
+     */
+    private $recording;
 
     /**
      * Constructor.
@@ -552,6 +563,26 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getRecording()
+    {
+        return $this->recording;
+    }
+
+    /**
+     * @param Blob $recording
+     *
+     * @return $this
+     */
+    public function setRecording(Blob $recording = null)
+    {
+        $this->setModelField('recording', $recording);
 
         return $this;
     }
