@@ -114,7 +114,7 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     /**
      * Custom groups name for chat with type = 'group'.
      *
-     * @var \DateTime
+     * @var string
      * @ORM\Column(type="string", nullable=true)
      * @JMS\Expose()
      * @JMS\Type("string")
@@ -235,7 +235,7 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
     public function getName()
     {
@@ -243,7 +243,7 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     }
 
     /**
-     * @param \DateTime $name
+     * @param string $name
      *
      * @return $this
      */

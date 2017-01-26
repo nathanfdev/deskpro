@@ -32,6 +32,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfiguration;
 use Doctrine\ORM\EntityManager;
@@ -120,6 +122,31 @@ class NotificationService
         return new NotificationConfiguration($setup);
     }
 
+    public function sendNote(Person $person, $ids, $noteText)
+    {
+        $agentChatRepository = $this->em->getRepository(AgentChat::class);
+        if (!$chat = $agentChatRepository->findGroupChat($person, $ids)) {
+            $chat = new AgentChat();
+            $chat
+                ->setType(AgentChat::TYPE_GROUP)
+                ->setName('Notification from: '.$person->getDisplayName());
+            $participants = $this->em->getRepository(Person::class)->findBy(['id' => $ids]);
+            foreach ($participants as $participant) {
+                $chat->addParticipant($participant);
+            }
+            $chat->addParticipant($person);
+        }
+        $message = new AgentChatMessage();
+        $message
+            ->setPerson($person)
+            ->setChat($chat)
+            ->setUuid(uniqid('', true))
+            ->setMessage($noteText);
+        $this->em->persist($chat);
+        $this->em->persist($message);
+        $this->em->flush();
+    }
+
     /**
      * @param $handler
      *
@@ -134,6 +161,7 @@ class NotificationService
                     'debug'  => $this->settings->get('notification.settings.pusher_client.debug'),
                 ]);
             case 'db':
+
                 return new NotificationClient('polling', [
                     'last_alert'       => $this->lastAlert(),
                     'polling_interval' => $this->settings->get('notification.settings.polling_client.polling_interval', 5000),
