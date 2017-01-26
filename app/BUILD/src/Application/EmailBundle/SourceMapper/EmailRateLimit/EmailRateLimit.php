@@ -32,25 +32,25 @@
 
 namespace Application\EmailBundle\SourceMapper\EmailRateLimit;
 
-use Application\EmailBundle\EntityRepository\SendmailSourceRepository;
+use Application\DeskPRO\Entity\DataStore;
+use Application\EmailBundle\Entity\SendmailSource;
+use Orb\Util\Arrays;
+use Orb\Util\Dates;
+use Symfony\Component\DependencyInjection\Container;
 
 class EmailRateLimit implements EmailRateLimitInterface
 {
+    /**
+     * @var Container
+     */
+    private $container;
+
+    /**
+     * @var \Application\EmailBundle\EntityRepository\SendmailSourceRepository
+     */
     private $sourceRepository;
 
     /**
-     * Array of seconds => limit which defines the max messages in that time period.
-     *
-     * For example:
-     *
-     * <code>
-     * $limits = [
-     *     900     => 20,  // 15 minutes
-     *     86400   => 50,  // 24 hours
-     *     1209600 => 300, // 14 days
-     * ];
-     * </code>
-     *
      * @var array
      */
     private $limits;
@@ -73,14 +73,15 @@ class EmailRateLimit implements EmailRateLimitInterface
     /**
      * EmailRateLimit constructor.
      *
-     * @param SendmailSourceRepository $sourceRepository
-     * @param array                    $limits
-     * @param array|null               $in_account_ids
-     * @param \DateTime|null           $reset_date
+     * @param Container      $container
+     * @param array          $limits
+     * @param array|null     $in_account_ids
+     * @param \DateTime|null $reset_date
      */
-    public function __construct(SendmailSourceRepository $sourceRepository, array $limits, array $in_account_ids = null, \DateTime $reset_date = null)
+    public function __construct(Container $container, array $limits, array $in_account_ids = null, \DateTime $reset_date = null)
     {
-        $this->sourceRepository = $sourceRepository;
+        $this->container        = $container;
+        $this->sourceRepository = $container->get('doctrine.orm.default_entity_manager')->getRepository(SendmailSource::class);
         $this->limits           = $limits;
         $this->reset_date       = $reset_date;
         $this->in_account_ids   = $in_account_ids;
@@ -108,52 +109,34 @@ class EmailRateLimit implements EmailRateLimitInterface
             return false;
         }
 
-        $messageCount = substr_count($message['to_emails'] ?: '', '@')
-            + substr_count($message['cc_emails'] ?: '', '@')
-            + substr_count($message['bcc_emails'] ?: '', '@');
-
-        // TODO [cloudspam] proper cloud spam checker/handling
-        if (defined('DPC_IS_CLOUD') && \DpSys\License::getLicense()->isDemo()) {
-            if ($messageCount >= 15) {
-                \DpShutdown::add(function () use ($em) {
-                    $tmpdata = new \Application\DeskPRO\Entity\TmpData();
-                    $tmpdata->setType('cancel_for_abuse');
-                    $tmpdata->date_expire = new \DateTime('+30 minutes');
-                    $em->persist($tmpdata);
-                    $em->flush();
-
-                    $url = DP_MA_SERVER_SECURE.'/cloud/call/'.DPC_SITE_ID.'/'.$tmpdata->getCode();
-
-                    try {
-                        $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
-                        $client->setMethod(\Zend\Http\Request::METHOD_GET);
-                        $client->setUri($url);
-                        $r = $client->send();
-                    } catch (\Exception $e) {
-                        error_log('Failed to cancel site: '.$e->getMessage());
-                    }
-                });
-
-                return true;
-            }
-        }
-
-        foreach ($this->limits as $seconds => $limit) {
-
-            // case where this message itself has enough
-            // recipients to go over the limit
-            if ($messageCount > $limit) {
-                return true;
-            }
+        foreach ($this->limits as $options) {
+            $seconds  = $options['time'];
+            $limit    = $options['count'];
+            $actions  = $options['actions'];
+            $breached = false;
 
             $date = new \DateTime('@'.(time() - $seconds));
             if ($this->reset_date && $this->reset_date > $date) {
                 $date = $this->reset_date;
             }
 
-            $count = $this->sourceRepository->countSendingBetween($date, null, $this->in_account_ids, $limit);
-            if (($count + $messageCount) > $limit) {
-                return true;
+            // case where this message itself has enough
+            // recipients to go over the limit
+            if ($message['num_targets'] > $limit) {
+                $breached = true;
+            } else {
+                $count = $this->sourceRepository->countSendingBetween($date, null, $this->in_account_ids);
+                if (($count + $message['num_targets']) > $limit) {
+                    $breached = true;
+                }
+            }
+
+            if ($breached) {
+                $this->runActions($options);
+
+                if (in_array('rate_limit', $actions)) {
+                    return true;
+                }
             }
 
             if ($date === $this->reset_date) {
@@ -162,5 +145,76 @@ class EmailRateLimit implements EmailRateLimitInterface
         }
 
         return false;
+    }
+
+    private function runActions(array $options)
+    {
+        $id      = Arrays::generateHash($options);
+        $seconds = $options['time'];
+        $limit   = $options['count'];
+        $actions = $options['actions'];
+
+        $title = sprintf('Sendmail Rule(%d messages within %s)', $limit, Dates::secsToReadable($seconds));
+
+        $em = $this->container->get('doctrine.orm.default_entity_manager');
+
+        foreach ($actions as $act) {
+            switch ($act) {
+                case 'log_account_warning':
+                    \DpShutdown::add(function () use ($em, $id, $seconds, $limit, $actions, $options, $title) {
+                        /** @var DataStore $logWarningRec */
+                        $logWarningRec = $em->getRepository(DataStore::class)->getByName('sendmail_rate_limit.'.$id, true);
+                        $lastTime = $logWarningRec->getData('last_log', null);
+
+                        if (!$lastTime || $lastTime < (time() - $options['time'])) {
+                            $tmpdata = new \Application\DeskPRO\Entity\TmpData();
+                            $tmpdata->setType('log_account_warning');
+                            $tmpdata->setData('message', $title);
+                            $tmpdata->date_expire = new \DateTime('+30 minutes');
+                            $em->persist($tmpdata);
+                            $em->flush();
+
+                            $url = DP_MA_SERVER_SECURE.'/cloud/call/'.DPC_SITE_ID.'/'.$tmpdata->getCode();
+
+                            try {
+                                $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
+                                $client->setMethod(\Zend\Http\Request::METHOD_GET);
+                                $client->setUri($url);
+                                $r = $client->send();
+                            } catch (\Exception $e) {
+                                error_log('Failed to log_account_warning: '.$e->getMessage());
+                            }
+                        }
+
+                        $logWarningRec->setData('last_log', time());
+                        $em->persist($logWarningRec);
+                        $em->flush();
+                    });
+                    break;
+
+                case 'cancel_site':
+                    \DpShutdown::add(function () use ($em, $id, $seconds, $limit, $actions, $options, $title) {
+                        $tmpdata = new \Application\DeskPRO\Entity\TmpData();
+                        $tmpdata->setType('cancel_for_abuse');
+                        $tmpdata->setData('message', $title);
+                        $tmpdata->date_expire = new \DateTime('+30 minutes');
+                        $em->persist($tmpdata);
+                        $em->flush();
+
+                        $url = DP_MA_SERVER_SECURE.'/cloud/call/'.DPC_SITE_ID.'/'.$tmpdata->getCode();
+
+                        try {
+                            $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
+                            $client->setMethod(\Zend\Http\Request::METHOD_GET);
+                            $client->setUri($url);
+                            $r = $client->send();
+                        } catch (\Exception $e) {
+                            error_log('Failed to cancel site: '.$e->getMessage());
+                        }
+                    });
+
+                    break;
+            }
+        }
     }
 }

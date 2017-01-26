@@ -32,7 +32,6 @@
 
 namespace Application\EmailBundle\SourceMapper\EmailRateLimit;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Symfony\Component\DependencyInjection\Container;
 
 class EmailRateLimitFactory
@@ -44,48 +43,69 @@ class EmailRateLimitFactory
      */
     public static function create(Container $container)
     {
-        /** @var \Doctrine\DBAL\Connection $db */
-        $db             = $container->getDb();
-        $dp_account_ids = null;
-        if (defined('DPC_IS_CLOUD') && DPC_DEMO_EXPIRE) {
-            $dp_account_ids = array_map(function ($r) {
-                return $r['id'];
-            }, $db->fetchAll("
-                SELECT id
-                FROM email_accounts
-                WHERE outgoing_account LIKE '%PhpMailConfig%'
-            "));
+        if (!defined('DPC_IS_CLOUD') || (defined('DPC_NO_SENDMAIL_LIMITS') && DPC_NO_SENDMAIL_LIMITS)) {
+            return new NullEmailRateLimit();
         }
 
-        // Demo clouds have rate limits on our accounts
-        if (defined('DPC_IS_CLOUD') && DPC_DEMO_EXPIRE && $dp_account_ids) {
-            $reset_datetime = null;
+        $limits = self::getRateLimits();
 
-            if ($container instanceof DeskproContainer) {
-                $reset_setting = $container->getSetting('cloud.email_out.limits.reset_date');
+        if (!$limits) {
+            return new NullEmailRateLimit();
+        }
 
-                if ($reset_setting) {
-                    try {
-                        $reset_datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $reset_setting);
-                    } catch (\Exception $e) {
-                    }
-                }
-            }
+        $accountIds = array_map(function ($r) {
+            return $r['id'];
+        }, $container->get('database_connection')->fetchAll("
+            SELECT id
+            FROM email_accounts
+            WHERE outgoing_account LIKE '%PhpMailConfig%'
+        "));
 
-            $limits = [
-                900     => 20,  // 15 minutes
-                86400   => 50,  // 24 hours
-                1209600 => 300, // 14 days
+        if (!$accountIds) {
+            return new NullEmailRateLimit();
+        }
+
+        return new EmailRateLimit(
+            $container,
+            $limits,
+            $accountIds,
+            null
+        );
+    }
+
+    /**
+     * @return array
+     */
+    private static function getRateLimits()
+    {
+        if (!defined('DPC_IS_CLOUD')) {
+            return [];
+        }
+
+        if (DPC_NO_SENDMAIL_LIMITS) {
+            return [];
+        }
+
+        // Demos
+        if (DPC_DEMO_EXPIRE) {
+            return [
+                ['time' => 5       /* 5s */,  'count' => 25,  'actions' => ['cancel_site']],
+                ['time' => 900     /* 15m */, 'count' => 20,  'actions' => ['log_account_warning']],
+                ['time' => 86400   /* 24h */, 'count' => 50,  'actions' => ['rate_limit', 'log_account_warning']],
+                ['time' => 1209600 /* 14d */, 'count' => 300, 'actions' => ['rate_limit', 'log_account_warning']],
             ];
 
-            return new EmailRateLimit(
-                $container->getEm()->getRepository('EmailBundle:SendmailSource'),
-                $limits,
-                $dp_account_ids,
-                $reset_datetime
-            );
+        // New accounts (30 days)
+        } elseif (DPC_SITE_CREATED_AT > (time() - 3369600)) {
+            return [
+                ['time' => 5       /* 5s */,  'count' => max(DPC_AGENTS + 20, 25),  'actions' => ['cancel_site']],
+                ['time' => 900     /* 15m */, 'count' => 40,                        'actions' => ['log_account_warning']],
+                ['time' => 3600    /* 1h */,  'count' => max(DPC_AGENTS * 4, 60),   'actions' => ['rate_limit', 'log_account_warning']],
+            ];
+
+        // Everyone else
         } else {
-            return new NullEmailRateLimit();
+            return [];
         }
     }
 }
