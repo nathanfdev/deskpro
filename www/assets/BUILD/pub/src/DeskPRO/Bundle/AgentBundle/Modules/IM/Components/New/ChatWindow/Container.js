@@ -241,6 +241,7 @@ class Container extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     this.props.onSubmit(this.state.message);
+    this.props.saveDraft(this.props.current.get('id'), '');
     this.setState({ message: '' });
   }
 
