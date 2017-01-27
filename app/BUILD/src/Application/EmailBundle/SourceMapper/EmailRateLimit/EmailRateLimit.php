@@ -137,6 +137,8 @@ class EmailRateLimit implements EmailRateLimitInterface
                 if (in_array('rate_limit', $actions)) {
                     return true;
                 }
+
+                return false;
             }
 
             if ($date === $this->reset_date) {
@@ -161,6 +163,40 @@ class EmailRateLimit implements EmailRateLimitInterface
         foreach ($actions as $act) {
             switch ($act) {
                 case 'log_account_warning':
+                    if (!defined('DPC_SITE_FLAG_SILENCE_SENDMAIL_RATE_WARNING')) {
+                        \DpShutdown::add(function () use ($em, $id, $seconds, $limit, $actions, $options, $title) {
+                            /** @var DataStore $logWarningRec */
+                            $logWarningRec = $em->getRepository(DataStore::class)->getByName('sendmail_rate_limit.'.$id, true);
+                            $lastTime = $logWarningRec->getData('last_log', null);
+
+                            if (!$lastTime || $lastTime < (time() - $options['time'])) {
+                                $tmpdata = new \Application\DeskPRO\Entity\TmpData();
+                                $tmpdata->setType('log_account_warning');
+                                $tmpdata->setData('message', $title);
+                                $tmpdata->date_expire = new \DateTime('+30 minutes');
+                                $em->persist($tmpdata);
+                                $em->flush();
+
+                                $url = DP_MA_SERVER_SECURE.'/cloud/call/'.DPC_SITE_ID.'/'.$tmpdata->getCode();
+
+                                try {
+                                    $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
+                                    $client->setMethod(\Zend\Http\Request::METHOD_GET);
+                                    $client->setUri($url);
+                                    $r = $client->send();
+                                } catch (\Exception $e) {
+                                    error_log('Failed to log_account_warning: '.$e->getMessage());
+                                }
+                            }
+
+                            $logWarningRec->setData('last_log', time());
+                            $em->persist($logWarningRec);
+                            $em->flush();
+                        });
+                    }
+                    break;
+
+                case 'log_suspicious':
                     \DpShutdown::add(function () use ($em, $id, $seconds, $limit, $actions, $options, $title) {
                         /** @var DataStore $logWarningRec */
                         $logWarningRec = $em->getRepository(DataStore::class)->getByName('sendmail_rate_limit.'.$id, true);
@@ -168,7 +204,7 @@ class EmailRateLimit implements EmailRateLimitInterface
 
                         if (!$lastTime || $lastTime < (time() - $options['time'])) {
                             $tmpdata = new \Application\DeskPRO\Entity\TmpData();
-                            $tmpdata->setType('log_account_warning');
+                            $tmpdata->setType('log_suspicious');
                             $tmpdata->setData('message', $title);
                             $tmpdata->date_expire = new \DateTime('+30 minutes');
                             $em->persist($tmpdata);
