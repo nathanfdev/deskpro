@@ -46,7 +46,7 @@ class UpdateCleanup
 
     public function __construct(Container $container)
     {
-        $this->current = 17; //$container->get('deskpro.app_env')->getAppName();
+        $this->current = $container->get('deskpro.app_env')->getAppName();
         $this->reader  = $container->get('dp.updater.instance_reader');
     }
 
