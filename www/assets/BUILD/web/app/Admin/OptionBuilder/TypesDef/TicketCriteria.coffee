@@ -618,6 +618,9 @@ define [
       options.extraOptions = [
         {title: 'Unassigned', value: 0},
         {title: 'Current Agent', value: -1}
+        {title: 'Assigned Agent', value: -2}
+        {title: 'Member of assigned team', value: -3}
+        {title: 'Follower on the ticket', value: -4}
       ]
       def = @getStandardSelect(options)
       return def

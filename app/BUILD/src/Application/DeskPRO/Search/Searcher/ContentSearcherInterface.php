@@ -67,7 +67,7 @@ interface ContentSearcherInterface
      *
      * @return \Application\DeskPRO\Search\SearcherResult\ResultSet
      */
-    public function similarContent($content, array $in_types = null);
+    public function similarContent($content, array $in_types = []);
 
     /**
      * Results for the "omnisearch" search box.
