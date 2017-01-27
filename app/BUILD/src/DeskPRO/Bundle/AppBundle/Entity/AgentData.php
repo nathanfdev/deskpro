@@ -43,7 +43,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="agent_data", uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_extension_numbers", columns={"extension_number"})
  * })
- * @ORM\EntityListeners({"DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceWorkerListener"})
+ * @ORM\EntityListeners({
+ *     "DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceWorkerListener",
+ *     "DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceSettingsListener"
+ * })
  *
  * @JMS\ExclusionPolicy("all")
  *

@@ -37,6 +37,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Serializer;
 
+/**
+ * Class ZapierListener.
+ */
 class ZapierListener
 {
     /**
@@ -49,6 +52,12 @@ class ZapierListener
      */
     protected $serializer;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $entityManager
+     * @param Serializer    $serializer
+     */
     public function __construct(EntityManager $entityManager, Serializer $serializer)
     {
         $this->entityManager = $entityManager;
@@ -89,6 +98,7 @@ class ZapierListener
             default:
                 throw new \Exception('Unknown event '.$zapierHook->getEvent());
         }
+
         $httpClient->request('POST', $zapierHook->getTargetUrl(), $options);
     }
 }

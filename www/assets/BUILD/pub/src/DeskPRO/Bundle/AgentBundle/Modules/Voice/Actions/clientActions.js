@@ -3,6 +3,7 @@ import Immutable from 'immutable';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { callsEnabledSelector } from '../Selectors/agents';
 import { phoneTokenSelector, workerTokenSelector, idleActivitySidSelector, busyActivitySidSelector, offlineActivitySidSelector } from '../Selectors/client';
 import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
@@ -104,6 +105,18 @@ export const voiceBootstrap = createAction(
     }
 
     const messageBroker = window.DeskPRO_Window.getMessageBroker();
+    messageBroker.addMessageListener('agent.voice.calls_enabled', (data) => {
+      const state  = getState();
+      const agents = agentsSelector(state);
+
+      let agent  = agents.get(data.person_id);
+      if (!agent) {
+        return;
+      }
+
+      agent = agent.setIn(['agent_data', 'agent_calls_enabled'], !!data.agent_calls_enabled);
+      dispatch(updateCollection('Person', Immutable.List([agent]), 'replace'));
+    });
     messageBroker.addMessageListener('agent.voice.conference.participant-invite', (data) => {
       if (data.caller_person_id) {
         dispatch(loadBatch('Person', data.caller_person_id, 'all'));
