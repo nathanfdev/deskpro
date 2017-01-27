@@ -62,7 +62,9 @@ export class NotificationService {
 
   startPolling() {
     this.eventEmitter.on('action_alert', data => this.options.actionAlertsHandler.handle(data));
+    this.eventEmitter.on('user_notify', data => this.options.notificationsHandler.handle(data));
     this.clients.map(client => client.bind(`private-channel-${this.options.user.get('id')}`, 'action_alert'));
+    this.clients.map(client => client.bind(`private-channel-${this.options.user.get('id')}`, 'user_notify'));
     if (!this.heartbeat_disabled) {
       this.startHeartbeat();
     }

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Isvg from 'react-inlinesvg';
 import uuid from 'node-uuid';
 import striptags from 'striptags';
+import Notify from 'notifyjs';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { Container } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/ChatWindow';
 import * as chatsActions from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/chatsActions';
@@ -143,6 +144,12 @@ export class AgentTopBarContainer extends SeparateComponent {
       dispatch(chatsActions.closeChat(chatId));
     } else {
       dispatch(chatsActions.startChat(null, chatId));
+    }
+  }
+
+  componentDidMount() {
+    if (Notify.needsPermission && Notify.isSupported()) {
+      Notify.requestPermission();
     }
   }
 

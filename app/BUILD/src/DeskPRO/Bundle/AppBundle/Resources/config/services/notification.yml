@@ -81,6 +81,7 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
+      - "@avatar_resolver"
 
   #
   # ActionAlert message generators

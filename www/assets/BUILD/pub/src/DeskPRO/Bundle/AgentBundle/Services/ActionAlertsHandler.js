@@ -3,7 +3,7 @@ import { startChat } from '../Modules/IM/Actions/chatsActions';
 import { markMessages } from '../Modules/IM/Actions/messagesActions';
 import { addToCollection } from '../../AppBundle/Modules/RecordsStore/Actions/store';
 
-export class ActionAlertsHandler
+class ActionAlertsHandler
 {
   constructor(props) {
     this.options = {};
