@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Blobs;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
@@ -294,7 +295,7 @@ class BlobsController extends CrudController
 
     /**
      * @ApiDoc(
-     *     description="See archive content"
+     *     description="See archive info",
      *     requirements={
      *          {
      *              "name"="authId",
@@ -306,11 +307,137 @@ class BlobsController extends CrudController
      * )
      * @Rest\Get("/{authId}/archive", requirements={"authId"="(\d+\-)?[A-Z0-9]+"})
      *
-     * @param int $authId
+     * @param int     $authId
+     * @param Request $request
+     *
+     * @throws \Exception
      *
      * @return View
      */
-    public function getArchiveAction($authId)
+    public function getArchiveInfoAction($authId, Request $request)
     {
+        /** @var Blob $blob */
+        $blob = $this->findEntity($authId, $request);
+
+        $archive = $this->getArchive($blob);
+
+        try {
+            $zip = $this->get('archive_factory')->createZipArchive();
+            $zip->open($archive);
+        } finally {
+            @unlink($archive);
+        }
+
+        return new View($zip->getInfo());
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="See archive content",
+     *     requirements={
+     *          {
+     *              "name"="authId",
+     *              "requirement"="(\d+\-)?[A-Z0-9]+",
+     *              "description"="The id of the resource",
+     *              "dataType"="integer"
+     *          }
+     *      }
+     * )
+     * @Rest\Get("/{authId}/files", requirements={"authId"="(\d+\-)?[A-Z0-9]+"})
+     *
+     * @param int     $authId
+     * @param Request $request
+     *
+     * @throws \Exception
+     *
+     * @return View
+     */
+    public function getArchiveFilesAction($authId, Request $request)
+    {
+        /** @var Blob $blob */
+        $blob = $this->findEntity($authId, $request);
+
+        $archive = $this->getArchive($blob);
+
+        try {
+            //            $zippy = $this->get('deskpro.zippy');
+//            $archiveZip = $zippy->open($archive);
+
+//            $content = $archiveZip->getMembers();
+            $zip = $this->get('archive_factory')->createZipArchive();
+            $zip->open($archive);
+            $content = $zip->getMembers();
+        } finally {
+            @unlink($archive);
+        }
+
+        return new View($content);
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="See archive content",
+     *     requirements={
+     *          {
+     *              "name"="authId",
+     *              "requirement"="(\d+\-)?[A-Z0-9]+",
+     *              "description"="The id of the resource",
+     *              "dataType"="integer"
+     *          },
+     *          {
+     *              "name"="path",
+     *              "description"="The path of the file",
+     *          }
+     *      }
+     * )
+     * @Rest\Get("/{authId}/download/{path}", requirements={"authId"="(\d+\-)?[A-Z0-9]+","path"=".+"})
+     *
+     * @param int     $authId
+     * @param string  $path
+     * @param Request $request
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function getArchiveExtractedFileAction($authId, $path, Request $request)
+    {
+        /** @var Blob $blob */
+        $blob = $this->findEntity($authId, $request);
+
+        $archive = $this->getArchive($blob);
+
+        try {
+            $zip = $this->get('archive_factory')->createZipArchive();
+            $zip->open($archive);
+            $content = $zip->extractMembers($path);
+        } finally {
+            @unlink($archive);
+        }
+
+        $pieces = explode('/', $path);
+
+        $filename = array_pop($pieces);
+
+        $headers[] = 'Content-Disposition: inline; filename="'.addslashes($filename).'"';
+
+        return new Response($content[$path], Response::HTTP_OK, $headers);
+    }
+
+    /**
+     * @param Blob $blob
+     *
+     * @return string
+     */
+    private function getArchive(Blob $blob)
+    {
+        /** @var DeskproBlobStorage $blobStorage */
+        $blobStorage = $this->get('deskpro.blob_storage');
+        $fileId      = uniqid('archive', true);
+        $tmpDir      = $this->get('deskpro.app_env')->getUserTmpDir();
+        $archive     = $tmpDir.'/'.$fileId.$blob->getFilename();
+        $blobStorage->copyBlobRecordToFile($archive, $blob);
+
+        return $archive;
     }
 }
