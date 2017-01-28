@@ -9,7 +9,7 @@ define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
       )
       return
 
-    goAdmin: (ev, el) ->
+    goAgent: (ev, el) ->
       if not @done_set
         ev.preventDefault()
         @set_prom.success(=>
