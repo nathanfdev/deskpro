@@ -142,6 +142,25 @@
 		</div>
 	</div>
 
+	<div style="margin: 15px 15px 0 15px" ng-if="!valid_url">
+		<div class="alert alert-danger">
+			<div style="float:left">
+				<i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
+			</div>
+			<div style="margin-left: 50px;">
+				<h3 style="margin-top: 8px;">
+					Your web server appears to be misconfigured. The URL in your browser does not match the URI the server thinks it is.
+				</h3>
+				<p>
+					This is most commonly an issue with proxy servers and missing headers. Please refer to
+					<a href="https://support.deskpro.com/en/kb/articles/176" target="_blank">
+						this article
+					</a>.
+				</p>
+			</div>
+		</div>
+	</div>
+
 	<div style="margin: 15px" ng-if="http_method_errors">
 		<div class="alert alert-danger" style="margin-bottom: 0; position: relative;">
 			<div style="float:left">

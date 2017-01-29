@@ -491,4 +491,21 @@ class MiscController extends AbstractController
 
         throw $this->createNotFoundException();
     }
+
+    public function checkUrlAction(Request $request)
+    {
+        $scheme = $request->get('scheme');
+        $host   = $request->get('host');
+        $port   = (int) $request->get('port');
+
+        $actualScheme = $request->getScheme();
+        $actualHost   = $request->getHost();
+        $actualPort   = (int) $request->getPort();
+
+        $valid = $actualScheme === $scheme && $actualHost === $host && $actualPort === $port;
+
+        return $this->createJsonResponse([
+            'valid' => $valid,
+        ]);
+    }
 }
