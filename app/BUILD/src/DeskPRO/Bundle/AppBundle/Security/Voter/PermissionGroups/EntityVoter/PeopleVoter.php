@@ -50,18 +50,18 @@ class PeopleVoter implements PermissionGroupEntityVoterInterface
      */
     public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
+        $peopleUse = $user->hasPerm('agent_people.use');
+
         switch ($attribute) {
             case PermissionGroupVoter::CREATE:
-                return $user->hasPerm('agent_people.use') && $user->hasPerm('agent_people.create');
+                return $peopleUse && $user->hasPerm('agent_people.create');
             case PermissionGroupVoter::MODIFY:
-                return $user->hasPerm('agent_people.use') && $user->hasPerm('agent_people.edit');
+                return $peopleUse && $user->hasPerm('agent_people.edit');
             case PermissionGroupVoter::DELETE:
-                return $user->hasPerm('agent_people.use') && $user->hasPerm('agent_people.delete');
+                return $peopleUse && $user->hasPerm('agent_people.delete');
             case PermissionGroupVoter::VIEW_LIST:
             case PermissionGroupVoter::VIEW:
-                $agentData = $user->getAgentData();
-
-                return $user->hasPerm('agent_people.use') || ($agentData && $agentData->isVoiceEnabled());
+                return $peopleUse || ($user->getAgentData() && $user->getAgentData()->isVoiceEnabled());
         }
 
         return true;

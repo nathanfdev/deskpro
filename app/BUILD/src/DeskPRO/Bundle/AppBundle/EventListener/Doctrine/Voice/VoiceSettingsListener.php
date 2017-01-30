@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice;
 
 use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\Permission;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
@@ -54,6 +55,8 @@ class VoiceSettingsListener
     }
 
     /**
+     * Send notification to real-time update voice agents online count.
+     *
      * @ORM\PostPersist()
      * @ORM\PostUpdate()
      *
@@ -69,6 +72,36 @@ class VoiceSettingsListener
         ]);
 
         $this->em->persist($cm);
+        $this->em->flush();
+    }
+
+    /**
+     * Force set 'ticket.use' and 'person.use' permissions that are required to use voice.
+     *
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
+     *
+     * @param AgentData $agentData
+     */
+    public function setRelatedPermissions(AgentData $agentData)
+    {
+        if (!$agentData->isVoiceEnabled()) {
+            return;
+        }
+
+        $permission = new Permission();
+        $permission->setPerson($agentData->getPerson());
+        $permission->setName('agent_people.use');
+        $permission->setValue(1);
+
+        $this->em->persist($permission);
+
+        $permission = new Permission();
+        $permission->setPerson($agentData->getPerson());
+        $permission->setName('agent_tickets.use');
+        $permission->setValue(1);
+
+        $this->em->persist($permission);
         $this->em->flush();
     }
 }
