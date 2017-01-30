@@ -13,7 +13,8 @@ const initialState = {
   loadingMessages:  true,
   loadingCounts:    true,
   updatingMessages: false,
-  searching:        false
+  searching:        false,
+  drafts:           {}
 };
 
 export default createReducer(initialState, {
@@ -60,10 +61,15 @@ export default createReducer(initialState, {
 
   [actions.refreshCounts]: async(
     {
-      success: (state, payload) => state.set('counts', payload),
-      done:    state => state.set('loadingCounts', false)
+      success: (state, payload) => {
+        DeskPRO_Window.notifications.fireEvent('modCount', { count: payload.count }); // eslint-disable-line no-undef
+        return state.set('counts', payload);
+      },
+      done: state => state.set('loadingCounts', false)
     }
   ),
+  [actions.saveDraft]:  (state, payload) => state.set('drafts', payload),
+  [actions.loadDrafts]: (state, payload) => state.set('drafts', payload),
 
   [newActionAlerts]: MessagesHelper.handleActionAlerts
 });
