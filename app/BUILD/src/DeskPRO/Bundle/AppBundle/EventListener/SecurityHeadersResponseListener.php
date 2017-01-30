@@ -64,7 +64,7 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
      */
     public function onResponse(FilterResponseEvent $event)
     {
-        if ($this->container->has('deskpro.core.settings')) {
+        if ($this->container->initialized('deskpro.core.settings')) {
             if ($this->container->get('deskpro.core.settings')->get('core.disable_csp_headers')) {
                 return;
             }
