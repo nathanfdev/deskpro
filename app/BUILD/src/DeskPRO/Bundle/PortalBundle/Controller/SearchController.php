@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Labels\ContentLabelCloud;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory;
+use Application\DeskPRO\NewSearch\SearchEngine\SearchEngine;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Search\Adapter\AbstractAdapter;
@@ -339,6 +340,7 @@ class SearchController extends AbstractController
         $results = [];
 
         if ($q) {
+            /** @var SearchEngine $se */
             $se = $this->get('search_engine');
 
             /** @var UserSearchInterface $userSearch */
