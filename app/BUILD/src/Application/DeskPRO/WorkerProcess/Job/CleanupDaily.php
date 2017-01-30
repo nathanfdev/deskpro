@@ -34,6 +34,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TmpData;
+use DeskPRO\Bundle\UpdateBundle\Service\UpdateCleanup;
 
 class CleanupDaily extends AbstractJob
 {
@@ -363,5 +364,11 @@ BODY;
         // Cleanup rate limit logs
         //------------------------------
         $db->executeQuery('DELETE FROM `rate_limit_log` WHERE `date_created` < (NOW() - INTERVAL 1 DAY)');
+
+        //------------------------------
+        // Cleanup old builds
+        //------------------------------
+        $service = new UpdateCleanup(App::getContainer());
+        $service->cleanup();
     }
 }

@@ -26,36 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\UpdateBundle\Command;
 
-namespace DeskPRO\Bundle\UpdateBundle;
+use DeskPRO\Bundle\UpdateBundle\Service\UpdateCleanup;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-use DeskPRO\Bundle\UpdateBundle\Command as UpdateCommand;
-use Symfony\Component\Console\Application;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
-class UpdateBundle extends Bundle
+class UpdateCleanupCommand extends ContainerAwareCommand
 {
-    public function registerCommands(Application $application)
+    protected function configure()
     {
-        $application->add(new UpdateCommand\ActivateBuildCommand());
-        $application->add(new UpdateCommand\UpdateCommand());
-        $application->add(new UpdateCommand\UpdateStatusCommand());
-        $application->add(new UpdateCommand\DbBackupCommand());
-        $application->add(new UpdateCommand\DownloadBuildCommand());
-        $application->add(new UpdateCommand\StatusCommand());
-        $application->add(new UpdateCommand\UpdateCleanupCommand());
+        $this
+            ->setName('dp:update:cleanup')
+            ->setDescription('Deletes any builds older than $current - 1.')
+        ;
     }
 
-    public function getNamespace()
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
+        $service = new UpdateCleanup($this->getContainer());
+        $service->cleanup();
     }
 }
