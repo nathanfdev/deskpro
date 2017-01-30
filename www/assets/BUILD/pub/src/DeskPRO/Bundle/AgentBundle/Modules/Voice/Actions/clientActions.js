@@ -11,6 +11,7 @@ import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
 export const setVoiceTokens = createAction('VOICE_AGENT_SET_TOKENS');
 export const setVoiceActivities = createAction('VOICE_AGENT_SET_ACTIVITIES');
 export const addIncomingCall = createAction('VOICE_AGENT_ADD_RESERVATION');
+export const updateIncomigCall = createAction('VOICE_AGENT_UPDATE_RESERVATION');
 export const removeIncomingCall = createAction('VOICE_AGENT_REMOVE_RESERVATION');
 export const removeConferenceIncomingCalls = createAction('VOICE_AGENT_REMOVE_CONFERENCE_RESERVATIONS');
 export const addConnection = createAction('VOICE_AGENT_ADD_CONNECTION');
@@ -49,6 +50,7 @@ export const voiceBootstrap = createAction(
     });
     worker.on('reservation.accepted', () => {
       console.log('reservation.accepted');
+      window.DeskPRO_Window.getMessageChanneler().poller.setInterval(2000);
     });
     worker.on('reservation.canceled', (reservation) => {
       console.log('reservation.canceled');
@@ -62,8 +64,18 @@ export const voiceBootstrap = createAction(
     });
     worker.on('reservation.rescinded', (reservation) => {
       console.log('reservation.rescinded');
-      dispatch(removeIncomingCall(reservation));
       worker.update('ActivitySid', idleSid);
+
+      // another agent have already accepted the call
+      if (reservation.task.assignmentStatus === 'assigned') {
+        console.log('reservation.workerSid');
+        dispatch(updateIncomigCall(reservation));
+
+        // remove the reservation by timeout to show that another agent accepted the call
+        setTimeout(() => dispatch(removeIncomingCall(reservation)), 5000);
+      } else {
+        dispatch(removeIncomingCall(reservation));
+      }
     });
     worker.on('connected', (data) => {
       console.log('worker connected');
@@ -88,11 +100,15 @@ export const voiceBootstrap = createAction(
         console.log(error);
       });
       window.Twilio.Device.connect((connection) => {
+        const callId   = connection.message.CallId;
         const ticketId = connection.message.TicketId;
 
-        dispatch(addConnection(connection));
-        window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${ticketId}`);
+        // open ticket
+        api.sendPut(`DP_API/voice_client/phone_call/${callId}/assign_agent`).success(() => {
+          window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${ticketId}`);
+        });
 
+        dispatch(addConnection(connection));
         connection.disconnect(() => {
           // call has ended
           // unset incoming call and set worker activity to idle

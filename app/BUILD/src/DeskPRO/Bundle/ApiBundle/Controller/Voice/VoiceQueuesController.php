@@ -43,7 +43,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @Rest\Route("/voice_queues")
  * @Feature("voice")
  * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
- * @ApiUserContext("admin")
+ * @ApiUserContext("admin", agent={"list", "get", "count"})
  */
 class VoiceQueuesController extends AbstractVoiceCrudController
 {

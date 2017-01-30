@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketParticipant;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
@@ -53,6 +54,59 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class VoiceClientPhoneCallController extends BaseController
 {
+    use TicketSaveTrait;
+
+    /**
+     * Force agent assign to a ticket to open the created voice ticket asap.
+     * It works slowly via twilio callbacks.
+     *
+     * @ApiDoc(
+     *     description="Assign agent to the ticket",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Rest\Put("/assign_agent")
+     *
+     * @param VoicePhoneCall $phoneCall
+     *
+     * @return View
+     */
+    public function assignAgentAction(VoicePhoneCall $phoneCall)
+    {
+        // assign the phone call ticket to the first answered agent
+        $messageAttribute = $this->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $phoneCall,
+        ]);
+        if (!$messageAttribute) {
+            throw $this->createBadRequestException('Ticket not found');
+        }
+
+        $agent  = $this->getUser();
+        $ticket = $messageAttribute->getMessage()->getTicket();
+
+        if (!$agent->getAgentData() || !$agent->getAgentData()->isVoiceEnabled()) {
+            throw $this->createBadRequestException('Agent does not have voice permissions');
+        }
+        if ($phoneCall->getDateEnded()) {
+            throw $this->createBadRequestException('Phone call is already ended');
+        }
+
+        if (!$ticket->getAgent()) {
+            $ticket->setAgent($agent);
+        } else {
+            $participant = new TicketParticipant();
+            $participant->setPerson($agent);
+
+            $ticket->addParticipant($participant);
+        }
+
+        $this->saveTicket($ticket);
+
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
     /**
      * @ApiDoc(
      *     description="Toggle agent mute",
@@ -142,14 +196,6 @@ class VoiceClientPhoneCallController extends BaseController
         }
 
         $ticket = $messageAttribute->getMessage()->getTicket();
-
-        // add the invited agent to followers to prevent permission errors
-        $participant = new TicketParticipant();
-        $participant->setPerson($person);
-        $participant->setTicket($ticket);
-
-        $em->persist($participant);
-        $em->flush();
 
         // send agent invite
         $cm = new ClientMessage();

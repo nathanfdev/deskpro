@@ -15,6 +15,17 @@ export default createReducer(initialState, {
   [actions.setVoiceTokens]:     setFullPayload('tokens'),
   [actions.setVoiceActivities]: setFullPayload('activities'),
   [actions.addIncomingCall]:    pushPayloadToCollection('incomingCalls'),
+  [actions.updateIncomigCall]:  (state, payload) => {
+    let incomingCalls = state.get('incomingCalls');
+    if (payload.sid) {
+      const existingCall = incomingCalls.filter(incomingCall => incomingCall.sid === payload.sid).first();
+      if (existingCall) {
+        incomingCalls = incomingCalls.set(incomingCalls.indexOf(existingCall), payload);
+      }
+    }
+
+    return state.set('incomingCalls', incomingCalls);
+  },
   [actions.removeIncomingCall]: (state, payload) => {
     let incomingCalls = state.get('incomingCalls');
     if (payload.sid) {
