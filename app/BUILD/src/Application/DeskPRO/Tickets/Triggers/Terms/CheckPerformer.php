@@ -65,8 +65,25 @@ class CheckPerformer extends AbstractTriggerTerm
             return false;
         }
 
-        $options = $this->getTermOptions();
+        $options   = $this->getTermOptions();
+        $performer = $context->getPersonContext();
+        $check     = $options['person_ids'];
 
-        return $this->isIntMatch($ticket, $context, TermValue::createWithValue($context->getPersonContext()->getId()), $options['person_ids']);
+        // Assigned Agent
+        if (in_array('-1', $check)) {
+            return $performer->getId() === $ticket->getAgentId();
+        }
+
+        // Member of assigned team
+        if (in_array('-2', $check) && ($team = $ticket->getAgentTeam())) {
+            return $performer->getHelper('Agent')->isTeamMember($team->getId());
+        }
+
+        // Follower of the ticket
+        if (in_array('-3', $check)) {
+            return $ticket->hasParticipantPerson($performer->getId());
+        }
+
+        return $this->isIntMatch($ticket, $context, TermValue::createWithValue($performer->getId()), $check);
     }
 }

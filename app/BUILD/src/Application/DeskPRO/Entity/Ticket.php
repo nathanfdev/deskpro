@@ -2511,7 +2511,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             return 0;
         }
 
-        return $this->agent['id'];
+        return $this->getAgent()->getId();
     }
 
     /**
