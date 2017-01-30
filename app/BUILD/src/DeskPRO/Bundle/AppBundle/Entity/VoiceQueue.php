@@ -260,7 +260,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return Person[]
+     * @return Person[]|ArrayCollection
      */
     public function getAgents()
     {

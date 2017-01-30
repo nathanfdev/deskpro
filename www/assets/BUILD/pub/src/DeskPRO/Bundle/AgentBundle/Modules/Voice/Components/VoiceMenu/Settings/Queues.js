@@ -25,7 +25,7 @@ class Queues extends React.Component {
       agents = agents.push(agentId);
     }
 
-    onChange(queue, agents.toJS());
+    onChange(queue, agents.contains(agentId));
   };
 
   render() {

@@ -35,6 +35,9 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceQueueType;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class VoiceQueuesController.
@@ -43,11 +46,44 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @Rest\Route("/voice_queues")
  * @Feature("voice")
  * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
- * @ApiUserContext("admin", agent={"list", "get", "count"})
+ * @ApiUserContext("admin", agent={"list", "get", "count", "toggleAgent"})
  */
 class VoiceQueuesController extends AbstractVoiceCrudController
 {
     public static $entity       = VoiceQueue::class;
     public static $type         = VoiceQueueType::class;
     public static $listPaginate = false;
+
+    /**
+     * @ApiDoc(
+     *     description="Toggle agent in voice queue list",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Rest\Put("/{queue}/toggle_agent")
+     *
+     * @param VoiceQueue $queue
+     * @param Request    $request
+     *
+     * @return View
+     */
+    public function toggleAgentAction(VoiceQueue $queue, Request $request)
+    {
+        $enabled = $request->request->get('enabled');
+        $person  = $this->getUser();
+
+        if ($enabled) {
+            $queue->addAgent($person);
+        } else {
+            $queue->removeAgent($person);
+        }
+
+        $em = $this->getManager();
+        $em->persist($queue);
+        $em->flush();
+
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
 }
