@@ -396,6 +396,15 @@ class Runner
      */
     public function executeSource(EmailSource $source, AbstractReader $reader = null)
     {
+        if (defined('DPC_SITE_FLAG_DISABLE_INMAIL')) {
+            $source->status     = 'error';
+            $source->error_code = 'rate_limit';
+            App::getOrm()->persist($source);
+            App::getOrm()->flush();
+
+            return false;
+        }
+
         if (!$this->logMessages) {
             $this->logMessages = new \Orb\Log\Writer\ArrayWriter();
             $this->logMessages->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
