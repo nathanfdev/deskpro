@@ -754,6 +754,7 @@ class TwilioCallbacksController extends BaseController
                 ->setNumber($number)
                 ->setFromNumber($phoneNumber)
                 ->setPerson($person)
+                ->setType(VoicePhoneCall::DIRECTION_INBOUND)
                 ->setData($query->all())
             ;
 

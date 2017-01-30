@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
+import MediaControls from 'DeskPRO/Component/MediaControls';
 import classNames from 'classnames';
 import Avatar from '../Common/Avatar';
-import MediaControls from './MediaControls';
 
 class TicketMessage extends React.Component {
 

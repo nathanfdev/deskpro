@@ -64,10 +64,15 @@ class VoiceSettingsListener
      */
     public function sendVoiceAgentCallsEnabledNotification(AgentData $agentData)
     {
+        $agent = $agentData->getPerson();
+        if (!$agent) {
+            return;
+        }
+
         $cm = new ClientMessage();
         $cm->setChannel('agent.voice.calls_enabled');
         $cm->setData([
-            'person_id'           => $agentData->getPerson()->getId(),
+            'person_id'           => $agent->getId(),
             'agent_calls_enabled' => $agentData->isAgentCallsEnabled(),
         ]);
 
@@ -89,19 +94,21 @@ class VoiceSettingsListener
             return;
         }
 
-        $permission = new Permission();
-        $permission->setPerson($agentData->getPerson());
-        $permission->setName('agent_people.use');
-        $permission->setValue(1);
+        $agent = $agentData->getPerson();
+        if (!$agent) {
+            return;
+        }
 
-        $this->em->persist($permission);
+        foreach (['agent_people.use', 'agent_tickets.use'] as $permName) {
+            if (!$agent->hasPerm($permName)) {
+                $permission = new Permission();
+                $permission->setPerson($agent);
+                $permission->setName($permName);
+                $permission->setValue(1);
 
-        $permission = new Permission();
-        $permission->setPerson($agentData->getPerson());
-        $permission->setName('agent_tickets.use');
-        $permission->setValue(1);
-
-        $this->em->persist($permission);
-        $this->em->flush();
+                $this->em->persist($permission);
+                $this->em->flush();
+            }
+        }
     }
 }

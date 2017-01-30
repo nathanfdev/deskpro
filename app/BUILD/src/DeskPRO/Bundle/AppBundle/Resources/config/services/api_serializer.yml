@@ -216,16 +216,18 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  # listeners and subscribers
-  api_serializer.sideload_listener:
-    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadListener
+  api_serializer.handler.voice_phone_call:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Voice\VoicePhoneCallHandler
     arguments:
       - "@doctrine.orm.default_entity_manager"
     tags:
-      - { name: "jms_serializer.event_subscriber" }
+      - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.deferred_listener:
-    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\DeferredPropertiesListener
+  # listeners and subscribers
+  api_serializer.sideload_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadAndDeferredListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: "jms_serializer.event_subscriber" }
 

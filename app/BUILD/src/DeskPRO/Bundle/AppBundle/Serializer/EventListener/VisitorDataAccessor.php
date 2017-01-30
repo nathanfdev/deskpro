@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 
 use JMS\Serializer\GenericSerializationVisitor;
+use JMS\Serializer\VisitorInterface;
 
 /**
  * Class VisitorAccessor.
@@ -36,11 +37,11 @@ use JMS\Serializer\GenericSerializationVisitor;
 class VisitorDataAccessor
 {
     /**
-     * @param GenericSerializationVisitor $visitor
+     * @param VisitorInterface $visitor
      *
      * @return mixed
      */
-    public static function getData(GenericSerializationVisitor $visitor)
+    public static function getData(VisitorInterface $visitor)
     {
         $property = self::getReflectionProperty();
         $data     = $property->getValue($visitor);
@@ -50,10 +51,10 @@ class VisitorDataAccessor
     }
 
     /**
-     * @param GenericSerializationVisitor $visitor
-     * @param mixed                       $data
+     * @param VisitorInterface $visitor
+     * @param mixed            $data
      */
-    public static function setData(GenericSerializationVisitor $visitor, $data)
+    public static function setData(VisitorInterface $visitor, $data)
     {
         $property = self::getReflectionProperty();
         $property->setValue($visitor, $data);

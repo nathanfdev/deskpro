@@ -140,6 +140,48 @@ class LanguagesController extends CrudController
     }
 
     /**
+     * @ApiDoc(
+     *      section="Languages",
+     *      description="provide admin phrases for frontend",
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      }
+     * )
+     * @Rest\Get("/admin_phrases")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function adminPhrasesAction(Request $request)
+    {
+        $phrases = [
+            'agent.voice.call_new_incoming',
+            'agent.voice.call_answered',
+            'agent.voice.call_participant_muted',
+            'agent.voice.call_participant_unmuted',
+            'agent.voice.call_participant_hold',
+            'agent.voice.call_participant_unhold',
+            'agent.voice.call_agent_invited',
+            'agent.voice.call_agent_transfer',
+            'agent.voice.call_user_joined',
+            'agent.voice.call_agent_joined',
+            'agent.voice.call_agent_cancel_invite',
+            'agent.voice.call_agent_ignore_invite',
+            'agent.voice.call_agent_left',
+            'agent.voice.call_user_left',
+            'agent.voice.call_user_disconnected',
+            'agent.voice.call_agent_disconnected',
+            'agent.voice.call_agent_hangup',
+            'agent.voice.call_started',
+            'agent.voice.call_ended',
+        ];
+
+        return $this->getPhrasesResponse($request, $phrases);
+    }
+
+    /**
      * @param Request $request
      * @param array   $phrases
      *
