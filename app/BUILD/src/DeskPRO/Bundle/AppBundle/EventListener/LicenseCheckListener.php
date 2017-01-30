@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
+use Application\DeskPRO\HttpFoundation\Session as AgentSession;
 use DeskPRO\Bundle\AppBundle\EventListener\Helper\LowTemplateHelper;
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
@@ -167,12 +168,17 @@ final class LicenseCheckListener implements EventSubscriberInterface
             $this->interfaceInfo->isAgentInterface()
             || ($this->interfaceInfo->isUserInterface() && $lic->isPastExpireDate() >= 14)
         )) {
-            $date = $lic->getExpireDate()->format('F jS');
+            $date    = $lic->getExpireDate()->format('F jS');
             $message = "Your helpdesk license expired on {$date}. To continue using your helpdesk,
                 an administrator needs to renew the license. Go to
-                <a href='{$this->container->get('router')->generate('admin_interface')}#/license'>billing settings</a>";
+                <a href='{$this->container->get('router')->generate('admin_interface')}#/license'>billing settings</a>.";
 
-            if ($this->container->get('session')->getPerson()->isAgent()) {
+            // In agent interface add note if they are not an admin
+            if ($this->container->initialized('session')
+                && $this->container->get('session') instanceof AgentSession
+                && $this->container->get('session')->getPerson()
+                && !$this->container->get('session')->getPerson()->canAdmin()
+            ) {
                 $message .= '<p>Note: You are not an administrator and cannot make this change yourself.
                     Please get your administrator to log in and update the license.</p>';
             }
