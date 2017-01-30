@@ -632,7 +632,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			if (!$title.length) {
 				return;
 			}
-			-1 === $problems.val() ? $title.show() : $title.hide();
+			-1 === parseInt($problems.val()) ? $title.show() : $title.hide();
 		});
 
 		this.draft.init();

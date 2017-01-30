@@ -2118,6 +2118,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       self.showCloseProblemOverlay();
     });
 
+    var $problems = this.getEl('ticket_problem_id'), $title ;
+    $problems.on('change', function () {
+      var $title = self.getEl('create_problem');
+    	if (-1 === parseInt($problems.val())) {
+        $title.show();
+			} else {
+        $title.hide();
+			}
+    });
+
 		this.getEl('field_holders').on('click', '.incident-link', function () {
 			var pid = $(this).data('problem-id')
 				, $item = $('#problems-section li.is-nav-item[data-problem-id="' + pid + '"] [data-route]')
