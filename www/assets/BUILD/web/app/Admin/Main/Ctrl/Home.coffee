@@ -35,7 +35,7 @@ define [
       if w.parent != window
         w = w.parent
       l = w.location
-      @Api.sendGet('check_url', {scheme: l.protocol.replace(':', ''), host: encodeURIComponent(l.host), port: l.port || 80}).then((res) =>
+      @Api.sendGet('check_url', {scheme: l.protocol.replace(':', ''), host: encodeURIComponent(l.hostname), port: l.port || 80}).then((res) =>
         @$scope.valid_url = res.data.valid
       )
 
