@@ -35,6 +35,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Bundle\UpdateBundle\Service\UpdateCleanup;
+use Symfony\Bridge\Monolog\Handler\DebugHandler;
 
 class CleanupDaily extends AbstractJob
 {
@@ -368,7 +369,20 @@ BODY;
         //------------------------------
         // Cleanup old builds
         //------------------------------
+
+        $logger = new \Monolog\Logger('out');
+        $debug  = new DebugHandler();
+        $logger->pushHandler($debug);
+
         $service = new UpdateCleanup(App::getContainer());
-        $service->cleanup();
+        $service->cleanup(true, $logger);
+
+        $logString = implode("\n", array_map(function ($r) {
+            return '[UpdateCleanup] '.$r['message'];
+        }, $debug->getLogs()));
+
+        if ($logString) {
+            $this->logStatus($logString);
+        }
     }
 }
