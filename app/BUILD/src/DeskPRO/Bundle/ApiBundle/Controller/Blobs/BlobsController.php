@@ -328,7 +328,7 @@ class BlobsController extends CrudController
             @unlink($archive);
         }
 
-        return new View($zip->getInfo());
+        return new View(['data' => $zip->getInfo()]);
     }
 
     /**
@@ -371,7 +371,7 @@ class BlobsController extends CrudController
             @unlink($archive);
         }
 
-        return new View($content);
+        return new View(['data' => $content]);
     }
 
     /**

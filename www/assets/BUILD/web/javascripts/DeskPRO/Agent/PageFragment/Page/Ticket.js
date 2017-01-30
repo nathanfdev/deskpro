@@ -1530,6 +1530,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		// open links in new window
 		$(messageEl).find('a').on('click', function(ev) {
+			if ($(this).parents('.archive-blob').length > 0) {
+				ev.preventDefault();
+        var $rElement = $('<div style="display: inline-block"></div>').insertAfter(this);
+        var data = {
+        	authId: $(this).data('blob-authid'),
+					href: this.href,
+        	text: this.text
+				}
+        $(this).hide();
+				window.AgentLegacyBundle.renderMessageArchiveAttachment($rElement.get(0), data);
+
+				return false;
+			}
 			if ($(this).hasClass('cboxElement')) {
 				return;
 			}

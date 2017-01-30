@@ -1,33 +1,92 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
+import * as actions from '../../Actions/archiveActions';
 
-class ArchiveMenu extends React.Component {
+@connect(state => ({
+  archive: state.Tickets.archive
+}))
+export class ArchiveMenuContainer extends React.Component {
   static propTypes = {
-    list: PropTypes.array
+    authId:   PropTypes.string,
+    title:    PropTypes.string,
+    href:     PropTypes.string,
+    dispatch: PropTypes.func,
+    archive:  PropTypes.object.isRequired
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      file: this.props.archive.get('files')
+    };
+  }
+
+  componentWillMount() {
+    const { dispatch, authId } = this.props;
+
+    dispatch(actions.loadFiles(authId));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      file: nextProps.archive.get('files')
+    });
+  }
+
+  getLink = (element) => {
+    const { authId } = this.props;
+    return `/api/v2/blobs/${authId}/download/${element.name}`;
+  };
+
+  render() {
+    return (
+      <ArchiveMenu
+        title={this.props.title}
+        href={this.props.href}
+        list={this.props.archive.get('files')}
+        getLink={this.getLink}
+      />
+    );
+  }
+}
+
+export class ArchiveMenu extends React.Component {
+  static propTypes = {
+    list:    PropTypes.object,
+    getLink: PropTypes.func,
+    title:   PropTypes.string,
+    href:    PropTypes.string,
+  };
+
+  static defaultProps = {
+    list: {},
+    getLink() {}
   };
 
   static unflattenList(list, index, level) {
     const tree = [];
     let localIndex = index;
 
-    while (localIndex < list.length) {
-      const path = list[localIndex].name.split('/');
-      list[localIndex].dir = path[path.length - 1] === '';
+    while (localIndex < list.size) {
+      const element = list.get(localIndex).toObject();
+      const path = list.get(localIndex).get('name').split('/');
+      element.dir = path[path.length - 1] === '';
 
-      if (!list[localIndex].dir) {
+      if (!element.dir) {
         if (level > path.length - 1) {
           return tree;
         }
-        list[localIndex].filename = path[path.length - 1];
-        tree.push(list[localIndex]);
+        element.filename = path[path.length - 1];
+        tree.push(element);
       } else {
         if (level > path.length - 2) {
           return tree;
         }
-        list[localIndex].filename = path[path.length - 2];
-        list[localIndex].children = ArchiveMenu.unflattenList(list, localIndex + 1, level + 1);
-        tree.push(list[localIndex]);
-        localIndex += ArchiveMenu.recursiveLength(list[localIndex].children);
+        element.filename = path[path.length - 2];
+        element.children = ArchiveMenu.unflattenList(list, localIndex + 1, level + 1);
+        tree.push(element);
+        localIndex += ArchiveMenu.recursiveLength(element.children);
       }
       localIndex += 1;
     }
@@ -45,24 +104,6 @@ class ArchiveMenu extends React.Component {
     return length;
   }
 
-  static renderTree(tree) {
-    if (tree) {
-      return (
-        <List>
-          {tree.map(element =>
-            <ListElement
-              icon={element.dir ? 'folder' : 'file'}
-              label={element.name}
-            >
-              {ArchiveMenu.renderTree(element.children)}
-            </ListElement>
-          )}
-        </List>
-      );
-    }
-    return null;
-  }
-
   constructor(props) {
     super(props);
     this.state = {
@@ -71,6 +112,7 @@ class ArchiveMenu extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
     if (nextProps.list !== this.props.list) {
       this.setState({
         tree: ArchiveMenu.unflattenList(nextProps.list, 0, 0)
@@ -79,16 +121,36 @@ class ArchiveMenu extends React.Component {
   }
 
   getFileList() {
-    return ArchiveMenu.renderTree(this.state.tree);
+    return this.renderTree(this.state.tree);
+  }
+
+  renderTree(tree) {
+    if (tree) {
+      return (
+        <List>
+          {tree.map(element =>
+            <ListElement
+              icon={element.dir ? 'folder' : 'file'}
+              href={element.dir ? '' : this.props.getLink(element)}
+              label={element.filename}
+            >
+              {this.renderTree(element.children)}
+            </ListElement>
+          )}
+        </List>
+      );
+    }
+    return null;
   }
 
   render() {
     return (
-      <div>
-        {this.getFileList()}
+      <div className="archive-popup">
+        <div className="header"><a href={this.props.href}>{this.props.title}</a></div>
+        <div className="content">
+          {this.getFileList()}
+        </div>
       </div>
     );
   }
 }
-
-export default ArchiveMenu;

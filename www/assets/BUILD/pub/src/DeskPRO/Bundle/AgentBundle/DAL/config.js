@@ -1,6 +1,7 @@
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { TicketFilterRepository } from './Repositories/TicketFilterRepository';
 import { UserChatRepository } from './Repositories/UserChatRepository';
+import BlobRepository from './Repositories/BlobRepository';
 import { AgentChatRepository } from './Repositories/AgentChatRepository';
 import { FeedbackRepository } from './Repositories/FeedbackRepository';
 import { FeedbackCommentRepository } from './Repositories/FeedbackCommentRepository';
@@ -12,6 +13,7 @@ import { OnboardingRepository } from './Repositories/OnboardingRepository';
 
 export const repositoriesConfig = {
   AgentChat:            { type: 'api', url: '/agent_chats', repositoryClass: AgentChatRepository },
+  Blob:                 { type: 'api', url: '/blobs', repositoryClass: BlobRepository },
   Content:              { type: 'factory', factory: () => new ContentRepository(api) },
   Comment:              { type: 'factory', factory: () => new CommentsRepository(api) },
   Feedback:             { type: 'api', url: '/feedback', repositoryClass: FeedbackRepository },
