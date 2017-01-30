@@ -86,7 +86,7 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
         }
 
         try {
-            $this->protocol->connect($host, $port, $ssl, $logger, $verifyCertificate);
+            $this->protocol->connect($host, $port, $ssl, $verifyCertificate);
             if ($logger) {
                 $logger->logDebug('[protocol] connect okay');
             }

@@ -100,6 +100,16 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
             $port = $ssl == 'SSL' ? 995 : 110;
         }
 
+        $context = null;
+        if (!$verifyCertificate) {
+            $context = stream_context_create([
+                $wrapper => [
+                    'verify_peer'      => $verifyCertificate,
+                    'verify_peer_name' => $verifyCertificate,
+                ],
+            ]);
+        }
+
         $errno        = 0;
         $errstr       = '';
         $this->socket = @stream_socket_client(
@@ -108,12 +118,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
             $errstr,
             $this->stream_timeout,
             \STREAM_CLIENT_CONNECT,
-            stream_context_create([
-                $wrapper => [
-                    'verify_peer'      => $verifyCertificate,
-                    'verify_peer_name' => $verifyCertificate,
-                ],
-            ])
+            $context
         );
         if (!$this->socket) {
             throw new Exception\RuntimeException('cannot connect to host; error = '.$errstr.' (errno = '.$errno.' )');
