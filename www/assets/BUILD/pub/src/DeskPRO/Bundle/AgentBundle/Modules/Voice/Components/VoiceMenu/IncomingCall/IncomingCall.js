@@ -122,11 +122,21 @@ class IncomingCall extends React.Component {
   }
 
   renderAcceptedCall() {
+    const { incomingCall, agents } = this.props;
+    const agentId = incomingCall.task.attributes.deskpro_assigned_agent;
+
+    let agent;
+    if (agentId) {
+      agent = agents.get(agentId);
+    }
+
     return (
       <div className="incoming-call">
         <div className="incoming-call-another-agent-message">
-          Call was accepted by another agent.
+          Call was accepted by another agent
         </div>
+
+        {agent && <CallTarget target={{ type: 'agent', agent }} />}
 
         <div className="buttons">
           <a

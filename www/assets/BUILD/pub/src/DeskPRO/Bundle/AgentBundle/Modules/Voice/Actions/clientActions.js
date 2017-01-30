@@ -71,8 +71,21 @@ export const voiceBootstrap = createAction(
         console.log('reservation.workerSid');
         dispatch(updateIncomigCall(reservation));
 
-        // remove the reservation by timeout to show that another agent accepted the call
-        setTimeout(() => dispatch(removeIncomingCall(reservation)), 5000);
+        // fetch the ticket info to get assigned agent
+        const ticketId = reservation.task.attributes.deskpro_ticket_id;
+        const fetchTimeout = setInterval(() => {
+          api.sendGet(`DP_API/tickets/${ticketId}`).success(({ data }) => {
+            if (data.agent) {
+              clearInterval(fetchTimeout);
+
+              reservation.task.attributes.deskpro_assigned_agent = data.agent;
+              dispatch(updateIncomigCall(reservation));
+
+              // remove the reservation by timeout to show that another agent accepted the call
+              setTimeout(() => dispatch(removeIncomingCall(reservation)), 5000);
+            }
+          });
+        }, 500);
       } else {
         dispatch(removeIncomingCall(reservation));
       }
