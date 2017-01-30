@@ -17,6 +17,7 @@ define [
       @$scope.hide_admin_upgrade_notice = window.hide_admin_upgrade_notice || false
       @$scope.readable_config = false
       @$scope.missconfigure_web_root = false
+      @$scope.valid_url = true
 
       @online_agents  = []
       @offline_agents = []
@@ -30,6 +31,14 @@ define [
       return
 
     initialLoad: ->
+      w = window
+      if w.parent != window
+        w = w.parent
+      l = w.location
+      @Api.sendGet('check_url', {scheme: l.protocol.replace(':', ''), host: encodeURIComponent(l.host), port: l.port || 80}).then((res) =>
+        @$scope.valid_url = res.data.valid
+      )
+
       @refreshAgents()
       promise = @Api.sendDataGet({
         lastLogin:   '/me/last-login',
