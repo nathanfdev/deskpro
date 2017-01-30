@@ -1,13 +1,14 @@
 import { createReducer } from 'Ampliflux';
 import Immutable from 'immutable';
-import { setFullPayload, pushPayloadToCollection, deletePayloadFromCollection } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
+import { setFullPayload, pushPayloadToCollection, deletePayloadFromCollection, setValue } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
 import * as actions from '../Actions/clientActions';
 
 const initialState = {
-  tokens:        {},
-  activities:    {},
-  incomingCalls: [],
-  connections:   []
+  tokens:         {},
+  activities:     {},
+  incomingCalls:  [],
+  connections:    [],
+  outboundNumber: null
 };
 
 export default createReducer(initialState, {
@@ -37,5 +38,7 @@ export default createReducer(initialState, {
     return state.set('incomingCalls', incomingCalls);
   },
   [actions.addConnection]:    pushPayloadToCollection('connections'),
-  [actions.removeConnection]: deletePayloadFromCollection('connections')
+  [actions.removeConnection]: deletePayloadFromCollection('connections'),
+  [actions.openDialpad]:      setFullPayload('outboundNumber'),
+  [actions.dialpadOpened]:    setValue('outboundNumber', null)
 });

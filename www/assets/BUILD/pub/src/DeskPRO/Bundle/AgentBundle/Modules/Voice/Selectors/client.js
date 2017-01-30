@@ -71,3 +71,8 @@ export const connectionsSelector = createSelector(
   stateSelector,
   state => state.get('connections')
 );
+
+export const outboundNumberSelector = createSelector(
+  stateSelector,
+  state => state.get('outboundNumber')
+);

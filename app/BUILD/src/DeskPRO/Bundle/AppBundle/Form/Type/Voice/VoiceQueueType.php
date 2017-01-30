@@ -135,6 +135,7 @@ class VoiceQueueType extends AbstractType
                 }
 
                 $agentData->setIsVoiceEnabled(true);
+                $agentData->setOutboundCallsEnabled(true);
             }
         }
     }

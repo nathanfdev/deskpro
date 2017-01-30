@@ -14,6 +14,8 @@ export const removeIncomingCall = createAction('VOICE_AGENT_REMOVE_RESERVATION')
 export const removeConferenceIncomingCalls = createAction('VOICE_AGENT_REMOVE_CONFERENCE_RESERVATIONS');
 export const addConnection = createAction('VOICE_AGENT_ADD_CONNECTION');
 export const removeConnection = createAction('VOICE_AGENT_REMOVE_CONNECTION');
+export const openDialpad = createAction('VOICE_AGENT_OPEN_DIALPAD');
+export const dialpadOpened = createAction('VOICE_AGENT_DIALPAD_OPENED');
 
 let worker;
 
