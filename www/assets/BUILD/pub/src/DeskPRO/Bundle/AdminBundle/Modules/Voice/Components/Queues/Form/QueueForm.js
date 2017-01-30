@@ -67,7 +67,7 @@ class QueueForm extends React.Component {
           account,
           name:           queue ? queue.get('name') : '',
           agents:         queue ? queue.get('agents').toArray() : [],
-          routing_model:  queue ? queue.get('routing_model') : 'round_robin',
+          routing_model:  queue ? queue.get('routing_model') : 'automatic',
           max_queue_size: queue ? queue.get('max_queue_size') : 0
         },
         errorList: {},

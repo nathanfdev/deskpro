@@ -28,39 +28,25 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
-use DeskPRO\Bundle\AppBundle\Entity\AgentData;
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetType;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class PersonAgentDataType.
+ * Class AgentProfileType.
  */
-class PersonAgentDataType extends AbstractType
+class AgentProfileType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('extension_number', NumberType::class, [
-                'property_path' => 'extensionNumber',
-            ])
-            ->add('voicemail_asset', VoiceAssetType::class, [
-                'property_path' => 'voicemailAsset',
-                'required'      => false,
-            ])
-            ->add('is_voice_enabled', ApiBooleanType::class, [
-                'property_path' => 'isVoiceEnabled',
-            ])
-            ->add('outbound_calls_enabled', ApiBooleanType::class, [
-                'property_path' => 'outboundCallsEnabled',
-            ])
-        ;
+        $builder->add('agent_data', AgentDataProfileType::class, [
+            'property_path' => 'agentData',
+        ]);
     }
 
     /**
@@ -69,7 +55,12 @@ class PersonAgentDataType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => AgentData::class,
+            'data_class'  => Person::class,
+            'constraints' => [
+                new AppAssert\Person\PersonType([
+                    'type' => 'agent',
+                ]),
+            ],
         ]);
     }
 }
