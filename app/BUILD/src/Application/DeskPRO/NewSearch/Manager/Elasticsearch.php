@@ -226,7 +226,7 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
             $res = $res->getData();
             if (version_compare(@$res['version']['number'], '2.0.0') < 0) {
                 throw new \Exception('DeskPRO is not compatible with your ElasticSearch '.@$res['version']['number']
-                    .' server. Please use DeskPRO with an ElasticSearch 2.x server.');
+                    .' server. Please use DeskPRO with an ElasticSearch 2.x or 5.x server.');
             }
         }
     }
