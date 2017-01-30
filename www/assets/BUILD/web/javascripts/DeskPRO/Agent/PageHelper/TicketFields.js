@@ -168,7 +168,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				return;
 			}
 
-      $scope.savedValues[field] = self.ticketReader.getTicketFieldValue(field.replace('ticket_field_', ''));
+			if (field !== 'problem') {
+        $scope.savedValues[field] = self.ticketReader.getTicketFieldValue(field.replace('ticket_field_', ''));
+      }
 			$scope.edit_fields.push(field);
 
 			// focus input field on open edit mode
@@ -191,8 +193,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		};
 
 		$scope.cancelEdit = function() {
-      $scope.edit_fields.forEach(function(id){
-      	$scope.setFieldValue(id, $scope.savedValues[id]);
+      $scope.edit_fields.forEach(function(id) {
+        if (typeof $scope.savedValues[id] != 'undefined') {
+          $scope.setFieldValue(id, $scope.savedValues[id]);
+      	}
       	delete $scope.savedValues[id];
 			});
       $scope.edit_fields.length = 0;
