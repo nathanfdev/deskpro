@@ -28,11 +28,12 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1484728706 extends AbstractBuild
+class Build1485785260 extends AbstractBuild
 {
     public function run()
     {
         $this->out('My Upgrade Class');
-        $this->execDbQuery('default', 'ALTER TABLE agent_data ADD outbound_calls_enabled TINYINT(1) NOT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE voice_numbers CHANGE nickname nickname VARCHAR(255) DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE voice_numbers ADD outbound_calls_enabled TINYINT(1) NOT NULL;');
     }
 }

@@ -28,13 +28,11 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1485424358 extends AbstractBuild
+class Build1485785257 extends AbstractBuild
 {
     public function run()
     {
         $this->out('My Upgrade Class');
-        $this->execDbQuery('default', 'ALTER TABLE voice_phone_calls ADD recording_id INT DEFAULT NULL');
-        $this->execDbQuery('default', 'ALTER TABLE voice_phone_calls ADD CONSTRAINT FK_6679AE4C8CA9A845 FOREIGN KEY (recording_id) REFERENCES blobs (id)');
-        $this->execDbQuery('default', 'CREATE UNIQUE INDEX UNIQ_6679AE4C8CA9A845 ON voice_phone_calls (recording_id)');
+        $this->execDbQuery('default', 'ALTER TABLE agent_data ADD outbound_calls_enabled TINYINT(1) NOT NULL');
     }
 }

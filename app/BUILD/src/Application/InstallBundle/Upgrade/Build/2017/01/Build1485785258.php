@@ -28,11 +28,12 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1485274086 extends AbstractBuild
+class Build1485785258 extends AbstractBuild
 {
     public function run()
     {
         $this->out('My Upgrade Class');
-        $this->execDbQuery('default', 'CREATE TABLE zapier_hooks (id INT AUTO_INCREMENT NOT NULL, target_url VARCHAR(255) DEFAULT NULL, event VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
+        $this->execDbQuery('default', 'ALTER TABLE products DROP FOREIGN KEY FK_B3BA5A5A727ACA70');
+        $this->execDbQuery('default', 'ALTER TABLE products ADD CONSTRAINT FK_B3BA5A5A727ACA70 FOREIGN KEY (parent_id) REFERENCES products (id) ON DELETE SET NULL');
     }
 }
