@@ -47,7 +47,10 @@ use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserChatController extends AbstractController
 {
@@ -132,6 +135,23 @@ class UserChatController extends AbstractController
             'custom_fields'             => $customFields,
             'has_joined'                => $hasJoined,
         ]);
+    }
+
+    public function deleteAction(Request $request, $conversation_id)
+    {
+        if (!$this->person->hasPerm('agent_chat.delete')) {
+            throw new AccessDeniedHttpException();
+        }
+
+        /** @var ChatConversation $convo */
+        if (!$convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id)) {
+            throw new NotFoundHttpException();
+        }
+
+//        $this->em->remove($convo);
+//        $this->em->flush();
+
+        return $this->createJsonResponse(['success' => true]);
     }
 
     public function joinChatAction($conversation_id)

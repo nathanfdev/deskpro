@@ -2150,6 +2150,12 @@ $collection->create('agent_userchat_view', [
     'options'    => ['fragment_name' => 'c'],
 ]);
 
+$collection->create('agent_userchat_delete', [
+    'path'       => '/chat/{conversation_id}',
+    'controller' => 'AgentBundle:UserChat:delete',
+    'methods'    => ['DELETE'],
+]);
+
 $collection->create('agent_userchat_join', [
     'path'       => '/chat/join/{conversation_id}',
     'controller' => 'AgentBundle:UserChat:joinChat',
