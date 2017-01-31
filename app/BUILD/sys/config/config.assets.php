@@ -198,6 +198,7 @@ $CONFIG['agent_pages_lists'] = [
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/Search.js',
         'javascripts/DeskPRO/Agent/PageFragment/List/TicketList.js',
+        'javascripts/DeskPRO/Agent/PageFragment/List/Helper/TicketMassActions.js',
     ],
 ];
 
