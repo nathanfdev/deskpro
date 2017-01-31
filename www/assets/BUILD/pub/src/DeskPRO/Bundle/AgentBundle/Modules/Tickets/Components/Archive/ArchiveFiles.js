@@ -1,62 +1,58 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
+import { pureRender } from 'Ampliflux';
 import * as actions from '../../Actions/archiveActions';
+import { filesSelector } from '../../Selectors/archive';
 
 @connect(state => ({
-  archive: state.Tickets.archive
+  files: filesSelector(state)
 }))
-export class ArchiveMenuContainer extends React.Component {
+
+@pureRender
+export class ArchiveFilesContainer extends React.Component {
   static propTypes = {
     authId:   PropTypes.string,
-    title:    PropTypes.string,
-    href:     PropTypes.string,
     dispatch: PropTypes.func,
-    archive:  PropTypes.object.isRequired
+    files:    PropTypes.object.isRequired
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      file: this.props.archive.get('files')
-    };
-  }
-
-  componentWillMount() {
-    const { dispatch, authId } = this.props;
-
-    dispatch(actions.loadFiles(authId));
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      file: nextProps.archive.get('files')
-    });
-  }
 
   getLink = (element) => {
     const { authId } = this.props;
     return `/api/v2/blobs/${authId}/download/${element.name}`;
   };
 
+  loadFiles = () => {
+    const { authId, files } = this.props;
+
+    if (!files.get(authId.toInt())) {
+      this.props.dispatch(actions.loadFiles(authId));
+    }
+  };
+
   render() {
+    const { files, authId } = this.props;
+    let filesList = {};
+    const list = files.filter(x => x.get('id') === authId.toInt());
+    if (list.size) {
+      filesList = list.first().get('files');
+    }
     return (
-      <ArchiveMenu
-        title={this.props.title}
-        href={this.props.href}
-        list={this.props.archive.get('files')}
+      <ArchiveFiles
+        list={filesList}
         getLink={this.getLink}
+        loadFiles={this.loadFiles}
       />
     );
   }
 }
 
-export class ArchiveMenu extends React.Component {
+export class ArchiveFiles extends React.Component {
   static propTypes = {
-    list:    PropTypes.object,
-    getLink: PropTypes.func,
-    title:   PropTypes.string,
-    href:    PropTypes.string,
+    list:      PropTypes.object,
+    getLink:   PropTypes.func,
+    loadFiles: PropTypes.func
   };
 
   static defaultProps = {
@@ -84,9 +80,9 @@ export class ArchiveMenu extends React.Component {
           return tree;
         }
         element.filename = path[path.length - 2];
-        element.children = ArchiveMenu.unflattenList(list, localIndex + 1, level + 1);
+        element.children = ArchiveFiles.unflattenList(list, localIndex + 1, level + 1);
         tree.push(element);
-        localIndex += ArchiveMenu.recursiveLength(element.children);
+        localIndex += ArchiveFiles.recursiveLength(element.children);
       }
       localIndex += 1;
     }
@@ -98,7 +94,7 @@ export class ArchiveMenu extends React.Component {
     for (const e of array) {
       length += 1;
       if (e.children) {
-        length += ArchiveMenu.recursiveLength(e.children);
+        length += ArchiveFiles.recursiveLength(e.children);
       }
     }
     return length;
@@ -107,24 +103,36 @@ export class ArchiveMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tree: ArchiveMenu.unflattenList(this.props.list, 0, 0)
+      tree: ArchiveFiles.unflattenList(this.props.list, 0, 0),
+      open: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
     if (nextProps.list !== this.props.list) {
       this.setState({
-        tree: ArchiveMenu.unflattenList(nextProps.list, 0, 0)
+        tree: ArchiveFiles.unflattenList(nextProps.list, 0, 0)
       });
     }
   }
 
-  getFileList() {
+  getFileList = () => {
+    if (this.state.tree.length === 0) {
+      return <div className="ui loader mini inline active" />;
+    }
     return this.renderTree(this.state.tree);
-  }
+  };
 
-  renderTree(tree) {
+  toggleFiles = () => {
+    if (!this.state.open) {
+      this.props.loadFiles();
+    }
+    this.setState({
+      open: !this.state.open
+    });
+  };
+
+  renderTree = (tree) => {
     if (tree) {
       return (
         <List>
@@ -141,13 +149,16 @@ export class ArchiveMenu extends React.Component {
       );
     }
     return null;
-  }
+  };
 
   render() {
     return (
-      <div className="archive-popup">
-        <div className="header"><a href={this.props.href}>{this.props.title}</a></div>
-        <div className="content">
+      <div className="archive-files">
+        <a onClick={this.toggleFiles}>
+          <span>view files &nbsp;</span>
+          <i className="fitted icon dropdown" />
+        </a>
+        <div className={classNames('files', { hidden: !this.state.open })}>
           {this.getFileList()}
         </div>
       </div>

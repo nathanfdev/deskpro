@@ -40,10 +40,19 @@ class Zip implements ArchiveInterface
      */
     private $environment;
 
+    private $tmpFolder = false;
+
     public function __construct(AppEnvInterface $environment)
     {
         $this->zip         = new \ZipArchive();
         $this->environment = $environment;
+    }
+
+    public function __destruct()
+    {
+        if ($this->tmpFolder) {
+            Util::delTree($this->tmpFolder);
+        }
     }
 
     /**
@@ -85,18 +94,20 @@ class Zip implements ArchiveInterface
      */
     public function extractMembers($members)
     {
-        $tmpDir    = $this->environment->getUserTmpDir();
-        $fileId    = uniqid('archive', true);
-        $tmpFolder = $tmpDir.DIRECTORY_SEPARATOR.'archive'.DIRECTORY_SEPARATOR.$fileId.DIRECTORY_SEPARATOR;
-        $this->zip->extractTo($tmpFolder, $members);
-        $files = [];
-        if (!is_array($members)) {
-            $members = [$members];
+        $tmpDir          = $this->environment->getUserTmpDir();
+        $fileId          = uniqid('archive', true);
+        $this->tmpFolder = $tmpDir.DIRECTORY_SEPARATOR.'archive'.DIRECTORY_SEPARATOR.$fileId.DIRECTORY_SEPARATOR;
+        $files           = [];
+        if ($this->zip->extractTo($this->tmpFolder, $members)) {
+            if (!is_array($members)) {
+                $members = [$members];
+            }
+            foreach ($members as $member) {
+                $files[$member] = $this->tmpFolder.$member;
+            }
+        } else {
+            throw new \Exception('Error while getting the files');
         }
-        foreach ($members as $member) {
-            $files[$member] = file_get_contents($tmpFolder.$member);
-        }
-        Util::delTree($tmpFolder);
 
         return $files;
     }

@@ -11,8 +11,7 @@ import { AgentTopBarContainer } from './Modules/TopBar/Components/AgentTopBar';
 import { SideBarContainer } from './Modules/SideBar/Components/SideBar';
 import { AgentList } from './Modules/Agent/Components/AgentList';
 import { AgentOnboardingContainer }  from './Modules/Onboarding/Components/AgentOnboarding';
-import { ArchiveMenuContainer } from './Modules/Tickets/Components/Archive/ArchiveMenu';
-import ArchivePopUp from './Modules/Tickets/Components/Archive/ArchivePopUp';
+import { ArchiveFilesContainer } from './Modules/Tickets/Components/Archive/ArchiveFiles';
 import VoiceControlsContainer from './Modules/Voice/Components/Controls/VoiceControlsContainer';
 import VoiceTicketMessageContainer from './Modules/Voice/Components/TicketMessage/TicketMessageContainer';
 import AgentReducers from './AgentApp_Reducers';
@@ -129,13 +128,9 @@ class AgentLegacyApp {
   renderMessageArchiveAttachment(node, data) {
     ReactDOM.render(
       <Provider store={this.store}>
-        <ArchivePopUp authId={data.authId} text={data.text}>
-          <ArchiveMenuContainer
-            authId={data.authId}
-            title={data.text}
-            href={data.href}
-          />
-        </ArchivePopUp>
+        <ArchiveFilesContainer
+          authId={data.authId}
+        />
       </Provider>,
       node
     );

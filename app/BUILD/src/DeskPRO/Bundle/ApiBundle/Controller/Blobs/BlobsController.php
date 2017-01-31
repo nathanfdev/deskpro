@@ -376,7 +376,7 @@ class BlobsController extends CrudController
 
     /**
      * @ApiDoc(
-     *     description="See archive content",
+     *     description="Serve archived content",
      *     requirements={
      *          {
      *              "name"="authId",
@@ -397,8 +397,6 @@ class BlobsController extends CrudController
      * @param Request $request
      *
      * @throws \Exception
-     *
-     * @return Response
      */
     public function getArchiveExtractedFileAction($authId, $path, Request $request)
     {
@@ -418,10 +416,14 @@ class BlobsController extends CrudController
         $pieces = explode('/', $path);
 
         $filename = array_pop($pieces);
+        header('Content-Type: application/octet-stream');
+        header('Content-Transfer-Encoding: Binary');
+        header('Content-Disposition: attachment; filename="'.addslashes($filename).'"');
 
-        $headers[] = 'Content-Disposition: inline; filename="'.addslashes($filename).'"';
+        readfile($content[$path]);
 
-        return new Response($content[$path], Response::HTTP_OK, $headers);
+        unset($zip);
+        exit;
     }
 
     /**
@@ -436,6 +438,7 @@ class BlobsController extends CrudController
         $fileId      = uniqid('archive', true);
         $tmpDir      = $this->get('deskpro.app_env')->getUserTmpDir();
         $archive     = $tmpDir.'/'.$fileId.$blob->getFilename();
+
         $blobStorage->copyBlobRecordToFile($archive, $blob);
 
         return $archive;
