@@ -1230,6 +1230,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
                 $scope.checkedTicketsCount = 0;
                 $scope.removeAllTicketsChanges();
               });
+              self.refreshCursor(null, true);
             },
             onFormUpdated: function (changes) {
               self.updateMassActionPreviews(changes);
