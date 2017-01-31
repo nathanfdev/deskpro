@@ -105,6 +105,11 @@ class UpdateCleanup
         $installedBuilds = array_slice($installedBuilds, 0, array_search($this->current, $installedBuilds));
         $prevBuild       = array_pop($installedBuilds); // gets the previously installed build
 
+        // failsafe
+        if ($prevBuild == $this->current || (defined('DP_ACTIVE_BUILD') && $prevBuild == DP_ACTIVE_BUILD)) {
+            return [];
+        }
+
         $ts = microtime(true);
         $logger->debug('Scanning filesystem');
 
@@ -121,6 +126,12 @@ class UpdateCleanup
             ->filter(function (\SplFileInfo $dir) use ($prevBuild) {
                 $name = $dir->getBasename();
                 $nameBuild = (int) $name;
+
+                // failsafe
+                if ($name == $this->current || (defined('DP_ACTIVE_BUILD') && $name == DP_ACTIVE_BUILD)) {
+                    return false;
+                }
+
                 if (!is_numeric($name) || !$nameBuild) {
                     return false;
                 }
