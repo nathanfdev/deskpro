@@ -148,8 +148,8 @@ class UserChatController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-//        $this->em->remove($convo);
-//        $this->em->flush();
+        $this->em->remove($convo);
+        $this->em->flush();
 
         return $this->createJsonResponse(['success' => true]);
     }
