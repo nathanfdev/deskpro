@@ -401,6 +401,7 @@ var DP = {
 			var opt = $(this);
 			if (!$.trim(opt.text())) {
 				opt.html('&nbsp;');
+				opt.attr('value', '');
 			}
 		});
 
