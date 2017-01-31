@@ -56,10 +56,9 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
-    const ROUTING_MODEL_ROUND_ROBIN    = 'round_robin';
+    const ROUTING_MODEL_AUTOMATIC      = 'automatic';
     const ROUTING_MODEL_LEAST_UTILIZED = 'least_utilized';
-    const ROUTING_MODEL_LEAST_IDLE     = 'least_idle';
-    const ROUTING_MODEL_RANDOM         = 'random';
+    const ROUTING_MODEL_SIMULRING      = 'simulring';
 
     /**
      * The unique ID.
@@ -261,7 +260,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return Person[]
+     * @return Person[]|ArrayCollection
      */
     public function getAgents()
     {

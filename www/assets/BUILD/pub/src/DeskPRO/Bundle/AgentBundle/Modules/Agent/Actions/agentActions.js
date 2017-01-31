@@ -1,8 +1,9 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import Immutable from 'immutable';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 
 export const setOnlineAgents = createAction(
   'AGENT_SET_ONLINE_AGENTS',
@@ -43,12 +44,19 @@ export const toggleUserChat = createAction(
   }
 );
 
-export const editAgent = createAction(
-  'AGENT_EDIT_AGENT',
-  (id, data) => (dispatch) => {
-    const person = Immutable.fromJS({ ...data, id });
-    dispatch(updateCollection('Person', Immutable.List([person]), 'merge'));
+export const editAgentProfile = createAction(
+  'AGENT_EDIT_AGENT_PROFILE',
+  (id, data) => (dispatch, getState) => {
+    const state = getState();
+    const agents = agentsSelector(state);
 
-    return repository('Person').update(data, id);
+    let agent = agents.get(id);
+    if (agent) {
+      const agentData = agent.get('agent_data') ? agent.get('agent_data').toJS() : {};
+      agent = agent.set('agent_data', Immutable.fromJS({ ...agentData, ...data }));
+      dispatch(updateCollection('Person', Immutable.List([agent]), 'merge'));
+    }
+
+    return api.sendPut(`DP_API/agents/${id}/profile`, { agent_data: data });
   }
 );

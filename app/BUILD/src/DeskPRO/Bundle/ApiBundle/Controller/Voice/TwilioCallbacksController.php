@@ -681,19 +681,6 @@ class TwilioCallbacksController extends BaseController
             $em->persist($phoneCall);
             $em->flush();
 
-            // assign the phone call ticket to the first answered agent
-            $messageAttribute = $this->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
-                'phoneCall' => $phoneCall,
-            ]);
-
-            if ($messageAttribute) {
-                $ticket = $messageAttribute->getMessage()->getTicket();
-                if (!$ticket->getAgent()) {
-                    $ticket->setAgent($agent);
-                    $this->saveTicket($ticket);
-                }
-            }
-
             // log answering event
             $log = new VoicePhoneCallLog();
             $log->setActionType(VoicePhoneCallLog::ACTION_ANSWERED);

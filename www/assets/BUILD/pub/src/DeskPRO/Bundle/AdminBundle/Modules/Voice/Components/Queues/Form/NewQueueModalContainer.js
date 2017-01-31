@@ -70,7 +70,7 @@ class NewQueueModalContainer extends React.Component {
 
   render() {
     return (
-      <div className="page page-modal-window" style={{ height: '525px' }}>
+      <div className="page page-modal-window" style={{ height: '530px' }}>
         {this.renderContent()}
       </div>
     );

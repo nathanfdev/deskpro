@@ -30,19 +30,17 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class PersonAgentDataType.
+ * Class AgentDataProfileType.
  */
-class PersonAgentDataType extends AbstractType
+class AgentDataProfileType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -50,19 +48,6 @@ class PersonAgentDataType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('extension_number', NumberType::class, [
-                'property_path' => 'extensionNumber',
-            ])
-            ->add('voicemail_asset', VoiceAssetType::class, [
-                'property_path' => 'voicemailAsset',
-                'required'      => false,
-            ])
-            ->add('is_voice_enabled', ApiBooleanType::class, [
-                'property_path' => 'isVoiceEnabled',
-            ])
-            ->add('outbound_calls_enabled', ApiBooleanType::class, [
-                'property_path' => 'outboundCallsEnabled',
-            ])
             ->add('available_status', ChoiceType::class, [
                 'property_path'     => 'availableStatus',
                 'choices_as_values' => true,
@@ -100,10 +85,6 @@ class PersonAgentDataType extends AbstractType
     public function onChangeAvailableStatus(FormEvent $event)
     {
         $data = $event->getData();
-
-        if (isset($data['is_voice_enabled']) && !$data['is_voice_enabled']) {
-            $data['available_status'] = AgentData::AVAILABLE_STATUS_OFFLINE;
-        }
         if (isset($data['available_status']) && $data['available_status'] === AgentData::AVAILABLE_STATUS_OFFLINE) {
             $data['agent_calls_enabled'] = false;
         }

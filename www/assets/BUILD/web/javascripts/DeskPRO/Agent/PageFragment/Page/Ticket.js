@@ -2147,6 +2147,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
   },
 
 	_initVoice: function() {
+		var self = this;
 		var onEndCall = function() {
 			console.debug('Restoring poller interval: %d', DP_POLLER_INTERVAL);
 			DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL);
@@ -2183,7 +2184,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			onContentSet: function() {
 				$('.end-trigger').on('click', function() {
 					confirmCloseOverlay.close();
-					this.controls.endCall();
+					self.controls.endCall();
 					DeskPRO_Window.TabBar.removeTabById(self.meta.tabId);
 				});
 			}

@@ -397,17 +397,30 @@
 }
 
 .twilio-queue-form {
-  width: 425px;
+  width: 525px;
 
   .queue-size {
+    margin-top: 25px !important;
+    margin-bottom: 25px !important;
+
     .help {
       float: right;
       margin-top: 10px;
     }
 
-    input[type="text"] {
-      width: 45px !important;
-      margin-left: 10px !important;
+    .select-wrapper {
+      position: relative;
+      width: 65px;
+      display: inline-block;
+
+      .Select {
+        position: absolute;
+        top: -25px;
+        width: 45px !important;
+        margin-left: 10px !important;
+        margin-right: 10px !important;
+        display: inline-block;
+      }
     }
   }
 

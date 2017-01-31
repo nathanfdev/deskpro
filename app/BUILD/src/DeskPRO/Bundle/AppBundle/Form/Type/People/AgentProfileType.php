@@ -26,28 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
-use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
-use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceNumberType;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class VoiceNumbersController.
- *
- * @ApiModes("all")
- * @Rest\Route("/voice_numbers")
- * @Feature("voice")
- * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceNumber")
- * @ApiUserContext("admin", agent={"list", "get", "count"})
+ * Class AgentProfileType.
  */
-class VoiceNumbersController extends AbstractVoiceCrudController
+class AgentProfileType extends AbstractType
 {
-    public static $entity       = VoiceNumber::class;
-    public static $type         = VoiceNumberType::class;
-    public static $listPaginate = false;
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('agent_data', AgentDataProfileType::class, [
+            'property_path' => 'agentData',
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class'  => Person::class,
+            'constraints' => [
+                new AppAssert\Person\PersonType([
+                    'type' => 'agent',
+                ]),
+            ],
+        ]);
+    }
 }

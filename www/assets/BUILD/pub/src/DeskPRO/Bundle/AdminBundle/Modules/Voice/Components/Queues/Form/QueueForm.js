@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import _ from 'lodash';
 import { Fieldset, Input, createValue } from 'react-forms';
-import { Form, Field, Select, MultiSelect, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Form, Field, Select, MultiSelect } from 'DeskPRO/Component/Semantic/ReactForm';
 import AgentChoiceListWrapper from '../../Common/AgentChoiceListWrapper';
 import AccountChoiceWrapper from '../../Common/AccountChoiceWrapper';
 
@@ -66,7 +67,7 @@ class QueueForm extends React.Component {
           account,
           name:           queue ? queue.get('name') : '',
           agents:         queue ? queue.get('agents').toArray() : [],
-          routing_model:  queue ? queue.get('routing_model') : 'round_robin',
+          routing_model:  queue ? queue.get('routing_model') : 'automatic',
           max_queue_size: queue ? queue.get('max_queue_size') : 0
         },
         errorList: {},
@@ -77,10 +78,11 @@ class QueueForm extends React.Component {
 
   render() {
     const { queue, accounts, agents, saving } = this.props;
+    const { formData } = this.state;
 
     return (
       <div className="twilio-queue-form">
-        <Form onSubmit={this.onSubmit} formValue={this.state.formData}>
+        <Form onSubmit={this.onSubmit} formValue={formData}>
           <Fieldset>
             {!queue && accounts && accounts.size > 1 &&
               <Field select="account" label="Choose account *">
@@ -100,9 +102,11 @@ class QueueForm extends React.Component {
             <Field select="routing_model" label="Routing model" className="routing-model">
               <RoutingModel />
             </Field>
+
+            {formData.value.routing_model === 'least_utilized' &&
             <Field select="max_queue_size" className="queue-size">
               <MaxQueueSize />
-            </Field>
+            </Field>}
 
             <button className={classNames('ui button', { loading: saving })}>
               {queue ? 'Update' : 'Create'}
@@ -135,10 +139,9 @@ class RoutingModel extends React.Component {
   render() {
     const { value, onChange } = this.props;
     const choices = [
-      { value: 'round_robin', label: 'Round Robin', help: 'Assign a phone call to agent by "Round Robin".' },
-      { value: 'least_utilized', label: 'Least Utilized', help: 'Assign a phone call to least utilized agent.' },
-      { value: 'least_idle', label: 'Least Idle', help: 'Assign a phone call to least idle agent.' },
-      { value: 'random', label: 'Random', help: 'Assign a phone call to random agent.' }
+      { value: 'automatic', label: 'Automatic', help: 'Call will be routed amongst all agents evenly. The system will automatically balance calls so that no single agent handles more or less than any other agent. For example, given three agents online, if AgentA and AgentB have both accepted a call, then they won\'t recieve another call until AgentC has also accepted a call.' },
+      { value: 'least_utilized', label: 'Least Utilized', help: 'Calls will be routed towards agents who have handled the fewest calls.' },
+      { value: 'simulring', label: 'Simulring', help: 'Any incoming call will ring ALL agents at the same time. The first to answer wil handle the call.' }
     ];
 
     const help = {};
@@ -169,19 +172,20 @@ class MaxQueueSize extends React.Component {
     onChange: PropTypes.func
   };
 
-  onToggleExpand = () => {
-    const { value, onChange } = this.props;
-    onChange(value > 0 ? 0 : 1);
-  };
-
   render() {
     const { value, onChange } = this.props;
-    const expanded = value > 0;
+    const choices = _.range(1, 10).map(num => ({
+      value: num,
+      label: num
+    }));
 
     return (
       <div>
-        <Checkbox label="Enable a max queue size" value={expanded} onChange={this.onToggleExpand} />
-        {expanded && <Input type="text" value={value} onChange={onChange} />}
+        <span>Ring</span>
+        <div className="select-wrapper">
+          <Select value={value} onChange={onChange} clearable={false} choices={choices} />
+        </div>
+        <span>agents at the same time. The first to answer will handle the call.</span>
       </div>
     );
   }

@@ -92,10 +92,6 @@ class TicketChecker extends AbstractChecker
      */
     public function canView(Ticket $ticket)
     {
-        if (!$this->person->hasPerm('agent_tickets.use')) {
-            return false;
-        }
-
         //------------------------------
         // If the user is part of the ticket
         // then we know right away they can view
@@ -113,6 +109,10 @@ class TicketChecker extends AbstractChecker
 
         if ($ticket->hasParticipantPerson($this->person)) {
             return true;
+        }
+
+        if (!$this->person->hasPerm('agent_tickets.use')) {
+            return false;
         }
 
         //------------------------------

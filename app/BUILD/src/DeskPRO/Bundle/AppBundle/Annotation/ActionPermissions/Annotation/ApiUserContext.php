@@ -54,9 +54,11 @@ class ApiUserContext extends Security
     ];
 
     /**
-     * ApiUserContext constructor.
+     * Constructor.
      *
      * @param array $values
+     *
+     * @throws \Exception
      */
     public function __construct(array $values)
     {
@@ -64,12 +66,54 @@ class ApiUserContext extends Security
             throw new MissingConfigurationException();
         }
 
-        if ($values['value'] === self::CONTEXT_OPEN) {
-            $values['value'] = 'true';
-        } else {
-            $role            = sprintf('ROLE_%s', strtoupper($values['value']));
-            $values['value'] = "is_granted('{$role}')";
+        $defaultRole = $values['value'];
+        unset($values['value']);
+
+        $overrides = [];
+        foreach ($values as $role => $actions) {
+            if (is_string($actions)) {
+                $actions = (array) $actions;
+            }
+            if (!is_array($actions)) {
+                throw new \Exception('Role actions should be a string or array value');
+            }
+
+            foreach ($actions as $action) {
+                $overrides[$action] = $role;
+            }
         }
-        parent::__construct($values);
+
+        // collect role permission overrides
+        $expressions = [];
+        foreach ($overrides as $action => $role) {
+            $expression = ["request.attributes.get('_controller') matches '/::{$action}Action$/'"];
+            if ($role !== self::CONTEXT_OPEN) {
+                $role         = sprintf('ROLE_%s', strtoupper($role));
+                $expression[] = "is_granted('{$role}')";
+            }
+
+            $expressions[] = implode(' and ', $expression);
+        }
+
+        // set default role permission
+        $expression = [];
+        if (!empty($overrides)) {
+            $customActions = array_map(function ($action) {
+                return '::'.$action.'Action';
+            }, array_keys($overrides));
+
+            $expression[] = "request.attributes.get('_controller') matches '/^((?!(".implode('|', $customActions).")).)*$/'";
+        }
+
+        if ($defaultRole !== self::CONTEXT_OPEN) {
+            $role         = sprintf('ROLE_%s', strtoupper($defaultRole));
+            $expression[] = "is_granted('{$role}')";
+        }
+
+        $expressions[] = $expression ? implode(' and ', $expression) : 'true';
+
+        parent::__construct([
+            'value' => implode(' or ', $expressions),
+        ]);
     }
 }
