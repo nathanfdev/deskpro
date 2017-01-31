@@ -107,7 +107,7 @@ class CsvImport extends AbstractJob
      */
     public function run($max_time)
     {
-        $max_time = 3600;
+        $max_time = 800;
         $em       = App::getOrm();
         $tmpDir   = App::$container->get('deskpro.app_env')->getUserTmpDir();
         $logger   = App::$container->get('dp.importer_logger');
@@ -146,7 +146,7 @@ class CsvImport extends AbstractJob
         $imported = 0;
         $skipped  = 0;
 
-        while ($imported < 500 && (microtime(true) - $startTime < $max_time)) {
+        while (($imported + $skipped) < 500 && (microtime(true) - $startTime < $max_time)) {
             if (feof($fp)) {
                 $complete = true;
                 break;
