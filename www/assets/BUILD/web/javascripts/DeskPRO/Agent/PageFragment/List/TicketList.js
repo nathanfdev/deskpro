@@ -1201,6 +1201,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
       setTimeout(function () {
         if (!self.massActions) {
           self.massActions = new DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions({
+          	frameEl:       self.getEl('mass_actions_frame'),
             "$scope":      self.$scope,
             onPostApply:   function (inst, data, info) {
               $scope.$safeApply(function () {
@@ -1267,7 +1268,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		// Load preview data for selected tickets
 		this.getTicketChangePreviewRows(ids, changes, true).then(function(data) {
 			$scope.$safeApply(function() {
-				(data || []).forEach(this.$scope.addTicketChanges);
+				(data || []).forEach(self.$scope.addTicketChanges);
 			});
 		});
 	},

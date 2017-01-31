@@ -9,20 +9,14 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
       /**
        * Scope of the list
        */
-      $scope: null
+      $scope: null,
+
+      frameEl: null
     };
 
     this.setOptions(options);
     this.$scope = this.options.$scope;
 
-    this.realtimeStatus = this.$scope.realtime;
-    this.$scope.realtime = false;
-
-    if (this.realtimeStatus) {
-      this.$scope.halfrealtime = true;
-    }
-
-    this.$scope.massActionsOpen = true;
     this._formUpdatedDebounce = _.debounce(this._formUpdated, 500);
     this.backdropEls = null;
   },
@@ -35,36 +29,28 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
 
   _resetWrapper: function(callback) {
     if (this.wrapper) {
-      this.wrapper.remove();
-    }
+      this.wrapper.find('.inner-mount-point').empty();
+      this.wrapper.hide();
+    } else {
+      this.wrapper = this.options.frameEl;
+      this.wrapper.detach().appendTo('body');
+      this.wrapper.find('.with-scroll-handler, .scroll-setup, .scroll-draw').removeClass('with-scroll-handler scroll-setup scroll-draw');
+      this.countEl = $('.selected-tickets-count', this.wrapper);
 
-    var self = this;
-    var _renderTemplate = function(template) {
-      self.wrapper = $(template);
-      self.wrapper.detach().appendTo('body');
-      self.wrapper.find('.with-scroll-handler, .scroll-setup, .scroll-draw').removeClass('with-scroll-handler scroll-setup scroll-draw');
-      self.countEl = $('.selected-tickets-count', self.wrapper);
-      DP.select($('select.macro', self.wrapper));
+      DeskPRO_Window.initInterfaceLayerEvents(this.wrapper);
 
-      DeskPRO_Window.initInterfaceLayerEvents(self.wrapper);
-      var scrollEl = $('.with-scrollbar', self.wrapper).first();
+      var scrollEl = $('.with-scrollbar', this.wrapper).first();
       if (scrollEl.length) {
-        self.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, scrollEl, {
+        this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, scrollEl, {
           showEvent: 'show',
           hideEvent: 'hide'
         });
       }
+    }
 
-      callback();
-    };
+    callback();
 
-    $.ajax({
-      method: 'GET',
-      url: DP_BASE_URL+'agent/ticket-search/mass-action-overlay'
-    }).then(function(data) {
-      self.cachedTemplate = data;
-      _renderTemplate(data);
-    });
+    this._loadInside();
   },
 
   /**
@@ -98,11 +84,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
    * Form updated, fire the updated callback
    */
   _formUpdated: function() {
-    var info = {};
-    var changes = [];
 
-    this.getActionFormValues(changes, false, info);
-    this.fireEvent('formUpdated', [changes]);
   },
 
 
@@ -142,6 +124,10 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
       ev.preventDefault();
       this.close();
     }).bind(this));
+  },
+
+  _initInside: function() {
+    var self = this;
 
     //------------------------------
     // Convert radios
@@ -450,6 +436,39 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
 
     this.wrapper.find('input, select, textarea').on('click change blur focus', function() {
       self._formUpdatedDebounce();
+    });
+  },
+
+  _renderInside: function(html) {
+    var self = this;
+    var $inside = this.wrapper.find('.inner-mount-point');
+    $inside.html(html);
+    DeskPRO_Window.initInterfaceLayerEvents($inside);
+    DP.select($('select.macro', $inside));
+    this._initInside();
+    this.updatePositions();
+    window.setTimeout(function () {
+      self.updatePositions();
+    }, 200);
+    window.setTimeout(function () {
+      self.updatePositions();
+    }, 500);
+  },
+
+  _loadInside: function() {
+
+    if (this.cachedTemplate) {
+      this._renderInside(this.cachedTemplate);
+      return;
+    }
+
+    var self = this;
+    $.ajax({
+      method: 'GET',
+      url: DP_BASE_URL+'agent/ticket-search/mass-action-overlay'
+    }).then(function(data) {
+      self.cachedTemplate = data;
+      self._renderInside(self.cachedTemplate);
     });
   },
 
@@ -787,6 +806,10 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
 
       self.wrapper.addClass('open').show();
       self.updatePositions();
+
+      self.$scope.halfrealtime = true;
+      self.$scope.massActionsOpen = true;
+      self.$scope.$safeApply();
     }
 
     if (!this.wrapper || !this.wrapper[0]) {
@@ -816,9 +839,6 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
 
     this.$scope.halfrealtime = false;
     this.$scope.massActionsOpen = false;
-    if (this.realtimeStatus) {
-      this.$scope.toggleRealtimeUpdates();
-    }
     this.$scope.$safeApply();
   },
 
