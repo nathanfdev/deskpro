@@ -63,6 +63,18 @@ img.emojione, svg.emojione {
       position: relative;
       display: inline-block;
 
+      .agent-online {
+        background: #74C365;
+        display: block;
+        width: 7px;
+        height: 7px;
+        border-radius: 500rem;
+        border: 1px solid gray;
+        position: absolute;
+        bottom: -2px;
+        right: 6px;
+      }
+
       .icon.close {
         position: absolute;
         display: none;
@@ -226,6 +238,20 @@ img.emojione, svg.emojione {
     .offline {
       .header, .avatar {
         opacity: 0.5;
+      }
+    }
+
+    .online {
+      .avatar:before {
+        background: #74C365;
+        display: block;
+        width: 7px;
+        height: 7px;
+        border-radius: 500rem;
+        border: 1px solid gray;
+        position: absolute;
+        bottom: -2px;
+        right: 6px;
       }
     }
 
@@ -473,6 +499,21 @@ img.emojione, svg.emojione {
       &.offline {
         .header, .avatar {
           opacity: 0.5;
+        }
+      }
+      &.online {
+        &:before {
+          background: #74C365;
+          display: block;
+          width: 7px;
+          height: 7px;
+          border-radius: 500rem;
+          border: 1px solid gray;
+          position: absolute;
+          bottom: 10px;
+          left: 32px;
+          content: '';
+          z-index: 2;
         }
       }
     }

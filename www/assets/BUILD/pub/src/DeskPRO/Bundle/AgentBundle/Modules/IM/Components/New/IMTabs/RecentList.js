@@ -129,10 +129,7 @@ class RecentList extends React.Component {
       }
     }
     const agent = this.props.agents.get(agentId);
-    const className = ['im', 'agent', 'recent'];
-    if (!agent.get('online')) {
-      className.push('offline');
-    }
+    const className = ['im', 'agent', 'recent', agent.get('online') ? 'online' : 'offline'];
     return (
       <ListElement
         key={`agent_${agentId}`}

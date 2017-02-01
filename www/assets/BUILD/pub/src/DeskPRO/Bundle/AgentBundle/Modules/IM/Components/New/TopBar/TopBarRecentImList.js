@@ -137,6 +137,7 @@ class TopBarRecentImList extends RecentList {
           person={agent} size={24}
           className={classNames(className)}
         />
+        {(agent.get('online')) ? <span className="agent-online" /> : null}
         {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
       </span>
@@ -145,7 +146,6 @@ class TopBarRecentImList extends RecentList {
 
   renderDepartment(chat) {
     const department = this.props.departments.getIn(chat.get('departments', 0));
-
     const header = this.getHeaderHelper(chat).getHeaderText(true);
     const notificationsCount = this.getNotificationCount(chat);
     const participantsCount = department.get('agents').size;
