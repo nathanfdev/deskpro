@@ -159,7 +159,8 @@ function getWebpackConfig(mode, isProd) {
         path.join(__dirname, 'src'),
         path.join(__dirname, 'src/DeskPRO/Component'),
         path.join(__dirname, 'src/DeskPRO/Dev'),
-        path.join(__dirname, 'built-tools')
+        path.join(__dirname, 'built-tools'),
+        path.join(__dirname, 'vendor')
       ],
 
       alias: {
@@ -172,7 +173,7 @@ function getWebpackConfig(mode, isProd) {
     },
 
     resolveLoader: {
-      modulesDirectories: ['web_loaders', 'web_modules', 'node_loaders', 'node_modules', 'build-tools']
+      modulesDirectories: ['web_loaders', 'web_modules', 'node_loaders', 'node_modules', 'build-tools', 'vendor']
     },
 
     module: {

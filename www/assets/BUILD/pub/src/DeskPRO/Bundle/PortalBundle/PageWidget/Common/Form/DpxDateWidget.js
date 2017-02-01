@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import moment from 'moment';
 import 'DeskPRO/Bundle/AppBundle/moment-locales';
-import 'jquery-datetimepicker-iframe/jquery.datetimepicker';
+import 'jquery-datetimepicker-iframe/jquery.datetimepicker'; // eslint-disable-line import/no-unresolved
 
 export class DpxDateWidget extends PageWidget {
 
@@ -39,17 +39,17 @@ export class DpxDateWidget extends PageWidget {
     let isTimeIncluded;
 
     if ($el.hasClass('dpx-date-time')) {
-      $sYear = $('#' + `${id}_date_year`);
-      $sMonth = $('#' + `${id}_date_month`);
-      $sDay = $('#' + `${id}_date_day`);
-      $sHour = $('#' + `${id}_time_hour`);
-      $sMinute = $('#' + `${id}_time_minute`);
+      $sYear = $(`#${id}_date_year`);
+      $sMonth = $(`#${id}_date_month`);
+      $sDay = $(`#${id}_date_day`);
+      $sHour = $(`#${id}_time_hour`);
+      $sMinute = $(`#${id}_time_minute`);
 
       isTimeIncluded = true;
     } else {
-      $sYear = $('#' + `${id}_year`);
-      $sMonth = $('#' + `${id}_month`);
-      $sDay = $('#' + `${id}_day`);
+      $sYear = $(`#${id}_year`);
+      $sMonth = $(`#${id}_month`);
+      $sDay = $(`#${id}_day`);
 
       isTimeIncluded = false;
     }
@@ -58,6 +58,7 @@ export class DpxDateWidget extends PageWidget {
     const maxDate = ($el.data('max-date').length === 0) ? null : moment($el.data('max-date'));
 
     const $textBox = $('<input type="text">');
+
     const format  = isTimeIncluded ? 'L LT' : 'L';
     const options = {
       parentID:   $el.parent(),
@@ -101,7 +102,7 @@ export class DpxDateWidget extends PageWidget {
       weekdays = [0, 1, 2, 3, 4, 5, 6];
     }
 
-    weekdays = weekdays.map(weekDay => {
+    weekdays = weekdays.map((weekDay) => {
       // php stores 1 as monday and sunday as 7, but our cal uses 0 for sunday, 1 for monday, and so on.
       const d = parseInt(weekDay, 10);
       return d === 6 ? 0 : d + 1;
@@ -111,7 +112,7 @@ export class DpxDateWidget extends PageWidget {
       // disable all days of week
       options.onGenerate = function () {
         const that = this;
-        _.forEach([0, 1, 2, 3, 4, 5, 6], weekDay => {
+        _.forEach([0, 1, 2, 3, 4, 5, 6], (weekDay) => {
           if (!_.includes(weekdays, weekDay)) {
             $(that).find(`.xdsoft_day_of_week${weekDay}`).addClass('xdsoft_disabled');
           }
