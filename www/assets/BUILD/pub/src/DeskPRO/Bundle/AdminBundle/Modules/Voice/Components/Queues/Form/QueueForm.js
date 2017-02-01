@@ -2,19 +2,24 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import _ from 'lodash';
 import { Fieldset, Input, createValue } from 'react-forms';
-import { Form, Field, Select, MultiSelect } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Form, Field, Select, MultiSelect, Checkbox, RecordsChoiceWrapper } from 'DeskPRO/Component/Semantic/ReactForm';
 import AgentChoiceListWrapper from '../../Common/AgentChoiceListWrapper';
 import AccountChoiceWrapper from '../../Common/AccountChoiceWrapper';
+import AudioWidgetFormContainer from '../../Common/AudioWidget/AudioWidgetFormContainer';
+import AgentsSelectContainer from '../../Common/NumberTarget/AgentsSelectContainer';
 
 class QueueForm extends React.Component {
 
   static propTypes = {
-    queue:    PropTypes.object,
-    accounts: PropTypes.object,
-    agents:   PropTypes.object,
-    onSubmit: PropTypes.func.isRequired,
-    onDelete: PropTypes.func,
-    saving:   PropTypes.bool
+    queueId:           PropTypes.number,
+    queues:            PropTypes.object,
+    accounts:          PropTypes.object,
+    agents:            PropTypes.object,
+    agentTeams:        PropTypes.object,
+    ticketDepartments: PropTypes.object,
+    onSubmit:          PropTypes.func.isRequired,
+    onDelete:          PropTypes.func,
+    saving:            PropTypes.bool
   };
 
   constructor(props) {
@@ -52,7 +57,16 @@ class QueueForm extends React.Component {
   };
 
   getDefaultState() {
-    const { queue, accounts } = this.props;
+    const { queueId, queues, accounts } = this.props;
+
+    let queue;
+    if (queueId) {
+      queue = queues.get(queueId);
+    }
+
+    const greetAsset = queue && queue.get('greet_asset');
+    const loopAsset = queue && queue.get('loop_asset');
+    const voicemailAsset = queue && queue.get('voicemail_asset');
 
     let account = null;
     if (queue) {
@@ -65,10 +79,16 @@ class QueueForm extends React.Component {
       formData: createValue({
         value: {
           account,
-          name:           queue ? queue.get('name') : '',
-          agents:         queue ? queue.get('agents').toArray() : [],
-          routing_model:  queue ? queue.get('routing_model') : 'automatic',
-          max_queue_size: queue ? queue.get('max_queue_size') : 0
+          name:                 queue ? queue.get('name') : '',
+          agents:               queue ? queue.get('agents').toArray() : [],
+          routing_model:        queue ? queue.get('routing_model') : 'automatic',
+          max_queue_size:       queue ? queue.get('max_queue_size') : 0,
+          greet_asset:          greetAsset ? greetAsset.toJS() : null,
+          loop_asset:           loopAsset ? loopAsset.toJS() : null,
+          voicemail_asset:      voicemailAsset ? voicemailAsset.toJS() : null,
+          voicemail_department: queue ? queue.get('voicemail_department') : null,
+          voicemail_agent:      queue ? queue.get('voicemail_agent') : null,
+          voicemail_agent_team: queue ? queue.get('voicemail_agent_team') : null
         },
         errorList: {},
         onChange:  this.onChange
@@ -77,14 +97,14 @@ class QueueForm extends React.Component {
   }
 
   render() {
-    const { queue, accounts, agents, saving } = this.props;
+    const { queueId, accounts, agents, agentTeams, ticketDepartments, saving } = this.props;
     const { formData } = this.state;
 
     return (
       <div className="twilio-queue-form">
         <Form onSubmit={this.onSubmit} formValue={formData}>
           <Fieldset>
-            {!queue && accounts && accounts.size > 1 &&
+            {!queueId && accounts && accounts.size > 1 &&
               <Field select="account" label="Choose account *">
                 <AccountChoiceWrapper accounts={accounts}>
                   <Select clearable={false} />
@@ -107,9 +127,34 @@ class QueueForm extends React.Component {
             <Field select="max_queue_size" className="queue-size">
               <MaxQueueSize />
             </Field>}
+            <Field select="greet_asset" className="audio-asset" label="Greet">
+              <AudioWidgetFormContainer />
+            </Field>
+            <Field select="loop_asset" className="audio-asset" label="Loop">
+              <AudioWidgetFormContainer />
+            </Field>
+            <Field select="voicemail_asset" className="audio-asset" label="Voicemail">
+              <AudioWidgetFormContainer />
+            </Field>
+
+            {formData.value.voicemail_asset &&
+            <div>
+              Missed calls will ask the user to leave a message and a new voice ticket will be created with the following properties:
+
+              <Field select="voicemail_department">
+                <VoicemailDepartmentProperty ticketDepartments={ticketDepartments} />
+              </Field>
+              <Field select="voicemail_agent">
+                <VoicemailAgentProperty agents={agents} />
+              </Field>
+              {agentTeams.size > 0 &&
+              <Field select="voicemail_agent_team">
+                <VoicemailAgentTeamProperty agentTeams={agentTeams} />
+              </Field>}
+            </div>}
 
             <button className={classNames('ui button', { loading: saving })}>
-              {queue ? 'Update' : 'Create'}
+              {queueId ? 'Update' : 'Create'}
             </button>
             <button
               className={classNames('ui basic button cancel-button', { disabled: saving })}
@@ -118,7 +163,7 @@ class QueueForm extends React.Component {
               Cancel
             </button>
 
-            {queue &&
+            {queueId &&
               <span className="voice-delete-button" onClick={this.onDelete}>
                 Delete this queue
               </span>}
@@ -132,7 +177,7 @@ class QueueForm extends React.Component {
 class RoutingModel extends React.Component {
 
   static propTypes = {
-    value:    PropTypes.number,
+    value:    PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     onChange: PropTypes.func
   };
 
@@ -186,6 +231,102 @@ class MaxQueueSize extends React.Component {
           <Select value={value} onChange={onChange} clearable={false} choices={choices} />
         </div>
         <span>agents at the same time. The first to answer will handle the call.</span>
+      </div>
+    );
+  }
+}
+
+class VoicemailDepartmentProperty extends React.Component {
+
+  static propTypes = {
+    ticketDepartments: PropTypes.object
+  };
+
+  render() {
+    const { ticketDepartments } = this.props;
+    const defaultValue = ticketDepartments && ticketDepartments.size ? ticketDepartments.first().get('id') : null;
+
+    return (
+      <VoicemailProperty{...this.props} label="Set Department" defaultValue={defaultValue}>
+        <RecordsChoiceWrapper records={ticketDepartments} labelProp="title">
+          <Select {...this.props} clearable={false} />
+        </RecordsChoiceWrapper>
+      </VoicemailProperty>
+    );
+  }
+}
+
+class VoicemailAgentProperty extends React.Component {
+
+  static propTypes = {
+    agents: PropTypes.object
+  };
+
+  render() {
+    const { agents } = this.props;
+    const defaultValue = agents && agents.size ? agents.first().get('id') : null;
+
+    return (
+      <VoicemailProperty{...this.props} label="Assign Agent" defaultValue={defaultValue}>
+        <AgentsSelectContainer />
+      </VoicemailProperty>
+    );
+  }
+}
+
+class VoicemailAgentTeamProperty extends React.Component {
+
+  static propTypes = {
+    agentTeams: PropTypes.object
+  };
+
+  render() {
+    const { agentTeams } = this.props;
+    const defaultValue = agentTeams && agentTeams.size ? agentTeams.first().get('id') : null;
+
+    return (
+      <VoicemailProperty{...this.props} label="Assign Team" defaultValue={defaultValue}>
+        <RecordsChoiceWrapper records={agentTeams}>
+          <Select {...this.props} clearable={false} />
+        </RecordsChoiceWrapper>
+      </VoicemailProperty>
+    );
+  }
+}
+
+class VoicemailProperty extends React.Component {
+
+  static propTypes = {
+    label:        PropTypes.string,
+    value:        PropTypes.number,
+    onChange:     PropTypes.func,
+    children:     PropTypes.node,
+    defaultValue: PropTypes.number
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      expanded: !!props.value
+    };
+  }
+
+  onToggleExpanded = () => {
+    const { onChange, defaultValue } = this.props;
+    const expanded = !this.state.expanded;
+
+    this.setState({ expanded });
+    onChange(expanded ? defaultValue : null);
+  };
+
+  render() {
+    const { expanded } = this.state;
+    const { label, value, onChange, children } = this.props;
+
+    return (
+      <div className="voice-voicemail-property">
+        <Checkbox label={label} value={expanded} onChange={this.onToggleExpanded} />
+        {expanded && React.cloneElement(children, { ...children.props, value, onChange })}
       </div>
     );
   }

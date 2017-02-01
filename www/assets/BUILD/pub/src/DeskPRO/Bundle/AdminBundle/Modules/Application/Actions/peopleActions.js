@@ -15,3 +15,8 @@ export const editAgent = createAction(
     dispatch(updateCollection('Person', Immutable.List([person]), 'merge'));
   })
 );
+
+export const loadAgentTeams = createAction(
+  'ADMIN_LOAD_AGENT_TEAMS',
+  () => loadFromApi('AgentTeam', 'DP_API/agent_teams', 'agent_teams')
+);

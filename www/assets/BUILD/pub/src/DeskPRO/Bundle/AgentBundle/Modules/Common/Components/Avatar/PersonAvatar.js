@@ -15,7 +15,7 @@ export class PersonAvatar extends React.Component {
   };
 
   static defaultProps = {
-    className:   [],
+    className:   '',
     color:       '#CDD2D4',
     borderColor: colorLuminance('#CDD2D4')
   };

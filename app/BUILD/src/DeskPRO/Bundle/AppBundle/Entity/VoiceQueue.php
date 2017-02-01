@@ -28,8 +28,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
@@ -45,6 +47,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *   @ORM\UniqueConstraint(name="task_queue_sid", columns={"task_queue_sid"}),
  *   @ORM\UniqueConstraint(name="name", columns={"name"})
  * })
+ *
  * @ORM\EntityListeners({"DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceQueueListener"})
  *
  * @JMS\ExclusionPolicy("all")
@@ -100,7 +103,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $name;
 
     /**
-     * @ORM\Column(name="task_queue_sid", type="string", length=100)
+     * @ORM\Column(name="task_queue_sid", type="string", length=100, nullable=true)
      *
      * @var string
      */
@@ -172,6 +175,43 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
      * @var VoiceAsset
      */
     private $voicemailAsset;
+
+    /**
+     * @ORM\JoinColumn(name="voicemail_department")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
+     *
+     * @AppAssert\LeafDepartment()
+     *
+     * @var Department
+     */
+    private $voicemailDepartment;
+
+    /**
+     * @ORM\JoinColumn(name="voicemail_agent")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @AppAssert\Person\PersonType(type="agent")
+     *
+     * @var Person
+     */
+    private $voicemailAgent;
+
+    /**
+     * @ORM\JoinColumn(name="voicemail_agent_team")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\AgentTeam>")
+     *
+     * @var AgentTeam
+     */
+    private $voicemailAgentTeam;
 
     /**
      * @ORM\Column(name="max_queue_size", type="integer")
@@ -316,7 +356,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return Blob
+     * @return VoiceAsset
      */
     public function getGreetAsset()
     {
@@ -324,11 +364,11 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param Blob $greetAsset
+     * @param VoiceAsset $greetAsset
      *
      * @return $this
      */
-    public function setGreetAsset($greetAsset)
+    public function setGreetAsset(VoiceAsset $greetAsset = null)
     {
         $this->setModelField('greetAsset', $greetAsset);
 
@@ -336,7 +376,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return Blob
+     * @return VoiceAsset
      */
     public function getLoopAsset()
     {
@@ -344,11 +384,11 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param Blob $loopAsset
+     * @param VoiceAsset $loopAsset
      *
      * @return $this
      */
-    public function setLoopAsset($loopAsset)
+    public function setLoopAsset(VoiceAsset $loopAsset = null)
     {
         $this->setModelField('loopAsset', $loopAsset);
 
@@ -356,7 +396,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return Blob
+     * @return VoiceAsset
      */
     public function getVoicemailAsset()
     {
@@ -364,13 +404,73 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param Blob $voicemailAsset
+     * @param VoiceAsset $voicemailAsset
      *
      * @return $this
      */
-    public function setVoicemailAsset($voicemailAsset)
+    public function setVoicemailAsset(VoiceAsset $voicemailAsset = null)
     {
         $this->setModelField('voicemailAsset', $voicemailAsset);
+
+        return $this;
+    }
+
+    /**
+     * @return Department
+     */
+    public function getVoicemailDepartment()
+    {
+        return $this->voicemailDepartment;
+    }
+
+    /**
+     * @param Department $voicemailDepartment
+     *
+     * @return $this
+     */
+    public function setVoicemailDepartment(Department $voicemailDepartment = null)
+    {
+        $this->setModelField('voicemailDepartment', $voicemailDepartment);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getVoicemailAgent()
+    {
+        return $this->voicemailAgent;
+    }
+
+    /**
+     * @param Person $voicemailAgent
+     *
+     * @return $this
+     */
+    public function setVoicemailAgent(Person $voicemailAgent = null)
+    {
+        $this->setModelField('voicemailAgent', $voicemailAgent);
+
+        return $this;
+    }
+
+    /**
+     * @return AgentTeam
+     */
+    public function getVoicemailAgentTeam()
+    {
+        return $this->voicemailAgentTeam;
+    }
+
+    /**
+     * @param AgentTeam $voicemailAgentTeam
+     *
+     * @return $this
+     */
+    public function setVoicemailAgentTeam(AgentTeam $voicemailAgentTeam = null)
+    {
+        $this->setModelField('voicemailAgentTeam', $voicemailAgentTeam);
 
         return $this;
     }

@@ -124,6 +124,13 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     private $voiceWorkerSid;
 
     /**
+     * @ORM\Column(name="voice_task_queue_sid", type="string", length=100, nullable=true)
+     *
+     * @var string
+     */
+    private $voiceTaskQueueSid;
+
+    /**
      * @ORM\Column(name="available_status", type="string",length=100)
      *
      * @JMS\Expose()
@@ -260,6 +267,26 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     public function setVoiceWorkerSid($voiceWorkerSid)
     {
         $this->setModelField('voiceWorkerSid', $voiceWorkerSid);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVoiceTaskQueueSid()
+    {
+        return $this->voiceTaskQueueSid;
+    }
+
+    /**
+     * @param string $voiceTaskQueueSid
+     *
+     * @return $this
+     */
+    public function setVoiceTaskQueueSid($voiceTaskQueueSid)
+    {
+        $this->setModelField('voiceTaskQueueSid', $voiceTaskQueueSid);
 
         return $this;
     }
