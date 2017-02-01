@@ -405,10 +405,26 @@ class BlobsController extends CrudController
 
         $archive = $this->getArchive($blob);
 
+        $found = false;
         try {
             $zip = $this->get('archive_factory')->createZipArchive();
             $zip->open($archive);
-            $content = $zip->extractMembers($path);
+
+            $files = $zip->getMembers();
+            foreach ($files as $file) {
+                if ($file['name'] === $path) {
+                    if ($file['size'] < 100000000) {
+                        $content = $zip->extractMembers($path);
+                        $found   = true;
+                    } else {
+                        throw new \Exception('Compressed file is too big');
+                    }
+                    break;
+                }
+            }
+            if (!$found) {
+                throw new \Exception('File not found in archive');
+            }
         } finally {
             @unlink($archive);
         }

@@ -20,6 +20,9 @@ export class ArchiveFilesContainer extends React.Component {
 
   getLink = (element) => {
     const { authId } = this.props;
+    if (element.size > 100000000) {
+      return null;
+    }
     return `/api/v2/blobs/${authId}/download/${element.name}`;
   };
 
@@ -140,7 +143,7 @@ export class ArchiveFiles extends React.Component {
             <ListElement
               icon={element.dir ? 'folder' : 'file'}
               href={element.dir ? '' : this.props.getLink(element)}
-              label={element.filename}
+              label={`${element.filename} (${element.filesize_readable})`}
             >
               {this.renderTree(element.children)}
             </ListElement>

@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Archive;
 
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
+use Orb\Util\Numbers;
 use Orb\Util\Util;
 
 class Zip implements ArchiveInterface
@@ -75,6 +76,10 @@ class Zip implements ArchiveInterface
             $file = $this->zip->statIndex($i);
             if ($file['crc'] < 0) {
                 $file['crc'] = sprintf('%u', $file['crc']);
+            }
+
+            if ($file['size']) {
+                $file['filesize_readable'] = Numbers::filesizeDisplay($file['size']);
             }
             $file['comment'] = $this->zip->getCommentIndex($i);
             $opsys           = null;
