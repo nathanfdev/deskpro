@@ -122,7 +122,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
         $el.find('.with-select2').select2('val', value);
         $el.find('input[type=radio]').each(function(i, field) {
           var $field = $(field);
-          if ($field.val() === String(value)) {
+
+          if (!String(value) && i === 0) {
+            $field.prop('checked', true);
+					} else if (String($field.val()) === String(value)) {
             $field.prop('checked', true);
           } else {
             $field.prop('checked', false);
