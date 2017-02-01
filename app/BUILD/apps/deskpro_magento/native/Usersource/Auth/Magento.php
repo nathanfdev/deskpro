@@ -107,8 +107,9 @@ Loggable
         $time_start = microtime(true);
         if ($this->logger) {
             $this->logger->log('START Magento::authenticate', Logger::DEBUG);
-            $this->logger->log('Options: '.trim(Arrays::implodeTemplate('{KEY}({VAL}) ')), Logger::DEBUG);
-            $this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
+            $this->logger->log('Options: '.trim(Arrays::implodeTemplate($this->options->all(), '{KEY}({VAL}) ')), Logger::DEBUG);
+            $maskedPassword = preg_replace('/./', '*', $this->set_password);
+            $this->logger->log("Request: {$this->set_username}:{$maskedPassword}", Logger::DEBUG);
         }
 
         try {
