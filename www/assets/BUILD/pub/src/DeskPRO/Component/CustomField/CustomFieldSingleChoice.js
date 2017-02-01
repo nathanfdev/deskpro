@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Field } from 'react-forms';
 import { AbstractCustomField } from './AbstractCustomField';
-import { PortalSimpleSelectBoxWrapper } from './PortalSimpleSelectBoxWrapper';
+import PortalSimpleSelectBoxWrapper from './PortalSimpleSelectBoxWrapper';
 
 export class CustomFieldSingleChoice extends AbstractCustomField {
 
