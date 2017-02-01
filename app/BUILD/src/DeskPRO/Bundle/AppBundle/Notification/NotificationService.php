@@ -95,6 +95,16 @@ class NotificationService
     }
 
     /**
+     * @return int
+     */
+    public function lastNotify()
+    {
+        $date = new \DateTime();
+
+        return $date->getTimestamp();
+    }
+
+    /**
      * @return NotificationConfiguration
      */
     public function getClientsSetup()
@@ -181,6 +191,11 @@ class NotificationService
                     'debug'  => $this->settings->get('notification.settings.pusher_client.debug'),
                 ]);
             case 'db':
+                return new NotificationClient('legacy', [
+                    'last_alert'  => $this->lastAlert(),
+                    'last_notify' => $this->lastNotify(),
+                ]);
+            case 'db_new':
 
                 return new NotificationClient('polling', [
                     'last_alert'       => $this->lastAlert(),

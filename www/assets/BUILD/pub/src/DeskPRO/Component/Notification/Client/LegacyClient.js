@@ -1,0 +1,73 @@
+/**
+ * wrapper for pusher-app client
+ */
+import { AbstractClient } from './AbstractClient';
+
+export default class LegacyClient extends AbstractClient {
+
+  getDefaultOptions() { // eslint-disable-line class-methods-use-this
+    this.poller = window.DeskPRO_Window.getPoller();
+    return {
+      me:          0,
+      last_alert:  Math.floor(Date.now() / 1000),
+      last_notify: Math.floor(Date.now() / 1000)
+    };
+  }
+
+  bind(channelName, eventName) {
+    this.handleAlert = this.handleUserNotifyPoll.bind(this);
+    this.handleNotify = this.handleActionAlertsPoll.bind(this);
+    this.poller.addData({ last_alert: this.options.last_alert }, 'last_alert');
+    this.poller.addData({ last_notify: this.options.last_notify }, 'last_notify');
+    if (eventName === 'action_alert') {
+      this.poller.addEvent('ajaxSuccess', this.handleAlert);
+    } else if (eventName === 'user_notify') {
+      this.poller.addEvent('ajaxSuccess', this.handleNotify);
+    }
+  }
+
+  handleActionAlertsPoll(response) {
+    const that = this;
+
+    if (response.action_alerts) {
+      const last = response.action_alerts[response.action_alerts.length - 1];
+      if (last && last.timestamp) {
+        that.options.last_alert = last.timestamp;
+        response.action_alerts.map((datum) => {
+          if (datum.target_id === that.options.me) {
+            that.options.dispatcher('action_alert', datum);
+          }
+          return null;
+        });
+      }
+    }
+    this.poller.addData({ last_alert: this.options.last_alert }, 'last_alert');
+  }
+
+  handleUserNotifyPoll(response) {
+    const that = this;
+    if (response.notifications) {
+      const last = response.notifications[response.notifications.length - 1];
+      if (last && last.timestamp) {
+        that.options.last_notify = last.timestamp;
+        response.notifications.map((datum) => {
+          if (datum.target_id === that.options.me) {
+            that.options.dispatcher('user_notify', datum);
+          }
+          return null;
+        });
+      }
+    }
+    this.poller.addData({ last_notify: this.options.last_notify }, 'last_notify');
+  }
+
+  handleError() {
+    this.poller.addData({ last_alert: this.options.last_alert }, 'last_alert');
+    this.poller.addData({ last_notify: this.options.last_notify }, 'last_notify');
+  }
+
+  stopPolling() {
+    this.poller.removeEvent('ajaxSuccess', this.handleUserNotifyPoll.bind(this));
+    this.poller.removeEvent('ajaxSuccess', this.handleActionAlertsPoll.bind(this));
+  }
+}
