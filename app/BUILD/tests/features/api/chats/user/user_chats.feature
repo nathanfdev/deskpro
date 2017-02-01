@@ -30,3 +30,36 @@ Feature: /user_chats endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.subject" should be equal to "Chat1"
+
+  Scenario: I create a chat with agent
+    Given an agent with "darthvader@empire.galaxy" email exists
+    And a user with "chewie@falcon.galaxy" email exists
+    When I send a POST request to "/api/v2/user_chats" with body:
+    """
+{
+  "subject": "Test Subject",
+  "agent": "darthvader@empire.galaxy"
+  "person": "chewie@falcon.galaxy"
+  "chat_department": ~d1~
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 201
+    And the header "Location" should be equal to "/api/v2/user_chats/{lastCreatedId}"
+    And the JSON node "data" should exist
+    And the JSON node "data.id" should be equal to "{lastCreatedId}"
+    And the JSON node "data.agent" should be equal to "{darthvader@empire.galaxy}"
+    And the JSON node "data.subject" should be equal to "Test Subject"
+    And the JSON node "data.subject_line" should be equal to "Test Subject"
+
+  Scenario: I assign a new agent to a conversation
+    Given an agent with "darthvader@empire.galaxy" email exists
+    And only the following "ChatConversation" records exist:
+      | #  | Subject  |
+      | c1 | Chat1    |
+
+    When I send a PUT request to "api/v2/user_chats/{c1}/assign/{darthvader@empire.galaxy}"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node data should exist
+    And the JSON node "data.id" should be equal to "{1}"

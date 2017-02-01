@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\CustomDataHelper;
@@ -37,10 +38,14 @@ use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatConversationType;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class UserChatsController.
@@ -74,8 +79,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class UserChatsController extends CrudController
 {
-    public static $exposeOnly  = ['get', 'list', 'count', 'delete'];
+    public static $exposeOnly  = ['get', 'post', 'list', 'count', 'delete'];
     public static $entity      = ChatConversation::class;
+    public static $type        = ChatConversationType::class;
     public static $sortOptions = [
         'date_created' => 'date_created',
         'agent'        => ['join' => 'agent', 'as' => 'a', 'sort' => 'a.id'],
@@ -96,6 +102,95 @@ class UserChatsController extends CrudController
     public function csvAction(Request $request)
     {
         return $this->listAction($request);
+    }
+
+    /**
+     * Assign a chat conversation to an agent.
+     *
+     * @ApiDoc(
+     *      description="Assign chat to agent",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "dataType"="integer",
+     *          },
+     *          {
+     *              "name"="agentId",
+     *              "requirement"="\d+",
+     *              "dataType"="integer",
+     *          }
+     *      },
+     *      statusCodes={
+     *         200="Returned if successful request",
+     *         400="Returned if you filter set was malformed"
+     *      }
+     * )
+     * @Rest\Put("/{id}/assign/{agentId}", requirements={"id"="\d+", "agentId"="\d+"})
+     *
+     * @param Request $request
+     * @param int     $id
+     * @param int     $agentId
+     *
+     * @return View
+     */
+    public function assignAction(Request $request, $id, $agentId)
+    {
+        $conversation = $this->findEntity($id, $request);
+        $agent        = $this->getManager()->getRepository(Person::class)->getAgent($agentId);
+        if (!$agent) {
+            throw $this->createNotFoundException('Agent not found');
+        }
+
+        $conversation->setAgent($agent);
+        $conversation->addParticipant($agent);
+
+        $em = $this->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
+        return View::create($this->wrap($conversation), Response::HTTP_OK);
+    }
+
+    /**
+     * End a chat conversation.
+     *
+     * @ApiDoc(
+     *      description="End a chat conversation",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "dataType"="integer",
+     *          }
+     *      },
+     *      statusCodes={
+     *         200="Returned if successful request",
+     *         400="Returned if you filter set was malformed"
+     *      }
+     * )
+     * @Rest\Put("/{id}/end", requirements={"id"="\d+"})
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return View
+     */
+    public function endAction(Request $request, $id)
+    {
+        $conversation = $this->findEntity($id, $request);
+
+        $conversation
+            ->setStatus(ChatConversation::STATUS_ENDED)
+        ;
+
+        $em = $this->getManager();
+        $em->persist($conversation);
+        $em->flush();
+
+        $this->get('event_dispatcher')->dispatch(UserChatEvent::ENDED, new UserChatEvent($conversation, [], ['chat_ended']));
+
+        return View::create();
     }
 
     /**
