@@ -109,17 +109,16 @@ img.emojione, svg.emojione {
           top: 0;
         }
       }
-
       > .knuckles.message-counter {
-        &:hover {
-          display: none;
-        }
         position: absolute;
         top: -8px;
         left: 25px;
         font-size: 12px;
         padding: 2px;
         font-weight: bold;
+      }
+      &:hover > .knuckles.message-counter {
+        display: none;
       }
     }
   }
