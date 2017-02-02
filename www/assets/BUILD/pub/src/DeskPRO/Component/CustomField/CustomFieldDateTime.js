@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Field, Input } from 'react-forms';
-import 'jquery-datetimepicker-iframe/jquery.datetimepicker'; // eslint-disable-line import/no-unresolved
+import 'jquery-datetimepicker-iframe/jquery.datetimepicker';
 import $ from 'jquery';
 import moment from 'moment';
 import 'DeskPRO/Bundle/AppBundle/moment-locales';

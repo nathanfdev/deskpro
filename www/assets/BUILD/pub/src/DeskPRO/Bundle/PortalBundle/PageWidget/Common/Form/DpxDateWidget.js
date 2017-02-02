@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import moment from 'moment';
 import 'DeskPRO/Bundle/AppBundle/moment-locales';
-import 'jquery-datetimepicker-iframe/jquery.datetimepicker'; // eslint-disable-line import/no-unresolved
+import 'jquery-datetimepicker-iframe/jquery.datetimepicker';
 
 export class DpxDateWidget extends PageWidget {
 
