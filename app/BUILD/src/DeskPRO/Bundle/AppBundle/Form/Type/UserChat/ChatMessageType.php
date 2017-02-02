@@ -78,9 +78,9 @@ class ChatMessageType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetDefault'], 50);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetDefault'], 200);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'sendEvent'], 200);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'sendEvent'], -1);
     }
 
     public function configureOptions(OptionsResolver $resolver)

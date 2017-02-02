@@ -92,7 +92,7 @@ class ChatConversationType extends AbstractType
         ]);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'sendChatEvent'], 200);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'sendChatEvent'], -1);
     }
 
     public function configureOptions(OptionsResolver $resolver)
