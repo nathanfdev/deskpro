@@ -153,16 +153,17 @@ class NotificationService
                 $chat->addParticipant($participant);
                 $chat->addParticipant($person);
             }
+
+            $message = new AgentChatMessage();
+            $message
+                ->setPerson($person)
+                ->setChat($chat)
+                ->setUuid(uniqid('', true))
+                ->setMessage($noteText);
+            $this->em->persist($chat);
+            $this->em->persist($message);
         }
 
-        $message = new AgentChatMessage();
-        $message
-            ->setPerson($person)
-            ->setChat($chat)
-            ->setUuid(uniqid('', true))
-            ->setMessage($noteText);
-        $this->em->persist($chat);
-        $this->em->persist($message);
         $this->em->flush();
     }
 
