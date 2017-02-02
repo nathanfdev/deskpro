@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatMessageType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,6 +46,13 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("user_chats/{conversationId}/messages")
  * @ApiDoc(target="all", section="Chats", output="Application\DeskPRO\Entity\ChatMessage")
+ * @ApiDoc(
+ *     target="listAction,countAction",
+ *     filters={
+ *          {"name"="last_message_id", "dataType"="integer", "pattern"="\d+"},
+ *          {"name"="agent_only", "dataType"="integer", "pattern"="\d+"}
+ *     }
+ * )
  */
 class UserChatMessagesController extends CrudSubController
 {
@@ -108,5 +116,24 @@ class UserChatMessagesController extends CrudSubController
         $this->get('event_dispatcher')->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $model));
 
         return $model;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+        parent::applyListFilters($qb, $alias, $request);
+
+        $qb->andWhere($alias.'.is_user_hidden = 0');
+
+        $lastMessageId = $request->get('last_message_id');
+        if ($lastMessageId) {
+            $qb->andWhere($alias.'.id > :last_message_id');
+            $qb->setParameter('last_message_id', $lastMessageId);
+        }
+        if ($request->get('agent_only')) {
+            $qb->andWhere($alias.'.is_user = 0');
+        }
     }
 }
