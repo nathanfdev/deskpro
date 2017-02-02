@@ -52,7 +52,9 @@
 
   const each = (classNames, fn) => {
     for (const className of (classNames || '').split(',')) {
-      const elements = document.getElementsByClassName(className);
+      // document.getElementsByClassName broken in Safari
+      // https://github.com/zloirock/core-js/issues/37
+      const elements = [].slice.call(document.getElementsByClassName(className));
       for (const element of elements) {
         fn(element);
       }
