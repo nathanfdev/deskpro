@@ -50,6 +50,8 @@ class NotificationServiceSpec extends ObjectBehavior
         $settings->get('notification.settings.strategies')->willReturn($this->getStrategies());
         $settings->get('notification.settings.default_strategy')->willReturn($this->getDefaultStrategy());
         $settings->get('notification.settings.polling_client.polling_interval', 5000)->willReturn(25000);
+        $settings->get('notification.settings.pusher_client.appKey')->willReturn('pusherAppKey');
+        $settings->get('notification.settings.pusher_client.debug')->willReturn(true);
         $this->beConstructedWith($em, $settings_resolver);
     }
 
@@ -58,11 +60,31 @@ class NotificationServiceSpec extends ObjectBehavior
         $this->getClientsSetup()->shouldHaveType(NotificationConfiguration::class);
         $clients = $this->getClientsSetup()->getClients();
         $clients->shouldBeArray();
-        $clients->shouldHaveCount(1);
+        $clients->shouldHaveCount(3);
+
         $client = $clients[0];
         $client->shouldHaveType(NotificationClient::class);
+        $client->getType()->shouldBe('legacy');
+        $client->getOptions()->shouldBe([
+            'last_alert'  => $this->lastAlert(),
+            'last_notify' => $this->lastNotify(),
+        ]);
+
+        $client = $clients[1];
+        $client->shouldHaveType(NotificationClient::class);
         $client->getType()->shouldBe('polling');
-        $client->getOptions()->shouldBe(['last_alert' => $this->lastAlert(), 'polling_interval' => 25000]);
+        $client->getOptions()->shouldBe([
+            'last_alert'       => $this->lastAlert(),
+            'polling_interval' => 25000,
+        ]);
+
+        $client = $clients[2];
+        $client->shouldHaveType(NotificationClient::class);
+        $client->getType()->shouldBe('pusher');
+        $client->getOptions()->shouldBe([
+            'appKey' => 'pusherAppKey',
+            'debug'  => true,
+        ]);
     }
 
     private function getStrategies()
@@ -72,6 +94,18 @@ class NotificationServiceSpec extends ObjectBehavior
                 'strategy' => 'immediate',
                 'delivery' => [
                     'db',
+                ],
+            ],
+            'notification.yet.another.system.event_for_polling' => [
+                'strategy' => 'immediate',
+                'delivery' => [
+                    'db_new',
+                ],
+            ],
+            'notification.yet.another.system.event_for_pusher' => [
+                'strategy' => 'immediate',
+                'delivery' => [
+                    'pusher',
                 ],
             ],
         ];
