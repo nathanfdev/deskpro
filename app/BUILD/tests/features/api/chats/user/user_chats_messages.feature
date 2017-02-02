@@ -33,6 +33,37 @@ Feature: /user_chats endpoint
     And the response status code should be 201
     And the JSON node data should exist
     And the JSON node "data.author_id" should be equal to "{chewie@falcon.galaxy}"
+    And the JSON node "data.is_user" should be true
+
+  Scenario: I send a message without an author to a conversation
+    Given I'm authenticated as admin
+    When I send a POST request to "/api/v2/user_chats/{c1}/messages" with body:
+    """
+{
+  "content": "Test Message",
+  "is_user": 1
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 201
+    And the JSON node data should exist
+    And the JSON node "data.author_id" should be equal to 0
+    And the JSON node "data.is_user" should be true
+
+  Scenario: I send a message as an agent to a conversation
+    Given I'm authenticated as admin
+    When I send a POST request to "/api/v2/user_chats/{c1}/messages" with body:
+    """
+{
+  "content": "Test Message",
+  "is_user": 0
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 201
+    And the JSON node data should exist
+    And the JSON node "data.author_id" should be equal to 0
+    And the JSON node "data.is_user" should be false
 
   Scenario: I get the last messages on a conversation
     Given only the following "Chat" records exist:
@@ -46,3 +77,16 @@ Feature: /user_chats endpoint
     Then the response should be in JSON
     And the JSON node "data[0].content" should be equal to "test"
     And the JSON node "data[1].content" should be equal to "test message"
+
+  Scenario: I get the last messages on a conversation
+    Given only the following "Chat" records exist:
+      | #  | Subject  |
+      | c1 | Chat1    |
+    And only the following "ChatMessage" records exist:
+      | #  | Conversation | Author  | Person name | Content      |
+      | m1 | {c1}         | {agent} | agent       | test message |
+      | m2 | {c1}         | {agent} | agent       | test         |
+    When I send a GET request to "/api/v2/user_chats/{c1}/messages/counts"
+    Then the response should be in JSON
+    And the JSON node "data.count" should be equal to 2
+    And print last response

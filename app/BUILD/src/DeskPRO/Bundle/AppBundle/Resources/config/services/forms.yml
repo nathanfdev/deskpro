@@ -309,18 +309,6 @@ services:
     tags:
       - { name: form.type }
 
-  form.user_chat.chat_conversation:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatConversationType
-    arguments: ["@event_dispatcher"]
-    tags:
-      - { name: form.type }
-
-  form.user_chat.chat_message:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatMessageType
-    arguments: ["@event_dispatcher"]
-    tags:
-      - { name: form.type }
-
   form.voice_account:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAccountType
     arguments:

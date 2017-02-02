@@ -269,4 +269,17 @@ class UserChatsController extends CrudController
                 break;
         }
     }
+
+    /**
+     * @param ChatConversation $model
+     *
+     * @return ChatConversation
+     */
+    protected function persistModel($model)
+    {
+        parent::persistModel($model);
+        $this->get('event_dispatcher')->dispatch(UserChatEvent::STARTED, new UserChatEvent($model));
+
+        return $model;
+    }
 }

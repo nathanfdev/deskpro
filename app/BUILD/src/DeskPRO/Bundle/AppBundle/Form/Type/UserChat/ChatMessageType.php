@@ -35,10 +35,9 @@ use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
-use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -46,16 +45,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ChatMessageType extends AbstractType
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    public function __construct(EventDispatcherInterface $eventDispatcher)
-    {
-        $this->eventDispatcher = $eventDispatcher;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -64,7 +53,6 @@ class ChatMessageType extends AbstractType
             ])
             ->add('author', PersonAssignType::class, [
                 'property_path' => 'author',
-                'person'        => $options['person'],
             ])
             ->add('attachments', CollectionType::class, [
                 'type'         => BlobAuthType::class,
@@ -76,11 +64,13 @@ class ChatMessageType extends AbstractType
             ->add('is_user', ApiBooleanType::class, [
                 'data' => !$options['person']->isAgent(),
             ])
+            ->add('person_name', TextType::class, [
+                'data' => !$options['person']->isAgent(),
+            ])
         ;
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetDefault'], 200);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'sendEvent'], -1);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetDefault']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -102,10 +92,14 @@ class ChatMessageType extends AbstractType
         if ($form->isValid()) {
             /** @var ChatMessage $message */
             $message = $form->getData();
-            if (!$message->getAuthor()->isAgent()) {
-                $message->setIsUser(true);
+            if ($message->getAuthor()) {
+                if (!$message->getAuthor()->isAgent()) {
+                    $message->setIsUser(true);
+                }
+                $origin = $message->getAuthor()->isAgent() ? 'agent' : 'user';
+            } else {
+                $origin = $message->getIsUser() ? 'user' : 'agent';
             }
-            $origin = $message->getAuthor()->isAgent() ? 'agent' : 'user';
             $message->setOrigin($origin);
         }
     }
@@ -125,24 +119,6 @@ class ChatMessageType extends AbstractType
             $conversation = $config->getOption('conversation');
 
             $conversation->addMessage($message);
-        }
-    }
-
-    /**
-     * @param FormEvent $event
-     */
-    public function sendEvent(FormEvent $event)
-    {
-        $form = $event->getForm();
-        if ($form->isValid()) {
-            $config = $form->getConfig();
-
-            /** @var ChatMessage $message */
-            $message = $form->getData();
-            /** @var ChatConversation $conversation */
-            $conversation = $config->getOption('conversation');
-
-            $this->eventDispatcher->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $message));
         }
     }
 }

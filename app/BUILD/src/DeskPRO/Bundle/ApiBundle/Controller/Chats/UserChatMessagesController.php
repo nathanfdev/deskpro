@@ -34,6 +34,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatMessageType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -91,5 +92,21 @@ class UserChatMessagesController extends CrudSubController
         ]);
 
         return parent::handleForm($model, $request, $options);
+    }
+
+    /**
+     * @param ChatMessage $model
+     *
+     * @return ChatMessage
+     */
+    protected function persistModel($model)
+    {
+        parent::persistModel($model);
+
+        $conversation = $model->getConversation();
+
+        $this->get('event_dispatcher')->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $model));
+
+        return $model;
     }
 }
