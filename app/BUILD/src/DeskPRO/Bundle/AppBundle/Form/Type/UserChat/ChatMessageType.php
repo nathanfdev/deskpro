@@ -31,9 +31,12 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\UserChat;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -43,6 +46,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ChatMessageType extends AbstractType
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    public function __construct(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -60,9 +73,14 @@ class ChatMessageType extends AbstractType
                 'required'     => false,
                 'mapped'       => false,
             ])
+            ->add('is_user', ApiBooleanType::class, [
+                'data' => !$options['person']->isAgent(),
+            ])
         ;
 
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetDefault'], 50);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'sendEvent'], 200);
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -77,19 +95,54 @@ class ChatMessageType extends AbstractType
         ;
     }
 
+    public function onSetDefault(FormEvent $event)
+    {
+        $form = $event->getForm();
+
+        if ($form->isValid()) {
+            /** @var ChatMessage $message */
+            $message = $form->getData();
+            if (!$message->getAuthor()->isAgent()) {
+                $message->setIsUser(true);
+            }
+            $origin = $message->getAuthor()->isAgent() ? 'agent' : 'user';
+            $message->setOrigin($origin);
+        }
+    }
+
     /**
      * @param FormEvent $event
      */
     public function onSetRelations(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $config = $form->getConfig();
+        $form = $event->getForm();
+        if ($form->isValid()) {
+            $config = $form->getConfig();
 
-        /** @var ChatMessage $message */
-        $message = $form->getData();
-        /** @var ChatConversation $conversation */
-        $conversation = $config->getOption('conversation');
+            /** @var ChatMessage $message */
+            $message = $form->getData();
+            /** @var ChatConversation $conversation */
+            $conversation = $config->getOption('conversation');
 
-        $conversation->addMessage($message);
+            $conversation->addMessage($message);
+        }
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function sendEvent(FormEvent $event)
+    {
+        $form = $event->getForm();
+        if ($form->isValid()) {
+            $config = $form->getConfig();
+
+            /** @var ChatMessage $message */
+            $message = $form->getData();
+            /** @var ChatConversation $conversation */
+            $conversation = $config->getOption('conversation');
+
+            $this->eventDispatcher->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $message));
+        }
     }
 }

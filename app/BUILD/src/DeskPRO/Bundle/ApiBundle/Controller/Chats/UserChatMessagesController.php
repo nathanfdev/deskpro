@@ -42,15 +42,16 @@ use Symfony\Component\HttpFoundation\Request;
  * Class UserChatMessagesController.
  *
  * @ApiModes("all")
- * @Rest\Route("user_chats/{parentId}/messages")
+ * @Rest\Route("user_chats/{conversationId}/messages")
  * @ApiDoc(target="all", section="Chats", output="Application\DeskPRO\Entity\ChatMessage")
  */
 class UserChatMessagesController extends CrudSubController
 {
-    public static $exposeOnly     = ['post', 'list', 'count'];
-    public static $entity         = ChatMessage::class;
-    public static $type           = ChatMessageType::class;
-    public static $parentProperty = 'conversation';
+    public static $exposeOnly      = ['post', 'list', 'count'];
+    public static $entity          = ChatMessage::class;
+    public static $type            = ChatMessageType::class;
+    public static $parentProperty  = 'conversation';
+    public static $parentParameter = 'conversationId';
 
     /**
      * You can create new resource. Just provide well formed request.

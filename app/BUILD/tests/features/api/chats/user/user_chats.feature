@@ -82,3 +82,30 @@ Feature: /user_chats endpoint
     And the response status code should be 200
     And the JSON node data should exist
     And the JSON node "data.id" should be equal to "{c1}"
+
+  Scenario: I send a message to a conversation
+    Given a user with "chewie@falcon.galaxy" email exists
+    And I'm authenticated as admin
+    And only the following "Chat" records exist:
+      | #  | Subject  |
+      | c1 | Chat1    |
+
+    When I send a POST request to "/api/v2/user_chats/{c1}/messages" with body:
+    """
+{
+  "content": "Test Message",
+  "author": "chewie@falcon.galaxy"
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 201
+    And the JSON node data should exist
+    And the JSON node "data.author_id" should be equal to "{chewie@falcon.galaxy}"
+
+  Scenario: I can pull last messages for a conversation
+    Given a user with "chewie@falcon.galaxy" email exists
+    When I send a GET request to "/api/v2/user_chats/{c1}/messages"
+    Then the response should be in JSON
+    And print last response
+
+

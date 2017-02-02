@@ -32,17 +32,32 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\LeafDepartment;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class ChatConversationType extends AbstractType
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    public function __construct(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -50,6 +65,7 @@ class ChatConversationType extends AbstractType
 
             ])
             ->add('person', PersonAssignType::class)
+            ->add('person_email', EmailType::class)
             ->add('agent', PersonAssignType::class)
             ->add('email_validated', ApiBooleanType::class)
         ;
@@ -57,6 +73,7 @@ class ChatConversationType extends AbstractType
         $builder->add('chat_department', EntityType::class, [
             'class'         => Department::class,
             'property_path' => 'department',
+            'required'      => true,
             'query_builder' => function (EntityRepository $er) {
                 $qb = $er
                     ->createQueryBuilder('d')
@@ -73,6 +90,9 @@ class ChatConversationType extends AbstractType
                 new LeafDepartment(),
             ],
         ]);
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'sendChatEvent'], 200);
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -82,5 +102,36 @@ class ChatConversationType extends AbstractType
                 'data_class' => ChatConversation::class,
             ])
         ;
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetRelations(FormEvent $event)
+    {
+        $form = $event->getForm();
+
+        if ($form->isValid()) {
+            /** @var ChatConversation $conversation */
+            $conversation = $form->getData();
+
+            if ($conversation->getAgent()) {
+                $conversation->addParticipant($conversation->getAgent());
+            }
+        }
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function sendChatEvent(FormEvent $event)
+    {
+        $form = $event->getForm();
+
+        if ($form->isValid()) {
+            $conversation = $form->getData();
+
+            $this->eventDispatcher->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
+        }
     }
 }

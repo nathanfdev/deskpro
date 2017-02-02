@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefFeedback;
@@ -269,6 +270,7 @@ class ObjectsManager
             'ArticleCategory'          => [Factory\SimpleFactory::class, 'create', ArticleCategory::class],
             'PendingArticle'           => [Factory\SimpleFactory::class, 'create', ArticlePendingCreate::class],
             'Chat'                     => [Factory\CommonFactories::class, 'chat'],
+            'ChatMessage'              => [Factory\SimpleFactory::class, 'create', ChatMessage::class],
             'AgentChat'                => [Factory\SimpleFactory::class, 'create', AgentChat::class],
             'AgentChatParticipant'     => [Factory\SimpleFactory::class, 'create', AgentChatParticipant::class],
             'AgentChatMessage'         => [Factory\SimpleFactory::class, 'create', AgentChatMessage::class],
@@ -369,6 +371,7 @@ class ObjectsManager
             'OrganizationNote'         => [$this, 'find', OrganizationNote::class],
             'Product'                  => [$this, 'find', Product::class],
             'Chat'                     => [$this, 'find', ChatConversation::class],
+            'ChatMessage'              => [$this, 'find', ChatMessage::class],
             'Department'               => [$this, 'find', Department::class],
             'CustomDefTicket'          => [$this, 'find', CustomDefTicket::class],
             'CustomDefOrganization'    => [$this, 'find', CustomDefOrganization::class],
