@@ -1038,7 +1038,6 @@ class Ticket extends AbstractEntityRepository
 
     /**
      * @param PersonEntity $person
-     * @param bool         $isCount
      * @param null         $sort
      *
      * @return \Doctrine\ORM\Query
