@@ -46,7 +46,7 @@ class Magento extends AbstractAdapter
             'name'            => isset($info['name']) ? $info['name'] : '',
             'first_name'      => isset($info['first_name']) ? $info['first_name'] : '',
             'last_name'       => isset($info['last_name']) ? $info['last_name'] : '',
-            'email'           => isset($info['email_address']) ? $info['email_address'] : '',
+            'email'           => isset($info['email']) ? $info['email'] : '',
             'email_confirmed' => true,
         ];
     }
