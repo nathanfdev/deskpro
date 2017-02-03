@@ -39,6 +39,8 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
 use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
@@ -51,6 +53,7 @@ use Orb\Auth\Adapter\CallbackInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -68,6 +71,10 @@ class ApiTokensController extends BaseController
      * @ApiDoc(
      *      description="create a new api token",
      *      output="token",
+     *      parameters={
+     *          { "name" = "email", "dataType" = "string", "format" = "string", "required" = true, "description" = "Email address" },
+     *          { "name" = "password", "dataType" = "string", "format" = "string", "required" = true, "description" = "Password" },
+     *      },
      *      statusCodes={
      *          201="Created token",
      *          401="Invalid credentials",
@@ -84,10 +91,10 @@ class ApiTokensController extends BaseController
      */
     public function newTokenAction(Request $request)
     {
-        $request_data = $request->request->all();
+        $requestData = $request->request->all();
 
         $form = $this->createForm(AuthenticationRequestType::class);
-        $form->submit($request_data);
+        $form->submit($requestData);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
@@ -96,24 +103,35 @@ class ApiTokensController extends BaseController
         $email    = $data['email'];
         $password = $data['password'];
 
-        $auth_result = $this->get('dp_authentication_manager.agent')->authenticateFormLogin($email, $password);
+        $check = new LoginAbuseCheck($email, $request->getClientIp());
+        try {
+            $this->container->get('anti_abuse')->check($check);
+        } catch (AntiAbuseException $e) {
+        }
 
-        if (!$auth_result->isValid()) {
+        if ($check->isLockoutRecommended() || $check->isCaptchaRecommended()) {
+            throw new TooManyRequestsHttpException();
+        }
+
+        $authResult = $this->get('dp_authentication_manager.agent')->authenticateFormLogin($email, $password);
+
+        if (!$authResult->isValid()) {
             // failed on agent usersources, revert to user
-            $auth_result = $this->get('dp_authentication_manager.user')->authenticateFormLogin($email, $password);
-            if (!$auth_result->isValid()) {
+            $authResult = $this->get('dp_authentication_manager.user')->authenticateFormLogin($email, $password);
+            $this->container->get('anti_abuse')->saveRateLimit($check);
+            if (!$authResult->isValid()) {
                 $this->throwUnauthorized();
             }
         }
 
-        $identity  = $auth_result->getIdentity();
-        $person_id = $identity->getIdentity();
+        $identity = $authResult->getIdentity();
+        $personId = $identity->getIdentity();
 
-        if (!$person_id) {
+        if (!$personId) {
             $this->throwUnauthorized();
         }
 
-        $person = $this->getManager()->getRepository(Person::class)->find($person_id);
+        $person = $this->getManager()->getRepository(Person::class)->find($personId);
         if (!$person) {
             $this->throwUnauthorized();
         }
@@ -253,7 +271,7 @@ class ApiTokensController extends BaseController
      * @param Usersource $usersource
      * @param string     $format
      *
-     * @return View
+     * @return Response
      */
     public function usersourceCallbackAction(Request $request, Usersource $usersource, $format)
     {
