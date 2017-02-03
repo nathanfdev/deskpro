@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Message;
 
-use Faker\Provider\Uuid;
+use DeskPRO\Component\Util\RandUtils;
 
 abstract class AbstractMessage implements MessageInterface
 {
@@ -69,7 +69,7 @@ abstract class AbstractMessage implements MessageInterface
         $this->data   = $data;
         $this->type   = $type;
         $this->date   = $date->format(\DateTime::ISO8601);
-        $this->id     = Uuid::uuid();
+        $this->id     = RandUtils::uuidV4();
     }
 
     /**

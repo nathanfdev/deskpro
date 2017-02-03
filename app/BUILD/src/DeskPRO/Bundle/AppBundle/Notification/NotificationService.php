@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfiguration;
+use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -158,7 +159,7 @@ class NotificationService
             $message
                 ->setPerson($person)
                 ->setChat($chat)
-                ->setUuid(uniqid('', true))
+                ->setUuid(RandUtils::uuidV4())
                 ->setMessage($noteText);
             $this->em->persist($chat);
             $this->em->persist($message);
