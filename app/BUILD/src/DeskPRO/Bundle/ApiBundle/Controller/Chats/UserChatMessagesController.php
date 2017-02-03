@@ -33,11 +33,9 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatMessageType;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -53,6 +51,15 @@ use Symfony\Component\HttpFoundation\Request;
  *          {"name"="agent_only", "dataType"="integer", "pattern"="\d+"}
  *     }
  * )
+ * @ApiDoc(
+ *     target="postAction",
+ *     parameters = {
+ *         { "name" = "content", "dataType" = "string", "format" = "string", "description" = "Message content", "required" = false },
+ *         { "name" = "author", "dataType" = "string|integer", "format" = "string|integer", "description" = "Author id or email address", "required" = false },
+ *         { "name" = "is_user", "dataType" = "boolean", "format" = "boolean", "description" = "Guest email address", "required" = false },
+ *         { "name" = "person_name", "dataType" = "string", "format" = "string", "description" = "Author name", "required" = false },
+ *     }
+ * )
  */
 class UserChatMessagesController extends CrudSubController
 {
@@ -61,33 +68,6 @@ class UserChatMessagesController extends CrudSubController
     public static $type            = ChatMessageType::class;
     public static $parentProperty  = 'conversation';
     public static $parentParameter = 'conversationId';
-
-    /**
-     * You can create new resource. Just provide well formed request.
-     * Look into requirements for details.
-     *
-     * **We will ship resource representation as soon as it will be created.**
-     *
-     * @ApiDoc(
-     *      description="Create a new resource",
-     *      tags={"CRUD"="#ffa500"},
-     *      statusCodes={
-     *          201="Returned in case of successful resource creation",
-     *          400="We will return this in case your request was malformed",
-     *      }
-     * )
-     * @Rest\Post("")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function postAction(Request $request)
-    {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
-
-        return $this->handleForm($this->instantiateEntity($request), $request);
-    }
 
     /**
      * {@inheritdoc}

@@ -32,11 +32,9 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -53,13 +51,6 @@ class ChatMessageType extends AbstractType
             ])
             ->add('author', PersonAssignType::class, [
                 'property_path' => 'author',
-            ])
-            ->add('attachments', CollectionType::class, [
-                'type'         => BlobAuthType::class,
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'required'     => false,
-                'mapped'       => false,
             ])
             ->add('is_user', ApiBooleanType::class, [
                 'data' => !$options['person']->isAgent(),

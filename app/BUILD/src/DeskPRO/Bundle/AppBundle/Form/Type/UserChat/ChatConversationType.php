@@ -30,7 +30,10 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\UserChat;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Department;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\LeafDepartment;
 use Doctrine\ORM\EntityRepository;
@@ -46,6 +49,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ChatConversationType extends AbstractType
 {
+    /**
+     * @var CustomFieldManager
+     */
+    private $fieldManager;
+
+    /**
+     * Constructor.
+     *
+     * @param CustomFieldManager $fieldManager
+     */
+    public function __construct(CustomFieldManager $fieldManager)
+    {
+        $this->fieldManager = $fieldManager;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -56,6 +74,10 @@ class ChatConversationType extends AbstractType
             ->add('person_email', EmailType::class)
             ->add('agent', PersonAssignType::class)
             ->add('email_validated', ApiBooleanType::class)
+            ->add('fields', CombinedType::class, [
+                'forms'          => $this->getCustomDataFields(),
+                'error_bubbling' => false,
+            ])
         ;
 
         $builder->add('chat_department', EntityType::class, [
@@ -106,5 +128,29 @@ class ChatConversationType extends AbstractType
                 $conversation->addParticipant($conversation->getAgent());
             }
         }
+    }
+
+    /**
+     * @return array
+     */
+    private function getCustomDataFields()
+    {
+        $defs   = $this->fieldManager->getAvailableChatDefs();
+        $fields = [];
+
+        foreach ($defs as $def) {
+            $fields[] = [
+                'name'    => $def->getId(),
+                'type'    => CustomDataType::class,
+                'options' => [
+                    'custom_def'      => $def,
+                    'property_path'   => 'custom_data',
+                    'agent_interface' => false,
+                    'inline'          => true,
+                ],
+            ];
+        }
+
+        return $fields;
     }
 }
