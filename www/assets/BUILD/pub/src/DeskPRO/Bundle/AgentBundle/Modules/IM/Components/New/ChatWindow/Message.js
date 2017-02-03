@@ -31,6 +31,15 @@ class Message extends React.Component
     );
   }
 
+  static formatMessage(message) {
+    // it's just a short version of AgentChatWin::formatMessage
+    // it seems, that nothing but only tickets mentions are used.
+    const re = new RegExp('\\{\\{\\s*t\\-([0-9]+)\\s*\\}\\}', 'g');
+    let newMessage = message.replace(re, `<a data-route="page:${window.BASE_URL}agent/tickets/$1">Ticket#$1</a>`);
+    newMessage = newMessage.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target="_blank">$1</a>');
+    return newMessage;
+  }
+
   getMessage() {
     let message = this.props.message.message;
     emojione.imagePathSVGSprites = `./..${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg`;
@@ -41,6 +50,7 @@ class Message extends React.Component
       message = message.replace(this.props.searchQuery, `<span class="search result">${this.props.searchQuery}</span>`);
     }
     message = emojione.shortnameToImage(message);
+    message = Message.formatMessage(message);
     return {
       __html: message
     };

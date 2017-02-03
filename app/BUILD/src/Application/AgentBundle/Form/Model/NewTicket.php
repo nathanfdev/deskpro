@@ -579,8 +579,19 @@ class NewTicket
         $this->_ticket_manager->saveTicket($ticket, $ticket_context);
 
         if ($agent_chat) {
-            $notify_text = $message->person->getDisplayName().' alerted you in a note in {{t-'.$ticket->id.'}}: '.$ticket->subject;
-            $agent_chat->sendAgentMessage($notify_text, array_keys($notify_chat));
+            $agentIds   = array_keys($notify_chat);
+            $notifyText = sprintf(
+                '%s alerted you in a note in {{t-%d}}: %s',
+                $message->getPerson()->getDisplayName(),
+                $ticket->getId(),
+                $ticket->getSubject()
+            );
+            $agent_chat->sendAgentMessage($notifyText, $agentIds);
+            App::$container->get('deskpro.notification.service')->sendNote(
+                $message->getPerson(),
+                $agentIds,
+                $notifyText
+            );
         }
 
         $this->_ticket = $ticket;
