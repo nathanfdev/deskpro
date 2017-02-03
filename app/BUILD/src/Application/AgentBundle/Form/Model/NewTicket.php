@@ -587,11 +587,13 @@ class NewTicket
                 $ticket->getSubject()
             );
             $agent_chat->sendAgentMessage($notifyText, $agentIds);
-            App::$container->get('deskpro.notification.service')->sendNote(
-                $message->getPerson(),
-                $agentIds,
-                $notifyText
-            );
+            if (App::$container->get('deskpro.feature_flags')->hasFeature('agent_chat')) {
+                App::$container->get('deskpro.notification.service')->sendNote(
+                    $message->getPerson(),
+                    $agentIds,
+                    $notifyText
+                );
+            }
         }
 
         $this->_ticket = $ticket;

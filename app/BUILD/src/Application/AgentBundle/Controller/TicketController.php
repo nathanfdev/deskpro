@@ -1273,7 +1273,9 @@ class TicketController extends AbstractController
                     $ticket->getSubject()
                 );
                 $agent_chat->sendAgentMessage($notifyText, $agentIds);
-                $this->container->get('deskpro.notification.service')->sendNote($this->person, $agentIds, $notifyText);
+                if ($this->container->get('deskpro.feature_flags')->hasFeature('agent_chat')) {
+                    $this->container->get('deskpro.notification.service')->sendNote($this->person, $agentIds, $notifyText);
+                }
             }
 
             if ($notify_email) {
