@@ -10,6 +10,7 @@ import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
+import { history } from '../../../Services/history';
 import {
   skippedPollingSelector,
   lockedPollingSelector,
@@ -31,6 +32,7 @@ export const unsetChatId = createAction(
       localStorage.removeItem('dpWidget.chat.partial');
       localStorage.removeItem('dpWidget.chat.lastAgentId');
     }
+    history.replace('/');
   }
 );
 
