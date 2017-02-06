@@ -2465,6 +2465,8 @@ return [
     'agent.userchat.block_title'                               => 'End the chat and block this user from starting a new chat for the next 24 hours.',
     'agent.userchat.block_user'                                => 'Block User',
     'agent.userchat.create_ticket'                             => 'Create ticket',
+    'agent.userchat.delete'                                    => 'Delete chat',
+    'agent.userchat.delete_confirm'                            => 'Delete this chat',
     'agent.userchat.ended_by'                                  => 'Chat ended by {{name}}',
     'agent.userchat.ended_by_reason'                           => 'Chat ended by {{name}}: {{reason}}',
     'agent.userchat.ended_user'                                => 'Chat ended by user',
