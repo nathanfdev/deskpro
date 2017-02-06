@@ -33,9 +33,9 @@ use Application\DeskPRO\Entity\Blob;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
-use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use DeskPRO\Component\Pagerfanta\LimitedPager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -53,8 +53,9 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class BlobsController extends CrudController
 {
-    public static $entity = Blob::class;
-    public static $type   = BlobAuthType::class;
+    public static $exposeOnly = ['list', 'get', 'post', 'delete'];
+    public static $entity     = Blob::class;
+    public static $type       = BlobAuthType::class;
 
     /**
      * @Rest\Post("/temp")
@@ -205,41 +206,6 @@ class BlobsController extends CrudController
     }
 
     /**
-     * Update the resource with specified ID.
-     * Look carefully in requirements section to form request well.
-     *
-     * @ApiDoc(
-     *      description="Update an existing resource",
-     *      tags={"CRUD"="#ffa500"},
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="(\d+\-)?[A-Z0-9]+",
-     *              "description"="The id of the resource",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          204="Returned in case of successful resource modify",
-     *          400="We will return this in case your request was malformed",
-     *      }
-     * )
-     * @Rest\Put("/{authId}", requirements={"authId"="(\d+\-)?[A-Z0-9]+"})
-     *
-     * @param int     $authId
-     * @param Request $request
-     * @SerializerView(serializeNull=true)
-     *
-     * @return View
-     */
-    public function putAction($authId, Request $request)
-    {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupEntityContext($authId, $request));
-
-        return $this->handleForm($this->findEntity($authId, $request), $request);
-    }
-
-    /**
      * Obviously it's an ability to erase what you've done.
      * Be careful there is no CTRL+Z shortcut.
      *
@@ -259,6 +225,8 @@ class BlobsController extends CrudController
      *          404="Well, looks like either blob already deleted either it doesn't exists at all"
      *      }
      * )
+     * @ApiModes({"key"})
+     * @ApiUserContext("admin")
      * @Rest\Delete("/{authId}", requirements={"authId"="(\d+\-)?[A-Z0-9]+"})
      *
      * @param int     $authId
@@ -360,10 +328,6 @@ class BlobsController extends CrudController
         $archive = $this->getArchive($blob);
 
         try {
-            //            $zippy = $this->get('deskpro.zippy');
-//            $archiveZip = $zippy->open($archive);
-
-//            $content = $archiveZip->getMembers();
             $zip = $this->get('archive_factory')->createZipArchive();
             $zip->open($archive);
             $content = $zip->getMembers();

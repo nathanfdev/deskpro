@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Archive;
 
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use Orb\Util\Numbers;
-use Orb\Util\Util;
+use Symfony\Component\Filesystem\Filesystem;
 
 class Zip implements ArchiveInterface
 {
@@ -52,7 +52,8 @@ class Zip implements ArchiveInterface
     public function __destruct()
     {
         if ($this->tmpFolder) {
-            Util::delTree($this->tmpFolder);
+            $fs = new Filesystem();
+            $fs->remove($this->tmpFolder);
         }
     }
 
