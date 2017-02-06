@@ -57,7 +57,7 @@ class GoToController extends AbstractController
             }
         }
 
-        return $this->redirect('/agent/#app.tickets,inbox:agent,t.o:'.$id.',vis:7');
+        return $this->redirect('/agent/#app.tickets,inbox:agent,t:'.$id);
     }
 
     public function ticketRefAction($ref)
@@ -68,7 +68,7 @@ class GoToController extends AbstractController
             $this->createNotFoundException();
         }
 
-        return $this->redirect('/agent/#app.tickets,inbox:agent,t.o:'.$ticket->getId().',vis:7');
+        return $this->redirect('/agent/#app.tickets,inbox:agent,t:'.$ticket->getId());
     }
 
     public function personIdAction($id)
@@ -79,7 +79,7 @@ class GoToController extends AbstractController
             $this->createNotFoundException();
         }
 
-        return $this->redirect('/agent/#app.people,people:*,p.o:'.$id.',vis:7');
+        return $this->redirect('/agent/#app.people,people:*,p:'.$id);
     }
 
     public function personEmailAddressAction($emailAddress)
@@ -90,7 +90,7 @@ class GoToController extends AbstractController
             $this->createNotFoundException();
         }
 
-        return $this->redirect('/agent/#app.people,people:*,p.o:'.$person->getId().',vis:7');
+        return $this->redirect('/agent/#app.people,people:*,p:'.$person->getId());
     }
 
     public function organizationIdAction($id)
@@ -101,7 +101,7 @@ class GoToController extends AbstractController
             $this->createNotFoundException();
         }
 
-        return $this->redirect('/agent/#app.people,orgs,o.o:'.$id.',vis:7');
+        return $this->redirect('/agent/#app.people,orgs,o:'.$id);
     }
 
     public function articleIdAction($id)
@@ -112,7 +112,7 @@ class GoToController extends AbstractController
             $this->createNotFoundException();
         }
 
-        return $this->redirect('/agent/#app.publish,knowledgebase:1,a.o:'.$id.',vis:7');
+        return $this->redirect('/agent/#app.publish,knowledgebase:1,a:'.$id);
     }
 
     public function downloadIdAction($id)
@@ -123,7 +123,7 @@ class GoToController extends AbstractController
             $this->createNotFoundException();
         }
 
-        return $this->redirect('/agent/#app.publish,downloads:1,d.o:'.$id.',vis:7');
+        return $this->redirect('/agent/#app.publish,downloads:1,d:'.$id);
     }
 
     public function newsIdAction($id)
@@ -134,7 +134,7 @@ class GoToController extends AbstractController
             $this->createNotFoundException();
         }
 
-        return $this->redirect('/agent/#app.publish,news:1,n.o:'.$id.',vis:7');
+        return $this->redirect('/agent/#app.publish,news:1,n:'.$id);
     }
 
     public function feedbackIdAction($id)
@@ -145,7 +145,7 @@ class GoToController extends AbstractController
             $this->createNotFoundException();
         }
 
-        return $this->redirect('/agent/#app.feedback,fb_content,i.o:'.$id.',vis:7');
+        return $this->redirect('/agent/#app.feedback,fb_content,i:'.$id);
     }
 
     public function chatIdAction($id)
@@ -158,6 +158,6 @@ class GoToController extends AbstractController
 
         $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, new PermissionGroupContext($conversation));
 
-        return $this->redirect('/agent/#app.userchat,new:-1,c.o:'.$id.',vis:7');
+        return $this->redirect('/agent/#app.userchat,new:-1,c:'.$id);
     }
 }
