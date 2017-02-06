@@ -171,6 +171,9 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
               for own day of fieldModel.options.date_valid_dow
                 formTypeOpts.valid_weekdays[day] = true
 
+            if fieldModel.options?.calendar
+              formTypeOpts.calendar = fieldModel.options.calendar
+
             if fieldModel.options.date_valid_type?
               if fieldModel.options.date_valid_type == "date"
                 formTypeOpts.valid_dates_mode = 'date'

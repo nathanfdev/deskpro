@@ -82,8 +82,8 @@ class DpDateType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $current_date = new \DateTime();
-        $current_year = (int) $current_date->format('Y');
+        $currentDate = new \DateTime();
+        $currentYear = (int) $currentDate->format('Y');
 
         /** @var \Application\DeskPRO\Entity\Person $user */
         $token = $this->tokenStorage->getToken();
@@ -91,14 +91,16 @@ class DpDateType extends AbstractType
 
         $resolver
             ->setDefaults([
-                'years'         => range(($current_year - 100), ($current_year + 100)),
+                'years'         => range(($currentYear - 100), ($currentYear + 100)),
                 'placeholder'   => '',
+                'calendar'      => 'gregorian',
                 'weekdays'      => [0, 1, 2, 3, 4, 5, 6],
                 'min_date'      => null,
                 'max_date'      => null,
                 'view_timezone' => $user instanceof Person ? $user->getTimezone() : 'UTC',
             ])
             ->setAllowedTypes('weekdays', ['array', 'null'])
+            ->setAllowedValues('calendar', ['gregorian', 'hijri', null])
         ;
     }
 
@@ -107,6 +109,7 @@ class DpDateType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
+        $view->vars['calendar'] = $options['calendar'];
         $view->vars['weekdays'] = $options['weekdays'] ? implode(',', $options['weekdays']) : null;
         $view->vars['min_date'] = $options['min_date'];
         $view->vars['max_date'] = $options['max_date'];
