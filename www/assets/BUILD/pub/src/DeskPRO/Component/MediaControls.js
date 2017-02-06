@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Range } from 'DeskPRO/Component/Semantic/Form';
-import { TimerFormat } from 'DeskPRO/Component/Timer';
+import Duration from 'DeskPRO/Component/Duration';
 
 class MediaControls extends React.Component {
 
@@ -79,7 +79,7 @@ class MediaControls extends React.Component {
     const rangeValue = duration ? (currentTime / duration) * 100 : 0;
 
     return (
-      <div className="voice-ticket-message-media-controls">
+      <div className="media-controls">
         <audio ref={(c) => { this.audio = c; }} src={recording.get('download_url')} />
 
         <Button className={classNames('basic icon', { disabled: !duration })} onClick={this.onStepBackward}>
@@ -88,14 +88,14 @@ class MediaControls extends React.Component {
         <Button className={classNames('basic icon', { disabled: !duration })} onClick={this.onPlay}>
           <i className={classNames(playing ? 'stop' : 'play', 'icon')} />
         </Button>
-        <div className="voice-ticket-message-timeline">
+        <div className="media-timeline">
           <Range value={rangeValue} onChange={this.onMove} />
         </div>
-        <span className="voice-ticket-message-time">
-          <Time value={currentTime} /> / { duration ? <Time value={duration} /> : '??' }
+        <span className="media-time">
+          <Duration value={currentTime} /> / { duration ? <Duration value={duration} /> : '??' }
         </span>
         <a
-          className="voice-ticket-message-size"
+          className="media-size"
           href={`${recording.get('download_url')}?dl=1`}
           target="_blank"
           rel="noopener noreferrer"
@@ -103,29 +103,6 @@ class MediaControls extends React.Component {
           <i className="icon download" /> {recording.get('filesize_readable')}
         </a>
       </div>
-    );
-  }
-}
-
-class Time extends React.Component {
-
-  static propTypes = {
-    value: PropTypes.number
-  };
-
-  render() {
-    const { value } = this.props;
-
-    const seconds = parseInt(value % 60, 10);
-    const minutes = parseInt(value / 60, 10) % 60;
-    const hours = parseInt(value / 60 / 60, 10);
-
-    return (
-      <TimerFormat
-        seconds={seconds}
-        minutes={minutes}
-        hours={hours}
-      />
     );
   }
 }

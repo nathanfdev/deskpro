@@ -979,56 +979,56 @@ $voice-green-border-color: #47BF61;
       border-top: 0;
       height: 38px;
 
-      .voice-ticket-message-media-controls {
+      .media-controls {
         display: inline-block;
-      }
 
-      .voice-ticket-message-timeline {
-        display: inline-block;
-        width: 300px;
+        .media-timeline {
+          display: inline-block;
+          width: 300px;
 
-        .range {
-          width: 100%;
+          .range {
+            width: 100%;
+          }
         }
-      }
 
-      .voice-ticket-message-time, .voice-ticket-message-size {
-        font-weight: 400;
-        font-size: 10px;
-        color: $dp-greyscale-850;
-      }
-
-      .voice-ticket-message-time {
-        margin-left: 10px;
-      }
-
-      .voice-ticket-message-size {
-        margin-left: 20px;
-
-        i {
-          padding-left: 0;
-        }
-      }
-
-      button {
-        height: 30px;
-        padding-top: 3px;
-        padding-bottom: 3px;
-        margin-right: 10px;
-
-        &.call-button {
-          float: right;
-          font-weight: 600;
-          font-size: 16px;
+        .media-time, .media-size {
+          font-weight: 400;
+          font-size: 10px;
           color: $dp-greyscale-850;
-          margin-right: 0;
-          padding-left: 15px;
-          padding-right: 15px;
+        }
+
+        .media-time {
+          margin-left: 10px;
+        }
+
+        .media-size {
+          margin-left: 20px;
 
           i {
-            color: $voice-green-border-color;
-            font-size: 20px;
-            margin-right: 3px !important;
+            padding-left: 0;
+          }
+        }
+
+        button {
+          height: 30px;
+          padding-top: 3px;
+          padding-bottom: 3px;
+          margin-right: 10px;
+
+          &.call-button {
+            float: right;
+            font-weight: 600;
+            font-size: 16px;
+            color: $dp-greyscale-850;
+            margin-right: 0;
+            padding-left: 15px;
+            padding-right: 15px;
+
+            i {
+              color: $voice-green-border-color;
+              font-size: 20px;
+              margin-right: 3px !important;
+            }
           }
         }
       }

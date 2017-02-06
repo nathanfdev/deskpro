@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\WrappedDeferred;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineCustomSideload;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineEntitySideload;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -41,9 +42,9 @@ use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\GenericSerializationVisitor;
 
 /**
- * Class SideloadListener.
+ * Class SideloadAndDeferredListener.
  */
-class SideloadListener implements EventSubscriberInterface
+class SideloadAndDeferredListener implements EventSubscriberInterface
 {
     /**
      * @var EntityManager
@@ -109,36 +110,17 @@ class SideloadListener implements EventSubscriberInterface
         $sideloads->setInterests($includes);
         $context->setExclusionEnabled(false);
 
-        $linked = [];
-
         // disable inline sideloading for linked objects
         $inlineSideloads = $context->isInlineSideloads();
         $context->setInlineSideloads(false);
 
-        while ($includes && $sideloads->hasSideloads()) {
-            foreach ($includes as $include) {
-                $fqcn = $sideloads->getFqcn($include);
-                if ($fqcn) {
-                    $idsToLoad = $sideloads->getSideloads($include);
-                    foreach ($this->em->getRepository($fqcn)->findBy(['id' => $idsToLoad]) as $entity) {
-                        /* @var EntityInterface|DomainObject $entity */
-                        $linked[$include][$entity->getId()] = $context->accept($entity);
-                    }
-                }
-                if ($sideloads->hasCustom($include)) {
-                    foreach ($sideloads->getCustom($include) as $custom) {
-                        $linked[$include][$custom->getId()] = $context->accept($custom->getData());
-                    }
-                }
-            }
-        }
+        $visitor->setData('linked', []);
+        $this->recursiveResolveSideloadsAndDeferred($context);
 
         // perhaps it's not necessary at all, but who knows where context will be used?
         $context->setExclusionEnabled(true);
         // restore original 'inline_sideloading' option
         $context->setInlineSideloads($inlineSideloads);
-
-        $visitor->setData('linked', $linked);
     }
 
     /**
@@ -156,7 +138,7 @@ class SideloadListener implements EventSubscriberInterface
         $data = VisitorDataAccessor::getData($visitor);
         if (isset($data['data']) && isset($data['linked']) && is_array($data['data'])) {
             $data['data']   = $this->recursiveCopyInlineEntitySideloads($data['data'], $data['linked'], $context);
-            $data['linked'] = $this->removeInlineSideloads($data['linked']);
+            $data['linked'] = $this->recursiveRemoveInlineSideloads($data['linked']);
 
             VisitorDataAccessor::setData($visitor, $data);
         }
@@ -179,6 +161,45 @@ class SideloadListener implements EventSubscriberInterface
             $data['linked'] = new \ArrayObject($data['linked']);
 
             VisitorDataAccessor::setData($visitor, $data);
+        }
+    }
+
+    /**
+     * Recursive resolve deferred and sideloads.
+     * Deferred properties could return entities that could be sideloaded and contains deferred as well.
+     *
+     * @param SideloadSerializationContext $context
+     */
+    private function recursiveResolveSideloadsAndDeferred(SideloadSerializationContext $context)
+    {
+        $visitor   = $context->getVisitor();
+        $data      = VisitorDataAccessor::getData($visitor);
+        $sideloads = $context->getSideloadStore();
+        $includes  = $context->getIncludes();
+
+        while ($includes && $sideloads->hasSideloads()) {
+            foreach ($includes as $include) {
+                $fqcn = $sideloads->getFqcn($include);
+                if ($fqcn) {
+                    $idsToLoad = $sideloads->getSideloads($include);
+                    foreach ($this->em->getRepository($fqcn)->findBy(['id' => $idsToLoad]) as $entity) {
+                        /* @var EntityInterface|DomainObject $entity */
+                        $data['linked'][$include][$entity->getId()] = $context->accept($entity);
+                    }
+                }
+                if ($sideloads->hasCustom($include)) {
+                    foreach ($sideloads->getCustom($include) as $custom) {
+                        $data['linked'][$include][$custom->getId()] = $context->accept($custom->getData());
+                    }
+                }
+            }
+        }
+
+        $data = $this->recursiveResolveDeferred($data, $context);
+        VisitorDataAccessor::setData($visitor, $data);
+
+        if ($includes && $sideloads->hasSideloads()) {
+            $this->recursiveResolveSideloadsAndDeferred($context);
         }
     }
 
@@ -219,13 +240,34 @@ class SideloadListener implements EventSubscriberInterface
      *
      * @return array
      */
-    private function removeInlineSideloads($data)
+    private function recursiveRemoveInlineSideloads($data)
     {
         foreach ($data as $key => $value) {
             if ($value instanceof InlineCustomSideload || $value instanceof InlineEntitySideload) {
                 unset($data[$key]);
             } elseif (is_array($value)) {
-                $data[$key] = $this->removeInlineSideloads($value);
+                $data[$key] = $this->recursiveRemoveInlineSideloads($value);
+            } else {
+                $data[$key] = $value;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array                        $data
+     * @param SideloadSerializationContext $context
+     *
+     * @return array
+     */
+    private function recursiveResolveDeferred(array $data, SideloadSerializationContext $context)
+    {
+        foreach ($data as $key => $value) {
+            if ($value instanceof WrappedDeferred) {
+                $data[$key] = $context->accept($value->getDeferred()->call(), $value->getType());
+            } elseif (is_array($value)) {
+                $data[$key] = $this->recursiveResolveDeferred($value, $context);
             } else {
                 $data[$key] = $value;
             }

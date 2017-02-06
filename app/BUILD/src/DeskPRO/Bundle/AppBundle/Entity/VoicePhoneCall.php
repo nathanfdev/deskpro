@@ -33,7 +33,6 @@ use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -45,8 +44,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *   @ORM\UniqueConstraint(name="call_sid", columns={"call_sid"}),
  *   @ORM\UniqueConstraint(name="conference_sid", columns={"conference_sid"})
  * })
- *
- * @JMS\ExclusionPolicy("all")
  *
  * @UniqueEntity("sid")
  * @UniqueEntity("conferenceSid")
@@ -60,15 +57,15 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     const STATUS_ACTIVE        = 'active';
     const STATUS_ENDED         = 'ended';
 
+    const DIRECTION_INBOUND  = 'inbound';
+    const DIRECTION_OUTBOUND = 'outbound';
+
     /**
      * The unique ID.
      *
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -77,18 +74,12 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="task_sid", type="string", length=50, nullable=true)
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @var string
      */
     private $taskSid;
 
     /**
      * @ORM\Column(name="call_sid", type="string", length=50)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
      *
      * @var string
      */
@@ -97,9 +88,6 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="conference_sid", type="string", length=50, nullable=true)
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @var string
      */
     private $conferenceSid;
@@ -107,9 +95,6 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceNumber")
      * @ORM\JoinColumn(name="number_id", referencedColumnName="id", onDelete="CASCADE")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoiceNumber>")
      *
      * @Assert\NotNull()
      *
@@ -120,9 +105,6 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="from_number", type="string", length=50)
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @var string
      */
     private $fromNumber;
@@ -131,18 +113,19 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
-     *
      * @var Person
      */
     private $person;
 
     /**
-     * @ORM\Column(name="status", type="string", length=50)
+     * @ORM\Column(name="type", type="string", length=50)
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
+     * @var string
+     */
+    private $type;
+
+    /**
+     * @ORM\Column(name="status", type="string", length=50)
      *
      * @var string
      */
@@ -151,18 +134,12 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="data", type="json_array")
      *
-     * @JMS\Expose()
-     * @JMS\Type("array")
-     *
      * @var array
      */
     private $data;
 
     /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant", mappedBy="phoneCall", cascade={"persist", "remove"}, orphanRemoval=true)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant")
      *
      * @var AbstractVoicePhoneCallParticipant[]|ArrayCollection
      */
@@ -171,17 +148,12 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog", mappedBy="phoneCall", cascade={"persist", "remove"}, orphanRemoval=true)
      *
-     * @JMS\Expose()
-     *
      * @var VoicePhoneCallLog[]|ArrayCollection
      */
     private $phoneCallLogs;
 
     /**
      * @ORM\Column(name="date_created", type="datetime")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
      *
      * @var \DateTime
      */
@@ -190,9 +162,6 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="date_started", type="datetime", nullable=true)
      *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
-     *
      * @var \DateTime
      */
     private $dateStarted;
@@ -200,18 +169,12 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="date_ended", type="datetime", nullable=true)
      *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
-     *
      * @var \DateTime
      */
     private $dateEnded;
 
     /**
      * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Blob", cascade={"persist", "remove"})
-     *
-     * @JMS\Expose()
-     * @JMS\Type("Application\DeskPRO\Entity\Blob")
      *
      * @var Blob
      */
@@ -331,6 +294,26 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function setFromNumber($from)
     {
         $this->setModelField('fromNumber', $from);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return $this
+     */
+    public function setType($type)
+    {
+        $this->setModelField('type', $type);
 
         return $this;
     }
