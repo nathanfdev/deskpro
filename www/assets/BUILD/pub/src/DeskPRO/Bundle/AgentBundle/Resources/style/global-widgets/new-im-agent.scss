@@ -860,6 +860,9 @@ img.emojione, svg.emojione {
           top: 10px;
 
           &.fa-paperclip {
+            &.inactive {
+              color: $dp-greyscale-450;
+            }
             color: $dp-greyscale-850;
             right: 30px;
           }
@@ -870,9 +873,6 @@ img.emojione, svg.emojione {
           }
         }
       }
-
-
-
     }
   }
 
@@ -945,12 +945,12 @@ img.emojione, svg.emojione {
   }
 }
 
-.emoji.box {
+.emoji.box, .attach-list {
   font-size: 12px;
   color: $dp-greyscale-850;
   background-color: white;
-  width: 278px;
-  height: 222px;
+
+
   border: 1px solid $dp-greyscale-350;
   position: relative;
   display: inline-block;
@@ -963,7 +963,7 @@ img.emojione, svg.emojione {
     bottom: auto;
     margin-left: 0em;
     box-shadow: none;
-    background-color: #F5F7F9;
+
     position: absolute;
     content: '';
     width: 20px;
@@ -973,6 +973,34 @@ img.emojione, svg.emojione {
     border: 1px solid $dp-greyscale-350;
     border-right: none;
     border-bottom: none;
+  }
+}
+
+.emoji.box {
+  width: 278px;
+  height: 222px;
+
+  &:before {
+    background-color: #F5F7F9;
+  }
+}
+
+.attach-list {
+  padding-top: 15px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  width: 200px;
+
+  li {
+    cursor: pointer;
+  }
+
+  .attach-header {
+    padding-left: 10px;
+  }
+
+  &:before {
+    background-color: white;
   }
 }
 

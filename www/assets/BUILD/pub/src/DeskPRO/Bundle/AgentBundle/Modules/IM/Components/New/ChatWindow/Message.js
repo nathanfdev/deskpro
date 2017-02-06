@@ -31,13 +31,35 @@ class Message extends React.Component
     );
   }
 
+  // static formatMessage(message) {
+  //   // it's just a short version of AgentChatWin::formatMessage
+  //   // it seems, that nothing but only tickets mentions are used.
+  //   const re = new RegExp('\\{\\{\\s*t\\-([0-9]+)\\s*\\}\\}', 'g');
+  //   let newMessage = message.replace(re, `<a data-route="page:${window.BASE_URL}agent/tickets/$1">Ticket#$1</a>`);
+  //   newMessage = newMessage.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target="_blank">$1</a>');
+  //   return newMessage;
+  // }
+
+  // it's just a copy paste version of AgentChatWin::formatMessage
   static formatMessage(message) {
-    // it's just a short version of AgentChatWin::formatMessage
-    // it seems, that nothing but only tickets mentions are used.
-    const re = new RegExp('\\{\\{\\s*t\\-([0-9]+)\\s*\\}\\}', 'g');
-    let newMessage = message.replace(re, `<a data-route="page:${window.BASE_URL}agent/tickets/$1">Ticket#$1</a>`);
-    newMessage = newMessage.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target="_blank">$1</a>');
-    return newMessage;
+    const idMap = {
+      t: { title: 'Ticket', url: 'agent/tickets/' },
+      p: { title: 'Person', url: 'agent/people/' },
+      o: { title: 'Organization', url: 'agent/organizations/' },
+      a: { title: 'Article', url: 'agent/kb/article/' },
+      n: { title: 'News', url: 'agent/news/post/' },
+      d: { title: 'Download', url: 'agent/downloads/file/' },
+      i: { title: 'Feedback', url: 'agent/feedback/view/' }
+    };
+    let newMessage = message;
+
+    Object.each(idMap, (info, prefix) => {
+      const re = new RegExp(`\\{\\{\\s*${prefix}\\-([0-9]+)\\s*\\}\\}`, 'g');
+      newMessage = newMessage.replace(re, `<a data-route="page:${window.BASE_URL}${info.url}$1">${info.title} #$1</a>`);
+      return null;
+    });
+
+    return newMessage.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target="_blank">$1</a>');
   }
 
   getMessage() {

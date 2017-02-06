@@ -2,10 +2,13 @@ import React, { PropTypes } from 'react';
 import RteEditor from 'DeskPRO/Component/Rte/RteEditor';
 import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
 import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
+import { List } from 'DeskPRO/Component/Semantic/List';
+import { Header } from 'DeskPRO/Component/Semantic/Common';
 import emojione from 'emojione';
 import MessageList from './MessageList';
 import HeaderHelper from './HeaderHelper';
@@ -28,7 +31,7 @@ class Container extends React.Component {
     saveDraft:       PropTypes.func,
     onSubmit:        PropTypes.func,
     onChange:        PropTypes.func,
-    onAttach:        PropTypes.func,
+    activeTabs:      PropTypes.object,
     messages:        PropTypes.object,
     loadMessages:    PropTypes.func,
     loadingMessages: PropTypes.bool.isRequired,
@@ -61,13 +64,35 @@ class Container extends React.Component {
     }
   };
 
+  static pickIcon(item) {
+    switch (item.tabType) {
+      case 'ticket':
+        return 'mail outline';
+      case 'person':
+        return 'user';
+      case 'article':
+        return 'file text outline';
+      case 'news':
+        return 'newspaper';
+      case 'organization':
+        return 'building outline';
+      case 'download':
+        return 'download';
+      case 'feedback':
+        return 'thumbs outline up';
+      default:
+        return '';
+    }
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       emojiOpened:       false,
       expandGroupHeader: false,
       searching:         false,
-      message:           ''
+      message:           '',
+      attachOpened:      false
     };
 
     this.openEmoji    = this.openEmoji.bind(this);
@@ -75,6 +100,7 @@ class Container extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.addEmoji     = this.addEmoji.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.openAttach = this.openAttach.bind(this);
   }
 
   componentDidMount() {
@@ -245,8 +271,8 @@ class Container extends React.Component {
     this.setState({ message: '' });
   }
 
-  handleAttach() {
-    this.props.onAttach();
+  openAttach() {
+    this.setState({ attachOpened: true });
   }
 
   groupHeader() {
@@ -324,6 +350,53 @@ class Container extends React.Component {
     return null;
   }
 
+  handleAttach(item) {
+    // let message = '';
+    // switch (item.tabType) {
+    //   case 'person':
+    //     message += `{{p-${item.page.meta.person_id}}}: `;
+    //     break;
+    //   case 'ticket':
+    //     message += `{{t-${item.page.meta.ticket_id}}}: `;
+    //     break;
+    //   case 'article':
+    //     message += `{{a-${item.page.meta.article_id}}}: `;
+    //     break;
+    //   default:
+    //     message += 'unknown: ';
+    // }
+    const propertyName = `${item.tabType}_id`;
+
+    const message = `{{${item.tabType.charAt(0).toLowerCase()}-${item.page.meta[propertyName]}}}: ${item.title}`;
+
+    this.props.onSubmit(message);
+  }
+
+
+  renderAttachList() {
+    const { activeTabs } = this.props;
+
+    const items = Object.keys(activeTabs).map((index) => {
+      const item = activeTabs[index];
+      return {
+        label:   item.title,
+        icon:    Container.pickIcon(item),
+        onClick: () => this.handleAttach(item)
+      };
+    });
+
+    return this.attach ?
+      (<Detached zIndex={99999} isOpen={this.state.attachOpened} positionTarget={this.attach} positionMy="right+25 top+35">
+        <ClickOut onClickOut={() => { this.setState({ attachOpened: false }); }}>
+          <div className="attach-list">
+            <Header content="Current tabs" level={4} className="attach-header" />
+            <List elements={items} />
+          </div>
+        </ClickOut>
+      </Detached>)
+      : null;
+  }
+
   render() {
     const { isOpen, loadingMessages, onScroll, markNewMessages, searchQuery, onAgentClick } = this.props;
     const { current, messages, me, agents, teams, departments } = this.props;
@@ -380,7 +453,11 @@ class Container extends React.Component {
                   }
                 }}
               />
-              <i className="fa fa-paperclip reply-icon" onClick={this.handleAttach} />
+              <i
+                className={classNames('fa fa-paperclip reply-icon', { inactive: Object.keys(this.props.activeTabs).length < 1 })}
+                ref={(c) => { this.attach = c; }}
+                onClick={this.openAttach}
+              />
               <i
                 className="fa fa-smile-o reply-icon emoji trigger"
                 onClick={this.openEmoji} ref={(c) => { this.emoji = c; }}
@@ -395,6 +472,7 @@ class Container extends React.Component {
               />
               : null
             }
+            {Object.keys(this.props.activeTabs).length ? this.renderAttachList() : null}
           </div>
         </div>
       </Detached>

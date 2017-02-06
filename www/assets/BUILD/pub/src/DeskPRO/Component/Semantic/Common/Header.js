@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 class Header extends React.Component {
   static propTypes = {
-    level:     PropTypes.number.isRequired,
+    level:     PropTypes.number,
     content:   PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     className: PropTypes.string
   };
