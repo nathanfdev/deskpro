@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
-import { PortalSimpleSelectBox } from 'DeskPRO/Bundle/PortalBundle/React/Form/PortalSimpleSelectBox';
+import PortalSimpleSelectBox from 'DeskPRO/Bundle/PortalBundle/React/Form/PortalSimpleSelectBox';
 import _ from 'lodash';
 
 export class SortWidget extends React.Component {
@@ -10,7 +10,7 @@ export class SortWidget extends React.Component {
     filter:  PropTypes.object
   };
 
-  onChangeSort = option => {
+  onChangeSort = (option) => {
     this.props.setSort(option.id);
   };
 
@@ -29,7 +29,7 @@ export class SortWidget extends React.Component {
       'most-views-asc':      portalPhrases.get('portal.general.prop_views_asc')
     };
 
-    const selectedSort = { id: filter.sort + '-' + filter.sort_direction, title: 'Sort' };
+    const selectedSort = { id: `${filter.sort}-filter.sort_direction`, title: 'Sort' };
     if (sorts[selectedSort.id]) {
       selectedSort.title = sorts[selectedSort.id];
     }

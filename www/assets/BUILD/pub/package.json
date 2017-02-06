@@ -31,7 +31,7 @@
     "immutable": "3.8.1",
     "intl-tel-input": "6.4.4",
     "jquery": "2.1.4",
-    "jquery-datetimepicker-iframe": "2.5.5",
+    "jquery-datetimepicker-iframe": "2.5.6",
     "jquery-serializejson": "^2.6.2",
     "jquery-ui": "1.10.5",
     "jquery.ui.widget": "1.10.3",

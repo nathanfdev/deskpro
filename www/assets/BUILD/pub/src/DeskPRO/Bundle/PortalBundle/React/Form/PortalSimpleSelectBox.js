@@ -48,7 +48,7 @@ class SelectOption extends React.Component {
   }
 }
 
-export class PortalSimpleSelectBox extends React.Component {
+export default class PortalSimpleSelectBox extends React.Component {
 
   static propTypes = {
     widgetOptions: PropTypes.object,
@@ -401,7 +401,7 @@ export class PortalSimpleSelectBox extends React.Component {
 
   render() {
     const { widgetOptions = {} } = this.props;
-    const context = widgetOptions.context || document;
+    const context = widgetOptions.context || [document];
 
     return (
       <div className={classNames('multiselect', widgetOptions.widgetClassName || null, `level-${this.state.level}`)}>

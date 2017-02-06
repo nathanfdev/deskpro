@@ -6984,18 +6984,6 @@ ul.categories-article-list {
     background: $hr-border;
   }
 
-  table {
-    tr {
-      td {
-        padding: 10px 10px;
-
-        &:first-child {
-          min-width: 210px;
-        }
-      }
-    }
-  }
-
   h1 {
     display: inline-block;
     font-weight: normal

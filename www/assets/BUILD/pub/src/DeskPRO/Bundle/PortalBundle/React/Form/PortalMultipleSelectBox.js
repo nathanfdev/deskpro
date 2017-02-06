@@ -1,16 +1,16 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { FormActionStore } from 'DeskPRO/Component/React/Standalone/FormActionStore';
-import { PortalSimpleSelectBox } from './PortalSimpleSelectBox';
 import _ from 'lodash';
 import $ from 'jquery';
+import { FormActionStore } from 'DeskPRO/Component/React/Standalone/FormActionStore';
+import PortalSimpleSelectBox from './PortalSimpleSelectBox';
 
 export class LevelSelectActionStore extends FormActionStore {
 
   onValueChanged(data) {
     const opts = this.el.find('option');
     opts.each((x, el) => {
-      el.selected = _.some(data.value, (v) => _.parseInt(v) === _.parseInt(el.value));
+      el.selected = _.some(data.value, v => _.parseInt(v) === _.parseInt(el.value));
     });
     this.el.trigger('change');
   }
@@ -44,7 +44,7 @@ export class LevelSelectActionStore extends FormActionStore {
 
     const walkerFn = (parent = null, path = []) => {
       const r = [];
-      options.forEach(opt => {
+      options.forEach((opt) => {
         if (opt.parent === parent) {
           opt.path = _.clone(path);
           path.push(opt.id);
@@ -82,7 +82,7 @@ export class PortalMultipleSelectBox extends React.Component {
     const { actionStore } = this.props;
     const $el = actionStore.el;
 
-    actionStore.on('formChanged', data => {
+    actionStore.on('formChanged', (data) => {
       this.setState({
         value: data.value
       });
@@ -93,9 +93,9 @@ export class PortalMultipleSelectBox extends React.Component {
     });
   }
 
-  onClickOption = options => {
+  onClickOption = (options) => {
     const { actionStore } = this.props;
-    actionStore.setValue(options ? options.map((opt) => opt.id) : []);
+    actionStore.setValue(options ? options.map(opt => opt.id) : []);
   };
 
   renderSelect() {
@@ -120,7 +120,7 @@ export class PortalMultipleSelectBox extends React.Component {
     options = _.flattenDeep(options);
 
     const values = this.state.value.map(selectedId =>
-      _.find(options, (opt) => _.parseInt(opt.id) === _.parseInt(selectedId))
+      _.find(options, opt => _.parseInt(opt.id) === _.parseInt(selectedId))
     );
 
     return (
