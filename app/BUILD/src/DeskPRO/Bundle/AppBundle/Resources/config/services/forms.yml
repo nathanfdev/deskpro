@@ -309,6 +309,12 @@ services:
     tags:
       - { name: form.type }
 
+  form.user_chat.chat_conversation_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatConversationType
+    arguments: ["@custom_field_manager"]
+    tags:
+      - { name: form.type }
+
   form.voice_account:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAccountType
     arguments:
