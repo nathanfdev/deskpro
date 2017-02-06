@@ -35,8 +35,8 @@
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -654,7 +654,6 @@ Configuration file to allow overriding of semantic variables and styling
              Reset
 *******************************/
 /* Border-Box */
-@import url('https://fonts.googleapis.com/css?family=Open Sans:300,400,600,700,400italic,700italic&subset=latin');
 *,
 *:before,
 *:after {
@@ -1057,8 +1056,8 @@ th {
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -2199,8 +2198,8 @@ h6 {
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -6153,8 +6152,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -6927,8 +6926,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -7807,8 +7806,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -9463,8 +9462,8 @@ i.flag.zimbabwe:before {
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -10759,8 +10758,8 @@ a.ui.inverted.grey.header:hover {
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -14436,8 +14435,8 @@ i.icon {
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -15365,8 +15364,8 @@ img.ui.bordered.image {
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -16478,8 +16477,8 @@ input[type=search]:invalid + i.icon.remove {
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -18320,8 +18319,8 @@ a.ui.basic.label:hover {
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -19887,8 +19886,8 @@ ol.ui.horizontal.list li:before,
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -20838,8 +20837,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -21615,8 +21614,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -22467,8 +22466,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -23826,8 +23825,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -25005,8 +25004,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -25751,8 +25750,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -27422,8 +27421,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -29907,8 +29906,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -32427,8 +32426,8 @@ Floated Menu / Item
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -33503,8 +33502,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -35191,8 +35190,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -36039,8 +36038,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -37584,8 +37583,8 @@ a.ui.card:hover,
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -38483,8 +38482,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -39408,8 +39407,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -40479,8 +40478,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -41638,8 +41637,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -42570,8 +42569,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -43846,8 +43845,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -44655,8 +44654,8 @@ body.dimmable > .dimmer {
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -46631,8 +46630,8 @@ select.ui.dropdown {
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -47423,8 +47422,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -48514,8 +48513,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -49301,8 +49300,8 @@ a.ui.nag {
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -50618,8 +50617,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -51724,8 +51723,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -52587,8 +52586,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -53609,8 +53608,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -54369,8 +54368,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -55489,8 +55488,8 @@ html.ios body {
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -56179,8 +56178,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */
@@ -56885,8 +56884,8 @@ Configuration file to allow overriding of semantic variables and styling
 /*******************************
         Theme Selection
 *******************************/
-/*
-Configuration file to allow overriding of semantic variables and styling
+/* To override a theme for an individual element
+   specify theme name below
 */
 /* Global */
 /* Elements */

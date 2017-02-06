@@ -55,6 +55,7 @@
     Fonts
 ******************************/
 
+@importGoogleFonts: false;
 @fontName : "Helvetica Neue";
 @googleFontName : "Open Sans";
 @fontPath: '../../../fonts';
