@@ -37,6 +37,7 @@ use Application\DeskPRO\Chat\UserChat\GroupingCounter;
 use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\ChatBlock;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\CustomDefChat;
@@ -1017,6 +1018,7 @@ class UserChatController extends AbstractController
 
     public function blockUserAction($conversation_id)
     {
+        /** @var ChatConversation $convo */
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
         if (!$convo || !$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
@@ -1025,6 +1027,20 @@ class UserChatController extends AbstractController
 
         /** @var $chatManager \Application\DeskPRO\Chat\UserChat\UserChatManager */
         $chatManager = $this->container->getSystemObject('user_chat_manager', ['session' => $this->session->getEntity()]);
+
+        if ($session = $convo->getSession()) {
+            $block = new ChatBlock();
+            $block->setVisitorId($session->getVisitorId());
+            $block->by_person = $this->person;
+            $block->reason    = $this->in->getString('reason');
+
+            if ($this->in->getBool('block_ip') && $session->getIpAddress()) {
+                $block->setIpAddress($session->getIpAddress());
+            }
+
+            $this->em->persist($block);
+            $this->em->flush();
+        }
 
         if ($convo->status == 'open') {
             $chatManager->endChat($convo, $this->person, '');
@@ -1035,10 +1051,21 @@ class UserChatController extends AbstractController
 
     public function unblockUserAction($conversation_id)
     {
+        /** @var ChatConversation $convo */
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
         if (!$convo || !$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
+
+        $session = $convo->getSession();
+        if ($session && $session->getVisitorId()) {
+            /** @var \Application\DeskPRO\EntityRepository\ChatBlock $rep */
+            $rep = $this->em->getRepository('DeskPRO:ChatBlock');
+            if ($block = $rep->getBlockForVisitor($session->getVisitorId())) {
+                $this->em->remove($block);
+                $this->em->flush();
+            }
         }
 
         return $this->createJsonResponse(['success' => true]);

@@ -41,6 +41,34 @@ class ChatBlock extends AbstractEntityRepository
      */
     const BLOCK_TIMEOUT = 86400;
 
+    public function getBlockForVisitor($visitor_id = null, $ip = null)
+    {
+        if (!$visitor_id && !$ip) {
+            return null;
+        }
+
+        $datecut = new \DateTime('-'.self::BLOCK_TIMEOUT.' seconds');
+        $q       = 'SELECT b FROM DeskPRO:ChatBlock b WHERE 1 ';
+        $params  = [];
+
+        if ($visitor_id) {
+            $q .= 'AND b.visitor_id = ? ';
+            $params[] = $visitor_id;
+        }
+
+        if ($ip) {
+            $q .= 'AND b.ip_address = ?';
+            $params[] = $ip;
+        }
+
+        $q .= ' AND b.date_created > ?';
+        $params[] = $datecut;
+
+        $block = $this->_em->createQuery($q)->setParameters($params)->setMaxResults(1)->getOneOrNullResult();
+
+        return $block;
+    }
+
     /**
      * @param string $ip_address
      *
