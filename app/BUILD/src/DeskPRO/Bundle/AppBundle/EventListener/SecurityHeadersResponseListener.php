@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\MapUtils;
-use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\IntrospectableContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -41,11 +41,11 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class SecurityHeadersResponseListener implements EventSubscriberInterface
 {
     /**
-     * @var Container
+     * @var IntrospectableContainerInterface
      */
     protected $container;
 
-    public function __construct(Container $container)
+    public function __construct(IntrospectableContainerInterface $container)
     {
         $this->container = $container;
     }

@@ -29,7 +29,7 @@
 namespace spec\DeskPRO\Bundle\AppBundle\EventListener;
 
 use PhpSpec\ObjectBehavior;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\IntrospectableContainerInterface;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,7 +42,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class SecurityHeadersResponseListenerSpec extends ObjectBehavior
 {
     public function let(
-        ContainerInterface $container
+        IntrospectableContainerInterface $container
     ) {
         $this->beConstructedWith($container);
     }
