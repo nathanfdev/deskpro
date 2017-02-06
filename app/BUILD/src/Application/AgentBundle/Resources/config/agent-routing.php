@@ -2407,4 +2407,72 @@ $collection->create('gregwar_captcha.agent.generate_captcha', [
     'methods'    => ['GET'],
 ]);
 
+$collection->create('go_to_ticket_id', [
+    'path'         => '/go/ticket/{id}',
+    'controller'   => 'AgentBundle:GoTo:ticketId',
+    'methods'      => ['GET'],
+    'requirements' => ['id' => '\\d+'],
+]);
+
+$collection->create('go_to_ticket_ref', [
+    'path'       => '/go/ticket/{ref}',
+    'controller' => 'AgentBundle:GoTo:ticketRef',
+    'methods'    => ['GET'],
+]);
+
+$collection->create('go_to_person_id', [
+    'path'         => '/go/person/{id}',
+    'controller'   => 'AgentBundle:GoTo:personId',
+    'methods'      => ['GET'],
+    'requirements' => ['id' => '\\d+'],
+]);
+
+$collection->create('go_to_person_email', [
+    'path'       => '/go/person/{emailAddress}',
+    'controller' => 'AgentBundle:GoTo:personEmailAddress',
+    'methods'    => ['GET'],
+]);
+
+$collection->create('go_to_organization_id', [
+    'path'         => '/go/organization/{id}',
+    'controller'   => 'AgentBundle:GoTo:organizationId',
+    'methods'      => ['GET'],
+    'requirements' => ['id' => '\\d+'],
+]);
+
+$collection->create('go_to_article_id', [
+    'path'         => '/go/article/{id}',
+    'controller'   => 'AgentBundle:GoTo:articleId',
+    'methods'      => ['GET'],
+    'requirements' => ['id' => '\\d+'],
+]);
+
+$collection->create('go_to_download_id', [
+    'path'         => '/go/download/{id}',
+    'controller'   => 'AgentBundle:GoTo:downloadId',
+    'methods'      => ['GET'],
+    'requirements' => ['id' => '\\d+'],
+]);
+
+$collection->create('go_to_news_id', [
+    'path'         => '/go/news/{id}',
+    'controller'   => 'AgentBundle:GoTo:newsId',
+    'methods'      => ['GET'],
+    'requirements' => ['id' => '\\d+'],
+]);
+
+$collection->create('go_to_feedback_id', [
+    'path'         => '/go/feedback/{id}',
+    'controller'   => 'AgentBundle:GoTo:feedbackId',
+    'methods'      => ['GET'],
+    'requirements' => ['id' => '\\d+'],
+]);
+
+$collection->create('go_to_chat_id', [
+    'path'         => '/go/chat/{id}',
+    'controller'   => 'AgentBundle:GoTo:chatId',
+    'methods'      => ['GET'],
+    'requirements' => ['id' => '\\d+'],
+]);
+
 return $collection;
