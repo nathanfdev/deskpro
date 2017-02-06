@@ -89,6 +89,9 @@ class UserChatMessagesController extends CrudSubController
      */
     protected function persistModel($model)
     {
+        if (!$model->getAuthor()->isAgent()) {
+            $model->setIsUser(true);
+        }
         parent::persistModel($model);
 
         $conversation = $model->getConversation();

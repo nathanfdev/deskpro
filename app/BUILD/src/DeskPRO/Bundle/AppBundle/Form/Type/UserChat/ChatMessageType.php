@@ -51,13 +51,10 @@ class ChatMessageType extends AbstractType
             ])
             ->add('author', PersonAssignType::class, [
                 'property_path' => 'author',
+                'person'        => $options['person'],
             ])
-            ->add('is_user', ApiBooleanType::class, [
-                'data' => !$options['person']->isAgent(),
-            ])
-            ->add('person_name', TextType::class, [
-                'data' => !$options['person']->isAgent(),
-            ])
+            ->add('is_user', ApiBooleanType::class)
+            ->add('person_name', TextType::class)
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetDefault']);
@@ -80,19 +77,14 @@ class ChatMessageType extends AbstractType
     {
         $form = $event->getForm();
 
-        if ($form->isValid()) {
-            /** @var ChatMessage $message */
-            $message = $form->getData();
-            if ($message->getAuthor()) {
-                if (!$message->getAuthor()->isAgent()) {
-                    $message->setIsUser(true);
-                }
-                $origin = $message->getAuthor()->isAgent() ? 'agent' : 'user';
-            } else {
-                $origin = $message->getIsUser() ? 'user' : 'agent';
-            }
-            $message->setOrigin($origin);
+        /** @var ChatMessage $message */
+        $message = $form->getData();
+        if ($message->getAuthor()) {
+            $origin = $message->getAuthor()->isAgent() ? 'agent' : 'user';
+        } else {
+            $origin = $message->getIsUser() ? 'user' : 'agent';
         }
+        $message->setOrigin($origin);
     }
 
     /**
@@ -100,16 +92,14 @@ class ChatMessageType extends AbstractType
      */
     public function onSetRelations(FormEvent $event)
     {
-        $form = $event->getForm();
-        if ($form->isValid()) {
-            $config = $form->getConfig();
+        $form   = $event->getForm();
+        $config = $form->getConfig();
 
-            /** @var ChatMessage $message */
-            $message = $form->getData();
-            /** @var ChatConversation $conversation */
-            $conversation = $config->getOption('conversation');
+        /** @var ChatMessage $message */
+        $message = $form->getData();
+        /** @var ChatConversation $conversation */
+        $conversation = $config->getOption('conversation');
 
-            $conversation->addMessage($message);
-        }
+        $conversation->addMessage($message);
     }
 }

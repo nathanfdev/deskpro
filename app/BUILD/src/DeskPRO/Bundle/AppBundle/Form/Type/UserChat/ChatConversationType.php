@@ -35,7 +35,6 @@ use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\LeafDepartment;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -45,7 +44,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
 
 class ChatConversationType extends AbstractType
 {
@@ -67,9 +65,7 @@ class ChatConversationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('subject', TextType::class, [
-
-            ])
+            ->add('subject', TextType::class)
             ->add('person', PersonAssignType::class)
             ->add('person_email', EmailType::class)
             ->add('agent', PersonAssignType::class)
@@ -95,10 +91,6 @@ class ChatConversationType extends AbstractType
 
                 return $qb;
             },
-            'constraints' => [
-                new Assert\NotNull(),
-                new LeafDepartment(),
-            ],
         ]);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
@@ -120,13 +112,11 @@ class ChatConversationType extends AbstractType
     {
         $form = $event->getForm();
 
-        if ($form->isValid()) {
-            /** @var ChatConversation $conversation */
-            $conversation = $form->getData();
+        /** @var ChatConversation $conversation */
+        $conversation = $form->getData();
 
-            if ($conversation->getAgent()) {
-                $conversation->addParticipant($conversation->getAgent());
-            }
+        if ($conversation->getAgent()) {
+            $conversation->addParticipant($conversation->getAgent());
         }
     }
 
