@@ -11,6 +11,7 @@ import { AgentTopBarContainer } from './Modules/TopBar/Components/AgentTopBar';
 import { SideBarContainer } from './Modules/SideBar/Components/SideBar';
 import { AgentList } from './Modules/Agent/Components/AgentList';
 import { AgentOnboardingContainer }  from './Modules/Onboarding/Components/AgentOnboarding';
+import { ArchiveFilesContainer } from './Modules/Tickets/Components/Archive/ArchiveFiles';
 import VoiceControlsContainer from './Modules/Voice/Components/Controls/VoiceControlsContainer';
 import VoiceTicketMessageContainer from './Modules/Voice/Components/TicketMessage/TicketMessageContainer';
 import AgentReducers from './AgentApp_Reducers';
@@ -122,6 +123,17 @@ class AgentLegacyApp {
     );
 
     return tabRef;
+  }
+
+  renderMessageArchiveAttachment(node, data) {
+    ReactDOM.render(
+      <Provider store={this.store}>
+        <ArchiveFilesContainer
+          authId={data.authId}
+        />
+      </Provider>,
+      node
+    );
   }
 
   static createStore(initialState = {}) {

@@ -8,6 +8,7 @@ class ListElement extends React.Component {
     description: PropTypes.string,
     icon:        PropTypes.string,
     image:       PropTypes.string,
+    href:        PropTypes.string,
     imageNode:   PropTypes.object,
     elements:    PropTypes.arrayOf(PropTypes.object),
     className:   PropTypes.string,
@@ -22,6 +23,7 @@ class ListElement extends React.Component {
     onClick() {
 
     },
+    href:      '',
     label:     '',
     className: ''
   };
@@ -62,7 +64,14 @@ class ListElement extends React.Component {
   }
 
   render() {
-    const { className, children } = this.props;
+    const { className, children, href } = this.props;
+    if (href) {
+      return (<a href={href} className={classNames('item', className)} onClick={this.props.onClick}>
+        {this.getIcon()}
+        {this.getContent()}
+        {children}
+      </a>);
+    }
     return (<div className={classNames('item', className)} onClick={this.props.onClick}>
       {this.getIcon()}
       {this.getContent()}

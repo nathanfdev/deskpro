@@ -327,6 +327,21 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * Is this file an archive (and supported by the Archive extraction API yet).
+     *
+     * @return bool
+     */
+    public function isArchive()
+    {
+        switch ($this->content_type) {
+            case 'application/zip':
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Get the filesize with B, KB, GB etc suffix.
      */
     public function getReadableFilesize()

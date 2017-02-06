@@ -26,35 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Blobs;
+namespace DeskPRO\Bundle\AppBundle\Archive;
 
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 
-/**
- * Class TempController.
- *
- * @ApiModes("all")
- */
-class TempController extends BaseController
+class ArchiveFactory
 {
     /**
-     * @Rest\Post("/blobs/temp")
-     *
-     * @param Request $request
-     *
-     * @return View
+     * @var AppEnvInterface
      */
-    public function postAction(Request $request)
-    {
-        $file   = $request->files->get('file');
-        $accept = $this->getContainer()->getAttachmentAccepter();
-        $blob   = $accept->accept($file);
+    private $environment;
 
-        return View::create($this->wrap($blob), Response::HTTP_CREATED);
+    /**
+     * ArchiveFactory constructor.
+     *
+     * @param AppEnvInterface $environment
+     */
+    public function __construct(AppEnvInterface $environment)
+    {
+        $this->environment = $environment;
+    }
+
+    public function createZipArchive()
+    {
+        return new Zip($this->environment);
     }
 }
