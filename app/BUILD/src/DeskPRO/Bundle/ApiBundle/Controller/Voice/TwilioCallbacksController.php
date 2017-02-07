@@ -45,8 +45,9 @@ use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
-use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant;
+use DeskPRO\Bundle\AppBundle\Entity\VoicemailRecord;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
@@ -191,26 +192,43 @@ class TwilioCallbacksController extends BaseController
 
         $phoneCall->setTaskSid($request->request->get('TaskSid'));
 
-        $this->getManager()->persist($phoneCall);
-        $this->getManager()->flush();
-
-        $messageAttribute = $this->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
-            'phoneCall' => $phoneCall,
-        ]);
-        if (!$messageAttribute) {
-            throw $this->createBadRequestException('Ticket not found');
-        }
-
-        $ticket = $messageAttribute->getMessage()->getTicket();
+        $em = $this->getManager();
+        $em->persist($phoneCall);
+        $em->flush();
 
         $workerSid = $request->request->get('WorkerSid');
         if ($account->getVoicemailWorkerSid() === $workerSid) {
+            // mark the phone call as completed (redirected to voicemail)
+            $phoneCall->setStatus(VoicePhoneCall::STATUS_VOICEMAIL);
+            $em->persist($phoneCall);
+            $em->flush();
+
+            // return redirect response
             $asset   = null;
             $queueId = isset($task['deskpro_queue_id']) ? $task['deskpro_queue_id'] : null;
+            $agentId = isset($task['agent_id']) ? $task['agent_id'] : null;
+
             if ($queueId) {
                 $queue = $this->getRepository(VoiceQueue::class)->find($queueId);
                 if ($queue) {
+                    // get custom queue voicemail asset
                     $asset = $queue->getVoicemailAsset();
+
+                    // create voicemail queue ticket
+                    $ticketMessageCall = new TicketMessageVoicePhoneCall();
+                    $ticketMessageCall->setPhoneCall($phoneCall);
+
+                    $ticketMessage = new TicketMessage();
+                    $ticketMessage->setPerson($phoneCall->getPerson());
+                    $ticketMessage->addAttribute($ticketMessageCall);
+                    $ticketMessage->setMessage('Call from '.$phoneCall->getFromNumber());
+                    $ticketMessage->setAsAgentNote(true);
+
+                    $ticket = new Ticket();
+                    $ticket->disableAutoTicketProcess();
+                    $ticket->setSubject('Call from '.$phoneCall->getFromNumber());
+                    $ticket->setPerson($phoneCall->getPerson());
+                    $ticket->addMessage($ticketMessage);
 
                     // set asset properties
                     if ($queue->getVoicemailAgent()) {
@@ -225,6 +243,21 @@ class TwilioCallbacksController extends BaseController
 
                     $this->saveTicket($ticket);
                 }
+            } elseif ($agentId) {
+                $agent = $this->getRepository(Person::class)->find($agentId);
+                if (!$agent) {
+                    throw $this->createBadRequestException();
+                }
+
+                $voicemailRecord = new VoicemailRecord();
+                $voicemailRecord
+                    ->setPhoneCall($phoneCall)
+                    ->setAgent($agent)
+                    ->setData($request->request->all())
+                ;
+
+                $em->persist($voicemailRecord);
+                $em->flush();
             }
 
             $response = [
@@ -234,6 +267,7 @@ class TwilioCallbacksController extends BaseController
                 'accept'      => true,
             ];
         } else {
+            // got agent worker, redirect to the agent UI
             $qb = $this->getManager()->createQueryBuilder();
             $qb
                 ->select('p')
@@ -651,18 +685,30 @@ class TwilioCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
-            'conferenceSid' => $request->request->get('ConferenceSid'),
-        ]);
+        $em     = $this->getManager();
+        $source = $request->request->get('RecordingSource');
+
+        $phoneCall = null;
+        if ($source === 'RecordVerb') {
+            // voicemail record
+            $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+                'callSid' => $request->request->get('CallSid'),
+            ]);
+        } elseif ($source === 'Conference') {
+            // phone call record
+            $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+                'conferenceSid' => $request->request->get('ConferenceSid'),
+            ]);
+        }
         if (!$phoneCall) {
             throw $this->createBadRequestException('Phone call not found');
         }
 
+        $phoneCall->setDuration($request->request->get('RecordingDuration'));
         $phoneCall->setData(array_merge($phoneCall->getData(), [
             'RecordingUrl' => $request->request->get('RecordingUrl'),
         ]));
 
-        $em = $this->getManager();
         $em->persist($phoneCall);
         $em->flush();
 
@@ -700,13 +746,13 @@ class TwilioCallbacksController extends BaseController
         $asset   = null;
         $assetId = $request->query->get('asset');
         if ($assetId) {
-            $asset = $this->getRepository(VoiceAsset::class)->find($assetId);
+            $asset = $this->getRepository(AbstractVoiceAsset::class)->find($assetId);
         }
 
         // get voicemail message
         $twiml = new Twiml();
 
-        if ($asset instanceof VoiceAsset) {
+        if ($asset instanceof AbstractVoiceAsset) {
             if ($asset->getType() === 'text') {
                 $twiml->say($asset->getText());
             } else {
@@ -716,7 +762,10 @@ class TwilioCallbacksController extends BaseController
             $twiml->say("You've reached voicemail. Please leave a message");
         }
 
-        $twiml->record();
+        $twiml->record([
+            'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account),
+            'recordingStatusCallbackMethod' => 'POST',
+        ]);
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -874,24 +923,6 @@ class TwilioCallbacksController extends BaseController
             $em->persist($phoneCall);
             $em->flush();
 
-            // create a new ticket for the call
-            $ticketMessageCall = new TicketMessageVoicePhoneCall();
-            $ticketMessageCall->setPhoneCall($phoneCall);
-
-            $ticketMessage = new TicketMessage();
-            $ticketMessage->setPerson($person);
-            $ticketMessage->addAttribute($ticketMessageCall);
-            $ticketMessage->setMessage('Call from '.$phoneNumber);
-            $ticketMessage->setAsAgentNote(true);
-
-            $ticket = new Ticket();
-            $ticket->disableAutoTicketProcess();
-            $ticket->setSubject('Call from '.$phoneNumber);
-            $ticket->setPerson($person);
-            $ticket->addMessage($ticketMessage);
-
-            $this->saveTicket($ticket);
-
             // create twilio new task response
             $twiml = new Twiml();
             $twiml->say(sprintf('Thank you for calling, %s', $this->getHelpdeskName()));
@@ -945,20 +976,9 @@ class TwilioCallbacksController extends BaseController
      */
     private function addTargetResponse(VoicePhoneCall $phoneCall, AbstractVoiceTarget $target, Twiml $twiml)
     {
-        $em = $this->getManager();
-
         $number  = $phoneCall->getNumber();
         $account = $number->getAccount();
         $person  = $phoneCall->getPerson();
-
-        $messageAttribute = $this->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
-            'phoneCall' => $phoneCall,
-        ]);
-        if (!$messageAttribute) {
-            throw $this->createBadRequestException('Ticket not found');
-        }
-
-        $ticket = $messageAttribute->getMessage()->getTicket();
 
         if ($target instanceof VoiceQueueTarget) {
             $twiml
@@ -968,7 +988,6 @@ class TwilioCallbacksController extends BaseController
                     'deskpro_call_id'   => $phoneCall->getId(),
                     'deskpro_queue_id'  => $target->getQueue()->getId(),
                     'deskpro_person_id' => $person ? $person->getId() : null,
-                    'deskpro_ticket_id' => $ticket->getId(),
                     'rejected_workers'  => [],
                 ]))
             ;
@@ -980,7 +999,6 @@ class TwilioCallbacksController extends BaseController
                     'deskpro_call_id'   => $phoneCall->getId(),
                     'agent_id'          => $target->getAgent()->getId(),
                     'deskpro_person_id' => $person ? $person->getId() : null,
-                    'deskpro_ticket_id' => $ticket->getId(),
                     'rejected_workers'  => [],
                 ]))
             ;
@@ -1079,12 +1097,12 @@ class TwilioCallbacksController extends BaseController
     }
 
     /**
-     * @param VoiceAccount $account
-     * @param VoiceAsset   $asset
+     * @param VoiceAccount       $account
+     * @param AbstractVoiceAsset $asset
      *
      * @return string
      */
-    private function getVoicemailUrl(VoiceAccount $account, VoiceAsset $asset = null)
+    private function getVoicemailUrl(VoiceAccount $account, AbstractVoiceAsset $asset = null)
     {
         return $this->get('router')->generate('twilio_voicemail', [
             'account'     => $account->getId(),

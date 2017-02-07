@@ -3,6 +3,7 @@ import { TabButton, Tab } from 'DeskPRO/Component/Tab/Tab';
 import Settings from './Settings/Settings';
 import DialpadContainer from './Dialpad/DialpadContainer';
 import IncomingCall from './IncomingCall/IncomingCall';
+import VoicemailListContainer from './Voicemail/VoicemailListContainer';
 
 class VoiceMenu extends React.Component {
 
@@ -27,7 +28,7 @@ class VoiceMenu extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.incomingCall) {
+    if (newProps.incomingCall || newProps.outboundNumber) {
       this.setState({
         tabName: 'phone'
       });
@@ -75,8 +76,14 @@ class VoiceMenu extends React.Component {
         <div className="voice-header">
           Calls
         </div>
-        {hasPhoneTab &&
         <div className="tab-menu">
+          <TabButton
+            tabName="voicemail"
+            title="Voicemail"
+            iconClass="fa-play-circle"
+            onClick={this.onChangeTab}
+            active={tabName === 'voicemail'}
+          />
           <TabButton
             tabName="settings"
             title="Settings"
@@ -84,14 +91,18 @@ class VoiceMenu extends React.Component {
             onClick={this.onChangeTab}
             active={tabName === 'settings'}
           />
+          {hasPhoneTab &&
           <TabButton
             tabName="phone"
             title={this.getPhoneTabName()}
             iconClass={this.getPhoneTabIcon()}
             onClick={this.onChangeTab}
             active={tabName === 'phone'}
-          />
-        </div>}
+          />}
+        </div>
+        <Tab active={tabName === 'voicemail'}>
+          <VoicemailListContainer />
+        </Tab>
         <Tab active={tabName === 'settings'}>
           <Settings />
         </Tab>

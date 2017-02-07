@@ -47,7 +47,7 @@ class VoiceAutoAttendantType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
-            ->add('audio_asset', VoiceAssetType::class, [
+            ->add('audio_asset', VoiceAssetAuthType::class, [
                 'property_path' => 'audioAsset',
                 'required'      => false,
             ])

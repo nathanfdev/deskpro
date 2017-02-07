@@ -29,11 +29,15 @@
 namespace Application\DeskPRO\JobQueue\Processor;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\ClientMessage;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use JMS\Serializer\Serializer;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -54,18 +58,25 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
     private $blobStorage;
 
     /**
+     * @var Serializer
+     */
+    private $serializer;
+
+    /**
      * Constructor.
      *
      * @param Connection         $connection
      * @param EntityManager      $em
      * @param DeskproBlobStorage $blobStorage
+     * @param Serializer         $serializer
      */
-    public function __construct(Connection $connection, EntityManager $em, DeskproBlobStorage $blobStorage)
+    public function __construct(Connection $connection, EntityManager $em, DeskproBlobStorage $blobStorage, Serializer $serializer)
     {
         parent::__construct($connection);
 
         $this->em          = $em;
         $this->blobStorage = $blobStorage;
+        $this->serializer  = $serializer;
     }
 
     /**
@@ -73,24 +84,39 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
      */
     public function process(array $data, array $job)
     {
-        $client = new Client();
+        $callId = $data['call_id'];
 
         try {
-            $callId    = $data['call_id'];
             $phoneCall = $this->em->getRepository(VoicePhoneCall::class)->find($callId);
-            $callData  = $phoneCall->getData();
-
             if (!$phoneCall) {
                 throw new \Exception('Phone call not found');
             }
 
-            $data = $client->send(new Request('GET', $callData['RecordingUrl']))->getBody()->getContents();
-            $blob = $this->blobStorage->createBlobRecordFromString($data, 'call_record_'.$callId, 'mp3');
-
+            $blob = $this->getBlob('call_record_'.$callId, $phoneCall->getData());
             $phoneCall->setRecording($blob);
 
             $this->em->persist($phoneCall);
             $this->em->flush();
+
+            if ($phoneCall->getVoicemailRecord()) {
+                // send voicemail notification
+                $serializedData = $this->serializer->toArray(
+                    new ApiWrapper($phoneCall->getVoicemailRecord()),
+                    new SideloadSerializationContext([
+                        'voice_phone_call',
+                        'person',
+                    ])
+                );
+
+                $cm = new ClientMessage();
+                $cm->setChannel('agent.voice.voicemail.new-message');
+                $cm->setData([
+                    'data' => $serializedData,
+                ]);
+
+                $this->em->persist($cm);
+                $this->em->flush();
+            }
 
             $this->runSuccessHandler($job);
         } catch (\Exception $e) {
@@ -104,5 +130,20 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired('call_id');
+    }
+
+    /**
+     * @param string $filename
+     * @param array  $callData
+     *
+     * @return \Application\DeskPRO\Entity\Blob
+     */
+    private function getBlob($filename, array $callData)
+    {
+        $client = new Client();
+        $data   = $client->send(new Request('GET', $callData['RecordingUrl']))->getBody()->getContents();
+        $blob   = $this->blobStorage->createBlobRecordFromString($data, $filename, 'wav');
+
+        return $blob;
     }
 }

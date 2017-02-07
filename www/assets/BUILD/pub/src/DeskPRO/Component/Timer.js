@@ -54,33 +54,26 @@ class Timer extends React.Component {
     const { format } = this.props;
     const { time } = this.state;
 
-    const seconds = time % 60;
-    const minutes = parseInt(time / 60, 10) % 60;
-    const hours = parseInt(time / 60 / 60, 10);
-
-    const formatProps = { hours, minutes, seconds };
-
     if (format === 'waiting_time') {
-      return <WaitingFormat {...formatProps} />;
+      return <WaitingFormat value={time} />;
     }
 
-    return <TimerFormat {...formatProps} />;
+    return <TimerFormat value={time} />;
   }
 }
 
-class BaseFormat extends React.Component {
+export class WaitingFormat extends React.Component {
 
   static propTypes = {
-    hours:   PropTypes.number,
-    minutes: PropTypes.number,
-    seconds: PropTypes.number
+    value: PropTypes.number
   };
-}
-
-export class WaitingFormat extends BaseFormat {
 
   render() {
-    const { hours, minutes, seconds } = this.props;
+    const { value } = this.props;
+
+    const seconds = value % 60;
+    const minutes = parseInt(value / 60, 10) % 60;
+    const hours = parseInt(value / 60 / 60, 10);
 
     return (
       <span>
@@ -92,10 +85,18 @@ export class WaitingFormat extends BaseFormat {
   }
 }
 
-export class TimerFormat extends BaseFormat {
+export class TimerFormat extends React.Component {
+
+  static propTypes = {
+    value: PropTypes.number
+  };
 
   render() {
-    let { hours, minutes, seconds } = this.props;
+    const { value } = this.props;
+
+    let seconds = value % 60;
+    let minutes = parseInt(value / 60, 10) % 60;
+    let hours = parseInt(value / 60 / 60, 10);
 
     if (hours < 10) {
       hours = `0${hours}`;

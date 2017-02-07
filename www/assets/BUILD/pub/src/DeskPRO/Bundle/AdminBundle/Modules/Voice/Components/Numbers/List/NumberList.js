@@ -51,6 +51,12 @@ class NumberRow extends React.Component {
               </VoiceTargetNameContainer>
             }
           </div>
+          <div className="column press-options">
+            {number.get('outbound_calls_enabled') &&
+            <span className="press-option">
+              Allow outbound calls from this number <i className="icon checkmark" />
+            </span>}
+          </div>
           <div className="column options-button">
             <a onClick={this.onToggleOptions}>
               <i className="fa fa-gear" />

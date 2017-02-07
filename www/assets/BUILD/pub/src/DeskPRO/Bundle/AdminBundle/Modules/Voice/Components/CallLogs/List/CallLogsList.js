@@ -78,11 +78,15 @@ class CallLogsList extends React.Component {
                     {numbers.getIn([call.get('number'), 'number'])}
                   </td>
                   <td className="overflow-ellipsis">
-                    <i className="fa fa-envelope" />
-                    &nbsp;
-                    <a href={`../agent/#t:${ticketId}`} target="_blank" rel="noopener noreferrer">
-                      {ticketId}
-                    </a>
+                    {ticketId
+                      ? <span>
+                        <i className="fa fa-envelope" />
+                        &nbsp;
+                        <a href={`../agent/#t:${ticketId}`} target="_blank" rel="noopener noreferrer">
+                          {ticketId}
+                        </a>
+                      </span>
+                      : '-'}
                   </td>
                   <td className="overflow-ellipsis">
                     {call.get('type')}

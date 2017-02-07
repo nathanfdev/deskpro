@@ -43,12 +43,13 @@ export class ApiRepository {
    *
    * @returns {Promise} promise
    */
-  loadAll() {
+  loadAll(include = null) {
     if (!this.supportsLoadAll) {
       throw new Error(`${this.url} endpoint is not allowed to loadAll()`);
     }
 
-    return this.api.sendGet(`DP_API/${this.url}`);
+    const params = include ? `?${compileParams({ include })}` : '';
+    return this.api.sendGet(`DP_API/${this.url}${params}`);
   }
 
   /**

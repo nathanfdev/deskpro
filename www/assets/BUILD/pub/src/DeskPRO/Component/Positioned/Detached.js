@@ -6,7 +6,7 @@ import { Abstract } from './Abstract';
 export class Detached extends Abstract {
 
   static propTypes = {
-    context: React.PropTypes.any
+    context: React.PropTypes.any // eslint-disable-line react/forbid-prop-types
   };
 
   componentWillUnmount() {

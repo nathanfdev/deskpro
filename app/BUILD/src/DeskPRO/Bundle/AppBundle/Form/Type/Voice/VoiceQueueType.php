@@ -65,15 +65,15 @@ class VoiceQueueType extends AbstractType
                 'multiple'     => true,
                 'by_reference' => false,
             ])
-            ->add('greet_asset', VoiceAssetType::class, [
+            ->add('greet_asset', VoiceAssetAuthType::class, [
                 'property_path' => 'greetAsset',
                 'required'      => false,
             ])
-            ->add('loop_asset', VoiceAssetType::class, [
+            ->add('loop_asset', VoiceAssetAuthType::class, [
                 'property_path' => 'loopAsset',
                 'required'      => false,
             ])
-            ->add('voicemail_asset', VoiceAssetType::class, [
+            ->add('voicemail_asset', VoiceAssetAuthType::class, [
                 'property_path' => 'voicemailAsset',
                 'required'      => false,
             ])
@@ -106,7 +106,6 @@ class VoiceQueueType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onResetVoicemailProperties']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetMaxQueueSize']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onEnsureAgentVoiceEnabled']);
     }
@@ -135,23 +134,6 @@ class VoiceQueueType extends AbstractType
             } elseif ($data['routing_model'] === VoiceQueue::ROUTING_MODEL_SIMULRING) {
                 $data['max_queue_size'] = 50;
             }
-        }
-
-        $event->setData($data);
-    }
-
-    /**
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onResetVoicemailProperties(FormEvent $event)
-    {
-        $data = $event->getData();
-        if (array_key_exists('voicemail_asset', $data) && !$data['voicemail_asset']) {
-            $data['voicemail_department'] = null;
-            $data['voicemail_agent']      = null;
-            $data['voicemail_agent_team'] = null;
         }
 
         $event->setData($data);

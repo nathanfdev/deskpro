@@ -129,7 +129,8 @@ class JobRouterService
             new VoiceDownloadRecordProcessor(
                 $conn,
                 $container->getEm(),
-                $container->getBlobStorage()
+                $container->getBlobStorage(),
+                $container->get('serializer')
             )
         );
 

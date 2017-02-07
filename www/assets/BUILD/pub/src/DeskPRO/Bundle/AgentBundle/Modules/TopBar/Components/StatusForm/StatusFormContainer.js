@@ -14,15 +14,14 @@ import { userChatEnabledSelector } from '../../../Agent/Selectors/agents';
 class StatusFormContainer extends React.Component {
 
   static propTypes = {
-    me:       PropTypes.object,
     dispatch: PropTypes.func
   };
 
   onChange = (data) => {
-    const { me, dispatch } = this.props;
+    const { dispatch } = this.props;
 
     dispatch(toggleUserChat(data.chats));
-    dispatch(editAgentProfile(me.get('id'), {
+    dispatch(editAgentProfile({
       available_status:    data.status,
       agent_calls_enabled: data.calls
     }));

@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
@@ -141,38 +142,35 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $routingModel;
 
     /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
      *
      * @JMS\Expose()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceAsset")
      *
      * @Assert\Valid()
      *
-     * @var VoiceAsset
+     * @var AbstractVoiceAsset
      */
     private $greetAsset;
 
     /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
      *
      * @JMS\Expose()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceAsset")
      *
      * @Assert\Valid()
      *
-     * @var VoiceAsset
+     * @var AbstractVoiceAsset
      */
     private $loopAsset;
 
     /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
      *
      * @JMS\Expose()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceAsset")
      *
      * @Assert\Valid()
      *
-     * @var VoiceAsset
+     * @var AbstractVoiceAsset
      */
     private $voicemailAsset;
 
@@ -356,7 +354,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return VoiceAsset
+     * @return AbstractVoiceAsset
      */
     public function getGreetAsset()
     {
@@ -364,11 +362,11 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param VoiceAsset $greetAsset
+     * @param AbstractVoiceAsset $greetAsset
      *
      * @return $this
      */
-    public function setGreetAsset(VoiceAsset $greetAsset = null)
+    public function setGreetAsset(AbstractVoiceAsset $greetAsset = null)
     {
         $this->setModelField('greetAsset', $greetAsset);
 
@@ -376,7 +374,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return VoiceAsset
+     * @return AbstractVoiceAsset
      */
     public function getLoopAsset()
     {
@@ -384,11 +382,11 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param VoiceAsset $loopAsset
+     * @param AbstractVoiceAsset $loopAsset
      *
      * @return $this
      */
-    public function setLoopAsset(VoiceAsset $loopAsset = null)
+    public function setLoopAsset(AbstractVoiceAsset $loopAsset = null)
     {
         $this->setModelField('loopAsset', $loopAsset);
 
@@ -396,7 +394,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return VoiceAsset
+     * @return AbstractVoiceAsset
      */
     public function getVoicemailAsset()
     {
@@ -404,11 +402,11 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param VoiceAsset $voicemailAsset
+     * @param AbstractVoiceAsset $voicemailAsset
      *
      * @return $this
      */
-    public function setVoicemailAsset(VoiceAsset $voicemailAsset = null)
+    public function setVoicemailAsset(AbstractVoiceAsset $voicemailAsset = null)
     {
         $this->setModelField('voicemailAsset', $voicemailAsset);
 

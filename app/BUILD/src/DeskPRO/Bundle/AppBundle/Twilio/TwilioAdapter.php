@@ -242,7 +242,9 @@ class TwilioAdapter
         ]);
 
         // add additional activity
-        $taskRouter->workspaces($workspace->sid)->activities->create('IdleDisabled', 'false');
+        $taskRouter->workspaces($workspace->sid)->activities->create('IdleDisabled', [
+            'available' => false,
+        ]);
 
         return $workspace;
     }

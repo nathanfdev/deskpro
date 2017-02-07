@@ -5,7 +5,7 @@ import { Fieldset, Input, createValue } from 'react-forms';
 import { Form, Field, Select, MultiSelect, Checkbox, RecordsChoiceWrapper } from 'DeskPRO/Component/Semantic/ReactForm';
 import AgentChoiceListWrapper from '../../Common/AgentChoiceListWrapper';
 import AccountChoiceWrapper from '../../Common/AccountChoiceWrapper';
-import AudioWidgetFormContainer from '../../Common/AudioWidget/AudioWidgetFormContainer';
+import AudioWidgetFormContainer from '../../Common/AudioWidgetFormContainer';
 import AgentsSelectContainer from '../../Common/NumberTarget/AgentsSelectContainer';
 
 class QueueForm extends React.Component {
@@ -137,7 +137,6 @@ class QueueForm extends React.Component {
               <AudioWidgetFormContainer />
             </Field>
 
-            {formData.value.voicemail_asset &&
             <div>
               Missed calls will ask the user to leave a message and a new voice ticket will be created with the following properties:
 
@@ -151,7 +150,7 @@ class QueueForm extends React.Component {
               <Field select="voicemail_agent_team">
                 <VoicemailAgentTeamProperty agentTeams={agentTeams} />
               </Field>}
-            </div>}
+            </div>
 
             <button className={classNames('ui button', { loading: saving })}>
               {queueId ? 'Update' : 'Create'}

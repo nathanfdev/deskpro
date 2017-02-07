@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
@@ -94,15 +95,14 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     private $extensionNumber;
 
     /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, orphanRemoval=true)
      * @ORM\JoinColumn(name="voicemail_asset_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @JMS\Expose()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceAsset")
      *
      * @Assert\Valid()
      *
-     * @var VoiceAsset
+     * @var AbstractVoiceAsset
      */
     private $voicemailAsset;
 
@@ -212,7 +212,7 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return VoiceAsset
+     * @return AbstractVoiceAsset
      */
     public function getVoicemailAsset()
     {
@@ -220,11 +220,11 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param VoiceAsset $voicemailAsset
+     * @param AbstractVoiceAsset $voicemailAsset
      *
      * @return $this
      */
-    public function setVoicemailAsset(VoiceAsset $voicemailAsset = null)
+    public function setVoicemailAsset(AbstractVoiceAsset $voicemailAsset = null)
     {
         $this->setModelField('voicemailAsset', $voicemailAsset);
 

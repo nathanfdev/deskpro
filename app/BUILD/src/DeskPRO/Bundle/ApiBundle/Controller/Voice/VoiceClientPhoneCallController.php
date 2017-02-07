@@ -30,6 +30,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -75,17 +77,7 @@ class VoiceClientPhoneCallController extends BaseController
      */
     public function assignAgentAction(VoicePhoneCall $phoneCall)
     {
-        // assign the phone call ticket to the first answered agent
-        $messageAttribute = $this->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
-            'phoneCall' => $phoneCall,
-        ]);
-        if (!$messageAttribute) {
-            throw $this->createBadRequestException('Ticket not found');
-        }
-
-        $agent  = $this->getUser();
-        $ticket = $messageAttribute->getMessage()->getTicket();
-
+        $agent = $this->getUser();
         if (!$agent->getAgentData() || !$agent->getAgentData()->isVoiceEnabled()) {
             throw $this->createBadRequestException('Agent does not have voice permissions');
         }
@@ -93,18 +85,69 @@ class VoiceClientPhoneCallController extends BaseController
             throw $this->createBadRequestException('Phone call is already ended');
         }
 
-        if (!$ticket->getAgent()) {
+        // create a new ticket for the call
+        $messageAttribute = $this->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $phoneCall,
+        ]);
+        if (!$messageAttribute) {
+            // no ticket is created for the call yet, create and assign agent
+            $ticketMessageCall = new TicketMessageVoicePhoneCall();
+            $ticketMessageCall->setPhoneCall($phoneCall);
+
+            $ticketMessage = new TicketMessage();
+            $ticketMessage->setPerson($phoneCall->getPerson());
+            $ticketMessage->addAttribute($ticketMessageCall);
+            $ticketMessage->setMessage('Call from '.$phoneCall->getFromNumber());
+            $ticketMessage->setAsAgentNote(true);
+
+            $ticket = new Ticket();
+            $ticket->disableAutoTicketProcess();
+            $ticket->setSubject('Call from '.$phoneCall->getFromNumber());
+            $ticket->setPerson($phoneCall->getPerson());
             $ticket->setAgent($agent);
+            $ticket->addMessage($ticketMessage);
+
+            $this->saveTicket($ticket);
         } else {
+            // ticket is already created, that means we are joining the existing conference
+            $ticket = $messageAttribute->getMessage()->getTicket();
+
             $participant = new TicketParticipant();
             $participant->setPerson($agent);
 
             $ticket->addParticipant($participant);
+            $this->saveTicket($ticket);
         }
 
-        $this->saveTicket($ticket);
+        return new View($this->wrap($ticket));
+    }
 
-        return new View(null, Response::HTTP_NO_CONTENT);
+    /**
+     * @ApiDoc(
+     *     description="Returns related phone call ticket",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Rest\Get("/ticket")
+     *
+     * @param VoicePhoneCall $phoneCall
+     *
+     * @return View
+     */
+    public function getPhoneCallTicketAction(VoicePhoneCall $phoneCall)
+    {
+        $messageAttribute = $this->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $phoneCall,
+        ]);
+        if (!$messageAttribute) {
+            throw $this->createNotFoundException();
+        }
+
+        $ticket = $messageAttribute->getMessage()->getTicket();
+
+        return new View($this->wrap($ticket));
     }
 
     /**

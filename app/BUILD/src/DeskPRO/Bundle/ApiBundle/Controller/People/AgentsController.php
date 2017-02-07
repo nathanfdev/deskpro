@@ -152,16 +152,15 @@ class AgentsController extends CrudController
      *     }
      * )
      *
-     * @Rest\Put("/{person}/profile")
+     * @Rest\Put("/profile")
      *
-     * @param Person  $person
      * @param Request $request
      *
      * @return View
      */
-    public function editProfileAction(Person $person, Request $request)
+    public function editProfileAction(Request $request)
     {
-        $form    = $this->createForm(AgentProfileType::class, $person);
+        $form    = $this->createForm(AgentProfileType::class, $this->getUser());
         $decoded = $this->getRequestContent($request);
 
         $form->submit($decoded, false);
@@ -169,7 +168,7 @@ class AgentsController extends CrudController
             throw new InvalidFormException($form);
         }
 
-        $this->persistModel($person);
+        $this->persistModel($this->getUser());
 
         return View::create(null, Response::HTTP_NO_CONTENT);
     }
