@@ -1,6 +1,6 @@
 @new
 Feature: /user_chats endpoint
-  To retrieve DeskPRO agents
+  To retrieve DeskPRO user chat messages
   As an API user
   I want an API endpoint
 
@@ -35,35 +35,35 @@ Feature: /user_chats endpoint
     And the JSON node "data.author_id" should be equal to "{chewie@falcon.galaxy}"
     And the JSON node "data.is_user" should be true
 
-  Scenario: I send a message without an author to a conversation
-    Given I'm authenticated as admin
-    When I send a POST request to "/api/v2/user_chats/{c1}/messages" with body:
-    """
-{
-  "content": "Test Message",
-  "is_user": 1
-}
-    """
-    Then the response should be in JSON
-    And the response status code should be 201
-    And the JSON node data should exist
-    And the JSON node "data.author_id" should be equal to 0
-    And the JSON node "data.is_user" should be true
+#  Scenario: I send a message without an author to a conversation
+#    Given I'm authenticated as admin
+#    When I send a POST request to "/api/v2/user_chats/{c1}/messages" with body:
+#    """
+#{
+#  "content": "Test Message",
+#  "is_user": 1
+#}
+#    """
+#    Then the response should be in JSON
+#    And the response status code should be 201
+#    And the JSON node data should exist
+#    And the JSON node "data.author_id" should be equal to "{agent}"
+#    And the JSON node "data.is_user" should be true
 
-  Scenario: I send a message as an agent to a conversation
-    Given I'm authenticated as admin
-    When I send a POST request to "/api/v2/user_chats/{c1}/messages" with body:
-    """
-{
-  "content": "Test Message",
-  "is_user": 0
-}
-    """
-    Then the response should be in JSON
-    And the response status code should be 201
-    And the JSON node data should exist
-    And the JSON node "data.author_id" should be equal to 0
-    And the JSON node "data.is_user" should be false
+#  Scenario: I send a message as an agent to a conversation
+#    Given I'm authenticated as admin
+#    When I send a POST request to "/api/v2/user_chats/{c1}/messages" with body:
+#    """
+#{
+#  "content": "Test Message",
+#  "is_user": 0
+#}
+#    """
+#    Then the response should be in JSON
+#    And the response status code should be 201
+#    And the JSON node data should exist
+#    And the JSON node "data.author_id" should be equal to "{agent}"
+#    And the JSON node "data.is_user" should be false
 
   Scenario: I get the last messages on a conversation
     Given only the following "Chat" records exist:

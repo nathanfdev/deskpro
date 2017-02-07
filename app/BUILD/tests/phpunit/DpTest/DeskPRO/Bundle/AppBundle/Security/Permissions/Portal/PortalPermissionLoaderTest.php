@@ -70,14 +70,17 @@ class PortalPermissionLoaderTest extends PortalTestCase
         $em->persist($registered);
         $em->flush();
 
-        $brand       = $this->getBrand();
-        $brand_stack = $this->get('brand_stack');
-        $brand_stack->push($brand);
+        $brand      = $this->getBrand();
+        $brandStack = $this->get('brand_stack');
+        $brandStack->push($brand);
     }
 
     /**
      * @test
      * @dataProvider loadAllCategoriesProvider
+     *
+     * @param string $entityClass
+     * @param string $method
      */
     public function load_all_categories($entityClass, $method)
     {
@@ -158,6 +161,9 @@ class PortalPermissionLoaderTest extends PortalTestCase
     /**
      * @test
      * @dataProvider getAllowedDepartmentsProvider
+     *
+     * @param string $app
+     * @param string $method
      */
     public function get_allowed_departments($app, $method)
     {
