@@ -47,7 +47,12 @@ class QueuesSelectContainer extends React.Component {
             onAddNew={this.onAddNew}
           />
         </RecordsChoiceWrapper>
-        <Modal isOpen={formOpened} onClose={this.onClose} title="New Queue">
+        <Modal
+          isOpen={formOpened}
+          onClose={this.onClose}
+          title="New Queue"
+          contentStyles={{ top: '10%', bottom: '10%' }}
+        >
           <NewQueueModalContainer onClose={this.onClose} />
         </Modal>
       </div>

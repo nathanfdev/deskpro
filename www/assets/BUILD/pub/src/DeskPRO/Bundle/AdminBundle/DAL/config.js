@@ -1,6 +1,8 @@
 export const repositoriesConfig = {
   Person:             { type: 'api', url: '/people', allowAll: false },
   Ticket:             { type: 'api', url: '/people', allowAll: false },
+  TicketDepartment:   { type: 'api', url: '/ticket_departments', allowAll: true },
+  AgentTeam:          { type: 'api', url: '/agent_teams', allowAll: true },
   VoiceAccount:       { type: 'api', url: '/voice_accounts', allowAll: true },
   VoiceNumber:        { type: 'api', url: '/voice_numbers', allowAll: true },
   VoiceQueue:         { type: 'api', url: '/voice_queues', allowAll: true },

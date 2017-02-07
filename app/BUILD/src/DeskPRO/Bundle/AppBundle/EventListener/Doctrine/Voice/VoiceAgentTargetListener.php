@@ -28,18 +28,16 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice;
 
-use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class VoiceQueueListener.
+ * Class VoiceAgentTargetListener.
  */
-class VoiceQueueListener
+class VoiceAgentTargetListener
 {
-    use VoiceAccountSyncTrait;
-
     /**
      * @var EntityManager
      */
@@ -56,37 +54,29 @@ class VoiceQueueListener
     }
 
     /**
-     * @ORM\PrePersist()
+     * @ORM\PreFlush()
      *
-     * @param VoiceQueue $queue
+     * @param VoiceAgentTarget $target
      */
-    public function onPersist(VoiceQueue $queue)
+    public function ensureAgentVoiceEnabled(VoiceAgentTarget $target)
     {
-        $account = $queue->getAccount();
-        if (!$account) {
+        $agent = $target->getAgent();
+        if (!$agent) {
             return;
         }
 
-        $this->updateAccountDateSync($account);
-    }
-
-    /**
-     * @ORM\PreUpdate()
-     *
-     * @param VoiceQueue         $queue
-     * @param PreUpdateEventArgs $args
-     */
-    public function onUpdate(VoiceQueue $queue, PreUpdateEventArgs $args)
-    {
-        $account = $queue->getAccount();
-        if (!$account) {
-            return;
+        $agentData = $agent->getAgentData();
+        if (!$agentData) {
+            $agentData = new AgentData();
+            $agent->setAgentData($agentData);
         }
 
-        if ($args->hasChangedField('agents')
-            || $args->hasChangedField('routingModel')
-            || $args->hasChangedField('maxQueueSize')) {
-            $this->updateAccountDateSync($account);
-        }
+        $agentData->setIsVoiceEnabled(true);
+        $agentData->setOutboundCallsEnabled(true);
+
+        $this->em->persist($agent);
+
+        $uow = $this->em->getUnitOfWork();
+        $uow->computeChangeSet($this->em->getClassMetadata(get_class($agentData)), $agentData);
     }
 }

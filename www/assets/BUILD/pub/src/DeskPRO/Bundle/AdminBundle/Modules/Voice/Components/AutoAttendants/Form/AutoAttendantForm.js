@@ -6,7 +6,7 @@ import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
 import DialNumberCheckbox from './DialNumber/DialNumberCheckbox';
 import DialNumbers from './DialNumber/DialNumbers';
-import AudioWidgetFormContainer from './AudioWidgetFormContainer';
+import AudioWidgetFormContainer from '../../Common/AudioWidget/AudioWidgetFormContainer';
 
 class AutoAttendantForm extends React.Component {
 

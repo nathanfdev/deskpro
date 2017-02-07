@@ -3,8 +3,6 @@ import Immutable from 'immutable';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
-import AudioWidget from '../../Common/AudioWidget/AudioWidget';
-import AudioWidgetContainer from './AudioWidgetContainer';
 
 class QueueHeader extends React.Component {
 
@@ -74,21 +72,6 @@ class QueueRow extends React.Component {
                 </PopUp>
               </span>
             }
-          </div>
-          <div className="column asset">
-            <AudioWidgetContainer queue={queue} propName="greet_asset" >
-              <AudioWidget />
-            </AudioWidgetContainer>
-          </div>
-          <div className="column asset">
-            <AudioWidgetContainer queue={queue} propName="loop_asset">
-              <AudioWidget />
-            </AudioWidgetContainer>
-          </div>
-          <div className="column asset">
-            <AudioWidgetContainer queue={queue} propName="voicemail_asset">
-              <AudioWidget />
-            </AudioWidgetContainer>
           </div>
           <div className="column options-button">
             <a onClick={this.onEditQueue}>
@@ -160,9 +143,6 @@ class QueueList extends React.Component {
           <div className="row header">
             <div className="column queue-name">Name</div>
             <div className="column agents">Agents</div>
-            <div className="column asset">Greet</div>
-            <div className="column asset">Loop</div>
-            <div className="column asset">Voicemail</div>
           </div>
           {queues.map(queue =>
             <QueueRow

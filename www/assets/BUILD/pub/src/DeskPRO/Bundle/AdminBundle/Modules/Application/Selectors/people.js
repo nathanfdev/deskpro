@@ -9,3 +9,6 @@ export const voicePeopleSelector = createSelector(
   allAgentsSelector,
   agents => agents.filter(agent => agent.getIn(['agent_data', 'is_voice_enabled']))
 );
+
+export const allAgentTeamsSelector = collectionSelectorFactory('AgentTeam', 'all');
+export const isAgentTeamsLoadedSelector = isLoadedCollectionSelectorFactory('AgentTeam', 'all');

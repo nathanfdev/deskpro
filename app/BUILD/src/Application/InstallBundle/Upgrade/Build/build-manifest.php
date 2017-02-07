@@ -1875,4 +1875,8 @@ return [
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2017/02/Build1486138400.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1486138400',
     ],
+    1486483118 => [
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2017/02/Build1486483118.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1486483118',
+    ],
 ];

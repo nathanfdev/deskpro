@@ -26,67 +26,45 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice;
+namespace Application\DeskPRO\WorkerProcess\Job;
 
-use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
-use Doctrine\ORM\Mapping as ORM;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 
 /**
- * Class VoiceQueueListener.
+ * Class TwilioSync.
  */
-class VoiceQueueListener
+class TwilioSync extends AbstractJob
 {
-    use VoiceAccountSyncTrait;
+    const DEFAULT_INTERVAL = 60;
 
     /**
-     * @var EntityManager
+     * {@inheritdoc}
      */
-    private $em;
-
-    /**
-     * Constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
+    public function run()
     {
-        $this->em = $em;
-    }
+        $em      = $this->getContainer()->getEm();
+        $account = $em->getRepository(VoiceAccount::class)->getVoiceAccount();
 
-    /**
-     * @ORM\PrePersist()
-     *
-     * @param VoiceQueue $queue
-     */
-    public function onPersist(VoiceQueue $queue)
-    {
-        $account = $queue->getAccount();
+        // no account
         if (!$account) {
             return;
         }
 
-        $this->updateAccountDateSync($account);
-    }
-
-    /**
-     * @ORM\PreUpdate()
-     *
-     * @param VoiceQueue         $queue
-     * @param PreUpdateEventArgs $args
-     */
-    public function onUpdate(VoiceQueue $queue, PreUpdateEventArgs $args)
-    {
-        $account = $queue->getAccount();
-        if (!$account) {
+        // no sync required
+        if (!$account->getDateSync()) {
             return;
         }
 
-        if ($args->hasChangedField('agents')
-            || $args->hasChangedField('routingModel')
-            || $args->hasChangedField('maxQueueSize')) {
-            $this->updateAccountDateSync($account);
+        // already synced
+        if ($account->getDateLastSync() && $account->getDateSync() === $account->getDateLastSync()) {
+            return;
         }
+
+        // sync twilio account
+        $this->getContainer()->get('twilio_sync_manager')->syncWorkflow($account);
+
+        $account->setDateLastSync($account->getDateSync());
+        $em->persist($account);
+        $em->flush();
     }
 }

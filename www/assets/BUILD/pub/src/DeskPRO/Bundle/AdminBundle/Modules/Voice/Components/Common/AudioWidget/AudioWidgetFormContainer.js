@@ -4,7 +4,6 @@ import $ from 'jquery';
 import Immutable from 'immutable';
 import AudioWidgetForm from '../../Common/AudioWidget/AudioWidget';
 import { createAsset, updateAsset } from '../../../Actions/assetActions';
-import { AssetPlayButton } from '../../Common/AudioWidget/PlayButton';
 
 class AddAudioAsset extends React.Component {
 
@@ -40,26 +39,13 @@ class EditAudioAsset extends React.Component {
     this.props.onOpen();
   };
 
-  renderButtons() {
-    const { value } = this.props;
-
-    return (
-      <div className="audio-asset-buttons">
-        <AssetPlayButton value={value} iconOnly />
-        <button className="ui icon basic button" onClick={this.onClick}>
-          <i className="write icon" />
-        </button>
-      </div>
-    );
-  }
-
   renderText() {
     const { value } = this.props;
 
     return (
       <div>
         <b>Text to audio:</b> {value.get('text')}
-        {this.renderButtons()}
+        <i className="write icon" onClick={this.onClick} />
       </div>
     );
   }
@@ -70,7 +56,7 @@ class EditAudioAsset extends React.Component {
     return (
       <div>
         <b>Uploaded file:</b> {value.getIn(['blob', 'filename'])}
-        {this.renderButtons()}
+        <i className="write icon" onClick={this.onClick} />
       </div>
     );
   }
@@ -81,7 +67,7 @@ class EditAudioAsset extends React.Component {
     return (
       <div>
         <b>Record:</b> {value.get('name')}
-        {this.renderButtons()}
+        <i className="write icon" onClick={this.onClick} />
       </div>
     );
   }

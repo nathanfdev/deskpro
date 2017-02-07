@@ -6,7 +6,7 @@ import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 class AgentChoiceListWrapper extends React.Component {
 
   static propTypes = {
-    agents:   PropTypes.array,
+    agents:   PropTypes.object,
     children: PropTypes.node
   };
 

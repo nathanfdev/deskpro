@@ -352,6 +352,15 @@ class WorkerJobsData extends AbstractDefaultData
             'run_interval' => Job\ProcessSystemAlertEvents::DEFAULT_INTERVAL,
         ];
 
+        $jobs[] = [
+            'id'           => 'twilio_sync',
+            'worker_group' => 'twilio_sync',
+            'title'        => 'Twilio sync',
+            'description'  => 'Sync twilio account',
+            'job_class'    => Job\TwilioSync::class,
+            'run_interval' => Job\TwilioSync::DEFAULT_INTERVAL,
+        ];
+
         //------------------------------
         // Insert jobs
         //------------------------------
