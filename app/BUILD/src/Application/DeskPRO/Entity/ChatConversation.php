@@ -801,6 +801,18 @@ class ChatConversation extends DomainObject implements LabelsOwner
     }
 
     /**
+     * @param Department $department
+     *
+     * @return $this
+     */
+    public function setDepartment($department)
+    {
+        $this->setModelField('department', $department);
+
+        return $this;
+    }
+
+    /**
      * @return Department|null
      */
     public function getDepartment()

@@ -62,6 +62,7 @@ class ChatHandler extends AbstractEntityHandler
             ->setEndedBy($model->getEndedBy())
             ->setRatingOverall($model->getRatingOverall())
             ->setRatingComment($model->getRatingComment())
+            ->setDepartment($this->mappers->getDepartmentMapper()->getDefaultChatDepartment())
         ;
 
         if ($model->getDateCreated()) {
