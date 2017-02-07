@@ -55,10 +55,10 @@ export default createReducer(initialState, {
     setValue('messages', []),
     setValue('feedbackStage', 'dialog')
   ),
-  [actions.unsetChatId]: setValue('chat', {
+  [actions.unsetChatId]: state => setValue('chat', {
     id:        null,
     loaded:    false,
-    canReopen: true,
+    canReopen: state.getIn(['chat', 'canReopen']),
     info:      {},
     lastAgent: null
   }),
@@ -90,7 +90,7 @@ export default createReducer(initialState, {
     let newMessages = state.get('messages');
 
     const sendingMessages = newMessages.filter(message => message.get('tmp_id') === tmpId);
-    sendingMessages.forEach(sendingMessage => {
+    sendingMessages.forEach((sendingMessage) => {
       const index = newMessages.indexOf(sendingMessage);
       const newMessage = sendingMessage.set('not_delivered', true);
 
@@ -126,12 +126,12 @@ export default createReducer(initialState, {
   [actions.sendFeedback]:       setValue('feedbackStage', 'finished'),
 
   [actions.pollingChat]: async({
-    success: state => {
+    success: (state) => {
       connectionRetries = 0;
       return state.set('lostConnection', false);
     },
-    error: state => {
-      connectionRetries++;
+    error: (state) => {
+      connectionRetries += 1;
       return connectionRetries > 2
         ? state.set('lostConnection', true)
         : state;
