@@ -386,7 +386,7 @@ class UserChatManager
             FROM chat_messages
             WHERE conversation_id = ? AND tag IN (?, ?)
             GROUP BY tag
-        ', [$convo->getId(), $tag1, $tag2, $convo->getId()]);
+        ', [$convo->getId(), $tag1, $tag2]);
 
         if (
             $joined_left_counts
