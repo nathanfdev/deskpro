@@ -384,7 +384,7 @@ class UserChatManager
         $joined_left_counts = App::getDb()->fetchAllKeyValue('
             SELECT tag, COUNT(*)
             FROM chat_messages
-            WHERE conversation_id = ? AND tag IN (?, ?) AND conversation_id = ?
+            WHERE conversation_id = ? AND tag IN (?, ?)
             GROUP BY tag
         ', [$convo->getId(), $tag1, $tag2, $convo->getId()]);
 
