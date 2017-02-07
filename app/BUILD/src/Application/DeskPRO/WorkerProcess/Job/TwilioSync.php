@@ -56,7 +56,7 @@ class TwilioSync extends AbstractJob
         }
 
         // already synced
-        if ($account->getDateLastSync() && $account->getDateSync() === $account->getDateLastSync()) {
+        if ($account->getDateLastSync() && $account->getDateSync() == $account->getDateLastSync()) {
             return;
         }
 
