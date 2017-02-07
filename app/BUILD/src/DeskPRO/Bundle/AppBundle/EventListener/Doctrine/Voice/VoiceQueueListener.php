@@ -99,7 +99,7 @@ class VoiceQueueListener
      */
     public function onUpdate(VoiceQueue $queue, PreUpdateEventArgs $args)
     {
-        if ($args->hasChangedField('name')) {
+        if ($args->hasChangedField('name') || $args->hasChangedField('routingModel')) {
             $this->twilioAdapter->updateTaskQueue($queue);
         }
 
@@ -117,6 +117,14 @@ class VoiceQueueListener
      */
     public function onRemove(VoiceQueue $queue)
     {
+        $account = $queue->getAccount();
+        if (!$account) {
+            return;
+        }
+
+        $account->getQueues()->removeElement($queue);
+
+        $this->twilioAdapter->createOrUpdateWorkflow($account, $this->getAssignmentUrl($account));
         $this->twilioAdapter->deleteTaskQueue($queue);
         $queue->setTaskQueueSid(null);
     }
@@ -150,12 +158,7 @@ class VoiceQueueListener
             return;
         }
 
-        $assignmentUrl = $this->router->generate('twilio_assignment_callback', [
-            'account'     => $account->getId(),
-            'accountAuth' => $account->getAccountAuth(),
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $workflow = $this->twilioAdapter->createOrUpdateWorkflow($account, $assignmentUrl);
+        $workflow = $this->twilioAdapter->createOrUpdateWorkflow($account, $this->getAssignmentUrl($account));
         if (!$workflow) {
             return;
         }
@@ -185,5 +188,18 @@ class VoiceQueueListener
     private function getVoiceAccount()
     {
         return $this->em->getRepository(VoiceAccount::class)->getVoiceAccount();
+    }
+
+    /**
+     * @param VoiceAccount $account
+     *
+     * @return string
+     */
+    private function getAssignmentUrl(VoiceAccount $account)
+    {
+        return $this->router->generate('twilio_assignment_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { FormActionStore } from 'DeskPRO/Component/React/Standalone/FormActionStore';
-import { PortalSimpleSelectBox } from './PortalSimpleSelectBox';
 import _ from 'lodash';
 import $ from 'jquery';
+import { FormActionStore } from 'DeskPRO/Component/React/Standalone/FormActionStore';
+import PortalSimpleSelectBox from './PortalSimpleSelectBox';
 
 export class LevelSelectActionStore extends FormActionStore {
 
@@ -38,7 +38,7 @@ export class LevelSelectActionStore extends FormActionStore {
 
     const walkerFn = (parent = null, path = []) => {
       const r = [];
-      options.forEach(opt => {
+      options.forEach((opt) => {
         if (opt.parent === parent) {
           opt.path = _.clone(path);
           path.push(opt.id);
@@ -93,7 +93,7 @@ export class PortalSelectBox extends React.Component {
     });
   }
 
-  onClickOption = option => {
+  onClickOption = (option) => {
     this.props.actionStore.setValue(option.id);
   };
 
@@ -127,7 +127,7 @@ export class PortalSelectBox extends React.Component {
       subGroup = _.find(group, i => this.state.valuePath.indexOf(i.id) !== -1);
     }
 
-    const options = group.map((g) => ({ id: g.id, title: g.title }));
+    const options = group.map(g => ({ id: g.id, title: g.title }));
 
     return (
       <div>

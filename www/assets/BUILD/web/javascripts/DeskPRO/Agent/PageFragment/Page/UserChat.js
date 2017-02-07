@@ -581,6 +581,20 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		// Init upload after RTE was added (it has an upload field on the 'attach' button)
 		this._initUpload();
+
+    this.getEl('delete-transcript').on('click', function(){
+      var $chk = $(this).parent().find('input');
+      if (!$chk.is(':checked')) return;
+      $.ajax({
+        url: self.meta.deleteUrl,
+				method: 'DELETE',
+        context: this,
+        contentType: 'json',
+				success: function() {
+        	self.closeSelf();
+				}
+      });
+    });
 	},
 
 	handleNewMessageCm: function(data, name) {

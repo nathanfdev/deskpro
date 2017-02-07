@@ -1,3 +1,15 @@
+<script>
+  (function() {
+    var link = document.createElement('link');
+    link.rel = "stylesheet";
+      {% if not app.isCloud() %}
+    link.href = "{{ asset('fonts/OpenSans.css') }}";
+      {%  else %}
+    link.href = "//fonts.googleapis.com/css?family=Open Sans:300,400,600,700,400italic,700italic&subset=latin";
+      {%  endif %}
+    document.querySelector("head").appendChild(link);
+  })();
+</script>
 <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/semantic.css') }}" type="text/css" />
 {% if not in_body %}
 	<script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>

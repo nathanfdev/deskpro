@@ -150,9 +150,17 @@ class DistroDownloader implements LoggerAwareInterface
      */
     private function verifyFile($targetPath, $checksum = null)
     {
+        if (!is_file($targetPath)) {
+            $this->logger->error("Target path does not exist: $targetPath");
+            throw new \UnexpectedValueException('The target path does not exist');
+        }
+
+        $this->logger->info('Filesize: '.filesize($targetPath));
+
         if ($checksum) {
             $hash = hash_file('sha256', $targetPath);
             if ($checksum !== $hash) {
+                $this->logger->error("Invalid checksum. Expected: $checksum, Got: $hash");
                 throw new \UnexpectedValueException('The downloaded file has an invalid checksum.');
             }
         }

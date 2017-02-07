@@ -47,6 +47,7 @@ class VoiceQueueTarget extends AbstractVoiceTarget
      *
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoiceQueue>")
+     * @JMS\SerializedName("target")
      *
      * @Assert\NotNull()
      *
@@ -72,5 +73,13 @@ class VoiceQueueTarget extends AbstractVoiceTarget
         $this->setModelField('queue', $queue);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTargetName()
+    {
+        return $this->queue->getName();
     }
 }

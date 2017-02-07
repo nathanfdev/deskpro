@@ -115,6 +115,6 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $data = (array) $context->getIn()->getAll('req');
         $meta = $js->updateMeta($data);
 
-        return $context->createJsonResponse($meta->toArray());
+        return $context->createJsonResponse($meta ? $meta->toArray() : []);
     }
 }

@@ -146,6 +146,7 @@ class TicketManager
         $this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($this->em);
         $this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container);
         $this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($this->db);
+        $this->post_save_actions[] = new TicketSaveActions\ZapierWebHook($this->em, $container->get('serializer'));
 
         $this->setAutoContextVar('custom_field_manager', $container->getCustomFieldManager());
     }

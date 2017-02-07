@@ -2144,6 +2144,13 @@ define(function() {
   });
 
   routes.push({
+    id:           'voice-channel.numbers_edit',
+    url:          '/numbers/{id:\\d+}',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
     id:           'voice-channel.extensions',
     url:          '/extensions',
     templateName: 'VoiceChannel/react_component.html',
@@ -2221,8 +2228,15 @@ define(function() {
   });
 
   routes.push({
-    id:           'voice-channel.history',
-    url:          '/history',
+    id:           'voice-channel.call_logs',
+    url:          '/call_logs',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.call_logs_view',
+    url:          '/call_logs/{id:\\d+}',
     templateName: 'VoiceChannel/react_component.html',
     controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
   });

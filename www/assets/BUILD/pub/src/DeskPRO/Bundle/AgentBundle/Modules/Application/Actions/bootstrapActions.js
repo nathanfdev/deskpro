@@ -5,7 +5,7 @@ import { flattenBatchResponses, getLinkedData } from 'DeskPRO/Component/Util/Api
 import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
-import { setImMe } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
+import { setImMe, loadDrafts } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 import { hideChat } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/chatsActions';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { setVoiceTokens, setVoiceActivities } from '../../Voice/Actions/clientActions';
@@ -56,6 +56,7 @@ export const preloadData    = createAction(
       if (window.DP_HAS_VOICE) {
         batchComponents.voice_tokens     = { endpoint: 'voice_client/tokens' };
         batchComponents.voice_activities = { endpoint: 'voice_client/activities' };
+        batchComponents.voice_numbers    = { endpoint: 'voice_numbers' };
       }
 
       if (window.DP_HAS_NEW_IM) {
@@ -96,6 +97,7 @@ export const preloadData    = createAction(
           if (window.DP_HAS_NEW_IM) {
             dispatch(setImMe(data.me.person));
             dispatch(setupActionAlerts(data.alerts));
+            dispatch(loadDrafts());
             const hiddenChats = localStorage.getItem('hiddenChats') ? JSON.parse(localStorage.getItem('hiddenChats')) : {};
             Object.keys(hiddenChats).forEach((key) => {
               if (Object.prototype.hasOwnProperty.call(hiddenChats, key)) {
@@ -106,6 +108,7 @@ export const preloadData    = createAction(
           if (window.DP_HAS_VOICE) {
             dispatch(setVoiceTokens(data.voice_tokens));
             dispatch(setVoiceActivities(data.voice_activities));
+            dispatch(setCollection('VoiceNumber', 'all', data.voice_numbers));
           }
 
           dispatch(donePreloading());

@@ -28,18 +28,40 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\Notification;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class NewAgentChatMessageGenerator.
  */
 class NewAgentChatMessageGenerator extends AbstractGenerator
 {
+    /**
+     * @var AvatarResolver
+     */
+    private $avatarResolver;
+
+    /**
+     * NewAgentChatMessageGenerator constructor.
+     *
+     * @param EntityManager         $em
+     * @param TokenStorageInterface $token_storage
+     * @param AvatarResolver        $avatarResolver
+     */
+    public function __construct(EntityManager $em, TokenStorageInterface $token_storage, AvatarResolver $avatarResolver)
+    {
+        parent::__construct($em, $token_storage);
+        $this->avatarResolver = $avatarResolver;
+    }
+
     /**
      * @param SystemEventInterface $event
      *
@@ -70,6 +92,7 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
         $message = $this->getChatMessage($event);
         $targets = [];
         foreach ($message->getChat()->getPersonList() as $target) {
+            /** @var Person $target */
             if (is_object($this->getUser()) && $target->getId() !== $this->getUser()->getId()) {
                 $targets[] = $target->getId();
             }
@@ -82,8 +105,9 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
     {
         $message = $this->getChatMessage($event);
         $data    = [
-            'notificationTitle'   => sprintf('%s sent a message to you', $message->getPersonName()),
-            'notificationSummary' => $message->getMessage(),
+            'title'   => sprintf('%s sent a message to you', $message->getPersonName()),
+            'summary' => $message->getMessage(),
+            'icon'    => $this->avatarResolver->getAvatar($message->getPerson(), 64),
         ];
 
         return $data;

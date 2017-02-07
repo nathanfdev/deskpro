@@ -7,18 +7,22 @@ import IncomingCall from './IncomingCall/IncomingCall';
 class VoiceMenu extends React.Component {
 
   static propTypes = {
-    me:            PropTypes.object,
-    agents:        PropTypes.object,
-    people:        PropTypes.object,
-    incomingCall:  PropTypes.object,
-    onAcceptCall:  PropTypes.func,
-    onDeclineCall: PropTypes.func
+    me:                   PropTypes.object,
+    agents:               PropTypes.object,
+    people:               PropTypes.object,
+    incomingCall:         PropTypes.object,
+    onAcceptCall:         PropTypes.func,
+    onDeclineCall:        PropTypes.func,
+    outboundCallsEnabled: PropTypes.bool,
+    outboundNumber:       PropTypes.string
   };
 
   constructor(props) {
     super(props);
+
+    const { incomingCall, outboundNumber } = this.props;
     this.state = {
-      tabName: props.incomingCall ? 'phone' : 'settings'
+      tabName: incomingCall || outboundNumber ? 'phone' : 'settings'
     };
   }
 
@@ -62,13 +66,16 @@ class VoiceMenu extends React.Component {
   }
 
   render() {
+    const { outboundCallsEnabled, incomingCall } = this.props;
     const { tabName } = this.state;
+    const hasPhoneTab = incomingCall || outboundCallsEnabled;
 
     return (
       <div className="voice-menu">
         <div className="voice-header">
           Calls
         </div>
+        {hasPhoneTab &&
         <div className="tab-menu">
           <TabButton
             tabName="settings"
@@ -84,13 +91,14 @@ class VoiceMenu extends React.Component {
             onClick={this.onChangeTab}
             active={tabName === 'phone'}
           />
-        </div>
+        </div>}
         <Tab active={tabName === 'settings'}>
           <Settings />
         </Tab>
+        {hasPhoneTab &&
         <Tab active={tabName === 'phone'}>
           {this.renderPhoneTab()}
-        </Tab>
+        </Tab>}
       </div>
     );
   }

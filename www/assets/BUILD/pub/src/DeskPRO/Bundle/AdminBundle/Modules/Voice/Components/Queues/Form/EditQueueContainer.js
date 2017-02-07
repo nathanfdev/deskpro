@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
-import QueueForm from './QueueForm';
+import QueuePageForm from './QueuePageForm';
 import BaseQueueFormContainer from './BaseQueueFormContainer';
 import { updateQueue, loadQueues, deleteQueue } from '../../../Actions/queueActions';
 import { allQueuesSelector } from '../../../Selectors/queue';
@@ -9,10 +9,10 @@ import { isAccountsLoadedSelector, allAccountsSelector } from '../../../Selector
 import { loadAccounts } from '../../../Actions/accountActions';
 import { replaceRoute } from '../../../../../Services/history';
 import { loadAgents } from '../../../../Application/Actions/peopleActions';
-import { voicePeopleSelector, isAgentsLoadedSelector } from '../../../../Application/Selectors/people';
+import { allAgentsSelector, isAgentsLoadedSelector } from '../../../../Application/Selectors/people';
 
 @connect(state => ({
-  agents:         voicePeopleSelector(state),
+  agents:         allAgentsSelector(state),
   agentsLoaded:   isAgentsLoadedSelector(state),
   queues:         allQueuesSelector(state),
   accounts:       allAccountsSelector(state),
@@ -64,7 +64,7 @@ class EditQueueContainer extends BaseQueueFormContainer {
     }
 
     return (
-      <QueueForm
+      <QueuePageForm
         {...this.state}
         queue={queue}
         agents={agents}

@@ -105,12 +105,10 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
     private $number;
 
     /**
-     * @ORM\Column(name="nickname", type="string", length=255)
+     * @ORM\Column(name="nickname", type="string", length=255, nullable=true)
      *
      * @JMS\Expose()
      * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
      *
      * @var string
      */
@@ -140,6 +138,16 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
      * @var AbstractVoiceTarget
      */
     private $target;
+
+    /**
+     * @ORM\Column(name="outbound_calls_enabled", type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $outboundCallsEnabled = false;
 
     /**
      * @return int
@@ -265,6 +273,26 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
     public function setTarget(AbstractVoiceTarget $target = null)
     {
         $this->setModelField('target', $target);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutboundCallsEnabled()
+    {
+        return $this->outboundCallsEnabled;
+    }
+
+    /**
+     * @param bool $outboundCallsEnabled
+     *
+     * @return $this
+     */
+    public function setOutboundCallsEnabled($outboundCallsEnabled)
+    {
+        $this->setModelField('outboundCallsEnabled', $outboundCallsEnabled);
 
         return $this;
     }

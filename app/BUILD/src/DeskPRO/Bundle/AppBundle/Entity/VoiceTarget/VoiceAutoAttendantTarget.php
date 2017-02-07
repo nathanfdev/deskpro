@@ -47,6 +47,7 @@ class VoiceAutoAttendantTarget extends AbstractVoiceTarget
      *
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant>")
+     * @JMS\SerializedName("target")
      *
      * @Assert\NotNull()
      *
@@ -72,5 +73,13 @@ class VoiceAutoAttendantTarget extends AbstractVoiceTarget
         $this->setModelField('autoAttendant', $autoAttendant);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTargetName()
+    {
+        return $this->autoAttendant->getName();
     }
 }

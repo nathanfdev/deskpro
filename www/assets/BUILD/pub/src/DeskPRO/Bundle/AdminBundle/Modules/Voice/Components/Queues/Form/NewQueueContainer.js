@@ -1,16 +1,16 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
-import QueueForm from './QueueForm';
+import QueuePageForm from './QueuePageForm';
 import BaseQueueFormContainer from './BaseQueueFormContainer';
 import { createQueue } from '../../../Actions/queueActions';
 import { isAccountsLoadedSelector, allAccountsSelector } from '../../../Selectors/account';
 import { loadAccounts } from '../../../Actions/accountActions';
 import { loadAgents } from '../../../../Application/Actions/peopleActions';
-import { voicePeopleSelector, isAgentsLoadedSelector } from '../../../../Application/Selectors/people';
+import { allAgentsSelector, isAgentsLoadedSelector } from '../../../../Application/Selectors/people';
 
 @connect(state => ({
-  agents:         voicePeopleSelector(state),
+  agents:         allAgentsSelector(state),
   agentsLoaded:   isAgentsLoadedSelector(state),
   accounts:       allAccountsSelector(state),
   accountsLoaded: isAccountsLoadedSelector(state)
@@ -42,7 +42,7 @@ class NewQueueContainer extends BaseQueueFormContainer {
     }
 
     return (
-      <QueueForm
+      <QueuePageForm
         {...this.state}
         agents={agents}
         accounts={accounts}

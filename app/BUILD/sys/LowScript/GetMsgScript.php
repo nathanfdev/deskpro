@@ -513,6 +513,7 @@ class GetMsgScript extends LowScriptAbstract
         $channels[] = 'agent.problems-created';
         $channels[] = 'agent.problems-updated';
 
+        $channels[] = 'agent.voice.calls_enabled';
         $channels[] = 'agent.voice.conference.participant-invite';
         $channels[] = 'agent.voice.conference.participant-cancel';
         $channels[] = 'agent.voice.conference.participant-ignore';

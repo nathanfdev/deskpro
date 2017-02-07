@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import { PortalSimpleSelectBox } from 'DeskPRO/Bundle/PortalBundle/React/Form/PortalSimpleSelectBox';
+import PortalSimpleSelectBox from 'DeskPRO/Bundle/PortalBundle/React/Form/PortalSimpleSelectBox';
 
-export class PortalSimpleSelectBoxWrapper extends React.Component {
+export default class PortalSimpleSelectBoxWrapper extends React.Component {
 
   static propTypes = {
     level:         PropTypes.number,
@@ -44,7 +44,7 @@ export class PortalSimpleSelectBoxWrapper extends React.Component {
     this.state = { options };
   }
 
-  onChange = value => {
+  onChange = (value) => {
     const { onChange } = this.props;
 
     if (Array.isArray(value)) {
@@ -61,8 +61,8 @@ export class PortalSimpleSelectBoxWrapper extends React.Component {
       selected = [];
 
       if (Array.isArray(value)) {
-        value.forEach(id => {
-          this.state.options.forEach(option => {
+        value.forEach((id) => {
+          this.state.options.forEach((option) => {
             if (option.id === id) {
               selected.push(option);
             }
@@ -70,7 +70,7 @@ export class PortalSimpleSelectBoxWrapper extends React.Component {
         });
       }
     } else {
-      this.state.options.forEach(option => {
+      this.state.options.forEach((option) => {
         if (option.id === value) {
           selected = option;
         }

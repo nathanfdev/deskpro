@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { onlineAgentsSelector } from '../../Agent/Selectors/agents';
+import { outboundNumbersSelector } from './numbers';
 
 export const voiceAgentsSelector = createSelector(
   agentsSelector,
@@ -16,4 +18,23 @@ export const voiceParticipantsSelector = createSelector(
 export const callsEnabledSelector = createSelector(
   meSelector,
   me => me.getIn(['agent_data', 'is_voice_enabled']) && me.getIn(['agent_data', 'agent_calls_enabled'])
+);
+
+export const voiceOnlineAgentsSelector = createSelector(
+  voiceAgentsSelector,
+  onlineAgentsSelector,
+  (voiceAgents, onlineAgentIds) => voiceAgents.filter(agent =>
+    onlineAgentIds.contains(agent.get('id')) && agent.getIn(['agent_data', 'agent_calls_enabled'])
+  )
+);
+
+export const outboundCallsEnabledSelector = createSelector(
+  meSelector,
+  outboundNumbersSelector,
+  (me, outboundNumbers) =>
+    me
+    && outboundNumbers
+    && me.getIn(['agent_data', 'is_voice_enabled'])
+    && me.getIn(['agent_data', 'outbound_calls_enabled'])
+    && outboundNumbers.size > 0
 );

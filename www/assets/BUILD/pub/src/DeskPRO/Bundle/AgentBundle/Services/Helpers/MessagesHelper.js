@@ -27,10 +27,11 @@ export class MessagesHelper {
     const counts = state.get('counts');
     if (counts.nested[payload.chatId] && payload.status === 2 && payload.person !== state.get('me').id) {
       counts.nested[payload.chatId].count -= 1;
+      counts.count = counts.count > 0 ? counts.count - 1 : 0;
       if (counts.nested[payload.chatId].count < 0) {
         counts.nested[payload.chatId].count = 0;
       }
-
+      DeskPRO_Window.notifications.fireEvent('modCount', { count: counts.count }); // eslint-disable-line no-undef
       return state.set('counts', { ...counts });
     }
     return state;
@@ -43,6 +44,8 @@ export class MessagesHelper {
     }
     if (payload.status !== 2 && payload.person !== state.get('me').id) {
       counts.nested[payload.chatId].count += 1;
+      counts.count += 1;
+      DeskPRO_Window.notifications.fireEvent('modCount', { count: counts.count }); // eslint-disable-line no-undef
       return state.set('counts', { ...counts });
     }
 

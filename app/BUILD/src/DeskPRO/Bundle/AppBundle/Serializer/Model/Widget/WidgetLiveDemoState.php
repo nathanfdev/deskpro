@@ -51,15 +51,23 @@ class WidgetLiveDemoState
     private $chat;
 
     /**
+     * @var array
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\Department>")
+     */
+    private $departments;
+
+    /**
      * Constructor.
      *
      * @param array            $agents
      * @param array            $users
      * @param ChatConversation $chat
      */
-    public function __construct(array $agents, array $users, ChatConversation $chat)
+    public function __construct(array $agents, array $users, ChatConversation $chat, array $departments)
     {
-        $this->people = new WidgetPeopleDemoState($agents, $users);
-        $this->chat   = new WidgetChatDemoState($chat);
+        $this->people      = new WidgetPeopleDemoState($agents, $users);
+        $this->chat        = new WidgetChatDemoState($chat);
+        $this->departments = $departments;
     }
 }

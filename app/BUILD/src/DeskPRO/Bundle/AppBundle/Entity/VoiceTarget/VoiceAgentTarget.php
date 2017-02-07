@@ -48,6 +48,7 @@ class VoiceAgentTarget extends AbstractVoiceTarget
      *
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     * @JMS\SerializedName("target")
      *
      * @Assert\NotNull()
      * @AppAssert\Person\PersonType(type="agent")
@@ -74,5 +75,13 @@ class VoiceAgentTarget extends AbstractVoiceTarget
         $this->setModelField('agent', $agent);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTargetName()
+    {
+        return $this->agent->getName();
     }
 }

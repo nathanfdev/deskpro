@@ -35,12 +35,15 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\People\AgentProfileType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class AgentsController.
@@ -107,15 +110,6 @@ class AgentsController extends CrudController
         return View::create($this->wrap($qb->getQuery()->getResult()));
     }
 
-    protected function denyAccessUnlessGranted($attributes, $object = null, $message = 'Access Denied.')
-    {
-        if ($attributes === PermissionGroupVoter::VIEW_LIST) {
-            return;
-        }
-
-        parent::denyAccessUnlessGranted($attributes, $object, $message);
-    }
-
     /**
      * @ApiDoc(
      *     section="Agents",
@@ -125,6 +119,8 @@ class AgentsController extends CrudController
      *     }
      * )
      * @Rest\Delete("/{id}/agent_permissions")
+     *
+     * @param Request $request
      */
     public function deletePermissionsAction($id, Request $request)
     {
@@ -145,6 +141,37 @@ class AgentsController extends CrudController
         $agent->setIsAgent(false);
         $this->getManager()->persist($agent);
         $this->getManager()->flush();
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Agents",
+     *     description="edit agent profile",
+     *     statusCodes={
+     *         204="No content"
+     *     }
+     * )
+     *
+     * @Rest\Put("/{person}/profile")
+     *
+     * @param Person  $person
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function editProfileAction(Person $person, Request $request)
+    {
+        $form    = $this->createForm(AgentProfileType::class, $person);
+        $decoded = $this->getRequestContent($request);
+
+        $form->submit($decoded, false);
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $this->persistModel($person);
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -183,6 +210,18 @@ class AgentsController extends CrudController
         $entity->setIsDeleted(true);
         $this->getManager()->persist($entity);
         $this->getManager()->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function denyAccessUnlessGranted($attributes, $object = null, $message = 'Access Denied.')
+    {
+        if ($attributes === PermissionGroupVoter::VIEW_LIST) {
+            return;
+        }
+
+        parent::denyAccessUnlessGranted($attributes, $object, $message);
     }
 
     /**

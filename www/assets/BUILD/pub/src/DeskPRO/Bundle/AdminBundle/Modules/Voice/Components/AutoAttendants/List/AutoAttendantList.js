@@ -96,8 +96,8 @@ class AutoAttendantRow extends React.Component {
         <div className="info">
           <div className="column auto-attendant-name">{autoAttendant.get('name')}</div>
           <div className="column auto-attendant-dial-numbers">
-            {autoAttendant.get('dial_numbers').map((dialNumber, index) =>
-              <VoiceTargetNameContainer key={index} target={dialNumber.get('target')}>
+            {autoAttendant.get('targets').map((target, dialNumber) =>
+              <VoiceTargetNameContainer key={dialNumber} target={target}>
                 <AutoAttendantDialNumber dialNumber={dialNumber} />
               </VoiceTargetNameContainer>
             )}
@@ -143,7 +143,7 @@ class AutoAttendantDialNumber extends React.Component {
 
     return (
       <div className="dial-number" onClick={onRedirectToTarget}>
-        {dialNumber.get('dial_num')}
+        {dialNumber}
       </div>
     );
   }

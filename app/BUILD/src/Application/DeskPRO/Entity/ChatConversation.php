@@ -77,6 +77,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
      * Department which chat was assigned.
      *
      * @AppAssert\LeafDepartment()
+     * @Assert\NotNull()
      *
      * @var \Application\DeskPRO\Entity\Department
      */

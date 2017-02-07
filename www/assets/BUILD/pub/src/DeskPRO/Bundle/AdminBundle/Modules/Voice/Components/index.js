@@ -1,5 +1,6 @@
 import Accounts from './Accounts/List/AccountListContainer';
 import Numbers from './Numbers/List/NumberListContainer';
+import EditNumber from './Numbers/Form/EditNumberContainer';
 import AvailableNumbers from './Numbers/Search/AvailableNumbers/AvailableListContainer';
 import ExistingNumbers from './Numbers/Search/ExistingNumbers/ExistingListContainer';
 import Queues from './Queues/List/QueueListContainer';
@@ -12,10 +13,13 @@ import AutoAttendantList from './AutoAttendants/List/AutoAttendantListContainer'
 import NewAutoAttendant from './AutoAttendants/Form/NewAutoAttendantContainer';
 import EditAutoAttendant from './AutoAttendants/Form/EditAutoAttendantContainer';
 import AgentsVoiceToggle from './Agents/AgentsVoiceToggleContainer';
+import CallLogsList from './CallLogs/List/CallLogsListContainer';
+import CallLogView from './CallLogs/View/CallLogViewContainer';
 
 export {
   Accounts,
   Numbers,
+  EditNumber,
   AvailableNumbers,
   ExistingNumbers,
   Queues,
@@ -27,5 +31,7 @@ export {
   AutoAttendantList,
   NewAutoAttendant,
   EditAutoAttendant,
-  AgentsVoiceToggle
+  AgentsVoiceToggle,
+  CallLogsList,
+  CallLogView
 };

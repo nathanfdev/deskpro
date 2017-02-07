@@ -37,14 +37,14 @@ Feature: /voice_queues endpoint
 {
   "account": ~a1~,
   "name": "My Queue",
-  "routing_model": "round_robin",
+  "routing_model": "least_utilized",
   "max_queue_size": 10,
   "agents": [~p1~, ~p2~, ~p3~]
 }
     """
     Then the response status code should be 201
     And the JSON node "data.name" should be equal to the string "My Queue"
-    And the JSON node "data.routing_model" should be equal to the string "round_robin"
+    And the JSON node "data.routing_model" should be equal to the string "least_utilized"
     And the JSON node "data.max_queue_size" should be equal to 10
     And the JSON node "data.agents" should have 3 elements
     And the JSON node "data.agents[0]" should be equal to "{p1}"

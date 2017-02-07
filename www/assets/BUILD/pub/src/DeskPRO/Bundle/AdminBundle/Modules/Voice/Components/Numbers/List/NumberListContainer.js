@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import NumberList from './NumberList';
 import { loadAccounts } from '../../../Actions/accountActions';
-import { loadNumbers, collapseNumber } from '../../../Actions/numberActions';
+import { loadNumbers } from '../../../Actions/numberActions';
 import { loadQueues } from '../../../Actions/queueActions';
 import { isAccountsLoadedSelector, allAccountsSelector } from '../../../Selectors/account';
-import { allNumbersSelector, isNumbersLoadedSelector, expandedNumberSelector } from '../../../Selectors/numbers';
+import { allNumbersSelector, isNumbersLoadedSelector } from '../../../Selectors/numbers';
 import { replaceRoute } from '../../../../../Services/history';
 import { allQueuesSelector, isQueuesLoadedSelector } from '../../../Selectors/queue';
 
@@ -16,8 +16,7 @@ import { allQueuesSelector, isQueuesLoadedSelector } from '../../../Selectors/qu
   numbers:        allNumbersSelector(state),
   numbersLoaded:  isNumbersLoadedSelector(state),
   queues:         allQueuesSelector(state),
-  queuesLoaded:   isQueuesLoadedSelector(state),
-  expandedNumber: expandedNumberSelector(state)
+  queuesLoaded:   isQueuesLoadedSelector(state)
 }))
 class NumberListContainer extends React.Component {
 
@@ -25,8 +24,7 @@ class NumberListContainer extends React.Component {
     dispatch:       PropTypes.func,
     accountsLoaded: PropTypes.bool,
     numbersLoaded:  PropTypes.bool,
-    queuesLoaded:   PropTypes.bool,
-    expandedNumber: PropTypes.number
+    queuesLoaded:   PropTypes.bool
   };
 
   componentDidMount() {
@@ -49,12 +47,8 @@ class NumberListContainer extends React.Component {
     replaceRoute('/voice_channel/numbers/existing');
   };
 
-  onCollapseNumber = (number) => {
-    const { expandedNumber, dispatch } = this.props;
-
-    if (number.get('id') === expandedNumber) {
-      dispatch(collapseNumber());
-    }
+  onEditNumber = (number) => {
+    replaceRoute(`/voice_channel/numbers/${number.get('id')}`);
   };
 
   render() {
@@ -70,7 +64,7 @@ class NumberListContainer extends React.Component {
         onGoToAccounts={this.onGoToAccounts}
         onAddNumber={this.onAddNumber}
         onAddExistingNumber={this.onAddExistingNumber}
-        onCollapseNumber={this.onCollapseNumber}
+        onEditNumber={this.onEditNumber}
       />
     );
   }

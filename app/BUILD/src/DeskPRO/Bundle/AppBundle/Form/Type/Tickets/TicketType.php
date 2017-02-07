@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCategory;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketWorkflow;
 use DeskPRO\Bundle\AppBundle\Form\BrandFormHelper;
@@ -45,6 +46,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -53,6 +55,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -114,12 +118,10 @@ class TicketType extends AbstractType
             ->add('product', EntityType::class, [
                 'class' => Product::class,
             ])
-            ->add('person', EntityType::class, [
-                'class' => Person::class,
+            ->add('person', PersonAssignType::class, [
+                'person' => $options['person'],
             ])
-            ->add('agent', EntityType::class, [
-                'class' => Person::class,
-            ])
+            ->add('agent', PersonAssignType::class)
             ->add('agent_team', EntityType::class, [
                 'class' => AgentTeam::class,
             ])
@@ -151,9 +153,11 @@ class TicketType extends AbstractType
                 'person' => $options['person'],
                 'inline' => true,
             ])
+
         ;
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddMessageField']);
     }
 
     /**
@@ -169,6 +173,38 @@ class TicketType extends AbstractType
             ])
             ->setAllowedTypes('person', Person::class)
         ;
+    }
+
+    /**
+     * Ticket message is optional so decide to add this field on form submission.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onAddMessageField(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $data = $event->getData();
+
+        /** @var Ticket $ticket */
+        $ticket = $form->getData();
+
+        if (isset($data['message'])) {
+            $message = $ticket->getMessages()->first();
+            if (!$message) {
+                $message = new TicketMessage();
+                $ticket->addMessage($message);
+            }
+
+            $form->add('message', TicketMessageType::class, [
+                'mapped'           => false,
+                'ticket'           => $form->getData(),
+                'person'           => $form->getConfig()->getOption('person'),
+                'ticket_message'   => $message,
+                'allow_set_person' => true,
+            ]);
+        }
     }
 
     /**
@@ -208,8 +244,7 @@ class TicketType extends AbstractType
     {
         $type = $builder->getOption('agent_interface')
             ? DefaultDepartmentSettings::DEFAULT_DEPARTMENT_AGENT_TYPE
-            : DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE
-            ;
+            : DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE;
 
         return $this->helper->getDefaultDepartment($type);
     }

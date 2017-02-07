@@ -29,10 +29,12 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
 use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\JobQueue\Processor\VoiceDownloadRecordProcessor;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
@@ -40,13 +42,18 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantAgent;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -184,11 +191,6 @@ class TwilioCallbacksController extends BaseController
         }
 
         $task = json_decode($request->request->get('TaskAttributes'), true);
-        $url  = $this->get('router')->generate('twilio_conference_callback', [
-            'account'     => $account->getId(),
-            'accountAuth' => $accountAuth,
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
-
         if (!isset($task['deskpro_call_id']) || !isset($task['call_sid'])) {
             throw $this->createBadRequestException('Unable to get task attributes');
         }
@@ -206,7 +208,7 @@ class TwilioCallbacksController extends BaseController
         $response = [
             'instruction' => 'redirect',
             'call_sid'    => $task['call_sid'],
-            'url'         => $url,
+            'url'         => $this->getConferenceCallbackUrl($account),
         ];
 
         return new JsonResponse($response);
@@ -236,22 +238,12 @@ class TwilioCallbacksController extends BaseController
 
         $callSid   = $request->request->get('CallSid');
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy(['callSid' => $callSid]);
-        $statusUrl = $this->get('router')->generate('twilio_conference_status_callback', [
-            'account'     => $account->getId(),
-            'accountAuth' => $accountAuth,
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
-
         if (!$phoneCall) {
             throw $this->createBadRequestException('Phone call not found');
         }
 
         $twiml = new Twiml();
-        $twiml->dial()->conference($this->getConferenceName($phoneCall), [
-            'endConferenceOnExit'  => true,
-            'statusCallback'       => $statusUrl,
-            'statusCallbackMethod' => 'POST',
-            'statusCallbackEvent'  => 'join leave start end mute hold',
-        ]);
+        $this->addConferenceResponse($phoneCall, $twiml);
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -468,6 +460,173 @@ class TwilioCallbacksController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Auto attendant callback",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Rest\Post("/auto_attendant_callback/{autoAttendant}", name="twilio_auto_attendant_callback")
+     *
+     * @param VoiceAccount       $account
+     * @param string             $accountAuth
+     * @param VoiceAutoAttendant $autoAttendant
+     * @param Request            $request
+     *
+     * @return Response
+     */
+    public function autoAttendantCallbackAction(VoiceAccount $account, $accountAuth, VoiceAutoAttendant $autoAttendant, Request $request)
+    {
+        if ($account->getAccountAuth() !== $accountAuth) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+            'callSid' => $request->request->get('CallSid'),
+        ]);
+        if (!$phoneCall) {
+            throw $this->createBadRequestException('Phone call not found');
+        }
+
+        $twiml = new Twiml();
+
+        $enteredCode = $request->request->get('Digits');
+        if (is_numeric($enteredCode)) {
+            $dialNumber = $autoAttendant->getDialNumber((int) $enteredCode);
+            if ($dialNumber) {
+                $this->addTargetResponse($phoneCall, $dialNumber->getTarget(), $twiml);
+            } else {
+                $number = $phoneCall->getNumber();
+                $target = $number->getTarget();
+
+                $twiml->say('Required dial number is not supported.');
+                $this->addTargetResponse($phoneCall, $target, $twiml);
+            }
+        } elseif ($enteredCode === '*') {
+            $number = $phoneCall->getNumber();
+            $target = $number->getTarget();
+
+            $this->addTargetResponse($phoneCall, $target, $twiml);
+        } elseif ($enteredCode === '#') {
+            $twiml
+                ->gather([
+                    'numDigits' => 4,
+                    'action'    => $this->getAgentExtensionCallbackUrl($account),
+                ])
+                ->say('Please enter agent extension number')
+            ;
+        }
+
+        $response = new Response($twiml);
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Agent extension callback",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Rest\Post("/agent_extension_callback", name="twilio_agent_extension_callback")
+     *
+     * @param VoiceAccount $account
+     * @param string       $accountAuth
+     * @param Request      $request
+     *
+     * @return Response
+     */
+    public function agentExtensionCallbackAction(VoiceAccount $account, $accountAuth, Request $request)
+    {
+        if ($account->getAccountAuth() !== $accountAuth) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+            'callSid' => $request->request->get('CallSid'),
+        ]);
+        if (!$phoneCall) {
+            throw $this->createBadRequestException('Phone call not found');
+        }
+
+        $enteredCode = $request->request->get('Digits');
+
+        $twiml = new Twiml();
+
+        $agentData = $this->getRepository(AgentData::class)->findOneBy([
+            'extensionNumber' => $enteredCode,
+        ]);
+        if ($agentData) {
+            $target = new VoiceAgentTarget();
+            $target->setAgent($agentData->getPerson());
+
+            $this->addTargetResponse($phoneCall, $target, $twiml);
+        } else {
+            $twiml
+                ->gather([
+                    'numDigits' => 4,
+                    'action'    => $this->getAgentExtensionCallbackUrl($account),
+                ])
+                ->say(sprintf(
+                    'Requested agent with %d extension number does not exist. Please enter agent extension number again.',
+                    $enteredCode
+                ))
+            ;
+        }
+
+        $response = new Response($twiml);
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Recording status callback",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Rest\Post("/recording_status_callback", name="twilio_recording_status_callback")
+     *
+     * @param VoiceAccount $account
+     * @param string       $accountAuth
+     * @param Request      $request
+     *
+     * @return Response
+     */
+    public function recordingStatusCallbackAction(VoiceAccount $account, $accountAuth, Request $request)
+    {
+        if ($account->getAccountAuth() !== $accountAuth) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+            'conferenceSid' => $request->request->get('ConferenceSid'),
+        ]);
+        if (!$phoneCall) {
+            throw $this->createBadRequestException('Phone call not found');
+        }
+
+        $phoneCall->setData(array_merge($phoneCall->getData(), [
+            'RecordingUrl' => $request->request->get('RecordingUrl'),
+        ]));
+
+        $em = $this->getManager();
+        $em->persist($phoneCall);
+        $em->flush();
+
+        $this->getContainer()->getJobQueue()->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
+            'call_id' => $phoneCall->getId(),
+        ]));
+    }
+
+    /**
      * @return string
      */
     private function getHelpdeskName()
@@ -522,19 +681,6 @@ class TwilioCallbacksController extends BaseController
             $em->persist($phoneCall);
             $em->flush();
 
-            // assign the phone call ticket to the first answered agent
-            $messageAttribute = $this->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
-                'phoneCall' => $phoneCall,
-            ]);
-
-            if ($messageAttribute) {
-                $ticket = $messageAttribute->getMessage()->getTicket();
-                if (!$ticket->getAgent()) {
-                    $ticket->setAgent($agent);
-                    $this->saveTicket($ticket);
-                }
-            }
-
             // log answering event
             $log = new VoicePhoneCallLog();
             $log->setActionType(VoicePhoneCallLog::ACTION_ANSWERED);
@@ -572,7 +718,7 @@ class TwilioCallbacksController extends BaseController
             'account' => $account,
         ]);
 
-        if (!$number || !$number->getTarget() instanceof VoiceQueueTarget) {
+        if (!$number || !$number->getTarget()) {
             $twiml = new Twiml();
             $twiml->say(sprintf('Thank you for calling, %s', $this->getHelpdeskName()));
             $twiml->say('Required phone number is out of service.');
@@ -608,6 +754,7 @@ class TwilioCallbacksController extends BaseController
                 ->setNumber($number)
                 ->setFromNumber($phoneNumber)
                 ->setPerson($person)
+                ->setType(VoicePhoneCall::DIRECTION_INBOUND)
                 ->setData($query->all())
             ;
 
@@ -637,6 +784,7 @@ class TwilioCallbacksController extends BaseController
             $ticketMessage->setPerson($person);
             $ticketMessage->addAttribute($ticketMessageCall);
             $ticketMessage->setMessage('Call from '.$phoneNumber);
+            $ticketMessage->setAsAgentNote(true);
 
             $ticket = new Ticket();
             $ticket->disableAutoTicketProcess();
@@ -651,19 +799,7 @@ class TwilioCallbacksController extends BaseController
             $twiml->say(sprintf('Thank you for calling, %s', $this->getHelpdeskName()));
 
             if ($account->getQueueWorkflowSid()) {
-                /** @var VoiceQueueTarget $target */
-                $target = $number->getTarget();
-                $twiml
-                    ->enqueue([
-                        'workflowSid' => $account->getQueueWorkflowSid(),
-                    ])->task(json_encode([
-                        'deskpro_call_id'   => $phoneCall->getId(),
-                        'deskpro_queue_id'  => $target->getQueue()->getId(),
-                        'deskpro_person_id' => $person ? $person->getId() : null,
-                        'deskpro_ticket_id' => $ticket->getId(),
-                        'rejected_workers'  => [],
-                    ]))
-                ;
+                $this->addTargetResponse($phoneCall, $phoneCall->getNumber()->getTarget(), $twiml);
             }
         }
 
@@ -681,5 +817,171 @@ class TwilioCallbacksController extends BaseController
     private function getConferenceName(VoicePhoneCall $phoneCall)
     {
         return 'conference'.$phoneCall->getId();
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     * @param Twiml          $twiml
+     */
+    private function addConferenceResponse(VoicePhoneCall $phoneCall, Twiml $twiml)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+
+        $twiml->dial()->conference($this->getConferenceName($phoneCall), [
+            'endConferenceOnExit'           => true,
+            'statusCallback'                => $this->getConferenceStatusCallbackUrl($account),
+            'statusCallbackMethod'          => 'POST',
+            'statusCallbackEvent'           => 'join leave start end mute hold',
+            'record'                        => 'record-from-start',
+            'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account),
+            'recordingStatusCallbackMethod' => 'POST',
+        ]);
+    }
+
+    /**
+     * @param VoicePhoneCall      $phoneCall
+     * @param AbstractVoiceTarget $target
+     * @param Twiml               $twiml
+     *
+     * @throws \Exception
+     */
+    private function addTargetResponse(VoicePhoneCall $phoneCall, AbstractVoiceTarget $target, Twiml $twiml)
+    {
+        $em = $this->getManager();
+
+        $number  = $phoneCall->getNumber();
+        $account = $number->getAccount();
+        $person  = $phoneCall->getPerson();
+
+        $messageAttribute = $this->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $phoneCall,
+        ]);
+        if (!$messageAttribute) {
+            throw new \Exception('Ticket not found');
+        }
+
+        $ticket = $messageAttribute->getMessage()->getTicket();
+
+        if ($target instanceof VoiceQueueTarget) {
+            $twiml
+                ->enqueue([
+                    'workflowSid' => $account->getQueueWorkflowSid(),
+                ])->task(json_encode([
+                    'deskpro_call_id'   => $phoneCall->getId(),
+                    'deskpro_queue_id'  => $target->getQueue()->getId(),
+                    'deskpro_person_id' => $person ? $person->getId() : null,
+                    'deskpro_ticket_id' => $ticket->getId(),
+                    'rejected_workers'  => [],
+                ]))
+            ;
+        } elseif ($target instanceof VoiceAgentTarget) {
+            $this->addConferenceResponse($phoneCall, $twiml);
+
+            // send agent invite
+            $cm = new ClientMessage();
+            $cm->setChannel('agent.voice.conference.participant-invite');
+            $cm->setForPerson($target->getAgent());
+            $cm->setData([
+                'number'           => $phoneCall->getFromNumber(),
+                'caller_person_id' => $phoneCall->getPerson() ? $phoneCall->getPerson()->getId() : null,
+                'call_id'          => $phoneCall->getId(),
+                'conference_sid'   => $phoneCall->getConferenceSid(),
+                'ticket_id'        => $ticket->getId(),
+            ]);
+
+            $em->persist($cm);
+            $em->flush();
+        } elseif ($target instanceof VoiceAutoAttendantTarget) {
+            $autoAttendant = $target->getAutoAttendant();
+            $dialNumbers   = $autoAttendant->getDialNumbers();
+
+            $content = [];
+            foreach ($dialNumbers as $dialNumber) {
+                $content[] = sprintf(
+                    'To call %s, press %d',
+                    $dialNumber->getTarget()->getTargetName(), $dialNumber->getDialNum()
+                );
+            }
+
+            $content[] = 'To repeat the main menu, press * key';
+            $content[] = 'To enter agent extension number, press # key';
+            $content   = implode('. ', $content);
+
+            $twiml
+                ->gather([
+                    'numDigits'   => 1,
+                    'action'      => $this->getAutoAttendantCallbackUrl($account, $autoAttendant),
+                    'finishOnKey' => '',
+                ])
+                ->say($content)
+            ;
+        }
+    }
+
+    /**
+     * @param VoiceAccount $account
+     *
+     * @return string
+     */
+    private function getConferenceCallbackUrl(VoiceAccount $account)
+    {
+        return $this->get('router')->generate('twilio_conference_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param VoiceAccount $account
+     *
+     * @return string
+     */
+    private function getConferenceStatusCallbackUrl(VoiceAccount $account)
+    {
+        return $this->get('router')->generate('twilio_conference_status_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param VoiceAccount       $account
+     * @param VoiceAutoAttendant $autoAttendant
+     *
+     * @return string
+     */
+    private function getAutoAttendantCallbackUrl(VoiceAccount $account, VoiceAutoAttendant $autoAttendant)
+    {
+        return $this->get('router')->generate('twilio_auto_attendant_callback', [
+            'account'       => $account->getId(),
+            'accountAuth'   => $account->getAccountAuth(),
+            'autoAttendant' => $autoAttendant->getId(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param VoiceAccount $account
+     *
+     * @return string
+     */
+    private function getAgentExtensionCallbackUrl(VoiceAccount $account)
+    {
+        return $this->get('router')->generate('twilio_agent_extension_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param VoiceAccount $account
+     *
+     * @return string
+     */
+    private function getRecordingStatusCallbackUrl(VoiceAccount $account)
+    {
+        return $this->get('router')->generate('twilio_recording_status_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

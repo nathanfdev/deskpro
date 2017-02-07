@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
+import classNames from 'classnames';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
 
 class AgentChoiceListWrapper extends React.Component {
@@ -16,7 +17,9 @@ class AgentChoiceListWrapper extends React.Component {
       label: (
         <div className="multi-select-label">
           <PersonAvatar person={agent} size={16} />
-          <span>{agent.get('name')}</span>
+          <span className={classNames({ disabled: !agent.getIn(['agent_data', 'is_voice_enabled']) })}>
+            {agent.get('name')}
+          </span>
         </div>
       )
     })).toArray();

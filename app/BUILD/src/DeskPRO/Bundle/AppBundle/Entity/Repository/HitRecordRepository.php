@@ -28,10 +28,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
+use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
-use Doctrine\ORM\EntityRepository;
 
-class HitRecordRepository extends EntityRepository
+class HitRecordRepository extends AbstractEntityRepository
 {
     /**
      * @param $visitorId

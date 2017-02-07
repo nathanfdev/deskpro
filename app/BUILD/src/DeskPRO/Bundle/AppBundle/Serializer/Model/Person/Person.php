@@ -228,6 +228,13 @@ class Person
     protected $titlePrefix;
 
     /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $displayName;
+
+    /**
      * Overrides the display name of an person in the user interface (agents only).
      *
      * @JMS\Type("string")
@@ -475,28 +482,29 @@ class Person
         $this->isContact               = $person->is_contact;
         $this->isUser                  = $person->isUser();
         $this->isAgent                 = $person->isAgent();
-        $this->wasAgent                = $person->was_agent;
-        $this->canAgent                = $person->can_agent;
-        $this->canAdmin                = $person->can_admin;
+        $this->wasAgent                = $person->wasAgent();
+        $this->canAgent                = $person->canAgent();
+        $this->canAdmin                = $person->canAdmin();
         $this->canBilling              = $person->getRealCanBilling();
         $this->disableAutoresponses    = $person->disable_autoresponses;
         $this->disableAutoresponsesLog = $person->disable_autoresponses_log;
         $this->isConfirmed             = $person->isConfirmed();
         $this->isDeleted               = $person->isDeleted();
         $this->isDisabled              = $person->isDisabled();
-        $this->creationSystem          = $person->creation_system;
-        $this->name                    = $person->name;
-        $this->firstName               = $person->first_name;
-        $this->lastName                = $person->last_name;
-        $this->titlePrefix             = $person->title_prefix;
-        $this->overrideDisplayName     = $person->override_display_name;
-        $this->summary                 = $person->summary;
+        $this->creationSystem          = $person->getCreationSystem();
+        $this->name                    = $person->getName();
+        $this->firstName               = $person->getFirstName();
+        $this->lastName                = $person->getLastName();
+        $this->titlePrefix             = $person->getTitlePrefix();
+        $this->displayName             = $person->getDisplayName();
+        $this->overrideDisplayName     = $person->getOverrideDisplayName();
+        $this->summary                 = $person->getSummary();
         $this->language                = $person->getLanguage();
         $this->organization            = $person->getOrganization();
-        $this->organizationPosition    = $person->organization_position;
+        $this->organizationPosition    = $person->getOrganizationPosition();
         $this->organizationManager     = $person->isOrganizationManager();
         $this->timezone                = $person->getTimezone();
-        $this->dateCreated             = $person->date_created;
+        $this->dateCreated             = $person->getDateCreated();
         $this->dateLastLogin           = $person->date_last_login;
         $this->browser                 = $person->browser;
         $this->userGroups              = $person->getPublicUsergroups();
@@ -506,7 +514,7 @@ class Person
         $this->ticketsCount            = $person->getTicketsCount();
         $this->chatsCount              = $person->getChatsCount();
         $this->phoneNumbers            = $person->getPhoneNumbers();
-        $this->fields                  = $person->custom_data;
+        $this->fields                  = $person->getCustomData();
         $this->contactData             = $person->getContactData();
         $this->emails                  = $person->getEmails();
         $this->teams                   = $person->getTeams();

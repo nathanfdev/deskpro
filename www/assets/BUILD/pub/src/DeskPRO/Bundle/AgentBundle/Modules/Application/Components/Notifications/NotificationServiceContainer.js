@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { NotificationService } from 'DeskPRO/Bundle/AgentBundle/Services/NotificationService';
-import { ActionAlertsHandler } from 'DeskPRO/Bundle/AgentBundle/Services/ActionAlertsHandler';
+import ActionAlertsHandler from 'DeskPRO/Bundle/AgentBundle/Services/ActionAlertsHandler';
+import NotificationsHandler from 'DeskPRO/Bundle/AgentBundle/Services/NotificationsHandler';
 import { connect } from 'react-redux';
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 
@@ -49,8 +50,13 @@ export class NotificationServiceContainer extends SeparateComponent {
 
     if (!actionAlertsSetup && !this.started) {
       const aah = new ActionAlertsHandler({ dispatch, me: user.get('id') });
-
-      this.ns = new NotificationService({ user, clients: actionAlerts.clients, actionAlertsHandler: aah });
+      const nh = new NotificationsHandler({ dispatch, me: user.get('id') });
+      this.ns = new NotificationService({
+        user,
+        clients:              actionAlerts.clients,
+        actionAlertsHandler:  aah,
+        notificationsHandler: nh
+      });
       this.ns.startPolling();
       this.started = true;
     }

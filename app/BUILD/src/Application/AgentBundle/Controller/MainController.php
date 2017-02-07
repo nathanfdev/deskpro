@@ -38,7 +38,6 @@ use Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService;
 use Application\DeskPRO\DependencyInjection\SystemServices\OrganizationDataService;
 use Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService;
 use Application\DeskPRO\Entity\AgentTeam;
-use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -50,10 +49,9 @@ use Application\DeskPRO\EntityRepository\Organization as OrganizationRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\EntityRepository\TextSnippetCategory as TextSnippetCategoryRepository;
 use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
+use Application\DeskPRO\NewSearch\Manager\Elasticsearch;
 use Application\DeskPRO\People\PrefNoticeSet;
-use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\DBAL\Connection;
 use DpSys\LowError\SystemErrorHandler;
@@ -384,16 +382,16 @@ class MainController extends AbstractController
             'chat'                 => [],
         ];
 
-        $result_meta = [];
-        $people_top  = false;
+        $resultMeta = [];
+        $peopleTop  = false;
 
         if (!$q) {
             return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', [
                 'q'           => $q,
                 'router'      => App::getRouter(),
                 'results'     => $results,
-                'result_meta' => $result_meta,
-                'people_top'  => $people_top,
+                'result_meta' => $resultMeta,
+                'people_top'  => $peopleTop,
             ]);
         }
 
@@ -419,49 +417,56 @@ class MainController extends AbstractController
      */
     private function searchInElasticsearch($q, $sort = null)
     {
+        /** @var Elasticsearch $elasticsearch */
         $elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
         $elasticsearch->setPersonContext($this->person);
 
-        list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q, $sort);
+        try {
+            list($results, $resultMeta, $peopleTop) = $elasticsearch->quickSearch($q, $sort);
 
-        $return_results = [];
+            $returnResults = [];
 
-        if ($results) {
-            foreach ($results as $type => $raw_rows) {
-                $rows = [];
-                foreach ($raw_rows as $r) {
-                    $rows[] = $r;
+            if ($results) {
+                foreach ($results as $type => $rawRows) {
+                    $rows = [];
+                    foreach ($rawRows as $r) {
+                        $rows[] = $r;
+                    }
+
+                    $returnResults[] = [
+                        'type'    => $type,
+                        'title'   => $this->container->getTranslator()->phrase('agent.search.type_'.$type),
+                        'results' => $rows,
+                    ];
                 }
-
-                $return_results[] = [
-                    'type'    => $type,
-                    'title'   => $this->container->getTranslator()->phrase('agent.search.type_'.$type),
-                    'results' => $rows,
-                ];
             }
+
+            foreach ($returnResults as &$group) {
+                $group['results'] = $this->renderSearchResults($group['type'], $group['results']);
+            }
+
+            /** @var DataStoreRepository $dataStoryRepository */
+            $dataStoryRepository = $this->em->getRepository(DataStore::class);
+            $esStatus            = $dataStoryRepository->getByName('sys.es_indexer', false);
+            $timecut             = new \DateTime('-10 minutes');
+            if ($esStatus && $esStatus->getData('status') == 'running' && $esStatus->getData('date_last') && $esStatus->getData('date_last') > $timecut) {
+                $indexRunning = true;
+            } else {
+                $indexRunning = false;
+            }
+
+            $returnResults[] = $this->getDeletedTicketResults($q);
+
+            return $this->createJsonResponse([
+                'grouped_results' => $returnResults,
+                'index_running'   => $indexRunning,
+                'is_elastic'      => true,
+            ]);
+        } catch (\Exception $e) {
+            $elasticsearch->testVersion();
+
+            throw $e;
         }
-
-        foreach ($return_results as &$group) {
-            $group['results'] = $this->renderSearchResults($group['type'], $group['results']);
-        }
-
-        /** @var DataStoreRepository $dataStoryRepository */
-        $dataStoryRepository = $this->em->getRepository(DataStore::class);
-        $es_status           = $dataStoryRepository->getByName('sys.es_indexer', false);
-        $timecut             = new \DateTime('-10 minutes');
-        if ($es_status && $es_status->getData('status') == 'running' && $es_status->getData('date_last') && $es_status->getData('date_last') > $timecut) {
-            $index_running = true;
-        } else {
-            $index_running = false;
-        }
-
-        $return_results[] = $this->getDeletedTicketResults($q);
-
-        return $this->createJsonResponse([
-            'grouped_results' => $return_results,
-            'index_running'   => $index_running,
-            'is_elastic'      => true,
-        ]);
     }
 
     /**

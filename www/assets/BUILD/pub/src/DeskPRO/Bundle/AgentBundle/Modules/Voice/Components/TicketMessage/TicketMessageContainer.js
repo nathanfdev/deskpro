@@ -3,13 +3,16 @@ import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import { loadBatch, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import TicketMessage from './TicketMessage';
+import { openDialpad } from '../../Actions/clientActions';
 import { allPhoneCallsSelector } from '../../Selectors/phoneCalls';
 import { connectionsSelector } from '../../Selectors/client';
+import { outboundCallsEnabledSelector } from '../../Selectors/agents';
 
 @connect(state => ({
-  people:      collectionSelectorFactory('Person', 'all')(state),
-  phoneCalls:  allPhoneCallsSelector(state),
-  connections: connectionsSelector(state)
+  people:               collectionSelectorFactory('Person', 'all')(state),
+  phoneCalls:           allPhoneCallsSelector(state),
+  connections:          connectionsSelector(state),
+  outboundCallsEnabled: outboundCallsEnabledSelector(state)
 }))
 class TicketMessageContainer extends React.Component {
 
@@ -30,19 +33,8 @@ class TicketMessageContainer extends React.Component {
   }
 
   onCall = () => {
-    console.log('onCall');
-  };
-
-  onPlay = () => {
-    console.log('onPlay');
-  };
-
-  onMove = () => {
-    console.log('onMove');
-  };
-
-  onStepBackward = () => {
-    console.log('onStepBackward');
+    const phoneCall = this.getPhoneCall();
+    this.props.dispatch(openDialpad(phoneCall.get('from_number')));
   };
 
   onOpenSettings = () => {
@@ -98,9 +90,6 @@ class TicketMessageContainer extends React.Component {
         phoneCall={this.getPhoneCall()}
         connection={this.getConnection()}
         onCall={this.onCall}
-        onPlay={this.onPlay}
-        onMove={this.onMove}
-        onStepBackward={this.onStepBackward}
         onOpenSettings={this.onOpenSettings}
       />
     );

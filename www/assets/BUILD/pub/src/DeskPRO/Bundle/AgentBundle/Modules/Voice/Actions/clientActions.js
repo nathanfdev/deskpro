@@ -3,6 +3,7 @@ import Immutable from 'immutable';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { callsEnabledSelector } from '../Selectors/agents';
 import { phoneTokenSelector, workerTokenSelector, idleActivitySidSelector, busyActivitySidSelector, offlineActivitySidSelector } from '../Selectors/client';
 import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
@@ -10,10 +11,13 @@ import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
 export const setVoiceTokens = createAction('VOICE_AGENT_SET_TOKENS');
 export const setVoiceActivities = createAction('VOICE_AGENT_SET_ACTIVITIES');
 export const addIncomingCall = createAction('VOICE_AGENT_ADD_RESERVATION');
+export const updateIncomigCall = createAction('VOICE_AGENT_UPDATE_RESERVATION');
 export const removeIncomingCall = createAction('VOICE_AGENT_REMOVE_RESERVATION');
 export const removeConferenceIncomingCalls = createAction('VOICE_AGENT_REMOVE_CONFERENCE_RESERVATIONS');
 export const addConnection = createAction('VOICE_AGENT_ADD_CONNECTION');
 export const removeConnection = createAction('VOICE_AGENT_REMOVE_CONNECTION');
+export const openDialpad = createAction('VOICE_AGENT_OPEN_DIALPAD');
+export const dialpadOpened = createAction('VOICE_AGENT_DIALPAD_OPENED');
 
 let worker;
 
@@ -46,6 +50,7 @@ export const voiceBootstrap = createAction(
     });
     worker.on('reservation.accepted', () => {
       console.log('reservation.accepted');
+      window.DeskPRO_Window.getMessageChanneler().poller.setInterval(2000);
     });
     worker.on('reservation.canceled', (reservation) => {
       console.log('reservation.canceled');
@@ -59,8 +64,31 @@ export const voiceBootstrap = createAction(
     });
     worker.on('reservation.rescinded', (reservation) => {
       console.log('reservation.rescinded');
-      dispatch(removeIncomingCall(reservation));
       worker.update('ActivitySid', idleSid);
+
+      // another agent have already accepted the call
+      if (reservation.task.assignmentStatus === 'assigned') {
+        console.log('reservation.workerSid');
+        dispatch(updateIncomigCall(reservation));
+
+        // fetch the ticket info to get assigned agent
+        const ticketId = reservation.task.attributes.deskpro_ticket_id;
+        const fetchTimeout = setInterval(() => {
+          api.sendGet(`DP_API/tickets/${ticketId}`).success(({ data }) => {
+            if (data.agent) {
+              clearInterval(fetchTimeout);
+
+              reservation.task.attributes.deskpro_assigned_agent = data.agent;
+              dispatch(updateIncomigCall(reservation));
+
+              // remove the reservation by timeout to show that another agent accepted the call
+              setTimeout(() => dispatch(removeIncomingCall(reservation)), 5000);
+            }
+          });
+        }, 500);
+      } else {
+        dispatch(removeIncomingCall(reservation));
+      }
     });
     worker.on('connected', (data) => {
       console.log('worker connected');
@@ -85,11 +113,15 @@ export const voiceBootstrap = createAction(
         console.log(error);
       });
       window.Twilio.Device.connect((connection) => {
+        const callId   = connection.message.CallId;
         const ticketId = connection.message.TicketId;
 
-        dispatch(addConnection(connection));
-        window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${ticketId}`);
+        // open ticket
+        api.sendPut(`DP_API/voice_client/phone_call/${callId}/assign_agent`).success(() => {
+          window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${ticketId}`);
+        });
 
+        dispatch(addConnection(connection));
         connection.disconnect(() => {
           // call has ended
           // unset incoming call and set worker activity to idle
@@ -102,6 +134,18 @@ export const voiceBootstrap = createAction(
     }
 
     const messageBroker = window.DeskPRO_Window.getMessageBroker();
+    messageBroker.addMessageListener('agent.voice.calls_enabled', (data) => {
+      const state  = getState();
+      const agents = agentsSelector(state);
+
+      let agent  = agents.get(data.person_id);
+      if (!agent) {
+        return;
+      }
+
+      agent = agent.setIn(['agent_data', 'agent_calls_enabled'], !!data.agent_calls_enabled);
+      dispatch(updateCollection('Person', Immutable.List([agent]), 'replace'));
+    });
     messageBroker.addMessageListener('agent.voice.conference.participant-invite', (data) => {
       if (data.caller_person_id) {
         dispatch(loadBatch('Person', data.caller_person_id, 'all'));

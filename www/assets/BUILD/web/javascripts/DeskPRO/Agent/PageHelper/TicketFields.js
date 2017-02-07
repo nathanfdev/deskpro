@@ -45,7 +45,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				if ($field.attr('type') === 'hidden') {
 					return $.trim($field.parent().text());
 				}
-				if ($field.is('input:not(:radio, :checkbox), textarea')) {
+				if ($field.is('input:not(:radio, :checkbox), textarea, select')) {
 					return $field.val();
 				}
 				$field = $('[name="' + name + '"], [name="' + name + '[]"]', $holders);
@@ -122,7 +122,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
         $el.find('.with-select2').select2('val', value);
         $el.find('input[type=radio]').each(function(i, field) {
           var $field = $(field);
-          if ($field.val() === String(value)) {
+
+          if (!String(value) && i === 0) {
+            $field.prop('checked', true);
+					} else if (String($field.val()) === String(value)) {
             $field.prop('checked', true);
           } else {
             $field.prop('checked', false);
@@ -168,20 +171,18 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				return;
 			}
 
-      $scope.savedValues[field] = self.ticketReader.getTicketFieldValue(field.replace('ticket_field_', ''));
+			if (field !== 'problem') {
+        $scope.savedValues[field] = self.ticketReader.getTicketFieldValue(field.replace('ticket_field_', ''));
+      }
 			$scope.edit_fields.push(field);
 
 			// focus input field on open edit mode
 			var $editContainer = $($event.currentTarget).parent().find('.mode-edit');
 			var $simpleField = $editContainer.find('input[type=text], textarea, select');
-			var $select2Field = $editContainer.find('.with-select2');
 
 			setTimeout(function() {
 				if ($simpleField.length) {
 					$simpleField.focus();
-				}
-				if ($select2Field.length) {
-					$select2Field.select2('open');
 				}
 			}, 0);
 		};
@@ -191,11 +192,14 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		};
 
 		$scope.cancelEdit = function() {
-      $scope.edit_fields.forEach(function(id){
-      	$scope.setFieldValue(id, $scope.savedValues[id]);
+      $scope.edit_fields.forEach(function(id) {
+        if (typeof $scope.savedValues[id] != 'undefined') {
+          $scope.setFieldValue(id, $scope.savedValues[id]);
+      	}
       	delete $scope.savedValues[id];
 			});
       $scope.edit_fields.length = 0;
+      $scope.show_hidden = 0;
       self.updateDisplay();
 		};
 

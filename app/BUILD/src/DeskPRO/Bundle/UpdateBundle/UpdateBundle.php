@@ -46,6 +46,7 @@ class UpdateBundle extends Bundle
         $application->add(new UpdateCommand\DbBackupCommand());
         $application->add(new UpdateCommand\DownloadBuildCommand());
         $application->add(new UpdateCommand\StatusCommand());
+        $application->add(new UpdateCommand\UpdateCleanupCommand());
     }
 
     public function getNamespace()

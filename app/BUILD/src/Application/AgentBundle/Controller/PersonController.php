@@ -1219,6 +1219,15 @@ class PersonController extends AbstractController
         if ($other_person_id && $other_person_id != $person_id) {
             $other_person        = $this->getPersonOr404($other_person_id);
             $other_custom_fields = $field_manager->getDisplayArrayForObject($other_person);
+
+            if (!$person->isAgent() && $other_person->isAgent()) {
+                $tmp                  = $person;
+                $tmpFields            = $person_custom_fields;
+                $person               = $other_person;
+                $person_custom_fields = $other_custom_fields;
+                $other_person         = $tmp;
+                $other_custom_fields  = $tmpFields;
+            }
         } else {
             $other_person        = false;
             $other_custom_fields = false;

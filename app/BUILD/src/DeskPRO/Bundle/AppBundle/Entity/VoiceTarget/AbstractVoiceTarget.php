@@ -48,7 +48,6 @@ use JMS\Serializer\Annotation as JMS;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string", length=30)
  * @ORM\DiscriminatorMap({
- *   "item" = "AbstractVoiceTarget",
  *   "queue" = "VoiceQueueTarget",
  *   "agent" = "VoiceAgentTarget",
  *   "auto_attendant" = "VoiceAutoAttendantTarget"
@@ -82,6 +81,11 @@ abstract class AbstractVoiceTarget implements EntityInterface, NotifyPropertyCha
     {
         return $this->id;
     }
+
+    /**
+     * @return string
+     */
+    abstract public function getTargetName();
 
     /**
      * @param string $type

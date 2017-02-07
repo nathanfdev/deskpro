@@ -8,6 +8,8 @@ import '../../../../../Resources/sounds/incoming-call.mp3';
 import '../../../../../Resources/sounds/incoming-call.ogg';
 import '../../../../../Resources/sounds/incoming-call.wav';
 
+const isAssigned = call => call && call.task && call.task.assignmentStatus === 'assigned';
+
 class IncomingCall extends React.Component {
 
   static propTypes = {
@@ -29,9 +31,14 @@ class IncomingCall extends React.Component {
     this.sound.play();
   }
 
+  componentWillReceiveProps(newProps) {
+    if (isAssigned(newProps.incomingCall)) {
+      this.stopSound();
+    }
+  }
+
   componentWillUnmount() {
-    this.sound.removeEventListener('ended', this.onSoundEnded);
-    this.sound.pause();
+    this.stopSound();
   }
 
   onAccept = (event) => {
@@ -48,7 +55,14 @@ class IncomingCall extends React.Component {
     this.sound.play();
   };
 
-  render() {
+  stopSound() {
+    if (this.sound) {
+      this.sound.removeEventListener('ended', this.onSoundEnded);
+      this.sound.pause();
+    }
+  }
+
+  renderAcceptCall() {
     const { me, agents, people, incomingCall } = this.props;
     const soundsPath = `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/sounds`;
 
@@ -105,6 +119,43 @@ class IncomingCall extends React.Component {
         </div>
       </div>
     );
+  }
+
+  renderAcceptedCall() {
+    const { incomingCall, agents } = this.props;
+    const agentId = incomingCall.task.attributes.deskpro_assigned_agent;
+
+    let agent;
+    if (agentId) {
+      agent = agents.get(agentId);
+    }
+
+    return (
+      <div className="incoming-call">
+        <div className="incoming-call-another-agent-message">
+          Call was accepted by another agent
+        </div>
+
+        {agent && <CallTarget target={{ type: 'agent', agent }} />}
+
+        <div className="buttons">
+          <a
+            className="ignore-button"
+            href="#ignore"
+            onClick={this.onDecline}
+          >
+            <i className="icon remove" />
+            Ignore
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    const { incomingCall } = this.props;
+
+    return isAssigned(incomingCall) ? this.renderAcceptedCall() : this.renderAcceptCall();
   }
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import { AbstractCustomField } from './AbstractCustomField';
 import { Field } from 'react-forms';
-import { PortalSimpleSelectBoxWrapper } from './PortalSimpleSelectBoxWrapper';
+import { AbstractCustomField } from './AbstractCustomField';
+import PortalSimpleSelectBoxWrapper from './PortalSimpleSelectBoxWrapper';
 
 export class CustomFieldMultiChoice extends AbstractCustomField {
 

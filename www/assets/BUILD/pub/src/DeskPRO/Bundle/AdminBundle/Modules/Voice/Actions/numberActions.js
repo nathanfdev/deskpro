@@ -7,8 +7,6 @@ import { loadAll, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBu
 
 export const changeExistingNumbersFilter = createAction('VOICE_CHANGE_EXISTING_NUMBERS_FILTER');
 export const changeAvailableNumbersFilter = createAction('VOICE_CHANGE_AVAILABLE_NUMBERS_FILTER');
-export const expandNumber = createAction('VOICE_EXPAND_NUMBER');
-export const collapseNumber = createAction('VOICE_COLLAPSE_NUMBER');
 
 export const loadNumbers = createAction(
   'VOICE_LOAD_NUMBERS',
@@ -35,13 +33,11 @@ export const addExistingNumber = createAction(
       sid:          number.get('sid'),
       account:      number.get('account'),
       number:       number.get('number'),
-      nickname:     number.get('nickname'),
       country_code: number.get('country_code')
     };
 
     return repository('VoiceNumber').create(data).success((response) => {
       dispatch(addToCollection('VoiceNumber', 'all', Immutable.List([Immutable.fromJS(response.data)])));
-      dispatch(expandNumber(response.data.id));
     }).error((response) => {
       if (response.errors && response.errors.errors && response.errors.errors[0]) {
         toastr.error(response.errors.errors[0].message);
@@ -61,7 +57,6 @@ export const addAvailableNumber = createAction(
     number: number.get('number')
   }).success((response) => {
     dispatch(addToCollection('VoiceNumber', 'all', Immutable.List([Immutable.fromJS(response.data)])));
-    dispatch(expandNumber(response.data.id));
   }).error((response) => {
     if (response.errors && response.errors.errors && response.errors.errors[0]) {
       toastr.error(response.errors.errors[0].message);

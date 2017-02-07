@@ -66,6 +66,30 @@
         width: 275px;
       }
 
+      &.agents {
+        width: 275px;
+
+        .avatar {
+          display: inline-block;
+          position: relative;
+          margin-right: 10px;
+          margin-bottom: -5px;
+          width: 24px;
+          height: 24px;
+          border-radius: 12px;
+          background-color: #FFFFFF;
+          overflow: hidden;
+
+          > .user-photo {
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 12px;
+            color: #FFFFFF;
+          }
+        }
+      }
+
       &.targets {
         width: 350px;
 
@@ -326,17 +350,84 @@
   }
 }
 
-.twilio-queue-form {
+.twilio-number-form {
   width: 425px;
 
+  .number-target {
+    clear: both;
+    margin: 10px 0;
+    min-height: 36px;
+
+    .field {
+      clear: none !important;
+    }
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .dial-number {
+      float: left;
+      border-right: 0;
+    }
+
+    .Select {
+      float: left;
+      width: 200px;
+      height: 35px;
+      margin-right: 10px;
+
+      .Select-control {
+        border: 1px solid #e3e3e3;
+      }
+    }
+  }
+
+  .allow-outbound-calls {
+    padding-top: 10px;
+  }
+
+  .cancel-button {
+    margin-left: 15px !important;
+  }
+}
+
+.twilio-queue-form {
+  width: 525px;
+
   .queue-size {
+    margin-top: 25px !important;
+    margin-bottom: 25px !important;
+
     .help {
       float: right;
       margin-top: 10px;
     }
 
-    input[type="text"] {
-      width: 45px !important;
+    .select-wrapper {
+      position: relative;
+      width: 65px;
+      display: inline-block;
+
+      .Select {
+        position: absolute;
+        top: -25px;
+        width: 45px !important;
+        margin-left: 10px !important;
+        margin-right: 10px !important;
+        display: inline-block;
+      }
+    }
+  }
+
+  .routing-model {
+    .help {
+      margin-top: 5px;
+      font-size: 13px;
     }
   }
 
@@ -347,6 +438,16 @@
       width: 15px;
       margin: 100px auto;
     }
+
+    .disabled {
+      color: $dp-greyscale-250;
+    }
+  }
+
+  .multi-select-toggle-all {
+    font-size: 11px;
+    color: #888;
+    cursor: pointer;
   }
 
   .cancel-button {
@@ -469,7 +570,11 @@
     .dial-number-target {
       clear: both;
       margin: 10px 0;
-      height: 36px;
+      min-height: 36px;
+
+      .field {
+        clear: none !important;
+      }
 
       &:first-child {
         margin-top: 0;
@@ -514,5 +619,27 @@
   .dial-number-checkbox-group {
     margin-top: 30px;
     margin-bottom: 40px;
+  }
+}
+
+.voice-popup-avatars {
+  .avatar {
+    display: inline-block;
+    position: relative;
+    margin-right: 10px;
+    margin-bottom: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    background-color: #FFFFFF;
+    overflow: hidden;
+
+    > .user-photo {
+      position: absolute;
+      left: 0;
+      top: 0;
+      border-radius: 12px;
+      color: #FFFFFF;
+    }
   }
 }

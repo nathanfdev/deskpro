@@ -29,6 +29,7 @@
 namespace spec\DeskPRO\Bundle\AppBundle\Notification\Message\Generator\Notification;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
@@ -54,9 +55,10 @@ class NewAgentChatMessageGeneratorSpec extends ObjectBehavior
         EntityRepository $repo,
         NewMessageEvent $event,
         AgentChatMessage $message,
-        AgentChat $chat
+        AgentChat $chat,
+        AvatarResolver $avatarResolver
     ) {
-        $this->beConstructedWith($em, $token_storage);
+        $this->beConstructedWith($em, $token_storage, $avatarResolver);
         $token_storage->getToken()->willReturn($token);
         $token->getUser()->willReturn($bob);
 
@@ -68,6 +70,8 @@ class NewAgentChatMessageGeneratorSpec extends ObjectBehavior
         $message->getChat()->willReturn($chat);
         $message->getPersonName()->willReturn('Bob');
         $message->getMessage()->willReturn('Hello, Alice');
+        $message->getPerson()->willReturn($bob);
+        $avatarResolver->getAvatar($bob, 64)->willReturn('http://lorempixel.com/64/64');
 
         $chat->getPersonList()->willReturn([$bob, $alice]);
 

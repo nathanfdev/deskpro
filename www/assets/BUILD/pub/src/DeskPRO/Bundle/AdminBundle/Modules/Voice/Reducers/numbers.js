@@ -1,9 +1,8 @@
 import { createReducer } from 'DeskPRO/Component/Ampliflux';
-import { setFullPayload, setValue } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
+import { setFullPayload } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
 import * as actions from '../Actions/numberActions';
 
 const initialState = {
-  expandedNumber: null,
   existingFilter: {
     account: null
   },
@@ -18,7 +17,5 @@ const initialState = {
 
 export default createReducer(initialState, {
   [actions.changeExistingNumbersFilter]:  setFullPayload('existingFilter'),
-  [actions.changeAvailableNumbersFilter]: setFullPayload('availableFilter'),
-  [actions.expandNumber]:                 setFullPayload('expandedNumber'),
-  [actions.collapseNumber]:               setValue('expandedNumber', null)
+  [actions.changeAvailableNumbersFilter]: setFullPayload('availableFilter')
 });

@@ -627,6 +627,11 @@ define [
       options.dataName = 'agents'
       options.operators = ['contains', 'notcontains']
       options.template = 'OptionBuilder/type-criteria-performer.html'
+      options.extraOptions = [
+        {title: 'Assigned Agent', value: -1}
+        {title: 'Member of assigned team', value: -2}
+        {title: 'Follower of the ticket', value: -3}
+      ]
       def = @getStandardSelect(options)
       return def
 

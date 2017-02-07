@@ -36,6 +36,7 @@ use Application\DeskPRO\ApacheTika\ClientManager;
 use Application\DeskPRO\Elastica\ClientFactory;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Monolog\Logger;
+use Application\DeskPRO\NewSearch\Manager\Elasticsearch;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Elastica\Response;
@@ -205,18 +206,9 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
         if (!$url) {
             return;
         }
-        $config = ClientFactory::createConfigFromUrl($url);
-        /** @var \Application\DeskPRO\Elastica\ClientFactory $client_factory */
-        $client_factory = $this->container->get('deskpro.elastica.client_factory');
-        $client         = $client_factory->createClientByConfig($config);
-        $res            = $client->request('/');
-        if ($res instanceof Response) {
-            $res = $res->getData();
-            if (version_compare(@$res['version']['number'], '2.0.0') < 0) {
-                throw new \Exception('DeskPRO is not compatible with your ElasticSearch '.@$res['version']['number']
-                    .' server. Please use DeskPRO with an ElasticSearch 2.x server.');
-            }
-        }
+        /** @var Elasticsearch $elasticSearch */
+        $elasticSearch = $this->container->get('deskpro.search_manager.elasticsearch');
+        $elasticSearch->testVersion($url);
     }
 
     //###################################################################################################################

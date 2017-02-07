@@ -60,6 +60,9 @@ class PersonAgentDataType extends AbstractType
             ->add('is_voice_enabled', ApiBooleanType::class, [
                 'property_path' => 'isVoiceEnabled',
             ])
+            ->add('outbound_calls_enabled', ApiBooleanType::class, [
+                'property_path' => 'outboundCallsEnabled',
+            ])
             ->add('available_status', ChoiceType::class, [
                 'property_path'     => 'availableStatus',
                 'choices_as_values' => true,
@@ -73,9 +76,6 @@ class PersonAgentDataType extends AbstractType
             ])
             ->add('agent_calls_enabled', ApiBooleanType::class, [
                 'property_path' => 'agentCallsEnabled',
-            ])
-            ->add('outbound_calls_enabled', ApiBooleanType::class, [
-                'property_path' => 'outboundCallsEnabled',
             ])
         ;
 
@@ -100,6 +100,10 @@ class PersonAgentDataType extends AbstractType
     public function onChangeAvailableStatus(FormEvent $event)
     {
         $data = $event->getData();
+
+        if (isset($data['is_voice_enabled']) && !$data['is_voice_enabled']) {
+            $data['available_status'] = AgentData::AVAILABLE_STATUS_OFFLINE;
+        }
         if (isset($data['available_status']) && $data['available_status'] === AgentData::AVAILABLE_STATUS_OFFLINE) {
             $data['agent_calls_enabled'] = false;
         }

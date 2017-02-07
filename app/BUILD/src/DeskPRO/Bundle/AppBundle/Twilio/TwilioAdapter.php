@@ -302,7 +302,9 @@ class TwilioAdapter
             }
         }
 
-        return $workspace->taskQueues->create($taskQueueName, $reservationSid, $assignmentSid);
+        return $workspace->taskQueues->create($taskQueueName, $reservationSid, $assignmentSid, [
+            'maxReservedWorkers' => $queue->getMaxQueueSize(),
+        ]);
     }
 
     /**
@@ -313,8 +315,9 @@ class TwilioAdapter
     public function updateTaskQueue(VoiceQueue $queue)
     {
         $this->getQueueWorkspace($queue)->taskQueues($queue->getTaskQueueSid())->update([
-            'friendlyName'  => 'DeskPRO - '.$queue->getName(),
-            'targetWorkers' => 'deskpro_queue_ids HAS '.$queue->getId(),
+            'friendlyName'       => 'DeskPRO - '.$queue->getName(),
+            'targetWorkers'      => 'deskpro_queue_ids HAS '.$queue->getId(),
+            'maxReservedWorkers' => $queue->getMaxQueueSize(),
         ]);
     }
 
@@ -477,10 +480,7 @@ class TwilioAdapter
      */
     public function createOrUpdateWorkflow(VoiceAccount $account, $assignmentCallbackUrl)
     {
-        $queues = $this->em->getRepository(VoiceQueue::class)->findBy([
-            'account' => $account,
-        ]);
-
+        $queues  = $account->getQueues();
         $filters = [];
         foreach ($queues as $queue) {
             $filters[] = [

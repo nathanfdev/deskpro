@@ -160,3 +160,60 @@ Feature: /tickets endpoint
     When I send a POST request to "/api/v2/tickets"
     Then the response should be in JSON
     And the response status code should be 400
+
+  Scenario: I create a ticket with message
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": ~user~,
+  "agent": ~agent~,
+  "message": {
+    "message": "my message"
+  }
+}
+    """
+    Then the response status code should be 201
+
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].ticket" should be equal to "{lastCreatedId}"
+    And the JSON node "data[0].message" should be equal to "my message"
+
+  Scenario: I assign ticket author by email
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": "user@deskpro.dev",
+  "agent": "agent@deskpro.dev",
+  "message": {
+    "message": "my message"
+  }
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.person" should be equal to "{user}"
+    And the JSON node "data.agent" should be equal to "{agent}"
+
+  Scenario: I set custom ticket message author (different from ticket author)
+    Given "user2@deskpro.dev" user exists
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": "user@deskpro.dev",
+  "agent": "agent@deskpro.dev",
+  "message": {
+    "person": "user2@deskpro.dev",
+    "message": "my message"
+  }
+}
+    """
+    Then the response status code should be 201
+
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].person" should be equal to "{user2@deskpro.dev}"

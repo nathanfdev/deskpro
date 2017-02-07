@@ -29,7 +29,7 @@ class QueuesToggleContainer extends React.Component {
     dispatch(loadQueues());
   }
 
-  onChange = (queue, agents) => {
+  onChange = (queue, enabled) => {
     if (this.state.saving) {
       return;
     }
@@ -39,7 +39,7 @@ class QueuesToggleContainer extends React.Component {
     });
 
     const { dispatch } = this.props;
-    const promise = dispatch(updateQueue(queue.get('id'), { agents }));
+    const promise = dispatch(updateQueue(queue.get('id'), { enabled }));
     promise.success(() => {
       this.setState({
         saving: false

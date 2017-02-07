@@ -35,6 +35,7 @@ namespace Application\DeskPRO\EmailGateway;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Person;
 use Orb\Util\Arrays;
 
 /**
@@ -138,13 +139,15 @@ class PersonFromEmailProcessor
      * This should NOT be called within a transaction because the record needs to be committed so we can be sure it
      * is properly saved.
      *
-     * @param $from
+     * @param EmailAddress $from
      *
-     * @return \Application\DeskPRO\Entity\Person
+     * @throws \Exception
+     *
+     * @return Entity\Person
      */
     public function createPerson(EmailAddress $from)
     {
-        $person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail(), true);
+        $person = App::getEntityRepository(Person::class)->findOneByEmail($from->getEmail(), true);
         if ($person) {
             return $person;
         }
@@ -170,32 +173,32 @@ class PersonFromEmailProcessor
             $p_array                 = $tmp_person->toArray(Entity\Person::TOARRAY_ONLY_PRIMATIVES);
             $p_array['date_created'] = date('Y-m-d H:i:s', time() - 5); // overwrting time because we'll set it for real below
             $db->insert('people', Arrays::removeFalsey($p_array));
-            $person_id = $db->lastInsertId();
+            $personId = $db->lastInsertId();
 
             // Since we are 'manually' inserting the user here, Person->isNew will think
             // it already existed, so we need this hack to override it
             if (!isset($GLOBALS['DP_CREATED_PEOPLE_IDS'])) {
                 $GLOBALS['DP_CREATED_PEOPLE_IDS'] = [];
             }
-            $GLOBALS['DP_CREATED_PEOPLE_IDS'][$person_id] = $person_id;
+            $GLOBALS['DP_CREATED_PEOPLE_IDS'][$personId] = $personId;
 
             // Attempt to create email record,
             // this may fail (races)
 
-            $email_address        = strtolower($from->getEmail());
-            list(, $email_domain) = explode('@', $email_address, 2);
+            $emailAddress        = strtolower($from->getEmail());
+            list(, $emailDomain) = explode('@', $emailAddress, 2);
 
             $db->insert('people_emails', [
-                'person_id'    => $person_id,
-                'email'        => $email_address,
-                'email_domain' => $email_domain,
+                'person_id'    => $personId,
+                'email'        => $emailAddress,
+                'email_domain' => $emailDomain,
                 'date_created' => date('Y-m-d H:i:s'),
             ]);
-            $email_id = $db->lastInsertId();
+            $emailId = $db->lastInsertId();
 
             $db->update('people', [
-                'primary_email_id' => $email_id,
-            ], ['id' => $person_id]);
+                'primary_email_id' => $emailId,
+            ], ['id' => $personId]);
 
             $db->commit();
         } catch (\Exception $e) {
@@ -212,7 +215,7 @@ class PersonFromEmailProcessor
             $last_e = $e;
         }
 
-        $person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail(), true);
+        $person = App::getEntityRepository(Person::class)->findOneByEmail($from->getEmail(), true);
 
         if (!$person) {
             if ($this->is_running) {
@@ -228,8 +231,8 @@ class PersonFromEmailProcessor
             $this->is_running = false;
         }
 
-        $user_rule_proc = new \Application\DeskPRO\People\UserRuleProcessor(App::getOrm());
-        $user_rule_proc->newRegister($person);
+        $userRuleProcessor = new \Application\DeskPRO\People\UserRuleProcessor(App::getOrm());
+        $userRuleProcessor->newRegister($person);
 
         // We need to manually persist the record again
         // so doctrine hooks are run (e.g., to insert into search index)

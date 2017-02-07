@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\Reader\Item\AuthenticationResults;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\TicketMessage;
 
@@ -132,12 +133,12 @@ class PreProcessor extends AbstractGatewayProcessor
         // From is a know gateway address
         //------------------------------
 
-        $account_manager = App::$container->getEmailAccountManager();
-        if ($found_account = $account_manager->findAccountForEmailAddress($from)) {
+        $accountManager = App::$container->getEmailAccountManager();
+        if ($foundAccount = $accountManager->findAccountForEmailAddress($from)) {
             $this->error         = EmailSource::ERR_FROM_GATEWAY;
             $this->source_info[] = 'Read from address: '.$from;
-            $this->source_info[] = 'Matched account: '.$found_account->id;
-            $this->source_info[] = 'Account addresses: '.implode(', ', $found_account->getAllAddresses());
+            $this->source_info[] = 'Matched account: '.$foundAccount->id;
+            $this->source_info[] = 'Account addresses: '.implode(', ', $foundAccount->getAllAddresses());
 
             return;
         }
@@ -175,13 +176,42 @@ class PreProcessor extends AbstractGatewayProcessor
         // on the account
         //------------------------------
 
-        if ($this->account->date_read_start && $email_date = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
-            if ($email_date < $this->account->date_read_start) {
+        if ($this->account->date_read_start && $emailDate = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
+            if ($emailDate < $this->account->date_read_start) {
                 $this->error         = EmailSource::ERR_DATE_LIMIT;
                 $this->source_info[] = 'Gateway date limit: '.$this->account->date_read_start->format(\DateTime::RFC2822);
-                $this->source_info[] = 'Message date: '.$email_date->format(\DateTime::RFC2822);
+                $this->source_info[] = 'Message date: '.$emailDate->format(\DateTime::RFC2822);
 
                 return;
+            }
+        }
+
+        //--------------------------------
+        // Validate email SPF and DKIM header
+        //--------------------------------
+
+        if (App::getSetting('core_tickets.reject_spf_level') || App::getSetting('core_tickets.reject_dkim_level')) {
+            $authenticationResults = $this->reader->getAuthenticationResults();
+
+            $spfLevel  = App::getSetting('core_tickets.reject_spf_level');
+            $dkimLevel = App::getSetting('core_tickets.reject_dkim_level');
+
+            /** @var AuthenticationResults $authenticationResult */
+            foreach ($authenticationResults as $authenticationResult) {
+                if ($spfLevel && in_array($authenticationResult->getSpfResult(), explode(',', $spfLevel))) {
+                    $this->error         = EmailSource::ERR_SPF_REJECT;
+                    $this->source_info[] = 'SPF servId: '.$authenticationResult->getAuthservId();
+                    $this->source_info[] = 'SPF result: '.$authenticationResult->getSpfResult();
+
+                    return;
+                }
+                if ($dkimLevel && in_array($authenticationResult->getDkimResult(), explode(',', $dkimLevel))) {
+                    $this->error         = EmailSource::ERR_DKIM_REJECT;
+                    $this->source_info[] = 'DKIM servId: '.$authenticationResult->getAuthservId();
+                    $this->source_info[] = 'DKIM result: '.$authenticationResult->getDkimResult();
+
+                    return;
+                }
             }
         }
 

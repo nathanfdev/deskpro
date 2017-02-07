@@ -109,6 +109,11 @@ $collection->create(
     ]
 );
 
+$collection->create('check_url', [
+    'path'       => '/check_url',
+    'controller' => 'LegacyApiBundle:Misc:checkUrl',
+]);
+
 $collection->create(
     'api_deskpro_dpspecial',
     [

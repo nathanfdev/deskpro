@@ -1,0 +1,4 @@
+services:
+  archive_factory:
+    class: DeskPRO\Bundle\AppBundle\Archive\ArchiveFactory
+    arguments: ["@deskpro.app_env"]

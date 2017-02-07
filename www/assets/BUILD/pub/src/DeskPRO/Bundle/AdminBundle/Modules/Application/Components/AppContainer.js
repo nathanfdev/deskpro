@@ -7,6 +7,7 @@ import { repositoriesConfig } from 'DeskPRO/Bundle/AdminBundle/DAL/config';
 import store from '../../../Services/store';
 import { history } from '../../../Services/history';
 import * as Voice from '../../Voice/Components/index';
+import { loadAdmintPhraseTranslations } from '../Actions/bootstrapActions';
 
 class AppContainer extends React.Component {
 
@@ -20,6 +21,8 @@ class AppContainer extends React.Component {
     // Bootstrap API and DAL
     setApi(api);
     loadRepositoriesConfig(repositoriesConfig);
+
+    store.dispatch(loadAdmintPhraseTranslations());
   }
 
   componentWillMount() {
@@ -48,6 +51,7 @@ class AppContainer extends React.Component {
               <Route path="numbers" component={Voice.Numbers} />
               <Route path="numbers/available" component={Voice.AvailableNumbers} />
               <Route path="numbers/existing" component={Voice.ExistingNumbers} />
+              <Route path="numbers/:numberId" component={Voice.EditNumber} />
               <Route path="queues" component={Voice.Queues} />
               <Route path="queues/new" component={Voice.NewQueue} />
               <Route path="queues/:queueId" component={Voice.EditQueue} />
@@ -58,6 +62,8 @@ class AppContainer extends React.Component {
               <Route path="auto_attendants/new" component={Voice.NewAutoAttendant} />
               <Route path="auto_attendants/:autoAttendantId" component={Voice.EditAutoAttendant} />
               <Route path="agents" component={Voice.AgentsVoiceToggle} />
+              <Route path="call_logs" component={Voice.CallLogsList} />
+              <Route path="call_logs/:callId" component={Voice.CallLogView} />
             </Route>}
         </Router>
       </Provider>

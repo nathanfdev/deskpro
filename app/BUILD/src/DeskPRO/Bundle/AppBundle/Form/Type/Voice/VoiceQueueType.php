@@ -29,15 +29,17 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
-use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -45,21 +47,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class VoiceQueueType extends AbstractType
 {
-    /**
-     * @var TwilioAdapter
-     */
-    private $twilioAdapter;
-
-    /**
-     * Constructor.
-     *
-     * @param TwilioAdapter $twilioAdapter
-     */
-    public function __construct(TwilioAdapter $twilioAdapter)
-    {
-        $this->twilioAdapter = $twilioAdapter;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -75,16 +62,6 @@ class VoiceQueueType extends AbstractType
                 'multiple'     => true,
                 'by_reference' => false,
             ])
-            ->add('routing_model', ChoiceType::class, [
-                'property_path'     => 'routingModel',
-                'choices_as_values' => true,
-                'choices'           => [
-                    VoiceQueue::ROUTING_MODEL_ROUND_ROBIN,
-                    VoiceQueue::ROUTING_MODEL_LEAST_UTILIZED,
-                    VoiceQueue::ROUTING_MODEL_LEAST_IDLE,
-                    VoiceQueue::ROUTING_MODEL_RANDOM,
-                ],
-            ])
             ->add('greet_asset', VoiceAssetType::class, [
                 'property_path' => 'greetAsset',
                 'required'      => false,
@@ -97,10 +74,22 @@ class VoiceQueueType extends AbstractType
                 'property_path' => 'voicemailAsset',
                 'required'      => false,
             ])
+            ->add('routing_model', ChoiceType::class, [
+                'property_path'     => 'routingModel',
+                'choices_as_values' => true,
+                'choices'           => [
+                    VoiceQueue::ROUTING_MODEL_AUTOMATIC,
+                    VoiceQueue::ROUTING_MODEL_LEAST_UTILIZED,
+                    VoiceQueue::ROUTING_MODEL_SIMULRING,
+                ],
+            ])
             ->add('max_queue_size', IntegerType::class, [
                 'property_path' => 'maxQueueSize',
             ])
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetMaxQueueSize']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onEnsureAgentVoiceEnabled']);
     }
 
     /**
@@ -111,5 +100,46 @@ class VoiceQueueType extends AbstractType
         $resolver->setDefaults([
             'data_class' => VoiceQueue::class,
         ]);
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSetMaxQueueSize(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (isset($data['routing_model'])) {
+            if ($data['routing_model'] === VoiceQueue::ROUTING_MODEL_AUTOMATIC) {
+                $data['max_queue_size'] = 1;
+            } elseif ($data['routing_model'] === VoiceQueue::ROUTING_MODEL_SIMULRING) {
+                $data['max_queue_size'] = 50;
+            }
+        }
+
+        $event->setData($data);
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onEnsureAgentVoiceEnabled(FormEvent $event)
+    {
+        $data = $event->getData();
+        if ($data instanceof VoiceQueue) {
+            foreach ($data->getAgents() as $agent) {
+                $agentData = $agent->getAgentData();
+                if (!$agentData) {
+                    $agentData = new AgentData();
+                    $agent->setAgentData($agentData);
+                }
+
+                $agentData->setIsVoiceEnabled(true);
+                $agentData->setOutboundCallsEnabled(true);
+            }
+        }
     }
 }
