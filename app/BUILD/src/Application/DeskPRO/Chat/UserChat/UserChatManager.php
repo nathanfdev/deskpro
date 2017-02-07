@@ -384,9 +384,9 @@ class UserChatManager
         $joined_left_counts = App::getDb()->fetchAllKeyValue('
             SELECT tag, COUNT(*)
             FROM chat_messages
-            WHERE tag IN (?, ?) AND conversation_id = ?
+            WHERE conversation_id = ? AND tag IN (?, ?) AND conversation_id = ?
             GROUP BY tag
-        ', [$tag1, $tag2, $convo->getId()]);
+        ', [$convo->getId(), $tag1, $tag2, $convo->getId()]);
 
         if (
             $joined_left_counts
@@ -431,9 +431,9 @@ class UserChatManager
         $joined_left_counts = App::getDb()->fetchAllKeyValue('
             SELECT tag, COUNT(*)
             FROM chat_messages
-            WHERE tag IN (?, ?)
+            WHERE conversation_id = ? AND tag IN (?, ?)
             GROUP BY tag
-        ', [$tag1, $tag2]);
+        ', [$convo->getId(), $tag1, $tag2]);
 
         if (
             $joined_left_counts
