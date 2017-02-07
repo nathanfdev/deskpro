@@ -39,6 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class Event.
  *
+ * @todo process it same as ActionAlert with JMS
  * @ORM\Entity
  * @ORM\Table(name="notify_notifications")
  * @ORM\ChangeTrackingPolicy("NOTIFY")

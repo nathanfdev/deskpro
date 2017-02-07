@@ -12,7 +12,8 @@ const initialState = {
   groupCreation:  false,
   manuallyClosed: {},
   checkedAgents:  {},
-  hiddenChats:    {}
+  hiddenChats:    {},
+  activeTabs:     {}
 };
 
 export default createReducer(initialState, {
@@ -48,6 +49,7 @@ export default createReducer(initialState, {
     }
     return state.mergeIn([], diff);
   },
-  [actions.hideChat]:   (state, payload) => state.set('hiddenChats', payload),
-  [actions.revealChat]: (state, payload) => state.set('hiddenChats', payload)
+  [actions.hideChat]:       (state, payload) => state.set('hiddenChats', payload),
+  [actions.revealChat]:     (state, payload) => state.set('hiddenChats', payload),
+  [actions.loadActiveTabs]: (state, payload) => state.set('activeTabs', payload)
 });

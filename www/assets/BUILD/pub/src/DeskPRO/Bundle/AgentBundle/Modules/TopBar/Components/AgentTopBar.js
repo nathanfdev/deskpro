@@ -38,6 +38,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   overlayShown:        state.IM.chats.get('overlayShown'),
   groupCreation:       state.IM.chats.get('groupCreation'),
   checkedAgents:       state.IM.chats.get('checkedAgents'),
+  activeTabs:          state.IM.chats.get('activeTabs'),
   messages:            state.IM.messages,
   drafts:              state.IM.messages.get('drafts'),
   loadingMessages:     state.IM.messages.get('loadingMessages'),
@@ -69,6 +70,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     current:             PropTypes.object,
     editChat:            PropTypes.object,
     checkedAgents:       PropTypes.object,
+    activeTabs:          PropTypes.object,
     recentLoaded:        PropTypes.bool.isRequired,
     groupLoaded:         PropTypes.bool.isRequired,
     loadingMessages:     PropTypes.bool.isRequired,
@@ -407,6 +409,7 @@ export class AgentTopBar extends React.Component {
     current:             PropTypes.object,
     editChat:            PropTypes.object,
     checkedAgents:       PropTypes.object,
+    activeTabs:          PropTypes.object,
     searchQuery:         PropTypes.string,
     loadingMessages:     PropTypes.bool.isRequired,
     groupCreation:       PropTypes.bool.isRequired,
@@ -453,7 +456,7 @@ export class AgentTopBar extends React.Component {
     const { current, chating, messages, chatClickOut, participantClick, recentClick, createGroup } = this.props;
     const { onChatSearch, onScroll, openGroupDrawer, markNewMessages, onSubmit, toggleImOverlay } = this.props;
     const { searchQuery, counts, groupChats, checkedAgents, me, myDepartments, myTeams, recentChats } = this.props;
-    const { agents, onSearchFocus, onSearchBlur, editChat, updateGroup, loadMessages } = this.props;
+    const { agents, onSearchFocus, onSearchBlur, editChat, updateGroup, loadMessages, activeTabs } = this.props;
     const { recentLoaded, groupLoaded, overlayShown, hiddenChats, onHideChat, drafts, saveDraft }  = this.props;
     const groupDrawerTarget = document.getElementById('im-button');
 
@@ -522,6 +525,7 @@ export class AgentTopBar extends React.Component {
           messages={messages}
           drafts={drafts}
           current={current}
+          activeTabs={activeTabs}
           onSubmit={onSubmit}
           clickOut={chatClickOut}
           saveDraft={saveDraft}

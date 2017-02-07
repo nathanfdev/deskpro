@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfiguration;
+use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -95,6 +96,16 @@ class NotificationService
     }
 
     /**
+     * @return int
+     */
+    public function lastNotify()
+    {
+        $date = new \DateTime();
+
+        return $date->getTimestamp();
+    }
+
+    /**
      * @return NotificationConfiguration
      */
     public function getClientsSetup()
@@ -129,41 +140,31 @@ class NotificationService
      */
     public function sendNote(Person $person, $ids, $noteText)
     {
-        $participantsCount   = count($ids);
         $agentChatRepository = $this->em->getRepository(AgentChat::class);
         $personRepository    = $this->em->getRepository(Person::class);
 
         $chat = null;
-        if ($participantsCount == 1) {
-            $chat = $agentChatRepository->findChatWithAgent($personRepository->find(current($ids)), $person);
-        } elseif ($participantsCount > 1) {
-            $chat = $agentChatRepository->findGroupChat($person, $ids);
-        }
 
-        if (!$chat) {
-            $chat = new AgentChat();
-            if ($participantsCount == 1) {
+        foreach ($ids as $participantId) {
+            $participant = $personRepository->find($participantId);
+            $chat        = $agentChatRepository->findChatWithAgent($participant, $person);
+            if (!$chat) {
+                $chat = new AgentChat();
                 $chat->setType(AgentChat::TYPE_AGENT);
-            } else {
-                $chat
-                    ->setType(AgentChat::TYPE_GROUP)
-                    ->setName('Notification from: '.$person->getDisplayName());
+                $chat->addParticipant($participant);
+                $chat->addParticipant($person);
             }
 
-            $participants = $personRepository->findBy(['id' => $ids]);
-            foreach ($participants as $participant) {
-                $chat->addParticipant($participant);
-            }
-            $chat->addParticipant($person);
+            $message = new AgentChatMessage();
+            $message
+                ->setPerson($person)
+                ->setChat($chat)
+                ->setUuid(RandUtils::uuidV4())
+                ->setMessage($noteText);
+            $this->em->persist($chat);
+            $this->em->persist($message);
         }
-        $message = new AgentChatMessage();
-        $message
-            ->setPerson($person)
-            ->setChat($chat)
-            ->setUuid(uniqid('', true))
-            ->setMessage($noteText);
-        $this->em->persist($chat);
-        $this->em->persist($message);
+
         $this->em->flush();
     }
 
@@ -181,6 +182,11 @@ class NotificationService
                     'debug'  => $this->settings->get('notification.settings.pusher_client.debug'),
                 ]);
             case 'db':
+                return new NotificationClient('legacy', [
+                    'last_alert'  => $this->lastAlert(),
+                    'last_notify' => $this->lastNotify(),
+                ]);
+            case 'db_new':
 
                 return new NotificationClient('polling', [
                     'last_alert'       => $this->lastAlert(),

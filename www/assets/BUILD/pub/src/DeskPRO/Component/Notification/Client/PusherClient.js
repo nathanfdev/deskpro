@@ -4,14 +4,14 @@
 import Pusher from 'pusher-js';
 import { AbstractClient } from './AbstractClient';
 
-export class PusherClient extends AbstractClient {
+export default class PusherClient extends AbstractClient {
 
   constructor(props) {
     super(props);
     const that = this;
 
     if (this.options.debug) {
-      Pusher.log = message => {
+      Pusher.log = (message) => {
         if (window.console && window.console.log) {
           window.console.log(message);
         }
@@ -25,7 +25,7 @@ export class PusherClient extends AbstractClient {
     });
   }
 
-  getDefaultOptions() {
+  getDefaultOptions() { // eslint-disable-line class-methods-use-this
     return {
       authEndpoint:  '/api/v2/pusher/auth',
       authTransport: 'rest',
@@ -43,7 +43,7 @@ export class PusherClient extends AbstractClient {
       if (Pusher.XHR) {
         xhr = new Pusher.XHR();
       } else {
-        xhr = (window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'));
+        xhr = (window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP')); // eslint-disable-line no-undef
       }
 
       xhr.open('POST', that.client.config.authEndpoint, true);

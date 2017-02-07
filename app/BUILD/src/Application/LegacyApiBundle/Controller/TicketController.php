@@ -856,8 +856,17 @@ class TicketController extends AbstractController implements ProtectedController
             }
 
             if ($notify_chat) {
-                $notify_text = $this->person->getDisplayName()." alerted you in a note in {{t-$ticket->id}}: $ticket->subject";
-                $agent_chat->sendAgentMessage($notify_text, array_keys($notify_chat));
+                $agentIds   = array_keys($notify_chat);
+                $notifyText = sprintf(
+                    '%s alerted you in a note in {{t-%d}}: %s',
+                    $message->getPerson()->getDisplayName(),
+                    $ticket->getId(),
+                    $ticket->getSubject()
+                );
+                $agent_chat->sendAgentMessage($notifyText, $agentIds);
+                if ($this->container->get('deskpro.feature_flags')->hasFeature('agent_chat')) {
+                    $this->container->get('deskpro.notification.service')->sendNote($this->person, $agentIds, $notifyText);
+                }
             }
 
             if ($notify_email) {

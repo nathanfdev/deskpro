@@ -106,3 +106,8 @@ export const updateChat = createAction(
     }));
   }
 );
+
+export const loadActiveTabs = createAction(
+  'IM_LOAD_ACTIVE_TABS',
+  () => DeskPRO_Window.TabBar.getTabs() // eslint-disable-line no-undef
+);

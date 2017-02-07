@@ -1,6 +1,7 @@
 import EventEmitter2 from 'eventemitter2';
-import { PusherClient } from 'DeskPRO/Component/Notification/Client/PusherClient';
-import { PollingClient } from 'DeskPRO/Component/Notification/Client/PollingClient';
+import PusherClient from 'DeskPRO/Component/Notification/Client/PusherClient';
+import PollingClient from 'DeskPRO/Component/Notification/Client/PollingClient';
+import LegacyClient from 'DeskPRO/Component/Notification/Client/LegacyClient';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export class NotificationService {
@@ -47,6 +48,8 @@ export class NotificationService {
       case 'polling':
         this.heartbeat_disabled = true;
         return new PollingClient(clientConfig.options);
+      case 'legacy':
+        return new LegacyClient(clientConfig.options);
       default:
         throw new Error(`You should provide supported client. Given is ${clientConfig.type}`);
     }

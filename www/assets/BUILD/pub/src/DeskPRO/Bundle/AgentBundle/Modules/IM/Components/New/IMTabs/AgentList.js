@@ -17,10 +17,7 @@ class AgentList extends AbstractList {
       return null;
     }
 
-    const className = ['im', 'agent'];
-    if (!agent.get('online')) {
-      className.push('offline');
-    }
+    const className = ['im', 'agent', agent.get('online') ? 'online' : 'offline'];
 
     return (
       <ListElement
