@@ -64,8 +64,6 @@ class ErrorReporter
         if ($reduced_lic_reports) {
             $info = [
                 'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
-                'build'             => DP_BUILD_TIME,
-                'build_num'         => DP_BUILD_NUM,
             ];
         } else {
             if (class_exists('Application\\DeskPRO\\App')) {
@@ -92,8 +90,6 @@ class ErrorReporter
                 'client_referrer'   => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '',
                 'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
                 'client_request'    => isset($_REQUEST) ? implode(', ', array_keys($_REQUEST)) : '',
-                'build'             => DP_BUILD_TIME,
-                'build_num'         => DP_BUILD_NUM,
             ];
 
             if ($send_all_stats && $all_stats) {
@@ -128,6 +124,16 @@ class ErrorReporter
 
         if ($DP_ENV->isDebug()) {
             $info['DEV_MODE'] = 1;
+        }
+
+        $info['build']     = $DP_ENV->getAppName();
+        $info['build_num'] = $DP_ENV->getAppName();
+
+        $versionNameFile = $DP_ENV->getAppDir().'/sys/config/build-name.txt';
+        if (file_exists($versionNameFile)) {
+            $info['build_name'] = trim(file_get_contents($versionNameFile));
+        } else {
+            $info['build_name'] = $DP_ENV->getAppName();
         }
 
         if ((defined('DP_INTERFACE') && DP_INTERFACE != 'install') || (!isset($GLOBALS['DP_IS_INSTALL']) || !$GLOBALS['DP_IS_INSTALL'])) {
