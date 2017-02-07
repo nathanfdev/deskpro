@@ -69,6 +69,7 @@ class AuthController extends AbstractApiController
         $repository = $this->getDoctrine()->getRepository(Session::class);
 
         // try to get session from widget dpsid
+        /** @var Session $session */
         $session = $repository->getSessionFromCode($request->request->get('dpsid'));
 
         $visitorId = $this->get('visitor_identification_provider')->getVisitorIdentifier(true);
@@ -97,6 +98,12 @@ class AuthController extends AbstractApiController
 
             $changed = true;
         }
+
+        if (!$session->getIpAddress()) {
+            $session->setIpAddress($request->getClientIp());
+            $changed = true;
+        }
+
         if (!$session->getPerson() && $this->getUser()) {
             $session->setPerson($this->getUser());
             $changed = true;

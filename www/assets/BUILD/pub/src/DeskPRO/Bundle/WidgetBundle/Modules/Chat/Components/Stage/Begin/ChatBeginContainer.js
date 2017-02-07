@@ -197,7 +197,7 @@ export class ChatBeginContainer extends React.Component {
   };
 
   getInitialFormData(props) {
-    const { children, customFields, defaultValues } = props;
+    const { customFields, defaultValues } = props;
     const { chatDepartments, chatSelectDepartmentType, chatDefaultDepartment } = props;
     const formData = {
       name:   '',
@@ -205,31 +205,29 @@ export class ChatBeginContainer extends React.Component {
       fields: {}
     };
 
-    if (children.type !== ChatBeginSimple) {
-      if (chatSelectDepartmentType === 'default' && chatDefaultDepartment) {
-        if (chatDepartments.has(chatDefaultDepartment)) {
-          formData.chat_department = chatDefaultDepartment;
-        } else if (chatDepartments.size > 0) {
-          formData.chat_department = chatDepartments.first().get('id');
-        }
-      } else if (chatDepartments.size > 1) {
-        formData.chat_department = '';
-      } else if (chatDepartments.size === 1) {
+    if (chatSelectDepartmentType === 'default' && chatDefaultDepartment) {
+      if (chatDepartments.has(chatDefaultDepartment)) {
+        formData.chat_department = chatDefaultDepartment;
+      } else if (chatDepartments.size > 0) {
         formData.chat_department = chatDepartments.first().get('id');
       }
-
-      customFields.forEach((customField) => {
-        const fieldId = customField.get('id');
-        const optionsDefaultValue = defaultValues && defaultValues.getIn(['fields', String(fieldId)]);
-
-        let defaultValue = optionsDefaultValue || customField.get('default_value');
-        if (defaultValue && defaultValue.toJS) {
-          defaultValue = defaultValue.toJS();
-        }
-
-        formData.fields[fieldId] = defaultValue;
-      });
+    } else if (chatDepartments.size > 1) {
+      formData.chat_department = '';
+    } else if (chatDepartments.size === 1) {
+      formData.chat_department = chatDepartments.first().get('id');
     }
+
+    customFields.forEach((customField) => {
+      const fieldId = customField.get('id');
+      const optionsDefaultValue = defaultValues && defaultValues.getIn(['fields', String(fieldId)]);
+
+      let defaultValue = optionsDefaultValue || customField.get('default_value');
+      if (defaultValue && defaultValue.toJS) {
+        defaultValue = defaultValue.toJS();
+      }
+
+      formData.fields[fieldId] = defaultValue;
+    });
 
     return createValue({
       onChange: this.onChange,

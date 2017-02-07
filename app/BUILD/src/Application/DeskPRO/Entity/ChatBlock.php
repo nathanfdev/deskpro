@@ -74,6 +74,38 @@ class ChatBlock extends \Application\DeskPRO\Domain\DomainObject
         $this->date_created = new \DateTime();
     }
 
+    /**
+     * @return string
+     */
+    public function getIpAddress()
+    {
+        return $this->ip_address;
+    }
+
+    /**
+     * @param string $ip
+     */
+    public function setIpAddress($ip)
+    {
+        $this->setModelField('ip_address', $ip);
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getVisitorId()
+    {
+        return $this->visitor_id;
+    }
+
+    /**
+     * @param $id
+     */
+    public function setVisitorId($id)
+    {
+        $this->setModelField('visitor_id', $id);
+    }
+
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);

@@ -29,9 +29,11 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\ChatBlock;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
@@ -48,6 +50,7 @@ use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
@@ -82,7 +85,8 @@ class ChatController extends AbstractApiController
      */
     public function createNewChatAction(Request $request)
     {
-        $session      = $this->getApiSession();
+        $session = $this->getApiSession();
+        $this->checkIfSessionIsBlocked($session);
         $conversation = ChatConversation::newForUserSession($session);
 
         // $clearMissing = false to check only submitted data
@@ -478,6 +482,8 @@ class ChatController extends AbstractApiController
         if (!$conversation_session || $request_session->getId() !== $conversation_session->getId()) {
             throw new BadRequestHttpException('wrong_session_code');
         }
+
+        $this->checkIfSessionIsBlocked($conversation_session);
     }
 
     /**
@@ -488,5 +494,17 @@ class ChatController extends AbstractApiController
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);
         $em->flush();
+    }
+
+    /**
+     * @param Session $session
+     */
+    public function checkIfSessionIsBlocked(Session $session)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\ChatBlock $rep */
+        $rep = $this->getDoctrine()->getRepository(ChatBlock::class);
+        if ($block = $rep->getBlockForVisitor($session->getVisitorId(), $session->getIpAddress())) {
+            throw new AccessDeniedHttpException('Banned');
+        }
     }
 }
