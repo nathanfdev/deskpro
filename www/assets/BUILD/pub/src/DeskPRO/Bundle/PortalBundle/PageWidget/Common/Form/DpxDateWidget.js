@@ -2,6 +2,7 @@ import _ from 'lodash';
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import moment from 'moment';
+import momentHijri from 'moment-hijri';
 import 'DeskPRO/Bundle/AppBundle/moment-locales';
 import 'jquery-datetimepicker-iframe/jquery.datetimepicker';
 import 'kbw-calendars/dist/js/jquery.calendars';
@@ -191,8 +192,20 @@ export class DpxDateWidget extends PageWidget {
       const $sMonth = $(`#${id}_month`);
       const $sDay = $(`#${id}_day`);
       const $textBox = $('<input type="text">');
-      $textBox.val(`${$sYear.val()}/${$sMonth.val()}/${$sDay.val()}`);
-      $textBox.calendarsPicker({ calendar: $.calendars.instance('islamic') });
+      if ($sYear.val() && $sMonth.val() && $sDay.val()) {
+        const m = momentHijri(`${$sYear.val()}/${$sMonth.val()}/${$sDay.val()}`, 'YYYY/M/D');
+        $textBox.val(m.format('iYYYY/iM/iD'));
+      }
+      $textBox.calendarsPicker({
+        calendar: $.calendars.instance('islamic'),
+        onSelect(dates) {
+          const date = dates[0];
+          const m = momentHijri(`${date.year()}/${date.month()}/${date.day()}`, 'iYYYY/iM/iD');
+          $sDay.val(m.date()).trigger('change');
+          $sMonth.val(m.month() + 1).trigger('change');
+          $sYear.val(m.year()).trigger('change');
+        }
+      });
       $el.hide();
       $textBox.insertAfter($el);
     }
