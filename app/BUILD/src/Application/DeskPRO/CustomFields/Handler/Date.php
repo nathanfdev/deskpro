@@ -53,6 +53,7 @@ class Date extends HandlerAbstract
             case 'hijri':
                 $calendar = new ArabicCalendar();
 
+                // -1 Fix the date shifting due to Julian calendar day starting at noon
                 return implode('/', $calendar->jdToYmd(unixtojd($value) - 1));
             default:
                 try {
@@ -122,25 +123,29 @@ class Date extends HandlerAbstract
         if (!$value) {
             return [];
         }
-
         switch ($this->field_def->getOption('calendar')) {
             case 'hijri':
                 $calendar                 = new ArabicCalendar();
                 list($year, $month, $day) = explode('/', $value);
                 $jd                       = $calendar->ymdToJd($year, $month, $day);
 
-                $value = jdtounix($jd);
+                // +1 Fix the date shifting due to Julian calendar day starting at noon
+                $value = jdtounix($jd + 1);
+                $date  = \DateTime::createFromFormat('U', $value);
+                $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
                 break;
             default:
                 $date = \DateTime::createFromFormat('Y-m-d', $value, App::getCurrentPerson()->getDateTimezone());
-                if (!$date) {
-                    return [];
-                }
-
-                $date->modify('midnight');
-                $date  = \Orb\Util\Dates::convertToUtcDateTime($date);
-                $value = $date->getTimestamp();
+                var_dump($date->format('U'));
+                break;
         }
+        if (!$date) {
+            return [];
+        }
+
+        $date->modify('midnight');
+        $date  = \Orb\Util\Dates::convertToUtcDateTime($date);
+        $value = $date->getTimestamp();
 
         return [
             [$this->field_def['id'], 'value', $value],
@@ -160,7 +165,8 @@ class Date extends HandlerAbstract
                     $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
                     switch ($this->field_def->getOption('calendar')) {
                         case 'hijri':
-                            $calendar      = new ArabicCalendar();
+                            $calendar = new ArabicCalendar();
+                            // -1 Fix the date shifting due to Julian calendar day starting at noon
                             $data['value'] = implode('/', $calendar->jdToYmd(unixtojd($date->format('U')) - 1));
                             break;
                         default:

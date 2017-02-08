@@ -130,7 +130,9 @@ $CONFIG['agent_vendors'] = [
         'bower_components/kbw-calendars/dist/js/jquery.plugin.js',
         'bower_components/kbw-calendars/dist/js/jquery.calendars.plus.js',
         'bower_components/kbw-calendars/dist/js/jquery.calendars.picker.js',
+        'bower_components/kbw-calendars/dist/js/jquery.calendars.picker-ar.js',
         'bower_components/kbw-calendars/dist/js/jquery.calendars.islamic.js',
+        'bower_components/kbw-calendars/dist/js/jquery.calendars.islamic-ar.js',
     ],
 ];
 
