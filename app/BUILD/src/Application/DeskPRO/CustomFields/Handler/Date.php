@@ -42,17 +42,18 @@ use Fisharebest\ExtCalendar\ArabicCalendar;
 class Date extends HandlerAbstract
 {
     /**
-     * @param $value
-     * @param $calendar
+     * @param string $value
+     * @param string $calendarType
      *
      * @return \DateTime|string
      */
-    public static function getDisplayValue($value, $calendar)
+    public static function getDisplayValue($value, $calendarType)
     {
-        switch ($calendar) {
+        switch ($calendarType) {
             case 'hijri':
                 $calendar = new ArabicCalendar();
-                return implode('/', $calendar->jdToYmd(unixtojd($value)));
+
+                return implode('/', $calendar->jdToYmd(unixtojd($value) - 1));
             default:
                 try {
                     if ($value) {
@@ -82,9 +83,16 @@ class Date extends HandlerAbstract
             $data['value'] = time();
         }
 
-        $data['value'] = self::getDisplayValue($data['value'], $this->field_def->getOption('calendar'));
+        $calendar = $this->field_def->getOption('calendar');
 
-        return parent::renderText($data, $template_vars);
+        $data['value'] = self::getDisplayValue($data['value'], $calendar);
+
+        switch ($calendar) {
+            case 'hijri':
+                return $data['value'];
+            default:
+                return parent::renderText($data, $template_vars);
+        }
     }
 
     public function renderText($data = null, array $template_vars = [])
@@ -117,9 +125,9 @@ class Date extends HandlerAbstract
 
         switch ($this->field_def->getOption('calendar')) {
             case 'hijri':
-                $calendar = new ArabicCalendar();
+                $calendar                 = new ArabicCalendar();
                 list($year, $month, $day) = explode('/', $value);
-                $jd = $calendar->ymdToJd($year, $month, $day);
+                $jd                       = $calendar->ymdToJd($year, $month, $day);
 
                 $value = jdtounix($jd);
                 break;
@@ -130,7 +138,7 @@ class Date extends HandlerAbstract
                 }
 
                 $date->modify('midnight');
-                $date = \Orb\Util\Dates::convertToUtcDateTime($date);
+                $date  = \Orb\Util\Dates::convertToUtcDateTime($date);
                 $value = $date->getTimestamp();
         }
 
@@ -148,10 +156,17 @@ class Date extends HandlerAbstract
                 } else {
                     $date = \DateTime::createFromFormat($this->getFormat(), $data['value']);
                 }
-
                 if ($date) {
                     $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-                    $data['value'] = $date->format($this->getFormat());
+                    switch ($this->field_def->getOption('calendar')) {
+                        case 'hijri':
+                            $calendar      = new ArabicCalendar();
+                            $data['value'] = implode('/', $calendar->jdToYmd(unixtojd($date->format('U')) - 1));
+                            break;
+                        default:
+                            $data['value'] = $date->format($this->getFormat());
+                            break;
+                    }
                 }
             } catch (\Exception $e) {
                 $data = null;

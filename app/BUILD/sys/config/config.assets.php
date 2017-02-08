@@ -126,6 +126,11 @@ $CONFIG['agent_vendors'] = [
         'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
         'bower_components/jquery-qrcode/dist/jquery.qrcode.js',
         'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+        'bower_components/kbw-calendars/dist/js/jquery.calendars.js',
+        'bower_components/kbw-calendars/dist/js/jquery.plugin.js',
+        'bower_components/kbw-calendars/dist/js/jquery.calendars.plus.js',
+        'bower_components/kbw-calendars/dist/js/jquery.calendars.picker.js',
+        'bower_components/kbw-calendars/dist/js/jquery.calendars.islamic.js',
     ],
 ];
 
@@ -563,5 +568,6 @@ $CONFIG['agent_vendors_css'] = [
         'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
         'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-patch.css',
         'stylesheets/user/content-editor.css',
+        'bower_components/kbw-calendars/dist/css/smoothness.calendars.picker.css',
     ],
 ];

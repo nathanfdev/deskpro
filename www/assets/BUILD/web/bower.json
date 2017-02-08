@@ -48,6 +48,6 @@
     "toastr": "2.0.3",
     "underscore": "1.5.2",
     "zeroclipboard": "2.2.0",
-    "kbwood-calendars": "kbwood-calendar#2.0.3"
+    "kbw-calendars": "https://github.com/kbwood/calendars.git#2.1.0"
   }
 }

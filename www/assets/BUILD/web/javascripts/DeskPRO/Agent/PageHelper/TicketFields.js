@@ -249,7 +249,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		var $ctrls = this.display.find('.hidden-row');
 		$ctrls.removeClass('off').prev().removeClass('off');
 
-        $('.hijri input').calendarsPicker({calendar: $.calendars.instance('islamic')});
+		$('.hijri input').calendarsPicker({calendar: $.calendars.instance('islamic')});
 
 		for (var i = 0; i < fields.length; i++) {
 			var f = fields[i];
