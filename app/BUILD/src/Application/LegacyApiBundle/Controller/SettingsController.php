@@ -150,10 +150,10 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     public function serverSettingsAction()
     {
-        $server_settings = new ServerSettings($this->settings);
+        $serverSettings = new ServerSettings($this->settings);
 
         return $this->createApiResponse([
-            'server_settings' => $server_settings->toArray(),
+            'server_settings' => $serverSettings->toArray(),
         ]);
     }
 
@@ -163,9 +163,9 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     public function saveServerSettingsAction()
     {
-        $server_settings = new ServerSettings($this->settings);
-        $server_settings->setArray($this->in->getArrayValue('server_settings'));
-        $server_settings->saveSettings();
+        $serverSettings = new ServerSettings($this->settings);
+        $serverSettings->setArray($this->in->getArrayValue('server_settings'));
+        $serverSettings->saveSettings();
 
         return $this->createSuccessResponse();
     }

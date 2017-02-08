@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\MapUtils;
+use Symfony\Component\DependencyInjection\IntrospectableContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -39,6 +40,15 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class SecurityHeadersResponseListener implements EventSubscriberInterface
 {
+    /**
+     * @var IntrospectableContainerInterface
+     */
+    protected $container;
+
+    public function __construct(IntrospectableContainerInterface $container)
+    {
+        $this->container = $container;
+    }
     /**
      * {@inheritdoc}
      */
@@ -54,6 +64,12 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
      */
     public function onResponse(FilterResponseEvent $event)
     {
+        if ($this->container->initialized('deskpro.core.settings')) {
+            if ($this->container->get('deskpro.core.settings')->get('core.disable_csp_headers')) {
+                return;
+            }
+        }
+
         $response = $event->getResponse();
         $response->headers->add(['X-Content-Type-Options' => 'nosniff']);
 
