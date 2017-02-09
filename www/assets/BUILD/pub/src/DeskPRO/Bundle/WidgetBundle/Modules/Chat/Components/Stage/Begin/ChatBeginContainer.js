@@ -197,7 +197,7 @@ export class ChatBeginContainer extends React.Component {
   };
 
   getInitialFormData(props) {
-    const { customFields, defaultValues } = props;
+    const { customFields, defaultValues, children } = props;
     const { chatDepartments, chatSelectDepartmentType, chatDefaultDepartment } = props;
     const formData = {
       name:   '',
@@ -211,6 +211,8 @@ export class ChatBeginContainer extends React.Component {
       } else if (chatDepartments.size > 0) {
         formData.chat_department = chatDepartments.first().get('id');
       }
+    } else if (children && children.type === ChatBeginSimple && chatDepartments.size > 1) {
+      formData.chat_department = chatDepartments.first().get('id');
     } else if (chatDepartments.size > 1) {
       formData.chat_department = '';
     } else if (chatDepartments.size === 1) {
