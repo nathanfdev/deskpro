@@ -56,12 +56,15 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				return $field.filter(':checked').map(function(i, el) { return el.value; }).get();
 			},
 			getTicketFieldValue: function(fieldId) {
+        fieldId = (fieldId || '').replace('ticket_field_');
 				return this.getFieldValue('custom_fields[field_' + fieldId + ']');
 			},
 			getUserFieldValue: function(fieldId) {
+        fieldId = (fieldId || '').replace('user_field_');
 				return this.getFieldValue('custom_person_fields[field_' + fieldId + ']');
 			},
 			getOrgFieldValue: function(fieldId) {
+				fieldId = (fieldId || '').replace('org_field_');
 				return this.getFieldValue('custom_org_fields[field_' + fieldId + ']');
 			}
 		};
@@ -172,7 +175,15 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 
 			if (field !== 'problem') {
-        $scope.savedValues[field] = self.ticketReader.getTicketFieldValue(field.replace('ticket_field_', ''));
+				var value;
+				if (0 === field.indexOf('user_field_')) {
+					value = self.ticketReader.getUserFieldValue(field);
+				} else if (0 === field.indexOf('org_field_')) {
+          value = self.ticketReader.getOrgFieldValue(field);
+				} else {
+          value = self.ticketReader.getTicketFieldValue(field);
+				}
+        $scope.savedValues[field] = value;
       }
 			$scope.edit_fields.push(field);
 
@@ -249,6 +260,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			var value = true;
 			if (f.field_type === 'ticket_field') {
 				value = this.ticketReader.getTicketFieldValue(f.field_id);
+			} else if (f.field_type === 'user_field') {
+        value = this.ticketReader.getUserFieldValue(f.field_id);
+			} else if (f.field_type === 'org_field') {
+        value = this.ticketReader.getOrgFieldValue(f.field_id);
 			}
 
 			var noValue = !value || (value instanceof Array && value.length === 0);
