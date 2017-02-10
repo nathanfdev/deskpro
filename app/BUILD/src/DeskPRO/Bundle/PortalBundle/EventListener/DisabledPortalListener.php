@@ -186,7 +186,10 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
      */
     protected function isWhiteListedChatRoute(Request $request, BrandContainer $brand)
     {
-        if ($brand->getSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL)) {
+        if (
+            $brand->getSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL)
+            && $brand->getSetting(WidgetSettingsResolver::CHAT_ENABLED)
+        ) {
             if ($this->isWhitelisted($request, static::$whitelistedChatWidgetRouteNames)) {
                 return true;
             }
