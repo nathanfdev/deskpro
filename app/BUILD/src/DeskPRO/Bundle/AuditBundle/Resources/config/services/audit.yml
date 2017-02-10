@@ -7,7 +7,7 @@ services:
       - "@audit_log.transformer"
       - "@audit_log.helper"
 
-# unfortunately we have to set service_container as dependency, otherwise CirucalrDependency will occur
+# unfortunately we have to set service_container as dependency, otherwise CircularDependency will occur
   audit_log.helper:
     class: DeskPRO\Bundle\AuditBundle\Log\AuditLogHelper
     arguments:
