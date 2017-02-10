@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\ChatBlock;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -88,6 +89,9 @@ class ChatController extends AbstractApiController
         $session = $this->getApiSession();
         $this->checkIfSessionIsBlocked($session);
         $conversation = ChatConversation::newForUserSession($session);
+
+        $defaultDepartment = $this->getManager()->getRepository(Department::class)->getDefaultDepartment('chat');
+        $conversation->setDepartment($defaultDepartment);
 
         // $clearMissing = false to check only submitted data
         // if chat in 'simple' mode so we can skip custom fields validation
