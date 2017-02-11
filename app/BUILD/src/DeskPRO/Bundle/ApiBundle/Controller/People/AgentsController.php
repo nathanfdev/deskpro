@@ -73,7 +73,7 @@ class AgentsController extends CrudController
     /**
      * @ApiDoc(
      *     section="Agents",
-     *     description="get a list of online agents",
+     *     description="get a list of online agents"
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
