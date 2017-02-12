@@ -1,5 +1,7 @@
+import 'froala-editor/js/froala_editor.pkgd.min';
 import React, { PropTypes } from 'react';
-import RteEditor from 'DeskPRO/Component/Rte/RteEditor';
+import $ from 'jquery';
+import FroalaEditor from 'react-froala-wysiwyg';
 import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
@@ -157,6 +159,7 @@ class Container extends React.Component {
     }
     this.setState({ searching: !this.state.searching, expandGroupHeader: false });
   }
+
 
   refresh(props) {
     if (
@@ -392,6 +395,18 @@ class Container extends React.Component {
       }
     }
 
+    const froalaConfig = {
+      toolbarInline:    true,
+      charCounterCount: false,
+      toolbarButtons:   ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'insertImage', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
+      enter:            $.FroalaEditor.ENTER_BR,
+      placeholderText:  false,
+      events:           {
+        'froalaEditor.focus': () => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; },
+        'froalaEditor.blur':  () => { window.DeskPRO_Window.keyboardShortcuts.isPaused = false; }
+      }
+    };
+
     return (
       <Detached
         zIndex={99999}
@@ -421,29 +436,12 @@ class Container extends React.Component {
           </div>
           {enabled ? (<div className="reply">
             <form onSubmit={this.handleSubmit}>
-              <RteEditor
-                inline
-                ref={(c) => { this.editor = c; }}
-                value={this.state.message}
-                onChange={this.handleChange}
-                onSubmit={this.handleSubmit}
-                onFocus={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; }}
-                onBlur={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = false; }}
+              <FroalaEditor
+                tag="textarea"
                 className="textarea"
-                options={{
-                  autoLink:      true,
-                  imageDragging: true,
-                  placeholder:   false,
-                  toolbar:       {
-                    buttons:                ['bold', 'italic', 'underline'],
-                    updateOnEmptySelection: true
-                  },
-                  paste: {
-                    forcePlainText:  false,
-                    cleanPastedHTML: false,
-                    cleanAttrs:      ['style', 'dir']
-                  }
-                }}
+                config={froalaConfig}
+                model={this.state.message}
+                onModelChange={this.handleChange}
               />
               <i
                 className={classNames('fa fa-paperclip reply-icon', { inactive: Object.keys(this.props.activeTabs).length < 1 })}

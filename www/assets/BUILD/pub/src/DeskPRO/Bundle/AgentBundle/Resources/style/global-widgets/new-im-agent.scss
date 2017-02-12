@@ -1,4 +1,5 @@
 @import '../variables';
+@import '../../../../../../../node_modules/froala-editor/css/froala_editor.pkgd.min';
 
 img.emojione, svg.emojione {
   width: 16px;
@@ -831,7 +832,7 @@ img.emojione, svg.emojione {
       form {
         position: relative;
 
-        .textarea {
+        .fr-wrapper {
           background: #fff;
           min-height: 40px;
           padding: 10px 40px 10px 10px;
@@ -850,6 +851,7 @@ img.emojione, svg.emojione {
           cursor: pointer;
           position: absolute;
           top: 10px;
+          z-index: 10;
 
           &.fa-paperclip {
             &.inactive {
@@ -996,6 +998,6 @@ img.emojione, svg.emojione {
   }
 }
 
-.medium-editor-toolbar {
+.fr-toolbar {
   z-index: 99999;
 }
