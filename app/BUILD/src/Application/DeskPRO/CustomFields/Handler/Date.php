@@ -47,7 +47,7 @@ class Date extends HandlerAbstract
      *
      * @return \DateTime|string
      */
-    public static function getDisplayValue($value, $calendarType)
+    public static function getDisplayValue($value, $calendarType = null)
     {
         switch ($calendarType) {
             case 'hijri':
@@ -85,7 +85,7 @@ class Date extends HandlerAbstract
 
         $calendar = $this->field_def->getOption('calendar');
 
-        $data['value'] = self::getDisplayValue($data['value'], $calendar);
+        $data['value'] = static::getDisplayValue($data['value'], $calendar);
 
         switch ($calendar) {
             case 'hijri':
@@ -137,7 +137,7 @@ class Date extends HandlerAbstract
                 $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
                 break;
             default:
-                $date = \DateTime::createFromFormat('Y-m-d', $value, App::getCurrentPerson()->getDateTimezone());
+                $date = \DateTime::createFromFormat($this->getFormat(), $value, App::getCurrentPerson()->getDateTimezone());
                 break;
         }
         if (!$date) {
@@ -235,14 +235,14 @@ class Date extends HandlerAbstract
         // Validate options
         //------------------------------
 
-        $opt_prefix = '';
+        $optPrefix = '';
         if ($context == self::CONTEXT_AGENT) {
-            $opt_prefix = 'agent_';
+            $optPrefix = 'agent_';
         }
 
         $options = [];
         foreach (['required'] as $k) {
-            $options[$k] = $this->field_def->getOption($opt_prefix.$k);
+            $options[$k] = $this->field_def->getOption($optPrefix.$k);
         }
 
         if ($options['required']) {
@@ -264,19 +264,19 @@ class Date extends HandlerAbstract
 
         if ($data && $this->isDefaultCalendar()) {
             try {
-                $admin_tz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
+                $adminTz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
             } catch (\Exception $e) {
-                $admin_tz = App::getCurrentPerson()->getDateTimezone();
+                $adminTz = App::getCurrentPerson()->getDateTimezone();
             }
-            $date       = \DateTime::createFromFormat($this->getFormat(), $data, App::getCurrentPerson()->getDateTimezone());
-            $date_admin = clone $date;
-            $date_admin->setTimezone($admin_tz);
+            $date      = \DateTime::createFromFormat($this->getFormat(), $data, App::getCurrentPerson()->getDateTimezone());
+            $dateAdmin = clone $date;
+            $dateAdmin->setTimezone($adminTz);
 
-            $dow = intval($date_admin->format('N')) - 1;
+            $dow = intval($dateAdmin->format('N')) - 1;
 
             // Days of week
-            if ($valid_dow = $this->field_def->getOption('date_valid_dow')) {
-                if (!in_array($dow, $valid_dow)) {
+            if ($validDow = $this->field_def->getOption('date_valid_dow')) {
+                if (!in_array($dow, $validDow)) {
                     return $this->makeErrorArray(['date_invalid_dow']);
                 }
             }
@@ -287,18 +287,18 @@ class Date extends HandlerAbstract
                 $d2 = $this->field_def->getOption('date_valid_date2');
 
                 if ($d1) {
-                    $d1 = \DateTime::createFromFormat($this->getFormat(), $d1, $admin_tz);
+                    $d1 = \DateTime::createFromFormat($this->getFormat(), $d1, $adminTz);
                     $d1->setTime(0, 0, 0);
 
-                    if ($date_admin < $d1) {
+                    if ($dateAdmin < $d1) {
                         return $this->makeErrorArray(['date_invalid_range']);
                     }
                 }
                 if ($d2) {
-                    $d2 = \DateTime::createFromFormat($this->getFormat(), $d2, $admin_tz);
+                    $d2 = \DateTime::createFromFormat($this->getFormat(), $d2, $adminTz);
                     $d2->setTime(23, 59, 59);
 
-                    if ($date_admin > $d2) {
+                    if ($dateAdmin > $d2) {
                         return $this->makeErrorArray(['date_invalid_range']);
                     }
                 }
@@ -307,9 +307,9 @@ class Date extends HandlerAbstract
             } elseif ($this->field_def->getOption('date_valid_type') == 'range') {
                 if ($context_data && isset($context_data['exist_ticket'])) {
                     $now = clone $context_data['exist_ticket']->date_created;
-                    $now->setTimezone($admin_tz);
+                    $now->setTimezone($adminTz);
                 } else {
-                    $now = new \DateTime('now', $admin_tz);
+                    $now = new \DateTime('now', $adminTz);
                 }
 
                 $days1 = (int) $this->field_def->getOption('date_valid_range1');
@@ -323,7 +323,7 @@ class Date extends HandlerAbstract
                 $d2->modify("+{$days2} days");
                 $d2->setTime(23, 59, 59);
 
-                if ($date_admin < $d1 || $date_admin > $d2) {
+                if ($dateAdmin < $d1 || $dateAdmin > $d2) {
                     return $this->makeErrorArray(['date_invalid_range']);
                 }
             }
