@@ -136,7 +136,6 @@ class Date extends HandlerAbstract
                 break;
             default:
                 $date = \DateTime::createFromFormat('Y-m-d', $value, App::getCurrentPerson()->getDateTimezone());
-                var_dump($date->format('U'));
                 break;
         }
         if (!$date) {

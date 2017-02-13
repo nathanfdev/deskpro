@@ -56,8 +56,9 @@ class DateFieldType extends CustomFieldTypeAbstract
             'choices'  => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         ]);
         $builder->add('calendar', 'choice', [
-            'required' => false,
-            'choices' => ['gregorian', 'hijri'],
+            'required'          => false,
+            'choices'           => ['gregorian', 'hijri'],
+            'choices_as_values' => true,
         ]);
     }
 
