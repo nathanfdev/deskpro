@@ -111,6 +111,15 @@
 				<h3>New Ticket Trigger</h3>
 			</div>
 			<div class="col-md-9">
+				<div class="alert alert-danger" ng-if="!EditCtrl.trigger.is_enabled">
+					<p>
+						Warning: Department triggers are disabled from
+						{% set href = ng_href('tickets.triggers', {type: 'newticket'}) %}
+						<a href="{{ href }}">
+							New Ticket Triggers
+						</a>
+					</p>
+				</div>
 				<div class="dp-ob-set">
 					<div class="dp-ob-setrow">
 						<header>
@@ -131,6 +140,15 @@
 				<h3>Ticket Changed Trigger</h3>
 			</div>
 			<div class="col-md-9">
+				<div class="alert alert-danger" ng-if="!EditCtrl.trigger2.is_enabled">
+					<p>
+						Warning: Department triggers are disabled from
+                        {% set href = ng_href('tickets.triggers', {type: 'update'}) %}
+						<a ng-href="{{ href }}">
+							Ticket Update Triggers
+						</a>
+					</p>
+				</div>
 				<div class="dp-ob-set">
 					<div class="dp-ob-setrow">
 						<header>
