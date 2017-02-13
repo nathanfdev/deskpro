@@ -33,9 +33,16 @@
 namespace Application\LegacyApiBundle\Form\CustomField\Type;
 
 use Application\LegacyApiBundle\Form\CustomField\Model\DateTimeField;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class DateTimeFieldType extends DateFieldType
 {
+    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildCustomFieldForm($builder, $options);
+        $builder->remove('calendar');
+    }
+
     public function getDefaultOptions(array $options)
     {
         return [
