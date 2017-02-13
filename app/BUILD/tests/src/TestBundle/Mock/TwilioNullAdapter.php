@@ -87,18 +87,21 @@ class TwilioNullAdapter extends TwilioAdapter
     public function createWorkspace(VoiceAccount $account)
     {
         $payload = [
-            'sid'                   => 'sid'.(++self::$uuid),
-            'account_sid'           => 'account_sid',
-            'date_created'          => 'date_created',
-            'date_updated'          => 'date_updated',
-            'default_activity_name' => 'default_activity_name',
-            'default_activity_sid'  => 'default_activity_sid',
-            'event_callback_url'    => 'event_callback_url',
-            'events_filter'         => 'events_filter',
-            'friendly_name'         => 'friendly_name',
-            'multi_task_enabled'    => 'multi_task_enabled',
-            'timeout_activity_name' => 'timeout_activity_name',
-            'timeout_activity_sid'  => 'timeout_activity_sid',
+            'sid'                    => 'sid'.(++self::$uuid),
+            'account_sid'            => 'account_sid',
+            'date_created'           => 'date_created',
+            'date_updated'           => 'date_updated',
+            'default_activity_name'  => 'default_activity_name',
+            'default_activity_sid'   => 'default_activity_sid',
+            'event_callback_url'     => 'event_callback_url',
+            'events_filter'          => 'events_filter',
+            'friendly_name'          => 'friendly_name',
+            'multi_task_enabled'     => 'multi_task_enabled',
+            'timeout_activity_name'  => 'timeout_activity_name',
+            'timeout_activity_sid'   => 'timeout_activity_sid',
+            'prioritize_queue_order' => 'prioritize_queue_order',
+            'url'                    => 'url',
+            'links'                  => 'links',
         ];
 
         return new WorkspaceInstance($this->getVersion(), $payload);
@@ -348,6 +351,8 @@ class TwilioNullAdapter extends TwilioAdapter
             'target_workers'            => 'target_workers',
             'url'                       => 'url',
             'workspace_sid'             => 'workspace_sid',
+            'task_order'                => 'task_order',
+            'links'                     => 'links',
         ];
 
         return new TaskQueueInstance($this->getVersion(), $payload, 'workspace_sid');
@@ -370,6 +375,8 @@ class TwilioNullAdapter extends TwilioAdapter
             'friendly_name'       => 'friendly_name',
             'sid'                 => 'sid'.(++self::$uuid),
             'workspace_sid'       => 'workspace_sid',
+            'url'                 => 'url',
+            'links'               => 'links',
 
         ];
 
