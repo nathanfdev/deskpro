@@ -53,8 +53,7 @@ class Date extends HandlerAbstract
             case 'hijri':
                 $calendar = new ArabicCalendar();
 
-                // -1 Fix the date shifting due to Julian calendar day starting at noon
-                return implode('/', $calendar->jdToYmd(unixtojd($value) - 1));
+                return implode('/', $calendar->jdToYmd(unixtojd($value)));
             default:
                 try {
                     if ($value) {
@@ -125,13 +124,16 @@ class Date extends HandlerAbstract
         }
         switch ($this->field_def->getOption('calendar')) {
             case 'hijri':
-                $calendar                 = new ArabicCalendar();
-                list($year, $month, $day) = explode('/', $value);
-                $jd                       = $calendar->ymdToJd($year, $month, $day);
+                $calendar = new ArabicCalendar();
+                if (strpos($value, '/') !== false) {
+                    list($year, $month, $day) = explode('/', $value);
+                    $jd                       = $calendar->ymdToJd($year, $month, $day);
 
+                    $value = jdtounix($jd);
+                }
+                $date = \DateTime::createFromFormat('U', $value);
                 // +1 Fix the date shifting due to Julian calendar day starting at noon
-                $value = jdtounix($jd + 1);
-                $date  = \DateTime::createFromFormat('U', $value);
+                $date->add(new \DateInterval('P1D'));
                 $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
                 break;
             default:
@@ -164,9 +166,8 @@ class Date extends HandlerAbstract
                     $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
                     switch ($this->field_def->getOption('calendar')) {
                         case 'hijri':
-                            $calendar = new ArabicCalendar();
-                            // -1 Fix the date shifting due to Julian calendar day starting at noon
-                            $data['value'] = implode('/', $calendar->jdToYmd(unixtojd($date->format('U')) - 1));
+                            $calendar      = new ArabicCalendar();
+                            $data['value'] = implode('/', $calendar->jdToYmd(unixtojd($date->format('U'))));
                             break;
                         default:
                             $data['value'] = $date->format($this->getFormat());
