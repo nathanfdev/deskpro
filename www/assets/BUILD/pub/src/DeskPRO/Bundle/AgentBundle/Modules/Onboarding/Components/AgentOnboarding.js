@@ -36,7 +36,6 @@ export class AgentOnboardingContainer extends SeparateComponent {
   };
 
   checkTimezone = () => {
-    console.log('checkTimezone');
     if (window.DESKPRO_TIME_OUT_OF_SYNC) {
       window.DESKPRO_TIME_OUT_OF_SYNC = false;
       window.$.ajax({
