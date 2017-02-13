@@ -268,27 +268,27 @@
 {% endfor %}
 
 {% for f in custom_person_fields %}
-    <tbody class="person_field_{{f.id}} custom-field item off {% if f.field_def.isFormField() and not ticket.person.hasCustomField(f.id) %}no-value{% endif %}"
+    <tbody class="user_field_{{f.id}} custom-field item off {% if f.field_def.isFormField() and not ticket.person.hasCustomField(f.id) %}no-value{% endif %}"
 		   data-field-type="person_field"
 		   data-item-id="{{f.id}}"
 		   data-custom-field-handler="{{f.field_handler}}"
 		   data-default-value="{{ f.field_def.getStringDefaultValue() }}"
-		   ng-show="fields['person_field_{{ f.id }}']"
+		   ng-show="fields['user_field_{{ f.id }}']"
 	>
-    <tr class="mode-display" ng-show="!isEditMode('person_field_{{ f.id }}')" ng-click="editField($event, 'person_field_{{ f.id }}')">
+    <tr class="mode-display" ng-show="!isEditMode('user_field_{{ f.id }}')" ng-click="editField($event, 'user_field_{{ f.id }}')">
         <th width="80">
-            <span class="custom-field edit-trigger ticket_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
+            <span class="custom-field edit-trigger user_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
         </th>
         <td>
-            <div class="custom-field content person_field_{{f.id}}" data-item-id="{{f.id}}">
+            <div class="custom-field content user_field_{{f.id}}" data-item-id="{{f.id}}">
                 {{ render_custom_field(f) }}
             </div>
         </td>
     </tr>
-    <tr class="mode-edit" ng-show="isEditMode('person_field_{{ f.id }}')">
+    <tr class="mode-edit" ng-show="isEditMode('user_field_{{ f.id }}')">
         <th width="80">{{ f.title }}:</th>
         <td>
-            <div class="custom-field field-input person_field_{{f.id}}" data-item-id="{{f.id}}">
+            <div class="custom-field field-input user_field_{{f.id}}" data-item-id="{{f.id}}">
                 {{ render_custom_field_form(f) }}
             </div>
         </td>
