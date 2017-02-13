@@ -32,9 +32,12 @@
 
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
+use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Twig\Environment;
@@ -53,6 +56,28 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequestInterface
 {
+    public static $whitelistedChatWidgetRouteNames = [
+        'deskpro_portal_api_chat_createnewchat',
+        'deskpro_portal_api_chat_regenerateemailvalidationcode',
+        'deskpro_portal_api_chat_validateemail',
+        'deskpro_portal_api_chat_pollingchat',
+        'deskpro_portal_api_chat_sendmessage',
+        'deskpro_portal_api_chat_ackmessages',
+        'deskpro_portal_api_chat_usertyping',
+        'deskpro_portal_api_chat_sendtranscriptinfo',
+        'deskpro_portal_api_chat_toggleshouldsendtranscript',
+        'deskpro_portal_api_chat_endchat',
+        'deskpro_portal_api_chat_reopenchat',
+        'deskpro_portal_api_chat_feedback',
+        'deskpro_portal_api_chatdepartments_getchatdepartments',
+        'deskpro_portal_api_chat_getcustomfields',
+        'deskpro_portal_api_people_getonlineagents',
+        'deskpro_portal_api_auth_getsession',
+        'deskpro_portal_api_widget_getwidgetoptions',
+        'portal_api_lang_widget_phrases',
+        'portal_api_ticket_new',
+    ];
+
     /**
      * @var SettingsResolver
      */
@@ -61,7 +86,7 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
     /**
      * @var BrandStack
      */
-    private $brand_stack;
+    private $brandStack;
 
     /**
      * @var LoggerInterface
@@ -81,7 +106,7 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
     /**
      * @var Environment
      */
-    private $portal_tpl;
+    private $portalTpl;
 
     public function __construct(
         BrandStack $brand_stack,
@@ -92,9 +117,9 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
         TokenStorageInterface $tokenStorage
     ) {
         $this->resolver     = $resolver;
-        $this->brand_stack  = $brand_stack;
+        $this->brandStack   = $brand_stack;
         $this->logger       = $logger;
-        $this->portal_tpl   = $portal_tpl;
+        $this->portalTpl    = $portal_tpl;
         $this->modeStorage  = $modeStorage;
         $this->tokenStorage = $tokenStorage;
     }
@@ -130,17 +155,21 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
         }
 
         // we can always use brand settings here, because they inherit global in case brand specific is not set
-        $brand              = $this->brand_stack->getActive();
+        $brand              = $this->brandStack->getActive();
         $brandPortalEnabled = (bool) $brand->getSetting('core.iface_portal', true);
 
         if (!$brandPortalEnabled) {
+            if ($this->isWhiteListedChatRoute($event->getRequest(), $brand)) {
+                return;
+            }
+
             if (strpos($event->getRequest()->getPathInfo(), '/portal/api') === 0) {
                 $event->setResponse(new JsonResponse([
                     'code'    => Response::HTTP_FORBIDDEN,
                     'message' => 'The portal has been disabled.',
                 ], Response::HTTP_FORBIDDEN));
             } else {
-                $event->setResponse($this->portal_tpl->renderResponse('Theme:Portal:portal-disabled.html.twig'));
+                $event->setResponse($this->portalTpl->renderResponse('Theme:Portal:portal-disabled.html.twig'));
             }
         }
     }
@@ -150,11 +179,34 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
      *
      * @return mixed
      */
-    protected function isWhitelisted(Request $request)
+    protected function isWhitelisted(Request $request, $routes = null)
     {
-        $route_name = $request->attributes->get('_route');
+        if (!$routes) {
+            $routes = DisabledHelpdeskListener::$whitelistedRouteNames;
+        }
+        $routeName = $request->attributes->get('_route');
 
-        return in_array($route_name, DisabledHelpdeskListener::$whitelisted_route_names);
+        return in_array($routeName, $routes);
+    }
+
+    /**
+     * @param Request              $request
+     * @param Brand|BrandContainer $brand
+     *
+     * @return bool
+     */
+    protected function isWhiteListedChatRoute(Request $request, BrandContainer $brand)
+    {
+        if (
+            $brand->getSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL)
+            && $brand->getSetting(WidgetSettingsResolver::CHAT_ENABLED)
+        ) {
+            if ($this->isWhitelisted($request, static::$whitelistedChatWidgetRouteNames)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
