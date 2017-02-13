@@ -153,9 +153,9 @@ class UsersourceAuthAdapterFactory
                 );
             }
 
-            $adapter->setCallbackUrl($this->maintainScheme(
+            $adapter->setCallbackUrl(
                 $url
-            ));
+            );
         }
 
         if ($adapter instanceof SessionStateInterface) {
@@ -170,20 +170,20 @@ class UsersourceAuthAdapterFactory
                 $logoutUrl = $usersource->getAdapter()->getUserLogoutRedirectUrl();
             }
 
-            $adapter->setLogoutRedirectUrl($this->maintainScheme($logoutUrl));
+            $adapter->setLogoutRedirectUrl($logoutUrl);
         }
 
         if ($adapter instanceof SamlAdapterInterface) {
-            $adapter->setMetadataXmlUrl($this->maintainScheme(
+            $adapter->setMetadataXmlUrl(
                 $this->router->generate(
                     'user_saml_metadata', ['usersource_id' => $usersource->id], RouterInterface::ABSOLUTE_URL
                 )
-            ));
-            $adapter->setSingleLogoutServiceUrl($this->maintainScheme(
+            );
+            $adapter->setSingleLogoutServiceUrl(
                 $this->router->generate(
                     'user_saml_sls', ['usersource_id' => $usersource->id], RouterInterface::ABSOLUTE_URL
                 )
-            ));
+            );
         }
 
         return $adapter;
@@ -208,13 +208,5 @@ class UsersourceAuthAdapterFactory
         }
 
         return $this->interface && $this->interface != 'user';
-    }
-
-    private function maintainScheme($url)
-    {
-        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
-            $url = preg_replace('/^http:/', 'https:', $url);
-        }
-        return $url;
     }
 }

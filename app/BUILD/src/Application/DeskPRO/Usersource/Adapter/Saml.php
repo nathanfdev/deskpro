@@ -51,7 +51,7 @@ class Saml extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
     }
 
     /**
-     * @return \deskpro_magento\Usersource\Auth\Magento
+     * @return \Orb\Auth\Adapter\Saml
      */
     protected function _createAuthAdapterObject()
     {
