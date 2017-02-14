@@ -68,6 +68,7 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\TransactionRequiredException;
 use DpSys\License;
+use Exception;
 use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Auth\Adapter\CallbackInterface;
 use Orb\Auth\Adapter\SamlAdapterInterface;
@@ -1308,20 +1309,30 @@ HTML;
             return new NotFoundHttpException();
         }
 
-        $usersource_test = $this->session->getFlash(self::USERSOURCE_TEST, []);
-        if (!$usersource_test) {
-            $usersource_test = $this->in->getBool(self::USERSOURCE_TEST);
+        $usersourceTest = $this->session->getFlash(self::USERSOURCE_TEST, []);
+        if (!$usersourceTest) {
+            $usersourceTest = $this->in->getBool(self::USERSOURCE_TEST);
         }
 
-        $this->attachTestLoggerIfNecessary($usersource_test, $adapter);
+        $this->attachTestLoggerIfNecessary($usersourceTest, $adapter);
 
         $result = $adapter->getSsoLoginActionResult($this);
 
         if ($result->isValid()) {
-            $login_processor = new LoginProcessor($source, $result->getIdentity(), $usersource_test);
-            $person          = $login_processor->getPerson();
+            $loginProcessor = new LoginProcessor($source, $result->getIdentity(), $usersourceTest);
+            try {
+                $person = $loginProcessor->getPerson(null, true);
+            } catch (Exception $e) {
+                $log = $this->getAdapterLog($adapter);
 
-            if ($usersource_test) {
+                return $this->render('DeskPRO:Auth:_sso_test_failed.html.twig', [
+                        'log'            => $log,
+                        'display_errors' => $result->getMessages('display_errors'),
+                    ]
+                );
+            }
+
+            if ($usersourceTest) {
                 //--------------------------------------
                 // test result
                 //--------------------------------------
@@ -1346,7 +1357,7 @@ HTML;
             //--------------------------------------
             // test result
             //--------------------------------------
-            if ($usersource_test) {
+            if ($usersourceTest) {
                 $log = $this->getAdapterLog($adapter);
 
                 return $this->render('DeskPRO:Auth:_sso_test_failed.html.twig', [

@@ -35,6 +35,8 @@ namespace Application\DeskPRO\Auth;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\SystemServices\AgentCheckerService;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonTwitterUser;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\Usersource;
@@ -114,19 +116,19 @@ class LoginProcessor
         //------------------------------
 
         $em = App::getOrm();
-        /** @var \Application\DeskPRO\EntityRepository\PersonUsersourceAssoc $assoc_repos */
-        $assoc_repos = $em->getRepository('DeskPRO:PersonUsersourceAssoc');
+        /** @var \Application\DeskPRO\EntityRepository\PersonUsersourceAssoc $assocRepos */
+        $assocRepos = $em->getRepository(PersonUsersourceAssoc::class);
 
         $this->beginTransaction($em);
 
-        $this->assoc = $assoc_repos->getIdentityAssociation(
+        $this->assoc = $assocRepos->getIdentityAssociation(
             $this->usersource,
             $this->identity->getIdentity()
         );
 
-        $mapped_fields = $this->usersource->getAdapter()->getFieldsFromIdentity($this->identity);
-        $mapped_fields = Arrays::removeEmptyString($mapped_fields);
-        $mapped_fields = new OptionsArray($mapped_fields);
+        $mappedFields = $this->usersource->getAdapter()->getFieldsFromIdentity($this->identity);
+        $mappedFields = Arrays::removeEmptyString($mappedFields);
+        $mappedFields = new OptionsArray($mappedFields);
 
         //------------------------------
         // If we dont have one yet, we're have to create the assoc and maybe a new user too
@@ -137,12 +139,12 @@ class LoginProcessor
 
             // If we can trust the email address and there already exists a person
             // with this email address, then we can just link the accounts now
-            $set_email = false;
+            $setEmail = false;
             // I removed the "email_confirmed" requirement below; after new validation rules, all emails from a usersource are considered valid
-            if ($mapped_fields->has('email') || $use_email_address) {
-                $set_email = $mapped_fields->get('email', $use_email_address);
-                $email     = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($mapped_fields->get('email'));
-                /** @var \Application\DeskPRO\Entity\PersonEmail $email */
+            if ($mappedFields->has('email') || $use_email_address) {
+                $setEmail = $mappedFields->get('email', $use_email_address);
+                $email    = App::getEntityRepository(PersonEmail::class)->getEmail($mappedFields->get('email'));
+                /** @var PersonEmail $email */
                 if ($email) {
                     // always validate emails sent from a usersource
                     $email->is_validated = true;
@@ -151,13 +153,13 @@ class LoginProcessor
             }
 
             // if someone has already associated this twitter account with them, then connect with them
-            if ($mapped_fields->has('twitter')) {
-                $twitter      = $mapped_fields->get('twitter');
-                $this->person = App::getEntityRepository('DeskPRO:PersonTwitterUser')->getVerifiedPersonForTwitterUser($twitter['user_id']);
+            if ($mappedFields->has('twitter')) {
+                $twitter      = $mappedFields->get('twitter');
+                $this->person = App::getEntityRepository(PersonTwitterUser::class)->getVerifiedPersonForTwitterUser($twitter['user_id']);
             }
 
             if (!$this->person) {
-                if (!$set_email) {
+                if (!$setEmail) {
                     $em->rollback();
                     // we are making a new person, and no email was sent in. this is not possible. throw an exception:
                     throw new UsersourceNoEmailException('The account you are trying to use is invalid because it is missing an email address.');
@@ -169,18 +171,18 @@ class LoginProcessor
                 $this->person->creation_system = 'web.usersource';
             }
 
-            $this->updatePersonName($mapped_fields);
-            $this->updatePictureData($mapped_fields, $em);
-            $this->updatePhone($mapped_fields, $em);
-            $this->updateTwitter($mapped_fields, $em);
+            $this->updatePersonName($mappedFields);
+            $this->updatePictureData($mappedFields, $em);
+            $this->updatePhone($mappedFields, $em);
+            $this->updateTwitter($mappedFields, $em);
 
-            if ($set_email && !$this->person->findEmailAddress($set_email)) {
-                $email_obj = $this->person->addEmailAddressString($set_email);
+            if ($setEmail && !$this->person->findEmailAddress($setEmail)) {
+                $emailObj = $this->person->addEmailAddressString($setEmail);
                 // always validate emails sent from a usersource
-                if ($this_email = $this->person->findEmailAddress($set_email)) {
-                    $this_email->is_validated = true;
+                if ($thisEmail = $this->person->findEmailAddress($setEmail)) {
+                    $thisEmail->is_validated = true;
                 }
-                $this->persist($em, $email_obj);
+                $this->persist($em, $emailObj);
                 $this->flush($em);
             }
 
@@ -202,25 +204,25 @@ class LoginProcessor
 
             // if this setting is true, then always update $this->person via these methods
             if (App::getSetting('core.usersource_always_update_data')) {
-                $this->updatePersonName($mapped_fields);
+                $this->updatePersonName($mappedFields);
                 if (!$this->person->picture_blob || strpos($this->person->picture_blob->filename, 'dp-source-picture') !== false) {
-                    $this->updatePictureData($mapped_fields, $em);
+                    $this->updatePictureData($mappedFields, $em);
                 }
-                $this->updatePhone($mapped_fields, $em);
-                $this->updateTwitter($mapped_fields, $em);
+                $this->updatePhone($mappedFields, $em);
+                $this->updateTwitter($mappedFields, $em);
             }
 
             // Need to make sure the email address on the local account matches that of the
             // identity (it could have been updated).
-            if ($mapped_fields->has('email') && $mapped_fields->get('email_confirmed')) {
-                if (!$this->person->hasEmailAddress($mapped_fields->get('email'))) {
-                    $email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($mapped_fields->get('email'));
+            if ($mappedFields->has('email') && $mappedFields->get('email_confirmed')) {
+                if (!$this->person->hasEmailAddress($mappedFields->get('email'))) {
+                    $email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($mappedFields->get('email'));
                     if (!$email) {
-                        $email_obj = $this->person->addEmailAddressString($mapped_fields->get('email'));
-                        $this->persist($em, $email_obj);
+                        $emailObj = $this->person->addEmailAddressString($mappedFields->get('email'));
+                        $this->persist($em, $emailObj);
                         // always validate emails sent from a usersource
-                        $email_obj->is_validated     = true;
-                        $this->person->primary_email = $email_obj;
+                        $emailObj->is_validated      = true;
+                        $this->person->primary_email = $emailObj;
                         $this->persist($em, $this->person);
                         $this->flush($em);
                     }
