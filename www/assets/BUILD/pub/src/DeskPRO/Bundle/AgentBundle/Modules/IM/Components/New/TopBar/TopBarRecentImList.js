@@ -116,7 +116,12 @@ class TopBarRecentImList extends RecentList {
       }
     }
     const agent = agents.get(agentId);
+    if (!agent) {
+      return null;
+    }
+
     const className = ['ui avatar image im'];
+
     if (!agent.get('online')) {
       className.push('offline');
     }
