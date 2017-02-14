@@ -40,6 +40,7 @@ use Orb\Auth\Result;
 use Orb\Auth\StateHandler\StateHandlerInterface;
 use Orb\Log\Logger;
 use Orb\Util\Arrays;
+use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Response;
 
 class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, IframeSsoInterface, SamlAdapterInterface, ExtraDetailsInterface
@@ -171,6 +172,13 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         try {
             return $this->processAcs($_REQUEST);
         } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->log(
+                    $e->getMessage(),
+                    Logger::DEBUG
+                );
+            }
+
             return new Result(
                 Result::FAILURE_EXCEPTION, null,
                 ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]
@@ -286,6 +294,16 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
             $userInfo['last_name'] = Arrays::reachForFirstValueInKey($attrs, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname');
         }
         // end xmlsoap stuff
+
+        // Office 365 empty emailAddress workaround
+        if (
+            !$userInfo['email']
+            && !empty($saml->getNameId())
+            && StringEmail::isValueValid($saml->getNameId())
+            && $saml->getNameIdFormat() === 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+        ) {
+            $userInfo['email'] = $saml->getNameId();
+        }
 
         $id = new Identity($saml->getNameId(), $userInfo);
 

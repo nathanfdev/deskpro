@@ -1325,6 +1325,8 @@ HTML;
             } catch (Exception $e) {
                 $log = $this->getAdapterLog($adapter);
 
+                $log .= "\n\n".$e->getMessage();
+
                 return $this->render('DeskPRO:Auth:_sso_test_failed.html.twig', [
                         'log'            => $log,
                         'display_errors' => $result->getMessages('display_errors'),
