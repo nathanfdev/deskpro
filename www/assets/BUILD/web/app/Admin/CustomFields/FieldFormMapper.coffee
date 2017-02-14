@@ -46,6 +46,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           default_mode:              if fieldModel?.default_value then 'date' else '0'
           default_value:             if fieldModel?.default_value then moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate() else new Date()
           valid_weekdays:            [true, true, true, true, true, true, true]
+          calendar:                  'gregorian'
           valid_dates_mode:          '0'
           valid_date_date1:          ''
           valid_date_date2:          ''
@@ -169,6 +170,9 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
               formTypeOpts.valid_weekdays = [false, false, false, false, false, false, false]
               for own day of fieldModel.options.date_valid_dow
                 formTypeOpts.valid_weekdays[day] = true
+
+            if fieldModel.options?.calendar
+              formTypeOpts.calendar = fieldModel.options.calendar
 
             if fieldModel.options.date_valid_type?
               if fieldModel.options.date_valid_type == "date"
@@ -304,6 +308,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
             postData.agent_required = true
 
           postData.date_valid_type = formTypeOpts.valid_dates_mode
+          postData.calendar = formTypeOpts.calendar
 
           if formTypeOpts.valid_dates_mode == 'date'
             postData.date_valid_date1 = ''

@@ -52,7 +52,7 @@ class SideloadAndDeferredListener implements EventSubscriberInterface
     private $em;
 
     /**
-     * SideloadListener constructor.
+     * SideloadAndDeferredListener constructor.
      *
      * @param EntityManager $em
      */

@@ -34,12 +34,45 @@ namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Form\Type\CriteriaFilterField\DateType;
+use Fisharebest\ExtCalendar\ArabicCalendar;
 
 /**
  * Handles the date field.
  */
 class Date extends HandlerAbstract
 {
+    /**
+     * @param string $value
+     * @param string $calendarType
+     *
+     * @return \DateTime|string
+     */
+    public static function getDisplayValue($value, $calendarType = null)
+    {
+        switch ($calendarType) {
+            case 'hijri':
+                $calendar = new ArabicCalendar();
+
+                return implode('/', $calendar->jdToYmd(unixtojd($value)));
+            default:
+                try {
+                    if ($value) {
+                        if (is_numeric($value)) {
+                            $datetime = new \DateTime('@'.$value);
+                        } else {
+                            $datetime = new \DateTime($value);
+                        }
+
+                        return date('F j, Y', $datetime->getTimestamp());
+                    } else {
+                        return '';
+                    }
+                } catch (\Exception $e) {
+                    return '';
+                }
+        }
+    }
+
     public function renderHtml($data = null, array $template_vars = [])
     {
         if ($data === null) {
@@ -50,9 +83,16 @@ class Date extends HandlerAbstract
             $data['value'] = time();
         }
 
-        $data['value'] = new \DateTime('@'.$data['value']);
+        $calendar = $this->field_def->getOption('calendar');
 
-        return parent::renderText($data, $template_vars);
+        $data['value'] = static::getDisplayValue($data['value'], $calendar);
+
+        switch ($calendar) {
+            case 'hijri':
+                return $data['value'];
+            default:
+                return parent::renderText($data, $template_vars);
+        }
     }
 
     public function renderText($data = null, array $template_vars = [])
@@ -82,17 +122,34 @@ class Date extends HandlerAbstract
         if (!$value) {
             return [];
         }
+        switch ($this->field_def->getOption('calendar')) {
+            case 'hijri':
+                $calendar = new ArabicCalendar();
+                if (strpos($value, '/') !== false) {
+                    list($year, $month, $day) = explode('/', $value);
+                    $jd                       = $calendar->ymdToJd($year, $month, $day);
 
-        $date = \DateTime::createFromFormat('Y-m-d', $value, App::getCurrentPerson()->getDateTimezone());
+                    $value = jdtounix($jd);
+                }
+                $date = \DateTime::createFromFormat('U', $value);
+                // +1 Fix the date shifting due to Julian calendar day starting at noon
+                $date->add(new \DateInterval('P1D'));
+                $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                break;
+            default:
+                $date = \DateTime::createFromFormat($this->getFormat(), $value, App::getCurrentPerson()->getDateTimezone());
+                break;
+        }
         if (!$date) {
             return [];
         }
 
         $date->modify('midnight');
-        $date = \Orb\Util\Dates::convertToUtcDateTime($date);
+        $date  = \Orb\Util\Dates::convertToUtcDateTime($date);
+        $value = $date->getTimestamp();
 
         return [
-            [$this->field_def['id'], 'value', $date->getTimestamp()],
+            [$this->field_def['id'], 'value', $value],
         ];
     }
 
@@ -102,15 +159,19 @@ class Date extends HandlerAbstract
             try {
                 if (ctype_digit($data['value'])) {
                     $date = new \DateTime('@'.$data['value']);
-                    if ($date) {
-                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-                        $data['value'] = $date->format($this->getFormat());
-                    }
                 } else {
                     $date = \DateTime::createFromFormat($this->getFormat(), $data['value']);
-                    if ($date) {
-                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-                        $data['value'] = $date->format($this->getFormat());
+                }
+                if ($date) {
+                    $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                    switch ($this->field_def->getOption('calendar')) {
+                        case 'hijri':
+                            $calendar      = new ArabicCalendar();
+                            $data['value'] = implode('/', $calendar->jdToYmd(unixtojd($date->format('U'))));
+                            break;
+                        default:
+                            $data['value'] = $date->format($this->getFormat());
+                            break;
                     }
                 }
             } catch (\Exception $e) {
@@ -174,14 +235,14 @@ class Date extends HandlerAbstract
         // Validate options
         //------------------------------
 
-        $opt_prefix = '';
+        $optPrefix = '';
         if ($context == self::CONTEXT_AGENT) {
-            $opt_prefix = 'agent_';
+            $optPrefix = 'agent_';
         }
 
         $options = [];
         foreach (['required'] as $k) {
-            $options[$k] = $this->field_def->getOption($opt_prefix.$k);
+            $options[$k] = $this->field_def->getOption($optPrefix.$k);
         }
 
         if ($options['required']) {
@@ -190,7 +251,7 @@ class Date extends HandlerAbstract
             }
         }
 
-        if ($data) {
+        if ($data && $this->isDefaultCalendar()) {
             $date = \DateTime::createFromFormat($this->getFormat(), $data);
             if (!$date) {
                 return $this->makeErrorArray(['date_invalid']);
@@ -201,21 +262,21 @@ class Date extends HandlerAbstract
         // Validate ranges
         //------------------------------
 
-        if ($data) {
+        if ($data && $this->isDefaultCalendar()) {
             try {
-                $admin_tz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
+                $adminTz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
             } catch (\Exception $e) {
-                $admin_tz = App::getCurrentPerson()->getDateTimezone();
+                $adminTz = App::getCurrentPerson()->getDateTimezone();
             }
-            $date       = \DateTime::createFromFormat($this->getFormat(), $data, App::getCurrentPerson()->getDateTimezone());
-            $date_admin = clone $date;
-            $date_admin->setTimezone($admin_tz);
+            $date      = \DateTime::createFromFormat($this->getFormat(), $data, App::getCurrentPerson()->getDateTimezone());
+            $dateAdmin = clone $date;
+            $dateAdmin->setTimezone($adminTz);
 
-            $dow = intval($date_admin->format('N')) - 1;
+            $dow = intval($dateAdmin->format('N')) - 1;
 
             // Days of week
-            if ($valid_dow = $this->field_def->getOption('date_valid_dow')) {
-                if (!in_array($dow, $valid_dow)) {
+            if ($validDow = $this->field_def->getOption('date_valid_dow')) {
+                if (!in_array($dow, $validDow)) {
                     return $this->makeErrorArray(['date_invalid_dow']);
                 }
             }
@@ -226,18 +287,18 @@ class Date extends HandlerAbstract
                 $d2 = $this->field_def->getOption('date_valid_date2');
 
                 if ($d1) {
-                    $d1 = \DateTime::createFromFormat($this->getFormat(), $d1, $admin_tz);
+                    $d1 = \DateTime::createFromFormat($this->getFormat(), $d1, $adminTz);
                     $d1->setTime(0, 0, 0);
 
-                    if ($date_admin < $d1) {
+                    if ($dateAdmin < $d1) {
                         return $this->makeErrorArray(['date_invalid_range']);
                     }
                 }
                 if ($d2) {
-                    $d2 = \DateTime::createFromFormat($this->getFormat(), $d2, $admin_tz);
+                    $d2 = \DateTime::createFromFormat($this->getFormat(), $d2, $adminTz);
                     $d2->setTime(23, 59, 59);
 
-                    if ($date_admin > $d2) {
+                    if ($dateAdmin > $d2) {
                         return $this->makeErrorArray(['date_invalid_range']);
                     }
                 }
@@ -246,9 +307,9 @@ class Date extends HandlerAbstract
             } elseif ($this->field_def->getOption('date_valid_type') == 'range') {
                 if ($context_data && isset($context_data['exist_ticket'])) {
                     $now = clone $context_data['exist_ticket']->date_created;
-                    $now->setTimezone($admin_tz);
+                    $now->setTimezone($adminTz);
                 } else {
-                    $now = new \DateTime('now', $admin_tz);
+                    $now = new \DateTime('now', $adminTz);
                 }
 
                 $days1 = (int) $this->field_def->getOption('date_valid_range1');
@@ -262,7 +323,7 @@ class Date extends HandlerAbstract
                 $d2->modify("+{$days2} days");
                 $d2->setTime(23, 59, 59);
 
-                if ($date_admin < $d1 || $date_admin > $d2) {
+                if ($dateAdmin < $d1 || $dateAdmin > $d2) {
                     return $this->makeErrorArray(['date_invalid_range']);
                 }
             }
@@ -279,5 +340,13 @@ class Date extends HandlerAbstract
     public function getSearchType()
     {
         return 'value';
+    }
+
+    /**
+     * @return bool
+     */
+    private function isDefaultCalendar()
+    {
+        return 'gregorian' === $this->field_def->getOption('calendar', 'gregorian');
     }
 }

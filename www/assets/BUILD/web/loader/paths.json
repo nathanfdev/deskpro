@@ -85,5 +85,12 @@
   "Reports":                         "app-build/Reports",
   "ReportsRouting":                  "app/Reports/Resources/config/routing",
   "semanticAccordion":               "node_modules/semantic-ui-less/definitions/modules/accordion",
-  "customEventPolyfill":             "node_modules/custom-event-polyfill/custom-event-polyfill"
+  "customEventPolyfill":             "node_modules/custom-event-polyfill/custom-event-polyfill",
+
+
+  "jquery.calendars":                "bower_components/kbw-calendars/dist/js/jquery.calendars",
+  "jquery.plugin":                   "bower_components/kbw-calendars/dist/js/jquery.plugin",
+  "jquery.calendars.plus":           "bower_components/kbw-calendars/dist/js/jquery.calendars.plus",
+  "jquery.calendars.picker":         "bower_components/kbw-calendars/dist/js/jquery.calendars.picker",
+  "jquery.calendars.islamic":        "bower_components/kbw-calendars/dist/js/jquery.calendars.islamic"
 }

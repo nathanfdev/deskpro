@@ -4392,11 +4392,11 @@ class TicketController extends AbstractController
                 'comment_id'   => $comment_id,
                 'comment_type' => $comment_type,
             ]);
-        } else {
-            return $this->createJsonResponse([
-                'success' => false,
-            ]);
         }
+
+        return $this->createJsonResponse([
+            'success' => false,
+        ]);
     }
 
     protected function _getCommentEntityName($typename)

@@ -65,7 +65,7 @@ class NewTicketValidator extends AbstractValidator
     protected $is_resolved = false;
 
     /**
-     * @param array $page_data
+     * @param Layout $layout
      */
     public function setLayout(Layout $layout)
     {

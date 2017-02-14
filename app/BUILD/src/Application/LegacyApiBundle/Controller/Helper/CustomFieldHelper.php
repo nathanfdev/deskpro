@@ -58,37 +58,42 @@ class CustomFieldHelper
 
     /**
      * @param CustomDefAbstract $field
-     * @param $form_data
+     * @param $formData
      *
      * @throws \Exception
      */
-    public function saveFormToField(CustomDefAbstract $field, array $form_data)
+    public function saveFormToField(CustomDefAbstract $field, array $formData)
     {
-        $basetype    = Util::getBaseClassname($field['handler_class']);
-        $model_class = 'Application\\LegacyApiBundle\\Form\\CustomField\\Model\\'.$basetype.'Field';
-        $type_class  = 'Application\\LegacyApiBundle\\Form\\CustomField\\Type\\'.$basetype.'FieldType';
+        $baseType    = Util::getBaseClassname($field['handler_class']);
+        $modelClass = 'Application\\LegacyApiBundle\\Form\\CustomField\\Model\\'.$baseType.'Field';
+        $typeClass  = 'Application\\LegacyApiBundle\\Form\\CustomField\\Type\\'.$baseType.'FieldType';
 
-        if (!isset($form_data['choices_structure'])) {
-            $form_data['choices_structure'] = [];
+        if (!isset($formData['choices_structure'])) {
+            $formData['choices_structure'] = [];
         }
 
-        $editfield = new $model_class($field);
-        $formtype  = new $type_class();
-        $form      = $this->controller->getContainer()->get('form.factory')->create($formtype, $editfield);
+        $editField = new $modelClass($field);
+        $formType  = new $typeClass();
+        $form      = $this->controller->getContainer()->get('form.factory')->create($formType, $editField);
 
         $this->em->getConnection()->beginTransaction();
         try {
             if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-                $editfield->choices_structure = $form_data['choices_structure'];
-                $editfield->default_option    = @$form_data['default_option'];
+                $editField->choices_structure = $formData['choices_structure'];
+                $editField->default_option    = @$formData['default_option'];
             }
 
             // todo
-            if (empty($form_data['handler_class'])) {
-                $form_data['handler_class'] = $editfield->handler_class ?: $field['handler_class'];
+            if (empty($formData['handler_class'])) {
+                $formData['handler_class'] = $editField->handler_class ?: $field['handler_class'];
             }
-            $form->submit($form_data);
-            $editfield->save();
+            $property = 'calendar';
+            if (property_exists($modelClass, $property) && array_key_exists($property, $formData)) {
+                $editField->calendar = $formData[$property];
+            }
+
+            $form->submit($formData);
+            $editField->save();
 
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
