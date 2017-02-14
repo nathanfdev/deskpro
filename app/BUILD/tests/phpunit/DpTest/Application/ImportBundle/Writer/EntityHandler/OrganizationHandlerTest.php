@@ -238,39 +238,6 @@ class OrganizationHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('http://urlupdated', $entity->getContactData()->first()->getField1());
     }
 
-    public function test_remove_contact_data()
-    {
-        $websiteModel1 = new Model\ContactData\Website();
-        $websiteModel1->setComment('comment');
-        $websiteModel1->setUrl('http://url.com');
-
-        $websiteModel2 = new Model\ContactData\Website();
-        $websiteModel2->setComment('comment');
-        $websiteModel2->setUrl('http://url2.com');
-
-        $model = $this->createBaseModel();
-        $model->getContactData()->setWebsite([$websiteModel1, $websiteModel2]);
-
-        $this->writer->writeData($model);
-        $this->em()->clear();
-
-        $entity = $this->getBaseEntity();
-
-        $this->assertNotNull($entity);
-        $this->assertCount(2, $entity->getContactData());
-
-        $model->getContactData()->setWebsite([$websiteModel2]);
-
-        $this->writer->writeData($model);
-        $this->em()->clear();
-
-        $entity = $this->getBaseEntity();
-
-        $this->assertNotNull($entity);
-        $this->assertCount(1, $entity->getContactData());
-        $this->assertEquals('http://url2.com', $entity->getContactData()->first()->getField1());
-    }
-
     /**
      * @return Model\Organization
      */

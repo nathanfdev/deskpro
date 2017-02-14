@@ -37,9 +37,9 @@ namespace Application\DeskPRO\Entity;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use libphonenumber\PhoneNumberUtil;
 use Orb\Util\PhoneNumbers;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * A Phone Number that is registered somewhere in the system (people can have many phone numbers).
@@ -298,10 +298,17 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    /**
+     * @param string $region
+     *
+     * @return $this
+     */
     public function setRegion($region)
     {
         $region = strtoupper($region);
         $this->setModelField('region', $region);
+
+        return $this;
     }
 
     /**
@@ -392,7 +399,7 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(
             [
                 'fieldName'  => 'guessed_type',
-                'type'       => 'integer',
+                'type'       => 'string',
                 'precision'  => 10,
                 'scale'      => 0,
                 'nullable'   => false,

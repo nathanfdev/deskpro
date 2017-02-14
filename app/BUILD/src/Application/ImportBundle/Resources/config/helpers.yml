@@ -44,9 +44,24 @@ services:
     tags:
       - { name: dp.importer.writer.helper }
 
-  dp.importer.writer.helper.contact_data:
-    class: Application\ImportBundle\Writer\Helper\ContactDataHelper
-    arguments: ["@dp.importer.writer.helper.create_entity", "@dp.importer.entity_persister",  "@dp.importer_logger"]
+  dp.importer.writer.helper.person_contact_data:
+    class: Application\ImportBundle\Writer\Helper\PersonContactDataHelper
+    arguments:
+      - "@dp.importer.writer.mapper.phone_number"
+      - "@dp.importer.writer.mapper.person_contact_data"
+      - "@dp.importer.writer.helper.create_entity"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.organization_contact_data:
+    class: Application\ImportBundle\Writer\Helper\OrganizationContactDataHelper
+    arguments:
+      - "@dp.importer.writer.mapper.organization_contact_data"
+      - "@dp.importer.writer.helper.create_entity"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
     tags:
       - { name: dp.importer.writer.helper }
 
