@@ -5,6 +5,7 @@ import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
 import { Segment, SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
+import { loadActiveTabs } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/chatsActions';
 import {
   AgentList,
   DepartmentList,
@@ -39,7 +40,8 @@ export default class IMOverlay extends React.Component {
     teamsLoaded:        PropTypes.bool.isRequired,
     departmentsLoaded:  PropTypes.bool.isRequired,
     agentsLoaded:       PropTypes.bool.isRequired,
-    groupLoaded:        PropTypes.bool.isRequired
+    groupLoaded:        PropTypes.bool.isRequired,
+    dispatch:           PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -48,6 +50,16 @@ export default class IMOverlay extends React.Component {
       filter: ''
     };
     this.onListFilter = this.onListFilter.bind(this);
+  }
+
+  componentWillMount() {
+    const { dispatch } = this.props;
+    dispatch(loadActiveTabs());
+    if (window.DeskPRO_Window && window.DeskPRO_Window.TabBar) {
+      window.DeskPRO_Window.TabBar.addEvent('addTab', () => dispatch(loadActiveTabs()));
+      window.DeskPRO_Window.TabBar.addEvent('closeTab', () => dispatch(loadActiveTabs()));
+      window.DeskPRO_Window.TabBar.addEvent('removeTab', () => dispatch(loadActiveTabs()));
+    }
   }
 
   onListFilter(filter) {

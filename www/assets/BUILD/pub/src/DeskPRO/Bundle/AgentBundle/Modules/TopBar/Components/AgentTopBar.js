@@ -498,6 +498,7 @@ export class AgentTopBar extends React.Component {
           onFocus={onSearchFocus}
           onBlur={onSearchBlur}
           searchQuery={searchQuery}
+          dispatch={this.props.dispatch}
         >
           <IMButton />
         </IMOverlay>

@@ -6,7 +6,7 @@ import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 import { setImMe, loadDrafts } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
-import { loadActiveTabs, hideChat } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/chatsActions';
+import { hideChat } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/chatsActions';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { setVoiceTokens, setVoiceActivities } from '../../Voice/Actions/clientActions';
 
@@ -98,15 +98,7 @@ export const preloadData    = createAction(
             dispatch(setImMe(data.me.person));
             dispatch(setupActionAlerts(data.alerts));
             dispatch(loadDrafts());
-            dispatch(loadActiveTabs());
-
             // a simple way to subscribe TabBars events
-
-            if (DeskPRO_Window.TabBar) { // eslint-disable-line no-undef
-              DeskPRO_Window.TabBar.addEvent('addTab', () => dispatch(loadActiveTabs())); // eslint-disable-line no-undef
-              DeskPRO_Window.TabBar.addEvent('closeTab', () => dispatch(loadActiveTabs())); // eslint-disable-line no-undef
-              DeskPRO_Window.TabBar.addEvent('removeTab', () => dispatch(loadActiveTabs())); // eslint-disable-line no-undef
-            }
 
             const hiddenChats = localStorage.getItem('hiddenChats') ? JSON.parse(localStorage.getItem('hiddenChats')) : {};
             Object.keys(hiddenChats).forEach((key) => {
