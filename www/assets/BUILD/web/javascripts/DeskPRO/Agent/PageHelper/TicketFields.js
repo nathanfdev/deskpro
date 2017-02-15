@@ -56,15 +56,15 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				return $field.filter(':checked').map(function(i, el) { return el.value; }).get();
 			},
 			getTicketFieldValue: function(fieldId) {
-        fieldId = (fieldId || '').replace('ticket_field_');
+        fieldId = ((fieldId || '')+'').replace('ticket_field_');
 				return this.getFieldValue('custom_fields[field_' + fieldId + ']');
 			},
 			getUserFieldValue: function(fieldId) {
-        fieldId = (fieldId || '').replace('user_field_');
+        fieldId = ((fieldId || '')+'').replace('user_field_');
 				return this.getFieldValue('custom_person_fields[field_' + fieldId + ']');
 			},
 			getOrgFieldValue: function(fieldId) {
-				fieldId = (fieldId || '').replace('org_field_');
+				fieldId = ((fieldId || '')+'').replace('org_field_');
 				return this.getFieldValue('custom_org_fields[field_' + fieldId + ']');
 			}
 		};
