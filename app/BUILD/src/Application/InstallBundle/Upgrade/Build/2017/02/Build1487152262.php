@@ -30,7 +30,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 use DeskPRO\Component\Util\RandUtils;
 
-class Build1486138400 extends AbstractBuild
+class Build1487152262 extends AbstractBuild
 {
     /**
      * @throws \Throwable
@@ -41,7 +41,7 @@ class Build1486138400 extends AbstractBuild
             $this->out('Copying old IM messages');
             $this->copyIM();
         } else {
-            $this->out('Skip IM messages copy. Feature is not enabled');
+            $this->out('Skip IM messages copy. Experimental feature is not enabled');
         }
     }
 
