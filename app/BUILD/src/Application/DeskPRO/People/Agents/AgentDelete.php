@@ -34,41 +34,53 @@
 
 namespace Application\DeskPRO\People\Agents;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Usergroup;
+use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
+use DeskPRO\Bundle\AuditBundle\Log\AuditLogService;
+use DeskPRO\Component\Util\TypeUtils;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
 class AgentDelete
 {
-    /** @var \Application\DeskPRO\Entity\Person */
+    /**
+     * @var Person
+     */
     private $agent;
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
     private $em;
 
     /**
-     * @var \Application\DeskPRO\DBAL\Connection
+     * @var Connection
      */
     private $db;
 
     /**
-     * @param Person        $agent
-     * @param EntityManager $em
-     *
-     * @throws \InvalidArgumentException
+     * @var AuditLogService
      */
-    public function __construct(Person $agent, EntityManager $em)
+    private $auditService;
+
+    /**
+     * @param Person          $agent
+     * @param EntityManager   $em
+     * @param AuditLogService $auditService
+     */
+    public function __construct(Person $agent, EntityManager $em, $auditService)
     {
         if (!$agent->is_agent) {
             throw new \InvalidArgumentException();
         }
 
-        $this->agent = $agent;
-        $this->em    = $em;
-        $this->db    = $em->getConnection();
+        $this->agent        = $agent;
+        $this->em           = $em;
+        $this->db           = $em->getConnection();
+        $this->auditService = $auditService;
     }
 
     /**
@@ -98,14 +110,16 @@ class AgentDelete
                 WHERE person_id = ?
             ', [$this->agent->id]);
 
+            /** @var \Application\DeskPRO\EntityRepository\Usergroup $userGroupRepository */
+            $userGroupRepository = $this->em->getRepository(Usergroup::class);
             // Agent groups
-            $agent_groups = $this->em->getRepository('DeskPRO:Usergroup')->getAgentUsergroups();
-            if ($agent_groups) {
-                $agent_group_ids = Arrays::flattenToIndex($agent_groups, 'id');
+            $agentGroups = $userGroupRepository->getAgentUsergroups();
+            if ($agentGroups) {
+                $agentGroupIds = Arrays::flattenToIndex($agentGroups, 'id');
                 $this->db->executeUpdate('
                     DELETE FROM person2usergroups
                     WHERE person_id = ? AND usergroup_id IN (?)
-                ', [$this->agent->id, $agent_group_ids], [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
+                ', [$this->agent->id, $agentGroupIds], [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
             }
 
             // Assigned tickets
@@ -141,6 +155,18 @@ class AgentDelete
             $this->db->rollback();
             throw $e;
         }
+
+        $auditLog = new AuditLog();
+        $auditLog
+            ->setAction('agent.downgrade')
+            ->setPerformerId(App::getCurrentPerson() ? App::getCurrentPerson()->getId() : 0)
+            ->setDescription(sprintf('Agent with email: %s downgraded to user', $this->agent->getEmail()))
+            ->setDateCreated(new \DateTime())
+            ->setObjectType(TypeUtils::getBaseTypeName($this->agent))
+            ->setObjectId($this->agent->getId())
+            ->setObjectName(sprintf('Agent "%s" downgraded', $this->agent->getEmail()))
+            ->setPerformerName(App::getCurrentPerson() ? App::getCurrentPerson()->getDisplayName() : '');
+        $this->auditService->write($auditLog);
 
         $this->clearSessions();
 

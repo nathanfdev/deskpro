@@ -55,6 +55,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -1071,8 +1072,7 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
      *
-     * @return JsonResponse
-     *
+     * @return JsonResponse|Response
      *
      * SWG\Api(
      * 	path="/agents/{id}/delete",
@@ -1092,7 +1092,6 @@ class AgentsController extends AbstractController implements ProtectedController
      *      )
      *  )
      * )
-
      * SWG\Api(
      * 	path="/agents/{id}/delete/to-user",
      * 	SWG\Operation(
@@ -1114,7 +1113,8 @@ class AgentsController extends AbstractController implements ProtectedController
      */
     public function deleteAgentAction($id, $mode)
     {
-        $agent = $this->em->find('DeskPRO:Person', $id);
+        /** @var Person $agent */
+        $agent = $this->em->find(Person::class, $id);
 
         if (!$agent || !$agent->is_agent) {
             throw $this->createNotFoundException();
@@ -1124,7 +1124,7 @@ class AgentsController extends AbstractController implements ProtectedController
             return $this->createApiErrorResponse('no_delete_self', 'You cannot delete yourself');
         }
 
-        $deleter = new AgentDelete($agent, $this->em);
+        $deleter = new AgentDelete($agent, $this->em, $this->get('audit_log.service'));
 
         switch ($mode) {
             case 'user':
@@ -1372,7 +1372,7 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function bulkLicenseCheckAction()
     {
