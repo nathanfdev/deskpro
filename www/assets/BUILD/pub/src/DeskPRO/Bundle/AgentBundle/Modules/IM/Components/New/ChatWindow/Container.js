@@ -382,6 +382,14 @@ class Container extends React.Component {
   render() {
     const { isOpen, loadingMessages, onScroll, markNewMessages, searchQuery, onAgentClick } = this.props;
     const { current, messages, me, agents, teams, departments } = this.props;
+    const header = this.getHeader();
+    let enabled = true;
+    if (current.get('chat_type') === 'agent') {
+      const agentId = this.headerHelper.getAgentId(current);
+      if (agentId && !agents.get(agentId)) {
+        enabled = false;
+      }
+    }
 
     return (
       <Detached
@@ -391,7 +399,7 @@ class Container extends React.Component {
         positionMy="left-43 top-2"
       >
         <div className="ui popup left bottom im chat drawer">
-          <div className="im header">{this.getHeader()}</div>
+          <div className="im header">{header}</div>
           {this.searchHeader()}
           {this.groupHeader()}
           <div className="box">
@@ -409,7 +417,7 @@ class Container extends React.Component {
               onAgentClick={onAgentClick}
             />
           </div>
-          <div className="reply">
+          {enabled ? (<div className="reply">
             <form onSubmit={this.handleSubmit}>
               <RteEditor
                 inline
@@ -455,7 +463,7 @@ class Container extends React.Component {
               : null
             }
             {Object.keys(this.props.activeTabs).length ? this.renderAttachList() : null}
-          </div>
+          </div>) : null }
         </div>
       </Detached>
     );
