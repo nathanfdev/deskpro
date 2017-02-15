@@ -21,6 +21,7 @@ class Container extends React.Component {
   static propTypes = {
     me:              PropTypes.object.isRequired,
     agents:          PropTypes.object.isRequired,
+    people:          PropTypes.object.isRequired,
     departments:     PropTypes.object.isRequired,
     teams:           PropTypes.object.isRequired,
     current:         PropTypes.object.isRequired,
@@ -124,8 +125,8 @@ class Container extends React.Component {
   };
 
   getHeader() {
-    const { agents, teams, departments, current, me, openGroupDrawer } = this.props;
-    const props = { agents, teams, departments, current, me, openGroupDrawer };
+    const { agents, people, teams, departments, current, me, openGroupDrawer } = this.props;
+    const props = { agents, people, teams, departments, current, me, openGroupDrawer };
 
     if (!this.headerHelper) {
       this.headerHelper = new HeaderHelper(props);

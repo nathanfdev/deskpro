@@ -79,8 +79,8 @@ class TopBarRecentImList extends RecentList {
   }
 
   getHeaderHelper(chat) {
-    const { agents, departments, teams, me } = this.props;
-    const props = { agents, departments, teams, me, current: chat };
+    const { agents, people, departments, teams, me } = this.props;
+    const props = { agents, people, departments, teams, me, current: chat };
 
     if (!this.headerHelper) {
       this.headerHelper = new HeaderHelper(props);

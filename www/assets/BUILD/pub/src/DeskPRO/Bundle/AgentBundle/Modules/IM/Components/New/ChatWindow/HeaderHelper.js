@@ -1,7 +1,6 @@
 import React from 'react';
 
-export default class HeaderHelper
-{
+export default class HeaderHelper {
   constructor(props) {
     this.props = props;
   }
@@ -17,7 +16,7 @@ export default class HeaderHelper
     const agent =  agents.get(agentId);
     return [
       this.getAgentHeaderText(chat),
-      <i className="icon group add" onClick={() => { openGroupDrawer([agent.get('id')]); }} />
+      agent ? <i className="icon group add" onClick={() => { openGroupDrawer([agent.get('id')]); }} /> : null
     ];
   }
 
@@ -36,7 +35,9 @@ export default class HeaderHelper
 
   getAgentHeaderText(chat) {
     const agentId = this.getAgentId(chat);
-    return this.props.agents.getIn([agentId, 'name']);
+    return this.props.agents.getIn([agentId, 'name'])
+      ? this.props.agents.getIn([agentId, 'name'])
+      : this.props.people.getIn([agentId, 'name']);
   }
 
   getDepartmentHeader(chat) {
