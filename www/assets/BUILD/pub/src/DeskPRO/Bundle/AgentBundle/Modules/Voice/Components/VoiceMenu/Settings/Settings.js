@@ -2,7 +2,6 @@ import React from 'react';
 import Accordion from 'DeskPRO/Component/Semantic/Accordion/Accordion';
 import QueuesToggleContainer from './QueuesToggleContainer';
 import Volume from './Volume';
-import CallForward from './CallForward';
 import Voicemail from './Voicemail';
 
 class Settings extends React.Component {
@@ -19,11 +18,6 @@ class Settings extends React.Component {
           title:   'Ringing volume',
           icon:    'fa fa-volume-up',
           content: <Volume />
-        },
-        {
-          title:   'Call forwarding',
-          icon:    'fa fa-mail-forward',
-          content: <CallForward />
         },
         {
           title:   'Voicemail',
