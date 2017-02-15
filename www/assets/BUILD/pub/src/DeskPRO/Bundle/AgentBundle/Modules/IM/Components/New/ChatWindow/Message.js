@@ -6,8 +6,7 @@ import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { darkerColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import AvatarHelper from '../IMTabs/AvatarHelper';
 
-class Message extends React.Component
-{
+class Message extends React.Component {
   static propTypes = {
     me:           PropTypes.object.isRequired,
     message:      PropTypes.object.isRequired,
@@ -30,15 +29,6 @@ class Message extends React.Component
       </div>
     );
   }
-
-  // static formatMessage(message) {
-  //   // it's just a short version of AgentChatWin::formatMessage
-  //   // it seems, that nothing but only tickets mentions are used.
-  //   const re = new RegExp('\\{\\{\\s*t\\-([0-9]+)\\s*\\}\\}', 'g');
-  //   let newMessage = message.replace(re, `<a data-route="page:${window.BASE_URL}agent/tickets/$1">Ticket#$1</a>`);
-  //   newMessage = newMessage.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target="_blank">$1</a>');
-  //   return newMessage;
-  // }
 
   // it's just a copy paste version of AgentChatWin::formatMessage
   static formatMessage(message) {
@@ -111,12 +101,22 @@ class Message extends React.Component
       {this.dateSep()}
       {my || searchQuery ? this.timestamp() : null}
       <div className="message">
-        {searchQuery ? <div className="avatar wrapper">{AvatarHelper.renderAgentAvatar(agent, 20)}</div> : null}
+        {
+          searchQuery
+          ? (<div className="avatar wrapper">
+            {agent ? AvatarHelper.renderAgentAvatar(agent, 20) : AvatarHelper.renderAvatar(message.person_name, message.person, 20)}
+          </div>)
+          : null
+        }
         {!my && !searchQuery
           ? (
             <div
-              style={{ color: darkerColor(agent.get('id'), 0.2) }}
-              onClick={() => onAgentClick(agent.get('id'), 'agent')}
+              style={{ color: darkerColor(message.person, 0.2) }}
+              onClick={() => {
+                if (agent) {
+                  onAgentClick(agent.get('id'), 'agent');
+                }
+              }}
               className="agent name"
             >
               {message.person_name}

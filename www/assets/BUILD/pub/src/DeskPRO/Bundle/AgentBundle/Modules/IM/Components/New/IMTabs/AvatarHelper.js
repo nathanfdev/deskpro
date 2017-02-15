@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import {
   Avatar,
   DepartmentAvatar,
@@ -7,8 +8,7 @@ import {
 } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 import { chooseColor, darkerColor, colorLuminance } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 
-class AvatarHelper
-{
+class AvatarHelper {
   static renderDepartmentAvatar(department) {
     return <DepartmentAvatar department={department} size={24} className="ui avatar image im" />;
   }
@@ -17,11 +17,12 @@ class AvatarHelper
     return <AgentTeamAvatar agentTeam={team} size={24} className="ui avatar image im" />;
   }
 
-  static renderAgentAvatar(agent, size = 24) {
+  static renderAgentAvatar(agent, size = 24, className = []) {
     return (<PersonAvatar
       color={chooseColor(agent.get('id'))}
+      borderColor={darkerColor(agent.get('id'), 0.2)}
       person={agent} size={size}
-      className="ui avatar image im"
+      className={classNames('ui avatar image im', className)}
     />);
   }
 
@@ -63,6 +64,26 @@ class AvatarHelper
     return <Avatar {...props} />;
   }
 
+  static renderAvatar(text, id, size = 24, className = []) {
+    const split = text.split(' ');
+    let avatarText;
+    if (split.length > 1) {
+      avatarText = split[0].toUpperCase() + split[1].toUpperCase();
+    } else {
+      avatarText = text.substr(0, 2);
+    }
+    const props = {
+      size,
+      color:       chooseColor(id),
+      borderColor: darkerColor(id),
+      urlPattern:  null,
+      gravatar:    null,
+      text:        avatarText || '?',
+      className:   classNames('ui avatar image im', className)
+    };
+
+    return <Avatar {...props} />;
+  }
 }
 
 export default AvatarHelper;

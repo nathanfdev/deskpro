@@ -21,6 +21,7 @@ class TopBarRecentImList extends RecentList {
     onRecentClick:     PropTypes.func.isRequired,
     me:                PropTypes.object.isRequired,
     agents:            PropTypes.object.isRequired,
+    people:            PropTypes.object.isRequired,
     departments:       PropTypes.object.isRequired,
     teams:             PropTypes.object.isRequired,
     recentLoaded:      PropTypes.bool.isRequired,
@@ -107,7 +108,7 @@ class TopBarRecentImList extends RecentList {
   }
 
   renderAgent(chat) {
-    const { me, agents, onRecentClick } = this.props;
+    const { me, agents, people, onRecentClick } = this.props;
     let agentId;
     for (const id of chat.get('agents')) {
       if (id !== me.get('id')) {
@@ -115,14 +116,21 @@ class TopBarRecentImList extends RecentList {
         break;
       }
     }
-    const agent = agents.get(agentId);
-    if (!agent) {
+    let agent = agents.get(agentId);
+    let active = true;
+    const person = people.get(agentId);
+    if (!agent && !person) {
       return null;
+    }
+
+    if (!agent) {
+      agent = person;
+      active = false;
     }
 
     const className = ['ui avatar image im'];
 
-    if (!agent.get('online')) {
+    if (!active || !agent.get('online')) {
       className.push('offline');
     }
 
@@ -142,7 +150,7 @@ class TopBarRecentImList extends RecentList {
           person={agent} size={24}
           className={classNames(className)}
         />
-        {(agent.get('online')) ? <span className="agent-online" /> : null}
+        {(active && agent.get('online')) ? <span className="agent-online" /> : null}
         {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
       </span>

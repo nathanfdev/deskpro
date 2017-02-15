@@ -4,8 +4,6 @@ import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
-import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
-import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { List } from 'DeskPRO/Component/Semantic/List';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
@@ -13,6 +11,7 @@ import emojione from 'emojione';
 import MessageList from './MessageList';
 import HeaderHelper from './HeaderHelper';
 import EmojiBox from './EmojiBox';
+import AvatarHelper from '../IMTabs/AvatarHelper';
 
 emojione.imagePathSVGSprites = `./..${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg`;
 emojione.imageType = 'png';
@@ -22,6 +21,7 @@ class Container extends React.Component {
   static propTypes = {
     me:              PropTypes.object.isRequired,
     agents:          PropTypes.object.isRequired,
+    people:          PropTypes.object.isRequired,
     departments:     PropTypes.object.isRequired,
     teams:           PropTypes.object.isRequired,
     current:         PropTypes.object.isRequired,
@@ -276,7 +276,7 @@ class Container extends React.Component {
   }
 
   groupHeader() {
-    const { current, agents, onAgentClick, openGroupDrawer, me } = this.props;
+    const { current, agents, people, onAgentClick, openGroupDrawer, me } = this.props;
     const { expandGroupHeader, searching } = this.state;
 
     let localAgents = current.get('agents');
@@ -305,21 +305,30 @@ class Container extends React.Component {
                 return null;
               }
 
-              const className = ['ui avatar image im'];
-              const agent = agents.get(agentId);
-              if (!agent.get('online')) {
+              const className = [];
+              let agent = agents.get(agentId);
+              const person = people.get(agentId);
+              let active = true;
+              if (!agent && !person) {
+                return (
+                  <span key={`agent_span_${agentId}`}>
+                    {AvatarHelper.renderAvatar(`#${agentId}`, agentId, 24)}
+                  </span>
+                );
+              }
+
+              if (!agent) {
+                agent = person;
+                active = false;
+              }
+
+              if (!active || !agent.get('online')) {
                 className.push('offline');
               }
 
               return (
                 <span key={`agent_span_${agentId}`} onClick={() => onAgentClick(agentId, 'agent')}>
-                  <PersonAvatar
-                    key={`agent_${agentId}`}
-                    person={agent}
-                    size={24}
-                    className={classNames(className)}
-                    color={chooseColor(agent)}
-                  />
+                  {AvatarHelper.renderAgentAvatar(agent, 24, className)}
                 </span>
               );
             }
@@ -351,24 +360,8 @@ class Container extends React.Component {
   }
 
   handleAttach(item) {
-    // let message = '';
-    // switch (item.tabType) {
-    //   case 'person':
-    //     message += `{{p-${item.page.meta.person_id}}}: `;
-    //     break;
-    //   case 'ticket':
-    //     message += `{{t-${item.page.meta.ticket_id}}}: `;
-    //     break;
-    //   case 'article':
-    //     message += `{{a-${item.page.meta.article_id}}}: `;
-    //     break;
-    //   default:
-    //     message += 'unknown: ';
-    // }
     const propertyName = `${item.tabType}_id`;
-
     const message = `{{${item.tabType.charAt(0).toLowerCase()}-${item.page.meta[propertyName]}}}: ${item.title}`;
-
     this.props.onSubmit(message);
   }
 
