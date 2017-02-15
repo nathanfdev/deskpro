@@ -49,6 +49,19 @@ Feature: /ticket_forms validation
     And the JSON node "errors.fields.attachments.fields.attachments_0.fields.blob_auth.errors" should have 1 element
     And the JSON node "errors.fields.attachments.fields.attachments_0.fields.blob_auth.errors[0].code" should be equal to "required"
 
+  Scenario: I sent attachment with unexpected blob auth code format
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "attachments": [
+    {"blob_auth": {"val": 1}}
+  ]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.attachments.fields.attachments_0.errors" should have 1 element
+    And the JSON node "errors.fields.attachments.fields.attachments_0.errors[0].code" should be equal to the string "no_uploaded_file"
+
   Scenario: I check that blob was not found
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
     """
