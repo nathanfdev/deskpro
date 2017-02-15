@@ -190,6 +190,21 @@ class NewFeedbackType extends AbstractType
     }
 
     /**
+     * {@inheritdoc}
+     *
+     * @param FormEvent $event
+     */
+    public function onPreSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (isset($data['content']) && is_string($data['content'])) {
+            $data['content'] = nl2br(htmlspecialchars($data['content']));
+        }
+
+        $event->setData($data);
+    }
+
+    /**
      * @return array
      */
     protected function getCustomDataForms()
@@ -221,12 +236,5 @@ class NewFeedbackType extends AbstractType
     protected function phrase($name, array $vars = [])
     {
         return $this->languageManager->phrase($name, $vars);
-    }
-
-    public function onPreSubmit(FormEvent $event)
-    {
-        $data            = $event->getData();
-        $data['content'] = nl2br(htmlspecialchars(@$data['content']));
-        $event->setData($data);
     }
 }
