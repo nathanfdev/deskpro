@@ -9,6 +9,7 @@ import './AgentBundle/Modules/Application/onboarding';
 import './AgentBundle/Modules/Common/NavFrame/Section';
 import './AgentBundle/Modules/Common/NavFrame/grouping-control';
 import './AgentBundle/Modules/Common/NavFrame/Lists/NestedList';
+import './AgentBundle/Modules/Publish/publish';
 import './AgentBundle/Frames/nav';
 import './AgentBundle/Modules/Voice/index';
 import './AgentBundle/Modules/Tickets/tickets';

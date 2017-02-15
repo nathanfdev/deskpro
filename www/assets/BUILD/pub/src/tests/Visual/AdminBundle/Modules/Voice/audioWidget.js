@@ -1,5 +1,5 @@
 import React from 'react';
-import AudioWidget from 'DeskPRO/Bundle/AdminBundle/Modules/Voice/Components/Common/AudioWidget/AudioWidget';
+import AudioWidget from 'DeskPRO/Component/AudioWidget/AudioWidget';
 import { storiesOf } from '@kadira/storybook';
 import { adminCss, redux } from '../../../decorators';
 
