@@ -35,7 +35,11 @@ define [
       if w.parent != window
         w = w.parent
       l = w.location
-      @Api.sendGet('check_url', {scheme: l.protocol.replace(':', ''), host: encodeURIComponent(l.hostname), port: l.port || 80}).then((res) =>
+      if l.protocol.replace(':', '') == 'http'
+        defaultPort = 80
+      else
+        defaultPort = 443
+      @Api.sendGet('check_url', {scheme: l.protocol.replace(':', ''), host: encodeURIComponent(l.hostname), port: l.port || defaultPort}).then((res) =>
         @$scope.valid_url = res.data.valid
       )
 
