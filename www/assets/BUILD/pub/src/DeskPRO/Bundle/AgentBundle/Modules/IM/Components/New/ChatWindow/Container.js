@@ -21,7 +21,6 @@ class Container extends React.Component {
   static propTypes = {
     me:              PropTypes.object.isRequired,
     agents:          PropTypes.object.isRequired,
-    people:          PropTypes.object.isRequired,
     departments:     PropTypes.object.isRequired,
     teams:           PropTypes.object.isRequired,
     current:         PropTypes.object.isRequired,
@@ -276,10 +275,10 @@ class Container extends React.Component {
   }
 
   groupHeader() {
-    const { current, agents, people, onAgentClick, openGroupDrawer, me } = this.props;
+    const { current, agents, onAgentClick, openGroupDrawer, me } = this.props;
     const { expandGroupHeader, searching } = this.state;
 
-    let localAgents = current.get('agents');
+    let localAgents = current.get('agents').filter(item => agents.get(item));
     localAgents = expandGroupHeader ? localAgents : localAgents.slice(0, 9);
 
     if (current.get('chat_type') === 'group' && !searching) {
@@ -306,23 +305,13 @@ class Container extends React.Component {
               }
 
               const className = [];
-              let agent = agents.get(agentId);
-              const person = people.get(agentId);
-              let active = true;
-              if (!agent && !person) {
-                return (
-                  <span key={`agent_span_${agentId}`}>
-                    {AvatarHelper.renderAvatar(`#${agentId}`, agentId, 24)}
-                  </span>
-                );
-              }
+              const agent = agents.get(agentId);
 
               if (!agent) {
-                agent = person;
-                active = false;
+                return null;
               }
 
-              if (!active || !agent.get('online')) {
+              if (!agent.get('online')) {
                 className.push('offline');
               }
 
@@ -334,7 +323,7 @@ class Container extends React.Component {
             }
           )}
           <span className="dots" onClick={() => this.setState({ expandGroupHeader: true })}>
-            {current.get('agents').size > 9 && !expandGroupHeader ? '...' : null}
+            {current.get('agents').filter(item => agents.get(item)).size > 9 && !expandGroupHeader ? '...' : null}
           </span>
         </Segment>
       );
