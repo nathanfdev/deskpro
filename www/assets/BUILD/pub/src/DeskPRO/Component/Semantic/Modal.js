@@ -24,7 +24,7 @@ class Modal extends React.Component {
     const { overlayStyles, contentStyles } = this.props;
     const customStyles = {
       overlay: {
-        zIndex:          1005,
+        zIndex:          999999,
         backgroundColor: 'rgba(0, 0, 0, 0.7)',
         ...overlayStyles
       },

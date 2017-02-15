@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
+import AudioWidget from 'DeskPRO/Component/AudioWidget/AudioWidget';
 import ExtensionsHeader from '../ExtensionsHeader';
-import AudioWidget from '../../Common/AudioWidget/AudioWidget';
 import NumberTargetList from '../../Common/NumberTarget/NumberTargetList';
 import AudioWidgetContainer from './AudioWidgetContainer';
 

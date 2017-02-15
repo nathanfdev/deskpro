@@ -521,6 +521,7 @@ class GetMsgScript extends LowScriptAbstract
         $channels[] = 'agent.voice.conference.participant-ignore';
         $channels[] = 'agent.voice.conference.hold';
         $channels[] = 'agent.voice.conference.status';
+        $channels[] = 'agent.voice.voicemail.new-message';
 
         if (isset($_REQUEST['chat_ids']) && is_array($_REQUEST['chat_ids'])) {
             foreach ($_REQUEST['chat_ids'] as $chat_id) {

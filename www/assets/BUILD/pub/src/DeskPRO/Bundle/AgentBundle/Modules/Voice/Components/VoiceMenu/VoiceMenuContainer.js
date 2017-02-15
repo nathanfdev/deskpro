@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { allPeopleSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/people';
 import { voiceAgentsSelector, voiceOnlineAgentsSelector, outboundCallsEnabledSelector, callsEnabledSelector } from '../../Selectors/agents';
 import VoiceMenuDropdown from './VoiceMenuDropdown';
 import { acceptPhoneCall, declinePhoneCall } from '../../Actions/clientActions';
@@ -11,7 +11,7 @@ import { incomingCallSelector, outboundNumberSelector } from '../../Selectors/cl
   me:                   meSelector(state),
   agents:               voiceAgentsSelector(state),
   onlineAgents:         voiceOnlineAgentsSelector(state),
-  people:               collectionSelectorFactory('Person', 'all')(state),
+  people:               allPeopleSelector(state),
   incomingCall:         incomingCallSelector(state),
   outboundCallsEnabled: outboundCallsEnabledSelector(state),
   outboundNumber:       outboundNumberSelector(state),

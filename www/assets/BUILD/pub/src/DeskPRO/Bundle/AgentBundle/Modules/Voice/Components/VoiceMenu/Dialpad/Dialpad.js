@@ -19,12 +19,28 @@ class Dialpad extends React.Component {
     this.state = {
       formData: createValue({
         value: {
-          call_from: '',
+          call_from: props.numbers && props.numbers.size > 1 ? '' : props.numbers.first().get('number'),
           call_to:   props.outboundNumber
         },
         onChange: this.onChange
       })
     };
+  }
+
+  componentWillReceiveProps(newProps) {
+    const { formData } = this.state;
+
+    if (newProps.outboundNumber) {
+      this.setState({
+        formData: createValue({
+          value: {
+            ...formData.value,
+            call_to: newProps.outboundNumber
+          },
+          onChange: this.onChange
+        })
+      });
+    }
   }
 
   onChange = (formData) => {

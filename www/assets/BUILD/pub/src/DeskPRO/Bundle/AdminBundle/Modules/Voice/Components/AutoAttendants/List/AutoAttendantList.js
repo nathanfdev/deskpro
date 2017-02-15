@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
+import { AssetPlayButton } from 'DeskPRO/Component/AudioWidget/PlayButton';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import VoiceTargetNameContainer from '../../Common/NumberTarget/VoiceTargetNameContainer';
-import { AssetPlayButton } from '../../Common/AudioWidget/PlayButton';
 
 class AutoAttendantHeader extends React.Component {
 
@@ -102,8 +102,8 @@ class AutoAttendantRow extends React.Component {
               </VoiceTargetNameContainer>
             )}
           </div>
-          <div className="column auto-attendant-press-options">
-            <div className="press-options">
+          <div className="column press-options">
+            <div className="multiple-press-options">
               {autoAttendant.get('allow_repeat_menu') &&
                 <span className="press-option">
                   Press ‘*’ to repeat the menu <i className="icon checkmark" />

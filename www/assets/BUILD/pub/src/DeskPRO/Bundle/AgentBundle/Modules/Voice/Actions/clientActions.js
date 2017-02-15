@@ -72,9 +72,9 @@ export const voiceBootstrap = createAction(
         dispatch(updateIncomigCall(reservation));
 
         // fetch the ticket info to get assigned agent
-        const ticketId = reservation.task.attributes.deskpro_ticket_id;
+        const callId = reservation.task.attributes.deskpro_call_id;
         const fetchTimeout = setInterval(() => {
-          api.sendGet(`DP_API/tickets/${ticketId}`).success(({ data }) => {
+          api.sendGet(`DP_API/voice_client/phone_call/${callId}/ticket`).success(({ data }) => {
             if (data.agent) {
               clearInterval(fetchTimeout);
 
@@ -113,12 +113,10 @@ export const voiceBootstrap = createAction(
         console.log(error);
       });
       window.Twilio.Device.connect((connection) => {
-        const callId   = connection.message.CallId;
-        const ticketId = connection.message.TicketId;
-
-        // open ticket
-        api.sendPut(`DP_API/voice_client/phone_call/${callId}/assign_agent`).success(() => {
-          window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${ticketId}`);
+        // create and open ticket
+        api.sendPut(`DP_API/voice_client/phone_call/${connection.message.CallId}/assign_agent`).success(({ data }) => {
+          connection.message.TicketId = data.id;
+          window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.id}`);
         });
 
         dispatch(addConnection(connection));
@@ -176,6 +174,18 @@ export const voiceBootstrap = createAction(
         worker.update('ActivitySid', idleSid);
       }
     });
+    messageBroker.addMessageListener('agent.voice.voicemail.new-message', (event) => {
+      const data = event.data;
+
+      dispatch(addToCollection('VoicemailRecord', 'all', [data.data]));
+
+      if (data.linked.voice_phone_call) {
+        dispatch(addToCollection('VoicePhoneCall', 'all',  Object.values(data.linked.voice_phone_call)));
+      }
+      if (data.linked.person) {
+        dispatch(addToCollection('Person', 'all',  Object.values(data.linked.person)));
+      }
+    });
   }
 );
 
@@ -194,20 +204,18 @@ export const acceptPhoneCall = createAction(
       // accept twilio reservation
       incomingCall.accept(() => {
         window.Twilio.Device.connect({
-          From:     from,
-          CallId:   incomingCall.task.attributes.deskpro_call_id,
-          AgentId:  agentId,
-          TicketId: incomingCall.task.attributes.deskpro_ticket_id
+          From:    from,
+          CallId:  incomingCall.task.attributes.deskpro_call_id,
+          AgentId: agentId
         });
       });
     } else {
       // got invite, join the conference
       worker.update('ActivitySid', busySid);
       window.Twilio.Device.connect({
-        From:     from,
-        CallId:   incomingCall.get('call_id'),
-        AgentId:  agentId,
-        TicketId: incomingCall.get('ticket_id')
+        From:    from,
+        CallId:  incomingCall.get('call_id'),
+        AgentId: agentId
       });
     }
   }

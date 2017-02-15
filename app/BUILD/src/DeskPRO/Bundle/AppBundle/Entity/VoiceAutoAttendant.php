@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
@@ -74,14 +75,13 @@ class VoiceAutoAttendant implements EntityInterface, NotifyPropertyChanged
     private $name;
 
     /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER")
      *
      * @JMS\Expose()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceAsset")
      *
      * @Assert\Valid()
      *
-     * @var VoiceAsset
+     * @var AbstractVoiceAsset
      */
     private $audioAsset;
 
@@ -156,7 +156,7 @@ class VoiceAutoAttendant implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return VoiceAsset
+     * @return AbstractVoiceAsset
      */
     public function getAudioAsset()
     {
@@ -164,11 +164,11 @@ class VoiceAutoAttendant implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param VoiceAsset $audioAsset
+     * @param AbstractVoiceAsset $audioAsset
      *
      * @return $this
      */
-    public function setAudioAsset(VoiceAsset $audioAsset = null)
+    public function setAudioAsset(AbstractVoiceAsset $audioAsset = null)
     {
         $this->setModelField('audioAsset', $audioAsset);
 

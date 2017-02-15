@@ -19,6 +19,10 @@ class DialpadContainer extends React.Component {
     this.props.dispatch(dialpadOpened());
   }
 
+  componentWillReceiveProps() {
+    this.props.dispatch(dialpadOpened());
+  }
+
   render() {
     return <Dialpad {...this.props} />;
   }

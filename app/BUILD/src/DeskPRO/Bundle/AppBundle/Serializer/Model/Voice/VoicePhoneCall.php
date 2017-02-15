@@ -156,6 +156,13 @@ class VoicePhoneCall
     private $recording;
 
     /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $duration;
+
+    /**
      * @JMS\Type("deferred<entity<Application\DeskPRO\Entity\Ticket>>")
      *
      * @var Ticket
@@ -185,6 +192,7 @@ class VoicePhoneCall
         $this->dateStarted   = $phoneCall->getDateStarted();
         $this->dateEnded     = $phoneCall->getDateEnded();
         $this->recording     = $phoneCall->getRecording();
+        $this->duration      = $phoneCall->getDuration();
     }
 
     /**

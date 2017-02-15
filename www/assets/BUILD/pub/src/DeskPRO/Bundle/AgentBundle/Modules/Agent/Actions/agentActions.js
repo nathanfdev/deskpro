@@ -3,7 +3,6 @@ import Immutable from 'immutable';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 
 export const setOnlineAgents = createAction(
   'AGENT_SET_ONLINE_AGENTS',
@@ -46,17 +45,16 @@ export const toggleUserChat = createAction(
 
 export const editAgentProfile = createAction(
   'AGENT_EDIT_AGENT_PROFILE',
-  (id, data) => (dispatch, getState) => {
+  data => (dispatch, getState) => {
     const state = getState();
-    const agents = agentsSelector(state);
 
-    let agent = agents.get(id);
-    if (agent) {
-      const agentData = agent.get('agent_data') ? agent.get('agent_data').toJS() : {};
-      agent = agent.set('agent_data', Immutable.fromJS({ ...agentData, ...data }));
-      dispatch(updateCollection('Person', Immutable.List([agent]), 'merge'));
+    let me = meSelector(state);
+    if (me) {
+      const agentData = me.get('agent_data') ? me.get('agent_data').toJS() : {};
+      me = me.set('agent_data', Immutable.fromJS({ ...agentData, ...data }));
+      dispatch(updateCollection('Person', Immutable.List([me]), 'merge'));
     }
 
-    return api.sendPut(`DP_API/agents/${id}/profile`, { agent_data: data });
+    return api.sendPut('DP_API/agents/profile', { agent_data: data });
   }
 );

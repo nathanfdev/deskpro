@@ -125,8 +125,8 @@
         }
       }
 
-      &.auto-attendant-press-options {
-        width: 300px;
+      &.press-options {
+        width: 350px;
       }
 
       &.auto-attendant-dial-numbers {
@@ -211,21 +211,21 @@
           }
         }
 
-        &.auto-attendant-press-options {
+        &.press-options {
           position: relative;
 
-          .press-options {
+          .multiple-press-options {
             position: absolute;
             margin-top: -5px;
+          }
 
-            .press-option {
-              display: block;
-              font-size: 14px;
-              color: #999999;
+          .press-option {
+            display: block;
+            font-size: 14px;
+            color: #999999;
 
-              i.icon {
-                color: #3E78B8;
-              }
+            i.icon {
+              color: #3E78B8;
             }
           }
         }

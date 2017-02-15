@@ -321,3 +321,9 @@ services:
       - "@twilio_adapter"
     tags:
       - { name: form.type }
+
+  form.voice_asset_auth:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetAuthType
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type }

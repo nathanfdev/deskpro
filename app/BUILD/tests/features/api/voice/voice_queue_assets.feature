@@ -6,119 +6,63 @@ Feature: Voice queue assets
     And only the following VoiceQueue records exist:
       | #  | Name    | Routing Model |
       | q1 | Queue 1 | round_robin   |
+    And only the following VoiceTextAsset records exist:
+      | #   | Text       | Language | Auth               |
+      | ta1 | text asset | en-GB    | AAAAAAAAAAAAAAAAAA |
 
-  Scenario: I create text asset
+  Scenario: I set greet asset
     When I send a PUT request to "/api/v2/voice_queues/{q1}" with body:
     """
 {
-  "greet_asset": {
-    "name": "My asset",
-    "type": "text",
-    "text": "my text",
-    "language": "en-GB"
-  }
+  "greet_asset": "AAAAAAAAAAAAAAAAAA"
 }
     """
     Then the response status code should be 204
 
     When I send a GET request to "/api/v2/voice_queues/{q1}"
-    Then the JSON node "data.greet_asset.name" should be equal to the string "My asset"
+    Then the JSON node "data.greet_asset.auth" should be equal to the string "AAAAAAAAAAAAAAAAAA"
     And the JSON node "data.greet_asset.type" should be equal to the string "text"
-    And the JSON node "data.greet_asset.text" should be equal to the string "my text"
+    And the JSON node "data.greet_asset.text" should be equal to the string "text asset"
     And the JSON node "data.greet_asset.language" should be equal to the string "en-GB"
 
-  Scenario Outline: I create blob asset
-    Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
+  Scenario: I set voicemail asset
     When I send a PUT request to "/api/v2/voice_queues/{q1}" with body:
     """
 {
-  "greet_asset": {
-    "name": "My asset",
-    "type": "<type>",
-    "blob": {
-      "blob_auth": "AAAAAAAAAAAAAAAAAA"
-    }
+  "voicemail_asset": "AAAAAAAAAAAAAAAAAA"
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/voice_queues/{q1}"
+    Then the JSON node "data.voicemail_asset.auth" should be equal to the string "AAAAAAAAAAAAAAAAAA"
+
+  Scenario: I set loop asset
+    When I send a PUT request to "/api/v2/voice_queues/{q1}" with body:
+    """
+{
+  "loop_asset": "AAAAAAAAAAAAAAAAAA"
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/voice_queues/{q1}"
+    Then the JSON node "data.loop_asset.auth" should be equal to the string "AAAAAAAAAAAAAAAAAA"
+
+  Scenario: I set uploaded data
+    When I send a PUT request to "/api/v2/voice_queues/{q1}" with body:
+    """
+{
+  "loop_asset": {
+    "id": ~ta1~,
+    "auth": "AAAAAAAAAAAAAAAAAA",
+    "text": "text asset",
+    "language": "en-GB",
+    "type": "text"
   }
 }
     """
     Then the response status code should be 204
 
     When I send a GET request to "/api/v2/voice_queues/{q1}"
-    Then the JSON node "data.greet_asset.name" should be equal to the string "My asset"
-    And the JSON node "data.greet_asset.type" should be equal to the string "<type>"
-    And the JSON node "data.greet_asset.blob" should exist
-    And the JSON node "data.greet_asset.blob.blob_auth" should be equal to the string "AAAAAAAAAAAAAAAAAA"
-
-    Examples:
-      | type   |
-      | upload |
-      | record |
-
-  Scenario: Asset type bad choice validation
-    When I send a PUT request to "/api/v2/voice_queues/{q1}" with body:
-    """
-{
-  "greet_asset": {
-    "name": "My asset",
-    "type": "unknown"
-  }
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.greet_asset.fields.type.errors[0].code" should be equal to the string "bad_choice"
-
-  Scenario: Text asset fields validation
-    When I send a PUT request to "/api/v2/voice_queues/{q1}" with body:
-    """
-{
-  "greet_asset": {
-    "name": "My asset",
-    "type": "text",
-    "text": "",
-    "language": ""
-  }
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.greet_asset.fields.text.errors[0].code" should be equal to the string "required"
-    And the JSON node "errors.fields.greet_asset.fields.language.errors[0].code" should be equal to the string "required"
-
-  Scenario Outline: Upload/record asset blob required validation
-    When I send a PUT request to "/api/v2/voice_queues/{q1}" with body:
-    """
-{
-  "greet_asset": {
-    "name": "My asset",
-    "type": "<type>",
-    "blob": ""
-  }
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.greet_asset.fields.blob.errors[0].code" should be equal to the string "required"
-
-    Examples:
-      | type   |
-      | upload |
-      | record |
-
-  Scenario Outline: Upload/record asset unknown blob validation
-    Given there are no Blob records in the DB
-    And I create blob with auth code "AAAAAAAAAAAAAAAAAA"
-    When I send a PUT request to "/api/v2/voice_queues/{q1}" with body:
-    """
-{
-  "greet_asset": {
-    "name": "My asset",
-    "type": "<type>",
-    "blob": "BBBBBBBBBBBBBBBBBB"
-  }
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.greet_asset.fields.blob.errors[0].code" should be equal to the string "required"
-
-    Examples:
-      | type   |
-      | upload |
-      | record |
+    Then the JSON node "data.loop_asset.auth" should be equal to the string "AAAAAAAAAAAAAAAAAA"
