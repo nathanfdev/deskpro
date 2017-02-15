@@ -37,6 +37,7 @@ class EditQueueContainer extends BaseQueueFormContainer {
         onSubmit={this.onSubmit}
         onDelete={this.onDelete}
         onReturnBack={this.onReturnBack}
+        onCancel={this.onReturnBack}
       />
     );
   }

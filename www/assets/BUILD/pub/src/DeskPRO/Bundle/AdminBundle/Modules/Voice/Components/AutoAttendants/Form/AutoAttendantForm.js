@@ -43,7 +43,7 @@ class AutoAttendantForm extends React.Component {
 
   onCancel = (event) => {
     event.preventDefault();
-    this.setState(this.getDefaultState());
+    this.props.onReturnBack();
   };
 
   getDefaultState() {

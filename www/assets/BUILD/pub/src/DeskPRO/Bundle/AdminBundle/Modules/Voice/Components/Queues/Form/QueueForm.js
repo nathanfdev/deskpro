@@ -19,7 +19,8 @@ class QueueForm extends React.Component {
     ticketDepartments: PropTypes.object,
     onSubmit:          PropTypes.func.isRequired,
     onDelete:          PropTypes.func,
-    saving:            PropTypes.bool
+    saving:            PropTypes.bool,
+    onCancel:          PropTypes.func
   };
 
   constructor(props) {
@@ -48,7 +49,7 @@ class QueueForm extends React.Component {
 
   onCancel = (event) => {
     event.preventDefault();
-    this.setState(this.getDefaultState());
+    this.props.onCancel();
   };
 
   onDelete = (event) => {
@@ -97,7 +98,7 @@ class QueueForm extends React.Component {
   }
 
   render() {
-    const { queueId, accounts, agents, agentTeams, ticketDepartments, saving } = this.props;
+    const { queueId, accounts, agents, agentTeams, ticketDepartments, saving, onCancel } = this.props;
     const { formData } = this.state;
 
     return (
@@ -155,12 +156,13 @@ class QueueForm extends React.Component {
             <button className={classNames('ui button', { loading: saving })}>
               {queueId ? 'Update' : 'Create'}
             </button>
+            {onCancel &&
             <button
               className={classNames('ui basic button cancel-button', { disabled: saving })}
               onClick={this.onCancel}
             >
               Cancel
-            </button>
+            </button>}
 
             {queueId &&
               <span className="voice-delete-button" onClick={this.onDelete}>
