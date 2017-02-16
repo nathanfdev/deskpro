@@ -107,6 +107,24 @@ abstract class ContentAbstract extends DomainObject
     protected $content = '';
 
     /**
+     * The main content originally input, markdown or HTML.
+     *
+     * @var string
+     *
+     * @Assert\NotBlank()
+     */
+    protected $content_input = '';
+
+    /**
+     * The main content originally input type, markdown or HTML.
+     *
+     * @var string
+     *
+     * @Assert\NotBlank()
+     */
+    protected $content_input_type = 'html';
+
+    /**
      * View counts.
      *
      * @var int
@@ -196,7 +214,7 @@ abstract class ContentAbstract extends DomainObject
     protected $_authors = null;
 
     /**
-     * @var \Application\DeskPRO\Labels\LabelManager
+     * @var LabelManager
      */
     protected $_label_manager = null;
 
@@ -412,17 +430,17 @@ abstract class ContentAbstract extends DomainObject
         return $this;
     }
 
-    public function setStatusCode($status_code)
+    public function setStatusCode($statusCode)
     {
-        if (strpos($status_code, 'hidden.') === 0) {
-            $status_code = str_replace('hidden.', '', $status_code);
+        if (strpos($statusCode, 'hidden.') === 0) {
+            $statusCode = str_replace('hidden.', '', $statusCode);
             $this->setModelField('status', 'hidden');
-            $this->setModelField('hidden_status', $status_code);
-            if ($status_code === self::HIDDEN_STATUS_UNPUBLISHED) {
+            $this->setModelField('hidden_status', $statusCode);
+            if ($statusCode === self::HIDDEN_STATUS_UNPUBLISHED) {
                 $this->setModelField('date_published', null);
             }
         } else {
-            $this->setModelField('status', $status_code);
+            $this->setModelField('status', $statusCode);
             $this->setModelField('hidden_status', null);
 
             if (!$this->date_published) {
@@ -498,9 +516,9 @@ abstract class ContentAbstract extends DomainObject
         $content = str_replace('&nbsp;', ' ', $content);
         $content = trim($content);
 
-        $lines_raw = explode("\n", $content);
-        $lines     = [];
-        foreach ($lines_raw as $l) {
+        $linesRaw = explode("\n", $content);
+        $lines    = [];
+        foreach ($linesRaw as $l) {
             $lines[] = trim($l);
         }
 
@@ -508,6 +526,50 @@ abstract class ContentAbstract extends DomainObject
         $content = RegexUtils::safePregReplace("#\n{3,}#", "\n\n", $content);
 
         return $content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentInput()
+    {
+        return $this->content_input;
+    }
+
+    /**
+     * @param string $contentInput
+     *
+     * @return ContentAbstract
+     */
+    public function setContentInput($contentInput)
+    {
+        if (!$contentInput) {
+            $contentInput = '';
+        }
+
+        $this->setModelField('content_input', $contentInput);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentInputType()
+    {
+        return $this->content_input_type;
+    }
+
+    /**
+     * @param string $contentInputType
+     *
+     * @return ContentAbstract
+     */
+    public function setContentInputType($contentInputType)
+    {
+        $this->setModelField('content_input_type', $contentInputType);
+
+        return $this;
     }
 
     /**
@@ -551,31 +613,31 @@ abstract class ContentAbstract extends DomainObject
     /**
      * NOTE: don't use this directly. Instead, use the "content_slug_manager" service to set the slug for you.
      *
-     * @param $new_slug
+     * @param $newSlug
      *
      * @internal this shouldn't be called except by the content_slug_manager
      */
-    public function setSlug($new_slug)
+    public function setSlug($newSlug)
     {
         $history = null;
-        if ($new_slug !== $this->slug && $this->slug) {
+        if ($newSlug !== $this->slug && $this->slug) {
             // if the slug exists in history already, we don't want to add it again
-            $object_slug = $this->slug;
+            $objectSlug = $this->slug;
             if (!$this->slug_history->exists(
-                function ($key, $history) use ($object_slug) {
-                    return $object_slug === $history->getSlug();
+                function ($key, $history) use ($objectSlug) {
+                    return $objectSlug === $history->getSlug();
                 }
             )
             ) {
                 $history = $this->addSlugHistory($this->slug);
             }
         }
-        $this->setModelField('slug', $new_slug);
+        $this->setModelField('slug', $newSlug);
 
         return $history;
     }
 
-    abstract protected function addSlugHistory($old_slug);
+    abstract protected function addSlugHistory($oldSlug);
 
     /**
      * Get an array of authors.
@@ -764,7 +826,7 @@ abstract class ContentAbstract extends DomainObject
     }
 
     /**
-     * @return \Application\DeskPRO\Labels\LabelManager
+     * @return LabelManager
      */
     public function getLabelManager()
     {
@@ -808,9 +870,9 @@ abstract class ContentAbstract extends DomainObject
     }
 
     /**
-     * @param $title
+     * @param string $title
      *
-     * @return ContentAbstract
+     * @return $this
      */
     public function setRealTitle($title)
     {
@@ -823,6 +885,16 @@ abstract class ContentAbstract extends DomainObject
      * @param $content
      *
      * @return ContentAbstract
+     */
+    public function getRealContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return $this
      */
     public function setRealContent($content)
     {
@@ -841,7 +913,6 @@ abstract class ContentAbstract extends DomainObject
 
     /**
      * @return Person
-     * @return $this
      */
     public function getPerson()
     {
@@ -932,8 +1003,8 @@ abstract class ContentAbstract extends DomainObject
 
     public function _preUpdate()
     {
-        foreach ($this->getStateChangeRecorder()->getTouchedFields() as $touched_field) {
-            if (in_array($touched_field, $this->getUpdateFields())) {
+        foreach ($this->getStateChangeRecorder()->getTouchedFields() as $touchedField) {
+            if (in_array($touchedField, $this->getUpdateFields())) {
                 $this->setDateUpdated(new DateTime());
 
                 return true;

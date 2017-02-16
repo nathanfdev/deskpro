@@ -278,9 +278,9 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
         return $this->category;
     }
 
-    protected function addSlugHistory($old_slug)
+    protected function addSlugHistory($oldSlug)
     {
-        $history = new NewsSlugHistory($this, $old_slug);
+        $history = new NewsSlugHistory($this, $oldSlug);
         $this->slug_history->add($history);
 
         return $history;
@@ -364,6 +364,27 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'content',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'content_input',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'content_input',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'content_input_type',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'content_input_type',
             ]
         );
         $metadata->mapField(
