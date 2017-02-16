@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\EventListener\Language;
 
 use Application\DeskPRO\Entity\Language;
@@ -47,6 +43,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Class LanguageStackInitializeListener.
+ */
 class LanguageStackInitializeListener implements EventSubscriberInterface
 {
     /**
@@ -69,6 +68,14 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
      */
     private $em;
 
+    /**
+     * Constructor.
+     *
+     * @param LanguageManager        $language_manager
+     * @param PortalModeStorage|null $portal_mode_store
+     * @param LoggerInterface        $logger
+     * @param EntityManager          $em
+     */
     public function __construct(LanguageManager $language_manager, PortalModeStorage $portal_mode_store = null, LoggerInterface $logger, EntityManager $em)
     {
         $this->language_manager  = $language_manager;
@@ -77,6 +84,9 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         $this->portal_mode_store = $portal_mode_store;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return [
@@ -84,6 +94,9 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param GetResponseEvent $event
+     */
     public function onRequest(GetResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
@@ -119,6 +132,11 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         $this->logger->info('detected no language in request - using default');
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Language
+     */
     protected function detectFromRequestPath(Request $request)
     {
         if ($this->portal_mode_store && $mode = $this->portal_mode_store->getMode()) {
@@ -146,15 +164,21 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
      */
     protected function detectFromRequestCookies(Request $request)
     {
-        if ($lang_code = $request->cookies->get(LastLanguageListener::COOKIE_NAME)) {
-            $this->logger->info(sprintf('found "%s" in last language cookie', $lang_code));
+        $langCode = $request->cookies->get(LastLanguageListener::COOKIE_NAME);
+        if ($langCode && is_scalar($langCode)) {
+            $this->logger->info(sprintf('found "%s" in last language cookie', $langCode));
 
-            return $this->language_manager->getLanguage($lang_code);
+            return $this->language_manager->getLanguage($langCode);
         }
 
         return;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Language
+     */
     protected function detectFromEsiQuery(Request $request)
     {
         if (IsProxyRequestHelper::check($request)) {
@@ -168,15 +192,21 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         return;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Language
+     */
     protected function detectFromPersonIfLoggedIn(Request $request)
     {
         // this is a request listener that runs before the security firewall
         // the only way to detect language this early (needed for routing)
         // is to manually fetch the sess_data and find the person_id
-        if ($session_id = $request->cookies->get('dpsid-portal', null)) {
+        $sessionId = $request->cookies->get('dpsid-portal', null);
+        if ($sessionId && is_scalar($sessionId)) {
             $query = $this->em->getConnection()->executeQuery(
                 'SELECT person_id FROM sess_data WHERE sess_id = :sess_id',
-                ['sess_id' => $session_id],
+                ['sess_id' => $sessionId],
                 ['sess_id' => \PDO::PARAM_STR]
             );
 
@@ -201,6 +231,11 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Language|void
+     */
     protected function detectFromPersonIfLoggedInLegacy(Request $request)
     {
         // Dont attempt to run this on portal since it makes no sense
@@ -211,8 +246,9 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         // this is a request listener that runs before the security firewall
         // the only way to detect language this early (needed for routing)
         // is to manually fetch the sess_data and find the person_id
-        if ($session_id = $request->cookies->get('dpsid-agent', null)) {
-            $sid = LegacySessionEntity::getIdFromCode($session_id);
+        $sessionId = $request->cookies->get('dpsid-agent', null);
+        if ($sessionId && is_scalar($sessionId)) {
+            $sid = LegacySessionEntity::getIdFromCode($sessionId);
             if (!$sid) {
                 return;
             }
@@ -244,6 +280,11 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Language
+     */
     protected function detectFromRequestHeaders(Request $request)
     {
         $negotiator = new LanguageNegotiator();
