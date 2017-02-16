@@ -27,7 +27,8 @@
  */
 
 return [
-    'agent.publish.helpful'         => 'Hjälpsam',
-    'agent.publish.view_count'      => 'Visa antal',
-    'agent.tickets.send_reply_as_x' => 'Skicka svar som {{status}}',
+    'agent.prefs.inbox_all_email_created' => 'Skicka epost till mig när ett ärende skapats',
+    'agent.publish.helpful'               => 'Hjälpsam',
+    'agent.publish.view_count'            => 'Visa antal',
+    'agent.tickets.send_reply_as_x'       => 'Skicka svar som {{status}}',
 ];
