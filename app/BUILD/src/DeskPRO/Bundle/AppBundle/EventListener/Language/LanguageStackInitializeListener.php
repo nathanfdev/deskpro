@@ -173,10 +173,11 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         // this is a request listener that runs before the security firewall
         // the only way to detect language this early (needed for routing)
         // is to manually fetch the sess_data and find the person_id
-        if ($session_id = $request->cookies->get('dpsid-portal', null)) {
+        $sessionId = $request->cookies->get('dpsid-portal', null);
+        if ($sessionId && is_scalar($sessionId)) {
             $query = $this->em->getConnection()->executeQuery(
                 'SELECT person_id FROM sess_data WHERE sess_id = :sess_id',
-                ['sess_id' => $session_id],
+                ['sess_id' => $sessionId],
                 ['sess_id' => \PDO::PARAM_STR]
             );
 
@@ -211,8 +212,9 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         // this is a request listener that runs before the security firewall
         // the only way to detect language this early (needed for routing)
         // is to manually fetch the sess_data and find the person_id
-        if ($session_id = $request->cookies->get('dpsid-agent', null)) {
-            $sid = LegacySessionEntity::getIdFromCode($session_id);
+        $sessionId = $request->cookies->get('dpsid-agent', null);
+        if ($sessionId && is_scalar($sessionId)) {
+            $sid = LegacySessionEntity::getIdFromCode($sessionId);
             if (!$sid) {
                 return;
             }
