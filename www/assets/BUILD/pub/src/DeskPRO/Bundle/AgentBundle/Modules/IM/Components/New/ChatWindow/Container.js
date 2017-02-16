@@ -398,7 +398,8 @@ class Container extends React.Component {
     const froalaConfig = {
       toolbarInline:    true,
       charCounterCount: false,
-      toolbarButtons:   ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'insertImage', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
+      toolbarButtons:   ['bold', 'italic', 'underline', 'strikeThrough', 'color', '-', 'align', 'formatOL', 'formatUL', 'insertImage', 'emoticons', '-', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
+      shortcutsEnabled: ['bold', 'italic', 'underline'],
       enter:            $.FroalaEditor.ENTER_BR,
       placeholderText:  false,
       events:           {

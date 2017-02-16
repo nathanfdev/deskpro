@@ -998,6 +998,6 @@ img.emojione, svg.emojione {
   }
 }
 
-.fr-toolbar {
-  z-index: 99999;
+.fr-toolbar, .fr-tooltip, .fr-popup {
+  z-index: 99999 !important;
 }
