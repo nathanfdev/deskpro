@@ -4,8 +4,6 @@ import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
-import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
-import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { List } from 'DeskPRO/Component/Semantic/List';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
@@ -13,6 +11,7 @@ import emojione from 'emojione';
 import MessageList from './MessageList';
 import HeaderHelper from './HeaderHelper';
 import EmojiBox from './EmojiBox';
+import AvatarHelper from '../IMTabs/AvatarHelper';
 
 emojione.imagePathSVGSprites = `./..${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg`;
 emojione.imageType = 'png';
@@ -22,6 +21,7 @@ class Container extends React.Component {
   static propTypes = {
     me:              PropTypes.object.isRequired,
     agents:          PropTypes.object.isRequired,
+    people:          PropTypes.object.isRequired,
     departments:     PropTypes.object.isRequired,
     teams:           PropTypes.object.isRequired,
     current:         PropTypes.object.isRequired,
@@ -125,8 +125,8 @@ class Container extends React.Component {
   };
 
   getHeader() {
-    const { agents, teams, departments, current, me, openGroupDrawer } = this.props;
-    const props = { agents, teams, departments, current, me, openGroupDrawer };
+    const { agents, people, teams, departments, current, me, openGroupDrawer } = this.props;
+    const props = { agents, people, teams, departments, current, me, openGroupDrawer };
 
     if (!this.headerHelper) {
       this.headerHelper = new HeaderHelper(props);
@@ -279,7 +279,7 @@ class Container extends React.Component {
     const { current, agents, onAgentClick, openGroupDrawer, me } = this.props;
     const { expandGroupHeader, searching } = this.state;
 
-    let localAgents = current.get('agents');
+    let localAgents = current.get('agents').filter(item => agents.get(item));
     localAgents = expandGroupHeader ? localAgents : localAgents.slice(0, 9);
 
     if (current.get('chat_type') === 'group' && !searching) {
@@ -305,27 +305,26 @@ class Container extends React.Component {
                 return null;
               }
 
-              const className = ['ui avatar image im'];
+              const className = [];
               const agent = agents.get(agentId);
+
+              if (!agent) {
+                return null;
+              }
+
               if (!agent.get('online')) {
                 className.push('offline');
               }
 
               return (
                 <span key={`agent_span_${agentId}`} onClick={() => onAgentClick(agentId, 'agent')}>
-                  <PersonAvatar
-                    key={`agent_${agentId}`}
-                    person={agent}
-                    size={24}
-                    className={classNames(className)}
-                    color={chooseColor(agent)}
-                  />
+                  {AvatarHelper.renderAgentAvatar(agent, 24, className)}
                 </span>
               );
             }
           )}
           <span className="dots" onClick={() => this.setState({ expandGroupHeader: true })}>
-            {current.get('agents').size > 9 && !expandGroupHeader ? '...' : null}
+            {current.get('agents').filter(item => agents.get(item)).size > 9 && !expandGroupHeader ? '...' : null}
           </span>
         </Segment>
       );
@@ -351,24 +350,8 @@ class Container extends React.Component {
   }
 
   handleAttach(item) {
-    // let message = '';
-    // switch (item.tabType) {
-    //   case 'person':
-    //     message += `{{p-${item.page.meta.person_id}}}: `;
-    //     break;
-    //   case 'ticket':
-    //     message += `{{t-${item.page.meta.ticket_id}}}: `;
-    //     break;
-    //   case 'article':
-    //     message += `{{a-${item.page.meta.article_id}}}: `;
-    //     break;
-    //   default:
-    //     message += 'unknown: ';
-    // }
     const propertyName = `${item.tabType}_id`;
-
     const message = `{{${item.tabType.charAt(0).toLowerCase()}-${item.page.meta[propertyName]}}}: ${item.title}`;
-
     this.props.onSubmit(message);
   }
 
@@ -399,7 +382,15 @@ class Container extends React.Component {
 
   render() {
     const { isOpen, loadingMessages, onScroll, markNewMessages, searchQuery, onAgentClick } = this.props;
-    const { current, messages, me, agents, teams, departments } = this.props;
+    const { current, messages, me, agents, teams, departments, people } = this.props;
+    const header = this.getHeader();
+    let enabled = true;
+    if (current.get('chat_type') === 'agent') {
+      const agentId = this.headerHelper.getAgentId(current);
+      if (agentId && !agents.get(agentId)) {
+        enabled = false;
+      }
+    }
 
     return (
       <Detached
@@ -409,7 +400,7 @@ class Container extends React.Component {
         positionMy="left-43 top-2"
       >
         <div className="ui popup left bottom im chat drawer">
-          <div className="im header">{this.getHeader()}</div>
+          <div className="im header">{header}</div>
           {this.searchHeader()}
           {this.groupHeader()}
           <div className="box">
@@ -419,6 +410,7 @@ class Container extends React.Component {
               messages={messages}
               me={me}
               agents={agents}
+              people={people}
               teams={teams}
               departments={departments}
               searchQuery={searchQuery}
@@ -427,7 +419,7 @@ class Container extends React.Component {
               onAgentClick={onAgentClick}
             />
           </div>
-          <div className="reply">
+          {enabled ? (<div className="reply">
             <form onSubmit={this.handleSubmit}>
               <RteEditor
                 inline
@@ -473,7 +465,7 @@ class Container extends React.Component {
               : null
             }
             {Object.keys(this.props.activeTabs).length ? this.renderAttachList() : null}
-          </div>
+          </div>) : null }
         </div>
       </Detached>
     );

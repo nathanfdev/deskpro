@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { addToCollection, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const toggleOverlay = createAction('IM_TOGGLE_OVERLAY');
@@ -110,4 +110,26 @@ export const updateChat = createAction(
 export const loadActiveTabs = createAction(
   'IM_LOAD_ACTIVE_TABS',
   () => DeskPRO_Window.TabBar.getTabs() // eslint-disable-line no-undef
+);
+
+export const loadRecentChats = createAction(
+  'IM_LOAD_RECENT_CHATS',
+  () => (dispatch) => {
+    api.sendGet('DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=10&include=person').success((response) => {
+      dispatch(addToCollection('Person', 'people', response.linked.person));
+      dispatch(addToCollection('AgentChat', 'recent', response.data));
+    });
+    return {};
+  }
+);
+
+export const loadGroups = createAction(
+  'IM_LOAD_RECENT_CHATS',
+  () => (dispatch) => {
+    api.sendGet('DP_API/agent_chats/groups?include=person').success((response) => {
+      dispatch(addToCollection('Person', 'people', response.linked.person));
+      dispatch(addToCollection('AgentChat', 'group', response.data));
+    });
+    return {};
+  }
 );

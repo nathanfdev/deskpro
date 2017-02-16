@@ -11,7 +11,7 @@ import * as messagesActions from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
-import { loadFromApi, isLoadedCollectionSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { isLoadedCollectionSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { IMOverlay, IMButton, TopBarRecentImList, GroupAddDrawer } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar';
 import AddButton from './AddButton';
@@ -24,6 +24,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
 
 @connect(state => ({
   agents:              collectionSelectorFactory('Person', 'agents')(state),
+  people:              collectionSelectorFactory('Person', 'people')(state),
   chatDepartments:     collectionSelectorFactory('Department', 'all_tickets')(state),
   recentChats:         collectionSelectorFactory('AgentChat', 'recent')(state),
   groupChats:          collectionSelectorFactory('AgentChat', 'group')(state),
@@ -58,6 +59,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     me:                  PropTypes.object,
     dispatch:            PropTypes.func.isRequired,
     agents:              PropTypes.object.isRequired,
+    people:              PropTypes.object.isRequired,
     chatDepartments:     PropTypes.object.isRequired,
     myDepartments:       PropTypes.object.isRequired,
     myTeams:             PropTypes.object.isRequired,
@@ -193,16 +195,8 @@ export class AgentTopBarContainer extends SeparateComponent {
       });
     }
     if (window.DP_HAS_NEW_IM) {
-      this.props.dispatch(loadFromApi(
-        'AgentChat',
-        'DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=10',
-        'recent'
-      ));
-      this.props.dispatch(loadFromApi(
-        'AgentChat',
-        'DP_API/agent_chats/groups',
-        'group'
-      ));
+      this.props.dispatch(chatsActions.loadRecentChats());
+      this.props.dispatch(chatsActions.loadGroups());
 
       this.refreshCounts();
     }
@@ -373,6 +367,7 @@ export class AgentTopBar extends React.Component {
 
   static propTypes = {
     agents:              PropTypes.object.isRequired,
+    people:              PropTypes.object.isRequired,
     chatDepartments:     PropTypes.object.isRequired,
     myDepartments:       PropTypes.object.isRequired,
     myTeams:             PropTypes.object.isRequired,
@@ -456,7 +451,7 @@ export class AgentTopBar extends React.Component {
     const { current, chating, messages, chatClickOut, participantClick, recentClick, createGroup } = this.props;
     const { onChatSearch, onScroll, openGroupDrawer, markNewMessages, onSubmit, toggleImOverlay } = this.props;
     const { searchQuery, counts, groupChats, checkedAgents, me, myDepartments, myTeams, recentChats } = this.props;
-    const { agents, onSearchFocus, onSearchBlur, editChat, updateGroup, loadMessages, activeTabs } = this.props;
+    const { agents, people, onSearchFocus, onSearchBlur, editChat, updateGroup, loadMessages, activeTabs } = this.props;
     const { recentLoaded, groupLoaded, overlayShown, hiddenChats, onHideChat, drafts, saveDraft }  = this.props;
     const groupDrawerTarget = document.getElementById('im-button');
 
@@ -464,6 +459,7 @@ export class AgentTopBar extends React.Component {
       <TopBarRecentImList
         me={me}
         agents={agents}
+        people={people}
         departments={myDepartments}
         teams={myTeams}
         chats={recentChats}
@@ -483,6 +479,7 @@ export class AgentTopBar extends React.Component {
           agentsLoaded={agentsLoaded}
           me={me}
           agents={agents}
+          people={people}
           departments={myDepartments}
           teams={myTeams}
           onRecentClick={recentClick}
@@ -498,6 +495,7 @@ export class AgentTopBar extends React.Component {
           onFocus={onSearchFocus}
           onBlur={onSearchBlur}
           searchQuery={searchQuery}
+          dispatch={this.props.dispatch}
         >
           <IMButton />
         </IMOverlay>
@@ -519,6 +517,7 @@ export class AgentTopBar extends React.Component {
           onChatSearch={onChatSearch}
           onAgentClick={participantClick}
           agents={agents}
+          people={people}
           departments={myDepartments}
           teams={myTeams}
           me={me}

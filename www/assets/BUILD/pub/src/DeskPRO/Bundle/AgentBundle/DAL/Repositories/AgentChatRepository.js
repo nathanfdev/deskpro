@@ -1,4 +1,5 @@
 import { ApiRepository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 
 /**
  * AgentChatRepository
@@ -33,7 +34,7 @@ export class AgentChatRepository extends ApiRepository {
    * @returns {Promise} promise
    */
   loadMessages(chatId, search = '', page = 1, order = 'date_created') {
-    return this.api.sendGet(`DP_API/${this.url}/${chatId}/messages?${this.compileParams({ search, page, order })}`);
+    return this.api.sendGet(`DP_API/${this.url}/${chatId}/messages?${compileParams({ search, page, order })}`);
   }
 
   /**

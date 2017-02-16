@@ -15,6 +15,7 @@ class MessageList extends React.Component {
     loadingMessages: PropTypes.bool.isRequired,
     markNewMessages: PropTypes.func,
     agents:          PropTypes.object.isRequired,
+    people:          PropTypes.object.isRequired,
     teams:           PropTypes.object.isRequired,
     departments:     PropTypes.object.isRequired,
     onScroll:        PropTypes.func,
@@ -70,13 +71,16 @@ class MessageList extends React.Component {
 
   renderList(msg) {
     let previous = false;
-    const { agents, searchQuery, me, onAgentClick } = this.props;
+    const { agents, people, searchQuery, me, onAgentClick } = this.props;
 
     return (
       <SegmentsGroup vertical>
         {
           msg.map((message) => {
-            const agent = agents.get(message.person);
+            let agent = agents.get(message.person);
+            if (!agent) {
+              agent = people.get(message.person);
+            }
             const result = (
               <Message
                 key={message.id}

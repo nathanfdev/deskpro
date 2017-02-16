@@ -82,12 +82,13 @@ class RecentList extends React.Component {
   getAgents(container) {
     return container.get('agents').map(
       (agentId) => {
-        if (agentId === this.props.me.get('id')) {
+        const agent = this.props.agents.get(agentId);
+        if (agentId === this.props.me.get('id') || !agent) {
           return null;
         }
 
         const className = ['ui avatar image im'];
-        const agent = this.props.agents.get(agentId);
+
         if (!agent.get('online')) {
           className.push('offline');
         }

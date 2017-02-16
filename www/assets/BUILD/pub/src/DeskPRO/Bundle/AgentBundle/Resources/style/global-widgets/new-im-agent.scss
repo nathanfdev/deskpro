@@ -44,6 +44,11 @@ img.emojione, svg.emojione {
     font-size: 12px;
     color: $dp-greyscale-850;
     font-weight: 600;
+    vertical-align: middle;
+    display: inline-block;
+    position: absolute;
+    left: -1px;
+    top: -1px;
   }
 
   &.gravatar {
@@ -77,36 +82,32 @@ img.emojione, svg.emojione {
 
       .icon.close {
         position: absolute;
-        display: none;
         width: 14px;
         height: 14px;
         top: -9px;
         right: -5px;
         color: $dp-greyscale-850;
+        &:before {
+          content: "";
+        }
       }
 
       &:hover {
-        .icon.close {
-          display: block;
+        .icon.close:before {
+          content: "\f00d";
         }
       }
 
       > .im.avatar {
         margin: 0 7px;
 
-        &.offline {
-          opacity: 0.5;
-        }
-
         .text {
-          vertical-align: middle;
-          display: inline-block;
-          width: inherit;
-          height: inherit;
-          background-size: cover;
-          position: absolute;
           left: 0;
           top: 0;
+        }
+
+        &.offline {
+          opacity: 0.5;
         }
       }
       > .knuckles.message-counter {
@@ -265,15 +266,6 @@ img.emojione, svg.emojione {
       }
 
       .text {
-        font-family: "Open Sans", serif;
-        font-size: 12px;
-        color: $dp-greyscale-850;
-        display: inline-block;
-        width: inherit;
-        height: inherit;
-        background-size: cover;
-        position: absolute;
-        left: 0;
         top: 0;
 
         &.gravatar {
