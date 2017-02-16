@@ -382,7 +382,7 @@ class Container extends React.Component {
 
   render() {
     const { isOpen, loadingMessages, onScroll, markNewMessages, searchQuery, onAgentClick } = this.props;
-    const { current, messages, me, agents, teams, departments } = this.props;
+    const { current, messages, me, agents, teams, departments, people } = this.props;
     const header = this.getHeader();
     let enabled = true;
     if (current.get('chat_type') === 'agent') {
@@ -410,6 +410,7 @@ class Container extends React.Component {
               messages={messages}
               me={me}
               agents={agents}
+              people={people}
               teams={teams}
               departments={departments}
               searchQuery={searchQuery}

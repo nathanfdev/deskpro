@@ -104,7 +104,11 @@ class Message extends React.Component {
         {
           searchQuery
           ? (<div className="avatar wrapper">
-            {agent ? AvatarHelper.renderAgentAvatar(agent, 20) : AvatarHelper.renderAvatar(message.person_name, message.person, 20)}
+            {
+              agent
+              ? AvatarHelper.renderAgentAvatar(agent, 20)
+              : AvatarHelper.renderAvatar(message.person_name.substr(0, 2).toUpperCase(), message.person, 20)
+            }
           </div>)
           : null
         }
