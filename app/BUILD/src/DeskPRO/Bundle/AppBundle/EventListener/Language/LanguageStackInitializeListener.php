@@ -164,10 +164,11 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
      */
     protected function detectFromRequestCookies(Request $request)
     {
-        if ($lang_code = $request->cookies->get(LastLanguageListener::COOKIE_NAME)) {
-            $this->logger->info(sprintf('found "%s" in last language cookie', $lang_code));
+        $langCode = $request->cookies->get(LastLanguageListener::COOKIE_NAME);
+        if ($langCode && is_scalar($langCode)) {
+            $this->logger->info(sprintf('found "%s" in last language cookie', $langCode));
 
-            return $this->language_manager->getLanguage($lang_code);
+            return $this->language_manager->getLanguage($langCode);
         }
 
         return;
