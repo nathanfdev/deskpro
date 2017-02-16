@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\EventListener\Language;
 
 use Application\DeskPRO\Entity\Language;
@@ -47,6 +43,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Class LanguageStackInitializeListener.
+ */
 class LanguageStackInitializeListener implements EventSubscriberInterface
 {
     /**
@@ -69,6 +68,14 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
      */
     private $em;
 
+    /**
+     * Constructor.
+     *
+     * @param LanguageManager        $language_manager
+     * @param PortalModeStorage|null $portal_mode_store
+     * @param LoggerInterface        $logger
+     * @param EntityManager          $em
+     */
     public function __construct(LanguageManager $language_manager, PortalModeStorage $portal_mode_store = null, LoggerInterface $logger, EntityManager $em)
     {
         $this->language_manager  = $language_manager;
@@ -77,6 +84,9 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         $this->portal_mode_store = $portal_mode_store;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return [
@@ -84,6 +94,9 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param GetResponseEvent $event
+     */
     public function onRequest(GetResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
@@ -119,6 +132,11 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         $this->logger->info('detected no language in request - using default');
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Language
+     */
     protected function detectFromRequestPath(Request $request)
     {
         if ($this->portal_mode_store && $mode = $this->portal_mode_store->getMode()) {
@@ -155,6 +173,11 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         return;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Language
+     */
     protected function detectFromEsiQuery(Request $request)
     {
         if (IsProxyRequestHelper::check($request)) {
@@ -168,6 +191,11 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         return;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Language
+     */
     protected function detectFromPersonIfLoggedIn(Request $request)
     {
         // this is a request listener that runs before the security firewall
@@ -202,6 +230,11 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Language|void
+     */
     protected function detectFromPersonIfLoggedInLegacy(Request $request)
     {
         // Dont attempt to run this on portal since it makes no sense
@@ -246,6 +279,11 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Language
+     */
     protected function detectFromRequestHeaders(Request $request)
     {
         $negotiator = new LanguageNegotiator();
