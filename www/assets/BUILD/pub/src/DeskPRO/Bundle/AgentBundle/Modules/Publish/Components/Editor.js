@@ -30,10 +30,6 @@ export class Editor extends React.Component {
     };
   }
 
-  onChange = (event) => {
-    this.onContentChange(event.target.value);
-  };
-
   onMarkdownChange = (content) => {
     this.setState({ markdown: content });
   };
@@ -44,9 +40,6 @@ export class Editor extends React.Component {
 
   getEditor = () => {
     switch (this.state.editorMode) {
-      case 'raw': {
-        return <textarea cols="100" rows="20" value={this.state.message} onChange={this.onChange} />;
-      }
       case 'markdown': {
         const MarkdownEditor = ReactMarkdownEditor.MarkdownEditor;
         return (<MarkdownEditor
@@ -105,7 +98,6 @@ export class Editor extends React.Component {
         <ButtonGroup onChange={this.changeMode} activeKey={this.state.editorMode}>
           <Button key="classic">Classic</Button>
           <Button key="markdown">Markdown</Button>
-          <Button key="raw">Raw</Button>
         </ButtonGroup>
       </div>
       <div className="editor">
