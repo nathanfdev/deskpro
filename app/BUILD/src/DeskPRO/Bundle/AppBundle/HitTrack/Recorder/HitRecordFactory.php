@@ -103,6 +103,11 @@ class HitRecordFactory
         // copy myValue -> my_value so we can use both input formats
         foreach ($bag->all() as $k => $v) {
             $altK = StringUtils::toSnakeCase($k);
+
+            if ($altK !== 'meta' && !is_scalar($v)) {
+                $v = null;
+                $bag->set($altK, $v);
+            }
             if ($k !== $altK && !$bag->has($altK)) {
                 $bag->set($altK, $v);
             }
