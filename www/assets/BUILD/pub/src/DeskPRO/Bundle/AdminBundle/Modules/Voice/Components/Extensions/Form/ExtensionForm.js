@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import { Fieldset, Input, createValue } from 'react-forms';
-import Immutable from 'immutable';
 import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import classNames from 'classnames';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
+import AudioWidgetFormContainer from '../../Common/AudioWidgetFormContainer';
 
 class ExtensionForm extends React.Component {
 
@@ -56,15 +56,16 @@ class ExtensionForm extends React.Component {
 
   getDefaultState() {
     const { agent } = this.props;
-    const agentData = (agent.get('agent_data') || Immutable.fromJS({
-      extension_number: ''
-    })).toJS();
+    const voicemailAsset = agent && agent.getIn(['agent_data', 'voicemail_asset']);
 
     return {
       formData: createValue({
         value: {
           name:       agent.get('name'),
-          agent_data: agentData
+          agent_data: {
+            extension_number: agent ? agent.getIn(['agent_data', 'extension_number']) : '',
+            voicemail_asset:  voicemailAsset ? voicemailAsset.toJS() : null
+          }
         },
         errorList: {},
         onChange:  this.onChange
@@ -87,12 +88,18 @@ class ExtensionForm extends React.Component {
               <Field select="name" label="Agent">
                 <Input type="text" disabled="disabled" />
               </Field>
-              <Field select="agent_data">
-                <Field select="extension_number" label="Extension">
-                  <Input placeholder="e.g. '1001'" />
-                </Field>
-              </Field>
+              <Fieldset select="agent_data">
+                <div>
+                  <Field select="extension_number" label="Extension">
+                    <Input placeholder="e.g. '1001'" />
+                  </Field>
+                  <Field select="voicemail_asset" className="audio-asset" label="Voicemail">
+                    <AudioWidgetFormContainer />
+                  </Field>
+                </div>
+              </Fieldset>
 
+              <br />
               <button className={classNames('ui button', { loading: saving })}>
                 Update
               </button>
