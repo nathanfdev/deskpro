@@ -249,6 +249,13 @@ class TwilioCallbacksController extends BaseController
                     throw $this->createBadRequestException();
                 }
 
+                $agentData = $agent->getAgentData();
+                if (!$agentData) {
+                    throw $this->createBadRequestException();
+                }
+
+                $asset = $agentData->getVoicemailAsset();
+
                 $voicemailRecord = new VoicemailRecord();
                 $voicemailRecord
                     ->setPhoneCall($phoneCall)
@@ -759,7 +766,7 @@ class TwilioCallbacksController extends BaseController
                 $twiml->play($asset->getBlob()->getDownloadUrl(true));
             }
         } else {
-            $twiml->say("You've reached voicemail. Please leave a message");
+            $twiml->say('You have reached voicemail. Please leave a message.');
         }
 
         $twiml->record([
