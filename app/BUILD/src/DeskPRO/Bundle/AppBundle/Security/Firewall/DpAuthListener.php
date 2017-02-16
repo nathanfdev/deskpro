@@ -89,7 +89,10 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
     {
         $tokenOrResponse = null;
 
-        if ('portal_login_submit' == $request->attributes->get('_route')) {
+        $username = $request->get('username', '');
+        $route    = $request->attributes->get('_route');
+
+        if ('portal_login_submit' == $route && is_scalar($username)) {
             $abuseCheck = $this->createAntiAbuseEvent($request);
             $response   = $this->checkCaptcha($request, $abuseCheck);
             if ($response) {
@@ -98,20 +101,22 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 return $response;
             }
 
-            $tokenOrResponse = new DpFormLoginToken($request->get('username', ''), $request->get('password', ''));
-        } elseif ('portal_agent_login' == $request->attributes->get('_route')) {
+            $tokenOrResponse = new DpFormLoginToken($username, $request->get('password', ''));
+        } elseif ('portal_agent_login' == $route) {
             $tokenOrResponse = new AgentImpersonateToken($request->attributes->get('code'));
             $request->getSession()->set('is_impersonating', true);
-        } elseif ('portal_login_authenticate' == $request->attributes->get('_route')) {
+        } elseif ('portal_login_authenticate' == $route) {
             $tokenOrResponse = $this->getAuthRedirect($request);
-        } elseif ('portal_login_callback' == $request->attributes->get('_route')) {
+        } elseif ('portal_login_callback' == $route) {
             $tokenOrResponse = $this->processCallback($request);
-        } elseif ('portal_login_usersource_sso' == $request->attributes->get('_route')) {
+        } elseif ('portal_login_usersource_sso' == $route) {
             $tokenOrResponse = $this->processBackgroundSso($request);
         }
 
         if ($tokenOrResponse instanceof Response) {
             return $tokenOrResponse;
+        } elseif (!$tokenOrResponse) {
+            return new RedirectResponse('/login');
         }
 
         try {
