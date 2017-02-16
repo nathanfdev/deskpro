@@ -87,6 +87,14 @@ class Container extends React.Component {
     }
   }
 
+  static onBlur() {
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
+  }
+
+  static onFocus() {
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -97,12 +105,16 @@ class Container extends React.Component {
       attachOpened:      false
     };
 
-    this.openEmoji    = this.openEmoji.bind(this);
-    this.closeEmoji   = this.closeEmoji.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.addEmoji     = this.addEmoji.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.openAttach = this.openAttach.bind(this);
+    this.destroyEditor    = () => {};
+    this.openEmoji        = this.openEmoji.bind(this);
+    this.closeEmoji       = this.closeEmoji.bind(this);
+    this.handleChange     = this.handleChange.bind(this);
+    this.addEmoji         = this.addEmoji.bind(this);
+    this.handleSubmit     = this.handleSubmit.bind(this);
+    this.handleKeydown    = this.handleKeydown.bind(this);
+    this.initFroala       = this.initFroala.bind(this);
+    this.bindFroalaEvents = this.bindFroalaEvents.bind(this);
+    this.openAttach       = this.openAttach.bind(this);
   }
 
   componentDidMount() {
@@ -114,6 +126,10 @@ class Container extends React.Component {
       this.props.saveDraft(this.props.current.get('id'), this.state.message);
       this.refresh(props);
     }
+  }
+
+  componentWillUnmount() {
+    this.destroyEditor();
   }
 
   getPath = (props) => {
@@ -169,9 +185,6 @@ class Container extends React.Component {
     ) {
       this.props.loadMessages();
     }
-    if (this.editor) {
-      this.editor.focus();
-    }
     const newState = { mounted: true, searching: false, expandedHeader: false };
     if (props.drafts && props.drafts[props.current.get('id')]) {
       newState.message = props.drafts[props.current.get('id')];
@@ -199,67 +212,11 @@ class Container extends React.Component {
   }
 
   addEmoji(emoji) {
-    emojione.imageType = 'png';
-    emojione.sprites = false;
-
     const editor = this.editor;
-    const medium = editor.getMediumEditor();
-    medium.stopSelectionUpdates();
-
-    // focus the rte field
-    editor.focus();
-
-    const contentWindow = medium.options.contentWindow;
-    const ownerDocument = medium.options.ownerDocument;
-
     const html = emoji.shortname;
-
-    if (contentWindow.getSelection) {
-      // IE9 and non-IE
-      const selection = contentWindow.getSelection();
-      if (selection.getRangeAt && selection.rangeCount) {
-        let range = selection.getRangeAt(0);
-        range.deleteContents();
-
-        // Range.createContextualFragment() would be useful here but is
-        // only relatively recently standardized and is not supported in
-        // some browsers (IE9, for one)
-        const el     = document.createElement('div');
-        el.innerHTML = html;
-        const frag   = document.createDocumentFragment();
-
-        let node;
-        let lastNode;
-
-        do {
-          node = el.firstChild;
-          if (node) {
-            lastNode = frag.appendChild(node);
-          }
-        } while (node);
-
-        range.insertNode(frag);
-
-        // Preserve the selection
-        if (lastNode) {
-          range = ownerDocument.createRange();
-          range.selectNodeContents(lastNode);
-          range.collapse(false);
-
-          selection.removeAllRanges();
-          selection.addRange(range);
-        }
-      }
-    } else if (ownerDocument.selection && ownerDocument.selection.type !== 'Control') {
-      // IE < 9
-      ownerDocument.selection.createRange().pasteHTML(html);
-    }
-
-    medium.saveSelection();
-    medium.trigger('onChange');
-
-    // focus the rte again to correct display caret position
-    editor.focus();
+    editor.events.focus();
+    editor.html.insert(html);
+    editor.events.focus();
   }
 
   handleChange(text) {
@@ -272,6 +229,26 @@ class Container extends React.Component {
     this.props.onSubmit(this.state.message);
     this.props.saveDraft(this.props.current.get('id'), '');
     this.setState({ message: '' });
+  }
+
+  initFroala(initControls) {
+    initControls.initialize();
+    this.destroyEditor = initControls.destroy;
+  }
+
+  bindFroalaEvents(e, editor) {
+    this.editor = editor;
+    editor.events.on('keydown', this.handleKeydown, true);
+    editor.events.focus();
+  }
+
+  handleKeydown(e) {
+    if (e.keyCode === 13 && (e.ctrlKey || e.metaKey)) {
+      e.stopPropagation();
+      this.handleSubmit(e);
+      return false;
+    }
+    return e;
   }
 
   openAttach() {
@@ -341,8 +318,8 @@ class Container extends React.Component {
       return (
         <Segment vertical className="search">
           <SearchBox
-            onFocus={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; }}
-            onBlur={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; }}
+            onFocus={Container.onFocus}
+            onBlur={Container.onBlur}
             onUserInput={this.props.onChatSearch}
           />
         </Segment>
@@ -396,15 +373,17 @@ class Container extends React.Component {
     }
 
     const froalaConfig = {
-      toolbarInline:    true,
-      charCounterCount: false,
-      toolbarButtons:   ['bold', 'italic', 'underline', 'strikeThrough', 'color', '-', 'align', 'formatOL', 'formatUL', 'insertImage', 'emoticons', '-', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
-      shortcutsEnabled: ['bold', 'italic', 'underline'],
-      enter:            $.FroalaEditor.ENTER_BR,
-      placeholderText:  false,
-      events:           {
-        'froalaEditor.focus': () => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; },
-        'froalaEditor.blur':  () => { window.DeskPRO_Window.keyboardShortcuts.isPaused = false; }
+      toolbarInline:             true,
+      charCounterCount:          false,
+      toolbarButtons:            ['bold', 'italic', 'underline', 'strikeThrough', 'color', '-', 'align', 'formatOL', 'formatUL', 'insertImage', '-', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
+      shortcutsEnabled:          ['bold', 'italic', 'underline'],
+      enter:                     $.FroalaEditor.ENTER_BR,
+      placeholderText:           false,
+      immediateReactModelUpdate: true,
+      events:                    {
+        'froalaEditor.focus':       Container.onFocus,
+        'froalaEditor.blur':        Container.onBlur,
+        'froalaEditor.initialized': this.bindFroalaEvents
       }
     };
 
@@ -443,6 +422,7 @@ class Container extends React.Component {
                 config={froalaConfig}
                 model={this.state.message}
                 onModelChange={this.handleChange}
+                onManualControllerReady={this.initFroala}
               />
               <i
                 className={classNames('fa fa-paperclip reply-icon', { inactive: Object.keys(this.props.activeTabs).length < 1 })}
