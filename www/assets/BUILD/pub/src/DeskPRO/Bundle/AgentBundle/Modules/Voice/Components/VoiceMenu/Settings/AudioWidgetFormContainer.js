@@ -14,7 +14,7 @@ import { createVoiceAsset } from '../../../Actions/assetActions';
 class AudioWidgetFormContainer extends React.Component {
 
   static propTypes = {
-    me:       PropTypes.func,
+    me:       PropTypes.object,
     dispatch: PropTypes.func
   };
 

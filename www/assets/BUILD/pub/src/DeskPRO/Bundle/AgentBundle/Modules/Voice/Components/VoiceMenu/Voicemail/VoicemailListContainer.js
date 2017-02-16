@@ -29,7 +29,7 @@ class VoicemailListContainer extends React.Component {
 
   onCallback = (phoneCall) => {
     const { dispatch } = this.props;
-    dispatch(openDialpad(phoneCall.get('from_number')));
+    dispatch(openDialpad(phoneCall.get('external_number')));
   };
 
   onDelete = (record) => {

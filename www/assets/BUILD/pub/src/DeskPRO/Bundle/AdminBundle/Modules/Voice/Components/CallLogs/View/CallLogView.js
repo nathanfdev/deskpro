@@ -111,7 +111,7 @@ class CallLogView extends React.Component {
                           <td width="80">[{moment(log.get('date_created')).format('hh:mm:ss')}]</td>
                           <td>
                             {agentPhrases.get(`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`, {
-                              '{number}':       call.get('from_number'),
+                              '{number}':       call.get('external_number'),
                               '{person_name}':  person.get('first_name') || '',
                               '{person_email}': person.get('primary_email') || ''
                             })}

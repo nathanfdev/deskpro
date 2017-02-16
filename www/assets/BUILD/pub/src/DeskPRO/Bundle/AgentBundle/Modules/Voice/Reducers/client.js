@@ -7,6 +7,7 @@ const initialState = {
   tokens:         {},
   activities:     {},
   incomingCalls:  [],
+  outgoingCall:   null,
   connections:    [],
   outboundNumber: null
 };
@@ -48,8 +49,10 @@ export default createReducer(initialState, {
 
     return state.set('incomingCalls', incomingCalls);
   },
-  [actions.addConnection]:    pushPayloadToCollection('connections'),
-  [actions.removeConnection]: deletePayloadFromCollection('connections'),
-  [actions.openDialpad]:      setFullPayload('outboundNumber'),
-  [actions.dialpadOpened]:    setValue('outboundNumber', null)
+  [actions.addConnection]:     pushPayloadToCollection('connections'),
+  [actions.removeConnection]:  deletePayloadFromCollection('connections'),
+  [actions.openDialpad]:       setFullPayload('outboundNumber'),
+  [actions.dialpadOpened]:     setValue('outboundNumber', null),
+  [actions.setOutgoingCall]:   setFullPayload('outgoingCall'),
+  [actions.resetOutgoingCall]: setValue('outgoingCall', null)
 });

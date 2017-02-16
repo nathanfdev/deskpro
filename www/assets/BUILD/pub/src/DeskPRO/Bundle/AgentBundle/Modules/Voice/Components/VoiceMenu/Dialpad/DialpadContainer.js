@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Dialpad from './Dialpad';
-import { dialpadOpened } from '../../../Actions/clientActions';
+import { dialpadOpened, makeOutboundCall, searchPerson } from '../../../Actions/clientActions';
 import { outboundNumbersSelector } from '../../../Selectors/numbers';
 import { outboundNumberSelector } from '../../../Selectors/client';
 
@@ -23,8 +23,17 @@ class DialpadContainer extends React.Component {
     this.props.dispatch(dialpadOpened());
   }
 
+  onMakeCall = (callFrom, callTo) => this.props.dispatch(makeOutboundCall(callFrom, callTo));
+  onSearchPerson = searchString => this.props.dispatch(searchPerson(searchString));
+
   render() {
-    return <Dialpad {...this.props} />;
+    return (
+      <Dialpad
+        {...this.props}
+        onMakeCall={this.onMakeCall}
+        onSearchPerson={this.onSearchPerson}
+      />
+    );
   }
 }
 

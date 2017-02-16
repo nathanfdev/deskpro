@@ -262,9 +262,23 @@ $voice-green-border-color: #47BF61;
         .call-button {
           width: 100%;
         }
+
+        .dialpad-search-results {
+          padding: 10px;
+          position: absolute;
+          background-color: #fff;
+          width: 100%;
+          border: 1px solid $dp-greyscale-250;
+          box-shadow: 0 4px 8px 0 $dp-greyscale-250;
+
+          .dialpad-search-result-item {
+            padding: 5px;
+            cursor: pointer;
+          }
+        }
       }
 
-      .incoming-call {
+      .incoming-call, .outgoing-call {
         text-align: center;
 
         .avatar {

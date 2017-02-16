@@ -82,7 +82,7 @@
     "egulias/email-validator": "~1.2",
     "shopblocks/php-ico": "*",
     "composer/ca-bundle": "^1.0",
-    "twilio/sdk": "^5.4",
+    "twilio/sdk": "5.4.*",
     "fisharebest/ext-calendar": "~2.2.1"
   },
   "require-dev": {

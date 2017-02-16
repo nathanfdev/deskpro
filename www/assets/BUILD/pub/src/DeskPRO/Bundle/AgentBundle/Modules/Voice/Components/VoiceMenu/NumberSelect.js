@@ -12,7 +12,7 @@ class NumberSelect extends React.Component {
     <span>
       <i className={classNames('flag-icon', `flag-icon-${option.country_code.toLowerCase()}`)} />
       {option.label}
-      <span className="target">(Sales)</span>
+      {option.nickname && <span className="target">({option.nickname})</span>}
     </span>
   );
 
@@ -22,8 +22,9 @@ class NumberSelect extends React.Component {
     numbers.forEach((number) => {
       choices.push({
         label:        number.get('number'),
-        value:        number.get('number'),
-        country_code: number.get('country_code')
+        value:        number.get('id'),
+        country_code: number.get('country_code'),
+        nickname:     number.get('nickname')
       });
     });
 

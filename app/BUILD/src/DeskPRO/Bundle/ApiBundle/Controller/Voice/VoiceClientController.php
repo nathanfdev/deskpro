@@ -28,16 +28,23 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceAccountRepository;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceOutboundCallType;
+use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioActivities;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioClientTokens;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Twilio\Exceptions\RestException;
 
 /**
  * Class VoiceTokenController.
@@ -85,6 +92,8 @@ class VoiceClientController extends BaseController
      *
      * @Rest\Get("/activities")
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function getActivitiesAction()
@@ -92,7 +101,15 @@ class VoiceClientController extends BaseController
         $adapter = $this->get('twilio_adapter');
         $account = $this->getVoiceAccount();
 
-        return new View($this->wrap($adapter->getActivities($account)));
+        try {
+            return new View($this->wrap($adapter->getActivities($account)));
+        } catch (RestException $e) {
+            if ($e->getStatusCode() === 404) {
+                return new TwilioActivities('', '', '', '', '');
+            }
+
+            throw $e;
+        }
     }
 
     /**
@@ -117,6 +134,53 @@ class VoiceClientController extends BaseController
         $adapter->rejectTaskWorker($account, $taskSid, $this->getUser());
 
         return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Prepares outbound phone call",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Rest\Post("/prepare_outbound_call")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function prepareOutboundCallAction(Request $request)
+    {
+        $form = $this->createForm(VoiceOutboundCallType::class);
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $number   = $form->get('call_from')->getData();
+        $toNumber = $form->get('call_to')->getData();
+
+        // get the caller person
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
+        $personRepo = $this->getRepository(Person::class);
+        $person     = $personRepo->getOrCreateUserByPhoneNumber($toNumber);
+
+        // create phone call
+        $phoneCall = new VoicePhoneCall();
+        $phoneCall
+            ->setNumber($number)
+            ->setExternalNumber($toNumber)
+            ->setPerson($person)
+            ->setType(VoicePhoneCall::DIRECTION_OUTBOUND)
+            ->setData([])
+        ;
+
+        $em = $this->getManager();
+        $em->persist($phoneCall);
+        $em->flush();
+
+        return new View($this->wrap($phoneCall));
     }
 
     /**

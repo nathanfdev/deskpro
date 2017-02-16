@@ -195,6 +195,7 @@ class SearchController extends BaseController
         $searchRequest = new QuickSearchRequest(
             $this->getUser(),
             (string) $request->query->get('q'),
+            $request->query->get('params'),
             (string) $request->query->get('sort')
         );
 

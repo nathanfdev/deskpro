@@ -26,15 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
-class Build1487765029 extends AbstractBuild
+use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Class VoiceOutboundCallType.
+ */
+class VoiceOutboundCallType extends AbstractType
 {
-    public function run()
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->out('My Upgrade Class');
-        $this->execDbQuery('default', 'ALTER TABLE phone_numbers CHANGE guessed_type guessed_type VARCHAR(255) NOT NULL');
-        $this->execDbQuery('default', 'ALTER TABLE voice_phone_calls CHANGE call_sid call_sid VARCHAR(50) DEFAULT NULL;');
-        $this->execDbQuery('default', 'ALTER TABLE voice_phone_calls CHANGE from_number external_number VARCHAR(50) NOT NULL;');
+        $builder
+            ->add('call_from', EntityType::class, [
+                'class'       => VoiceNumber::class,
+                'constraints' => [
+                    new Assert\NotNull(),
+                ],
+            ])
+            ->add('call_to', TextType::class, [
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new AppAssert\PhoneNumber(),
+                ],
+            ])
+        ;
     }
 }

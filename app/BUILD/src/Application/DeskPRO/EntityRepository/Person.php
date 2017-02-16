@@ -40,6 +40,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\DepartmentPermission as DepartmentPermissionEntity;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Entity\PhoneNumber as PhoneNumberEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
 use Application\DeskPRO\EntityRepository\Helper\IdentityHelper;
 use Doctrine\DBAL\LockMode;
@@ -718,5 +719,36 @@ class Person extends AbstractEntityRepository
         $this->_em->refresh($user);
 
         return $user;
+    }
+
+    /**
+     * @param string $phoneNumber
+     *
+     * @return PersonEntity|null
+     */
+    public function getOrCreateUserByPhoneNumber($phoneNumber)
+    {
+        $person = null;
+        if ($phoneNumber) {
+            // check for an existing person
+            $phoneNumberEntity = $this->_em->getRepository(PhoneNumberEntity::class)->findOneBy([
+                'number' => $phoneNumber,
+            ]);
+            if ($phoneNumberEntity) {
+                $person = $phoneNumberEntity->getPerson();
+            }
+
+            // if person was not found then create a new one
+            if (!$person) {
+                $person = new PersonEntity();
+                $person->setPrimaryPhoneNumber(PhoneNumberEntity::createEntity($phoneNumber));
+                $person->setEmail('incoming.call.'.$phoneNumber.'@example.com');
+
+                $this->_em->persist($person);
+                $this->_em->flush();
+            }
+        }
+
+        return $person;
     }
 }

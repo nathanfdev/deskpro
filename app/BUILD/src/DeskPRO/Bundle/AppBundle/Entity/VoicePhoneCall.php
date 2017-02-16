@@ -80,7 +80,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $taskSid;
 
     /**
-     * @ORM\Column(name="call_sid", type="string", length=50)
+     * @ORM\Column(name="call_sid", type="string", length=50, nullable=true)
      *
      * @var string
      */
@@ -104,11 +104,11 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $number;
 
     /**
-     * @ORM\Column(name="from_number", type="string", length=50)
+     * @ORM\Column(name="external_number", type="string", length=50)
      *
      * @var string
      */
-    private $fromNumber;
+    private $externalNumber;
 
     /**
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
@@ -137,7 +137,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      *
      * @var array
      */
-    private $data;
+    private $data = [];
 
     /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant", mappedBy="phoneCall", cascade={"persist", "remove"}, orphanRemoval=true)
@@ -296,9 +296,9 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @return string
      */
-    public function getFromNumber()
+    public function getExternalNumber()
     {
-        return $this->fromNumber;
+        return $this->externalNumber;
     }
 
     /**
@@ -306,9 +306,9 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setFromNumber($from)
+    public function setExternalNumber($from)
     {
-        $this->setModelField('fromNumber', $from);
+        $this->setModelField('externalNumber', $from);
 
         return $this;
     }
@@ -379,6 +379,26 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function getParticipants()
     {
         return $this->participants;
+    }
+
+    /**
+     * @return ArrayCollection|VoicePhoneCallParticipantUser[]
+     */
+    public function getUserParticipants()
+    {
+        return $this->participants->filter(function (AbstractVoicePhoneCallParticipant $participant) {
+            return $participant instanceof VoicePhoneCallParticipantUser;
+        });
+    }
+
+    /**
+     * @return ArrayCollection|VoicePhoneCallParticipantAgent[]
+     */
+    public function getAgentParticipants()
+    {
+        return $this->participants->filter(function (AbstractVoicePhoneCallParticipant $participant) {
+            return $participant instanceof VoicePhoneCallParticipantAgent;
+        });
     }
 
     /**

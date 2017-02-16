@@ -129,12 +129,12 @@ class VoicemailRecordsController extends CrudController
             $ticketMessage = new TicketMessage();
             $ticketMessage->setPerson($phoneCall->getPerson());
             $ticketMessage->addAttribute($ticketMessageCall);
-            $ticketMessage->setMessage('Call from '.$phoneCall->getFromNumber());
+            $ticketMessage->setMessage('Call from '.$phoneCall->getExternalNumber());
             $ticketMessage->setAsAgentNote(true);
 
             $ticket = new Ticket();
             $ticket->disableAutoTicketProcess();
-            $ticket->setSubject('Call from '.$phoneCall->getFromNumber());
+            $ticket->setSubject('Call from '.$phoneCall->getExternalNumber());
             $ticket->setPerson($phoneCall->getPerson());
             $ticket->setAgent($this->getUser());
             $ticket->addMessage($ticketMessage);
