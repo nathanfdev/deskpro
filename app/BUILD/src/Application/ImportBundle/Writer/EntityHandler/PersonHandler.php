@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Writer\EntityHandler;
 
 use Application\DeskPRO\Entity;
 use Application\ImportBundle\Model;
+use Orb\Util\Strings;
 
 /**
  * DeskPRO person importer.
@@ -82,6 +83,11 @@ class PersonHandler extends AbstractEntityHandler
         }
         if ($model->getName()) {
             $entity->setName($model->getName());
+        }
+
+        // no name provided, email fallback
+        if (!$entity->getName() && $model->getFirstEmail()) {
+            $entity->setName(Strings::getNameFromEmail($model->getFirstEmail()));
         }
 
         // update organization
