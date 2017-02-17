@@ -1,54 +1,59 @@
 import React, { PropTypes } from 'react';
 import { Button, ButtonGroup } from 'DeskPRO/Component/Semantic/Button';
+import MarkdownEditor from 'DeskPRO/Component/Markdown/MarkdownEditor';
 import 'froala-editor/js/froala_editor.pkgd.min';
-import 'froala-editor/css/froala_editor.pkgd.css';
 import $ from 'jquery';
 import FroalaEditor from 'react-froala-wysiwyg';
-import ReactMarkdownEditor from 'react-markdown-editor';
-import toMarkdown from 'to-markdown';
+
 
 export class EditorContainer extends React.Component {
   static propTypes = {
-    value: PropTypes.string
+    value:          PropTypes.string,
+    updateHtml:     PropTypes.func,
+    updateMarkdown: PropTypes.func
   };
 
   render() {
-    return <Editor value={this.props.value} />;
+    return (<Editor
+      value={this.props.value}
+      updateHtml={this.props.updateHtml}
+      updateMarkdown={this.props.updateMarkdown}
+    />);
   }
 }
 export class Editor extends React.Component {
   static propTypes = {
-    value: PropTypes.string
+    value:      PropTypes.string,
+    updateHtml: PropTypes.func
+  };
+  static defaultProps = {
+    updateHtml() {}
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      message:    '',
-      markdown:   '',
-      editorMode: 'classic'
+      message:   this.props.value,
+      markdown:  this.props.value,
+      inputMode: 'rte'
     };
   }
 
-  onMarkdownChange = (content) => {
-    this.setState({ markdown: content });
+  onChange = (event) => {
+    this.setState({ markdown: event.target.value });
   };
 
   onContentChange = (content) => {
     this.setState({ message: content });
+    this.props.updateHtml(content);
   };
 
   getEditor = () => {
-    switch (this.state.editorMode) {
+    switch (this.state.inputMode) {
       case 'markdown': {
-        const MarkdownEditor = ReactMarkdownEditor.MarkdownEditor;
-        return (<MarkdownEditor
-          initialContent={this.state.markdown}
-          onContentChange={this.onMarkdownChange}
-          iconsSet="font-awesome"
-        />);
+        return (<MarkdownEditor value={this.state.markdown} onChange={this.onChange} />);
       }
-      case 'classic':
+      case 'rte':
       default: {
         const froalaConfig = {
           // toolbarInline: true,
@@ -72,31 +77,14 @@ export class Editor extends React.Component {
   };
 
   changeMode = (mode) => {
-    this.setState({ editorMode: mode });
-    if (mode === 'markdown') {
-      const converters = [
-        {
-          filter: 'u',
-          replacement(content) {
-            return `_${content}_`;
-          }
-        },
-        {
-          filter: 'i',
-          replacement(content) {
-            return `*${content}*`;
-          }
-        }
-      ];
-      this.setState({ markdown: toMarkdown(this.state.message, { converters, gfm: true }) });
-    }
+    this.setState({ inputMode: mode });
   };
 
   render() {
     return (<div className="publish-editor">
       <div className="header">
-        <ButtonGroup onChange={this.changeMode} activeKey={this.state.editorMode}>
-          <Button key="classic">Classic</Button>
+        <ButtonGroup onChange={this.changeMode} activeKey={this.state.inputMode}>
+          <Button key="rte">Classic</Button>
           <Button key="markdown">Markdown</Button>
         </ButtonGroup>
       </div>

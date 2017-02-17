@@ -61,7 +61,6 @@ abstract class ContentAbstract extends DomainObject
     const HIDDEN_STATUS_PENDING = 'pending';
 
     const CONTENT_TYPE_RTE      = 'rte';
-    const CONTENT_TYPE_RAW_HTML = 'raw_html';
     const CONTENT_TYPE_MARKDOWN = 'markdown';
 
     /**
@@ -575,7 +574,6 @@ abstract class ContentAbstract extends DomainObject
     {
         if (!in_array($contentInputType, [
             self::CONTENT_TYPE_RTE,
-            self::CONTENT_TYPE_RAW_HTML,
             self::CONTENT_TYPE_MARKDOWN,
         ])) {
             throw new \Exception('Unknown content type '.$contentInputType);

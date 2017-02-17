@@ -785,7 +785,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
 			stateId: 'editarticle.' + this.article_id,
-			listenOn: $('.article-editor-wrap:first', wrap)
+			listenOn: $('.article-editor-wrap:first', this.wrapper)
 		});
 		this.ownObject(this.editStateSaver);
 
@@ -794,60 +794,61 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			page: this
 		});
 
-		var wrap = this.wrapper;
-
-		this.getEl('save_btn').off('click').on('click', (function(ev) {
-			ev.preventDefault();
-
-			var data = [];
-			data.push({
-				name: 'action',
-				value: 'content'
-			});
-			data.push({
-				name: 'content',
-				value: $('.article-editor-wrap textarea:first', wrap).val()
-			});
-			data.push({
-				name: 'language_id',
-				value: wrap.find('.article-editor.wrap').find('.language_id').val()
-			});
-
-			$('input.edit-content-attach:checked', wrap).each(function() {
-				data.push({
-					name: 'attach[]',
-					value: $(this).val()
-				});
-			});
-
-			var showSaving = this.getEl('article_save').find('.mark-loading');
-			var showSaved  = this.getEl('article_save').find('.mark-saved');
-
-			showSaved.stop().hide();
-			showSaving.show();
-
-			$.ajax({
-				url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
-				type: 'POST',
-				context: this,
-				data: data,
-				dataType: 'json',
-				complete: function() {
-					showSaving.hide();
-				},
-				success: function(data) {
-					this.getEl('content_ed').html(data.content_html);
-					this._initPostArea();
-					this._initArticleArea();
-					this.handleUnloadRevisions(data.revision_id);
-
-					showSaved.show().fadeOut(2000);
-				}
-			});
-
-		}).bind(this));
+		this.getEl('save_btn').off('click').on('click', (this.saveHtml.bind(this)).bind(this));
 
 		this.hideEditor();
+	},
+
+	saveHtml: function(ev) {
+		ev.preventDefault();
+
+		var wrap = this.wrapper;
+
+		var data = [];
+		data.push({
+			name: 'action',
+			value: 'content'
+		});
+		data.push({
+			name: 'content',
+			value: $('.article-editor-wrap textarea:first', wrap).val()
+		});
+		data.push({
+			name: 'language_id',
+			value: wrap.find('.article-editor.wrap').find('.language_id').val()
+		});
+
+		$('input.edit-content-attach:checked', wrap).each(function() {
+			data.push({
+				name: 'attach[]',
+				value: $(this).val()
+			});
+		});
+
+		var showSaving = this.getEl('article_save').find('.mark-loading');
+		var showSaved  = this.getEl('article_save').find('.mark-saved');
+
+		showSaved.stop().hide();
+		showSaving.show();
+
+		$.ajax({
+			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'json',
+			complete: function() {
+				showSaving.hide();
+			},
+			success: function(data) {
+				this.getEl('content_ed').html(data.content_html);
+				this._initPostArea();
+				this._initArticleArea();
+				this.handleUnloadRevisions(data.revision_id);
+
+				showSaved.show().fadeOut(2000);
+			}
+		});
 	},
 
 	destroyPage: function() {
@@ -859,6 +860,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		}
 	},
 
+	updateTextArea: function(val) {
+    $('textarea.edit-content-field').val(val);
+	},
+
 	showEditor: function() {
 
 		$('body').addClass('content-link-control-on');
@@ -866,47 +871,57 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		var self = this;
 
 		$('.article-content-wrap', this.getEl('content_ed')).hide();
+
 		var edWrap = $('.article-editor-wrap', this.getEl('content_ed')).show();
-
-		$('.revert-default', edWrap).on('click', function() {
-			var def = $('textarea.edit-content-field-default').val();
-			$('textarea.edit-content-field').val(def);
-
-			$('.revert-message-notice', edWrap).remove();
-		});
-
+    //
+		// $('.revert-default', edWrap).on('click', function() {
+		// 	var def = $('textarea.edit-content-field-default').val();
+		// 	$('textarea.edit-content-field').val(def);
+    //
+		// 	$('.revert-message-notice', edWrap).remove();
+		// });
+    //
 		if (!this._hasInitEd) {
 			this._hasInitEd = true;
 
-			var txt = $('.edit-content-field', this.getEl('content_ed'));
-			var w = $(txt.closest('.content-tab-item')).width() - 30;
-
-			// Means the whole thign is visible at once, lets try and max out the viewport
-			if (this.wrapper.find('> .layout-content > .scrollbar.disabled')) {
-				var h = $(window).height() - 90 - txt.offset().top;
-			} else {
-				h = 425;
-			}
-
-			txt.css({ width: w, height: h });
-
-			this.rte = DP.rteTextarea(txt, {
-				setup: function(ed) {
-					ed.onKeyPress.add(function() {
-						self.editStateSaver.triggerChange();
-					});
-				}
-			});
-
-			var saveBtn = this.getEl('save_btn');
-			this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
-				page: this,
-				rte: txt,
-				isReadyCallback: function() {
-					return saveBtn.is(':visible');
-				}
-			});
-
+      var textArea = $('textarea.edit-content-field');
+      var $rElement = $('<div></div>').insertAfter(textArea);
+      window.AgentLegacyBundle.renderContentEditor(
+      	$rElement.get(0),
+				textArea.val(),
+				this.updateTextArea
+			);
+      textArea.hide();
+    //
+		// 	var txt = $('.edit-content-field', this.getEl('content_ed'));
+		// 	var w = $(txt.closest('.content-tab-item')).width() - 30;
+    //
+		// 	// Means the whole thign is visible at once, lets try and max out the viewport
+		// 	if (this.wrapper.find('> .layout-content > .scrollbar.disabled')) {
+		// 		var h = $(window).height() - 90 - txt.offset().top;
+		// 	} else {
+		// 		h = 425;
+		// 	}
+    //
+		// 	txt.css({ width: w, height: h });
+    //
+		// 	this.rte = DP.rteTextarea(txt, {
+		// 		setup: function(ed) {
+		// 			ed.onKeyPress.add(function() {
+		// 				self.editStateSaver.triggerChange();
+		// 			});
+		// 		}
+		// 	});
+    //
+		// 	var saveBtn = this.getEl('save_btn');
+		// 	this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
+		// 		page: this,
+		// 		rte: txt,
+		// 		isReadyCallback: function() {
+		// 			return saveBtn.is(':visible');
+		// 		}
+		// 	});
+    //
 			this._hasInitEdBefore = true;
 		}
 

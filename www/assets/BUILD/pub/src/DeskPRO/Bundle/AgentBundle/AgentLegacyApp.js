@@ -12,6 +12,7 @@ import { SideBarContainer } from './Modules/SideBar/Components/SideBar';
 import { AgentList } from './Modules/Agent/Components/AgentList';
 import { AgentOnboardingContainer }  from './Modules/Onboarding/Components/AgentOnboarding';
 import { ArchiveFilesContainer } from './Modules/Tickets/Components/Archive/ArchiveFiles';
+import { EditorContainer } from './Modules/Publish/Components/Editor';
 import VoiceControlsContainer from './Modules/Voice/Components/Controls/VoiceControlsContainer';
 import VoiceTicketMessageContainer from './Modules/Voice/Components/TicketMessage/TicketMessageContainer';
 import AgentReducers from './AgentApp_Reducers';
@@ -131,6 +132,15 @@ class AgentLegacyApp {
         <ArchiveFilesContainer
           authId={data.authId}
         />
+      </Provider>,
+      node.get(0)
+    );
+  }
+
+  renderContentEditor(node, value, updateHtml) {
+    ReactDOM.render(
+      <Provider store={this.store}>
+        <EditorContainer value={value} updateHtml={updateHtml} />
       </Provider>,
       node
     );
