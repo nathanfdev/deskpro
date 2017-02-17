@@ -49,7 +49,7 @@ class Message extends React.Component {
       return null;
     });
 
-    return newMessage.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target="_blank">$1</a>');
+    return newMessage;
   }
 
   getMessage() {
