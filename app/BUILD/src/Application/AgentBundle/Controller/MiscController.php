@@ -532,7 +532,7 @@ JS;
 
     public function acceptTempUploadAction()
     {
-        $copy_blobauth = $this->in->getString('copy_blob');
+        $copy_blobauth          = $this->in->getString('copy_blob');
         $allowedImageExtensions = ['gif', 'png', 'jpg', 'jpeg'];
 
         if ($copy_blobauth) {
@@ -705,7 +705,12 @@ JS;
 
             // needed for Redactor
             'filelink' => $blob->getDownloadUrl(true),
+            'link'     => $blob->getDownloadUrl(true),
         ];
+
+        if ($this->in->getBool('json')) {
+            return $this->createJsonResponse(json_encode($blob));
+        }
 
         return $this->render('AgentBundle:Misc:redactor-image-upload.html.twig', ['blob' => $blob]);
     }

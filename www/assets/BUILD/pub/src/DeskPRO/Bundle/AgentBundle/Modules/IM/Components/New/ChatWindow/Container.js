@@ -373,6 +373,9 @@ class Container extends React.Component {
     }
 
     const froalaConfig = {
+      imageUploadMethod:         'POST',
+      imageUploadParams:         { _rt: window.DP_REQUEST_TOKEN, json: true },
+      imageUploadURL:            `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
       toolbarInline:             true,
       charCounterCount:          false,
       toolbarButtons:            ['bold', 'italic', 'underline', 'strikeThrough', 'color', '-', 'align', 'formatOL', 'formatUL', 'insertImage', '-', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
