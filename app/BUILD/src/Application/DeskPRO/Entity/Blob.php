@@ -229,6 +229,10 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         $this->labels       = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    static public function hasZipArchiveClass(){
+        return class_exists('ZipArchive');
+    }
+
     /**
      * @return int
      */

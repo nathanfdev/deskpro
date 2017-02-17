@@ -54,8 +54,10 @@ use Symfony\Component\HttpFoundation\Response;
 class BlobsController extends CrudController
 {
     public static $exposeOnly = ['list', 'get', 'post', 'delete'];
-    public static $entity     = Blob::class;
-    public static $type       = BlobAuthType::class;
+
+    public static $entity = Blob::class;
+
+    public static $type = BlobAuthType::class;
 
     /**
      * @Rest\Post("/temp")
@@ -101,7 +103,10 @@ class BlobsController extends CrudController
      */
     public function getAction(Request $request, $authId)
     {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, $this->getPermissionGroupEntityContext($authId, $request));
+        $this->denyAccessUnlessGranted(
+            PermissionGroupVoter::VIEW,
+            $this->getPermissionGroupEntityContext($authId, $request)
+        );
 
         return View::create($this->wrap($this->findEntity($authId, $request)), Response::HTTP_OK);
     }
@@ -149,11 +154,16 @@ class BlobsController extends CrudController
                 $authIds = explode(',', $authIds);
             }
 
-            $authIds = array_map(function ($authId) {
-                return preg_replace('|^(\d*\-)?|', '', $authId);
-            }, $authIds);
+            $authIds = array_map(
+                function ($authId) {
+                    return preg_replace('|^(\d*\-)?|', '', $authId);
+                },
+                $authIds
+            );
             if (count($authIds) > static::$listMaxResults) {
-                throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
+                throw $this->createBadRequestException(
+                    'You can select maximum '.static::$listMaxResults.' entities'
+                );
             }
 
             $qb->andWhere('e.authcode IN (:authIds)');
@@ -173,7 +183,9 @@ class BlobsController extends CrudController
             $count = (int) $request->query->getInt('count', static::$listPerPage);
 
             if ($count > static::$listMaxResults) {
-                throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
+                throw $this->createBadRequestException(
+                    'You can select maximum '.static::$listMaxResults.' entities'
+                );
             } elseif ($count <= 0) {
                 throw $this->createBadRequestException('You must select at least 1 entity');
             }
@@ -236,7 +248,10 @@ class BlobsController extends CrudController
      */
     public function deleteAction($authId, Request $request)
     {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::DELETE, $this->getPermissionGroupEntityContext($authId, $request));
+        $this->denyAccessUnlessGranted(
+            PermissionGroupVoter::DELETE,
+            $this->getPermissionGroupEntityContext($authId, $request)
+        );
 
         $entity = $this->findEntity($authId, $request);
         $this->deleteEntity($entity);
@@ -322,6 +337,10 @@ class BlobsController extends CrudController
      */
     public function getArchiveFilesAction($authId, Request $request)
     {
+        if (!Blob::hasZipArchiveClass()) {
+            return new View(null, Response::HTTP_NOT_IMPLEMENTED);
+        }
+
         /** @var Blob $blob */
         $blob = $this->findEntity($authId, $request);
 
