@@ -139,15 +139,21 @@ export class ArchiveFiles extends React.Component {
     if (tree) {
       return (
         <List>
-          {tree.map(element =>
-            <ListElement
-              icon={element.dir ? 'folder' : 'file'}
-              href={element.dir ? '' : this.props.getLink(element)}
-              label={`${element.filename} (${element.filesize_readable})`}
-            >
-              {this.renderTree(element.children)}
-            </ListElement>
-          )}
+          {tree.map((element) => {
+            let label = element.filename;
+            if (element.filesize_readable) {
+              label = `${label} (${element.filesize_readable})`;
+            }
+            return (
+              <ListElement
+                icon={element.dir ? 'folder' : 'file'}
+                href={element.dir ? '' : this.props.getLink(element)}
+                label={label}
+              >
+                {this.renderTree(element.children)}
+              </ListElement>
+            );
+          })}
         </List>
       );
     }
