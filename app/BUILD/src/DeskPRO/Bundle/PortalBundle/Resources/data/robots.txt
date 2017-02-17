@@ -11,5 +11,7 @@ Disallow: /dp/
 Disallow: /dp.php
 Disallow: /get_messages.php
 Disallow: /__serverinfo/
+Disallow: /*/vote-up$
+Disallow: /*/vote-down$
 
 Sitemap: sitemap.xml
