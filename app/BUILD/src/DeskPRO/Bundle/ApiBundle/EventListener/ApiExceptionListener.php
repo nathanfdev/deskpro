@@ -71,7 +71,12 @@ class ApiExceptionListener implements EventSubscriberInterface
 
             $response = $event->getKernel()->handle($sub_request, HttpKernel::SUB_REQUEST, false);
         } catch (\Exception $e) {
-            SystemErrorHandler::logException(new \Exception(sprintf('Exception thrown when handling an exception (%s: %s at %s line %s)', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine())));
+            if (!SystemErrorHandler::isProxyException($e)) {
+                SystemErrorHandler::logException(new \Exception(sprintf(
+                    'Exception thrown when handling an exception (%s: %s at %s line %s)',
+                    get_class($e), $e->getMessage(), $e->getFile(), $e->getLine())
+                ));
+            }
 
             $wrapper = $e;
 
