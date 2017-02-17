@@ -33,9 +33,13 @@ class Build1487247240 extends AbstractBuild
     public function run()
     {
         $this->out('Add Content input fields');
-        $this->execDbQuery('default', 'ALTER TABLE articles ADD content_input LONGTEXT NOT NULL, ADD content_input_type VARCHAR(100) NOT NULL');
-        $this->execDbQuery('default', 'ALTER TABLE downloads ADD content_input LONGTEXT NOT NULL, ADD content_input_type VARCHAR(100) NOT NULL');
-        $this->execDbQuery('default', 'ALTER TABLE feedback ADD content_input LONGTEXT NOT NULL, ADD content_input_type VARCHAR(100) NOT NULL');
-        $this->execDbQuery('default', 'ALTER TABLE news ADD content_input LONGTEXT NOT NULL, ADD content_input_type VARCHAR(100) NOT NULL');
+        $this->execSlowAlterTable('articles', 'ADD content_input LONGTEXT NOT NULL');
+        $this->execSlowAlterTable('articles', 'ADD content_input_type VARCHAR(100) NOT NULL');
+        $this->execSlowAlterTable('downloads', 'ADD content_input LONGTEXT NOT NULL');
+        $this->execSlowAlterTable('downloads', 'ADD content_input_type VARCHAR(100) NOT NULL');
+        $this->execSlowAlterTable('feedback', 'ADD content_input LONGTEXT NOT NULL');
+        $this->execSlowAlterTable('feedback', 'ADD content_input_type VARCHAR(100) NOT NULL');
+        $this->execSlowAlterTable('news', 'ADD content_input LONGTEXT NOT NULL');
+        $this->execSlowAlterTable('news', 'ADD content_input_type VARCHAR(100) NOT NULL');
     }
 }
