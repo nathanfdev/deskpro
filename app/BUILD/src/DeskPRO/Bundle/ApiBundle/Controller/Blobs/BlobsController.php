@@ -54,7 +54,9 @@ use Symfony\Component\HttpFoundation\Response;
 class BlobsController extends CrudController
 {
     public static $exposeOnly = ['list', 'get', 'post', 'delete'];
+
     public static $entity     = Blob::class;
+
     public static $type       = BlobAuthType::class;
 
     /**
@@ -101,7 +103,10 @@ class BlobsController extends CrudController
      */
     public function getAction(Request $request, $authId)
     {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, $this->getPermissionGroupEntityContext($authId, $request));
+        $this->denyAccessUnlessGranted(
+            PermissionGroupVoter::VIEW,
+            $this->getPermissionGroupEntityContext($authId, $request)
+        );
 
         return View::create($this->wrap($this->findEntity($authId, $request)), Response::HTTP_OK);
     }
@@ -149,11 +154,16 @@ class BlobsController extends CrudController
                 $authIds = explode(',', $authIds);
             }
 
-            $authIds = array_map(function ($authId) {
-                return preg_replace('|^(\d*\-)?|', '', $authId);
-            }, $authIds);
+            $authIds = array_map(
+                function ($authId) {
+                    return preg_replace('|^(\d*\-)?|', '', $authId);
+                },
+                $authIds
+            );
             if (count($authIds) > static::$listMaxResults) {
-                throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
+                throw $this->createBadRequestException(
+                    'You can select maximum ' . static::$listMaxResults . ' entities'
+                );
             }
 
             $qb->andWhere('e.authcode IN (:authIds)');
@@ -162,18 +172,20 @@ class BlobsController extends CrudController
             throw $this->createBadRequestException('Blobs can\'t be listed without authIds');
         }
 
-        $limit = (int) $request->query->getInt('limit', static::$listLimit);
+        $limit = (int)$request->query->getInt('limit', static::$listLimit);
         if ($limit && $limit < 0) {
             throw $this->createBadRequestException('You must select a limit of at least 1');
         }
 
         // return QueryBuilder result or Pagerfanta depending on if pagination is enabled for the controller
         if (static::$listPaginate) {
-            $page  = (int) $request->query->getInt('page', 1);
-            $count = (int) $request->query->getInt('count', static::$listPerPage);
+            $page  = (int)$request->query->getInt('page', 1);
+            $count = (int)$request->query->getInt('count', static::$listPerPage);
 
             if ($count > static::$listMaxResults) {
-                throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
+                throw $this->createBadRequestException(
+                    'You can select maximum ' . static::$listMaxResults . ' entities'
+                );
             } elseif ($count <= 0) {
                 throw $this->createBadRequestException('You must select at least 1 entity');
             }
@@ -236,7 +248,10 @@ class BlobsController extends CrudController
      */
     public function deleteAction($authId, Request $request)
     {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::DELETE, $this->getPermissionGroupEntityContext($authId, $request));
+        $this->denyAccessUnlessGranted(
+            PermissionGroupVoter::DELETE,
+            $this->getPermissionGroupEntityContext($authId, $request)
+        );
 
         $entity = $this->findEntity($authId, $request);
         $this->deleteEntity($entity);
@@ -322,6 +337,10 @@ class BlobsController extends CrudController
      */
     public function getArchiveFilesAction($authId, Request $request)
     {
+        if (!Blob::hasZipArchiveClass()) {
+            return new View(null, Response::HTTP_NOT_IMPLEMENTED);
+        }
+
         /** @var Blob $blob */
         $blob = $this->findEntity($authId, $request);
 
@@ -398,7 +417,7 @@ class BlobsController extends CrudController
         $filename = array_pop($pieces);
         header('Content-Type: application/octet-stream');
         header('Content-Transfer-Encoding: Binary');
-        header('Content-Disposition: attachment; filename="'.addslashes($filename).'"');
+        header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
 
         readfile($content[$path]);
 
@@ -417,7 +436,7 @@ class BlobsController extends CrudController
         $blobStorage = $this->get('deskpro.blob_storage');
         $fileId      = uniqid('archive', true);
         $tmpDir      = $this->get('deskpro.app_env')->getUserTmpDir();
-        $archive     = $tmpDir.'/'.$fileId.$blob->getFilename();
+        $archive     = $tmpDir . '/' . $fileId . $blob->getFilename();
 
         $blobStorage->copyBlobRecordToFile($archive, $blob);
 
