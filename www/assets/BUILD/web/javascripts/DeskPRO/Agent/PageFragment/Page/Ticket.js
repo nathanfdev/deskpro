@@ -1490,11 +1490,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				renderVoiceComponent($el);
 			}
 		});
-		messageEl.find('.archive-blob').each(function() {
-			var $rElement = $('<div></div>').insertAfter(this);
+		messageEl.find('.view-archive-files').each(function() {
+			var $rElement = $(this);
 			var data = {
-				authId: $(this).find('a').data('blob-authid'),
-			}
+				authId: $(this).closest('li').find('a').first().data('blob-authid')
+			};
 			window.AgentLegacyBundle.renderMessageArchiveAttachment($rElement.get(0), data);
 		});
 
