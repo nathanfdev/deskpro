@@ -1130,12 +1130,12 @@ return [
     ],
     'api_log.writer.file.serializer.type' => 'serialize',
 
-    'api_limits.global.hour' => 500,
-    'api_limits.global.day'  => 2500,
+    'api_limits.global.hour' => -1,
+    'api_limits.global.day'  => -1,
 
-    'api_limits.key.hour'    => defined('DPC_IS_CLOUD') ? 600 : -1,
+    'api_limits.key.hour'    => -1,
     'api_limits.key.day'     => -1,
-    'api_limits.key.default' => 50,
+    'api_limits.key.default' => -1,
 
     //###################################################################################################################
     // audit_log
