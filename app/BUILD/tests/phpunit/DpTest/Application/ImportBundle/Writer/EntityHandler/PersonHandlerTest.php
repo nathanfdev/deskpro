@@ -159,6 +159,19 @@ class PersonHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals(['email2@deskpro.dev', 'email3@deskpro.dev', 'email4@deskpro.dev'], $entity->getEmailAddresses());
     }
 
+    public function test_name_email_fallback()
+    {
+        $model = new Model\Person();
+        $model->setOid(1);
+        $model->addEmail('user@deskpro.dev');
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertEquals('User', $entity->getName());
+    }
+
     /**
      * @return Model\Person
      */
