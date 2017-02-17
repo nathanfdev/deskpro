@@ -378,7 +378,7 @@ class Container extends React.Component {
       imageUploadURL:            `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
       fileUploadMethod:          'POST',
       fileUploadParams:          { _rt: window.DP_REQUEST_TOKEN, json: true },
-      fileUploadURL:             `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
+      fileUploadURL:             `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
       toolbarInline:             true,
       charCounterCount:          false,
       toolbarButtons:            ['bold', 'italic', 'underline', 'strikeThrough', 'color', '-', 'align', 'formatOL', 'formatUL', 'insertImage', '-', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],

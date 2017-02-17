@@ -92,6 +92,11 @@ $collection->create('agent_accept_redactor_image_upload', [
     'controller' => 'AgentBundle:Misc:acceptRedactorImageUpload',
 ]);
 
+$collection->create('agent_accept_redactor_file_upload', [
+    'path'       => '/misc/accept-redactor-file-upload',
+    'controller' => 'AgentBundle:Misc:acceptRedactorFileUpload',
+]);
+
 $collection->create('agent_redactor_autosave', [
     'path'         => '/misc/redactor-autosave/{content_type}/{content_id}',
     'controller'   => 'AgentBundle:Misc:redactorAutosave',

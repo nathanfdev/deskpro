@@ -636,7 +636,12 @@ JS;
         return $res;
     }
 
-    public function acceptRedactorImageUploadAction()
+    public function acceptRedactorFileUploadAction()
+    {
+        return $this->acceptRedactorImageUploadAction(true);
+    }
+
+    public function acceptRedactorImageUploadAction($fileUpload = false)
     {
         $copy_blobauth = $this->in->getString('copy_blob');
 
@@ -650,7 +655,7 @@ JS;
                 return $this->createJsonResponse($error);
             }
 
-            if (!$blob->isImage()) {
+            if (!$fileUpload && !$blob->isImage()) {
                 $error = [
                     'error_code'   => 'not_in_allowed_exts',
                     'error_detail' => implode(',', ['gif', 'png', 'jpg', 'jpeg']),
@@ -680,10 +685,14 @@ JS;
 
             $error = $accept->getError($file, 'agent');
             if (!$error) {
-                $set = new \Application\DeskPRO\Attachments\RestrictionSet();
-                $set->setAllowedExts(['gif', 'png', 'jpg', 'jpeg']);
-                $accept->addRestrictionSet('only_images', $set);
-                $error = $accept->getError($file, 'only_images');
+                $set  = new \Application\DeskPRO\Attachments\RestrictionSet();
+                $exts = !$fileUpload
+                    ? ['gif', 'png', 'jpg', 'jpeg']
+                    : ['pdf', 'doc', 'docx', 'xls', 'csv', 'xlsx', 'txt', 'rar',
+                       'zip', 'tar.gz', '7zip', 'gzip', 'bzip', ];
+                $set->setAllowedExts($exts);
+                $accept->addRestrictionSet($fileUpload ? 'only_files' : 'only_images', $set);
+                $error = $accept->getError($file, $fileUpload ? 'only_files' : 'only_images');
             }
             if ($error) {
                 $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
