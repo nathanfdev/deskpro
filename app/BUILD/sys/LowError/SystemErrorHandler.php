@@ -236,11 +236,22 @@ class SystemErrorHandler
             || $exception instanceof MethodNotAllowedException
             || $exception instanceof AccessDeniedException
             || $exception instanceof LogoutException
+            || self::isProxyException($exception)
         ) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * @param $exception
+     *
+     * @return bool
+     */
+    public static function isProxyException($exception)
+    {
+        return $exception instanceof \UnexpectedValueException && strpos($exception->getMessage(), 'Invalid Host') === 0;
     }
 
     public static function logExceptionIfUniqueBacktrace(/*Throwable*/
