@@ -32,6 +32,7 @@
 
 namespace Cloud\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\Entity\TmpData;
 use Application\LegacyApiBundle\Controller\SettingsController as BaseSettingsController;
 use Orb\Util\OptionsArray;
@@ -138,6 +139,12 @@ class SettingsController extends BaseSettingsController
         foreach ($set_settings as $k => $v) {
             $this->settings->setSetting($k, $v);
         }
+
+        // primary brand url needs to change too
+        $brandStack   = $this->get('brand_stack');
+        $primaryBrand = $brandStack->getDefaultBrand();
+        $repos        = $this->get('doctrine.orm.default_entity_manager')->getRepository(BrandSetting::class);
+        $repos->updateSetting('core.deskpro_url', $set_settings['core.deskpro_url'], $primaryBrand);
 
         return $this->createApiSuccessResponse();
     }
