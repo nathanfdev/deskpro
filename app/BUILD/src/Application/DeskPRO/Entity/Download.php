@@ -201,6 +201,18 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
     }
 
     /**
+     * @param string $filename
+     *
+     * @return $this
+     */
+    public function setFilename($filename)
+    {
+        $this->setModelField('filename', $filename);
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getFileName()
