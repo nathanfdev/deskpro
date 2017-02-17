@@ -33,6 +33,7 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Person;
 use Orb\Util\Web;
@@ -102,14 +103,15 @@ class NewDownload
         $download->category = $cat;
 
         if ($this->attach) {
-            $blob           = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
-            $download->blob = $blob;
+            /** @var Blob $blob */
+            $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
+            $download->setBlob($blob);
+            $download->setFilename($blob->getFilename());
 
-            if (!$download->title) {
-                $download->title = $blob->filename;
+            if (!$download->getTitle()) {
+                $download->setTitle($blob->getFilename());
             }
 
-            $blob->filename = $download->title;
             $this->_em->persist($blob);
         } else {
             $fileurl  = $this->fileurl;
