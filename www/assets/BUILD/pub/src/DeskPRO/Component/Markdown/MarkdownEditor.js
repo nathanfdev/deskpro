@@ -14,7 +14,7 @@ class MarkdownEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      preview: ''
+      html: ''
     };
   }
 
@@ -25,7 +25,7 @@ class MarkdownEditor extends React.Component {
         linkify:     true,
         typographer: true
       });
-      this.setState({ preview: md.render(this.props.value) });
+      this.setState({ html: md.render(this.props.value) });
     }
   };
 
@@ -37,7 +37,7 @@ class MarkdownEditor extends React.Component {
             <textarea rows="20" cols="100" value={this.props.value} onChange={this.props.onChange} />
           </Tab>
           <Tab key="preview" label="Preview">
-            <div className="preview" dangerouslySetInnerHTML={{ __html: this.state.preview }} />
+            <div className="preview" dangerouslySetInnerHTML={{ __html: this.state.html }} />
           </Tab>
         </TabGroup>
       </div>

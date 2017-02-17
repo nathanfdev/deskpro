@@ -44,6 +44,7 @@
 				</div>
 			{% endif %}
 			<textarea class="edit-content-field" name="article[content]" rows="5" cols="50">{{ state.article.content|default(article.real_content) }}</textarea>
+			<input type="hidden" class="content_input_type" name="content_input_type" value="{{ article.content_input_type }}">
 			{% if app.languages.isMultiLang() %}
 				<div style="float: right; padding-right: 18px; padding-top: 4px;">
 					<span class="small-light-icon tipped" title="{{ phrase('agent.publish.primary_lang_explain') }}"></span>
