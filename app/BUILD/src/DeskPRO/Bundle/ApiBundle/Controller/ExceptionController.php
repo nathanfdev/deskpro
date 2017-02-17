@@ -37,6 +37,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
 
 /**
  * Class ExceptionController.
@@ -64,13 +65,15 @@ class ExceptionController extends BaseController
         }
 
         // Log exceptions if in production
-        if (!$exception instanceof FormExceptionInterface && !$exception instanceof HttpException) {
+        if (!$exception instanceof FormExceptionInterface
+            && !$exception instanceof HttpException
+            && !$exception instanceof AuthenticationCredentialsNotFoundException) {
             if (!$this->container->getParameter('kernel.debug')) {
                 $this->logException($exception);
             }
         }
 
-        if ($exception instanceof AccessDeniedException) {
+        if ($exception instanceof AccessDeniedException || $exception instanceof AuthenticationCredentialsNotFoundException) {
             $exception = new AccessDeniedHttpException($exception->getMessage(), $exception);
         }
 
