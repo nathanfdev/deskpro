@@ -680,6 +680,10 @@ img.emojione, svg.emojione {
             border: 1px solid $dp-greyscale-350;
             position: relative;
             display: inline-block;
+
+            img {
+              max-width: 280px !important;
+            }
           }
 
           .message:before {
