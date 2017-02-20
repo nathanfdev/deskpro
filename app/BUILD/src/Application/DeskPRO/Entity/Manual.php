@@ -113,11 +113,18 @@ class Manual extends DomainObject
         return $this->title;
     }
 
+    /**
+     * @param $title
+     *
+     * @return $this
+     */
     public function setTitle($title)
     {
         $this->setModelField('title', $title);
 
         $this->updateSlug();
+
+        return $this;
     }
 
     /**
@@ -131,7 +138,8 @@ class Manual extends DomainObject
     public function updateSlug()
     {
         $this->slug = Strings::slugifyTitle($this->title);
-        $this->setModelField('slug', $this->slug);
+
+        $this->setSlug($this->slug);
     }
 
     /**

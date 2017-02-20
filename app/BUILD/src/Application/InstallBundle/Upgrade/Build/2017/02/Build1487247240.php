@@ -34,12 +34,12 @@ class Build1487247240 extends AbstractBuild
     {
         $this->out('Add Content input fields');
         $this->execSlowAlterTable('articles', 'ADD content_input LONGTEXT NOT NULL');
-        $this->execSlowAlterTable('articles', 'ADD content_input_type VARCHAR(100) NOT NULL');
+        $this->execSlowAlterTable('articles', 'ADD content_input_type VARCHAR(100) DEFAULT NULL');
         $this->execSlowAlterTable('downloads', 'ADD content_input LONGTEXT NOT NULL');
-        $this->execSlowAlterTable('downloads', 'ADD content_input_type VARCHAR(100) NOT NULL');
+        $this->execSlowAlterTable('downloads', 'ADD content_input_type VARCHAR(100) DEFAULT NULL');
         $this->execSlowAlterTable('feedback', 'ADD content_input LONGTEXT NOT NULL');
-        $this->execSlowAlterTable('feedback', 'ADD content_input_type VARCHAR(100) NOT NULL');
+        $this->execSlowAlterTable('feedback', 'ADD content_input_type VARCHAR(100) DEFAULT NULL');
         $this->execSlowAlterTable('news', 'ADD content_input LONGTEXT NOT NULL');
-        $this->execSlowAlterTable('news', 'ADD content_input_type VARCHAR(100) NOT NULL');
+        $this->execSlowAlterTable('news', 'ADD content_input_type VARCHAR(100) DEFAULT NULL');
     }
 }

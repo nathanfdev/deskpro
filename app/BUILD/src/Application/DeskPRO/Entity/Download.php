@@ -582,7 +582,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
                 'length'     => 100,
                 'precision'  => 0,
                 'scale'      => 0,
-                'nullable'   => false,
+                'nullable'   => true,
                 'columnName' => 'content_input_type',
             ]
         );

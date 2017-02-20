@@ -34,6 +34,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualTopicType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,7 +43,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class ManualTopicsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/manual_topics")
+ * @Rest\Route("/content/manual_topics")
  * @ApiDoc(target="all", section="Content", output="Application\DeskPRO\Entity\ManualTopic")
  * @ApiDoc(
  *     target="listAction,countAction",
@@ -72,13 +73,18 @@ use Symfony\Component\HttpFoundation\Request;
  * )
  * @ApiDoc(
  *     target="postAction",
- *     input="DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualTopicType"
+ *     input={
+ *      "class" = "DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualTopicType",
+ *      "options" = {"method" = "POST"},
+ *      "name" = ""
+ *     }
  * )
  */
 class ManualTopicsController extends AbstractContentController
 {
     public static $entity     = ManualTopic::class;
     public static $category   = Manual::class;
+    public static $type       = ManualTopicType::class;
     public static $exposeOnly = ['get', 'list', 'count', 'delete', 'post'];
 
     /**
@@ -112,5 +118,17 @@ class ManualTopicsController extends AbstractContentController
         } else {
             parent::applyListGroupBy($qb, $alias, $groupBy, $request);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge($options, [
+            'person' => $this->getUser(),
+        ]);
+
+        return parent::handleForm($model, $request, $options);
     }
 }

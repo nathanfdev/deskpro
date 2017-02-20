@@ -327,3 +327,10 @@ services:
     arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
       - { name: form.type }
+
+  form.manual:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualType
+    arguments:
+      - "@brand_form_helper"
+    tags:
+      - { name: form.type }

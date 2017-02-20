@@ -730,6 +730,7 @@ return [
     'agent.general.lost_qm'                                    => 'lost?',
     'agent.general.macros'                                     => 'Macros',
     'agent.general.manage_macros'                              => 'Manage Macros',
+    'agent.general.manuals'                                    => 'Manuals',
     'agent.general.mark_spam'                                  => 'Mark as spam',
     'agent.general.matches'                                    => 'Matches',
     'agent.general.matches_regex'                              => 'matches regex',

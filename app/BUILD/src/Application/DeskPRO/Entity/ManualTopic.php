@@ -31,6 +31,7 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 class ManualTopic extends ContentAbstract
 {
@@ -47,6 +48,17 @@ class ManualTopic extends ContentAbstract
      * @var ArrayCollection
      */
     protected $revisions;
+
+    /**
+     * Display order.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     * @JMS\Groups("product")
+     *
+     * @var int
+     */
+    protected $display_order = 0;
 
     protected function addSlugHistory($oldSlug)
     {
@@ -92,6 +104,26 @@ class ManualTopic extends ContentAbstract
     public function setRevisions($revisions)
     {
         $this->setModelField('revisions', $revisions);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
+    }
+
+    /**
+     * @param int $display_order
+     *
+     * @return ManualTopic
+     */
+    public function setDisplayOrder($display_order)
+    {
+        $this->setModelField('display_order', $display_order);
 
         return $this;
     }
@@ -176,7 +208,7 @@ class ManualTopic extends ContentAbstract
                 'length'     => 100,
                 'precision'  => 0,
                 'scale'      => 0,
-                'nullable'   => false,
+                'nullable'   => true,
                 'columnName' => 'content_input_type',
             ]
         );
@@ -240,6 +272,16 @@ class ManualTopic extends ContentAbstract
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'hidden_status',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'display_order',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'display_order',
             ]
         );
         $metadata->mapField(

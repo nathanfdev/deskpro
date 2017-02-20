@@ -38,20 +38,19 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * Class ManualController.
  *
  * @ApiModes("all")
- * @Rest\Route("/manuals")
+ * @Rest\Route("/content/manuals")
  * @ApiDoc(target="all", section="Content", output="Application\DeskPRO\Entity\Manual")
  * @ApiDoc(
  *     target="postAction",
- *     input="DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualType"
+ *     input={
+ *      "class" = "DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualType",
+ *      "options" = {"method" = "POST"},
+ *      "name" = ""
+ *     }
  * )
  */
 class ManualController extends AbstractCategoriesController
 {
     public static $entity = Manual::class;
     public static $type   = ManualType::class;
-
-    public function denyAccessUnlessGranted($attributes, $object = null, $message = 'Access Denied.')
-    {
-        return true;
-    }
 }

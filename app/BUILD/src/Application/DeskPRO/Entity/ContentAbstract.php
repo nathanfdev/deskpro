@@ -572,7 +572,7 @@ abstract class ContentAbstract extends DomainObject
      */
     public function setContentInputType($contentInputType)
     {
-        if (!in_array($contentInputType, [
+        if ($contentInputType && !in_array($contentInputType, [
             self::CONTENT_TYPE_RTE,
             self::CONTENT_TYPE_MARKDOWN,
         ])) {

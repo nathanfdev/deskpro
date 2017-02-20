@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Orb\Util\Arrays;
@@ -269,48 +265,6 @@ class Deskpro3RedirectController extends AbstractController
     public function profileAction()
     {
         return $this->redirectToRoute('portal_user_profile', [], 301);
-    }
-
-    //###########################################################################
-    // Unsupported : Manuals and Troubles
-    //###########################################################################
-
-    public function rewrittenManualsAction($manualBit = '', $pageBit = '')
-    {
-        $manulaId = Strings::extractRegexMatch('#^(\d+)#', $manualBit);
-        $pageId   = Strings::extractRegexMatch('#^(\d+)#', $pageBit);
-
-        if (!$manulaId && !$pageId) {
-            return $this->redirectToRoute('user', [], 301);
-        }
-
-        if ($pageId) {
-            return $this->redirectToRoute('dp3_redirect_manual_php', ['m' => $manulaId, 'p' => $pageId]);
-        } else {
-            return $this->redirectToRoute('dp3_redirect_manual_php', ['m' => $manulaId]);
-        }
-    }
-
-    /**
-     * manual.php
-     * manual.php?m=2
-     * manual.php?m=2
-     * manual.php?p=49
-     * manual_download.php?m=2&do=single
-     * manual_download.php?m=2&do=zip.
-     */
-    public function manualsAction()
-    {
-        return $this->redirectToRoute('user', [], 301);
-    }
-
-    /**
-     * troubleshooter.php
-     * troubleshooter.php?id=1.
-     */
-    public function troublesAction()
-    {
-        return $this->redirectToRoute('user', [], 301);
     }
 
     //###########################################################################

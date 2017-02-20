@@ -30,14 +30,32 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Content;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Manual;
+use DeskPRO\Bundle\AppBundle\Form\BrandFormHelper;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ManualType extends AbstractType
 {
+    /**
+     * @var BrandFormHelper
+     */
+    private $brandHelper;
+
+    /**
+     * Constructor.
+     *
+     * @param BrandFormHelper $helper
+     */
+    public function __construct(BrandFormHelper $helper)
+    {
+        $this->brandHelper = $helper;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -45,12 +63,13 @@ class ManualType extends AbstractType
     {
         $builder
             ->add('title', TextType::class)
-            ->add('slug', TextType::class)
             ->add('display_order', TextType::class)
             ->add('brand', EntityType::class, [
                 'class' => Brand::class,
+                'data'  => $this->brandHelper->getCurrentBrand(),
             ])
         ;
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetDefault']);
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -60,5 +79,23 @@ class ManualType extends AbstractType
                 'data_class' => Manual::class,
             ]
         );
+    }
+
+    /**
+     * Assign manual to the current brand.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSetDefault(FormEvent $event)
+    {
+        $form = $event->getForm();
+
+        /** @var Manual $data */
+        $data = $form->getData();
+        if (!$data->getBrand()) {
+            $data->setBrand($this->brandHelper->getCurrentBrand());
+        }
     }
 }

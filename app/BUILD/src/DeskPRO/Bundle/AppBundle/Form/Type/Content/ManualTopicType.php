@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Manual;
 use Application\DeskPRO\Entity\ManualTopic;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -58,12 +59,20 @@ class ManualTopicType extends AbstractType
                     ContentAbstract::CONTENT_TYPE_MARKDOWN,
                 ],
             ])
-            ->add('status', TextType::class)
+            ->add('status', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => [
+                    ContentAbstract::STATUS_PUBLISHED,
+                    ContentAbstract::STATUS_ARCHIVED,
+                    ContentAbstract::STATUS_HIDDEN,
+                ],
+            ])
             ->add('manual', EntityType::class, [
                 'class' => Manual::class,
             ])
-            ->add('person', EntityType::class, [
-                'class' => Person::class,
+            ->add('author', PersonAssignType::class, [
+                'property_path' => 'person',
+                'person'        => $options['person'],
             ])
             ->add('language', EntityType::class, [
                 'class' => Language::class,
@@ -73,10 +82,12 @@ class ManualTopicType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
+        $resolver
+            ->setRequired('person')
+            ->setDefaults([
                 'data_class' => ManualTopic::class,
-            ]
-        );
+            ])
+            ->setAllowedTypes('person', Person::class)
+        ;
     }
 }
