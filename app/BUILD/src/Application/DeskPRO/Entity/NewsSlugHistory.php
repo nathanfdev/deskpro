@@ -130,7 +130,7 @@ class NewsSlugHistory extends DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ArticleSlugHistory';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\NewsSlugHistory';
         $metadata->setPrimaryTable(['name' => 'news_slug_history']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(

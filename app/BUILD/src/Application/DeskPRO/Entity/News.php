@@ -36,9 +36,11 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
+use DateTime;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\RegexUtils;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -58,14 +60,14 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
     const CONTENT_TYPE = 'news';
 
     /**
-     * @var \Application\DeskPRO\Entity\NewsCategory
+     * @var NewsCategory
      */
     protected $category;
 
     /**
      * Revisions of this news.
      *
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $revisions;
 
@@ -75,7 +77,7 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
      * @Assert\Valid()
      * @AppAssert\UniqueCollection(property={"label"})
      *
-     * @var \Doctrine\Common\Collections\ArrayCollection|LabelNews[]
+     * @var ArrayCollection|LabelNews[]
      */
     protected $labels;
 
@@ -87,12 +89,7 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
     protected $_search_highlights;
 
     /**
-     * @var \DateTime
-     */
-    protected $date_updated;
-
-    /**
-     * @var \DateTime
+     * @var DateTime
      */
     protected $date_end;
 
@@ -284,14 +281,6 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
         $this->slug_history->add($history);
 
         return $history;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateUpdated()
-    {
-        return $this->date_updated;
     }
 
     /**

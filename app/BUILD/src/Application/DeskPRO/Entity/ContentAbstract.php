@@ -189,14 +189,14 @@ abstract class ContentAbstract extends DomainObject
     protected $date_published;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     protected $date_last_comment;
 
     /**
      * DateTime when content was updated last time.
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $date_updated;
 
@@ -253,8 +253,8 @@ abstract class ContentAbstract extends DomainObject
      */
     public function __construct()
     {
-        $this->setModelField('date_created', new \DateTime());
-        $this->setModelField('date_updated', new \DateTime());
+        $this->setModelField('date_created', new DateTime());
+        $this->setModelField('date_updated', new DateTime());
 
         $this->revisions    = new ArrayCollection();
         $this->labels       = new ArrayCollection();
@@ -284,7 +284,7 @@ abstract class ContentAbstract extends DomainObject
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDateLastComment()
     {
@@ -324,13 +324,13 @@ abstract class ContentAbstract extends DomainObject
     }
 
     /**
-     * @param DateTime $date_updated
+     * @param DateTime $dateUpdated
      *
      * @return $this
      */
-    public function setDateUpdated(DateTime $date_updated = null)
+    public function setDateUpdated(DateTime $dateUpdated = null)
     {
-        $this->setModelField('date_updated', $date_updated);
+        $this->setModelField('date_updated', $dateUpdated);
 
         return $this;
     }
@@ -447,7 +447,7 @@ abstract class ContentAbstract extends DomainObject
             $this->setModelField('hidden_status', null);
 
             if (!$this->date_published) {
-                $this->setModelField('date_published', new \DateTime());
+                $this->setModelField('date_published', new DateTime());
             }
         }
     }
@@ -789,7 +789,7 @@ abstract class ContentAbstract extends DomainObject
             $this->setModelField('num_comments', $this->num_comments + 1);
             $this->setDateUpdated();
         }
-        $this->setModelField('date_last_comment', new \DateTime());
+        $this->setModelField('date_last_comment', new DateTime());
         $comment->setObject($this);
 
         $this->comments->add($comment);
@@ -943,7 +943,7 @@ abstract class ContentAbstract extends DomainObject
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDatePublished()
     {
@@ -951,7 +951,7 @@ abstract class ContentAbstract extends DomainObject
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDateCreated()
     {

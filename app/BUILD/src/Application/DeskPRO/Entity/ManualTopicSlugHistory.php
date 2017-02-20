@@ -30,6 +30,8 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DateTime;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Class ManualTopicSlugHistory.
@@ -60,7 +62,7 @@ class ManualTopicSlugHistory extends DomainObject
     {
         $this->setContent($manualTopic);
         $this->setSlug($oldSlug);
-        $this->setModelField('date_created', new DateTime());
+        $this->setDateCreated(new DateTime());
     }
 
     /**
@@ -141,5 +143,64 @@ class ManualTopicSlugHistory extends DomainObject
         $this->setModelField('date_created', $date_created);
 
         return $this;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ManualTopicSlugHistory';
+        $metadata->setPrimaryTable(['name' => 'manual_topic_slug_history']);
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(
+            [
+                'fieldName'  => 'date_created',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'date_created',
+            ]
+        );
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'slug',
+            'type'       => 'string',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'slug',
+            'unique'     => true,
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'manual_topic',
+            'targetEntity' => 'Application\DeskPRO\Entity\ManualTopic',
+            'cascade'      => [
+                0 => 'remove',
+                1 => 'persist',
+                3 => 'merge',
+            ],
+            'inversedBy'  => 'slug_history',
+            'joinColumns' => [
+                [
+                    'name'                 => 'manual_topic_id',
+                    'referencedColumnName' => 'id',
+                    'onDelete'             => 'cascade',
+                    'nullable'             => false,
+                ],
+            ],
+        ]);
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }
