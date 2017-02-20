@@ -143,6 +143,9 @@ class NotificationService
         $agentChatRepository = $this->em->getRepository(AgentChat::class);
         $personRepository    = $this->em->getRepository(Person::class);
 
+        // note this is a ugly cheat cause legacy code sends <span> element which we don't wanna change
+        $noteText = preg_replace(['#\&lt;span\&gt;#', '#\&lt;/span\&gt;#'], ['<strong>', '</strong>'], $noteText);
+
         $chat = null;
 
         foreach ($ids as $participantId) {
@@ -160,7 +163,8 @@ class NotificationService
                 ->setPerson($person)
                 ->setChat($chat)
                 ->setUuid(RandUtils::uuidV4())
-                ->setMessage($noteText);
+                ->setMessage($noteText)
+                ->setMetadata(['mention' => true]);
             $this->em->persist($chat);
             $this->em->persist($message);
         }
