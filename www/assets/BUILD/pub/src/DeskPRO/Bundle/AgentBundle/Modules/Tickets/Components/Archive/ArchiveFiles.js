@@ -29,7 +29,7 @@ export class ArchiveFilesContainer extends React.Component {
   loadFiles = () => {
     const { authId, files } = this.props;
 
-    if (!files.get(authId.toInt())) {
+    if (!files.get(authId)) {
       this.props.dispatch(actions.loadFiles(authId));
     }
   };
@@ -37,7 +37,7 @@ export class ArchiveFilesContainer extends React.Component {
   render() {
     const { files, authId } = this.props;
     let filesList = {};
-    const list = files.filter(x => x.get('id') === authId.toInt());
+    const list = files.filter(x => x.get('id') === authId);
     if (list.size) {
       filesList = list.first().get('files');
     }

@@ -7,7 +7,7 @@ export const loadFiles = createAction(
     repository('Blob').loadFiles(authId).then((promise) => {
       const res = promise.getData();
 
-      resolve({ id: authId.toInt(), files: res.data });
+      resolve({ id: authId, files: res.data });
     });
   })
 );
