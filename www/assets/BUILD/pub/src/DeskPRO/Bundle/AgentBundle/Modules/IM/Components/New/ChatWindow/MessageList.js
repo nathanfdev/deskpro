@@ -58,13 +58,13 @@ class MessageList extends React.Component {
       this.headerHelper.setProps(props);
     }
 
-    const header = this.headerHelper.getHeaderText(true);
+    const header = this.headerHelper.getEmptyHeader();
 
     return (
       <Header
         className="empty"
         level={5}
-        content={!searchQuery ? `Enter a message to start your first chat with ${header}!` : 'No matching results'}
+        content={!searchQuery ? `Send your first message to ${header}!` : 'No matching results'}
       />
     );
   }

@@ -48,6 +48,34 @@ export default class HeaderHelper {
     return this.props.teams.getIn([chat.getIn(['agent_teams', 0]), 'name']);
   }
 
+  getEmptyHeader() {
+    const { current } = this.props;
+    let header;
+
+    switch (current.get('chat_type')) {
+      case 'agent':
+        header = this.getAgentHeader(current);
+        break;
+      case 'department':
+        header = `the ${this.getDepartmentHeader(current)} Department`;
+        break;
+      case 'team':
+        header = `Team ${this.getAgentTeamHeader(current)}`;
+        break;
+      case 'group':
+        header = `the ${current.get('name')} Group`;
+        break;
+      case 'everyone':
+        header = 'Everyone';
+        break;
+      default:
+        header = 'some im';
+        break;
+    }
+
+    return header;
+  }
+
   getHeaderText(textMode = false) {
     const { current } = this.props;
     let header;
