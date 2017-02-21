@@ -95,8 +95,8 @@ class DownloadsDataService extends AbstractDataService
             [
                 'getDownloadsPager',
                 $category,
-                $page,
-                $max_per_page,
+                (int) $page,
+                (int) $max_per_page,
                 $person,
             ],
             function () use ($em, $permissions_manager, $category, $max_per_page, $page, $person) {
