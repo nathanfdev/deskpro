@@ -746,6 +746,9 @@ i.icon.fitted {
   > a span {
     font-size: 10px;
   }
+}
+
+.positioned-element {
   .files {
     &.hidden {
       display: none;
@@ -763,6 +766,7 @@ i.icon.fitted {
       .content {
         border: none;
         background: transparent;
+        white-space: nowrap;
       }
       .list {
         padding: 2px 0 0 12px;

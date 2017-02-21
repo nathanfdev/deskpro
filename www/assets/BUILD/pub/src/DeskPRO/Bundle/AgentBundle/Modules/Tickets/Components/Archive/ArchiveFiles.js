@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { pureRender } from 'Ampliflux';
+import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import * as actions from '../../Actions/archiveActions';
 import { filesSelector } from '../../Selectors/archive';
 
@@ -60,7 +62,8 @@ export class ArchiveFiles extends React.Component {
 
   static defaultProps = {
     list: {},
-    getLink() {}
+    getLink() {
+    }
   };
 
   static unflattenList(list, index, level) {
@@ -162,14 +165,32 @@ export class ArchiveFiles extends React.Component {
 
   render() {
     return (
-      <div className="archive-files">
+      <div
+        className="archive-files"
+        ref={(c) => {
+          this.container = c;
+        }}
+      >
         <a onClick={this.toggleFiles}>
           <span>view files &nbsp;</span>
           <i className="fitted icon dropdown" />
         </a>
-        <div className={classNames('files', { hidden: !this.state.open })}>
-          {this.getFileList()}
-        </div>
+        <Detached
+          zIndex={99999}
+          isOpen={this.state.open}
+          positionAt="left bottom"
+          positionTarget={this.container}
+        >
+          <ClickOut
+            onClickOut={() => {
+              this.setState({ open: false });
+            }}
+          >
+            <div className={classNames('files', { hidden: !this.state.open })}>
+              {this.getFileList()}
+            </div>
+          </ClickOut>
+        </Detached>
       </div>
     );
   }
