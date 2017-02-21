@@ -247,6 +247,11 @@ $collection->create('agent_login', [
     'controller' => 'AgentBundle:Login:index',
 ]);
 
+$collection->create('agent_login_view_reset_password_form', [
+    'path'       => '/login/reset-password',
+    'controller' => 'AgentBundle:Login:viewResetPasswordForm',
+]);
+
 $collection->create('agent_login_authenticate_local', [
     'path'       => '/login/authenticate-password',
     'controller' => 'AgentBundle:Login:authenticateLocal',

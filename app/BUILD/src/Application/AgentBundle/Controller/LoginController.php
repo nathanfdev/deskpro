@@ -45,6 +45,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 {
     /** @var string */
     protected $tpl_prefix = 'AgentBundle:Login';
+
     /** @var string */
     protected $route_prefix = 'agent';
 
@@ -223,6 +224,11 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                 'didReset'          => $this->in->getBool('did_reset'),
             ]
         );
+    }
+
+    public function viewResetPasswordFormAction()
+    {
+        return $this->redirect($this->generateUrl('agent_login').'#reset-password');
     }
 
     public function preloadSourcesAction()
