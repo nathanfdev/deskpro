@@ -186,6 +186,26 @@ class Manual extends DomainObject
     }
 
     /**
+     * @return ArrayCollection
+     */
+    public function getTopics()
+    {
+        return $this->topics;
+    }
+
+    /**
+     * @param ArrayCollection $topics
+     *
+     * @return Manual
+     */
+    public function setTopics($topics)
+    {
+        $this->setModelField('topics', $topics);
+
+        return $this;
+    }
+
+    /**
      * @return Brand
      */
     public function getBrand()

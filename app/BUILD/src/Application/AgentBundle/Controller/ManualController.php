@@ -28,9 +28,32 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\DeskPRO\Entity\Manual;
+
 class ManualController extends AbstractController
 {
     public function listAction($manual_id)
     {
+        $manual = null;
+        if ($manual_id) {
+            /** @var Manual $manual */
+            $manual = $this->em->getRepository(Manual::class)->find($manual_id);
+        }
+
+        if (!$manual) {
+            throw $this->createNotFoundException();
+        }
+
+        $results = $manual->getTopics();
+
+        $totalResults = count($results);
+
+        $tpl = 'AgentBundle:Manual:filter.html.twig';
+
+        return $this->render($tpl, [
+            'results'       => $results,
+            'manual'        => $manual,
+            'total_results' => $totalResults,
+        ]);
     }
 }

@@ -2115,14 +2115,14 @@ $collection->create('agent_feedback_merge', [
 
 $collection->create('agent_manuals_list', [
     'path'       => '/manuals/list/{manual_id}',
-    'controller' => 'AgentBundle:Manuals:list',
+    'controller' => 'AgentBundle:Manual:list',
     'defaults'   => ['manual_id' => '0'],
     'options'    => ['fragment_name' => 'manuals', 'fragment_type' => 'list'],
 ]);
 
 $collection->create('agent_publish_manuals_newform', [
     'path'       => '/manuals/new-form',
-    'controller' => 'AgentBundle:Manuals:addCategoryForm',
+    'controller' => 'AgentBundle:Manual:addCategoryForm',
 ]);
 
 $collection->create('agent_agentchat_getonlineagents', [

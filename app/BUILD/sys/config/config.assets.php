@@ -191,6 +191,7 @@ $CONFIG['agent_pages_lists'] = [
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/OpenChats.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/UserChatFilter.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackFilter.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/ManualList.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewCustomFilter.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewsList.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/DownloadList.js',

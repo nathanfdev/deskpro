@@ -1623,6 +1623,7 @@ return [
     'agent.publish.kb_list_unique_title'                       => '1 Unique Articles|{{count}} Unique Articles',
     'agent.publish.label_new_file'                             => 'New File',
     'agent.publish.label_old_file'                             => 'Old File',
+    'agent.publish.manual_list_title'                          => '1 Manual|{{count}} Manuals',
     'agent.publish.missing_translation'                        => 'Missing Translation',
     'agent.publish.move_to'                                    => 'Move to',
     'agent.publish.n_helpful_n_unhelpful'                      => '{{up_votes}} found this download helpful, {{down_votes}} found this download unhelpful',

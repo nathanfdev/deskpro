@@ -1221,6 +1221,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				case 'knowledgebase':
 				case 'news':
 				case 'downloads':
+				case 'manuals':
 				case 'category':
 				case 'status':
 				case 'label':
@@ -1688,7 +1689,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		};
 		var handler = null;
 		var sectionId = null;
-		if (testcl('.Kb') || testcl('.News') || testcl('.Download') || testcl('.Publish') || testcl('PublishSearch')) {
+		if (testcl('.Kb') || testcl('.News') || testcl('.Download') || testcl('.Publish') || testcl('PublishSearch') || testcl('.Manual')) {
 			sectionId = 'publish_section';
 		} else if (testcl('.Ticket') || testcl('.NewCustomFilter')) {
 			sectionId = 'tickets_section';
