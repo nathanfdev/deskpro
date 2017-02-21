@@ -96,8 +96,6 @@ class ArbitraryHasher
                 return $value['id'];
             }
 
-            sort($value);
-
             return $value;
         }
 
