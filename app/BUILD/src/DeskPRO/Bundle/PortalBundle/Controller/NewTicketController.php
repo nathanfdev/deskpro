@@ -90,8 +90,7 @@ class NewTicketController extends AbstractController
         if ($request->isMethod('get') && $request->query->count()) {
             // to set form default values from request query
             $formOptions['validation_groups']             = false;
-            $formOptions['csrf_protection']               = false;
-            $formOptions['csrf_double_submit_protection'] = false;
+            $formOptions['csrf_double_submit_skip_check'] = true;
         }
 
         $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, $formOptions);
