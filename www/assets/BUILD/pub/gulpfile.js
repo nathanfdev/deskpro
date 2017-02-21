@@ -233,7 +233,7 @@ function getWebpackConfig(mode, isProd) {
           loader: 'json-loader'
         }
       ],
-      noParse: [/\.min\.js/]
+      noParse: [/(^froala)\.min\.js/]
     },
 
     plugins: [
