@@ -118,32 +118,43 @@ define [
       if @depId
         get.trigger = "/ticket_triggers/departments/#{@depId}"
         get.trigger2 = "/ticket_triggers/departments_changed/#{@depId}"
+      else
+        get.trigger = "/ticket_triggers/newticket"
+        get.trigger2 = "/ticket_triggers/update"
 
       promise2 = @Api.sendDataGet(get).then( (result) =>
         @customActions = result.data.customActions.action_defs
 
-        if result.data?.trigger?.trigger?
-          @trigger = result.data.trigger.trigger
-          @triggerId = @trigger.id
+        if result.data && result.data.trigger
+          if result.data.trigger.trigger
+            @trigger = result.data.trigger.trigger
+            @triggerId = @trigger.id
 
-          if @trigger.actions?.actions?.length
-            @$scope.actions_form = {}
-            for action in @trigger.actions.actions
-              rowId = _.uniqueId('action')
-              @$scope.actions_form[rowId] = action
+            if @trigger.actions?.actions?.length
+              @$scope.actions_form = {}
+              for action in @trigger.actions.actions
+                rowId = _.uniqueId('action')
+                @$scope.actions_form[rowId] = action
+          else
+            @trigger = result.data.trigger
+            @triggerId = 0
         else
           @trigger = {}
           @triggerId = 0
 
-        if result.data?.trigger2?.trigger?
-          @trigger2 = result.data.trigger2.trigger
-          @trigger2Id = @trigger2.id
+        if result.data && result.data.trigger2
+          if result.data.trigger2.trigger
+            @trigger2 = result.data.trigger2.trigger
+            @trigger2Id = @trigger2.id
 
-          if @trigger2.actions?.actions?.length
-            @$scope.actions_form2 = {}
-            for action in @trigger2.actions.actions
-              rowId = _.uniqueId('action')
-              @$scope.actions_form2[rowId] = action
+            if @trigger2.actions?.actions?.length
+              @$scope.actions_form2 = {}
+              for action in @trigger2.actions.actions
+                rowId = _.uniqueId('action')
+                @$scope.actions_form2[rowId] = action
+          else
+            @trigger2 = result.data.trigger2
+            @trigger2Id = 0
         else
           @trigger2 = {}
           @trigger2Id = 0

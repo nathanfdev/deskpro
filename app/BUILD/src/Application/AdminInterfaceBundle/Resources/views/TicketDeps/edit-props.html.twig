@@ -111,7 +111,7 @@
 				<h3>New Ticket Trigger</h3>
 			</div>
 			<div class="col-md-9">
-				<div class="alert alert-danger" ng-if="!EditCtrl.trigger.is_enabled">
+				<div class="alert alert-danger" ng-if="!EditCtrl.trigger.is_enabled && !EditCtrl.trigger.department_triggers_enabled">
 					<p>
 						Warning: Department triggers are disabled from
 						{% set href = ng_href('tickets.triggers', {type: 'newticket'}) %}
@@ -140,7 +140,7 @@
 				<h3>Ticket Changed Trigger</h3>
 			</div>
 			<div class="col-md-9">
-				<div class="alert alert-danger" ng-if="!EditCtrl.trigger2.is_enabled">
+				<div class="alert alert-danger" ng-if="!EditCtrl.trigger2.is_enabled && !EditCtrl.trigger2.department_triggers_enabled">
 					<p>
 						Warning: Department triggers are disabled from
                         {% set href = ng_href('tickets.triggers', {type: 'update'}) %}
