@@ -162,7 +162,7 @@ class UpdateCleanup
                     $fs->remove($dir);
                     $logger->info(sprintf('Removed %s in %.3fs', $dir->getPathname(), microtime(true) - $dirTs));
                 } catch (\Exception $e) {
-                    $logger->warning(sprintf('FAILED to remove %s (time to failure: %.3fs). Error: ', $dir->getPathname(), microtime(true) - $dirTs), $e->getMessage());
+                    $logger->warning(sprintf('FAILED to remove %s (time to failure: %.3fs). Error: %s', $dir->getPathname(), microtime(true) - $dirTs, $e->getMessage()));
                 }
             }
 
