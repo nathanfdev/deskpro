@@ -76,9 +76,9 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiDoc(
  *     target="postAction",
  *     input={
- *      "class" = "DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualTopicType",
- *      "options" = {"method" = "POST"},
- *      "name" = ""
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualTopicType",
+ *      "options"={"method" = "POST"},
+ *      "name"=""
  *     }
  * )
  */

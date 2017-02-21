@@ -66,25 +66,23 @@ class ManualType extends AbstractType
             ->add('display_order', TextType::class)
             ->add('brand', EntityType::class, [
                 'class' => Brand::class,
-                'data'  => $this->brandHelper->getCurrentBrand(),
             ])
         ;
+
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetDefault']);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
+        $resolver
+            ->setDefaults([
                 'data_class' => Manual::class,
-            ]
-        );
+            ])
+        ;
     }
 
     /**
      * Assign manual to the current brand.
-     *
-     * @internal
      *
      * @param FormEvent $event
      */

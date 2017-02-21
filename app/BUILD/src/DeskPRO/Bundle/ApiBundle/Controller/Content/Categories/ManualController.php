@@ -45,9 +45,9 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiDoc(
  *     target="postAction",
  *     input={
- *      "class" = "DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualType",
- *      "options" = {"method" = "POST"},
- *      "name" = ""
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualType",
+ *      "options"={"method"="POST"},
+ *      "name"=""
  *     }
  * )
  */
