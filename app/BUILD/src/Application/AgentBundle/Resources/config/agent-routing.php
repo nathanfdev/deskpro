@@ -2113,6 +2113,18 @@ $collection->create('agent_feedback_merge', [
     'requirements' => ['feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'],
 ]);
 
+$collection->create('agent_manuals_list', [
+    'path'       => '/manuals/list/{manual_id}',
+    'controller' => 'AgentBundle:Manuals:list',
+    'defaults'   => ['manual_id' => '0'],
+    'options'    => ['fragment_name' => 'manuals', 'fragment_type' => 'list'],
+]);
+
+$collection->create('agent_publish_manuals_newform', [
+    'path'       => '/manuals/new-form',
+    'controller' => 'AgentBundle:Manuals:addCategoryForm',
+]);
+
 $collection->create('agent_agentchat_getonlineagents', [
     'path'       => '/agent-chat/get-online-agents.json',
     'controller' => 'AgentBundle:AgentChat:getOnlineAgents',

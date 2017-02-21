@@ -26,33 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Categories;
+namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\Entity\Manual;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
-use DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualType;
-use FOS\RestBundle\Controller\Annotations as Rest;
-
-/**
- * Class ManualController.
- *
- * @Feature("manuals")
- * @ApiModes("all")
- * @Rest\Route("/content/manuals")
- * @ApiDoc(target="all", section="Content", output="Application\DeskPRO\Entity\Manual")
- * @ApiDoc(
- *     target="postAction",
- *     input={
- *      "class" = "DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualType",
- *      "options" = {"method" = "POST"},
- *      "name" = ""
- *     }
- * )
- */
-class ManualController extends AbstractCategoriesController
+class ManualController extends AbstractController
 {
-    public static $entity = Manual::class;
-    public static $type   = ManualType::class;
+    public function listAction($manual_id)
+    {
+    }
 }

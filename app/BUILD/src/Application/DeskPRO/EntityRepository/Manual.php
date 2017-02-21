@@ -26,33 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Categories;
+namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity\Manual;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
-use DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualType;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
 
-/**
- * Class ManualController.
- *
- * @Feature("manuals")
- * @ApiModes("all")
- * @Rest\Route("/content/manuals")
- * @ApiDoc(target="all", section="Content", output="Application\DeskPRO\Entity\Manual")
- * @ApiDoc(
- *     target="postAction",
- *     input={
- *      "class" = "DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualType",
- *      "options" = {"method" = "POST"},
- *      "name" = ""
- *     }
- * )
- */
-class ManualController extends AbstractCategoriesController
+class Manual extends AbstractEntityRepository
 {
-    public static $entity = Manual::class;
-    public static $type   = ManualType::class;
+    public function getBySlug($slug)
+    {
+        $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
+        if (!$id) {
+            return;
+        }
+
+        return $this->find($id);
+    }
+
+    public function getAllCounts()
+    {
+        $counts = App::getDb()->fetchAllKeyed('
+            SELECT m.id as manual_id, COUNT(t.id) as count
+            FROM manuals AS m
+              LEFT JOIN manual_topics AS t
+                ON t.manual_id = m.id
+            GROUP BY m.id
+            ORDER BY m.id ASC
+        ', [], 'manual_id');
+
+        $result = [];
+        foreach ($counts as $count) {
+            $result[$count['manual_id']] = $count['count'];
+        }
+
+        return $result;
+    }
 }

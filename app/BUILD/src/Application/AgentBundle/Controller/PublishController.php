@@ -45,6 +45,7 @@ use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\Manual;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
@@ -179,6 +180,14 @@ class PublishController extends AbstractController
         $downloadCatsCounts = $this->publishHelper->getCategoryCounts(PublishHelper::DOWNLOADS);
 
         //------------------------------
+        // Manuals
+        //------------------------------
+
+        $manuals       = $this->em->getRepository(Manual::class)->findAll();
+        $manualRepo    = $this->em->getRepository(Manual::class);
+        $manualsCounts = $this->em->getRepository(Manual::class)->getAllCounts();
+
+        //------------------------------
         // Glossary
         //------------------------------
 
@@ -218,6 +227,10 @@ class PublishController extends AbstractController
             'download_cats'        => $downloadCats,
             'download_repo'        => $downloadRepo,
             'download_cats_counts' => $downloadCatsCounts,
+
+            'manuals'        => $manuals,
+            'manual_repo'    => $manualRepo,
+            'manuals_counts' => $manualsCounts,
 
             'app_settings'      => $appSettings,
             'brands'            => $brands,
@@ -1070,6 +1083,9 @@ class PublishController extends AbstractController
                 break;
             case 'downloads':
                 $url = $this->generateUrl('agent_downloads_list', ['category_id' => $cat->getId()]);
+                break;
+            case 'manuals':
+                $url = $this->generateUrl('agent_manuals_list', ['manual_id' => $cat->getId()]);
                 break;
             case 'news':
                 $url = $this->generateUrl('agent_news_list', ['category_id' => $cat->getId()]);

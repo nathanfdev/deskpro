@@ -34,6 +34,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualTopicType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -42,6 +43,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class ManualTopicsController.
  *
+ * @Feature("manuals")
  * @ApiModes("all")
  * @Rest\Route("/content/manual_topics")
  * @ApiDoc(target="all", section="Content", output="Application\DeskPRO\Entity\ManualTopic")
