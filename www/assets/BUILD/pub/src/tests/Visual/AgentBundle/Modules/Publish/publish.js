@@ -1,7 +1,9 @@
 import React from 'react';
-import { storiesOf } from '@kadira/storybook'; // eslint-disable-line import/no-extraneous-dependencies
+import { storiesOf, action } from '@kadira/storybook'; // eslint-disable-line import/no-extraneous-dependencies
 import { css } from 'Visual/decorators';
 import { Editor } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/Editor';
+import { ManualTree } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/List/ManualTree';
+import { tree } from 'DemoState/AgentBundle/Modules/Publish/publish';
 import 'froala-editor/css/froala_editor.pkgd.css';
 
 storiesOf('Agent: Publish', module)
@@ -10,5 +12,10 @@ storiesOf('Agent: Publish', module)
     'Agent: Publish: Content Editor',
     () =>
       <Editor />
+  )
+  .add(
+    'Agent: Publish: Manual Topic List',
+    () =>
+      <ManualTree tree={tree} onClick={action('click')} />
   )
 ;

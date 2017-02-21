@@ -78,6 +78,7 @@
     "react-scrollbar": "0.4.2",
     "react-select": "^1.0.0-beta13",
     "react-select-plus": "^1.0.0-beta12",
+    "react-sortable-tree": "^0.1.12",
     "react-stylesheet": "^1.0.2",
     "react-textarea-autosize": "4.0.2",
     "react-timeago": "3.0.0",
