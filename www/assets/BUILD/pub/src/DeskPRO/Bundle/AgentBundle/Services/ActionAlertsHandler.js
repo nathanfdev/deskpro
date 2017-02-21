@@ -3,8 +3,7 @@ import { startChat } from '../Modules/IM/Actions/chatsActions';
 import { markMessages } from '../Modules/IM/Actions/messagesActions';
 import { addToCollection } from '../../AppBundle/Modules/RecordsStore/Actions/store';
 
-class ActionAlertsHandler
-{
+class ActionAlertsHandler {
   constructor(props) {
     this.options = {};
     Object.assign(this.options, props);
@@ -25,7 +24,9 @@ class ActionAlertsHandler
         }
         this.options.dispatch(addToCollection('AgentChat', 'recent', [linked.agent_chat[data.chat]]));
         this.options.dispatch(markMessages([data.id], [data.uuid], data.chat, 1));
-        this.options.dispatch(startChat(null, data.chat, true));
+        if (!(data.metadata.mention && data.person === this.options.me)) {
+          this.options.dispatch(startChat(null, data.chat, true));
+        }
         break;
       default:
         break;

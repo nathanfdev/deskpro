@@ -588,10 +588,19 @@ class NewTicket
             );
             $agent_chat->sendAgentMessage($notifyText, $agentIds);
             if (App::$container->get('deskpro.feature_flags')->hasFeature('agent_chat')) {
+                $newIMtext = sprintf(
+                    '[{{t-%d}}] %s',
+                    $ticket->getId(),
+                    $this->is_html_reply
+                        ? Strings::prepareWysiwygHtml(Strings::trimHtml($this->message))
+                        : Strings::text2html($this->message)
+
+                );
+
                 App::$container->get('deskpro.notification.service')->sendNote(
                     $message->getPerson(),
                     $agentIds,
-                    $notifyText
+                    $newIMtext
                 );
             }
         }

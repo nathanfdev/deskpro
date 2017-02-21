@@ -46,6 +46,7 @@ use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\Common\Collections\ArrayCollection;
 use DpSys\LowError\SystemErrorHandler;
+use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -782,8 +783,8 @@ class TicketController extends AbstractController implements ProtectedController
         $notify_agent_ids = [];
 
         if ($this->in->getBool('message_is_html')) {
-            $message_text     = \Orb\Util\Strings::trimHtml($this->in->getHtmlCore('message'));
-            $message_text     = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
+            $message_text     = Strings::trimHtml($this->in->getHtmlCore('message'));
+            $message_text     = Strings::prepareWysiwygHtml($message_text);
             $message->message = $message_text;
 
             preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $this->in->getString('message'), $matches, PREG_SET_ORDER);
@@ -865,7 +866,15 @@ class TicketController extends AbstractController implements ProtectedController
                 );
                 $agent_chat->sendAgentMessage($notifyText, $agentIds);
                 if ($this->container->get('deskpro.feature_flags')->hasFeature('agent_chat')) {
-                    $this->container->get('deskpro.notification.service')->sendNote($this->person, $agentIds, $notifyText);
+                    $newIMtext = sprintf(
+                        '[{{t-%d}}] @ %s',
+                        $ticket->getId(),
+                        $this->in->getBool('message_is_html')
+                            ? Strings::prepareWysiwygHtml(Strings::trimHtml($this->in->getHtmlCore('message')))
+                            : Strings::text2html($this->in->getString('message'))
+
+                    );
+                    $this->container->get('deskpro.notification.service')->sendNote($this->person, $agentIds, $newIMtext);
                 }
             }
 

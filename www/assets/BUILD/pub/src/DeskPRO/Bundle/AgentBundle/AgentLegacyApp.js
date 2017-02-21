@@ -37,7 +37,6 @@ class AgentLegacyApp {
   }
 
   start() {
-    window.DP_DEV_MODE = __DEV__; // eslint-disable-line no-undef
     if (typeof window.DeskPRO_Window === 'undefined'
       || !this.store.getState().Application.bootstrap.get('isBootstrapped')) {
       setTimeout(this.start.bind(this), 100);

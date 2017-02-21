@@ -877,7 +877,7 @@ SQL;
             'date_created' => $date->format('Y-m-d H:i:s'),
         ]);
 
-        return $stmnt->fetchAll();
+        return $stmnt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     protected function transformData($data)

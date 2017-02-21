@@ -1274,7 +1274,15 @@ class TicketController extends AbstractController
                 );
                 $agent_chat->sendAgentMessage($notifyText, $agentIds);
                 if ($this->container->get('deskpro.feature_flags')->hasFeature('agent_chat')) {
-                    $this->container->get('deskpro.notification.service')->sendNote($this->person, $agentIds, $notifyText);
+                    $newIMtext = sprintf(
+                        '[{{t-%d}}] %s',
+                        $ticket->getId(),
+                        $this->in->getBool('message_is_html')
+                            ? Strings::prepareWysiwygHtml(Strings::trimHtml($this->in->getHtmlCore('message')))
+                            : Strings::text2html(Strings::trimHtml($request_message_orig))
+
+                    );
+                    $this->container->get('deskpro.notification.service')->sendNote($this->person, $agentIds, $newIMtext);
                 }
             }
 
