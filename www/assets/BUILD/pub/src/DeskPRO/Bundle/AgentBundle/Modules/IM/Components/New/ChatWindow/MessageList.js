@@ -49,7 +49,7 @@ class MessageList extends React.Component {
   };
 
   renderEmpty() {
-    const { agents, teams, departments, current, me } = this.props;
+    const { agents, teams, departments, current, me, searchQuery } = this.props;
     const props = { agents, teams, departments, current, me };
 
     if (!this.headerHelper) {
@@ -64,7 +64,7 @@ class MessageList extends React.Component {
       <Header
         className="empty"
         level={5}
-        content={`Enter a message to start your first chat with ${header}!`}
+        content={!searchQuery ? `Enter a message to start your first chat with ${header}!` : 'No matching results'}
       />
     );
   }
