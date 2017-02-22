@@ -331,7 +331,8 @@ class Container extends React.Component {
   handleLink(item) {
     const propertyName = `${item.tabType}_id`;
     const message = `{{${item.tabType.charAt(0).toLowerCase()}-${item.page.meta[propertyName]}}}: ${item.title}`;
-    this.props.onSubmit(message);
+    this.editor.events.focus();
+    this.editor.html.insert(message);
   }
 
 
