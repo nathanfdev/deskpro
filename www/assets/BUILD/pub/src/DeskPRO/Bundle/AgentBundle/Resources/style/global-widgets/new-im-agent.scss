@@ -859,6 +859,11 @@ img.emojione, svg.emojione {
           z-index: 10;
 
           &.fa-paperclip {
+            color: $dp-greyscale-850;
+            right: 50px;
+          }
+
+          &.fa-link {
             &.inactive {
               color: $dp-greyscale-450;
             }

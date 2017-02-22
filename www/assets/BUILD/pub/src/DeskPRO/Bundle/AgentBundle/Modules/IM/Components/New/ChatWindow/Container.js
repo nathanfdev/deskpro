@@ -114,7 +114,7 @@ class Container extends React.Component {
     this.handleKeydown    = this.handleKeydown.bind(this);
     this.initFroala       = this.initFroala.bind(this);
     this.bindFroalaEvents = this.bindFroalaEvents.bind(this);
-    this.openAttach       = this.openAttach.bind(this);
+    this.openLink       = this.openLink.bind(this);
   }
 
   componentDidMount() {
@@ -251,7 +251,7 @@ class Container extends React.Component {
     return e;
   }
 
-  openAttach() {
+  openLink() {
     this.setState({ attachOpened: true });
   }
 
@@ -348,8 +348,8 @@ class Container extends React.Component {
       };
     });
 
-    return this.attach ?
-      (<Detached zIndex={99999} isOpen={this.state.attachOpened} positionTarget={this.attach} positionMy="right+25 top+35">
+    return this.link ?
+      (<Detached zIndex={99999} isOpen={this.state.attachOpened} positionTarget={this.link} positionMy="right+25 top+35">
         <ClickOut onClickOut={() => { this.setState({ attachOpened: false }); }}>
           <div className="attach-list">
             <Header content="Current tabs" level={4} className="attach-header" />
@@ -432,9 +432,9 @@ class Container extends React.Component {
                 onManualControllerReady={this.initFroala}
               />
               <i
-                className={classNames('fa fa-paperclip reply-icon', { inactive: Object.keys(this.props.activeTabs).length < 1 })}
-                ref={(c) => { this.attach = c; }}
-                onClick={this.openAttach}
+                className={classNames('fa fa-link reply-icon', { inactive: Object.keys(this.props.activeTabs).length < 1 })}
+                ref={(c) => { this.link = c; }}
+                onClick={this.openLink}
               />
               <i
                 className="fa fa-smile-o reply-icon emoji trigger"
