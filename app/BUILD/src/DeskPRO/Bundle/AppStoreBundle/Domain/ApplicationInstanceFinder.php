@@ -26,64 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-use Doctrine\ORM\Mapping as ORM;
-
-/**
- * @ORM\Entity()
- * @ORM\Table(name="app2_app_instance")
- */
-class AppInstance
+interface ApplicationInstanceFinder
 {
     /**
-     * @ORM\Id()
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\App")
-     * @ORM\JoinColumn(name="app_id", referencedColumnName="id")
-     *
-     * @var App
-     */
-    private $app;
-
-    /**
-     * @ORM\Column(type="string", nullable=false, length=100)
-     */
-    private $scope;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $settings;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $secretKey;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
-     */
-    private $createdAt;
-
-    /**
-     * @return App
-     */
-    public function getApp()
-    {
-        return $this->app;
-    }
-
-    /**
+     * @param $applicationName
      * @return mixed
      */
-    public function getSettings()
-    {
-        return $this->settings;
-    }
+    function findSoleApplicationInstance($applicationName);
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    function findById($id);
 }
+

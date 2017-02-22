@@ -80,7 +80,7 @@ class AppsController {
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\ApiBundle\Apps\AppParamConverter")
      * @param Entity\AppStore\App $application
      *
-     * @return string
+     * @return array
      */
     public function getManifest(Entity\AppStore\App $application)
     {
@@ -88,6 +88,22 @@ class AppsController {
         $manifestArray = json_decode($manifestString, true);
 
         return $manifestArray;
+    }
+
+    /**
+     * @Rest\GET("/{application}/settings")
+     *
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
+     * @param Entity\AppStore\AppInstance $application
+     *
+     * @return array
+     */
+    public function getSettings(Entity\AppStore\AppInstance $application)
+    {
+        $settingsString = $application->getSettings();
+        $settingsArray = json_decode($settingsString, true);
+
+        return $settingsArray;
     }
 
     /**
