@@ -127,7 +127,7 @@ class Message extends React.Component {
             </div>
             )
           : null}
-        <div className="content" dangerouslySetInnerHTML={this.getMessage()} />
+        <div className="content dont-break-out" dangerouslySetInnerHTML={this.getMessage()} />
       </div>
       {!my && !searchQuery ? this.timestamp() : null}
     </Segment>);
