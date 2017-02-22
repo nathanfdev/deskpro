@@ -173,7 +173,6 @@ class ProjectFileSet
         $finder = Finder::create()
             ->files()
             ->in($this->env->getAppWwwAssetDir().DIRECTORY_SEPARATOR.'pub'.DIRECTORY_SEPARATOR.'build'.DIRECTORY_SEPARATOR)
-                ->exclude('storybook')
             ->in($this->env->getAppWwwAssetDir().DIRECTORY_SEPARATOR.'web'.DIRECTORY_SEPARATOR.'build'.DIRECTORY_SEPARATOR)
             ->in($this->env->getAppWwwAssetDir().DIRECTORY_SEPARATOR.'web'.DIRECTORY_SEPARATOR.'app-build'.DIRECTORY_SEPARATOR);
 
@@ -204,6 +203,7 @@ class ProjectFileSet
             'Mock',
             'test-suite',
             'classes.map',
+            'storybook',
         ];
 
         static $ignorePaths = [
@@ -230,6 +230,7 @@ class ProjectFileSet
             '%DP_APP_DIR%/vendor/doctrine/orm/lib/Doctrine/ORM/Event/PreUpdateEventArgs.php', // because we patch it ourselves
             '%DP_APP_KERNEL_CACHE%/dev/',
             '%DP_APP_KERNEL_CACHE%/test/',
+            '%DP_APP_WWW_ASSET%'.DIRECTORY_SEPARATOR.'pub'.DIRECTORY_SEPARATOR.'build'.DIRECTORY_SEPARATOR.'storybook',
         ];
 
         foreach ($ignoreAnywhere as $p) {
