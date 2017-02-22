@@ -11,52 +11,50 @@ DeskPRO.Agent.PageFragment.ListPane.ManualList = new Orb.Class({
 	initPage: function(el) {
 		this.wrapper = el;
 
-		this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
-			prefId: 'manual-filter',
-			resultId: this.meta.resultId,
-			refreshUrl: this.meta.refreshUrl,
-			prefSaveResultId: '0'
-		});
-		this.ownObject(this.displayOptions);
-
-		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
-
-		});
-		this.ownObject(this.selectionBar);
+		// this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
+		// 	prefId: 'manual-filter',
+		// 	resultId: this.meta.resultId,
+		// 	refreshUrl: this.meta.refreshUrl,
+		// 	prefSaveResultId: '0'
+		// });
+		// this.ownObject(this.displayOptions);
+    //
+		// this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
+    //
+		// });
+		// this.ownObject(this.selectionBar);
 
 		this.listWrapper = $('section.manual-simple-list', this.wrapper);
 
-		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
-			contentListEl: this.listWrapper
-		});
-		this.ownObject(this.relatedContentList);
+    var $rElement = $('<div></div>').insertAfter(this.listWrapper);
 
-		this.enableHighlightOpenRows('manual', 'manual_id', 'topic.manual-');
+    this.listWrapper.hide();
 
-		this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
+    window.AgentLegacyBundle.renderManualTopicsTree(
+      $rElement.get(0),
+      this.meta.manualId,
+      900
+		);
 
+		// this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
+		// 	contentListEl: this.listWrapper
+		// });
+		// this.ownObject(this.relatedContentList);
+    //
+		// this.enableHighlightOpenRows('manual', 'manual_id', 'topic.manual-');
+    //
+		// this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
+    //
 		// Manual editor
 		this._initManualEditor();
 	},
 
 	_initManualEditor: function() {
 		var self = this;
-		var manualEl = this.getEl('tab_manual');
+		var manualEl = this.getEl('tab_cat');
 		if (!manualEl[0]) {
 			return;
 		}
-
-		var tree = this.getEl('manualtree');
-		var treeData = tree.data('treedata');
-		var treeSave = this.getEl('manualtree_struct');
-		tree.tree({
-			data: treeData,
-			dragAndDrop: true
-		});
-		tree.bind('tree.move', function(event) {
-			event.move_info.do_move();
-			treeSave.val(tree.tree('toJson'));
-		});
 
 		this.getEl('manualfoot').find('.manual-save-trigger').on('click', function(ev){
 			Orb.cancelEvent(ev);

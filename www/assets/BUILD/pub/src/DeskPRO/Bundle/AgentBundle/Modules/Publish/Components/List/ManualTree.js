@@ -1,28 +1,57 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import SortableTree from 'react-sortable-tree';
 import classNames from 'classnames';
 import Renderer from 'DeskPRO/Component/Tree/Renderer';
+import * as actions from '../../Actions/manualListActions';
+import { treeSelector } from '../../Selectors/manual';
 
+@connect(state => ({
+  trees: treeSelector(state)
+}))
 export class ManualTreeContainer extends React.Component {
   static propTypes = {
-    tree: PropTypes.array
+    manualId: PropTypes.number,
+    height:   PropTypes.number,
+    trees:    PropTypes.object,
+    dispatch: PropTypes.func.isRequired
+  };
+
+  constructor(props) {
+    super(props);
+    this.props.dispatch(actions.loadTree(this.props.manualId));
+  }
+
+  handleChange = (treeData) => {
+    this.props.dispatch(actions.saveTree(this.props.manualId, treeData));
   };
 
   render() {
+    const trees = this.props.trees.filter(x => x.get('id') === this.props.manualId);
+    let tree = [];
+    if (trees.size) {
+      tree = trees.first().get('tree').toJS();
+    }
     return (
       <ManualTree
-        tree={this.props.tree}
+        tree={tree}
+        height={this.props.height}
+        handleChange={this.handleChange}
       />
     );
   }
 }
 export class ManualTree extends React.Component {
   static propTypes = {
-    tree:    PropTypes.array,
-    onClick: PropTypes.func
+    tree:         PropTypes.array,
+    height:       PropTypes.number,
+    onClick:      PropTypes.func,
+    handleChange: PropTypes.func,
   };
   static defaultProps = {
-    onClick() {}
+    height: 800,
+    onClick() {},
+    handleChange() {}
   };
 
   constructor(props) {
@@ -31,6 +60,12 @@ export class ManualTree extends React.Component {
       active:   null,
       treeData: this.props.tree,
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      treeData: nextProps.tree
+    });
   }
 
   onClick = (node) => {
@@ -44,6 +79,7 @@ export class ManualTree extends React.Component {
     this.setState({
       treeData
     });
+    this.props.handleChange(treeData);
   };
 
   generateNodeProps = rowInfo => ({
@@ -53,7 +89,7 @@ export class ManualTree extends React.Component {
 
   render() {
     return (
-      <div style={{ height: 800 }}>
+      <div style={{ height: this.props.height }}>
         <SortableTree
           treeData={this.state.treeData}
           onChange={this.handleChange}

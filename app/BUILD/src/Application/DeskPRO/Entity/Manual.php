@@ -84,9 +84,20 @@ class Manual extends DomainObject
      * @JMS\Groups("manuals")
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\ManualTopic>>")
      *
-     * @var ArrayCollection
+     * @var ManualTopic[]|ArrayCollection
      */
     protected $topics;
+
+    /**
+     * Usergroups that has access to this category.
+     *
+     * @JMS\Expose()
+     * @JMS\Groups("articles_categories")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $usergroups;
 
     /**
      * Brand linked to the category.
@@ -186,7 +197,7 @@ class Manual extends DomainObject
     }
 
     /**
-     * @return ArrayCollection
+     * @return ManualTopic[]|ArrayCollection
      */
     public function getTopics()
     {
@@ -203,6 +214,34 @@ class Manual extends DomainObject
         $this->setModelField('topics', $topics);
 
         return $this;
+    }
+
+    /**
+     * @return ArrayCollection|Usergroup[]
+     */
+    public function getUsergroups()
+    {
+        return $this->usergroups;
+    }
+
+    /**
+     * @param Usergroup $usergroup
+     */
+    public function addUsergroup(Usergroup $usergroup)
+    {
+        if (!$this->usergroups->contains($usergroup)) {
+            $this->usergroups->add($usergroup);
+        }
+    }
+
+    /**
+     * Publish controller wants to delete my children but I don't have any.
+     *
+     * @return array
+     */
+    public function getChildren()
+    {
+        return [];
     }
 
     /**
@@ -293,6 +332,36 @@ class Manual extends DomainObject
                 'fieldName'    => 'topics',
                 'targetEntity' => ManualTopic::class,
                 'mappedBy'     => 'manual',
+            ]
+        );
+        $metadata->mapManyToMany(
+            [
+                'fieldName'    => 'usergroups',
+                'targetEntity' => Usergroup::class,
+                'cascade'      => ['persist', 'merge'],
+                'joinTable'    => [
+                    'name'        => 'manual2usergroup',
+                    'schema'      => null,
+                    'joinColumns' => [
+                        [
+                            'name'                 => 'manual_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
+                        ],
+                    ],
+                    'inverseJoinColumns' => [
+                        [
+                            'name'                 => 'usergroup_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
+                        ],
+                    ],
+                ],
+                'dpApi' => true,
             ]
         );
         $metadata->mapManyToOne(

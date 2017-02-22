@@ -61,4 +61,21 @@ class Manual extends AbstractEntityRepository
 
         return $result;
     }
+
+    public function getPermissionTableName()
+    {
+        return 'manual2usergroup';
+    }
+
+    public function getCategoryField()
+    {
+        return 'manual_id';
+    }
+
+    /**
+     * Not used in manuals be it is called by PublishController.
+     */
+    public function repair()
+    {
+    }
 }

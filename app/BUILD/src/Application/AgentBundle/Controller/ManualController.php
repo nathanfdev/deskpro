@@ -28,9 +28,10 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Manual;
 
-class ManualController extends AbstractController
+class ManualController extends PublishController
 {
     public function listAction($manual_id)
     {
@@ -50,10 +51,38 @@ class ManualController extends AbstractController
 
         $tpl = 'AgentBundle:Manual:filter.html.twig';
 
+        $manualUserGroups = [];
+        if ($manual) {
+            $manualUserGroups = $this->db->fetchAllCol('
+                SELECT usergroup_id
+                FROM manual2usergroup
+                WHERE manual_id = ?
+            ', [$manual->getId()]);
+        }
+
         return $this->render($tpl, [
-            'results'       => $results,
-            'manual'        => $manual,
-            'total_results' => $totalResults,
+            'results'        => $results,
+            'manual'         => $manual,
+            'cat_usergroups' => $manualUserGroups,
+            'total_results'  => $totalResults,
+            'num_pages'      => 1,
+            'cur_page'       => 1,
+            'showing_to'     => $totalResults,
+        ]);
+    }
+
+    public function addCategoryFormAction($type = '')
+    {
+        $brandId = $this->in->getUInt('brand_id');
+
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
+        return $this->render('AgentBundle:Publish:new-manual.html.twig', [
+            'type'           => 'manual',
+            'all_categories' => [],
+            'brands'         => $brands,
+            'brand_id'       => $brandId,
         ]);
     }
 }

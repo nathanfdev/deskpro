@@ -10,6 +10,7 @@
       pageMeta.refreshUrl = '{{ path('agent_manuals_list', {'manual_id': manual.id}) }}';
       pageMeta.url_fragment = '{{ url_fragment('agent_manuals_list', {'manual_id': manual.id}) }}';
       pageMeta.baseId = '{{ tplvars.baseId }}';
+      pageMeta.manualId = {{ manual.id }};
     </script>
 {% endblock top %}
 
@@ -90,11 +91,11 @@
         <div class="list-listing">
             <div id="{{ tplvars.baseId }}_tab_cat" style="display: none;">
 
-                <section class="pane-section last" id="{{ tplvars.baseId }}_del_cat">
+                <section class="pane-section last" id="{{ tplvars.baseId }}_del_manual">
                     <header><h1>{{ phrase('agent.publish.delete_manual') }}</h1></header>
                     <article style="padding: 10px;">
                         <div class="dp-not-loading">
-                            <button class="dp-btn cat-del-trigger" data-save-url="{{ path('agent_publish_cats_adddel', {type: 'manual', manual_id: manual.id}) }}">{{ phrase('agent.publish.delete_manual_btn') }}</button>
+                            <button class="dp-btn manual-del-trigger" data-save-url="{{ path('agent_publish_cats_adddel', {type: 'manual_topics', category_id: manual.id}) }}">{{ phrase('agent.publish.delete_manual_btn') }}</button>
                         </div>
                         <div class="dp-is-loading">
                             <i class="spinner-flat"></i>
@@ -111,8 +112,8 @@
                                 <tr>
                                     <th width="100">{{ phrase('agent.general.title') }}</th>
                                     <td>
-                                        <input type="hidden" name="manual[id]" value="{{ manual.id }}" />
-                                        <input type="text" name="manual[title]" value="{{ manual.title }}" />
+                                        <input type="hidden" name="category[id]" value="{{ manual.id }}" />
+                                        <input type="text" name="category[title]" value="{{ manual.title }}" />
                                     </td>
                                 </tr>
                                 <tr class="vtop">
@@ -122,7 +123,7 @@
                                             {% for ug in app.getUsergroups().getUserUsergroups() %}
                                                 <li>
                                                     <label>
-                                                        <input class="ug-check ug-{{ ug.id }} {% if ug.sys_name %}ug-{{ ug.sys_name }}{% endif %}" type="checkbox" name="manual[usergroups][]" value="{{ ug.id }}" {% if ug.id in cat_usergroups %}checked="checked"{% endif %} />
+                                                        <input class="ug-check ug-{{ ug.id }} {% if ug.sys_name %}ug-{{ ug.sys_name }}{% endif %}" type="checkbox" name="category[usergroups][]" value="{{ ug.id }}" {% if ug.id in cat_usergroups %}checked="checked"{% endif %} />
                                                         {{ ug.title }}
                                                     </label>
                                                 </li>
@@ -136,17 +137,9 @@
                     </article>
                 </section>
 
-                <section class="pane-section last">
-                    <header><h1>{{ phrase('agent.publish.reorder_manual_title') }}</h1></header>
-                    <article>
-                        <div style="padding: 10px;" id="{{ tplvars.baseId }}_cattree" data-treedata="{{ cat_structure_data|json_encode }}"></div>
-                        <input type="hidden" id="{{ tplvars.baseId }}_cattree_struct" name="manual_structure" value="" />
-                    </article>
-                </section>
-
-                <footer class="pane-footer" id="{{ tplvars.baseId }}_catfoot">
+                <footer class="pane-footer" id="{{ tplvars.baseId }}_manualfoot">
                     <div class="dp-not-loading">
-                        <button class="dp-btn cat-save-trigger" data-save-url="{{ path('agent_publish_savecats', {type: 'manual'}) }}">{{ phrase('agent.general.save') }}</button>
+                        <button class="dp-btn manual-save-trigger" data-save-url="{{ path('agent_publish_savecats', {type: 'manual_topics'}) }}">{{ phrase('agent.general.save') }}</button>
                     </div>
                     <div class="dp-is-loading">
                         <i class="spinner-flat"></i>

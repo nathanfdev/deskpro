@@ -35,7 +35,7 @@ use JMS\Serializer\Annotation as JMS;
 
 class ManualTopic extends ContentAbstract
 {
-    const CONTENT_TYPE = 'manual_topic';
+    const CONTENT_TYPE = 'manualtopic';
 
     /**
      * @var Manual
@@ -59,6 +59,15 @@ class ManualTopic extends ContentAbstract
      * @var int
      */
     protected $display_order = 0;
+
+    /**
+     * Topic`s parent.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\ManualTopic>")
+     *
+     * @var ManualTopic
+     */
+    protected $parent;
 
     protected function addSlugHistory($oldSlug)
     {
@@ -124,6 +133,26 @@ class ManualTopic extends ContentAbstract
     public function setDisplayOrder($display_order)
     {
         $this->setModelField('display_order', $display_order);
+
+        return $this;
+    }
+
+    /**
+     * @return ManualTopic
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param ManualTopic $parent
+     *
+     * @return ManualTopic
+     */
+    public function setParent($parent)
+    {
+        $this->setModelField('parent', $parent);
 
         return $this;
     }
@@ -325,6 +354,24 @@ class ManualTopic extends ContentAbstract
             ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'parent',
+                'targetEntity' => self::class,
+                'mappedBy'     => null,
+                'inversedBy'   => 'children',
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'parent_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'manual',

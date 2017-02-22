@@ -12,6 +12,7 @@ import { SideBarContainer } from './Modules/SideBar/Components/SideBar';
 import { AgentList } from './Modules/Agent/Components/AgentList';
 import { AgentOnboardingContainer }  from './Modules/Onboarding/Components/AgentOnboarding';
 import { ArchiveFilesContainer } from './Modules/Tickets/Components/Archive/ArchiveFiles';
+import { ManualTreeContainer } from './Modules/Publish/Components/List/ManualTree';
 import { EditorContainer } from './Modules/Publish/Components/Editor';
 import VoiceControlsContainer from './Modules/Voice/Components/Controls/VoiceControlsContainer';
 import VoiceTicketMessageContainer from './Modules/Voice/Components/TicketMessage/TicketMessageContainer';
@@ -153,6 +154,18 @@ class AgentLegacyApp {
           updateHtml={updateHtml}
           hideEditor={hideEditor}
           save={save}
+        />
+      </Provider>,
+      node
+    );
+  }
+
+  renderManualTopicsTree(node, manualId, height) {
+    ReactDOM.render(
+      <Provider store={this.store}>
+        <ManualTreeContainer
+          manualId={manualId}
+          height={height}
         />
       </Provider>,
       node

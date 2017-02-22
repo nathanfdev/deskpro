@@ -77,7 +77,7 @@ use Symfony\Component\HttpFoundation\Request;
  *     target="postAction",
  *     input={
  *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualTopicType",
- *      "options"={"method" = "POST"},
+ *      "options"={"method"="POST"},
  *      "name"=""
  *     }
  * )

@@ -70,6 +70,9 @@ class ManualTopicType extends AbstractType
             ->add('manual', EntityType::class, [
                 'class' => Manual::class,
             ])
+            ->add('parent', EntityType::class, [
+                'class' => ManualTopic::class,
+            ])
             ->add('author', PersonAssignType::class, [
                 'property_path' => 'person',
                 'person'        => $options['person'],
