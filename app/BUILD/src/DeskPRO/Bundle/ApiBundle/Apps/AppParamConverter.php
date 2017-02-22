@@ -3,38 +3,63 @@
 namespace DeskPRO\Bundle\ApiBundle\Apps;
 
 use DeskPRO\Bundle\AppBundle\Entity;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use DeskPRO\Bundle\AppStoreBundle\Domain;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class AppParamConverter implements ParamConverterInterface
 {
+    /** @var Domain\ApplicationFinder  */
+    private $finder;
 
-    /**
-     * Stores the object in the request.
-     *
-     * @param Request $request The request
-     * @param ParamConverter $configuration Contains the name, class and options of the object
-     *
-     * @return bool True if the object has been successfully set, else false
-     */
-    public function apply(Request $request, ParamConverter $configuration)
+    /** @var IdentifierParser */
+    private $identifierParser;
+
+    public function __construct(Domain\ApplicationFinder $finder, IdentifierParser $identifierParser)
+    {
+        $this->finder = $finder;
+        $this->identifierParser = $identifierParser;
+    }
+
+    public function apply(Request $request, Configuration\ParamConverter $configuration)
     {
         $attributeName = $configuration->getName();
-        $request->attributes->set($attributeName, new Entity\AppStore\App());
+        $from = $request->attributes->get($attributeName);
 
+        if (empty($from)) {
+            return false;
+        }
+
+        $application = $this->convert($from);
+        if (empty($application)) {
+            return false;
+        }
+
+        $request->attributes->set($attributeName, $application);
         return true;
     }
 
     /**
-     * Checks if the object is supported.
-     *
-     * @param ParamConverter $configuration Should be an instance of ParamConverter
-     *
-     * @return bool True if the object is supported, else false
+     * @param string $from
+     * @return Entity\AppStore\App
      */
-    public function supports(ParamConverter $configuration)
+    private function convert($from)
     {
+        if ($this->identifierParser->recognizeApplicationName($from)) {
+            return $this->finder->findByName($from);
+        }
+
+        if ($this->identifierParser->recognizeApplicationInstanceId($from)) {
+            return $this->finder->findByInstanceId($from);
+        }
+
+        return null;
+    }
+
+    public function supports(Configuration\ParamConverter $configuration)
+    {
+        //TODO check that this class supports the configuration
         return true;
     }
 }

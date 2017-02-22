@@ -43,7 +43,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 class AppsController {
 
     /**
-     * @Rest\GET("/{app_name}")
+     * @Rest\GET("/{application}")
      *
      * @param Entity\AppStore\App $application
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\ApiBundle\Apps\AppParamConverter")
@@ -64,18 +64,18 @@ class AppsController {
     }
 
     /**
-     * @Rest\DELETE("/{app_name_or_instance_id}")
+     * @Rest\DELETE("/{instance}")
      *
-     * @param Entity\AppStore\AppInstance $appStoreInstance
-     * @ParamConverter("appStoreInstance", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
+     * @param Entity\AppStore\AppInstance $instance
+     * @ParamConverter("instance", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
      */
-    public function deleteApplication(Entity\AppStore\AppInstance $appStoreInstance)
+    public function deleteApplication(Entity\AppStore\AppInstance $instance)
     {
 
     }
 
     /**
-     * @Rest\GET("/{app_name_or_instance_id}/manifest")
+     * @Rest\GET("/{application}/manifest")
      *
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\ApiBundle\Apps\AppParamConverter")
      * @param Entity\AppStore\App $application
@@ -84,11 +84,14 @@ class AppsController {
      */
     public function getManifest(Entity\AppStore\App $application)
     {
-        return $application->getManifest();
+        $manifestString = $application->getManifest();
+        $manifestArray = json_decode($manifestString, true);
+
+        return $manifestArray;
     }
 
     /**
-     * @Rest\GET("/{app_name_or_instance_id}/assets")
+     * @Rest\GET("/{application}/assets")
      *
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\ApiBundle\Apps\AppParamConverter")
      * @ParamConverter("assetFilter", class="AppStoreBundle:Domain\AssetFilter", converter="ApiBundle:Apps\AssetFilterParamConverter")

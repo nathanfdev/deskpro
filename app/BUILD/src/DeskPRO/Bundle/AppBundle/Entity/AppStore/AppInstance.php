@@ -70,4 +70,12 @@ class AppInstance
      * @ORM\Column(type="datetime", nullable=false)
      */
     private $createdAt;
+
+    /**
+     * @return App
+     */
+    public function getApp()
+    {
+        return $this->app;
+    }
 }
