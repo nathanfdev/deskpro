@@ -69,14 +69,12 @@ services:
   DeskPRO\Bundle\ApiBundle\Apps\StateFilterParamConverter:
     class: DeskPRO\Bundle\ApiBundle\Apps\StateFilterParamConverter
     factory: [DeskPRO\Bundle\ApiBundle\Apps\ParamConverters, createStateFilterConverter]
-    arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
         - { name: request.param_converter, converter: DeskPRO\Bundle\ApiBundle\Apps\StateFilterParamConverter }
 
   DeskPRO\Bundle\ApiBundle\Apps\AssetFilterParamConverter:
     class: DeskPRO\Bundle\ApiBundle\Apps\AssetFilterParamConverter
     factory: [DeskPRO\Bundle\ApiBundle\Apps\ParamConverters, createAssetFilterConverter]
-    arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
         - { name: request.param_converter, converter: DeskPRO\Bundle\ApiBundle\Apps\AssetFilterParamConverter }
 

@@ -30,5 +30,45 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
 class StateFilter
 {
+    /** @var array|StateScope[]  */
+    private $scopeList;
 
+    /** @var string */
+    private $name;
+
+    /**
+     * @param array|StateScope[] $scopeList
+     * @param $name
+     */
+    public function __construct(array $scopeList, $name)
+    {
+        $this->scopeList = $scopeList;
+        $this->name = $name;
+    }
+
+    /**
+     * @param StateScope $scope
+     * @return $this
+     */
+    public function addScope(StateScope $scope)
+    {
+        $this->scopeList[] = $scope;
+        return $this;
+    }
+
+    /**
+     * @return array|StateScope[]
+     */
+    public function getScopeList()
+    {
+        return $this->scopeList;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 }

@@ -45,29 +45,29 @@ class AppsController {
     /**
      * @Rest\GET("/{application}")
      *
-     * @param Entity\AppStore\App $application
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\ApiBundle\Apps\AppParamConverter")
+     * @param Entity\AppStore\AppInstance $application
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
      * @return string
      */
-    public function getApplication(Entity\AppStore\App $application)
+    public function getApplication(Entity\AppStore\AppInstance $application)
     {
         return $application;
     }
 
     /**
      * @Rest\POST("/")
-     *
+     * @param Entity\AppStore\AppInstance $application
      */
-    public function createOrUpdateApp()
+    public function createOrUpdateApp(Entity\AppStore\AppInstance $application = null)
     {
 
     }
 
     /**
-     * @Rest\DELETE("/{instance}")
+     * @Rest\DELETE("/{application}")
      *
      * @param Entity\AppStore\AppInstance $instance
-     * @ParamConverter("instance", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
      */
     public function deleteApplication(Entity\AppStore\AppInstance $instance)
     {

@@ -28,8 +28,15 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-interface AssetRepository
+interface AssetFilterValueMap
 {
-    function findApplicationAssets(AssetFilter $assetFilter);
-}
+    /**
+     * @return string
+     */
+    public function getFilePathPattern();
 
+    /**
+     * @return string
+     */
+    public function getFileExtension();
+}

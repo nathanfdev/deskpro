@@ -28,50 +28,31 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-class StateScope
+class Filters
 {
-    /** @var string */
-    private $permission;
-
-    /** @var string */
-    private $targetObjectName;
-
-    /** @var string */
-    private $targetObjectId;
-
     /**
-     * @param $permission
-     * @param $targetObjectName
-     * @param $targetObjectId
+     * @param AssetFilterValueMap $valueMap
+     * @return AssetFilter
      */
-    public function __construct($permission, $targetObjectName, $targetObjectId)
+    public function convertValueMapToAssetFilter(AssetFilterValueMap $valueMap)
     {
-        $this->permission = $permission;
-        $this->targetObjectName = $targetObjectName;
-        $this->targetObjectId = $targetObjectId;
+        $fileExtension = $valueMap->getFileExtension();
+        if ("" == $fileExtension || is_null($fileExtension) || false == (bool) preg_match('#[^/]+#', $fileExtension)) {
+            $fileExtension = null;
+        }
+
+        $pathPattern = $valueMap->getFilePathPattern();
+        if ("" == $pathPattern || is_null($pathPattern)) {
+            $pathPattern = null;
+        }
+
+        $usePrefixPathMatchingStrategy = "/" == substr($pathPattern, -1);
+        return new AssetFilter($fileExtension, $pathPattern, $usePrefixPathMatchingStrategy);
     }
 
-    /**
-     * @return string
-     */
-    public function getPermission(): string
+    public function convertValueMapToStateFilter(StateFilterValueMap $map)
     {
-        return $this->permission;
+
     }
 
-    /**
-     * @return string
-     */
-    public function getTargetObjectName(): string
-    {
-        return $this->targetObjectName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTargetObjectId(): string
-    {
-        return $this->targetObjectId;
-    }
 }

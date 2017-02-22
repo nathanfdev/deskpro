@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-interface StateRepository
+interface StateFinder
 {
     function findApplicationState(StateFilter $assetFilter);
 }

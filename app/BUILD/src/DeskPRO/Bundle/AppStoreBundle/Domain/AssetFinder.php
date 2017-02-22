@@ -28,50 +28,8 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-class StateScope
+interface AssetFinder
 {
-    /** @var string */
-    private $permission;
-
-    /** @var string */
-    private $targetObjectName;
-
-    /** @var string */
-    private $targetObjectId;
-
-    /**
-     * @param $permission
-     * @param $targetObjectName
-     * @param $targetObjectId
-     */
-    public function __construct($permission, $targetObjectName, $targetObjectId)
-    {
-        $this->permission = $permission;
-        $this->targetObjectName = $targetObjectName;
-        $this->targetObjectId = $targetObjectId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPermission(): string
-    {
-        return $this->permission;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTargetObjectName(): string
-    {
-        return $this->targetObjectName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTargetObjectId(): string
-    {
-        return $this->targetObjectId;
-    }
+    function findApplicationAssets(AssetFilter $assetFilter);
 }
+

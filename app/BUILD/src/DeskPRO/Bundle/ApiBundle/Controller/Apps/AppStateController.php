@@ -28,8 +28,8 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
-use DeskPRO\Bundle\ApiBundle\Apps\StateFilterParamConverter;
 use DeskPRO\Bundle\AppBundle\Entity;
+use DeskPRO\Bundle\AppStoreBundle\Domain;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -50,7 +50,7 @@ class AppStateController
      * @param Entity\AppStore\AppInstance $instance
      * @param $stateFilter
      */
-    public function getState(Entity\AppStore\AppInstance $instance, StateFilterParamConverter$stateFilter)
+    public function getState(Entity\AppStore\AppInstance $instance, Domain\StateFilter $stateFilter)
     {
 
     }

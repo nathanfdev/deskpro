@@ -30,5 +30,43 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
 class AssetFilter
 {
+    private $fileExtension;
 
+    private $pathPattern;
+
+    private $pathMatchingStrategy = 'prefix';
+
+    public function __construct($fileExtension = null, $pathPattern = null, $usePrefixPathMatchingStrategy = false)
+    {
+        $this->fileExtension = $fileExtension;
+        $this->pathPattern = $pathPattern;
+
+        if (! $usePrefixPathMatchingStrategy) {
+            $this->pathMatchingStrategy = 'exact';
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileExtension()
+    {
+        return $this->fileExtension;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPathPattern()
+    {
+        return $this->pathPattern;
+    }
+
+    /**
+     * @return bool
+     */
+    public function usePrefixPathMatchingStrategy()
+    {
+        return $this->pathMatchingStrategy == 'prefix';
+    }
 }

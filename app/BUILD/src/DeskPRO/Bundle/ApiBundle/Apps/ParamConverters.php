@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Apps;
 
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
+use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Doctrine\ORM;
 
 /**
@@ -40,21 +41,21 @@ class ParamConverters
     }
 
     /**
-     * @param ORM\EntityManager $entityManager
      * @return AssetFilterParamConverter
      */
-    public static function createAssetFilterConverter(ORM\EntityManager $entityManager)
+    public static function createAssetFilterConverter()
     {
-        return new AssetFilterParamConverter($entityManager);
+        $filterConverter = new Domain\Filters();
+        return new AssetFilterParamConverter($filterConverter);
     }
 
     /**
-     * @param ORM\EntityManager $entityManager
      * @return StateFilterParamConverter
      */
-    public static function createStateFilterConverter(ORM\EntityManager $entityManager)
+    public static function createStateFilterConverter()
     {
-        return new StateFilterParamConverter($entityManager);
+        $filterConverter = new Domain\Filters();
+        return new StateFilterParamConverter($filterConverter);
     }
 
 
