@@ -87,9 +87,9 @@ class TicketsDataService extends AbstractDataService
                 'getPager',
                 $person,
                 $filter,
-                $page,
-                $maxPerPage,
-                $ignoreOnlyNotes,
+                (int) $page,
+                (int) $maxPerPage,
+                (bool) $ignoreOnlyNotes,
                 $brand,
             ],
             function () use ($em, $person, $filter, $page, $maxPerPage, $ignoreOnlyNotes, $brand) {

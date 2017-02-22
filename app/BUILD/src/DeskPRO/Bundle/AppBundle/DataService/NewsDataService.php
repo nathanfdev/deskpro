@@ -91,8 +91,8 @@ class NewsDataService extends AbstractDataService
             [
                 'getNewsPager',
                 $category,
-                $page,
-                $max_per_page,
+                (int) $page,
+                (int) $max_per_page,
                 $person,
             ],
             function () use ($em, $permissionsManager, $category, $max_per_page, $page, $person) {

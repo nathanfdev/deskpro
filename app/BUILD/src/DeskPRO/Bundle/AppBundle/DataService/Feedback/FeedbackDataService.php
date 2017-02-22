@@ -93,8 +93,8 @@ class FeedbackDataService extends AbstractDataService
         return $this->generateAndCache(
             [
                 'getItemsPager',
-                $page,
-                $max_per_page,
+                (int) $page,
+                (int) $max_per_page,
                 $filter,
                 $person,
             ],

@@ -58,10 +58,6 @@ class ArbitraryHasher
     {
         $inputs = $this->collectInputs($input);
 
-        if (is_array($inputs)) {
-            sort($inputs);
-        }
-
         $v = md5(json_encode($inputs));
 
         return $v;
@@ -99,8 +95,6 @@ class ArbitraryHasher
             if (isset($value['id'])) {
                 return $value['id'];
             }
-
-            sort($value);
 
             return $value;
         }
