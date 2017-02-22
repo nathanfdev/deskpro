@@ -216,7 +216,6 @@ class Container extends React.Component {
     const html = emoji.shortname;
     editor.events.focus();
     editor.html.insert(html);
-    editor.events.focus();
   }
 
   handleChange(text) {
@@ -388,8 +387,8 @@ class Container extends React.Component {
       immediateReactModelUpdate: true,
       key:                       'qENARBFSTb1G1QJg1RA==',
       events:                    {
-        'froalaEditor.focus':       Container.onFocus,
-        'froalaEditor.blur':        Container.onBlur,
+        'froalaEditor.focus':       () => { this.editor.selection.restore(); Container.onFocus(); },
+        'froalaEditor.blur':        () => { this.editor.selection.save(); Container.onBlur(); },
         'froalaEditor.initialized': this.bindFroalaEvents
       }
     };
