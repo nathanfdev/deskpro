@@ -28,31 +28,45 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-class Filters
+class SearchAssetFilter
 {
+    private $fileExtension;
+
+    private $pathPattern;
+
+    private $pathMatchingStrategy = 'prefix';
+
+    public function __construct($fileExtension = null, $pathPattern = null, $usePrefixPathMatchingStrategy = false)
+    {
+        $this->fileExtension = $fileExtension;
+        $this->pathPattern = $pathPattern;
+
+        if (! $usePrefixPathMatchingStrategy) {
+            $this->pathMatchingStrategy = 'exact';
+        }
+    }
+
     /**
-     * @param AssetFilterValueMap $valueMap
-     * @return AssetFilter
+     * @return string
      */
-    public function convertValueMapToAssetFilter(AssetFilterValueMap $valueMap)
+    public function getFileExtension()
     {
-        $fileExtension = $valueMap->getFileExtension();
-        if ("" == $fileExtension || is_null($fileExtension) || false == (bool) preg_match('#[^/]+#', $fileExtension)) {
-            $fileExtension = null;
-        }
-
-        $pathPattern = $valueMap->getFilePathPattern();
-        if ("" == $pathPattern || is_null($pathPattern)) {
-            $pathPattern = null;
-        }
-
-        $usePrefixPathMatchingStrategy = "/" == substr($pathPattern, -1);
-        return new AssetFilter($fileExtension, $pathPattern, $usePrefixPathMatchingStrategy);
+        return $this->fileExtension;
     }
 
-    public function convertValueMapToStateFilter(StateFilterValueMap $map)
+    /**
+     * @return string
+     */
+    public function getPathPattern()
     {
-
+        return $this->pathPattern;
     }
 
+    /**
+     * @return bool
+     */
+    public function usePrefixPathMatchingStrategy()
+    {
+        return $this->pathMatchingStrategy == 'prefix';
+    }
 }

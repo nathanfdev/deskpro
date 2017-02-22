@@ -28,15 +28,31 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-interface AssetFilterValueMap
+class SearchFilters
 {
     /**
-     * @return string
+     * @param SearchAssetFilterValueMap $valueMap
+     * @return SearchAssetFilter
      */
-    public function getFilePathPattern();
+    public function convertValueMapToAssetFilter(SearchAssetFilterValueMap $valueMap)
+    {
+        $fileExtension = $valueMap->getFileExtension();
+        if ("" == $fileExtension || is_null($fileExtension) || false == (bool) preg_match('#[^/]+#', $fileExtension)) {
+            $fileExtension = null;
+        }
 
-    /**
-     * @return string
-     */
-    public function getFileExtension();
+        $pathPattern = $valueMap->getFilePathPattern();
+        if ("" == $pathPattern || is_null($pathPattern)) {
+            $pathPattern = null;
+        }
+
+        $usePrefixPathMatchingStrategy = "/" == substr($pathPattern, -1);
+        return new SearchAssetFilter($fileExtension, $pathPattern, $usePrefixPathMatchingStrategy);
+    }
+
+    public function convertValueMapToStateFilter(SearchStateFilterValueMap $map)
+    {
+
+    }
+
 }

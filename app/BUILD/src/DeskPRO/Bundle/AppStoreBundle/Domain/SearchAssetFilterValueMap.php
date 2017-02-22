@@ -28,15 +28,15 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-interface StateFilterValueMap
+interface SearchAssetFilterValueMap
 {
     /**
      * @return string
      */
-    public function getScopeList();
+    public function getFilePathPattern();
 
     /**
      * @return string
      */
-    public function getStateVariableName();
+    public function getFileExtension();
 }

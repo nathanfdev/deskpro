@@ -115,7 +115,7 @@ class AppsController {
      * @param Entity\AppStore\App $application
      * @param $assetFilter
      */
-    public function getAssets(Entity\AppStore\App $application, AppStoreBundle\Domain\AssetFilter $assetFilter)
+    public function getAssets(Entity\AppStore\App $application, AppStoreBundle\Domain\SearchAssetFilter $assetFilter)
     {
 
     }

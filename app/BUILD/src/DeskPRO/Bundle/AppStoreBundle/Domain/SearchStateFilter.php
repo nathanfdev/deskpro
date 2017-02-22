@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-class StateFilter
+class SearchStateFilter
 {
     /** @var array|StateScope[]  */
     private $scopeList;

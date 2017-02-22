@@ -10,16 +10,16 @@ use DeskPRO\Bundle\AppStoreBundle\Domain;
 
 class StateFilterParamConverter implements ParamConverterInterface
 {
-    /** @var Domain\Filters  */
+    /** @var Domain\SearchFilters  */
     private $filters;
 
-    public function __construct(Domain\Filters $filters)
+    public function __construct(Domain\SearchFilters $filters)
     {
         $this->filters = $filters;
     }
     public function apply(Request $request, Configuration\ParamConverter $configuration)
     {
-        $filterValues = new Domain\FilterValueArrayMap();
+        $filterValues = new Domain\SearchFilterValueArrayMap();
         $this->resolveFilterValues($request->attributes, $filterValues);
 
         $attributeName = $configuration->getName();
@@ -29,7 +29,7 @@ class StateFilterParamConverter implements ParamConverterInterface
         return true;
     }
 
-    private function resolveFilterValues(ParameterBag $params, Domain\FilterValueArrayMap $filterValues)
+    private function resolveFilterValues(ParameterBag $params, Domain\SearchFilterValueArrayMap $filterValues)
     {
         if ($params->has('scopes')) {
             $filterValues->setStateVariableScope($params->get('scopes'));

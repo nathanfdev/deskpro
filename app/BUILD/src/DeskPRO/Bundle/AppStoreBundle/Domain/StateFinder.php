@@ -30,6 +30,6 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
 interface StateFinder
 {
-    function findApplicationState(StateFilter $assetFilter);
+    function findApplicationState(SearchStateFilter $assetFilter);
 }
 

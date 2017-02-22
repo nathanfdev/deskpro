@@ -45,7 +45,7 @@ class ParamConverters
      */
     public static function createAssetFilterConverter()
     {
-        $filterConverter = new Domain\Filters();
+        $filterConverter = new Domain\SearchFilters();
         return new AssetFilterParamConverter($filterConverter);
     }
 
@@ -54,7 +54,7 @@ class ParamConverters
      */
     public static function createStateFilterConverter()
     {
-        $filterConverter = new Domain\Filters();
+        $filterConverter = new Domain\SearchFilters();
         return new StateFilterParamConverter($filterConverter);
     }
 

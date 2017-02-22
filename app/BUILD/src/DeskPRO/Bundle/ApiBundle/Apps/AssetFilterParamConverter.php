@@ -10,17 +10,17 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AssetFilterParamConverter implements ParamConverterInterface
 {
-    /** @var Domain\Filters  */
+    /** @var Domain\SearchFilters  */
     private $filters;
 
-    public function __construct(Domain\Filters $filters)
+    public function __construct(Domain\SearchFilters $filters)
     {
         $this->filters = $filters;
     }
 
     public function apply(Request $request, Configuration\ParamConverter $configuration)
     {
-        $filterValues = new Domain\FilterValueArrayMap();
+        $filterValues = new Domain\SearchFilterValueArrayMap();
         $this->resolveFilterValues($request->attributes, $filterValues);
 
         $attributeName = $configuration->getName();
@@ -30,7 +30,7 @@ class AssetFilterParamConverter implements ParamConverterInterface
         return true;
     }
 
-    private function resolveFilterValues(ParameterBag $params, Domain\FilterValueArrayMap $filterValues)
+    private function resolveFilterValues(ParameterBag $params, Domain\SearchFilterValueArrayMap $filterValues)
     {
         if ($params->has('ext')) {
             $filterValues->setFileExtension($params->get('ext'));

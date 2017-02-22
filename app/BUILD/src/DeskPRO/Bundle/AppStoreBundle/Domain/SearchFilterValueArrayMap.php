@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-class FilterValueArrayMap implements AssetFilterValueMap, StateFilterValueMap, SettingsFilterValueMap
+class SearchFilterValueArrayMap implements SearchAssetFilterValueMap, SearchStateFilterValueMap, SettingsFilterValueMap
 {
     /** @var string */
     private $filePathPattern;

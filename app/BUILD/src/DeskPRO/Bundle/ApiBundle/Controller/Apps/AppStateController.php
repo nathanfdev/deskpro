@@ -50,7 +50,7 @@ class AppStateController
      * @param Entity\AppStore\AppInstance $instance
      * @param $stateFilter
      */
-    public function getState(Entity\AppStore\AppInstance $instance, Domain\StateFilter $stateFilter)
+    public function getState(Entity\AppStore\AppInstance $instance, Domain\SearchStateFilter $stateFilter)
     {
 
     }
