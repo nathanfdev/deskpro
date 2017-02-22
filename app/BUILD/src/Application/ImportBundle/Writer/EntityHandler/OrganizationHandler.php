@@ -75,6 +75,6 @@ class OrganizationHandler extends AbstractEntityHandler
         $this->persister->persistAndFlush($entity, $model);
 
         // persist others related entities which contains own oids
-        $this->helpers->getContactDataHelper()->updateContactData($this->mappers->getOrganizationContactDataMapper(), $model, $entity);
+        $this->helpers->getOrganizationContactDataHelper()->updateContactData($model, $entity);
     }
 }

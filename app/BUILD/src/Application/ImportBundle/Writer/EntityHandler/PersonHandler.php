@@ -143,7 +143,7 @@ class PersonHandler extends AbstractEntityHandler
         $this->persister->persistAndFlush($entity, $model);
 
         // persist others related entities which contains own oids
-        $this->helpers->getContactDataHelper()->updateContactData($this->mappers->getPersonContactDataMapper(), $model, $entity);
+        $this->helpers->getPersonContactDataHelper()->updateContactData($model, $entity);
     }
 
     /**

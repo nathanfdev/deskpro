@@ -118,11 +118,19 @@ class HelperRegistry
     }
 
     /**
-     * @return ContactDataHelper
+     * @return PersonContactDataHelper
      */
-    public function getContactDataHelper()
+    public function getPersonContactDataHelper()
     {
-        return $this->getHelper(ContactDataHelper::class);
+        return $this->getHelper(PersonContactDataHelper::class);
+    }
+
+    /**
+     * @return OrganizationContactDataHelper
+     */
+    public function getOrganizationContactDataHelper()
+    {
+        return $this->getHelper(OrganizationContactDataHelper::class);
     }
 
     /**
