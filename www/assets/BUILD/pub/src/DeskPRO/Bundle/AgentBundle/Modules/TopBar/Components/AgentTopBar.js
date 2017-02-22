@@ -100,7 +100,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.toggleImOverlay  = this.toggleImOverlay.bind(this);
     this.recentClick      = this.recentClick.bind(this);
     this.participantClick = this.participantClick.bind(this);
-    this.chatClickOut     = this.chatClickOut.bind(this);
+    this.onChatClose      = this.onChatClose.bind(this);
     this.saveDraft        = this.saveDraft.bind(this);
     this.onSubmit         = this.onSubmit.bind(this);
     this.markNewMessages  = this.markNewMessages.bind(this);
@@ -161,7 +161,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.props.dispatch(chatsActions.startChat({ id, type }));
   }
 
-  chatClickOut(chatId) {
+  onChatClose(chatId) {
     this.props.dispatch(chatsActions.closeChat(chatId));
   }
 
@@ -344,7 +344,7 @@ export class AgentTopBarContainer extends SeparateComponent {
       onClearSearchInput: AgentTopBarContainer.onClearSearchInput,
       notificationCount:  this.state.notificationCount,
       toggleImOverlay:    this.toggleImOverlay,
-      chatClickOut:       this.chatClickOut,
+      onChatClose:        this.onChatClose,
       saveDraft:          this.saveDraft,
       recentClick:        this.recentClick,
       participantClick:   this.participantClick,
@@ -387,7 +387,7 @@ export class AgentTopBar extends React.Component {
     toggleViewMode:      PropTypes.func,
     toggleImOverlay:     PropTypes.func,
     openGroupDrawer:     PropTypes.func,
-    chatClickOut:        PropTypes.func,
+    onChatClose:         PropTypes.func,
     saveDraft:           PropTypes.func,
     recentClick:         PropTypes.func,
     participantClick:    PropTypes.func,
@@ -448,7 +448,7 @@ export class AgentTopBar extends React.Component {
     if (!window.DP_HAS_NEW_IM) return null;
 
     const { groupCreation, myTeamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
-    const { current, chating, messages, chatClickOut, participantClick, recentClick, createGroup } = this.props;
+    const { current, chating, messages, onChatClose, participantClick, recentClick, createGroup } = this.props;
     const { onChatSearch, onScroll, openGroupDrawer, markNewMessages, onSubmit, toggleImOverlay } = this.props;
     const { searchQuery, counts, groupChats, checkedAgents, me, myDepartments, myTeams, recentChats } = this.props;
     const { agents, people, onSearchFocus, onSearchBlur, editChat, updateGroup, loadMessages, activeTabs } = this.props;
@@ -526,7 +526,7 @@ export class AgentTopBar extends React.Component {
           current={current}
           activeTabs={activeTabs}
           onSubmit={onSubmit}
-          clickOut={chatClickOut}
+          onClose={onChatClose}
           saveDraft={saveDraft}
           loadMessages={loadMessages}
           loadingMessages={loadingMessages}

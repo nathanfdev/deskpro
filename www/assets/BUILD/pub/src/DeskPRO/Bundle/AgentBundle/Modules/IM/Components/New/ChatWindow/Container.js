@@ -29,7 +29,7 @@ class Container extends React.Component {
     current:         PropTypes.object.isRequired,
     searchQuery:     PropTypes.string,
     isOpen:          PropTypes.bool.isRequired,
-    clickOut:        PropTypes.func,
+    onClose:         PropTypes.func,
     saveDraft:       PropTypes.func,
     onSubmit:        PropTypes.func,
     onChange:        PropTypes.func,
@@ -52,7 +52,7 @@ class Container extends React.Component {
     onAttach() {
 
     },
-    clickOut() {
+    onClose() {
 
     },
     onSubmit() {
@@ -102,7 +102,7 @@ class Container extends React.Component {
       expandGroupHeader: false,
       searching:         false,
       message:           '',
-      attachOpened:      false
+      linkDrawerOpened:  false
     };
 
     this.destroyEditor    = () => {};
@@ -114,7 +114,7 @@ class Container extends React.Component {
     this.handleKeydown    = this.handleKeydown.bind(this);
     this.initFroala       = this.initFroala.bind(this);
     this.bindFroalaEvents = this.bindFroalaEvents.bind(this);
-    this.openLink       = this.openLink.bind(this);
+    this.openLink         = this.openLink.bind(this);
   }
 
   componentDidMount() {
@@ -159,7 +159,7 @@ class Container extends React.Component {
         {header}
         <i
           className={classNames('remove icon')}
-          onClick={() => { this.clickOut(); }}
+          onClick={() => { this.closeContainer(); }}
         />
         <i
           className={classNames('search icon', { enabled: this.state.searching })}
@@ -204,11 +204,11 @@ class Container extends React.Component {
     this.setState({ emojiOpened: false });
   }
 
-  clickOut() {
+  closeContainer() {
     this.closeEmoji();
     this.setState({ searching: false, expandedHeader: false });
     this.props.onChatSearch('');
-    this.props.clickOut(this.props.current.get('id'));
+    this.props.onClose(this.props.current.get('id'));
   }
 
   addEmoji(emoji) {
@@ -252,7 +252,7 @@ class Container extends React.Component {
   }
 
   openLink() {
-    this.setState({ attachOpened: true });
+    this.setState({ linkDrawerOpened: true });
   }
 
   groupHeader() {
@@ -329,7 +329,7 @@ class Container extends React.Component {
     return null;
   }
 
-  handleAttach(item) {
+  handleLink(item) {
     const propertyName = `${item.tabType}_id`;
     const message = `{{${item.tabType.charAt(0).toLowerCase()}-${item.page.meta[propertyName]}}}: ${item.title}`;
     this.props.onSubmit(message);
@@ -344,13 +344,13 @@ class Container extends React.Component {
       return {
         label:   item.title,
         icon:    Container.pickIcon(item),
-        onClick: () => this.handleAttach(item)
+        onClick: () => this.handleLink(item)
       };
     });
 
-    return this.link ?
-      (<Detached zIndex={99999} isOpen={this.state.attachOpened} positionTarget={this.link} positionMy="right+25 top+35">
-        <ClickOut onClickOut={() => { this.setState({ attachOpened: false }); }}>
+    return this.linkTrigger ?
+      (<Detached zIndex={99999} isOpen={this.state.linkDrawerOpened} positionTarget={this.linkTrigger} positionMy="right+25 top+35">
+        <ClickOut onClickOut={() => { this.setState({ linkDrawerOpened: false }); }}>
           <div className="attach-list">
             <Header content="Current tabs" level={4} className="attach-header" />
             <List elements={items} />
@@ -433,7 +433,7 @@ class Container extends React.Component {
               />
               <i
                 className={classNames('fa fa-link reply-icon', { inactive: Object.keys(this.props.activeTabs).length < 1 })}
-                ref={(c) => { this.link = c; }}
+                ref={(c) => { this.linkTrigger = c; }}
                 onClick={this.openLink}
               />
               <i
