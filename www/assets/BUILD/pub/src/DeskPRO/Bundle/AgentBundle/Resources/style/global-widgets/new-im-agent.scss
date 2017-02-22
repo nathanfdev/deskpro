@@ -308,11 +308,11 @@ img.emojione, svg.emojione {
       .everyone-list {
         padding: 5px;
         margin: 10px 15px;
+        cursor: pointer;
 
         &:hover {
           color: $dp-sonic-primary;
           background: $dp-morning-sky;
-          cursor: pointer;
         }
       }
 
@@ -993,10 +993,19 @@ img.emojione, svg.emojione {
   padding-top: 15px;
   padding-right: 10px;
   padding-bottom: 10px;
-  width: 200px;
+  width: 350px;
 
-  li {
+  .item {
     cursor: pointer;
+    &:hover {
+      color: $dp-sonic-primary;
+      background: $dp-morning-sky;
+    }
+    .content {
+      max-width: 285px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
 
   .attach-header {

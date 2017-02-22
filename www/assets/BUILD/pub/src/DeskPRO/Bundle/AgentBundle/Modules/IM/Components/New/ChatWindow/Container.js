@@ -342,7 +342,7 @@ class Container extends React.Component {
     const items = Object.keys(activeTabs).map((index) => {
       const item = activeTabs[index];
       return {
-        label:   item.title,
+        label:   item.title.length > 50 ? `${item.title.substr(0, 50)}\u2026` : item.title,
         icon:    Container.pickIcon(item),
         onClick: () => this.handleLink(item)
       };
