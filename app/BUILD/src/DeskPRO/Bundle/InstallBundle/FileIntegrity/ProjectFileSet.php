@@ -173,6 +173,7 @@ class ProjectFileSet
         $finder = Finder::create()
             ->files()
             ->in($this->env->getAppWwwAssetDir().DIRECTORY_SEPARATOR.'pub'.DIRECTORY_SEPARATOR.'build'.DIRECTORY_SEPARATOR)
+                ->exclude('storybook')
             ->in($this->env->getAppWwwAssetDir().DIRECTORY_SEPARATOR.'web'.DIRECTORY_SEPARATOR.'build'.DIRECTORY_SEPARATOR)
             ->in($this->env->getAppWwwAssetDir().DIRECTORY_SEPARATOR.'web'.DIRECTORY_SEPARATOR.'app-build'.DIRECTORY_SEPARATOR);
 
