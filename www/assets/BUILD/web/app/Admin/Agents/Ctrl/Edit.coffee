@@ -121,7 +121,14 @@ define [
       )
       return promise
 
+    hasAnyDepTicketsPerms: ->
+      for own perm, obj of @deps_perms['tickets']
+        if obj.assign
+          return true
+      return false
 
+    canCreateNewTicket: ->
+      return @perm_form['ticket']? && @perm_form['ticket'].create
 
     changeUse: (type) ->
       return if !@perm_form[type]? || true == @perm_form[type].use

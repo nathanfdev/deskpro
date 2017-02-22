@@ -11,7 +11,7 @@
         <ul class="checkbox-list" style="min-width: 250px">
             <li ng-repeat="group in EditCtrl.form.agent_groups">
                 <label>
-                    <input type="checkbox" ng-model="group.value"/>
+                    <input type="checkbox" ng-model="group.value" />
                     <span>{{ ng_var('group.title') }}</span>
                 </label>
             </li>
@@ -31,6 +31,16 @@
         </div>
     </div>
 
+    <div ng-show="EditCtrl.canCreateNewTicket() && !EditCtrl.hasAnyDepTicketsPerms()">
+        <div class="alert alert-warning">
+            <p>
+                <span class="fa fa-exclamation-triangle"></span>
+                Warning: This agent has permission to create new tickets, but they do not have permissions to use any
+                departments. This means that the agent can't actually create new tickets. To fix this, grant at least
+                "assign" permission in one or more departments.
+            </p>
+        </div>
+    </div>
     {% include 'AdminInterfaceBundle:Agents:edit-perms-toggles-all.html.twig' %}
 
 </div>
