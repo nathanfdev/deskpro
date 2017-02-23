@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { Field, Textarea, Select } from 'DeskPRO/Component/Semantic/ReactForm';
-import { TextPlayButton } from './PlayButton';
 
 const languageChoices = [
   { value: 'da-DK', label: 'Danish, Denmark' },
@@ -37,13 +36,7 @@ class TextTab extends React.Component {
     value: PropTypes.object
   };
 
-  stopPlaying() {
-    this.playButton.stopPlaying();
-  }
-
   render() {
-    const { value } = this.props;
-
     return (
       <div className="text-tab">
         <Field select="text" label="Type the text you’d like to be read out.">
@@ -53,12 +46,6 @@ class TextTab extends React.Component {
           <Field select="language" className="language-field">
             <Select choices={languageChoices} clearable={false} />
           </Field>
-
-          <TextPlayButton
-            ref={(c) => { this.playButton = c; }}
-            text={value.text}
-            language={value.language}
-          />
         </div>
       </div>
     );
