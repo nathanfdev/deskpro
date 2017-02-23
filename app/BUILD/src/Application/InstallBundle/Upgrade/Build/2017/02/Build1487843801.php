@@ -28,13 +28,18 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1487772138 extends AbstractBuild
+class Build1487843801 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('My Upgrade Class');
-        $this->execDbQuery('default', 'CREATE TABLE manual2usergroup (manual_id INT NOT NULL, usergroup_id INT NOT NULL, INDEX IDX_EEBA159A9BA073D6 (manual_id), INDEX IDX_EEBA159AD2112630 (usergroup_id), PRIMARY KEY(manual_id, usergroup_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
-        $this->execDbQuery('default', 'ALTER TABLE manual2usergroup ADD CONSTRAINT FK_EEBA159A9BA073D6 FOREIGN KEY (manual_id) REFERENCES manuals (id) ON DELETE CASCADE');
-        $this->execDbQuery('default', 'ALTER TABLE manual2usergroup ADD CONSTRAINT FK_EEBA159AD2112630 FOREIGN KEY (usergroup_id) REFERENCES usergroups (id) ON DELETE CASCADE');
+        $this->out('Add Content input fields');
+        $this->execSlowAlterTable('articles', 'ADD content_input LONGTEXT NOT NULL');
+        $this->execSlowAlterTable('articles', 'ADD content_input_type VARCHAR(100) DEFAULT NULL');
+        $this->execSlowAlterTable('downloads', 'ADD content_input LONGTEXT NOT NULL');
+        $this->execSlowAlterTable('downloads', 'ADD content_input_type VARCHAR(100) DEFAULT NULL');
+        $this->execSlowAlterTable('feedback', 'ADD content_input LONGTEXT NOT NULL');
+        $this->execSlowAlterTable('feedback', 'ADD content_input_type VARCHAR(100) DEFAULT NULL');
+        $this->execSlowAlterTable('news', 'ADD content_input LONGTEXT NOT NULL');
+        $this->execSlowAlterTable('news', 'ADD content_input_type VARCHAR(100) DEFAULT NULL');
     }
 }
