@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import Isvg from 'react-inlinesvg';
 import classNames from 'classnames';
 import {
   Avatar,
@@ -6,7 +7,7 @@ import {
   PersonAvatar,
   AgentTeamAvatar
 } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
-import { chooseColor, darkerColor, colorLuminance } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
+import { chooseColor, darkerColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 
 class AvatarHelper {
   static renderDepartmentAvatar(department) {
@@ -27,20 +28,12 @@ class AvatarHelper {
   }
 
   static renderEveryoneAvatar(notificationsCount = false) {
-    const props = {
-      size:        24,
-      color:       '#DD00AA',
-      borderColor: colorLuminance('#DD00AA', -0.2),
-      urlPattern:  null,
-      gravatar:    null,
-      text:        'EO',
-      className:   'ui avatar image im'
-    };
+    let title = '';
     if (notificationsCount !== false) {
-      props.title = `Everyone chat. ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+      title = `Everyone chat. ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
     }
 
-    return <Avatar {...props} />;
+    return <EveryoneIM title={title} />;
   }
 
   static renderGroupAvatar(chat, notificationsCount = false) {
@@ -85,5 +78,17 @@ class AvatarHelper {
     return <Avatar {...props} />;
   }
 }
+
+function EveryoneIM(props) {
+  return (
+    <span className="ui avatar image im everyone" title={props.title}>
+      <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/im/everyone-im.svg`} />
+    </span>
+  );
+}
+
+EveryoneIM.propTypes = {
+  title: PropTypes.string
+};
 
 export default AvatarHelper;

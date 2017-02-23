@@ -69,6 +69,11 @@ img.emojione, svg.emojione {
       position: relative;
       display: inline-block;
 
+      .ui.avatar.image.im svg {
+        width: 24px;
+        height: 24px;
+      }
+
       .agent-online {
         background: #74C365;
         display: block;
