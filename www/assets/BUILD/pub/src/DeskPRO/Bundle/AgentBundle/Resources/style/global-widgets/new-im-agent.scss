@@ -374,7 +374,7 @@ img.emojione, svg.emojione {
         color: $dp-greyscale-600;
         font-size: 16px;
         padding: 20px 34px;
-        border-left: none;
+        border-left: 3px solid $dp-greyscale-50;;
 
         .dp-im-tab-menu-icon {
           font-size: 16px;
@@ -384,8 +384,8 @@ img.emojione, svg.emojione {
 
       .im.item.unactive {
         border-top: none;
-        border-left: none;
-        border-right: none;
+        border-left: 1px solid $dp-greyscale-50;
+        border-right: 1px solid $dp-greyscale-50;
         color: $dp-greyscale-450;
         border-bottom: 1px solid;
       }
@@ -395,7 +395,7 @@ img.emojione, svg.emojione {
       }
 
       .im.item:last-of-type {
-        border-right: none;
+        border-right: 1px solid $dp-greyscale-50;
       }
     }
 
