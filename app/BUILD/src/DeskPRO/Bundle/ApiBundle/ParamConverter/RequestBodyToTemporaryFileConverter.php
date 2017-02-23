@@ -39,31 +39,53 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class RequestBodyToTemporaryFileConverter implements ParamConverterInterface
 {
-    /** @var DpEnv */
-    private $deskproEnv;
-
     public static function createFromGlobals()
     {
-        return new RequestBodyToTemporaryFileConverter($GLOBALS['DP_ENV']);
+        /** @var DpEnv $deskproEnv */
+        $deskproEnv = $GLOBALS['DP_ENV'];
+        return self::createFromDeskproEnv($deskproEnv);
     }
+
+    public static function createFromDeskproEnv(DpEnv $env)
+    {
+        $tmpDir = $env->getUserTmpDir();
+        if (empty($tmpDir)) {
+            $tmpDir = sys_get_temp_dir();
+        }
+
+        return new static($tmpDir);
+    }
+
+    /** @var string */
+    private $tmpDir;
 
     /**
      * RequestBodyToTemporaryFileConverter constructor.
-     * @param DpEnv $deskproEnv
+     * @param string $tmpDir
      */
-    public function __construct(DpEnv $deskproEnv)
+    public function __construct($tmpDir)
     {
-        $this->deskproEnv = $deskproEnv;
+        $this->tmpDir = $tmpDir;
     }
 
     public function apply(Request $request, ParamConverter $configuration)
     {
-        $attributeName = $configuration->getName();
         $file = $this->writeInputStreamToFile();
-        $fileInfo = new \SplFileInfo($file);
-        $request->attributes->set($attributeName, $fileInfo);
-        return true;
+        $converted = $this->applyConversion($file, $request, $configuration);
 
+        if (! empty($converted)) {
+            $attributeName = $configuration->getName();
+            $request->attributes->set($attributeName, $converted);
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function applyConversion($file, Request $request, ParamConverter $configuration)
+    {
+        $fileInfo = new \SplFileInfo($file);
+        return $fileInfo;
     }
 
     /**
@@ -71,21 +93,10 @@ class RequestBodyToTemporaryFileConverter implements ParamConverterInterface
      */
     private function writeInputStreamToFile()
     {
-        $tempDir = sys_get_temp_dir();
-        $file = tempnam($tempDir, 'deskpro_');
+        $file = tempnam($this->tmpDir, 'deskpro_');
         file_put_contents($file, file_get_contents('php://input'));
 
         return $file;
-    }
-
-    private function resolveTempDirectory(DpEnv $env)
-    {
-        $tmpDir = $env->getUserTmpDir();
-        if (!empty($tmpDir)) {
-            return $tmpDir;
-        }
-
-        return sys_get_temp_dir();
     }
 
     public function supports(ParamConverter $configuration)

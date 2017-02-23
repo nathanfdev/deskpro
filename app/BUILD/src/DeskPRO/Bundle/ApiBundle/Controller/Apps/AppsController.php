@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
-use DeskPRO\Bundle\AppStoreBundle;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity;
@@ -57,22 +57,23 @@ class AppsController {
 
     /**
      * @Rest\POST("", condition="request.headers.get('Content-Type') matches '#application/zip#i'")
-     * @ParamConverter("file", class="SplFileInfo", converter="DeskPRO\Bundle\ApiBundle\ParamConverter\RequestBodyToTemporaryFileConverter")
+     * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\ApiBundle\Apps\AppZipArchiveBundleParamConverter")
      * @return string
      */
-    public function createFromZipFile(\SplFileInfo $file)
+    public function createFromZipFile(Infrastructure\AppZipArchiveBundle $bundle)
     {
-        return new Entity\AppStore\AppInstance();
+        $manifest = $bundle->getManifest();
+        return json_decode($manifest, true);
     }
 
     /**
      * @Rest\POST("/{application}", condition="request.headers.get('Content-Type') matches '#application/zip#i'")
-     * @ParamConverter("file", class="SplFileInfo", converter="DeskPRO\Bundle\ApiBundle\ParamConverter\RequestBodyToTemporaryFileConverter")
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
+     * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\ApiBundle\Apps\AppZipArchiveBundleParamConverter")
      * @param Entity\AppStore\AppInstance $application
      * @return string
      */
-    public function updateFromZipFile(Entity\AppStore\AppInstance $application, \SplFileInfo $file)
+    public function updateFromZipFile(Entity\AppStore\AppInstance $application, Infrastructure\AppZipArchiveBundle $bundle)
     {
         return $application;
     }
