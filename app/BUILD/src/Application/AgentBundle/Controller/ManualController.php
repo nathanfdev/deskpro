@@ -28,11 +28,77 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\AgentBundle\Form\Model\NewTopic;
+use Application\AgentBundle\Form\Type\NewTopic as NewTopicType;
+use Application\AgentBundle\Validator\NewTopicValidator;
+use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Manual;
+use Application\DeskPRO\Entity\PersonPref;
+use Symfony\Component\HttpFoundation\Request;
 
 class ManualController extends PublishController
 {
+    public function newTopicAction()
+    {
+        $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+
+        $manuals = $this->em->getRepository(Manual::class)->findAll();
+
+        $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.new_topic', $this->person->id);
+
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
+        return $this->render('AgentBundle:Manual:new-topic.html.twig', [
+            'manuals' => $manuals,
+            'state'   => $state,
+            'brands'  => $brands,
+        ]);
+    }
+
+    public function newTopicSaveAction(Request $request)
+    {
+        $newTopic = new NewTopic($this->person);
+
+        $formType = new NewTopicType();
+        $form     = $this->get('form.factory')->create($formType, $newTopic);
+
+        $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.new_topic' AND person_id = ?", [$this->person->id]);
+
+        if ($request->getMethod() == 'POST') {
+            $form->handleRequest($request);
+            $form->isValid();
+
+            $validator = new NewTopicValidator();
+            if (!$validator->isValid($newTopic)) {
+                return $this->createJsonResponse([
+                    'error'       => true,
+                    'error_codes' => $validator->getErrorGroups(),
+                ]);
+            }
+            $newTopic->save();
+
+            $topic = $newTopic->getTopic();
+
+            $rev = ContentRevisionUtil::findOrCreate($topic, ['title', 'content'], $this->person);
+            if ($rev) {
+                $this->em->persist($rev);
+                $this->em->flush();
+            }
+
+            $this->em->getRepository(PersonPref::class)->deletePrefForPersonId('agent.ui.state.new_topic', $this->person->id);
+
+            return $this->createJsonResponse([
+                'success' => true,
+                'news_id' => $topic['id'],
+            ]);
+        } else {
+            return $this->createJsonResponse([
+                'success' => false,
+            ]);
+        }
+    }
+
     public function listAction($manual_id)
     {
         $manual = null;

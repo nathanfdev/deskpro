@@ -253,6 +253,7 @@ $CONFIG['agent_pages'] = [
         'javascripts/DeskPRO/Agent/PageFragment/Page/NewDownload.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/NewNews.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/NewTicket.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/NewTopic.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/PublishNewCat.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/NewFeedback.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Organization.js',

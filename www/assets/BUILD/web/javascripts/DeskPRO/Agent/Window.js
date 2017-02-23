@@ -2865,6 +2865,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 				tabRoute: 'page:' + BASE_URL + 'agent/feedback/new',
 				autostart: autostart
 			});
+      this.newManualTopicLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+        loadUrl: BASE_URL + 'agent/manuals/new',
+        tabRoute: 'page:' + BASE_URL + 'agent/manuals/new',
+        autostart: autostart
+      });
 		}
 
 		this.newTaskLoader = new DeskPRO.Agent.Widget.BackgroundPopout({

@@ -2113,6 +2113,16 @@ $collection->create('agent_feedback_merge', [
     'requirements' => ['feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'],
 ]);
 
+$collection->create('agent_manual_topic_new', [
+    'path'       => '/manuals/new',
+    'controller' => 'AgentBundle:Manual:newTopic',
+]);
+
+$collection->create('agent_manual_topic_new_save', [
+    'path'       => '/manuals/new/save',
+    'controller' => 'AgentBundle:Manual:newTopicSave',
+]);
+
 $collection->create('agent_manuals_list', [
     'path'       => '/manuals/list/{manual_id}',
     'controller' => 'AgentBundle:Manual:list',

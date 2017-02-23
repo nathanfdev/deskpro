@@ -33,10 +33,12 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Manual;
+use Application\DeskPRO\Entity\ManualTopic;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
 
-class NewNews
+class NewTopic
 {
     /** @var string */
     public $title;
@@ -49,14 +51,10 @@ class NewNews
 
     /** @var string */
     public $slug;
-    /** @var string */
-    public $labels_json;
-    /** @var array */
-    public $labels = [];
     /** @var array */
     public $attach = [];
     /** @var News */
-    protected $_news;
+    protected $_manual_topic;
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -74,38 +72,33 @@ class NewNews
     {
         $this->_em->beginTransaction();
 
-        $news         = new News();
-        $news->person = $this->_person_context;
-        $news->title  = $this->title;
+        $topic = new ManualTopic();
+        $topic->setPerson($this->_person_context);
+        $topic->setTitle($this->title);
 
-        $news->content = $this->_person_context->hasPerm('agent_publish.can_insert_html')
+        $topic->setContent($this->_person_context->hasPerm('agent_publish.can_insert_html')
             ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', ['noclean' => true])
-            : App::$container->getInputCleaner()->clean($this->content ?: '', 'html');
+            : App::$container->getInputCleaner()->clean($this->content ?: '', 'html'));
 
-        $news->setStatusCode($this->status);
+        $topic->setStatusCode($this->status);
 
-        if ($news->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {
-            $news->setStatusCode('hidden.unpublished');
+        if ($topic->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {
+            $topic->setStatusCode('hidden.unpublished');
         }
 
-        $cat            = $this->_em->find('DeskPRO:NewsCategory', $this->manual_id);
-        $news->category = $cat;
+        $manual = $this->_em->find(Manual::class, $this->manual_id);
+        $topic->setManual($manual);
 
-        $this->_em->persist($news);
+        $this->_em->persist($topic);
         $this->_em->flush();
-
-        if ($this->labels) {
-            $news->getLabelManager()->setLabelsArray($this->labels, $this->_em);
-            $this->_em->flush();
-        }
 
         $this->_em->commit();
 
-        $this->_news = $news;
+        $this->_manual_topic = $topic;
     }
 
-    public function getNews()
+    public function getTopic()
     {
-        return $this->_news;
+        return $this->_manual_topic;
     }
 }

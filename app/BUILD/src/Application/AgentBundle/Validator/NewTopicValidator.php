@@ -33,31 +33,32 @@
 namespace Application\AgentBundle\Validator;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Manual;
 use Orb\Validator\AbstractValidator;
 
-class NewNewsValidator extends AbstractValidator
+class NewTopicValidator extends AbstractValidator
 {
     /**
-     * @param \Application\AgentBundle\Form\Model\NewNews $news
+     * @param \Application\AgentBundle\Form\Model\NewTopic $topic
      *
      * @return bool
      */
-    protected function checkIsValid($news)
+    protected function checkIsValid($topic)
     {
-        if (!$news->manual_id) {
-            $this->addError('category_id.invalid');
+        if (!$topic->manual_id) {
+            $this->addError('manual_id.invalid');
         } else {
-            $cat = App::getOrm()->find('DeskPRO:NewsCategory', $news->manual_id);
+            $cat = App::getOrm()->find(Manual::class, $topic->manual_id);
             if (!$cat) {
-                $this->addError('category_id.invalid');
+                $this->addError('manual_id.invalid');
             }
         }
 
-        if (!$news->title) {
+        if (!$topic->title) {
             $this->addError('title.missing');
         }
 
-        if (!$news->status) {
+        if (!$topic->status) {
             $this->addError('status.invalid');
         }
 

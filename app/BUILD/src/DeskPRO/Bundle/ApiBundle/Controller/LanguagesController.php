@@ -86,6 +86,7 @@ class LanguagesController extends CrudController
             'agent.general.chat',
             'agent.general.download',
             'agent.general.feedback',
+            'agent.general.manual_topic',
             'agent.general.news_post',
             'agent.general.off',
             'agent.general.on',

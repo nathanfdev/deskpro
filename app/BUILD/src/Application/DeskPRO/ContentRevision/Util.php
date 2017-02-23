@@ -33,6 +33,16 @@
 namespace Application\DeskPRO\ContentRevision;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleRevision;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\DownloadRevision;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackRevision;
+use Application\DeskPRO\Entity\ManualTopic;
+use Application\DeskPRO\Entity\ManualTopicRevision;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsRevision;
 use Application\DeskPRO\Entity\Person;
 
 class Util
@@ -196,24 +206,29 @@ class Util
         $type = get_class($content);
 
         switch ($type) {
-            case 'Application\\DeskPRO\\Entity\\Article':
-            case 'Application\\DeskPRO\\Entity\\ArticleRevision':
+            case Article::class:
+            case ArticleRevision::class:
                 return 'article';
                 break;
 
-            case 'Application\\DeskPRO\\Entity\\News':
-            case 'Application\\DeskPRO\\Entity\\NewsRevision':
+            case News::class:
+            case NewsRevision::class:
                 return 'news';
                 break;
 
-            case 'Application\\DeskPRO\\Entity\\Download':
-            case 'Application\\DeskPRO\\Entity\\DownloadRevision':
+            case Download::class:
+            case DownloadRevision::class:
                 return 'download';
                 break;
 
-            case 'Application\\DeskPRO\\Entity\\Feedback':
-            case 'Application\\DeskPRO\\Entity\\FeedbackRevision':
+            case Feedback::class:
+            case FeedbackRevision::class:
                 return 'feedback';
+                break;
+
+            case ManualTopic::class:
+            case ManualTopicRevision::class:
+                return 'manual';
                 break;
         }
 
@@ -225,35 +240,43 @@ class Util
         $type = get_class($content);
 
         switch ($type) {
-            case 'Application\\DeskPRO\\Entity\\Article':
+            case Article::class:
                 if ($entity_name) {
                     return 'DeskPRO:ArticleRevision';
                 } else {
-                    return 'Application\\DeskPRO\\Entity\\ArticleRevision';
+                    return ArticleRevision::class;
                 }
                 break;
 
-            case 'Application\\DeskPRO\\Entity\\News':
+            case News::class:
                 if ($entity_name) {
                     return 'DeskPRO:NewsRevision';
                 } else {
-                    return 'Application\\DeskPRO\\Entity\\NewsRevision';
+                    return NewsRevision::class;
                 }
                 break;
 
-            case 'Application\\DeskPRO\\Entity\\Download':
+            case Download::class:
                 if ($entity_name) {
                     return 'DeskPRO:DownloadRevision';
                 } else {
-                    return 'Application\\DeskPRO\\Entity\\DownloadRevision';
+                    return DownloadRevision::class;
                 }
                 break;
 
-            case 'Application\\DeskPRO\\Entity\\Feedback':
+            case Feedback::class:
                 if ($entity_name) {
                     return 'DeskPRO:FeedbackRevision';
                 } else {
-                    return 'Application\\DeskPRO\\Entity\\FeedbackRevision';
+                    return FeedbackRevision::class;
+                }
+                break;
+
+            case ManualTopic::class:
+                if ($entity_name) {
+                    return 'DeskPRO:ManualTopicRevision';
+                } else {
+                    return ManualTopicRevision::class;
                 }
                 break;
         }
