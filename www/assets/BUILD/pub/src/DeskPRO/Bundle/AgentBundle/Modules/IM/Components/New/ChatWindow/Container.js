@@ -102,7 +102,8 @@ class Container extends React.Component {
       expandGroupHeader: false,
       searching:         false,
       message:           '',
-      linkDrawerOpened:  false
+      linkDrawerOpened:  false,
+      editorControls:    null
     };
 
     this.destroyEditor    = () => {};
@@ -129,7 +130,7 @@ class Container extends React.Component {
   }
 
   componentWillUnmount() {
-    this.destroyEditor();
+    this.state.editorControls.destroy();
   }
 
   getPath = (props) => {
@@ -231,8 +232,8 @@ class Container extends React.Component {
   }
 
   initFroala(initControls) {
+    this.setState({ editorControls: initControls });
     initControls.initialize();
-    this.destroyEditor = initControls.destroy;
   }
 
   bindFroalaEvents(e, editor) {
