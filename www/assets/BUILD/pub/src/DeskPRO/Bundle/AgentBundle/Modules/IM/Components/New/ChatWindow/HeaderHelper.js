@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import Isvg from 'react-inlinesvg';
 
 export default class HeaderHelper {
   constructor(props) {
@@ -16,7 +17,7 @@ export default class HeaderHelper {
     const agent =  agents.get(agentId);
     return [
       this.getAgentHeaderText(chat),
-      agent ? <i className="icon group add" onClick={() => { openGroupDrawer([agent.get('id')]); }} /> : null
+      agent ? <GroupAdd onClick={() => { openGroupDrawer([agent.get('id')]); }} /> : null
     ];
   }
 
@@ -103,3 +104,15 @@ export default class HeaderHelper {
     return header;
   }
 }
+
+function GroupAdd(props) {
+  return (
+    <span className="dp-button group add" onClick={props.onClick}>
+      <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/im/group-icon.svg`} />
+    </span>
+  );
+}
+
+GroupAdd.propTypes = {
+  onClick: PropTypes.func.isRequired
+};

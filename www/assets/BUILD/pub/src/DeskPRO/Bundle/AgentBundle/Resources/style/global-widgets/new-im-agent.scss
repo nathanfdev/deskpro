@@ -133,36 +133,43 @@ img.emojione, svg.emojione {
   height: 535px;
 
   .im.header {
-    padding-right: 15px;
+    padding-right: 0;
     height: 40px;
 
-    .icon.group.add {
+    .dp-button.group.add {
       margin-left: 5px;
       cursor: pointer;
+      display: inline-block;
+      svg {
+        width: 30px;
+      }
+
     }
 
     .wrapper {
       vertical-align: middle;
 
-      .icon {
-        &.search, &.remove {
-
-          -webkit-border-radius: 2px;
-          -moz-border-radius: 2px;
-          border-radius: 2px;
-          -webkit-box-shadow: inset -1px 0 1px 1px rgba(255,255,255,0.5);
-          -moz-box-shadow: inset -1px 0 1px 1px rgba(255,255,255,0.5);
-          box-shadow: inset -1px 0 1px 1px rgba(255,255,255,0.5);
-
+      .dp-button {
+        &.search, &.close-im {
           float: right;
           cursor: pointer;
-          padding-top: 3px;
-          font-size: 12px;
+          font-size: 14px;
           display: inline-block;
           position: relative;
           vertical-align: middle;
-          height: 20px;
-          width: 20px;
+          height: 40px;
+          width: 40px;
+          margin-top: -9px;
+          border-left: 1px solid $dp-greyscale-50;
+          text-align: center;
+          padding-top: 11px;
+          margin-right: 0;
+        }
+
+        &.close-im {
+          svg {
+            width: 15px;
+          }
         }
 
         &.search.enabled {
