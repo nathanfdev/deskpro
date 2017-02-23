@@ -688,8 +688,9 @@ JS;
                 $set  = new \Application\DeskPRO\Attachments\RestrictionSet();
                 $exts = !$fileUpload
                     ? ['gif', 'png', 'jpg', 'jpeg']
-                    : ['pdf', 'doc', 'docx', 'xls', 'csv', 'xlsx', 'txt', 'rar',
-                       'zip', 'tar.gz', '7zip', 'gzip', 'bzip', ];
+                    : ['pdf', 'doc', 'docx', 'xls', 'csv', 'xlsx', 'txt',
+                       'rar', 'zip', 'tar.gz', '7zip', 'gzip', 'bzip',
+                       'mp4', 'avi', 'wmv', 'mpeg', 'mov', '3gp', ];
                 $set->setAllowedExts($exts);
                 $accept->addRestrictionSet($fileUpload ? 'only_files' : 'only_images', $set);
                 $error = $accept->getError($file, $fileUpload ? 'only_files' : 'only_images');
@@ -703,7 +704,7 @@ JS;
             }
         }
 
-        $blob = [
+        $blobResponse = [
             'blob_id'           => $blob['id'],
             'blob_auth'         => $blob->authcode,
             'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
@@ -718,10 +719,10 @@ JS;
         ];
 
         if ($this->in->getBool('json')) {
-            return $this->createJsonResponse(json_encode($blob));
+            return $this->createJsonResponse(json_encode(['link' => $blob->getDownloadUrl(true)]));
         }
 
-        return $this->render('AgentBundle:Misc:redactor-image-upload.html.twig', ['blob' => $blob]);
+        return $this->render('AgentBundle:Misc:redactor-image-upload.html.twig', ['blob' => $blobResponse]);
     }
 
     public function redactorAutosaveAction($content_type, $content_id)

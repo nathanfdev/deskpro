@@ -372,21 +372,28 @@ class Container extends React.Component {
     }
 
     const froalaConfig = {
-      imageUploadMethod:         'POST',
-      imageUploadParams:         { _rt: window.DP_REQUEST_TOKEN, json: true },
-      imageUploadURL:            `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
-      fileUploadMethod:          'POST',
-      fileUploadParams:          { _rt: window.DP_REQUEST_TOKEN, json: true },
-      fileUploadURL:             `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
-      toolbarInline:             true,
-      charCounterCount:          false,
-      toolbarButtons:            ['bold', 'italic', 'underline', 'strikeThrough', 'color', '-', 'align', 'formatOL', 'formatUL', 'insertImage', '-', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
-      shortcutsEnabled:          ['bold', 'italic', 'underline'],
-      enter:                     $.FroalaEditor.ENTER_BR,
-      placeholderText:           false,
-      immediateReactModelUpdate: true,
-      key:                       'qENARBFSTb1G1QJg1RA==',
-      events:                    {
+      imageUploadMethod:              'POST',
+      imageUploadParams:              { _rt: window.DP_REQUEST_TOKEN, json: true },
+      imageUploadURL:                 `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
+      imageDefaultWidth:              280,
+      fileUploadMethod:               'POST',
+      fileUploadParams:               { _rt: window.DP_REQUEST_TOKEN, json: true },
+      fileUploadURL:                  `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
+      videoUploadMethod:              'POST',
+      videoUploadParams:              { _rt: window.DP_REQUEST_TOKEN, json: true },
+      videoUploadURL:                 `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
+      videoDefaultWidth:              280,
+      videoResize:                    false,
+      toolbarInline:                  true,
+      charCounterCount:               false,
+      toolbarButtons:                 ['bold', 'italic', 'underline', 'strikeThrough', 'color', '-', 'align', 'formatOL', 'formatUL', 'insertImage', '-', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
+      toolbarVisibleWithoutSelection: true,
+      shortcutsEnabled:               ['bold', 'italic', 'underline'],
+      enter:                          $.FroalaEditor.ENTER_BR,
+      placeholderText:                false,
+      immediateReactModelUpdate:      true,
+      key:                            'qENARBFSTb1G1QJg1RA==',
+      events:                         {
         'froalaEditor.focus':       () => { this.editor.selection.restore(); Container.onFocus(); },
         'froalaEditor.blur':        () => { this.editor.selection.save(); Container.onBlur(); },
         'froalaEditor.initialized': this.bindFroalaEvents

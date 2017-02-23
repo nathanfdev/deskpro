@@ -52,6 +52,7 @@ class HtmlPurifier implements CleanerPlugin
     {
         return [
             'html',
+            'extended_html',
             'simple_html',
             'html_core',
             'html_email',
@@ -245,10 +246,14 @@ class HtmlPurifier implements CleanerPlugin
         $config = \HTMLPurifier_Config::createDefault();
         $config->set('Cache.DefinitionImpl', null);
         $config->set('Core.Encoding', 'UTF-8');
+        $allowed = '';
 
         switch ($type) {
+            case 'extended_html': // sic!
+                $allowed = 'video[src|type|width|height|poster|preload|controls],';
+
             case 'html':
-                $config->set('HTML.Allowed', '
+                $config->set('HTML.Allowed', $allowed.'
                     *[style|title|class|id],
                     a[rel|rev|name|href|target|title|class]
                     strong,b,em,i,strike,u,
@@ -271,6 +276,23 @@ class HtmlPurifier implements CleanerPlugin
                 $config->set('Attr.EnableID', true);
                 $config->set('Attr.IDPrefix', 'dp-user-');
                 $config->set('Attr.AllowedFrameTargets', ['_blank']);
+                $config->set('HTML.DefinitionID', 'html5-definitions');
+                $config->set('HTML.DefinitionRev', 1);
+                if ($def = $config->maybeGetRawHTMLDefinition()) {
+                    $def->addElement('video', 'Block', 'Optional: (source, Flow) | (Flow, source) | Flow', 'Common', [
+                        'src'      => 'URI',
+                        'type'     => 'Text',
+                        'width'    => 'Length',
+                        'height'   => 'Length',
+                        'poster'   => 'URI',
+                        'preload'  => 'Enum#auto,metadata,none',
+                        'controls' => 'Enum#',
+                    ]);
+                    $def->addElement('source', 'Block', 'Flow', 'Common', [
+                        'src'  => 'URI',
+                        'type' => 'Text',
+                    ]);
+                }
                 break;
 
             case 'html_core':
