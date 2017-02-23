@@ -355,9 +355,11 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
     protected function decodeMessage(Part $message)
     {
         $enc      = $this->_getHeaderOrNull($message, 'Content-Transfer-Encoding');
-        $type     = $this->_getHeaderOrNull($message, 'Content-Type');
-        $charset  = $type->getParameter('charset');
         $enc_type = $enc ? Decode::splitHeaderField($enc->getFieldValue(), 0) : 'binary';
+        $charset  = 'utf8';
+        if ($type = $this->_getHeaderOrNull($message, 'Content-Type')) {
+            $charset = $type->getParameter('charset');
+        }
 
         $data = $message->getContent();
         switch (strtolower($enc_type)) {
