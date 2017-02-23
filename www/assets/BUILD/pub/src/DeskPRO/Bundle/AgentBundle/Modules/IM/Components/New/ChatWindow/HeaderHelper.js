@@ -55,7 +55,7 @@ export default class HeaderHelper {
 
     switch (current.get('chat_type')) {
       case 'agent':
-        header = this.getAgentHeader(current);
+        header = this.getAgentHeaderText(current);
         break;
       case 'department':
         header = `the ${this.getDepartmentHeader(current)} Department`;
