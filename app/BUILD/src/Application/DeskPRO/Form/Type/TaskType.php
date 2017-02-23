@@ -80,7 +80,7 @@ class TaskType extends AbstractType implements EventSubscriberInterface
                 'required' => false,
                 'property' => 'name',
             ])
-            ->add('ticket', 'text', [
+            ->add('ticket', 'number', [
                 'required' => false,
                 'mapped'   => false,
             ]);
@@ -123,7 +123,7 @@ class TaskType extends AbstractType implements EventSubscriberInterface
         $form = $event->getForm();
         if ($ticket_id = $form->get('ticket')->getData()) {
             $ticket = App::getOrm()->getRepository('DeskPRO:Ticket')->find($ticket_id);
-            if ($ticket_id) {
+            if ($ticket) {
                 $assoc         = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
                 $task          = $form->getData();
                 $assoc->ticket = $ticket;
