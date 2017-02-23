@@ -27,12 +27,13 @@ class RecordTab extends BaseUploadTab {
         .then((stream) => {
           this.stream = stream;
           this.recordRTC = RecordRTC(this.stream, {
-            type:        'audio',
-            mimeType:    'audio/wav',
-            bufferSize:  0,
-            sampleRate:  44100,
-            leftChannel: false,
-            disableLogs: false
+            type:         'audio',
+            mimeType:     'audio/wav',
+            recorderType: RecordRTC.StereoAudioRecorder,
+            bufferSize:   0,
+            sampleRate:   44100,
+            leftChannel:  false,
+            disableLogs:  false
           });
 
           this.recordRTC.startRecording();
@@ -51,7 +52,7 @@ class RecordTab extends BaseUploadTab {
     } else {
       this.recordRTC.stopRecording(() => {
         const blob = this.recordRTC.getBlob();
-        const file = new File([blob], 'record.vaw');
+        const file = new File([blob], 'record.wav', { type: 'audio/wav' });
 
         this.stream.stop();
         this.setState({
