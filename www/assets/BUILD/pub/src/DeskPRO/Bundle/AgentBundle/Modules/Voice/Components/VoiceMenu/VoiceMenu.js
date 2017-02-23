@@ -18,7 +18,8 @@ class VoiceMenu extends React.Component {
     onHangup:             PropTypes.func,
     outboundCallsEnabled: PropTypes.bool,
     outboundNumber:       PropTypes.string,
-    outgoingCall:         PropTypes.object
+    outgoingCall:         PropTypes.object,
+    ringingVolume:        PropTypes.number
   };
 
   constructor(props) {
@@ -61,7 +62,8 @@ class VoiceMenu extends React.Component {
   }
 
   renderPhoneTab() {
-    const { me, agents, people, incomingCall, outgoingCall, onAcceptCall, onDeclineCall, onHangup } = this.props;
+    const { me, agents, people, incomingCall, ringingVolume } = this.props;
+    const { outgoingCall, onAcceptCall, onDeclineCall, onHangup } = this.props;
 
     if (incomingCall) {
       return (
@@ -70,6 +72,7 @@ class VoiceMenu extends React.Component {
           agents={agents}
           people={people}
           incomingCall={incomingCall}
+          ringingVolume={ringingVolume}
           onAccept={onAcceptCall}
           onDecline={onDeclineCall}
         />

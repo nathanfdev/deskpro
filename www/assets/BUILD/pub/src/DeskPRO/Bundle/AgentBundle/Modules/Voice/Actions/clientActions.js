@@ -2,6 +2,7 @@ import { createAction } from 'DeskPRO/Component/Ampliflux';
 import Immutable from 'immutable';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
@@ -22,6 +23,17 @@ export const openDialpad = createAction('VOICE_AGENT_OPEN_DIALPAD');
 export const dialpadOpened = createAction('VOICE_AGENT_DIALPAD_OPENED');
 export const setOutgoingCall = createAction('VOICE_AGENT_SET_OUTGOING_CALL');
 export const resetOutgoingCall = createAction('VOICE_AGENT_RESET_OUTGOING_CALL');
+
+export const setRingingVolume = createAction(
+  'VOICE_AGENT_SET_RINGING_VOLUME',
+  (value) => {
+    if (storageAvailable('localStorage')) {
+      localStorage.setItem('dpAgent.voice.ringingVolume', value);
+    }
+
+    return value;
+  }
+);
 
 let worker;
 
