@@ -241,7 +241,7 @@ class Container extends React.Component {
   }
 
   handleKeydown(e) {
-    if (e.keyCode === 13 && (e.ctrlKey || e.metaKey)) {
+    if (e.keyCode === 13 && !(e.ctrlKey || e.metaKey || e.shiftKey || e.altKey)) {
       e.stopPropagation();
       this.handleSubmit(e);
       return false;
