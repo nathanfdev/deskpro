@@ -13,12 +13,13 @@ const isAssigned = call => call && call.task && call.task.assignmentStatus === '
 class IncomingCall extends React.Component {
 
   static propTypes = {
-    me:           PropTypes.object,
-    agents:       PropTypes.object,
-    people:       PropTypes.object,
-    incomingCall: PropTypes.object,
-    onAccept:     PropTypes.func,
-    onDecline:    PropTypes.func
+    me:            PropTypes.object,
+    agents:        PropTypes.object,
+    people:        PropTypes.object,
+    incomingCall:  PropTypes.object,
+    onAccept:      PropTypes.func,
+    onDecline:     PropTypes.func,
+    ringingVolume: PropTypes.number
   };
 
   static defaultProps = {
@@ -27,7 +28,10 @@ class IncomingCall extends React.Component {
   };
 
   componentDidMount() {
+    const { ringingVolume } = this.props;
+
     this.sound.addEventListener('ended', this.onSoundEnded);
+    this.sound.volume = ringingVolume / 100;
     this.sound.play();
   }
 

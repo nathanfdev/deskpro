@@ -89,3 +89,9 @@ export const isVoiceEnabledSelector = createSelector(
     && phoneToken
     && workerToken
 );
+
+// settings
+export const ringingVolumeSelector = createSelector(
+  stateSelector,
+  state => state.get('ringingVolume')
+);
