@@ -184,17 +184,19 @@ class DoctrineSearchListener implements EventSubscriberInterface
             ->orderBy('p.id', 'desc')
         ;
 
+        if ($request->getParam('with_phone_number')) {
+            $qb->join('p.phone_numbers', 'pn');
+        } else {
+            $qb->leftJoin('p.phone_numbers', 'pn');
+        }
+
         if ($request->isEmailPart()) {
             if ($request->isEmailDomain()) {
-                $qb
-                    ->andWhere('pe.email_domain LIKE :email_domain')
-                    ->setParameter('email_domain', $this->escapeLike($request->getEmailDomain()).'%')
-                ;
+                $qb->andWhere('pe.email_domain LIKE :email_domain');
+                $qb->setParameter('email_domain', $this->escapeLike($request->getEmailDomain()).'%');
             } else {
-                $qb
-                    ->andWhere('pe.email LIKE :email')
-                    ->setParameter('email', $this->escapeLike($request->getQuery()).'%')
-                ;
+                $qb->andWhere('pe.email LIKE :email');
+                $qb->setParameter('email', $this->escapeLike($request->getQuery()).'%');
             }
         } else {
             $qb
@@ -203,6 +205,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
                     'p.first_name LIKE :query',
                     'p.last_name LIKE :query',
                     'pe.email LIKE :query',
+                    'pn.number LIKE :query',
                     "CONCAT(CONCAT(p.first_name, ' '), p.last_name) LIKE :query"
                 ))
                 ->setParameter('query', '%'.$this->escapeLike(RegexUtils::safePregReplace('#\s+#', ' ', $request->getQuery())).'%')

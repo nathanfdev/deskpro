@@ -26,50 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
-use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
-use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class SortListener.
+ * Class VoiceOutboundCallType.
  */
-class SortListener implements EventSubscriberInterface
+class VoiceOutboundCallType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return [
-            QuickSearchEvents::FINISH => ['onDefaultSort', 1000], // Call this first
-        ];
-    }
-
-    /**
-     * @param QuickSearchEvent $event
-     */
-    public function onDefaultSort(QuickSearchEvent $event)
-    {
-        $context = $event->getContext();
-        $request = $event->getRequest();
-
-        if ($request->getSort()) {
-            return;
-        }
-
-        $entities = $context->getEntities();
-        $ids      = $context->getIds();
-
-        usort($ids, function ($a, $b) {
-            return $a - $b;
-        });
-        usort($entities, function ($a, $b) {
-            return $a->id - $b->id;
-        });
-
-        $context->setEntities($entities);
-        $context->setIds($ids);
+        $builder
+            ->add('call_from', EntityType::class, [
+                'class'       => VoiceNumber::class,
+                'constraints' => [
+                    new Assert\NotNull(),
+                ],
+            ])
+            ->add('call_to', TextType::class, [
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new AppAssert\PhoneNumber(),
+                ],
+            ])
+        ;
     }
 }

@@ -77,7 +77,7 @@ class VoiceClientPhoneCallController extends BaseController
      */
     public function assignAgentAction(VoicePhoneCall $phoneCall)
     {
-        $agent = $this->getUser();
+        $agent = $this->getVoiceAgent();
         if (!$agent->getAgentData() || !$agent->getAgentData()->isVoiceEnabled()) {
             throw $this->createBadRequestException('Agent does not have voice permissions');
         }
@@ -97,12 +97,12 @@ class VoiceClientPhoneCallController extends BaseController
             $ticketMessage = new TicketMessage();
             $ticketMessage->setPerson($phoneCall->getPerson());
             $ticketMessage->addAttribute($ticketMessageCall);
-            $ticketMessage->setMessage('Call from '.$phoneCall->getFromNumber());
+            $ticketMessage->setMessage('Call from '.$phoneCall->getExternalNumber());
             $ticketMessage->setAsAgentNote(true);
 
             $ticket = new Ticket();
             $ticket->disableAutoTicketProcess();
-            $ticket->setSubject('Call from '.$phoneCall->getFromNumber());
+            $ticket->setSubject('Call from '.$phoneCall->getExternalNumber());
             $ticket->setPerson($phoneCall->getPerson());
             $ticket->setAgent($agent);
             $ticket->addMessage($ticketMessage);
@@ -168,7 +168,7 @@ class VoiceClientPhoneCallController extends BaseController
     public function muteAction(VoicePhoneCall $phoneCall, Request $request)
     {
         $mute        = $request->request->get('mute');
-        $participant = $phoneCall->getParticipantByPerson($this->getUser());
+        $participant = $phoneCall->getParticipantByPerson($this->getVoiceAgent());
         if (!$participant) {
             throw $this->createBadRequestException('Phone call participant not found');
         }
@@ -245,12 +245,12 @@ class VoiceClientPhoneCallController extends BaseController
         $cm->setChannel('agent.voice.conference.participant-invite');
         $cm->setForPerson($person);
         $cm->setData([
-            'number'           => $phoneCall->getFromNumber(),
+            'number'           => $phoneCall->getExternalNumber(),
             'caller_person_id' => $phoneCall->getPerson() ? $phoneCall->getPerson()->getId() : null,
             'call_id'          => $phoneCall->getId(),
             'call_type'        => $callType,
             'conference_sid'   => $phoneCall->getConferenceSid(),
-            'from_agent_id'    => $this->getUser()->getId(),
+            'from_agent_id'    => $this->getVoiceAgent()->getId(),
             'ticket_id'        => $ticket->getId(),
             'invite_type'      => $inviteType,
         ]);
@@ -305,7 +305,7 @@ class VoiceClientPhoneCallController extends BaseController
 
         // add action log
         $log = new VoicePhoneCallLog();
-        $log->setPerson($this->getUser());
+        $log->setPerson($this->getVoiceAgent());
         $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_CANCEL_INVITE);
         $log->setPhoneCall($phoneCall);
         $log->setDetails([
@@ -355,7 +355,7 @@ class VoiceClientPhoneCallController extends BaseController
 
         // add action log
         $log = new VoicePhoneCallLog();
-        $log->setPerson($this->getUser());
+        $log->setPerson($this->getVoiceAgent());
         $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_IGNORE_INVITE);
         $log->setPhoneCall($phoneCall);
         $log->setDetails([
@@ -400,12 +400,22 @@ class VoiceClientPhoneCallController extends BaseController
     {
         // add action log
         $log = new VoicePhoneCallLog();
-        $log->setPerson($this->getUser());
+        $log->setPerson($this->getVoiceAgent());
         $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_HANGUP);
         $log->setPhoneCall($phoneCall);
 
         $this->getManager()->persist($log);
         $this->getManager()->flush();
+
+        if ($phoneCall->getType() === VoicePhoneCall::DIRECTION_OUTBOUND) {
+            // if agent hangup pending call then decline user's call as well
+            if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_PENDING) {
+                $adapter = $this->get('twilio_adapter');
+                foreach ($phoneCall->getUserParticipants() as $participant) {
+                    $adapter->cancelCall($phoneCall->getNumber()->getAccount(), $participant->getCallSid());
+                }
+            }
+        }
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -427,5 +437,18 @@ class VoiceClientPhoneCallController extends BaseController
 
         $this->getManager()->persist($cm);
         $this->getManager()->flush();
+    }
+
+    /**
+     * @return Person
+     */
+    private function getVoiceAgent()
+    {
+        $agent = $this->getUser();
+        if (!$agent->getAgentData() || !$agent->getAgentData()->isVoiceEnabled()) {
+            throw $this->createBadRequestException('Agent does not have voice permissions');
+        }
+
+        return $agent;
     }
 }

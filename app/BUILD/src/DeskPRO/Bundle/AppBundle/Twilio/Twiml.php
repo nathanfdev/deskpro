@@ -26,13 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+namespace DeskPRO\Bundle\AppBundle\Twilio;
 
-class Build1487765029 extends AbstractBuild
+/**
+ * Class Twiml.
+ *
+ * @method $this say($message)
+ * @method $this gather(array $options)
+ * @method $this play($url)
+ * @method $this record(array $options)
+ * @method $this dial(array $options = [])
+ * @method $this conference($name, array $options = [])
+ * @method $this hangup()
+ * @method $this enqueue(array $options)
+ * @method $this task($jsonOptions)
+ */
+class Twiml extends \Twilio\Twiml
 {
-    public function run()
-    {
-        $this->out('Fix phone_numbers.guessed_type');
-        $this->execDbQuery('default', 'ALTER TABLE phone_numbers CHANGE guessed_type guessed_type VARCHAR(255) NOT NULL');
-    }
 }

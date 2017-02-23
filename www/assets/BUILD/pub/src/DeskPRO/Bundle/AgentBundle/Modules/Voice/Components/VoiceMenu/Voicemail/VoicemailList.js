@@ -197,7 +197,7 @@ class VoicemailRecord extends React.Component {
               : <span>Unknown user</span>
             }
           </div>
-          <div>{phoneCall.get('from_number')}</div>
+          <div>{phoneCall.get('external_number')}</div>
 
           <div className="voice-record-actions">
             <span className="voice-record-action">

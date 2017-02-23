@@ -62,3 +62,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\SortListener
     tags:
       - { name: quick_search.event_subscriber }
+
+  quick_search.listener.filter_listener:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\FilterListener
+    tags:
+      - { name: quick_search.event_subscriber }

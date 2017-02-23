@@ -89,7 +89,7 @@ class TicketMessage extends React.Component {
               {recording && <MediaControls recording={recording} />}
               {outboundCallsEnabled &&
               <Button className="basic call-button" onClick={onCall}>
-                <i className="icon call" /> Call {phoneCall.get('from_number')}
+                <i className="icon call" /> Call {phoneCall.get('external_number')}
               </Button>}
             </div>}
           {transcript &&
@@ -131,7 +131,7 @@ class TicketMessage extends React.Component {
                   return (
                     <li key={index}>
                       {agentPhrases.get(`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`, {
-                        '{number}':       phoneCall.get('from_number'),
+                        '{number}':       phoneCall.get('external_number'),
                         '{person_name}':  person.get('first_name') || '',
                         '{person_email}': person.get('primary_email') || ''
                       })}

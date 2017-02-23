@@ -5,7 +5,7 @@ import { allPeopleSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore
 import { voiceAgentsSelector, voiceOnlineAgentsSelector, outboundCallsEnabledSelector, callsEnabledSelector } from '../../Selectors/agents';
 import VoiceMenuDropdown from './VoiceMenuDropdown';
 import { acceptPhoneCall, declinePhoneCall } from '../../Actions/clientActions';
-import { incomingCallSelector, outboundNumberSelector } from '../../Selectors/client';
+import { incomingCallSelector, outboundNumberSelector, outgoingCallSelector } from '../../Selectors/client';
 
 @connect(state => ({
   me:                   meSelector(state),
@@ -15,7 +15,8 @@ import { incomingCallSelector, outboundNumberSelector } from '../../Selectors/cl
   incomingCall:         incomingCallSelector(state),
   outboundCallsEnabled: outboundCallsEnabledSelector(state),
   outboundNumber:       outboundNumberSelector(state),
-  voiceEnabled:         callsEnabledSelector(state)
+  voiceEnabled:         callsEnabledSelector(state),
+  outgoingCall:         outgoingCallSelector(state)
 }))
 class VoiceMenuContainer extends React.Component {
 

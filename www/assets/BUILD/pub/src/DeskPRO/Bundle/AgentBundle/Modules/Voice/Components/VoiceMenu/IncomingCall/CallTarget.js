@@ -11,7 +11,7 @@ class CallToAgent extends React.Component {
     const { agent } = this.props;
 
     return (
-      <div  className="call-to">
+      <div className="call-to">
         <Avatar person={agent} size={60} />
         <div className="call-to-name">
           {agent && agent.get('name')}
@@ -25,7 +25,7 @@ class CallToQueue extends React.Component {
 
   render() {
     return (
-      <div  className="call-to">
+      <div className="call-to">
         <div className="call-to-name">
           <i className="fa fa-tasks" />
           IT Support

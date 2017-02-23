@@ -2,8 +2,12 @@ import React, { PropTypes } from 'react';
 import { Fieldset, createValue } from 'react-forms';
 import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import $ from 'jquery';
 import Immutable from 'immutable';
+import 'mark.js';
+import debounce from 'lodash/function/debounce';
+import classNames from 'classnames';
 import NumberSelect from '../NumberSelect';
 import DialGrid from '../../Common/DialGrid';
 
@@ -11,7 +15,9 @@ class Dialpad extends React.Component {
 
   static propTypes = {
     numbers:        PropTypes.object,
-    outboundNumber: PropTypes.string
+    outboundNumber: PropTypes.string,
+    onMakeCall:     PropTypes.func,
+    onSearchPerson: PropTypes.func
   };
 
   constructor(props) {
@@ -19,12 +25,19 @@ class Dialpad extends React.Component {
     this.state = {
       formData: createValue({
         value: {
-          call_from: props.numbers && props.numbers.size > 1 ? '' : props.numbers.first().get('number'),
+          call_from: props.numbers && props.numbers.size > 1 ? '' : props.numbers.first().get('id'),
           call_to:   props.outboundNumber
         },
-        onChange: this.onChange
-      })
+        errorList: {},
+        onChange:  this.onChange
+      }),
+      searchResults: Immutable.fromJS([]),
+      submit:        false
     };
+  }
+
+  componentDidMount() {
+    this.lastQuery = '';
   }
 
   componentWillReceiveProps(newProps) {
@@ -37,18 +50,77 @@ class Dialpad extends React.Component {
             ...formData.value,
             call_to: newProps.outboundNumber
           },
-          onChange: this.onChange
-        })
+          errorList: {},
+          onChange:  this.onChange
+        }),
+        searchResults: Immutable.fromJS([])
       });
     }
   }
 
-  onChange = (formData) => {
+  onChange = (formData, changedFields) => {
     this.setState({ formData });
+
+    const { onSearchPerson } = this.props;
+    const searchPeople = debounce(() => {
+      const callTo = this.state.formData.value.call_to;
+      if (callTo && this.lastQuery !== callTo) {
+        const promise = onSearchPerson(callTo);
+        promise.success(({ data }) => {
+          if (callTo === this.state.formData.value.call_to) {
+            this.setState({
+              searchResults: Immutable.fromJS(data)
+            });
+          }
+        });
+      } else {
+        this.setState({
+          searchResults: Immutable.fromJS([])
+        });
+      }
+
+      this.lastQuery = callTo;
+    }, 500);
+
+    if (changedFields.indexOf('call_to') !== -1) {
+      searchPeople();
+    }
   };
 
   onSubmit = (event) => {
     event.preventDefault();
+
+    const { onMakeCall } = this.props;
+    const { submit } = this.state;
+    const { value } = this.state.formData;
+
+    if (submit) {
+      return;
+    }
+
+    const promise = onMakeCall(value.call_from, value.call_to);
+    if (!promise) {
+      return;
+    }
+
+    this.setState({
+      submit:        true,
+      searchResults: Immutable.fromJS([])
+    });
+
+    // handle just error callback, on success the dialpad component will be unmounted
+    promise.error(({ errors }) => {
+      const { formData } = this.state;
+      this.setState({
+        formData: createValue({
+          value:     formData.value,
+          errorList: errors,
+          onChange:  this.onChange
+        }),
+        submit:        false,
+        searchResults: Immutable.fromJS([])
+      });
+    });
   };
 
   onClickNumber = (number) => {
@@ -58,15 +130,37 @@ class Dialpad extends React.Component {
 
     this.setState({
       formData: createValue({
-        value:    { ...formData.value, call_to: `${currentValue}${number}` },
-        onChange: this.onChange
+        value:     { ...formData.value, call_to: `${currentValue}${number}` },
+        errorList: {},
+        onChange:  this.onChange
       })
     }, () => $input.focus());
   };
 
+  onSelectSearchResult = (number) => {
+    setTimeout(() => {
+      this.setState({
+        formData: createValue({
+          value:     { ...this.state.formData.value, call_to: number },
+          errorList: {},
+          onChange:  this.onChange
+        }),
+        searchResults: Immutable.fromJS([])
+      });
+    }, 1);
+  };
+
+  onClearSearchResults = () => {
+    setTimeout(() => {
+      this.setState({
+        searchResults: Immutable.fromJS([])
+      });
+    }, 1);
+  };
+
   render() {
     const { numbers = Immutable.fromJS({}) } = this.props;
-    const { formData } = this.state;
+    const { formData, searchResults, submit } = this.state;
 
     return (
       <div className="dialpad">
@@ -87,14 +181,70 @@ class Dialpad extends React.Component {
               </Field>
             </div>
 
+            {searchResults.size > 0 &&
+            <ClickOut onClickOut={this.onClearSearchResults}>
+              <SearchResults
+                query={formData.value.call_to}
+                results={searchResults}
+                onSelect={this.onSelectSearchResult}
+              />
+            </ClickOut>}
+
             <DialGrid onClick={this.onClickNumber} />
 
-            <Button className="green call-button">
+            <Button className={classNames('green call-button', { loading: submit })}>
               <i className="icon call" />
               Call
             </Button>
           </Fieldset>
         </Form>
+      </div>
+    );
+  }
+}
+
+class SearchResults extends React.Component {
+
+  static propTypes = {
+    query:    PropTypes.string,
+    results:  PropTypes.object,
+    onSelect: PropTypes.func
+  };
+
+  componentDidMount() {
+    this.hightlightQuery();
+  }
+
+  componentDidUpdate() {
+    this.hightlightQuery();
+  }
+
+  hightlightQuery() {
+    const { query } = this.props;
+    const $context = $('.dialpad-search-results');
+
+    $context.unmark();
+
+    if (query) {
+      $context.mark(query);
+    }
+  }
+
+  render() {
+    const { results, onSelect } = this.props;
+    const getNumber = item => item.getIn(['phone_numbers', 0, 'number']);
+
+    return (
+      <div className="dialpad-search-results">
+        {results.map((item, index) =>
+          <div
+            key={index}
+            className="dialpad-search-result-item"
+            onClick={() => onSelect(getNumber(item))}
+          >
+            {item.get('name')} {getNumber(item)}
+          </div>
+        )}
       </div>
     );
   }

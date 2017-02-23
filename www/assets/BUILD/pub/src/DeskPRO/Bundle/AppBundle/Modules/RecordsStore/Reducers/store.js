@@ -42,12 +42,18 @@ function handleSetCollection(state, { recordName, collectionName, records, ids, 
 }
 
 function handleAddToCollection(state, { recordName, collectionName, records }) {
+  // no records, skip
+  if (!records) {
+    return state;
+  }
+
   const newRecords = Immutable.Map.isMap(records) ? records : mapKeyedFromArray(records, 'id');
 
   // count ids AFTER we will update records. So we just insert new records in records and replace collection ids
   // nope, BEFORE
   const oldIds = Immutable.Set(state.getIn([recordName, 'collections', collectionName]));
   const newIds = newRecords.keySeq().toSet().union(oldIds);
+
   return state.withMutations((map) => {
     map.mergeIn([recordName, 'records'], newRecords);
     map.setIn([recordName, 'collections', collectionName], newIds);

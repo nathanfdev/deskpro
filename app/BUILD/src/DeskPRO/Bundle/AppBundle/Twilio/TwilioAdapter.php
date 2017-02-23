@@ -242,9 +242,7 @@ class TwilioAdapter
         ]);
 
         // add additional activity
-        $taskRouter->workspaces($workspace->sid)->activities->create('IdleDisabled', [
-            'available' => false,
-        ]);
+        $taskRouter->workspaces($workspace->sid)->activities->create('IdleDisabled', 'false');
 
         return $workspace;
     }
@@ -579,6 +577,16 @@ class TwilioAdapter
     public static function getWorkerContactUrl(Person $person)
     {
         return 'client:'.self::getWorkerClientName($person);
+    }
+
+    /**
+     * @param string $caller
+     *
+     * @return bool
+     */
+    public static function isWorkerContactUrl($caller)
+    {
+        return strpos($caller, 'client:') === 0;
     }
 
     /**
@@ -931,6 +939,34 @@ class TwilioAdapter
         }
 
         return false;
+    }
+
+    /**
+     * @param VoiceNumber $number
+     * @param string      $toNumber
+     * @param array       $options
+     *
+     * @return \Twilio\Rest\Api\V2010\Account\CallInstance
+     */
+    public function callNumber(VoiceNumber $number, $toNumber, array $options = [])
+    {
+        $account = $number->getAccount();
+        $client  = $this->getClient($account);
+
+        return $client->calls->create($toNumber, $number->getNumber(), $options);
+    }
+
+    /**
+     * @param VoiceAccount $account
+     * @param string       $callSid
+     *
+     * @return \Twilio\Rest\Api\V2010\Account\CallInstance
+     */
+    public function cancelCall(VoiceAccount $account, $callSid)
+    {
+        return $this->getClient($account)->calls($callSid)->update([
+            'status' => 'canceled',
+        ]);
     }
 
     /**

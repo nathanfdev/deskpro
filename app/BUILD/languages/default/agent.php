@@ -2519,6 +2519,7 @@ return [
 
     'agent.voice.incoming_call_title'      => 'Inbound call record',
     'agent.voice.call_new_incoming'        => 'Incoming call by {{number}} {{person_name}}',
+    'agent.voice.call_new_outgoing'        => 'Outgoing call to {{number}} {{person_name}}',
     'agent.voice.call_answered'            => 'Call answered by agent {{person_name}} <{{person_email}}>',
     'agent.voice.call_participant_muted'   => 'Call muted',
     'agent.voice.call_participant_unmuted' => 'Call unmuted',

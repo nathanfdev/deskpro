@@ -45,23 +45,26 @@ class PhoneNumberValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof PhoneNumber) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\PhoneNumber');
+            throw new UnexpectedTypeException($constraint, PhoneNumber::class);
         }
 
         if (!$value) {
             return;
         }
         if ($value instanceof Entity\PhoneNumber) {
-            $value = $value->getNumberFormatted();
+            $checkValue = $value->getNumberFormatted();
+        } elseif (is_scalar($value)) {
+            $checkValue = $value;
+        } else {
+            throw new UnexpectedTypeException($value, implode(', ', ['string', PhoneNumber::class]));
         }
 
-        if (!PhoneNumbers::isValid($value)) {
+        if (!PhoneNumbers::isValid($checkValue)) {
             /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
             $context = $this->context;
             $context
                 ->buildViolation($constraint->message)
                 ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
-                ->atPath('number')
                 ->addViolation()
             ;
         }

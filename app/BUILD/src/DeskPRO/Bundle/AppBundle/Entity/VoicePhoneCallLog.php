@@ -46,6 +46,7 @@ class VoicePhoneCallLog implements EntityInterface, NotifyPropertyChanged
     use NotifyPropertyChangedTrait;
 
     const ACTION_NEW_INCOMING        = 'call.new_incoming';
+    const ACTION_NEW_OUTGOING        = 'call.new_outgoing';
     const ACTION_ANSWERED            = 'call.answered';
     const ACTION_MUTED               = 'call.participant_muted';
     const ACTION_UNMUTED             = 'call.participant_unmuted';
