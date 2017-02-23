@@ -694,6 +694,19 @@ img.emojione, svg.emojione {
             position: relative;
             display: inline-block;
 
+            ol, ul {
+              padding-left: 10px;
+              list-style-type: initial;
+              list-style-position: inside;
+              li {
+                text-indent: -5px
+              }
+            }
+
+            ol {
+              list-style-type: decimal;
+            }
+
             img {
               max-width: 280px !important;
             }
@@ -857,6 +870,20 @@ img.emojione, svg.emojione {
           outline: none;
           border: 1px solid $dp-greyscale-450;
           font-size: 12px;
+
+          ol, ul {
+            padding-left: 10px;
+            list-style-type: initial;
+            list-style-position: inside;
+            li {
+              text-indent: -5px
+            }
+          }
+
+          ol {
+            list-style-type: decimal;
+          }
+
 
           &:focus {
             border: 1px solid $dp-sonic-primary;
