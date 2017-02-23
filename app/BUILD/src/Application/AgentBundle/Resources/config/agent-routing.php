@@ -2118,6 +2118,25 @@ $collection->create('agent_manual_topic_new', [
     'controller' => 'AgentBundle:Manual:newTopic',
 ]);
 
+$collection->create('agent_manual_topic_view', [
+    'path'         => '/manuals/topic/{manual_topic_id}',
+    'controller'   => 'AgentBundle:Manual:view',
+    'requirements' => ['manual_topic_id' => '\\d+'],
+    'options'      => ['fragment_name' => 'n'],
+]);
+
+$collection->create('agent_manual_topic_revisionstab', [
+    'path'         => '/manuals/topic/{manual_topic_id}/view-revisions',
+    'controller'   => 'AgentBundle:Manual:viewRevisions',
+    'requirements' => ['manual_topic_id' => '\\d+'],
+]);
+
+$collection->create('agent_manual_topic_save', [
+    'path'         => '/manuals/topic/{manual_topic_id}/ajax-save',
+    'controller'   => 'AgentBundle:Manual:ajaxSave',
+    'requirements' => ['manual_topic_id' => '\\d+'],
+]);
+
 $collection->create('agent_manual_topic_new_save', [
     'path'       => '/manuals/new/save',
     'controller' => 'AgentBundle:Manual:newTopicSave',

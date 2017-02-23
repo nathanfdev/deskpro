@@ -160,12 +160,13 @@ class AgentLegacyApp {
     );
   }
 
-  renderManualTopicsTree(node, manualId, height) {
+  renderManualTopicsTree(node, manualId, height, openTopic) {
     ReactDOM.render(
       <Provider store={this.store}>
         <ManualTreeContainer
           manualId={manualId}
           height={height}
+          openTopic={openTopic}
         />
       </Provider>,
       node

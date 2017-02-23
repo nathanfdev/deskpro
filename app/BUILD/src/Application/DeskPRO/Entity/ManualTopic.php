@@ -395,7 +395,7 @@ class ManualTopic extends ContentAbstract
                 'fieldName'    => 'revisions',
                 'targetEntity' => ManualTopicRevision::class,
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'mappedBy'     => 'news',
+                'mappedBy'     => 'manual_topic',
             ]
         );
         $metadata->mapManyToOne(

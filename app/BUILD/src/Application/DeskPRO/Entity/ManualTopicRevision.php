@@ -28,6 +28,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -55,6 +56,126 @@ class ManualTopicRevision extends RevisionAbstract
      * @var string
      */
     protected $content = '';
+
+    /**
+     * @return ManualTopic
+     */
+    public function getManualTopic()
+    {
+        return $this->manual_topic;
+    }
+
+    /**
+     * @param ManualTopic $manual_topic
+     *
+     * @return ManualTopicRevision
+     */
+    public function setManualTopic($manual_topic)
+    {
+        $this->setModelField('manual_topic', $manual_topic);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return ManualTopicRevision
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return ManualTopicRevision
+     */
+    public function setContent($content)
+    {
+        $this->setModelField('content', $content);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return ManualTopicRevision
+     */
+    public function setPerson($person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     *
+     * @return ManualTopicRevision
+     */
+    public function setStatus($status)
+    {
+        $this->setModelField('status', $status);
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @param DateTime $date_created
+     *
+     * @return ManualTopicRevision
+     */
+    public function setDateCreated($date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+
+        return $this;
+    }
 
     //###########################################################################
     // Doctrine Metadata

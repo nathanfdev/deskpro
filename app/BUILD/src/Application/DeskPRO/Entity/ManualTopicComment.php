@@ -28,6 +28,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\ManualTopicComment as ManualTopicCommentRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -50,6 +51,7 @@ class ManualTopicComment extends CommentAbstract
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = ManualTopicCommentRepository::class;
         $metadata->setPrimaryTable([
             'name'    => 'manual_topic_comments',
             'indexes' => [

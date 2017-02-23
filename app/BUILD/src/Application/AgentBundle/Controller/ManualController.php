@@ -32,13 +32,203 @@ use Application\AgentBundle\Form\Model\NewTopic;
 use Application\AgentBundle\Form\Type\NewTopic as NewTopicType;
 use Application\AgentBundle\Validator\NewTopicValidator;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Manual;
+use Application\DeskPRO\Entity\ManualTopic;
+use Application\DeskPRO\Entity\ManualTopicComment;
+use Application\DeskPRO\Entity\ManualTopicRevision;
 use Application\DeskPRO\Entity\PersonPref;
+use Application\DeskPRO\Entity\SearchLog;
+use Application\DeskPRO\Entity\SearchStickyResult;
+use Application\DeskPRO\Publish\RelatedContentUpdate;
+use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 
 class ManualController extends PublishController
 {
+    public function viewAction($manual_topic_id)
+    {
+        /** @var ManualTopic $manualTopic */
+        $manualTopic = $this->em->find(ManualTopic::class, $manual_topic_id);
+
+        if (!$manualTopic) {
+            throw $this->createNotFoundException();
+        }
+
+        $comments = $this->em->getRepository(ManualTopicComment::class)->getComments($manualTopic);
+
+        $relatedFinder  = new RelatedContentFinder($this->person, $manualTopic);
+        $relatedContent = $relatedFinder->getRelatedEntities(true);
+
+        $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.editmanualtopic', $this->person->id);
+
+        $stickySearchWords = $this->em->getRepository(SearchStickyResult::class)->getWordsForObject($manualTopic);
+        $ratedSearches     = $this->em->getRepository(SearchLog::class)->getRatedSearchesFor('manualTopic', $manualTopic['id'], 'counted');
+
+        if ($manualTopic->getManual() && $manualTopic->getManual()->getBrand()) {
+            $brand = $manualTopic->getManual()->getBrand();
+        } else {
+            $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+            $brand   = $this->em->getRepository(Brand::class)->find($brandId);
+        }
+        $manuals = $this->em->getRepository(Manual::class)->findBy(['brand' => $brand]);
+
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
+        $perms = [
+            'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($manualTopic),
+            'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($manualTopic),
+        ];
+
+        return $this->render('AgentBundle:Manual:view.html.twig', [
+            'manual_topic'        => $manualTopic,
+            'comments'            => $comments,
+            'manuals'             => $manuals,
+            'related_content'     => $relatedContent,
+            'state'               => $state,
+            'sticky_search_words' => $stickySearchWords,
+            'rated_searches'      => $ratedSearches,
+            'perms'               => $perms,
+            'brands'              => $brands,
+        ]);
+    }
+
+    public function ajaxSaveAction($manual_topic_id)
+    {
+        $manualTopic = $this->em->find(ManualTopic::class, $manual_topic_id);
+        $rev         = null;
+
+        if (!$manualTopic) {
+            throw $this->createNotFoundException();
+        }
+
+        $action = $this->in->getString('action');
+
+        if ($action == 'delete') {
+            if (!$this->person->PermissionsManager->PublishChecker->canDelete($manualTopic)) {
+                return $this->createJsonResponse(['success' => false]);
+            }
+        } else {
+            if (!$this->person->PermissionsManager->PublishChecker->canEdit($manualTopic)) {
+                return $this->createJsonResponse(['success' => false]);
+            }
+        }
+
+        $data = ['success' => 1];
+
+        $this->em->beginTransaction();
+
+        switch ($action) {
+            case 'status':
+                $manualTopic->setStatusCode($this->in->getString('status'));
+                if ($manualTopic['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
+                    $manualTopic['status_code'] = 'hidden.unpublished';
+                }
+                break;
+
+            case 'title':
+                $manualTopic->setTitle($this->in->getString('title'));
+                /** @var ManualTopicRevision $rev */
+                $rev = ContentRevisionUtil::findOrCreate($manualTopic, 'title', $this->person);
+                $rev->setTitle($manualTopic->getTitle());
+                break;
+
+            case 'slug':
+                $manualTopic->setSlug(Strings::slugifyTitle($this->in->getString('slug')) ?: 'view');
+                $data['slug'] = $manualTopic['slug'];
+                break;
+
+            case 'add-related':
+                $updater = new RelatedContentUpdate($manualTopic);
+                $updater->addRelated(
+                    $this->in->getString('content_type'),
+                    $this->in->getString('content_id')
+                );
+                break;
+
+            case 'remove-related':
+                $updater = new RelatedContentUpdate($manualTopic);
+                $updater->removeRelated(
+                    $this->in->getString('content_type'),
+                    $this->in->getString('content_id')
+                );
+                break;
+
+            case 'content':
+
+                $this->em->getRepository(PersonPref::class)->deletePrefForPersonId('agent.ui.state.editnews', $this->person->id);
+
+                $manualTopic->setContent($this->person->hasPerm('agent_publish.can_insert_html')
+                    ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
+                    : $this->in->getCleanValue('content', 'html'));
+
+                $data['content_html'] = $this->renderView('AgentBundle:News:view-content-tab.html.twig', [
+                    'manualTopic' => $manualTopic,
+                ]);
+
+                /** @var ManualTopicRevision $rev */
+                $rev = ContentRevisionUtil::findOrCreate($manualTopic, 'content', $this->person);
+                $rev->setContent($manualTopic->getContent());
+
+                break;
+
+            case 'manual':
+                $manual = $this->em->find(Manual::class, $this->in->getUInt('category_id'));
+                $manualTopic->setManual($manual);
+                $data['manual_id'] = $manual->getId();
+                break;
+
+            case 'delete':
+                $manualTopic->status_code = 'hidden.deleted';
+                break;
+
+            case 'undelete':
+                $manualTopic->status_code = 'published';
+                break;
+
+            case 'auto-unpub':
+                $date   = date_create('@'.$this->in->getUInt('end_timestamp'));
+                $action = $this->in->getString('end_action');
+
+                $manualTopic->date_end   = $date;
+                $manualTopic->end_action = $action;
+                break;
+
+            case 'remove-auto-unpub':
+                $manualTopic->date_end   = null;
+                $manualTopic->end_action = null;
+                break;
+
+            case 'auto-pub':
+                $date = date_create('@'.$this->in->getUInt('pub_timestamp'));
+
+                $manualTopic->setDatePublished($date);
+                break;
+
+            case 'remove-auto-pub':
+                $manualTopic->setDatePublished(null);
+                break;
+        }
+
+        $this->em->persist($manualTopic);
+
+        if ($rev) {
+            $this->em->persist($rev);
+        }
+
+        $this->em->flush();
+        $this->em->commit();
+
+        if ($rev) {
+            $data['revision_id'] = $rev['id'];
+        } else {
+            $data['revision_id'] = null;
+        }
+
+        return $this->createJsonResponse($data);
+    }
+
     public function newTopicAction()
     {
         $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');

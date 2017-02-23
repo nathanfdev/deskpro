@@ -33,7 +33,8 @@ DeskPRO.Agent.PageFragment.ListPane.ManualList = new Orb.Class({
     window.AgentLegacyBundle.renderManualTopicsTree(
       $rElement.get(0),
       this.meta.manualId,
-      900
+      900,
+			this.openTopic
 		);
 
 		// this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
@@ -117,5 +118,10 @@ DeskPRO.Agent.PageFragment.ListPane.ManualList = new Orb.Class({
 			updateChecks(this.checked);
 		});
 		updateChecks(ugEveryone.prop('checked'));
+	},
+
+	openTopic: function(manualTopicId) {
+		console.log(manualTopicId);
+    window.DeskPRO_Window.runPageRoute(`manuals:/agent/manuals/topic/${manualTopicId}`);
 	}
 });

@@ -11,10 +11,11 @@ import { treeSelector } from '../../Selectors/manual';
 }))
 export class ManualTreeContainer extends React.Component {
   static propTypes = {
-    manualId: PropTypes.number,
-    height:   PropTypes.number,
-    trees:    PropTypes.object,
-    dispatch: PropTypes.func.isRequired
+    manualId:  PropTypes.number,
+    height:    PropTypes.number,
+    trees:     PropTypes.object,
+    openTopic: PropTypes.func,
+    dispatch:  PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -37,6 +38,7 @@ export class ManualTreeContainer extends React.Component {
         tree={tree}
         height={this.props.height}
         handleChange={this.handleChange}
+        onClick={node => this.props.openTopic(node.id)}
       />
     );
   }

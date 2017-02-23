@@ -2739,6 +2739,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.addPageRouteLoader('article', cb.bind(this));
 		this.addPageRouteLoader('download', cb.bind(this));
 		this.addPageRouteLoader('news', cb.bind(this));
+		this.addPageRouteLoader('manuals', cb.bind(this));
 		this.addPageRouteLoader('feedback', cb.bind(this));
 		this.addPageRouteLoader('org', cb.bind(this));
 

@@ -428,7 +428,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			}
 		}
 
-		var message = messageInfo.message
+		var message = messageInfo.message;
 		var newMessage = $.tmpl('agent_chat_message_me', { message: '', time: messageInfo.time || '' });
 		newMessage.find('span.message-text').html(this.formatMessage(message));
 		if (messageInfo.id) {
