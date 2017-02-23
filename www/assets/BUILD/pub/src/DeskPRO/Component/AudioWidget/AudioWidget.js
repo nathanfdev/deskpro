@@ -11,6 +11,7 @@ class AudioWidgetForm extends React.Component {
 
   static propTypes = {
     value:    PropTypes.object,
+    errors:   PropTypes.object,
     saving:   PropTypes.bool,
     onSubmit: PropTypes.func
   };
@@ -54,7 +55,7 @@ class AudioWidgetForm extends React.Component {
   };
 
   getDefaultState() {
-    const { value } = this.props;
+    const { value, errors } = this.props;
     const type = value ? value.get('type') : 'text';
     const blobAuth = value ? value.getIn(['blob', 'blob_auth']) : null;
     const downloadUrl = value ? value.getIn(['blob', 'download_url']) : null;
@@ -85,7 +86,7 @@ class AudioWidgetForm extends React.Component {
             }
           }
         },
-        errorList: {},
+        errorList: errors,
         onChange:  this.onChange
       })
     };
@@ -128,7 +129,10 @@ class AudioSource extends React.Component {
     const { value, onChange } = this.props;
 
     if (value.type in this.tabs) {
-      this.tabs[value.type].stopPlaying();
+      const tab = this.tabs[value.type];
+      if (tab.stopPlaying) {
+        tab.stopPlaying();
+      }
     }
 
     onChange({ ...value, type });

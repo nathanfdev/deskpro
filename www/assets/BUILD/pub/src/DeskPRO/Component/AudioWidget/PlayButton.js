@@ -41,69 +41,6 @@ class PlayButton extends React.Component {
   }
 }
 
-export class TextPlayButton extends React.Component {
-
-  static propTypes = {
-    language: PropTypes.string,
-    text:     PropTypes.string,
-    children: PropTypes.node
-  };
-
-  onPlay = () => {
-    if (!window.speechSynthesis) {
-      return;
-    }
-
-    const { text } = this.props;
-    const voice = this.getLanguageVoice();
-    if (!voice) {
-      return;
-    }
-
-    const message = new SpeechSynthesisUtterance(text);
-    message.voice = voice;
-    window.speechSynthesis.speak(message);
-  };
-
-  getLanguageVoice = () => {
-    const { language } = this.props;
-    const previewVoices = {};
-
-    if (!window.speechSynthesis) {
-      return null;
-    }
-
-    window.speechSynthesis.getVoices().forEach((voice) => {
-      previewVoices[voice.lang] = voice;
-    });
-
-    return language ? previewVoices[language] : null;
-  };
-
-  stopPlaying() { // eslint-disable-line class-methods-use-this
-    window.speechSynthesis.cancel();
-  }
-
-  render() {
-    const { children = <PlayButton /> } = this.props;
-    if (!window.speechSynthesis) {
-      return null;
-    }
-
-    return (
-      <span>
-        {React.cloneElement(children, {
-          ...children.props,
-          ...this.props,
-
-          disabled: !this.getLanguageVoice(),
-          onClick:  this.onPlay
-        })}
-      </span>
-    );
-  }
-}
-
 export class UploadPlayButton extends React.Component {
 
   static propTypes = {
@@ -193,13 +130,7 @@ export class AssetPlayButton extends React.Component {
     const type = value && value.get('type');
 
     if (type === 'text') {
-      return (
-        <TextPlayButton
-          {...this.props}
-          language={value.get('language')}
-          text={value.get('text')}
-        />
-      );
+      return null;
     }
 
     return (
