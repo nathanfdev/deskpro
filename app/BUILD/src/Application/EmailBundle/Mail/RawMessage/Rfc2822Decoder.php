@@ -356,6 +356,10 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
     {
         $enc      = $this->_getHeaderOrNull($message, 'Content-Transfer-Encoding');
         $enc_type = $enc ? Decode::splitHeaderField($enc->getFieldValue(), 0) : 'binary';
+        $charset  = 'utf8';
+        if ($type = $this->_getHeaderOrNull($message, 'Content-Type')) {
+            $charset = $type->getParameter('charset');
+        }
 
         $data = $message->getContent();
         switch (strtolower($enc_type)) {
@@ -363,6 +367,10 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
             case 'base64':
                 $data = self::decodeString($data, $enc_type);
                 break;
+        }
+
+        if ($charset && $charset !== 'utf8') {
+            $data = mb_convert_encoding($data, 'utf8', $charset);
         }
 
         return $data;
