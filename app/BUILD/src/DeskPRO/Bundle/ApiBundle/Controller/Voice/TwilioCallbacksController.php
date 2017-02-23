@@ -206,6 +206,9 @@ class TwilioCallbacksController extends BaseController
         $em->flush();
 
         $workerSid = $request->request->get('WorkerSid');
+        $queueId   = isset($task['deskpro_queue_id']) ? $task['deskpro_queue_id'] : null;
+        $agentId   = isset($task['agent_id']) ? $task['agent_id'] : null;
+
         if ($account->getVoicemailWorkerSid() === $workerSid) {
             // mark the phone call as completed (redirected to voicemail)
             $phoneCall->setStatus(VoicePhoneCall::STATUS_VOICEMAIL);
@@ -213,15 +216,12 @@ class TwilioCallbacksController extends BaseController
             $em->flush();
 
             // return redirect response
-            $asset   = null;
-            $queueId = isset($task['deskpro_queue_id']) ? $task['deskpro_queue_id'] : null;
-            $agentId = isset($task['agent_id']) ? $task['agent_id'] : null;
-
+            $voicemailAsset = null;
             if ($queueId) {
                 $queue = $this->getRepository(VoiceQueue::class)->find($queueId);
                 if ($queue) {
                     // get custom queue voicemail asset
-                    $asset = $queue->getVoicemailAsset();
+                    $voicemailAsset = $queue->getVoicemailAsset();
 
                     // create voicemail queue ticket
                     $ticketMessageCall = new TicketMessageVoicePhoneCall();
@@ -259,7 +259,7 @@ class TwilioCallbacksController extends BaseController
                     throw $this->createBadRequestException();
                 }
 
-                $asset = $agentData->getVoicemailAsset();
+                $voicemailAsset = $agentData->getVoicemailAsset();
 
                 $voicemailRecord = new VoicemailRecord();
                 $voicemailRecord
@@ -275,7 +275,7 @@ class TwilioCallbacksController extends BaseController
             $response = [
                 'instruction' => 'redirect',
                 'call_sid'    => $task['call_sid'],
-                'url'         => $this->getVoicemailUrl($account, $asset),
+                'url'         => $this->getVoicemailUrl($account, $voicemailAsset),
                 'accept'      => true,
             ];
         } else {
@@ -295,10 +295,18 @@ class TwilioCallbacksController extends BaseController
                 throw $this->createBadRequestException('Worker agent not found');
             }
 
+            $loopAsset = null;
+            if ($queueId) {
+                $queue = $this->getRepository(VoiceQueue::class)->find($queueId);
+                if ($queue) {
+                    $loopAsset = $queue->getLoopAsset();
+                }
+            }
+
             $response = [
                 'instruction' => 'redirect',
                 'call_sid'    => $task['call_sid'],
-                'url'         => $this->getConferenceCallbackUrl($account),
+                'url'         => $this->getConferenceCallbackUrl($account, $loopAsset),
             ];
         }
 
@@ -333,8 +341,24 @@ class TwilioCallbacksController extends BaseController
             throw $this->createBadRequestException('Phone call not found');
         }
 
+        $asset   = null;
+        $assetId = $request->query->get('asset');
+        if ($assetId) {
+            $asset = $this->getRepository(AbstractVoiceAsset::class)->find($assetId);
+        }
+
         $twiml = new Twiml();
-        $this->addConferenceResponse($phoneCall, $twiml);
+        $twiml->dial()->conference($this->getConferenceName($phoneCall), [
+            'endConferenceOnExit'           => true,
+            'statusCallback'                => $this->getConferenceStatusCallbackUrl($account),
+            'statusCallbackMethod'          => 'POST',
+            'statusCallbackEvent'           => 'join leave start end mute hold',
+            'record'                        => 'record-from-start',
+            'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account),
+            'recordingStatusCallbackMethod' => 'POST',
+            'waitUrl'                       => $asset ? $this->getHoldMusicUrl($account, $asset) : '',
+            'waitMethod'                    => 'POST',
+        ]);
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -833,6 +857,51 @@ class TwilioCallbacksController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Custom hold music",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Rest\Post("/hold_music", name="twilio_hold_music")
+     *
+     * @param VoiceAccount $account
+     * @param string       $accountAuth
+     * @param Request      $request
+     *
+     * @return Response
+     */
+    public function holdMusicAction(VoiceAccount $account, $accountAuth, Request $request)
+    {
+        if ($account->getAccountAuth() !== $accountAuth) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $asset   = null;
+        $assetId = $request->query->get('asset');
+        if ($assetId) {
+            $asset = $this->getRepository(AbstractVoiceAsset::class)->find($assetId);
+        }
+
+        $twiml = new Twiml();
+        if ($asset instanceof VoiceTextAsset) {
+            $twiml->say($asset->getText(), [
+                'loop' => 0,
+            ]);
+        } elseif ($asset instanceof AbstractVoiceBlobAsset) {
+            $twiml->play($asset->getBlob()->getDownloadUrl(true), [
+                'loop' => 0,
+            ]);
+        }
+
+        $response = new Response($twiml);
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
+    }
+
+    /**
      * @return string
      */
     private function getHelpdeskName()
@@ -963,8 +1032,6 @@ class TwilioCallbacksController extends BaseController
 
             // create twilio new task response
             $twiml = new Twiml();
-            $twiml->say(sprintf('Thank you for calling, %s', $this->getHelpdeskName()));
-
             if ($account->getQueueWorkflowSid()) {
                 $this->addTargetResponse($phoneCall, $phoneCall->getNumber()->getTarget(), $twiml);
             }
@@ -1081,25 +1148,6 @@ class TwilioCallbacksController extends BaseController
     }
 
     /**
-     * @param VoicePhoneCall $phoneCall
-     * @param Twiml          $twiml
-     */
-    private function addConferenceResponse(VoicePhoneCall $phoneCall, Twiml $twiml)
-    {
-        $account = $phoneCall->getNumber()->getAccount();
-
-        $twiml->dial()->conference($this->getConferenceName($phoneCall), [
-            'endConferenceOnExit'           => true,
-            'statusCallback'                => $this->getConferenceStatusCallbackUrl($account),
-            'statusCallbackMethod'          => 'POST',
-            'statusCallbackEvent'           => 'join leave start end mute hold',
-            'record'                        => 'record-from-start',
-            'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account),
-            'recordingStatusCallbackMethod' => 'POST',
-        ]);
-    }
-
-    /**
      * @param VoicePhoneCall      $phoneCall
      * @param AbstractVoiceTarget $target
      * @param Twiml               $twiml
@@ -1113,12 +1161,21 @@ class TwilioCallbacksController extends BaseController
         $person  = $phoneCall->getPerson();
 
         if ($target instanceof VoiceQueueTarget) {
+            $queue = $target->getQueue();
+            $asset = $queue->getGreetAsset();
+
+            if ($asset instanceof VoiceTextAsset) {
+                $twiml->say($asset->getText());
+            } elseif ($asset instanceof AbstractVoiceBlobAsset) {
+                $twiml->play($asset->getBlob()->getDownloadUrl(true));
+            }
+
             $twiml
                 ->enqueue([
                     'workflowSid' => $account->getQueueWorkflowSid(),
                 ])->task(json_encode([
                     'deskpro_call_id'   => $phoneCall->getId(),
-                    'deskpro_queue_id'  => $target->getQueue()->getId(),
+                    'deskpro_queue_id'  => $queue->getId(),
                     'deskpro_person_id' => $person ? $person->getId() : null,
                     'rejected_workers'  => [],
                 ]))
@@ -1180,15 +1237,17 @@ class TwilioCallbacksController extends BaseController
     }
 
     /**
-     * @param VoiceAccount $account
+     * @param VoiceAccount       $account
+     * @param AbstractVoiceAsset $asset
      *
      * @return string
      */
-    private function getConferenceCallbackUrl(VoiceAccount $account)
+    private function getConferenceCallbackUrl(VoiceAccount $account, AbstractVoiceAsset $asset = null)
     {
         return $this->get('router')->generate('twilio_conference_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
+            'asset'       => $asset ? $asset->getId() : null,
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
@@ -1255,6 +1314,22 @@ class TwilioCallbacksController extends BaseController
     private function getVoicemailUrl(VoiceAccount $account, AbstractVoiceAsset $asset = null)
     {
         return $this->get('router')->generate('twilio_voicemail', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+            'asset'       => $asset ? $asset->getId() : null,
+
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param VoiceAccount       $account
+     * @param AbstractVoiceAsset $asset
+     *
+     * @return string
+     */
+    private function getHoldMusicUrl(VoiceAccount $account, AbstractVoiceAsset $asset = null)
+    {
+        return $this->get('router')->generate('twilio_hold_music', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
             'asset'       => $asset ? $asset->getId() : null,

@@ -17,6 +17,7 @@ class QueueForm extends React.Component {
     agents:            PropTypes.object,
     agentTeams:        PropTypes.object,
     ticketDepartments: PropTypes.object,
+    errors:            PropTypes.object,
     onSubmit:          PropTypes.func.isRequired,
     onDelete:          PropTypes.func,
     saving:            PropTypes.bool,
@@ -58,7 +59,7 @@ class QueueForm extends React.Component {
   };
 
   getDefaultState() {
-    const { queueId, queues, accounts } = this.props;
+    const { queueId, queues, accounts, errors } = this.props;
 
     let queue;
     if (queueId) {
@@ -91,7 +92,7 @@ class QueueForm extends React.Component {
           voicemail_agent:      queue ? queue.get('voicemail_agent') : null,
           voicemail_agent_team: queue ? queue.get('voicemail_agent_team') : null
         },
-        errorList: {},
+        errorList: errors,
         onChange:  this.onChange
       })
     };
@@ -131,7 +132,7 @@ class QueueForm extends React.Component {
             <Field select="greet_asset" className="audio-asset" label="Greet">
               <AudioWidgetFormContainer />
             </Field>
-            <Field select="loop_asset" className="audio-asset" label="Loop">
+            <Field select="loop_asset" className="audio-asset" label="Holding Music">
               <AudioWidgetFormContainer />
             </Field>
             <Field select="voicemail_asset" className="audio-asset" label="Voicemail">

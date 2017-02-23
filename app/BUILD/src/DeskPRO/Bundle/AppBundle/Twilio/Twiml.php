@@ -31,9 +31,9 @@ namespace DeskPRO\Bundle\AppBundle\Twilio;
 /**
  * Class Twiml.
  *
- * @method $this say($message)
+ * @method $this say($message, array $options = [])
  * @method $this gather(array $options)
- * @method $this play($url)
+ * @method $this play($url, array $options = [])
  * @method $this record(array $options)
  * @method $this dial(array $options = [])
  * @method $this conference($name, array $options = [])
