@@ -52,19 +52,6 @@ pageMeta.baseId = '{{ baseId }}';
 					'id': baseId ~ '_cat'
 				} %}
 			</td>
-			<td width="100%">
-				<div class="labels-line">
-					<input
-						type="hidden"
-						id="{{baseId}}_labels_input"
-						class="dpe_select dpe_select_noborder"
-						data-select-width="auto"
-						data-placeholder="Add a label"
-						value="{% for label in manual_topic.labels %}{{ label.label }},{% endfor %}"
-						data-allow-new="{% if app.user.hasPerm('agent_publish.news_create_labels') %}1{% endif %}"
-					/>
-				</div>
-			</td>
 		</tr>
 	</table>
 	<br class="clear" />
@@ -181,8 +168,6 @@ pageMeta.baseId = '{{ baseId }}';
 				<nav class="sub-box-nav noedit-hide">
 					<ul class="option-buttons right" id="{{baseId}}_content_edit_btns">
 						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('agent.general.ucfirst_edit') }}</span></li>
-						<li class="editor-save-trigger save" id="{{baseId}}_save_btn"><span>{{ phrase('agent.general.save') }}</span></li>
-						<li class="editor-cancel-trigger cancel" id="{{baseId}}_cancel_btn"><span>{{ phrase('agent.general.cancel') }}</span></li>
 					</ul>
 				</nav>
 				<div id="{{baseId}}_content_ed" class="manual-topic-content content-tab-item">

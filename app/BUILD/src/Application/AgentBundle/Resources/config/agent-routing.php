@@ -2122,7 +2122,7 @@ $collection->create('agent_manual_topic_view', [
     'path'         => '/manuals/topic/{manual_topic_id}',
     'controller'   => 'AgentBundle:Manual:view',
     'requirements' => ['manual_topic_id' => '\\d+'],
-    'options'      => ['fragment_name' => 'n'],
+    'options'      => ['fragment_name' => 'm'],
 ]);
 
 $collection->create('agent_manual_topic_revisionstab', [
@@ -2147,6 +2147,12 @@ $collection->create('agent_manuals_list', [
     'controller' => 'AgentBundle:Manual:list',
     'defaults'   => ['manual_id' => '0'],
     'options'    => ['fragment_name' => 'manuals', 'fragment_type' => 'list'],
+]);
+
+$collection->create('agent_manual_topic_ajax_save_comment', [
+    'path'         => '/manuals/topic/{manual_topic_id}/ajax-save-comment',
+    'controller'   => 'AgentBundle:Manual:ajaxSaveComment',
+    'requirements' => ['manual_topic_id' => '\\d+'],
 ]);
 
 $collection->create('agent_publish_manuals_newform', [

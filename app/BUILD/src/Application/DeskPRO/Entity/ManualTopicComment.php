@@ -44,6 +44,26 @@ class ManualTopicComment extends CommentAbstract
      */
     protected $manual_topic;
 
+    /**
+     * @return ManualTopic
+     */
+    public function getManualTopic()
+    {
+        return $this->manual_topic;
+    }
+
+    /**
+     * @param ManualTopic $manual_topic
+     *
+     * @return ManualTopicComment
+     */
+    public function setManualTopic($manual_topic)
+    {
+        $this->setModelField('manual_topic', $manual_topic);
+
+        return $this;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

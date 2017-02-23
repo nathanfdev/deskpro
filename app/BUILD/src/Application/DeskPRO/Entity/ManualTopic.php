@@ -43,7 +43,7 @@ class ManualTopic extends ContentAbstract
     protected $manual;
 
     /**
-     * Revisions of this news.
+     * Revisions of this Manual Topic.
      *
      * @var ArrayCollection
      */
@@ -439,7 +439,7 @@ class ManualTopic extends ContentAbstract
                 'fieldName'    => 'slug_history',
                 'targetEntity' => ManualTopicSlugHistory::class,
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'mappedBy'     => 'news',
+                'mappedBy'     => 'manual_topic',
             ]
         );
         $metadata->mapOneToMany(
@@ -447,7 +447,7 @@ class ManualTopic extends ContentAbstract
                 'fieldName'    => 'comments',
                 'targetEntity' => ManualTopicComment::class,
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'mappedBy'     => 'news',
+                'mappedBy'     => 'manual_topic',
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );

@@ -31,7 +31,6 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 			this._initPostArea();
 		}
 		this._initActions();
-		this._initLabels();
 		this._initAutoUnpublishOptions();
 		this._initAutoPublishOptions();
 
@@ -123,7 +122,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
-				if ($(info.tabContent).is('.manual-topics-content')) {
+				if ($(info.tabContent).is('.manual-topic-content')) {
 					self.getEl('content_edit_btns').show();
 				} else {
 					self.getEl('content_edit_btns').hide();
@@ -480,7 +479,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/manuals/topic/' + this.getMetaData('manual_topic_id') + '/ajax-save',
+			url: BASE_URL + 'agent/manuals/topic/' + this.getMetaData('manual_topic_id') + '/ajax-save-comment',
 			type: 'POST',
 			context: this,
 			data: data,
@@ -533,44 +532,64 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 		});
 		this.ownObject(this.editStateSaver);
 
-		this.getEl('save_btn').off('click').on('click', (function(ev) {
-			ev.preventDefault();
-
-			var data = {
-				action: 'content',
-				content: $('.manual-topic-editor-wrap textarea:first', wrap).val(),
-				attach: $('.manual-topic-editor-wrap .edit-content-attach:first', wrap).val()
-			};
-
-			$.ajax({
-				url: BASE_URL + 'agent/manuals/topic/' + this.meta.manual_topic_id + '/ajax-save',
-				type: 'POST',
-				context: this,
-				data: data,
-				dataType: 'json',
-				success: function(data) {
-					this.getEl('content_ed').html(data.content_html);
-					this.handleUnloadRevisions(data.revision_id);
-					this._initPostArea();
-				}
-			});
-
-		}).bind(this));
-
 		this.hideEditor();
 	},
+
+  save: function(html, input, inputMode) {
+		var self = this;
+    var data = [];
+    data.push({
+      name: 'action',
+      value: 'content'
+    });
+    data.push({
+      name: 'content',
+      value: html
+    });
+    data.push({
+      name: 'content_input',
+      value: input
+    });
+    data.push({
+      name: 'content_input_type',
+      value: inputMode
+    });
+
+    $('input.edit-content-attach:checked', this.getEl('content_ed')).each(function() {
+      data.push({
+        name: 'attach[]',
+        value: $(this).val()
+      });
+    });
+
+    var showSaving = this.getEl('article_save').find('.mark-loading');
+    var showSaved  = this.getEl('article_save').find('.mark-saved');
+
+    showSaved.stop().hide();
+    showSaving.show();
+
+    $.ajax({
+      url: BASE_URL + 'agent/manuals/topic/' + this.meta.manual_topic_id + '/ajax-save',
+      type: 'POST',
+      context: this,
+      data: data,
+      dataType: 'json',
+      complete: function() {
+        showSaving.hide();
+      },
+      success: function(data) {
+      	self.getEl('content_ed').html(data.content_html);
+        self._initPostArea();
+        self.handleUnloadRevisions(data.revision_id);
+
+        showSaved.show().fadeOut(2000);
+      }
+    });
+  },
 
 	showEditor: function() {
 
 		var self = this;
-
-		var edWrap = $('.manual-topic-editor-wrap', this.getEl('content_ed')).show();
-		$('.revert-default', edWrap).on('click', function() {
-			var def = $('textarea.edit-content-field-default').val();
-			$('textarea.edit-content-field').val(def);
-
-			$('.revert-message-notice', edWrap).remove();
-		});
 
 		$('.manual-topic-content-wrap', this.getEl('content_ed')).hide();
 		$('.manual-topic-editor-wrap', this.getEl('content_ed')).show();
@@ -578,30 +597,19 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 		if (!this._hasInitEd) {
 			this._hasInitEd = true;
 
-			var txt = $('.edit-content-field', this.getEl('content_ed'));
-			var w = $(txt.closest('.content-tab-item')).width() - 30;
-
-			// Means the whole thign is visible at once, lets try and max out the viewport
-			if (this.wrapper.find('> .layout-content > .scrollbar.disabled')) {
-				var h = $(window).height() - 90 - txt.offset().top;
-			} else {
-				h = 425;
-			}
-
-			txt.css({ width: w, height: h });
-
-			DP.rteTextarea($('.edit-content-field', this.getEl('content_ed')), {
-				setup: function(ed) {
-					ed.onKeyPress.add(function() {
-						self.editStateSaver.triggerChange();
-					});
-				}
-			});
-		}
+      var textArea = $('textarea.edit-content-field', this.getEl('content_ed'));
+      var $rElement = $('<div></div>').insertAfter(textArea);
+      textArea.hide();
+      window.AgentLegacyBundle.renderContentEditor(
+        $rElement.get(0),
+        textArea.val(),
+        $('input.content_input_type', this.wrapper).val(),
+        this.hideEditor.bind(this),
+        this.save.bind(this)
+      );
+    }
 
 		this.getEl('edit_btn').hide();
-		this.getEl('save_btn').show();
-		this.getEl('cancel_btn').show();
 		this.updateUi();
 	},
 

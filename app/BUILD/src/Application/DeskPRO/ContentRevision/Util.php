@@ -228,7 +228,7 @@ class Util
 
             case ManualTopic::class:
             case ManualTopicRevision::class:
-                return 'manual';
+                return 'manual_topic';
                 break;
         }
 

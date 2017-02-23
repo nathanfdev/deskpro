@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Entity\SearchStickyResult;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use DateTime;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -64,7 +65,7 @@ class ManualController extends PublishController
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.editmanualtopic', $this->person->id);
 
         $stickySearchWords = $this->em->getRepository(SearchStickyResult::class)->getWordsForObject($manualTopic);
-        $ratedSearches     = $this->em->getRepository(SearchLog::class)->getRatedSearchesFor('manualTopic', $manualTopic['id'], 'counted');
+        $ratedSearches     = $this->em->getRepository(SearchLog::class)->getRatedSearchesFor('manualtopic', $manualTopic['id'], 'counted');
 
         if ($manualTopic->getManual() && $manualTopic->getManual()->getBrand()) {
             $brand = $manualTopic->getManual()->getBrand();
@@ -91,6 +92,42 @@ class ManualController extends PublishController
             'rated_searches'      => $ratedSearches,
             'perms'               => $perms,
             'brands'              => $brands,
+        ]);
+    }
+
+    public function viewRevisionsAction($manual_topic_id)
+    {
+        $manualTopic = $this->em->find(ManualTopic::class, $manual_topic_id);
+
+        return $this->render('AgentBundle:Manual:view-revisions-tab.html.twig', [
+            'manual_topic' => $manualTopic,
+        ]);
+    }
+
+    public function ajaxSaveCommentAction($manual_topic_id)
+    {
+        $manualTopic = $this->em->find(ManualTopic::class, $manual_topic_id);
+
+        if (!$manualTopic || !$this->in->getString('content')) {
+            throw $this->createNotFoundException();
+        }
+
+        $comment = new ManualTopicComment();
+        $comment->setManualTopic($manualTopic);
+        $comment->setPerson($this->person);
+        $comment->setContent($this->in->getString('content'));
+        $comment->setStatus('visible');
+        $comment->setDateCreated(new DateTime());
+
+        if ($this->person->hasPerm('agent_publish.validate')) {
+            $comment->setIsReviewed(true);
+        }
+
+        $this->em->persist($comment);
+        $this->em->flush();
+
+        return $this->render('AgentBundle:Manual:view-comment.html.twig', [
+            'comment' => $comment,
         ]);
     }
 
@@ -157,14 +194,14 @@ class ManualController extends PublishController
 
             case 'content':
 
-                $this->em->getRepository(PersonPref::class)->deletePrefForPersonId('agent.ui.state.editnews', $this->person->id);
+                $this->em->getRepository(PersonPref::class)->deletePrefForPersonId('agent.ui.state.editmanualtopic', $this->person->id);
 
                 $manualTopic->setContent($this->person->hasPerm('agent_publish.can_insert_html')
                     ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
                     : $this->in->getCleanValue('content', 'html'));
 
-                $data['content_html'] = $this->renderView('AgentBundle:News:view-content-tab.html.twig', [
-                    'manualTopic' => $manualTopic,
+                $data['content_html'] = $this->renderView('AgentBundle:Manual:view-content-tab.html.twig', [
+                    'manual_topic' => $manualTopic,
                 ]);
 
                 /** @var ManualTopicRevision $rev */
@@ -279,8 +316,8 @@ class ManualController extends PublishController
             $this->em->getRepository(PersonPref::class)->deletePrefForPersonId('agent.ui.state.new_topic', $this->person->id);
 
             return $this->createJsonResponse([
-                'success' => true,
-                'news_id' => $topic['id'],
+                'success'         => true,
+                'manual_topic_id' => $topic['id'],
             ]);
         } else {
             return $this->createJsonResponse([

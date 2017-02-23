@@ -142,7 +142,6 @@ class AgentLegacyApp {
     node,
     value,
     inputType,
-    updateHtml,
     hideEditor,
     save
   ) {
@@ -151,7 +150,6 @@ class AgentLegacyApp {
         <EditorContainer
           value={value}
           inputType={inputType}
-          updateHtml={updateHtml}
           hideEditor={hideEditor}
           save={save}
         />

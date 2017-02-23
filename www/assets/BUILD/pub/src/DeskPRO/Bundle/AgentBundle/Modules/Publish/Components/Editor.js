@@ -10,12 +10,10 @@ import MarkdownIt from 'markdown-it';
 
 export class EditorContainer extends React.Component {
   static propTypes = {
-    value:          PropTypes.string,
-    inputType:      PropTypes.string,
-    updateHtml:     PropTypes.func,
-    updateMarkdown: PropTypes.func,
-    hideEditor:     PropTypes.func,
-    save:           PropTypes.func
+    value:      PropTypes.string,
+    inputType:  PropTypes.string,
+    hideEditor: PropTypes.func,
+    save:       PropTypes.func
   };
 
   onCancel = () => {
@@ -26,8 +24,6 @@ export class EditorContainer extends React.Component {
     return (<Editor
       value={this.props.value}
       inputType={this.props.inputType}
-      updateHtml={this.props.updateHtml}
-      updateMarkdown={this.props.updateMarkdown}
       onCancel={this.onCancel}
       onSave={this.props.save}
     />);
@@ -35,16 +31,14 @@ export class EditorContainer extends React.Component {
 }
 export class Editor extends React.Component {
   static propTypes = {
-    value:      PropTypes.string,
-    inputType:  PropTypes.string,
-    updateHtml: PropTypes.func,
-    onSave:     PropTypes.func,
-    onCancel:   PropTypes.func
+    value:     PropTypes.string,
+    inputType: PropTypes.string,
+    onSave:    PropTypes.func,
+    onCancel:  PropTypes.func
   };
   static defaultProps = {
     value:     '',
     inputType: 'rte',
-    updateHtml() {},
     onSave() {},
     onCancel() {}
   };
@@ -71,7 +65,6 @@ export class Editor extends React.Component {
     let input;
     let html;
     if (this.state.inputType === 'rte') {
-      this.props.updateHtml(this.state.html);
       input = this.state.html;
       html = input;
     } else {
@@ -81,7 +74,6 @@ export class Editor extends React.Component {
         typographer: true
       });
       html = md.render(this.state.markdown);
-      this.props.updateHtml(html);
       input = this.state.markdown;
     }
     this.props.onSave(html, input, this.state.inputType);

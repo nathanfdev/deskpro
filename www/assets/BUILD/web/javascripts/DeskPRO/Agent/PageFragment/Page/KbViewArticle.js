@@ -850,10 +850,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		}
 	},
 
-	updateHtml: function(data) {
-    this.getEl('content_ed').html(data);
-	},
-
 	showEditor: function() {
 		$('body').addClass('content-link-control-on');
 
@@ -871,7 +867,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
       	$rElement.get(0),
 				textArea.val(),
         $('input.content_input_type', this.wrapper).val(),
-				this.updateHtml.bind(this),
       	this.hideEditor.bind(this),
 				this.save.bind(this)
 			);
