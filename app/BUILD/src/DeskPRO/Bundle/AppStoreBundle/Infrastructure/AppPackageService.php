@@ -26,29 +26,42 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
-use DeskPRO\Bundle\AppStoreBundle\DependencyInjection\AppStoreExtension;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundle;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppPackageCreator;
+use JsonSchema;
 
-class AppStoreBundle extends Bundle
+class AppPackageService implements AppPackageCreator
 {
+    /** @var JsonSchema\Validator  */
+    private $schemaValidator;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getContainerExtension()
+    /** @var  \SplFileInfo */
+    private $schema;
+
+    public function __construct(JsonSchema\Validator $schemaValidator, \SplFileInfo $schema)
     {
-        return new AppStoreExtension();
+        $this->schemaValidator = $schemaValidator;
+        $this->schema = $schema;
     }
 
-    public function getNamespace()
+    public function verifyBundle(AppBundle $bundle)
     {
-        return __NAMESPACE__;
+        $manifestString = $bundle->getManifest();
+        $manifestData = json_decode($manifestString, true);
+        if (! is_array($manifestData)) {
+            return false;
+        }
+
+        $this->schemaValidator->validate($manifestData, (object)['$ref' => 'file://' . $this->schema->getRealPath()]);
+        return $this->schemaValidator->isValid();
     }
 
-    public function getPath()
+    public function createPackage(AppBundle $bundle)
     {
-        return __DIR__;
+        return null;
     }
 }
+
+

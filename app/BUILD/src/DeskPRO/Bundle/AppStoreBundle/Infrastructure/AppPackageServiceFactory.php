@@ -26,29 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
-use DeskPRO\Bundle\AppStoreBundle\DependencyInjection\AppStoreExtension;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class AppStoreBundle extends Bundle
+class AppPackageServiceFactory
 {
-
     /**
-     * {@inheritdoc}
+     * @param FileLocator $schemaLocator
+     * @return AppPackageService
      */
-    public function getContainerExtension()
+    public static function createInstance(FileLocator $schemaLocator)
     {
-        return new AppStoreExtension();
-    }
+        $schemaPath = $schemaLocator->locate('@AppStoreBundle/Resources/manifest/schema.default.json');
+        $schemaInfo = new \SplFileInfo($schemaPath);
 
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
+        $service = new AppPackageService(new \JsonSchema\Validator(), $schemaInfo);
+        return $service;
     }
 }
+
+

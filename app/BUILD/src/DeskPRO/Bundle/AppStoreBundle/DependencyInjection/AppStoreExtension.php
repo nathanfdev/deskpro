@@ -26,29 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle;
+/**
+ * DeskPRO.
+ */
 
-use DeskPRO\Bundle\AppStoreBundle\DependencyInjection\AppStoreExtension;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+namespace DeskPRO\Bundle\AppStoreBundle\DependencyInjection;
 
-class AppStoreBundle extends Bundle
+use DeskPRO\Bundle\AppBundle\DependencyInjection\YamlDirectoryLoader;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
+
+class AppStoreExtension extends Extension
 {
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getContainerExtension()
+    public function load(array $config, ContainerBuilder $container)
     {
-        return new AppStoreExtension();
-    }
-
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
+        $loader = new YamlDirectoryLoader($container);
+        $loader->loadDir(__DIR__.'/../Resources/config');
     }
 }

@@ -28,7 +28,10 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
+use DeskPRO\Bundle\AppStoreBundle\Domain;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppPackageCreator;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
+use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity;
@@ -41,7 +44,7 @@ use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
  * @ApiModes("all")
  * @Rest\Route("/apps")
  */
-class AppsController {
+class AppsController extends FOSRestController {
 
     /**
      * @Rest\GET("/{application}")
@@ -62,8 +65,11 @@ class AppsController {
      */
     public function createFromZipFile(Infrastructure\AppZipArchiveBundle $bundle)
     {
-        $manifest = $bundle->getManifest();
-        return json_decode($manifest, true);
+        /** @var AppPackageCreator $packageCreator */
+        $packageCreator = $this->container->get(Domain\AppPackageCreator::class);
+        $valid = $packageCreator->verifyBundle($bundle);
+
+        return [ "manifest is valid" => $valid ];
     }
 
     /**

@@ -1,0 +1,45 @@
+{
+  "id": "com.deskpro.my-app",
+
+  "name": "App Name",
+
+  "description": "A short description that support **Markdown**",
+
+  "url": "http://my-app.com/",
+
+  "author": {
+    "name": "John Doe",
+    "email": "email@example.com",
+    "url": "https://example.com/"
+  },
+
+  "is_single": true,
+
+  "scope": "agent",
+
+  "targets": {
+    "my_sidebar":    { "target": "ticket", "url": "./ticket.html" },
+    "other_sidebar": { "target": "person", "url": "./person.html" },
+    "other":         { "target": null,     "url": "./other.html" }
+  },
+
+  "settings": {
+    "name": "my_setting",
+    "type": "text/textarea/select/hidden",
+    "default_value": "foo",
+
+    "is_private": false,
+
+    "options": [
+      {"name": "example_option", "value": "foo"}
+    ]
+  },
+
+  "deskpro_api_tags": ["tickets.*"],
+
+  "external_apis": [
+    "https://my-domain.com/*",
+    "/^https?://w+.deskpro.com/.*?$",
+    "https://${settings.my_domain_name}.com/*"
+  ]
+}

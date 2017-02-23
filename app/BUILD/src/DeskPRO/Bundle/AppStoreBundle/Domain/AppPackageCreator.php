@@ -26,29 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-use DeskPRO\Bundle\AppStoreBundle\DependencyInjection\AppStoreExtension;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
-class AppStoreBundle extends Bundle
+interface AppPackageCreator
 {
-
     /**
-     * {@inheritdoc}
+     * @param AppBundle $bundle
+     * @return boolean
      */
-    public function getContainerExtension()
-    {
-        return new AppStoreExtension();
-    }
+    public function verifyBundle(AppBundle $bundle);
 
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
-    }
+    public function createPackage(AppBundle $bundle);
 }
