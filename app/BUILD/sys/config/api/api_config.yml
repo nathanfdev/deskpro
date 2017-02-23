@@ -20,6 +20,15 @@ services:
     arguments: ["@service_container"]
     tags:
       - { name: twig.extension }
+  # override the default body_listener to keep throw error behaviour but ignore some content-types like zip
+  # see the original configuration in vendor/friendsofsymfony/rest-bundle/FOS/RestBundle/Resources/config/body_listener.xml
+  fos_rest.body_listener:
+    class: DeskPRO\Bundle\ApiBundle\EventListener\DecodeRequestBodyListener
+    calls:
+      - [setDefaultFormat, ['%fos_rest.body_default_format%']]
+    arguments: ["@fos_rest.decoder_provider", "%fos_rest.throw_exception_on_unsupported_content_type%"]
+    tags:
+      - { name: "kernel.event_listener", event: "kernel.request", method: "onKernelRequest", priority: 10 }
 
 framework:
     esi:             { enabled: true }
@@ -68,11 +77,13 @@ fos_rest:
         inflector: api_url_inflector
     format_listener:
         rules:
-            - { path: '^/api/v2', priorities: ['json', 'jsonp'], fallback_format: json, prefer_extension: false }
+            - { path: '^/api/v2', priorities: ['json', 'jsonp', 'zip'], fallback_format: json, exception_fallback_format: json, prefer_extension: false }
     exception:
         enabled: true
         exception_controller: 'DeskPRO\Bundle\ApiBundle\Controller\ExceptionController::showAction'
     view:
+        mime_types:
+            { zip: ['application/zip']}
         view_response_listener: force
         formats:
             json: true

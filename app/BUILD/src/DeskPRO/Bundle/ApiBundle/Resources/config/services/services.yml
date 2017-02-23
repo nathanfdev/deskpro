@@ -1,3 +1,7 @@
+parameters:
+  json_body_listener.ignore_content_type_names:
+    - zip
+
 services:
 
   deskpro.api.request_auth:
@@ -21,6 +25,7 @@ services:
 
   content_type_listener:
     class: DeskPRO\Bundle\ApiBundle\EventListener\ContentTypeListener
+    arguments: ["%json_body_listener.ignore_content_type_names%"]
     tags:
       - { name: kernel.event_subscriber }
 
@@ -98,5 +103,11 @@ services:
     arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
         - { name: request.param_converter, converter: DeskPRO\Bundle\ApiBundle\Apps\AppStateParamConverter }
+
+  DeskPRO\Bundle\ApiBundle\ParamConverter\RequestBodyToTemporaryFileConverter:
+    class: DeskPRO\Bundle\ApiBundle\ParamConverter\RequestBodyToTemporaryFileConverter
+    factory: [DeskPRO\Bundle\ApiBundle\ParamConverter\RequestBodyToTemporaryFileConverter, createFromGlobals]
+    tags:
+        - { name: request.param_converter, converter: DeskPRO\Bundle\ApiBundle\ParamConverter\RequestBodyToTemporaryFileConverter }
 
 

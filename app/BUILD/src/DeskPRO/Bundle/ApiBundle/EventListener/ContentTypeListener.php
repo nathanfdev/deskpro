@@ -37,13 +37,26 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class ContentTypeListener implements EventSubscriberInterface
 {
+    /** @var array  */
+    private $ignoredContentTypes = [];
+
+    /**
+     * Constructor.
+     *
+     * @param array $ignoredContentTypes
+     */
+    public function __construct(array $ignoredContentTypes)
+    {
+        $this->ignoredContentTypes = $ignoredContentTypes;
+    }
+
     /**
      * {@inheritdoc}
      */
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::REQUEST => ['onRequest', 512],
+            KernelEvents::REQUEST => ['onRequest', 200],
         ];
     }
 
@@ -52,6 +65,14 @@ class ContentTypeListener implements EventSubscriberInterface
      */
     public function onRequest(GetResponseEvent $event)
     {
+        $contentType = $request->headers->get('Content-Type');
+        if (!empty($contentType)) {
+            $requestFormatName = $request->getFormat($contentType);
+            if (! empty($requestFormatName) && in_array($requestFormatName, $this->ignoredContentTypes)) {
+                return;
+            }
+        }
+
         $request = $event->getRequest();
         $content = $request->getContent();
 

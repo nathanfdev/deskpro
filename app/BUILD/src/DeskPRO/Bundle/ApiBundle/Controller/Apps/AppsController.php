@@ -33,6 +33,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 /**
  * Class AppsController
@@ -55,12 +56,45 @@ class AppsController {
     }
 
     /**
-     * @Rest\POST("/")
+     * @Rest\POST("", condition="request.headers.get('Content-Type') matches '#application/zip#i'")
+     * @ParamConverter("file", class="SplFileInfo", converter="DeskPRO\Bundle\ApiBundle\ParamConverter\RequestBodyToTemporaryFileConverter")
+     * @return string
+     */
+    public function createFromZipFile(\SplFileInfo $file)
+    {
+        return new Entity\AppStore\AppInstance();
+    }
+
+    /**
+     * @Rest\POST("/{application}", condition="request.headers.get('Content-Type') matches '#application/zip#i'")
+     * @ParamConverter("file", class="SplFileInfo", converter="DeskPRO\Bundle\ApiBundle\ParamConverter\RequestBodyToTemporaryFileConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
+     * @param Entity\AppStore\AppInstance $application
+     * @return string
+     */
+    public function updateFromZipFile(Entity\AppStore\AppInstance $application, \SplFileInfo $file)
+    {
+        return $application;
+    }
+
+    /**
+     * @Rest\POST("", condition="request.headers.get('Content-Type') matches '#application/json#i'")
+     * @ParamConverter("file", class="SplFileInfo", converter="DeskPRO\Bundle\ApiBundle\ParamConverter\RequestBodyToTemporaryFileConverter")
+     * @return string
+     */
+    public function createFromUrl()
+    {
+        throw new ServiceUnavailableHttpException('endpoint not available');
+    }
+
+    /**
+     * @Rest\POST("/{application}", condition="request.headers.get('Content-Type') matches '#application/json#i'")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
      * @param Entity\AppStore\AppInstance $application
      */
-    public function createOrUpdateApp(Entity\AppStore\AppInstance $application = null)
+    public function updateAppFromUrl(Entity\AppStore\AppInstance $application)
     {
-
+        throw new ServiceUnavailableHttpException('endpoint not available');
     }
 
     /**
