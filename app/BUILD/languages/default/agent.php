@@ -2486,7 +2486,7 @@ return [
     'agent.userchat.message_user-joined'                       => '{{name}} joined the chat',
     'agent.userchat.message_user-left'                         => '{{name}} left the chat',
     'agent.userchat.message_user-returned'                     => 'User has returned',
-    'agent.userchat.message_user-timeout'                      => 'User timed out',
+    'agent.userchat.message_user-timeout'                      => 'User timeout: The system has detected that the user has been disconnected or has left the chat page. If the user does not return, the chat will soon be ended automatically.',
     'agent.userchat.message_user_joined'                       => '{{name}} joined the chat',
     'agent.userchat.message_user_left'                         => '{{name}} left the chat',
     'agent.userchat.message_wait-timeout'                      => 'Chat ended: Could not find an agent',

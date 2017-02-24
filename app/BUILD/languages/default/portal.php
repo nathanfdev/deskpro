@@ -194,7 +194,7 @@ return [
     'portal.chat.message_user-joined'                       => '{{name}} joined the chat',
     'portal.chat.message_user-left'                         => '{{name}} left the chat',
     'portal.chat.message_user-returned'                     => 'User has returned',
-    'portal.chat.message_user-timeout'                      => 'User timed out',
+    'portal.chat.message_user-timeout'                      => 'User timeout: The system has detected that the user has been disconnected or has left the chat page. If the user does not return, the chat will soon be ended automatically.',
     'portal.chat.message_user_joined'                       => '{{name}} joined the chat',
     'portal.chat.message_user_left'                         => '{{name}} left the chat',
     'portal.chat.message_wait-long'                         => 'Sorry! It’s taking longer than expected to find an agent to take your chat.',
