@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { AgentAvatars } from './AgentAvatars';
 import ChatPopup from './ChatPopup';
 
@@ -34,7 +35,7 @@ export class OnlineAgentsPopup extends React.Component {
         <div>
           <div className="preemtive-chat-content" onClick={this.onClick}>
             <h1>
-              <span>Agents Online</span>
+              <span>{portalPhrases.get('portal.widget.online_agents')}</span>
             </h1>
             <div className="dpdesignportal-chat-header">
               <AgentAvatars onlineAgents={onlineAgents} />
