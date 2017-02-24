@@ -45,6 +45,9 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class ChatConversationType.
+ */
 class ChatConversationType extends AbstractType
 {
     /**
@@ -62,6 +65,9 @@ class ChatConversationType extends AbstractType
         $this->fieldManager = $fieldManager;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -96,6 +102,9 @@ class ChatConversationType extends AbstractType
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver

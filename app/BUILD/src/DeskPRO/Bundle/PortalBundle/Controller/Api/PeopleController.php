@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use DeskPRO\Bundle\PortalBundle\Annotation\Dpsid;
@@ -53,11 +54,18 @@ class PeopleController extends AbstractApiController
      */
     public function getOnlineAgentsAction()
     {
-        $ids = $this->getPersonRepository()->getActiveAgentIdsForUserChat();
+        $agentIds           = $this->getPersonRepository()->getActiveAgentIdsForUserChat();
+        $brand              = $this->getBrandContainer()->getBrand();
+        $brandDepartmentIds = $brand->getChatDepartments()->map(function (Department $department) {
+            return $department->getId();
+        })->getValues();
 
-        $agents = array_filter($this->getPersonRepository()->findBy(['id' => $ids]), function ($agent) {
-            /* @var Person $agent */
-            return $agent->hasPerm('agent_chat.use');
+        $agents = $this->getPersonRepository()->findBy(['id' => $agentIds]);
+        $agents = array_filter($agents, function (Person $agent) use ($brandDepartmentIds) {
+            $agent->loadHelper('AgentPermissions');
+            $agentDepartmentIds = $agent->getHelper('AgentPermissions')->getAllowedDepartments('chat');
+
+            return $agent->hasPerm('agent_chat.use') && array_intersect($brandDepartmentIds, $agentDepartmentIds);
         });
 
         return new View($this->wrap($agents));
