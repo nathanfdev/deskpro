@@ -510,12 +510,22 @@ class TicketController extends AbstractController
         return $this->render('AgentBundle:Ticket:view.html.twig', $vars);
     }
 
+    /**
+     * @param int $ticket_id
+     * @param int $page
+     *
+     * @return Response
+     */
     public function getMessagePageAction($ticket_id, $page)
     {
-        $ticket                     = $this->getTicketOr404($ticket_id);
-        $ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, $page);
+        if (!is_int($page) || $page < 1) {
+            return $this->createResponse(sprintf('Incorrect page number: %s', $page), Response::HTTP_BAD_REQUEST);
+        }
 
-        return $this->createResponse($ticket_messages_blockcache['ticket_messages_block'], 200);
+        $ticket                   = $this->getTicketOr404($ticket_id);
+        $ticketMessagesBlockCache = $this->_getMessageBlockInfo($ticket, $page);
+
+        return $this->createResponse($ticketMessagesBlockCache['ticket_messages_block'], Response::HTTP_OK);
     }
 
     protected function _getTicketPerms(Entity\Ticket $ticket)
@@ -649,13 +659,9 @@ class TicketController extends AbstractController
         return $info;
     }
 
-    protected function _getMessageBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page, array $ticket_attachments = null, $is_pdf = false, $is_print = false)
+    protected function _getMessageBlockInfo(Ticket $ticket, $page, array $ticket_attachments = [], $is_pdf = false, $is_print = false)
     {
-        $per_page = 25;
-
-        if ($is_pdf || $is_print) {
-            $per_page = 500;
-        }
+        $per_page = ($is_pdf || $is_print) ? 500 : 25;
 
         $all_message_ids = $this->db->fetchAllCol('
             SELECT id
@@ -690,7 +696,7 @@ class TicketController extends AbstractController
             return ($ts_a < $ts_b) ? -1 : 1;
         });
 
-        if ($ticket_attachments === null) {
+        if (empty($ticket_attachments)) {
             $ticket_attachments = $this->em->getRepository(TicketAttachment::class)->getAttachmentsForMessages($ticket_messages);
         }
 
