@@ -337,6 +337,7 @@ pageMeta.baseId = '{{ baseId }}';
 					{{ phrase('agent.general.reason') }}: <input type="text" id="{{baseId}}_block_reason" value="" style="width: 60%;" /><br />
 					<label>
 						<input type="checkbox" id="{{baseId}}_block_ip" /> {{ phrase('agent.userchat.block_ip_address') }}
+						{% if convo.session and convo.session.ip_address %}{{ convo.session.ip_address }}{% endif %}
 						<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.userchat.block_ip_address_info') }}"></span>
 					</label>
 
