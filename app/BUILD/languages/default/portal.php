@@ -532,6 +532,7 @@ return [
     'portal.forms.label_timezone'                           => 'Timezone',
     'portal.forms.label_title'                              => 'Title',
     'portal.forms.label_workflow'                           => 'Workflow',
+    'portal.forms.label_upload_picture'                     => 'Upload Picture',
     'portal.general.add-comment'                            => 'Add a comment',
     'portal.general.admin'                                  => 'Admin',
     'portal.general.admin_home'                             => 'Admin Home',
