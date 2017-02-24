@@ -29,36 +29,54 @@
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DeskPRO\Bundle\AppBundle\Entity;
-use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceFinder;
+use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationFinder;
 use Doctrine\ORM;
 
-class DoctrineApplicationInstanceFinder implements ApplicationInstanceFinder
+class ApplicationDoctrineFinder implements ApplicationFinder
 {
     /** @var ORM\EntityManager */
     private $entityManager;
 
-    /**
-     * @param ORM\EntityManager $entityManager
-     */
     public function __construct(ORM\EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
     }
 
     /**
-     * @param string $applicationName
+     * @param $name
      * @return mixed
      */
-    function findSoleApplicationInstance($applicationName)
+    function findByName($name)
+    {
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb
+            ->from(Entity\AppStore\App::class, 'a')
+            ->select('a')
+            ->where('a.name = :name')
+            ->setParameter('name', $name)
+        ;
+
+        $result = $qb->getQuery()->getResult();
+        if (1 != count($result)) { //instance not found or more than one
+            return null;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    function findByInstanceId($id)
     {
         $qb = $this->entityManager->createQueryBuilder();
         $qb
             ->from(Entity\AppStore\AppInstance::class, 'i')
             ->select('i, a')
             ->innerJoin('i.app', 'a')
-            ->where('a.name = :name')
-            ->setMaxResults(2)
-            ->setParameter('name', $applicationName)
+            ->where('i.id = :id')
+            ->setParameter('id', $id)
         ;
 
         $result = $qb->getQuery()->getResult();
@@ -68,18 +86,6 @@ class DoctrineApplicationInstanceFinder implements ApplicationInstanceFinder
 
         /** @var Entity\AppStore\AppInstance $instance */
         $instance = array_pop($result);
-        return $instance;
-    }
-
-    /**
-     * @param string $id
-     * @return mixed
-     */
-    function findById($id)
-    {
-        $repository = $this->entityManager->getRepository(Entity\AppStore\AppInstance::class);
-        /** @var Entity\AppStore\AppInstance $instance */
-        $instance = $repository->find($id);
-        return $instance;
+        return $instance->getApp();
     }
 }

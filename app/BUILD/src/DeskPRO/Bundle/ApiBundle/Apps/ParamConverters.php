@@ -17,7 +17,7 @@ class ParamConverters
      */
     public static function createAppInstanceConverter(ORM\EntityManager $entityManager)
     {
-        $finder = new Infrastructure\DoctrineApplicationInstanceFinder($entityManager);
+        $finder = new Infrastructure\ApplicationInstanceDoctrineFinder($entityManager);
         return new AppInstanceParamConverter($finder, new IdentifierParser());
     }
 
@@ -27,7 +27,7 @@ class ParamConverters
      */
     public static function createAppConverter(ORM\EntityManager $entityManager)
     {
-        $finder = new Infrastructure\DoctrineApplicationFinder($entityManager);
+        $finder = new Infrastructure\ApplicationDoctrineFinder($entityManager);
         return new AppParamConverter($finder, new IdentifierParser());
     }
 

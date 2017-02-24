@@ -7,16 +7,17 @@ use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AppInstanceParamConverter implements ParamConverterInterface
 {
-    /** @var Infrastructure\ApplicationInstanceFinder  */
+    /** @var Infrastructure\ApplicationInstanceDoctrineFinder  */
     private $finder;
 
     /** @var IdentifierParser */
     private $identifierParser;
 
-    public function __construct(Infrastructure\DoctrineApplicationInstanceFinder $finder, IdentifierParser $identifierParser)
+    public function __construct(Infrastructure\ApplicationInstanceDoctrineFinder $finder, IdentifierParser $identifierParser)
     {
         $this->finder = $finder;
         $this->identifierParser = $identifierParser;
@@ -33,7 +34,8 @@ class AppInstanceParamConverter implements ParamConverterInterface
 
         $application = $this->convert($from);
         if (empty($application)) {
-            return false;
+            //TODO provide a better exception context, serialization etc
+            throw new NotFoundHttpException('could not find application instance');
         }
 
         $request->attributes->set($attributeName, $application);
