@@ -3,20 +3,20 @@
 namespace DeskPRO\Bundle\ApiBundle\Apps;
 
 use DeskPRO\Bundle\AppBundle\Entity;
-use DeskPRO\Bundle\AppStoreBundle\Domain;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class AppInstanceParamConverter implements ParamConverterInterface
 {
-    /** @var Domain\ApplicationInstanceFinder  */
+    /** @var Infrastructure\ApplicationInstanceFinder  */
     private $finder;
 
     /** @var IdentifierParser */
     private $identifierParser;
 
-    public function __construct(Domain\ApplicationInstanceFinder $finder, IdentifierParser $identifierParser)
+    public function __construct(Infrastructure\DoctrineApplicationInstanceFinder $finder, IdentifierParser $identifierParser)
     {
         $this->finder = $finder;
         $this->identifierParser = $identifierParser;

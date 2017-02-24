@@ -11,26 +11,29 @@ use Symfony\Component\HttpFoundation\Request;
 class AssetFilterParamConverter implements ParamConverterInterface
 {
     /** @var Domain\SearchFilters  */
-    private $filters;
+    private $searchFilterConvertor;
 
     public function __construct(Domain\SearchFilters $filters)
     {
-        $this->filters = $filters;
+        $this->searchFilterConvertor = $filters;
     }
 
     public function apply(Request $request, Configuration\ParamConverter $configuration)
     {
-        $filterValues = new Domain\SearchFilterValueArrayMap();
-        $this->resolveFilterValues($request->attributes, $filterValues);
+        $filterValues = $this->mapParameterBagToFilterValues(
+            $request->attributes,
+            new Domain\SearchFilterValueArrayMap()
+        );
+
+        $filter = $this->searchFilterConvertor->convertValueMapToAssetFilter($filterValues);
 
         $attributeName = $configuration->getName();
-        $filter = $this->filters->convertValueMapToAssetFilter($filterValues);
         $request->attributes->set($attributeName, $filter);
 
         return true;
     }
 
-    private function resolveFilterValues(ParameterBag $params, Domain\SearchFilterValueArrayMap $filterValues)
+    private function mapParameterBagToFilterValues(ParameterBag $params, Domain\SearchFilterValueArrayMap $filterValues)
     {
         if ($params->has('ext')) {
             $filterValues->setFileExtension($params->get('ext'));
@@ -39,6 +42,8 @@ class AssetFilterParamConverter implements ParamConverterInterface
         if ($params->has('path')) {
             $filterValues->setFilePathPattern($params->get('path'));
         }
+
+        return $filterValues;
     }
 
     public function supports(Configuration\ParamConverter $configuration) {
