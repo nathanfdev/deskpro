@@ -1,5 +1,6 @@
 import 'froala-editor/js/froala_editor.pkgd.min';
 import React, { PropTypes } from 'react';
+import Isvg from 'react-inlinesvg';
 import $ from 'jquery';
 import FroalaEditor from 'react-froala-wysiwyg';
 import classNames from 'classnames';
@@ -29,7 +30,7 @@ class Container extends React.Component {
     current:         PropTypes.object.isRequired,
     searchQuery:     PropTypes.string,
     isOpen:          PropTypes.bool.isRequired,
-    clickOut:        PropTypes.func,
+    onClose:         PropTypes.func,
     saveDraft:       PropTypes.func,
     onSubmit:        PropTypes.func,
     onChange:        PropTypes.func,
@@ -52,7 +53,7 @@ class Container extends React.Component {
     onAttach() {
 
     },
-    clickOut() {
+    onClose() {
 
     },
     onSubmit() {
@@ -102,7 +103,8 @@ class Container extends React.Component {
       expandGroupHeader: false,
       searching:         false,
       message:           '',
-      attachOpened:      false
+      linkDrawerOpened:  false,
+      editorControls:    null
     };
 
     this.destroyEditor    = () => {};
@@ -114,7 +116,7 @@ class Container extends React.Component {
     this.handleKeydown    = this.handleKeydown.bind(this);
     this.initFroala       = this.initFroala.bind(this);
     this.bindFroalaEvents = this.bindFroalaEvents.bind(this);
-    this.openAttach       = this.openAttach.bind(this);
+    this.openLink         = this.openLink.bind(this);
   }
 
   componentDidMount() {
@@ -129,7 +131,7 @@ class Container extends React.Component {
   }
 
   componentWillUnmount() {
-    this.destroyEditor();
+    this.state.editorControls.destroy();
   }
 
   getPath = (props) => {
@@ -157,12 +159,9 @@ class Container extends React.Component {
     return (
       <span className="wrapper">
         {header}
+        <CloseChat onClick={() => { this.closeContainer(); }} />
         <i
-          className={classNames('remove icon')}
-          onClick={() => { this.clickOut(); }}
-        />
-        <i
-          className={classNames('search icon', { enabled: this.state.searching })}
+          className={classNames('search icon dp-button', { enabled: this.state.searching })}
           onClick={() => { this.toggleSearch(); }}
         />
       </span>
@@ -204,11 +203,11 @@ class Container extends React.Component {
     this.setState({ emojiOpened: false });
   }
 
-  clickOut() {
+  closeContainer() {
     this.closeEmoji();
     this.setState({ searching: false, expandedHeader: false });
     this.props.onChatSearch('');
-    this.props.clickOut(this.props.current.get('id'));
+    this.props.onClose(this.props.current.get('id'));
   }
 
   addEmoji(emoji) {
@@ -216,7 +215,6 @@ class Container extends React.Component {
     const html = emoji.shortname;
     editor.events.focus();
     editor.html.insert(html);
-    editor.events.focus();
   }
 
   handleChange(text) {
@@ -232,8 +230,8 @@ class Container extends React.Component {
   }
 
   initFroala(initControls) {
+    this.setState({ editorControls: initControls });
     initControls.initialize();
-    this.destroyEditor = initControls.destroy;
   }
 
   bindFroalaEvents(e, editor) {
@@ -243,7 +241,7 @@ class Container extends React.Component {
   }
 
   handleKeydown(e) {
-    if (e.keyCode === 13 && (e.ctrlKey || e.metaKey)) {
+    if (e.keyCode === 13 && !(e.ctrlKey || e.metaKey || e.shiftKey || e.altKey)) {
       e.stopPropagation();
       this.handleSubmit(e);
       return false;
@@ -251,8 +249,8 @@ class Container extends React.Component {
     return e;
   }
 
-  openAttach() {
-    this.setState({ attachOpened: true });
+  openLink() {
+    this.setState({ linkDrawerOpened: true });
   }
 
   groupHeader() {
@@ -329,10 +327,11 @@ class Container extends React.Component {
     return null;
   }
 
-  handleAttach(item) {
+  handleLink(item) {
     const propertyName = `${item.tabType}_id`;
     const message = `{{${item.tabType.charAt(0).toLowerCase()}-${item.page.meta[propertyName]}}}: ${item.title}`;
-    this.props.onSubmit(message);
+    this.editor.events.focus();
+    this.editor.html.insert(message);
   }
 
 
@@ -342,15 +341,15 @@ class Container extends React.Component {
     const items = Object.keys(activeTabs).map((index) => {
       const item = activeTabs[index];
       return {
-        label:   item.title,
+        label:   item.title.length > 50 ? `${item.title.substr(0, 50)}\u2026` : item.title,
         icon:    Container.pickIcon(item),
-        onClick: () => this.handleAttach(item)
+        onClick: () => this.handleLink(item)
       };
     });
 
-    return this.attach ?
-      (<Detached zIndex={99999} isOpen={this.state.attachOpened} positionTarget={this.attach} positionMy="right+25 top+35">
-        <ClickOut onClickOut={() => { this.setState({ attachOpened: false }); }}>
+    return this.linkTrigger ?
+      (<Detached zIndex={99999} isOpen={this.state.linkDrawerOpened} positionTarget={this.linkTrigger} positionMy="right+25 top+35">
+        <ClickOut onClickOut={() => { this.setState({ linkDrawerOpened: false }); }}>
           <div className="attach-list">
             <Header content="Current tabs" level={4} className="attach-header" />
             <List elements={items} />
@@ -373,23 +372,30 @@ class Container extends React.Component {
     }
 
     const froalaConfig = {
-      imageUploadMethod:         'POST',
-      imageUploadParams:         { _rt: window.DP_REQUEST_TOKEN, json: true },
-      imageUploadURL:            `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
-      fileUploadMethod:          'POST',
-      fileUploadParams:          { _rt: window.DP_REQUEST_TOKEN, json: true },
-      fileUploadURL:             `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
-      toolbarInline:             true,
-      charCounterCount:          false,
-      toolbarButtons:            ['bold', 'italic', 'underline', 'strikeThrough', 'color', '-', 'align', 'formatOL', 'formatUL', 'insertImage', '-', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
-      shortcutsEnabled:          ['bold', 'italic', 'underline'],
-      enter:                     $.FroalaEditor.ENTER_BR,
-      placeholderText:           false,
-      immediateReactModelUpdate: true,
-      key:                       'qENARBFSTb1G1QJg1RA==',
-      events:                    {
-        'froalaEditor.focus':       Container.onFocus,
-        'froalaEditor.blur':        Container.onBlur,
+      imageUploadMethod:              'POST',
+      imageUploadParams:              { _rt: window.DP_REQUEST_TOKEN, json: true },
+      imageUploadURL:                 `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
+      imageDefaultWidth:              280,
+      fileUploadMethod:               'POST',
+      fileUploadParams:               { _rt: window.DP_REQUEST_TOKEN, json: true },
+      fileUploadURL:                  `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
+      videoUploadMethod:              'POST',
+      videoUploadParams:              { _rt: window.DP_REQUEST_TOKEN, json: true },
+      videoUploadURL:                 `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
+      videoDefaultWidth:              280,
+      videoResize:                    false,
+      toolbarInline:                  true,
+      charCounterCount:               false,
+      toolbarButtons:                 ['bold', 'italic', 'underline', 'strikeThrough', 'color', '-', 'align', 'formatOL', 'formatUL', 'insertImage', '-', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
+      toolbarVisibleWithoutSelection: true,
+      shortcutsEnabled:               ['bold', 'italic', 'underline'],
+      enter:                          $.FroalaEditor.ENTER_BR,
+      placeholderText:                false,
+      immediateReactModelUpdate:      true,
+      key:                            'qENARBFSTb1G1QJg1RA==',
+      events:                         {
+        'froalaEditor.focus':       () => { this.editor.selection.restore(); Container.onFocus(); },
+        'froalaEditor.blur':        () => { this.editor.selection.save(); Container.onBlur(); },
         'froalaEditor.initialized': this.bindFroalaEvents
       }
     };
@@ -432,9 +438,9 @@ class Container extends React.Component {
                 onManualControllerReady={this.initFroala}
               />
               <i
-                className={classNames('fa fa-paperclip reply-icon', { inactive: Object.keys(this.props.activeTabs).length < 1 })}
-                ref={(c) => { this.attach = c; }}
-                onClick={this.openAttach}
+                className={classNames('fa fa-link reply-icon', { inactive: Object.keys(this.props.activeTabs).length < 1 })}
+                ref={(c) => { this.linkTrigger = c; }}
+                onClick={this.openLink}
               />
               <i
                 className="fa fa-smile-o reply-icon emoji trigger"
@@ -457,5 +463,17 @@ class Container extends React.Component {
     );
   }
 }
+
+function CloseChat(props) {
+  return (
+    <span className="dp-button close-im" onClick={props.onClick}>
+      <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/im/close-open-im.svg`} />
+    </span>
+  );
+}
+
+CloseChat.propTypes = {
+  onClick: PropTypes.func.isRequired
+};
 
 export default Container;

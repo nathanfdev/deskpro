@@ -225,7 +225,7 @@ export default class IMOverlay extends React.Component {
       >
         {children}
         <Detached
-          positionMy="center-25 top"
+          positionMy="center-20 top"
           zIndex={99999}
           isOpen={isOpen}
           positionTarget={this.imButton}

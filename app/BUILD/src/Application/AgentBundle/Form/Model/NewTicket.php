@@ -591,10 +591,7 @@ class NewTicket
                 $newIMtext = sprintf(
                     '[{{t-%d}}] %s',
                     $ticket->getId(),
-                    $this->is_html_reply
-                        ? Strings::prepareWysiwygHtml(Strings::trimHtml($this->message))
-                        : Strings::text2html($this->message)
-
+                    Strings::prepareWysiwygHtml(Strings::trimHtml($this->message))
                 );
 
                 App::$container->get('deskpro.notification.service')->sendNote(

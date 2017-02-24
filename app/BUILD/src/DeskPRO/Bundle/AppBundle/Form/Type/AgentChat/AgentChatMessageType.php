@@ -50,7 +50,7 @@ class AgentChatMessageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('message', HtmlTextareaType::class)
+            ->add('message', HtmlTextareaType::class, ['html_type' => 'extended_html'])
             ->add('uuid', TextType::class);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);

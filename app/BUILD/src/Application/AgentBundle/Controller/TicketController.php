@@ -1283,10 +1283,7 @@ class TicketController extends AbstractController
                     $newIMtext = sprintf(
                         '[{{t-%d}}] %s',
                         $ticket->getId(),
-                        $this->in->getBool('message_is_html')
-                            ? Strings::prepareWysiwygHtml(Strings::trimHtml($this->in->getHtmlCore('message')))
-                            : Strings::text2html(Strings::trimHtml($request_message_orig))
-
+                        Strings::prepareWysiwygHtml(Strings::trimHtml($this->in->getHtmlCore('message')))
                     );
                     $this->container->get('deskpro.notification.service')->sendNote($this->person, $agentIds, $newIMtext);
                 }

@@ -143,8 +143,14 @@ class NotificationService
         $agentChatRepository = $this->em->getRepository(AgentChat::class);
         $personRepository    = $this->em->getRepository(Person::class);
 
-        // note this is a ugly cheat cause legacy code sends <span> element which we don't wanna change
-        $noteText = preg_replace(['#\&lt;span\&gt;#', '#\&lt;/span\&gt;#'], ['<strong>', '</strong>'], $noteText);
+        //ugly cheat
+        foreach ($personRepository->findBy(['id' => $ids]) as $participant) {
+            $noteText = str_replace(
+                '@'.$participant->getDisplayName(),
+                '<strong>@'.$participant->getDisplayName().'</strong>',
+                $noteText
+            );
+        }
 
         $chat = null;
 

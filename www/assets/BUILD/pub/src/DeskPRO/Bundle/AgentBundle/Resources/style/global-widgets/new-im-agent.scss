@@ -69,6 +69,11 @@ img.emojione, svg.emojione {
       position: relative;
       display: inline-block;
 
+      .ui.avatar.image.im svg {
+        width: 24px;
+        height: 24px;
+      }
+
       .agent-online {
         background: #74C365;
         display: block;
@@ -133,36 +138,43 @@ img.emojione, svg.emojione {
   height: 535px;
 
   .im.header {
-    padding-right: 15px;
+    padding-right: 0;
     height: 40px;
 
-    .icon.group.add {
+    .dp-button.group.add {
       margin-left: 5px;
       cursor: pointer;
+      display: inline-block;
+      svg {
+        width: 30px;
+      }
+
     }
 
     .wrapper {
       vertical-align: middle;
 
-      .icon {
-        &.search, &.remove {
-
-          -webkit-border-radius: 2px;
-          -moz-border-radius: 2px;
-          border-radius: 2px;
-          -webkit-box-shadow: inset -1px 0 1px 1px rgba(255,255,255,0.5);
-          -moz-box-shadow: inset -1px 0 1px 1px rgba(255,255,255,0.5);
-          box-shadow: inset -1px 0 1px 1px rgba(255,255,255,0.5);
-
+      .dp-button {
+        &.search, &.close-im {
           float: right;
           cursor: pointer;
-          padding-top: 3px;
-          font-size: 12px;
+          font-size: 14px;
           display: inline-block;
           position: relative;
           vertical-align: middle;
-          height: 20px;
-          width: 20px;
+          height: 40px;
+          width: 40px;
+          margin-top: -9px;
+          border-left: 1px solid $dp-greyscale-50;
+          text-align: center;
+          padding-top: 11px;
+          margin-right: 0;
+        }
+
+        &.close-im {
+          svg {
+            width: 15px;
+          }
         }
 
         &.search.enabled {
@@ -308,11 +320,11 @@ img.emojione, svg.emojione {
       .everyone-list {
         padding: 5px;
         margin: 10px 15px;
+        cursor: pointer;
 
         &:hover {
           color: $dp-sonic-primary;
           background: $dp-morning-sky;
-          cursor: pointer;
         }
       }
 
@@ -362,7 +374,7 @@ img.emojione, svg.emojione {
         color: $dp-greyscale-600;
         font-size: 16px;
         padding: 20px 34px;
-        border-left: none;
+        border-left: 3px solid $dp-greyscale-50;;
 
         .dp-im-tab-menu-icon {
           font-size: 16px;
@@ -372,8 +384,8 @@ img.emojione, svg.emojione {
 
       .im.item.unactive {
         border-top: none;
-        border-left: none;
-        border-right: none;
+        border-left: 1px solid $dp-greyscale-50;
+        border-right: 1px solid $dp-greyscale-50;
         color: $dp-greyscale-450;
         border-bottom: 1px solid;
       }
@@ -383,7 +395,7 @@ img.emojione, svg.emojione {
       }
 
       .im.item:last-of-type {
-        border-right: none;
+        border-right: 1px solid $dp-greyscale-50;
       }
     }
 
@@ -626,6 +638,7 @@ img.emojione, svg.emojione {
         text-align: center;
         padding: 20px;
         color: $dp-sonic-primary;
+        margin-top: 175px;
       }
 
       .ui.segments {
@@ -680,6 +693,19 @@ img.emojione, svg.emojione {
             border: 1px solid $dp-greyscale-350;
             position: relative;
             display: inline-block;
+
+            ol, ul {
+              padding-left: 10px;
+              list-style-type: initial;
+              list-style-position: inside;
+              li {
+                text-indent: -5px
+              }
+            }
+
+            ol {
+              list-style-type: decimal;
+            }
 
             img {
               max-width: 280px !important;
@@ -845,6 +871,20 @@ img.emojione, svg.emojione {
           border: 1px solid $dp-greyscale-450;
           font-size: 12px;
 
+          ol, ul {
+            padding-left: 10px;
+            list-style-type: initial;
+            list-style-position: inside;
+            li {
+              text-indent: -5px
+            }
+          }
+
+          ol {
+            list-style-type: decimal;
+          }
+
+
           &:focus {
             border: 1px solid $dp-sonic-primary;
             outline: none;
@@ -854,10 +894,15 @@ img.emojione, svg.emojione {
         .reply-icon {
           cursor: pointer;
           position: absolute;
-          top: 10px;
+          top: 15px;
           z-index: 10;
 
           &.fa-paperclip {
+            color: $dp-greyscale-850;
+            right: 50px;
+          }
+
+          &.fa-link {
             &.inactive {
               color: $dp-greyscale-450;
             }
@@ -987,10 +1032,19 @@ img.emojione, svg.emojione {
   padding-top: 15px;
   padding-right: 10px;
   padding-bottom: 10px;
-  width: 200px;
+  width: 350px;
 
-  li {
+  .item {
     cursor: pointer;
+    &:hover {
+      color: $dp-sonic-primary;
+      background: $dp-morning-sky;
+    }
+    .content {
+      max-width: 285px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
 
   .attach-header {
