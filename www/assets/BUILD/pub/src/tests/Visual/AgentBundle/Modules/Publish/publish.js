@@ -11,7 +11,7 @@ storiesOf('Agent: Publish', module)
   .add(
     'Agent: Publish: Content Editor',
     () =>
-      <Editor />
+      <Editor onAddFile={action('add file')} />
   )
   .add(
     'Agent: Publish: Manual Topic List',

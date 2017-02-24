@@ -2,6 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import CM from 'codemirror';
 import MarkdownIt from 'markdown-it';
+import 'inline-attachment/src/inline-attachment';
 
 import 'codemirror/mode/xml/xml';
 import 'codemirror/mode/markdown/markdown';
@@ -12,13 +13,15 @@ import * as Icons from './Icons';
 
 class MarkdownEditor extends React.Component {
   static propTypes = {
-    onChange: React.PropTypes.func,
-    options:  React.PropTypes.object,
-    path:     React.PropTypes.string,
-    value:    React.PropTypes.string,
+    onChange:  React.PropTypes.func,
+    onAddFile: React.PropTypes.func,
+    options:   React.PropTypes.object,
+    path:      React.PropTypes.string,
+    value:     React.PropTypes.string,
   };
   static defaultProps = {
-    onChange() {}
+    onChange() {},
+    onAddFile() {}
   };
 
   static renderIcon(icon) {
@@ -45,6 +48,8 @@ class MarkdownEditor extends React.Component {
     this.codeMirror.on('focus', this.focusChanged.bind(this, true));
     this.codeMirror.on('blur', this.focusChanged.bind(this, false));
     this.codeMirror.on('cursorActivity', this.updateCursorState);
+    this.codeMirror.on('paste', this.onPaste);
+    this.codeMirror.on('drop', this.onDrop);
     this.currentCodemirrorValue = this.props.value;
   }
 
@@ -61,6 +66,17 @@ class MarkdownEditor extends React.Component {
     }
   }
 
+  onPaste = (cm, event) => {
+    const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+    this.getItemsToUpload(items);
+  };
+
+  onDrop = (cm, event) => {
+    event.preventDefault();
+    const items = (event.dataTransfer || event.originalEvent.dataTransfer).items;
+    this.getItemsToUpload(items);
+  };
+
   getOptions() {
     return Object.assign({
       mode:           'markdown',
@@ -73,6 +89,22 @@ class MarkdownEditor extends React.Component {
   getCodeMirror() {
     return this.codeMirror;
   }
+
+  getItemsToUpload = (items) => {
+    for (const item of Array.values(items)) {
+      if ((item.kind === 'file') && (item.type.match('^image/'))) {
+        // Drag data item is an image file
+        const blob = item.getAsFile();
+        if (blob) {
+          const formData = new FormData();
+
+          formData.append('file', blob);
+          event.preventDefault();
+          this.props.onAddFile(formData);
+        }
+      }
+    }
+  };
 
   focus() {
     if (this.codeMirror) {

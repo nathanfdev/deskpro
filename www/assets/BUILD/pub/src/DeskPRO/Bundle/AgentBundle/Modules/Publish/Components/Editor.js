@@ -34,13 +34,15 @@ export class Editor extends React.Component {
     value:     PropTypes.string,
     inputType: PropTypes.string,
     onSave:    PropTypes.func,
-    onCancel:  PropTypes.func
+    onCancel:  PropTypes.func,
+    onAddFile: PropTypes.func
   };
   static defaultProps = {
     value:     '',
     inputType: 'markdown',
     onSave() {},
-    onCancel() {}
+    onCancel() {},
+    onAddFile() {}
   };
 
   constructor(props) {
@@ -90,7 +92,7 @@ export class Editor extends React.Component {
   getEditor = () => {
     switch (this.state.inputType) {
       case 'markdown': {
-        return (<MarkdownEditor value={this.state.markdown} onChange={this.onChange} />);
+        return (<MarkdownEditor value={this.state.markdown} onChange={this.onChange} onAddFile={this.props.onAddFile} />);
       }
       case 'rte':
       default: {
