@@ -85,7 +85,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function isPortalEnabled()
     {
-        return App::$container->getSetting('user.portal_enabled');
+        return App::$container->getBrandSetting('core.iface_portal');
     }
 
     public function getJira()
