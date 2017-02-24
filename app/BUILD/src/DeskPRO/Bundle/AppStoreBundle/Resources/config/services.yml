@@ -2,5 +2,5 @@ services:
   DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationCreator:
     class: DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationCreator
     factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationServiceFactory, createInstance]
-    arguments: ["@file_locator"]
+    arguments: ["@file_locator", "@doctrine.orm.default_entity_manager"]
 

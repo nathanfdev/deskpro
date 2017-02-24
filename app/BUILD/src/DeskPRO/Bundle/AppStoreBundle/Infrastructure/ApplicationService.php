@@ -32,17 +32,31 @@ use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use JsonSchema;
+use Doctrine\ORM;
 
 class ApplicationService implements Domain\ApplicationCreator
 {
+    /** @var ORM\EntityManager */
+    private $entityManager;
+
     /** @var JsonSchema\Validator  */
     private $schemaValidator;
 
     /** @var  \SplFileInfo */
     private $schema;
 
-    public function __construct(JsonSchema\Validator $schemaValidator, \SplFileInfo $schema)
-    {
+    /**
+     * ApplicationService constructor.
+     * @param ORM\EntityManager $entityManager
+     * @param JsonSchema\Validator $schemaValidator
+     * @param \SplFileInfo $schema
+     */
+    public function __construct(
+        ORM\EntityManager $entityManager
+        , JsonSchema\Validator $schemaValidator
+        , \SplFileInfo $schema
+    ) {
+        $this->entityManager = $entityManager;
         $this->schemaValidator = $schemaValidator;
         $this->schema = $schema;
     }
@@ -71,7 +85,21 @@ class ApplicationService implements Domain\ApplicationCreator
             $assets[] = $this->mapBundleResourceToAsset($resource, $asset);
         }
 
+        $this->persistApplication($appEntity, $assets);
         return $appEntity;
+    }
+
+    /**
+     * @param Entity\AppStore\App $app
+     * @param array|Entity\AppStore\AppAsset[] $assets
+     */
+    private function persistApplication(Entity\AppStore\App $app, array $assets)
+    {
+        $this->entityManager->persist($app);
+        foreach ($assets as $asset) {
+            $this->entityManager->persist($asset);
+        }
+        $this->entityManager->flush();
     }
 
     /**

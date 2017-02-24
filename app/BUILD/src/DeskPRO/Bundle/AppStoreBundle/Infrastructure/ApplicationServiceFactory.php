@@ -30,19 +30,21 @@ namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator;
 use JsonSchema\Validator;
+use Doctrine\ORM;
 
 class ApplicationServiceFactory
 {
     /**
      * @param FileLocator $schemaLocator
+     * @param ORM\EntityManager $entityManager
      * @return ApplicationService
      */
-    public static function createInstance(FileLocator $schemaLocator)
+    public static function createInstance(FileLocator $schemaLocator, ORM\EntityManager $entityManager)
     {
         $schemaPath = $schemaLocator->locate('@AppStoreBundle/Resources/manifest/schema.default.json');
         $schemaInfo = new \SplFileInfo($schemaPath);
 
-        $service = new ApplicationService(new Validator(), $schemaInfo);
+        $service = new ApplicationService($entityManager, new Validator(), $schemaInfo);
         return $service;
     }
 }
