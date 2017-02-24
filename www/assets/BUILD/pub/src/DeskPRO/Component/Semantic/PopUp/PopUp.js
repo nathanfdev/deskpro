@@ -97,7 +97,7 @@ class PopUp extends React.Component {
     const { content, positionAt, elementId, innerClassName } = this.props;
 
     return (
-      <ClickOut onClickOut={this.closePopup} additionalNodes=".ReactModalPortal">
+      <ClickOut onClickOut={this.closePopup} additionalNodes={['.ReactModalPortal']}>
         <div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen }, innerClassName)}>
           {content}
         </div>

@@ -8,7 +8,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		var self = this;
 		this.page = page;
 		this.display = this.page.getEl('field_holders').find('.field-holders-table');
-		this.initFieldWidgets();
 
 		this.mode = 'view';
 
@@ -155,6 +154,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			if ($scope.isEditMode(field)) return;
 			if ($event.target.tagName === 'A') return;
 
+      self.initFieldWidgets($($event.currentTarget).closest('tbody.'+field));
+
 			var getSelected = function() {
 				if (window.getSelection) {
 					return window.getSelection().toString();
@@ -249,8 +250,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		var $ctrls = this.display.find('.hidden-row');
 		$ctrls.removeClass('off').prev().removeClass('off');
 
-		$('.hijri input').calendarsPicker({calendar: $.calendars.instance('islamic', 'ar')});
-
 		for (var i = 0; i < fields.length; i++) {
 			var f = fields[i];
 
@@ -333,10 +332,14 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		}
 	},
 
-	initFieldWidgets: function() {
-		this.display.find('select').not('.no-dp-select').dpMultiLevelSelect();
-		DP.select(this.display.find('select'));
-		$('.Date.customfield input', this.display).each(function(){
+	initFieldWidgets: function($tbody) {
+		if (!$tbody || $tbody.data('widget-init')) return;
+
+		$('select', $tbody).not('.no-dp-select').dpMultiLevelSelect();
+		// is it the same as one above?
+		DP.select($('select', $tbody));
+
+		$('.Date.customfield input', $tbody).each(function(){
 			$(this).datetimepicker({
 				format: 'YYYY-MM-DD',
 				widgetParent: $(this).parent().css('position', 'relative'),
@@ -353,7 +356,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			});
 		});
 
-		$('.DateTime.customfield input', this.display).each(function(){
+		$('.DateTime.customfield input', $tbody).each(function(){
 			$(this).datetimepicker({
 				format: 'YYYY-MM-DD HH:mm',
 				widgetParent: $(this).parent().css('position', 'relative'),
@@ -368,10 +371,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				}
 			});
 			$(this).on('dp.change', function(){
-
 				$(this).trigger('change');
 			});
 		});
+
+    $('.hijri input', $tbody).calendarsPicker({calendar: $.calendars.instance('islamic', 'ar')});
+
+    $tbody.data('widget-init', 1);
 	},
 
 	saveChanges: function() {
@@ -439,8 +445,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
     old.after(this.display);
     old.remove();
-
-		this.initFieldWidgets();
 
 		this.initScope(this.page.getEl('field_holders'));
 

@@ -16,10 +16,6 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		this.options.strokeColorAlt = 'rgb(0,0,0)';
 		this.options.colorAlt = '#FFFFFF';
 
-		$(document).bind('windowshow', this.disableCrazyMode.bind(this));
-		$(window).bind('mousemove', this.disableCrazyMode.bind(this));
-		$(window).bind('keypress', this.disableCrazyMode.bind(this));
-
 		this.setOptions(options);
 
 		if (this.isHighDensity()) {
@@ -58,6 +54,10 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		if ($('html').hasClass('window-active')) {
 			return;
 		}
+
+    $(document).one('windowshow', this.disableCrazyMode.bind(this));
+    $(window).one('mousemove', this.disableCrazyMode.bind(this));
+    $(window).one('keypress', this.disableCrazyMode.bind(this));
 
 		this.crazyTitle = title || null;
 		this.crazyMode = true;
