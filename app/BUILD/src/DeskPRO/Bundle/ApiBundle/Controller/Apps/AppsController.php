@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain;
-use DeskPRO\Bundle\AppStoreBundle\Domain\AppPackageCreator;
+use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationCreator;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * Class AppsController
@@ -61,30 +62,31 @@ class AppsController extends FOSRestController {
     /**
      * @Rest\POST("", condition="request.headers.get('Content-Type') matches '#application/zip#i'")
      * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\ApiBundle\Apps\AppZipArchiveBundleParamConverter")
+     * @param Infrastructure\AppZipArchiveBundle $bundle
      * @return string
      */
     public function createFromZipFile(Infrastructure\AppZipArchiveBundle $bundle)
     {
-        /** @var AppPackageCreator $packageCreator */
-        $packageCreator = $this->container->get(Domain\AppPackageCreator::class);
-        $valid = $packageCreator->verifyBundle($bundle);
+        /** @var ApplicationCreator $applicationCreator */
+        $applicationCreator = $this->container->get(Domain\ApplicationCreator::class);
+        $validBundle = $applicationCreator->verifyBundle($bundle);
 
-        $resourcePaths = [];
-        foreach ($bundle->listAllResources()  as $resource ) {
-            $resourcePaths[] = $resource->getPath();
+        if (! $validBundle) { //TODO provide a more elaborate exception body
+            throw new UnprocessableEntityHttpException('invalid bundle');
         }
 
-        return [ "manifest is valid" => $valid, "resources" => $resourcePaths ];
+        $application = $applicationCreator->createApplication($bundle);
+        return $application;
     }
 
     /**
      * @Rest\POST("/{application}", condition="request.headers.get('Content-Type') matches '#application/zip#i'")
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\ApiBundle\Apps\AppParamConverter")
      * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\ApiBundle\Apps\AppZipArchiveBundleParamConverter")
-     * @param Entity\AppStore\AppInstance $application
+     * @param Entity\AppStore\App $application
      * @return string
      */
-    public function updateFromZipFile(Entity\AppStore\AppInstance $application, Infrastructure\AppZipArchiveBundle $bundle)
+    public function updateFromZipFile(Entity\AppStore\App $application, Infrastructure\AppZipArchiveBundle $bundle)
     {
         return $application;
     }
@@ -101,10 +103,10 @@ class AppsController extends FOSRestController {
 
     /**
      * @Rest\POST("/{application}", condition="request.headers.get('Content-Type') matches '#application/json#i'")
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
-     * @param Entity\AppStore\AppInstance $application
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\ApiBundle\Apps\AppParamConverter")
+     * @param Entity\AppStore\App $application
      */
-    public function updateAppFromUrl(Entity\AppStore\AppInstance $application)
+    public function updateAppFromUrl(Entity\AppStore\App $application)
     {
         throw new ServiceUnavailableHttpException('endpoint not available');
     }
@@ -117,7 +119,7 @@ class AppsController extends FOSRestController {
      */
     public function deleteApplication(Entity\AppStore\AppInstance $instance)
     {
-
+        throw new ServiceUnavailableHttpException('endpoint not available');
     }
 
     /**

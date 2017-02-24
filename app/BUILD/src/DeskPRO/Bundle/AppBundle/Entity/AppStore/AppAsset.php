@@ -60,4 +60,52 @@ class AppAsset
      * @ORM\Column(type="text", nullable=false)
      */
     private $content;
+
+    /**
+     * @return App
+     */
+    public function getApp(): App
+    {
+        return $this->app;
+    }
+
+    /**
+     * @param App $app
+     */
+    public function setApp(App $app)
+    {
+        $this->app = $app;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * @param mixed $path
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param mixed $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
 }

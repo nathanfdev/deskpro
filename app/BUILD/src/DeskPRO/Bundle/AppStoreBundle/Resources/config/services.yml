@@ -1,6 +1,6 @@
 services:
-  DeskPRO\Bundle\AppStoreBundle\Domain\AppPackageCreator:
-    class: DeskPRO\Bundle\AppStoreBundle\Domain\AppPackageCreator
-    factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppPackageServiceFactory, createInstance]
+  DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationCreator:
+    class: DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationCreator
+    factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationServiceFactory, createInstance]
     arguments: ["@file_locator"]
 

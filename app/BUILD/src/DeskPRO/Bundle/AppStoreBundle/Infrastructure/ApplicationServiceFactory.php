@@ -28,39 +28,22 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
-use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundle;
-use DeskPRO\Bundle\AppStoreBundle\Domain\AppPackageCreator;
-use JsonSchema;
+use DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator;
+use JsonSchema\Validator;
 
-class AppPackageService implements AppPackageCreator
+class ApplicationServiceFactory
 {
-    /** @var JsonSchema\Validator  */
-    private $schemaValidator;
-
-    /** @var  \SplFileInfo */
-    private $schema;
-
-    public function __construct(JsonSchema\Validator $schemaValidator, \SplFileInfo $schema)
+    /**
+     * @param FileLocator $schemaLocator
+     * @return ApplicationService
+     */
+    public static function createInstance(FileLocator $schemaLocator)
     {
-        $this->schemaValidator = $schemaValidator;
-        $this->schema = $schema;
-    }
+        $schemaPath = $schemaLocator->locate('@AppStoreBundle/Resources/manifest/schema.default.json');
+        $schemaInfo = new \SplFileInfo($schemaPath);
 
-    public function verifyBundle(AppBundle $bundle)
-    {
-        $manifestString = $bundle->getManifestAsString();
-        $manifestData = json_decode($manifestString);
-        if (empty($manifestData) || false == $manifestData instanceof \stdClass) {
-            return false;
-        }
-
-        $this->schemaValidator->validate($manifestData, (object)['$ref' => 'file://' . $this->schema->getRealPath()]);
-        return $this->schemaValidator->isValid();
-    }
-
-    public function createPackage(AppBundle $bundle)
-    {
-        return null;
+        $service = new ApplicationService(new Validator(), $schemaInfo);
+        return $service;
     }
 }
 

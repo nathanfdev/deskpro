@@ -28,23 +28,26 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
-use DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use DeskPRO\Bundle\AppStoreBundle\Domain;
 
-class AppPackageServiceFactory
+class AppManifestJsonReader
 {
     /**
-     * @param FileLocator $schemaLocator
-     * @return AppPackageService
+     * @param $jsonString
+     * @return Domain\AppManifest
      */
-    public static function createInstance(FileLocator $schemaLocator)
+    public function readManifest($jsonString)
     {
-        $schemaPath = $schemaLocator->locate('@AppStoreBundle/Resources/manifest/schema.default.json');
-        $schemaInfo = new \SplFileInfo($schemaPath);
+        $manifestMap = json_decode($jsonString, true);
+        $manifest = new Domain\AppManifest();
 
-        $service = new AppPackageService(new \JsonSchema\Validator(), $schemaInfo);
-        return $service;
+        $this->mapManifestMapToObject($manifestMap, $manifest);
+        return $manifest;
+    }
+
+    private function mapManifestMapToObject(array $manifestMap, Domain\AppManifest $manifest)
+    {
+        $value = $manifestMap['name'];
+        $manifest->setName($value);
     }
 }
-
-

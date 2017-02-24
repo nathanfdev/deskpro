@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-interface AppPackageCreator
+interface ApplicationCreator
 {
     /**
      * @param AppBundle $bundle
@@ -36,5 +36,9 @@ interface AppPackageCreator
      */
     public function verifyBundle(AppBundle $bundle);
 
-    public function createPackage(AppBundle $bundle);
+    /**
+     * @param AppBundle $bundle
+     * @return Application
+     */
+    public function createApplication(AppBundle $bundle);
 }
