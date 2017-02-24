@@ -231,16 +231,22 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
     changeRights: (group) ->
       everyone = @$scope.everyone_group.id
       reg = @$scope.reg_group.id
-      if group.id == everyone && !@$scope.user_group_permission[group.id]
+      if group.id == everyone
         for own id,g of @$scope.user_group_permission
-          if id != everyone
-            @$scope.user_group_permission[id] = true
+          if parseInt(id) != everyone && @$scope.user_group_permission[group.id]
+            @$scope.user_group_permission[id] = false
         return true
-      if group.id == reg && !@$scope.user_group_permission[group.id]
+      else if group.id == reg
         for own id,g of @$scope.user_group_permission
-          if id != everyone && id != reg
-            @$scope.user_group_permission[id] = true
+          if parseInt(id) != everyone && parseInt(id) != reg && @$scope.user_group_permission[group.id]
+            @$scope.user_group_permission[id] = false
+        if !@$scope.user_group_permission[everyone] && !@$scope.user_group_permission[reg]
+          @$scope.user_group_permission[everyone] = true
         return true
+      else
+        if !@$scope.user_group_permission[group.id]
+          @$scope.user_group_permission[everyone] = true
+          @$scope.user_group_permission[reg] = true
       return true
 
     checkRights: (group) ->
