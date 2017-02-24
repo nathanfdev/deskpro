@@ -136,7 +136,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 				}
 			}
 		}
-		this.$scope.$safeApply();
 	},
 
 	//##################################################################################################################
@@ -377,7 +376,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.isAdding = false;
 
-		this.$scope.$safeApply();
 		this.$timeout(function() {
 			self.tabBarOverflow.update();
 		});
@@ -483,7 +481,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.isActivating = false;
 		data.isActive = true;
 		DeskPRO_Window.updateWindowUrlFragment();
-		this.$scope.$safeApply();
 	},
 
 
@@ -628,7 +625,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		DeskPRO_Window.updateWindowUrlFragment();
-		this.$scope.$safeApply();
 		if (!silent && tab.page && tab.page.meta.routeUrl && !tab.page.LOADING_TYPENAME) {
 			this.$scope.tabHistory.push({
 				title: tab.title,
