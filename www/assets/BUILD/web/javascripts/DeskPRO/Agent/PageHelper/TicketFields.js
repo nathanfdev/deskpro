@@ -150,11 +150,11 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		};
 
 		$scope.editField = function($event, field) {
-			self.initFieldWidgets($('tbody.'+field, this.display));
-
 			if (!$scope.editables[field]) return;
 			if ($scope.isEditMode(field)) return;
 			if ($event.target.tagName === 'A') return;
+
+      self.initFieldWidgets($($event.currentTarget).closest('tbody.'+field));
 
 			var getSelected = function() {
 				if (window.getSelection) {
@@ -332,14 +332,14 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		}
 	},
 
-	initFieldWidgets: function($el) {
-		if (!$el || !$el.data('widget-init')) return;
+	initFieldWidgets: function($tbody) {
+		if (!$tbody || $tbody.data('widget-init')) return;
 
-		$('select', $el).not('.no-dp-select').dpMultiLevelSelect();
+		$('select', $tbody).not('.no-dp-select').dpMultiLevelSelect();
 		// is it the same as one above?
-		DP.select($('select', $el));
+		DP.select($('select', $tbody));
 
-		$('.Date.customfield input', $el).each(function(){
+		$('.Date.customfield input', $tbody).each(function(){
 			$(this).datetimepicker({
 				format: 'YYYY-MM-DD',
 				widgetParent: $(this).parent().css('position', 'relative'),
@@ -356,7 +356,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			});
 		});
 
-		$('.DateTime.customfield input', $el).each(function(){
+		$('.DateTime.customfield input', $tbody).each(function(){
 			$(this).datetimepicker({
 				format: 'YYYY-MM-DD HH:mm',
 				widgetParent: $(this).parent().css('position', 'relative'),
@@ -375,9 +375,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			});
 		});
 
-    $('.hijri input', $el).calendarsPicker({calendar: $.calendars.instance('islamic', 'ar')});
+    $('.hijri input', $tbody).calendarsPicker({calendar: $.calendars.instance('islamic', 'ar')});
 
-    $el.data('widget-init', 1);
+    $tbody.data('widget-init', 1);
 	},
 
 	saveChanges: function() {
