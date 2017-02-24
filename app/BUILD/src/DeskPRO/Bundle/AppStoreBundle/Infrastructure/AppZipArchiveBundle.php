@@ -28,9 +28,9 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
-use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundle;
+use DeskPRO\Bundle\AppStoreBundle\Domain;
 
-class AppZipArchiveBundle implements AppBundle
+class AppZipArchiveBundle implements Domain\AppBundle
 {
     /** @var \ZipArchive  */
     private $archive;
@@ -50,14 +50,60 @@ class AppZipArchiveBundle implements AppBundle
     function getManifestAsString()
     {
         $path = $this->fileInfo->getRealPath();
-        $resource = $this->archive->open($path, \ZipArchive::CREATE);
-        if (true === $resource) {
-            $manifest = $this->archive->getFromName('manifest.json');
+        try {
+            $resource = $this->archive->open($path, \ZipArchive::CREATE);
+            if (true === $resource) {
+                $manifest = $this->archive->getFromName('manifest.json');
+                return $manifest;
+            }
+        } finally {
             $this->archive->close();
-            return $manifest;
         }
 
         return null;
+    }
+
+    /**
+     * @return Domain\AppBundleResource[];
+     */
+    function listAllResources()
+    {
+        // skip folders, accept only file entries
+        $acceptor = function ($index, \ZipArchive $archive) {
+            $path = $archive->getNameIndex($index);
+            return '/' != substr($path, -1);
+        };
+
+        return $this->collectResurces($acceptor);
+    }
+
+    /**
+     * @param \Closure $acceptor
+     * @return array|Domain\AppBundleResource[]
+     */
+    private function collectResurces(\Closure $acceptor) {
+        $collectedResources = [];
+
+        $archivePath = $this->fileInfo->getRealPath();
+        try {
+            $resource = $this->archive->open($archivePath, \ZipArchive::CREATE);
+            if (true === $resource) {
+                //online docs for ziparchive claim getNameIndex and getFromIndex leak memory in long running loops.
+                //TODO investigate
+                for($i = 0; $i < $this->archive->numFiles; $i++) {
+
+                    if ($acceptor($i, $this->archive)) {
+                        $path = $this->archive->getNameIndex($i);
+                        $content = $this->archive->getFromIndex($i);
+                        $collectedResources[] = new Domain\AppBundleSimpleResource($path, $content);
+                    }
+                }
+            }
+        } finally {
+            $this->archive->close();
+        }
+
+        return $collectedResources;
     }
 
 }

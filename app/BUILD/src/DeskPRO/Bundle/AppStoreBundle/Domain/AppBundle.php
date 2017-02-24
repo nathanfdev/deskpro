@@ -38,4 +38,9 @@ interface AppBundle
      * @return string
      */
     function getManifestAsString();
+
+    /**
+     * @return AppBundleResource[];
+     */
+    function listAllResources();
 }

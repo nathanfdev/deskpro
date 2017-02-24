@@ -69,7 +69,12 @@ class AppsController extends FOSRestController {
         $packageCreator = $this->container->get(Domain\AppPackageCreator::class);
         $valid = $packageCreator->verifyBundle($bundle);
 
-        return [ "manifest is valid" => $valid ];
+        $resourcePaths = [];
+        foreach ($bundle->listAllResources()  as $resource ) {
+            $resourcePaths[] = $resource->getPath();
+        }
+
+        return [ "manifest is valid" => $valid, "resources" => $resourcePaths ];
     }
 
     /**

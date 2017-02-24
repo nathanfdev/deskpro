@@ -31,13 +31,17 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 interface ApplicationFinder
 {
     /**
-     * @param $name
+     * Finds one application by name
+     *
+     * @param string $name
      * @return mixed
      */
     function findByName($name);
 
     /**
-     * @param $id
+     * Finds one application by unique system identifier
+     *
+     * @param string $id
      * @return mixed
      */
     function findByInstanceId($id);
