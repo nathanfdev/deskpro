@@ -74,14 +74,14 @@ class AppZipArchiveBundle implements Domain\AppBundle
             return '/' != substr($path, -1);
         };
 
-        return $this->collectResurces($acceptor);
+        return $this->collectResources($acceptor);
     }
 
     /**
      * @param \Closure $acceptor
      * @return array|Domain\AppBundleResource[]
      */
-    private function collectResurces(\Closure $acceptor) {
+    private function collectResources(\Closure $acceptor) {
         $collectedResources = [];
 
         $archivePath = $this->fileInfo->getRealPath();
