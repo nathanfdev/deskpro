@@ -718,9 +718,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.getEl('message_prev_page').on('click', function(ev) {
 			ev.preventDefault();
 			if (self.meta.ticket_reverse_order) {
-				var p = parseInt(messagesWrap.data('page')) - 1;
+				var p = (parseInt(messagesWrap.data('page')) || 1) - 1;
 			} else {
-				var p = parseInt(messagesWrap.data('page')) + 1;
+				var p = (parseInt(messagesWrap.data('page')) || 1) + 1;
 			}
 			self.loadMessagePage(p);
 		});
@@ -728,9 +728,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.getEl('message_next_page').on('click', function(ev) {
 			ev.preventDefault();
 			if (self.meta.ticket_reverse_order) {
-				var p = parseInt(messagesWrap.data('page')) + 1;
+				var p = (parseInt(messagesWrap.data('page')) || 1) + 1;
 			} else {
-				var p = parseInt(messagesWrap.data('page')) - 1;
+				var p = (parseInt(messagesWrap.data('page')) || 1) - 1;
 			}
 			self.loadMessagePage(p);
 		});
@@ -920,7 +920,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var reload = false;
 		if (!page) {
 			reload = true;
-			page = parseInt(messagesWrap.data('page'));
+			page = parseInt(messagesWrap.data('page')) || 1;
 		}
 
 		var loadDiv = false;
