@@ -50,11 +50,11 @@ class ChatBlock extends AbstractEntityRepository
         $qb = $this->createQueryBuilder('b');
 
         if ($visitor_id) {
-            $qb->andWhere('b.visitor_id = :vid')->setParameter('vid', $visitor_id);
+            $qb->orWhere('b.visitor_id = :vid')->setParameter('vid', $visitor_id);
         }
 
         if ($ip) {
-            $qb->andWhere('b.ip_address = :ip')->setParameter('ip', $ip);
+            $qb->orWhere('b.ip_address = :ip')->setParameter('ip', $ip);
         }
 
         $datecut = new \DateTime('-'.self::BLOCK_TIMEOUT.' seconds');
