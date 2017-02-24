@@ -37,5 +37,5 @@ interface AppBundle
     /**
      * @return string
      */
-    function getManifest();
+    function getManifestAsString();
 }

@@ -47,7 +47,7 @@ class AppZipArchiveBundle implements AppBundle
     /**
      * @return string
      */
-    function getManifest()
+    function getManifestAsString()
     {
         $path = $this->fileInfo->getRealPath();
         $resource = $this->archive->open($path, \ZipArchive::CREATE);

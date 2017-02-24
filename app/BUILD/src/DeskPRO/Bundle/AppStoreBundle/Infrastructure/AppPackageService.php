@@ -48,9 +48,9 @@ class AppPackageService implements AppPackageCreator
 
     public function verifyBundle(AppBundle $bundle)
     {
-        $manifestString = $bundle->getManifest();
-        $manifestData = json_decode($manifestString, true);
-        if (! is_array($manifestData)) {
+        $manifestString = $bundle->getManifestAsString();
+        $manifestData = json_decode($manifestString);
+        if (empty($manifestData) || false == $manifestData instanceof \stdClass) {
             return false;
         }
 
