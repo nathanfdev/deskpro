@@ -28,19 +28,12 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-/**
- * This is a representation of a data transfer object which holds raw values for a search asset filters.
- * It is used to build a SearchAssetFilter
- */
-interface SearchAssetFilterValueMap
+interface ApplicationInstance
 {
     /**
+     * Returns the system identifier assigned to the instance
+     *
      * @return string
      */
-    public function getFilePathPattern();
-
-    /**
-     * @return string
-     */
-    public function getFileExtension();
+    function getId();
 }

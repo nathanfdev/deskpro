@@ -28,13 +28,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
 
+use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
  * @ORM\Table(name="app2_app_instance")
  */
-class AppInstance
+class AppInstance implements Domain\ApplicationInstance
 {
     /**
      * @ORM\Id()
@@ -62,11 +63,6 @@ class AppInstance
     private $settings;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $secretKey;
-
-    /**
      * @ORM\Column(type="datetime", nullable=false)
      */
     private $createdAt;
@@ -85,5 +81,15 @@ class AppInstance
     public function getSettings()
     {
         return $this->settings;
+    }
+
+    /**
+     * Returns the system identifier assigned to the instance
+     *
+     * @return string
+     */
+    function getId()
+    {
+        return $this->id;
     }
 }

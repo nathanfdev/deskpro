@@ -28,13 +28,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
 
+use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
  * @ORM\Table(name="app2_app")
  */
-class App
+class App implements Domain\Application
 {
     /**
      * @ORM\Id()
@@ -52,7 +53,6 @@ class App
      * @ORM\Column(type="text", nullable=false)
      */
     private $manifest;
-
 
     /**
      * @return integer

@@ -29,18 +29,26 @@
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
 /**
- * This is a representation of a data transfer object which holds raw values for a search asset filters.
- * It is used to build a SearchAssetFilter
+ * Representation of an application's manifest. This is a mutable class to be used when creating other objects, like Application
  */
-interface SearchAssetFilterValueMap
+class AppManifest
 {
-    /**
-     * @return string
-     */
-    public function getFilePathPattern();
+    /** @var string */
+    private $name;
 
     /**
      * @return string
      */
-    public function getFileExtension();
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
 }

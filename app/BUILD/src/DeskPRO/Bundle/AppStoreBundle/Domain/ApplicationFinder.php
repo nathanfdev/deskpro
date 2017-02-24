@@ -34,7 +34,7 @@ interface ApplicationFinder
      * Finds one application by name
      *
      * @param string $name
-     * @return mixed
+     * @return Application
      */
     function findByName($name);
 
@@ -42,7 +42,7 @@ interface ApplicationFinder
      * Finds one application by unique system identifier
      *
      * @param string $id
-     * @return mixed
+     * @return Application
      */
     function findByInstanceId($id);
 }
