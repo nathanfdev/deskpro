@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react';
+import $ from 'jquery';
 
 class Range extends React.Component {
 
   static propTypes = {
     value:     PropTypes.number,
     onChange:  PropTypes.func,
+    onBlur:    PropTypes.func,
     elementId: PropTypes.string,
     min:       PropTypes.number,
     max:       PropTypes.number,
@@ -12,8 +14,17 @@ class Range extends React.Component {
   };
 
   static defaultProps = {
-    onChange: () => {}
+    onChange: () => {},
+    onBlur:   () => {}
   };
+
+  componentDidMount() {
+    $(this.input).on('mouseup', this.props.onBlur);
+  }
+
+  componentWillUnmount() {
+    $(this.input).off('mouseup', this.props.onBlur);
+  }
 
   handleChange = () => {
     this.props.onChange(this.input.value);

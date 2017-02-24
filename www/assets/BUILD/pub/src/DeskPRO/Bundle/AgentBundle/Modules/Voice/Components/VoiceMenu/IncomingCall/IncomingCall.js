@@ -4,9 +4,7 @@ import { Button } from 'DeskPRO/Component/Semantic/Button';
 import Timer from 'DeskPRO/Component/Timer';
 import CallFrom from './CallFrom';
 import CallTarget from './CallTarget';
-import '../../../../../Resources/sounds/incoming-call.mp3';
-import '../../../../../Resources/sounds/incoming-call.ogg';
-import '../../../../../Resources/sounds/incoming-call.wav';
+import IncomingCallAudio from './IncomingCallAudio';
 
 const isAssigned = call => call && call.task && call.task.assignmentStatus === 'assigned';
 
@@ -19,7 +17,7 @@ class IncomingCall extends React.Component {
     incomingCall:  PropTypes.object,
     onAccept:      PropTypes.func,
     onDecline:     PropTypes.func,
-    ringingVolume: PropTypes.number
+    ringingVolume: PropTypes.string
   };
 
   static defaultProps = {
@@ -28,21 +26,13 @@ class IncomingCall extends React.Component {
   };
 
   componentDidMount() {
-    const { ringingVolume } = this.props;
-
-    this.sound.addEventListener('ended', this.onSoundEnded);
-    this.sound.volume = ringingVolume / 100;
-    this.sound.play();
+    this.audio.playSound();
   }
 
   componentWillReceiveProps(newProps) {
     if (isAssigned(newProps.incomingCall)) {
-      this.stopSound();
+      this.audio.stopSound();
     }
-  }
-
-  componentWillUnmount() {
-    this.stopSound();
   }
 
   onAccept = (event) => {
@@ -56,19 +46,11 @@ class IncomingCall extends React.Component {
   };
 
   onSoundEnded = () => {
-    this.sound.play();
+    this.audio.playSound();
   };
 
-  stopSound() {
-    if (this.sound) {
-      this.sound.removeEventListener('ended', this.onSoundEnded);
-      this.sound.pause();
-    }
-  }
-
   renderAcceptCall() {
-    const { me, agents, people, incomingCall } = this.props;
-    const soundsPath = `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/sounds`;
+    const { me, agents, people, incomingCall, ringingVolume } = this.props;
 
     let callType = 'Direct';
     if (incomingCall instanceof Immutable.Map && incomingCall.get('call_id')) {
@@ -88,11 +70,11 @@ class IncomingCall extends React.Component {
 
     return (
       <div className="incoming-call">
-        <audio ref={(c) => { this.sound = c; }} preload="preload">
-          <source src={`${soundsPath}/incoming-call.mp3`} />
-          <source src={`${soundsPath}/incoming-call.ogg`} />
-          <source src={`${soundsPath}/incoming-call.wav`} />
-        </audio>
+        <IncomingCallAudio
+          ref={(c) => { this.audio = c; }}
+          ringingVolume={ringingVolume}
+          onSoundEnded={this.onSoundEnded}
+        />
         <CallFrom incomingCall={incomingCall} people={people} />
         <div className="incoming-call-type">
           <div>
