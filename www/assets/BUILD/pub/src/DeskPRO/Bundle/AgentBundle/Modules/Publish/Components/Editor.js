@@ -38,7 +38,7 @@ export class Editor extends React.Component {
   };
   static defaultProps = {
     value:     '',
-    inputType: 'rte',
+    inputType: 'markdown',
     onSave() {},
     onCancel() {}
   };
@@ -79,8 +79,8 @@ export class Editor extends React.Component {
     this.props.onSave(html, input, this.state.inputType);
   };
 
-  onChange = (event) => {
-    this.setState({ markdown: event.target.value });
+  onChange = (value) => {
+    this.setState({ markdown: value });
   };
 
   onContentChange = (content) => {

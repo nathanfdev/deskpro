@@ -1,47 +1,157 @@
-import React, { PropTypes } from 'react';
-import { TabGroup, Tab } from 'DeskPRO/Component/Semantic/Tab';
+import React from 'react';
+import classNames from 'classnames';
+import CM from 'codemirror';
 import MarkdownIt from 'markdown-it';
+
+import 'codemirror/mode/xml/xml';
+import 'codemirror/mode/markdown/markdown';
+import 'codemirror/addon/edit/continuelist';
+
+import { getCursorState, applyFormat } from './format';
+import * as Icons from './Icons';
 
 class MarkdownEditor extends React.Component {
   static propTypes = {
-    value:    PropTypes.string,
-    onChange: PropTypes.func
+    onChange: React.PropTypes.func,
+    options:  React.PropTypes.object,
+    path:     React.PropTypes.string,
+    value:    React.PropTypes.string,
   };
   static defaultProps = {
     onChange() {}
   };
 
+  static renderIcon(icon) {
+    return <span className="MDEditor_toolbarButton_icon">{icon}</span>;
+  }
+
   constructor(props) {
     super(props);
+    this.md = new MarkdownIt({
+      html:        false,
+      linkify:     true,
+      typographer: true
+    });
     this.state = {
-      html: ''
+      isFocused: false,
+      cs:        {},
+      html:      this.md.render(props.value)
     };
   }
 
-  onTabChange = (key) => {
-    if (key === 'preview') {
-      const md = new MarkdownIt({
-        html:        false,
-        linkify:     true,
-        typographer: true
-      });
-      this.setState({ html: md.render(this.props.value) });
+  componentDidMount() {
+    this.codeMirror = CM.fromTextArea(this.codeMirrorNode, this.getOptions());
+    this.codeMirror.on('change', this.codemirrorValueChanged);
+    this.codeMirror.on('focus', this.focusChanged.bind(this, true));
+    this.codeMirror.on('blur', this.focusChanged.bind(this, false));
+    this.codeMirror.on('cursorActivity', this.updateCursorState);
+    this.currentCodemirrorValue = this.props.value;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.codeMirror && this.currentCodemirrorValue !== nextProps.value) {
+      this.codeMirror.setValue(nextProps.value);
     }
+  }
+
+  componentWillUnmount() {
+    // todo: is there a lighter-weight way to remove the cm instance?
+    if (this.codeMirror) {
+      this.codeMirror.toTextArea();
+    }
+  }
+
+  getOptions() {
+    return Object.assign({
+      mode:           'markdown',
+      lineNumbers:    false,
+      indentWithTabs: true,
+      tabSize:        '2',
+    }, this.props.options);
+  }
+
+  getCodeMirror() {
+    return this.codeMirror;
+  }
+
+  focus() {
+    if (this.codeMirror) {
+      this.codeMirror.focus();
+    }
+  }
+
+  focusChanged(focused) {
+    this.setState({ isFocused: focused });
+  }
+
+  updateCursorState = () => {
+    this.setState({ cs: getCursorState(this.codeMirror) });
   };
 
-  render() {
+  codemirrorValueChanged = (doc) => {
+    const newValue = doc.getValue();
+    this.currentCodemirrorValue = newValue;
+    this.setState({ html: this.md.render(newValue) });
+    this.props.onChange(newValue);
+  };
+
+  toggleFormat(formatKey, e) {
+    e.preventDefault();
+    applyFormat(this.codeMirror, formatKey);
+  }
+
+  renderButton(formatKey, label, action) {
+    const onClickAction = (!action) ? this.toggleFormat.bind(this, formatKey) : action;
+
+    const isTextIcon = (formatKey === 'h1' || formatKey === 'h2' || formatKey === 'h3');
+    const className = classNames('MDEditor_toolbarButton', {
+      'MDEditor_toolbarButton--pressed': this.state.cs[formatKey]
+    }, (`MDEditor_toolbarButton--${formatKey}`));
+
+    const labelClass = isTextIcon ? 'MDEditor_toolbarButton_label-icon' : 'MDEditor_toolbarButton_label';
+
     return (
-      <div>
-        <TabGroup onChange={this.onTabChange}>
-          <Tab key="editor" label="First">
-            <textarea rows="20" cols="100" value={this.props.value} onChange={this.props.onChange} />
-          </Tab>
-          <Tab key="preview" label="Preview">
-            <div className="preview" dangerouslySetInnerHTML={{ __html: this.state.html }} />
-          </Tab>
-        </TabGroup>
+      <button className={className} onClick={onClickAction} title={formatKey}>
+        {isTextIcon ? null : MarkdownEditor.renderIcon(Icons[formatKey])}
+        <span className={labelClass}>{label}</span>
+      </button>
+    );
+  }
+
+  renderToolbar() {
+    return (
+      <div className="MDEditor_toolbar">
+        {this.renderButton('h1', 'h1')}
+        {this.renderButton('h2', 'h2')}
+        {this.renderButton('h3', 'h3')}
+        {this.renderButton('bold', 'b')}
+        {this.renderButton('italic', 'i')}
+        {this.renderButton('oList', 'ol')}
+        {this.renderButton('uList', 'ul')}
+        {this.renderButton('quote', 'q')}
+        {/* this.renderButton('link', 'a')*/}
+      </div>
+    );
+  }
+
+  render() {
+    const editorClassName = classNames('MDEditor_editor', { 'MDEditor_editor--focused': this.state.isFocused });
+    return (
+      <div className="MDEditor">
+        {this.renderToolbar()}
+        <div className={editorClassName}>
+          <textarea
+            ref={(c) => { this.codeMirrorNode = c; }}
+            name={this.props.path}
+            defaultValue={this.props.value}
+            autoComplete="off"
+          />
+        </div>
+        <h3>Preview</h3>
+        <div className="preview" dangerouslySetInnerHTML={{ __html: this.state.html }} />
       </div>
     );
   }
 }
+
 export default MarkdownEditor;
