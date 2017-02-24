@@ -2736,6 +2736,11 @@ class Person extends DomainObject implements
      */
     public function addLabel(Label $label)
     {
+        foreach ($this->labels as $l) {
+            if ($l->getLabel() === $label->getLabel()) {
+                return;
+            }
+        }
         $label['person'] = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', $this->labels, $this->labels);
