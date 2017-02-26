@@ -91,9 +91,13 @@ class BlobsController extends CrudController
                 $mimeType = $matches[1];
             }
             $binary = file_get_contents($dataUri);
-            $blob   = $this->get('blob.storage')->createBlobRecordFromString(
+            $name   = $request->request->get('name');
+            if ($name === 'undefined' && preg_match('|^image/(.*)|', $mimeType, $matches)) {
+                $name = 'image.'.$matches[1];
+            }
+            $blob = $this->get('blob.storage')->createBlobRecordFromString(
                 $binary,
-                $request->request->get('name'),
+                $name,
                 $mimeType
             );
 

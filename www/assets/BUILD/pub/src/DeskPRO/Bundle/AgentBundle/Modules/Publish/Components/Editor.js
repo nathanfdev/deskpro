@@ -19,8 +19,8 @@ export class EditorContainer extends React.Component {
     dispatch:   PropTypes.func,
   };
 
-  onAddFile = (data) => {
-    this.props.dispatch(actions.uploadFile(data));
+  onAddFile = (data, callback) => {
+    this.props.dispatch(actions.uploadFile(data, callback));
   };
 
   onCancel = () => {

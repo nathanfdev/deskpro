@@ -68,8 +68,6 @@ class MarkdownEditor extends React.Component {
 
   onPaste = (cm, event) => {
     const items = (event.clipboardData || event.originalEvent.clipboardData).items;
-    console.log(event);
-    console.log(items);
     this.getItemsToUpload(items);
   };
 
@@ -105,12 +103,20 @@ class MarkdownEditor extends React.Component {
           const reader = new FileReader();
           reader.onload = (event) => {
             formData.append('file', event.target.result);
-            this.props.onAddFile(formData);
+            this.props.onAddFile(formData, this.appendImage);
           };
           reader.readAsDataURL(blob);
         }
       }
     }
+  };
+
+  appendImage = (data) => {
+    let code = `[${data.filename}](${data.download_url})`;
+    if (data.content_type.match(/^image/)) {
+      code = `!${code}`;
+    }
+    this.codeMirror.replaceSelection(code);
   };
 
   focus() {
