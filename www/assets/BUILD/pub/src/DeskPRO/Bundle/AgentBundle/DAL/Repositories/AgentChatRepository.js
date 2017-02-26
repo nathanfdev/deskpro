@@ -66,6 +66,14 @@ export class AgentChatRepository extends ApiRepository {
     return this.api.sendPut(`DP_API/${this.url}/${chatId}/messages/mark`, { ids, status });
   }
 
+  /**
+   * @param {integer} chatId Chat identity
+   * @returns {Promise} promise
+   */
+  markAllMessagesAsRead(chatId) {
+    return this.api.sendPut(`DP_API/${this.url}/${chatId}/messages/mark_all`);
+  }
+
   updateChat(chatId, ids, name) {
     return this.api.sendPut(`DP_API/${this.url}/${chatId}`, { type: 'group', participant: ids, name });
   }

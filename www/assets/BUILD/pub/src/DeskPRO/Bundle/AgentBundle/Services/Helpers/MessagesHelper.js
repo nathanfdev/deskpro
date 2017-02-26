@@ -23,6 +23,32 @@ export class MessagesHelper {
     return newState;
   }
 
+  static markAllMessagesAsRead(state, payload) {
+    const chat = MessagesHelper.getChat(state, payload.chatId);
+    let newState = state;
+    if (chat) {
+      chat.messages.map((message) => {
+        message.status = 2;
+        newState = MessagesHelper.resetCounts(newState, payload);
+        return true;
+      });
+
+      return newState.setIn(MessagesHelper.getPath(state, payload.chatId), { ...chat });
+    }
+    return newState;
+  }
+
+  static resetCounts(state, payload) {
+    const counts = state.get('counts');
+    if (counts.nested[payload.chatId] && payload.person !== state.get('me').id) {
+      counts.count = counts.count > 0 ? counts.count - counts.nested[payload.chatId].count : 0;
+      counts.nested[payload.chatId].count = 0;
+      DeskPRO_Window.notifications.fireEvent('modCount', { count: counts.count }); // eslint-disable-line no-undef
+      return state.set('counts', { ...counts });
+    }
+    return state;
+  }
+
   static reduceCounts(state, payload) {
     const counts = state.get('counts');
     if (counts.nested[payload.chatId] && payload.status === 2 && payload.person !== state.get('me').id) {
@@ -54,6 +80,10 @@ export class MessagesHelper {
 
   static markMessagesOptimistic(state, payload) {
     return MessagesHelper.markMessages(state.set('updatingMessages', true), payload);
+  }
+
+  static markAllMessagesOptimistic(state, payload) {
+    return MessagesHelper.markAllMessagesAsRead(state.set('updatingMessages', true), payload);
   }
 
   static addMessageOptimistic(state, payload) {

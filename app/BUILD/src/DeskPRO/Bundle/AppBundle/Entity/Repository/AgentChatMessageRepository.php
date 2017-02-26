@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -35,4 +37,22 @@ use Doctrine\ORM\EntityRepository;
  */
 class AgentChatMessageRepository extends EntityRepository
 {
+    /**
+     * @param AgentChat $chat
+     * @param Person    $person
+     *
+     * @return int[]
+     */
+    public function getAgentChatMessagesIdByChat(AgentChat $chat, Person $person)
+    {
+        $qb = $this->createQueryBuilder('acm')
+            ->select('acm.id')
+            ->andWhere('acm.chat = :chat')
+            ->andWhere('acm.person != :person')
+            ->andWhere('acm.status != 2')
+            ->setParameter('chat', $chat)
+            ->setParameter('person', $person);
+
+        return $qb->getQuery()->getScalarResult();
+    }
 }

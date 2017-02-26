@@ -33,6 +33,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatMessageType;
@@ -131,6 +132,53 @@ class AgentChatMessagesController extends CrudSubController
         $dispatcher = $this->get('event_dispatcher');
         foreach ($messages as $message) {
             $dispatcher->dispatch(MarkMessageEvent::EVENT_NAME, new MarkMessageEvent($message->getId(), $status));
+        }
+
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Mark message with given id as sent/read.
+     *
+     * @ApiDoc(
+     *      description="mark message as sent/read",
+     *      statusCodes={
+     *          204="Returned if success",
+     *          400={
+     *              "Returned if given status was wrong",
+     *              "Returned if ids list was wrong formed"
+     *          }
+     *      }
+     * )
+     * @Rest\Put("/mark_all")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function markAllMessagesAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupContext($request));
+
+        /** @var AgentChat $chat */
+        $chat                       = $this->findParentOr404();
+        $entityManager              = $this->get('doctrine.orm.default_entity_manager');
+        $agentChatMessageRepository = $entityManager->getRepository(AgentChatMessage::class);
+        $ids                        = $agentChatMessageRepository->getAgentChatMessagesIdByChat($chat, $this->getUser());
+        $qb                         = $this->getManager()->createQueryBuilder();
+        $qb
+            ->update(static::$entity, 'e')
+            ->set('e.status', ':status')
+            ->where('e.id IN(:ids)')
+            ->setParameter('status', 2)
+            ->setParameter('ids', $ids)
+        ;
+
+        $qb->getQuery()->execute();
+
+        $dispatcher = $this->get('event_dispatcher');
+        foreach ($ids as $id) {
+            $dispatcher->dispatch(MarkMessageEvent::EVENT_NAME, new MarkMessageEvent($id, 2));
         }
 
         return new View(null, Response::HTTP_NO_CONTENT);

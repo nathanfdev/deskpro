@@ -131,7 +131,9 @@ class Container extends React.Component {
   }
 
   componentWillUnmount() {
-    this.state.editorControls.destroy();
+    if (this.state.editorControls) { // there is a chance that component was mounted and immediately unmounted
+      this.state.editorControls.destroy();
+    }
   }
 
   getPath = (props) => {

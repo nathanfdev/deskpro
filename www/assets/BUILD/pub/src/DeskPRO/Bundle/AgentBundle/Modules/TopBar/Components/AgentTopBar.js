@@ -283,22 +283,9 @@ export class AgentTopBarContainer extends SeparateComponent {
   };
 
   markNewMessages() {
-    if (!this.props.updatingMessages) {
-      const ids = [];
-      const uuids = [];
-      const { messages, dispatch } = this.props;
-
-      const msg = messages.hasIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
-      msg.map((message) => {
-        if (message.id && message.status < 2 && message.person !== this.props.me.get('id')) {
-          ids.push(message.id);
-          uuids.push(message.uuid);
-        }
-        return true;
-      });
-      if (ids.length > 0) {
-        dispatch(messagesActions.markMessages(ids, uuids, this.props.current.get('id')));
-      }
+    const { updatingMessages, current, dispatch, counts } = this.props;
+    if (!updatingMessages && counts.nested[current.get('id')] && counts.nested[current.get('id')].count > 0) {
+      dispatch(messagesActions.markAllMessagesAsRead(current.get('id')));
     }
   }
 
