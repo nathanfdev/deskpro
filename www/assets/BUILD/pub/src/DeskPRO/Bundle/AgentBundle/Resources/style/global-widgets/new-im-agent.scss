@@ -421,6 +421,7 @@ img.emojione, svg.emojione {
           margin-top: 2px;
           position: relative;
 
+
           .knuckles.message-counter {
             font-family: "Open Sans", serif;
             font-size: 12px;
@@ -476,7 +477,7 @@ img.emojione, svg.emojione {
         }
         .content {
           &.agent, &.department, &.team {
-            overflow: hidden;
+            overflow: visible;
             height: 30px;
             line-height: 28px;
             white-space: nowrap;
@@ -488,6 +489,10 @@ img.emojione, svg.emojione {
               font-weight: 400;
               color: $dp-greyscale-850;
               display: inline-block;
+            }
+
+            .description {
+              padding-top: 3px;
             }
           }
         }
