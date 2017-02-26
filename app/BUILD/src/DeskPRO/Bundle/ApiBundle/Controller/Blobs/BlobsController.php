@@ -107,6 +107,24 @@ class BlobsController extends CrudController
     }
 
     /**
+     * @Rest\Post("/froala")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function postFroalaAction(Request $request)
+    {
+        $file   = $request->files->get('file');
+        $accept = $this->getContainer()->getAttachmentAccepter();
+        $blob   = $accept->accept($file);
+
+        $return['link'] = $blob->getDownloadUrl(true);
+
+        return new Response(json_encode($return), Response::HTTP_CREATED);
+    }
+
+    /**
      * Get resource with provided id.
      *
      * @ApiDoc(
