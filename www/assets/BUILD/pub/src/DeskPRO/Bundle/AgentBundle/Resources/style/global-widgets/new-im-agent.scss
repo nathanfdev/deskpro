@@ -421,6 +421,17 @@ img.emojione, svg.emojione {
           margin-top: 2px;
           position: relative;
 
+          .ui.avatar.im.image.everyone {
+            width: auto;
+            height: auto;
+            margin: 0;
+            padding: 0;
+            svg {
+              width: 24px;
+              height: 24px;
+            }
+          }
+
 
           .knuckles.message-counter {
             font-family: "Open Sans", serif;
