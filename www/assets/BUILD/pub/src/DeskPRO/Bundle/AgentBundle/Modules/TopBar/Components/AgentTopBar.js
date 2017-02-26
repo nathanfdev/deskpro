@@ -175,13 +175,13 @@ export class AgentTopBarContainer extends SeparateComponent {
   }
 
   onSubmit(message) {
-    let testMessage = striptags(message);
+    let testMessage = striptags(message, ['img', 'svg', 'video', 'object', 'embed']);
     testMessage = testMessage.replace(/(&nbsp;\s)+$/g, '');
     testMessage = testMessage.replace(/(&nbsp;|\s)+$/g, '');
     testMessage = testMessage.replace(/^(&nbsp;|\s)+/g, '');
     testMessage = testMessage.replace(/(&nbsp;|\s)+$/g, '');
 
-    if (testMessage.trim()) {
+    if (testMessage.trim() || message.indexOf('<video') !== -1) { // another dancing around froala, it wraps <video> into <span>
       const { dispatch, current, me } = this.props;
       dispatch(messagesActions.addMessage(current.get('id'), message, uuid(), me));
     }
@@ -284,7 +284,7 @@ export class AgentTopBarContainer extends SeparateComponent {
 
   markNewMessages() {
     const { updatingMessages, current, dispatch, counts } = this.props;
-    if (!updatingMessages && counts.nested[current.get('id')] && counts.nested[current.get('id')].count > 0) {
+    if (!updatingMessages && counts.nested && counts.nested[current.get('id')] && counts.nested[current.get('id')].count > 0) {
       dispatch(messagesActions.markAllMessagesAsRead(current.get('id')));
     }
   }
