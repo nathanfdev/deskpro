@@ -52,10 +52,16 @@ img.emojione, svg.emojione {
     top: -1px;
   }
 
+  &.offline > .offline-block {
+    display: inline-block;
+    background: #fff;
+    opacity: 0.5;
+  }
+
   &.gravatar {
     position: absolute;
-    top: 0;
-    left: 1px !important;
+    top: -1px;
+    left: 0 !important;
   }
 }
 
@@ -110,10 +116,6 @@ img.emojione, svg.emojione {
         .text {
           left: 0;
           top: 0;
-        }
-
-        &.offline {
-          opacity: 0.5;
         }
       }
       > .knuckles.message-counter {
@@ -248,11 +250,6 @@ img.emojione, svg.emojione {
     padding: 0;
     border: none;
 
-    .offline {
-      .header, .avatar {
-        opacity: 0.5;
-      }
-    }
 
     .online {
       .avatar:before {
@@ -321,6 +318,10 @@ img.emojione, svg.emojione {
         padding: 5px;
         margin: 10px 15px;
         cursor: pointer;
+
+        .ui.im.avatar.image .gravatar + .offline-block {
+          left: -1px !important;
+        }
 
         &:hover {
           color: $dp-sonic-primary;
@@ -508,11 +509,6 @@ img.emojione, svg.emojione {
     }
 
     .ui.list .item.agent {
-      &.offline {
-        .header, .avatar {
-          opacity: 0.5;
-        }
-      }
       &.online {
         &:before {
           background: #74C365;
@@ -570,10 +566,6 @@ img.emojione, svg.emojione {
       .ui.im.avatar {
         cursor: pointer;
         margin-right: 3px;
-
-        &.offline {
-          opacity: 0.5;
-        }
       }
 
       .control .icon.write.group-edit, .dots {
@@ -842,10 +834,6 @@ img.emojione, svg.emojione {
                   -o-background-size: 100%;
                   -moz-background-size: 100%;
                   background-size: 100%;
-
-                  &.offline {
-                    opacity: 0.5;
-                  }
 
                   .text {
                     font-size: 10px;
