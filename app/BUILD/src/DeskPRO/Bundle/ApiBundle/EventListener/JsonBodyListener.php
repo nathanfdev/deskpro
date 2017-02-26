@@ -78,9 +78,9 @@ class JsonBodyListener implements EventSubscriberInterface
             return;
         }
 
-        $request->setFormat('json', 'application/json');
-        $request->attributes->set('_format', 'json');
-        $request->attributes->set('media_type', 'json');
-        $request->headers->set('Content-Type', 'application/json');
+//        $request->setFormat('json', 'application/json');
+//        $request->attributes->set('_format', 'json');
+//        $request->attributes->set('media_type', 'json');
+//        $request->headers->set('Content-Type', 'application/json');
     }
 }

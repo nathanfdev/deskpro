@@ -76,6 +76,33 @@ class BlobsController extends CrudController
     }
 
     /**
+     * @Rest\Post("/form_data")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function postFormDataAction(Request $request)
+    {
+        if ($request->request->has('file') && $request->request->has('name')) {
+            $dataUri  = $request->request->get('file');
+            $mimeType = 'application/octet-stream';
+            if (preg_match('|data:([^;]*);|', $dataUri, $matches)) {
+                $mimeType = $matches[1];
+            }
+            $binary = file_get_contents($dataUri);
+            $blob   = $this->get('blob.storage')->createBlobRecordFromString(
+                $binary,
+                $request->request->get('name'),
+                $mimeType
+            );
+
+            return View::create($this->wrap($blob), Response::HTTP_CREATED);
+        }
+        throw $this->createBadRequestException();
+    }
+
+    /**
      * Get resource with provided id.
      *
      * @ApiDoc(

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { Button, ButtonGroup } from 'DeskPRO/Component/Semantic/Button';
 import MarkdownEditor from 'DeskPRO/Component/Markdown/MarkdownEditor';
 import 'froala-editor/js/froala_editor.pkgd.min';
@@ -6,14 +7,20 @@ import $ from 'jquery';
 import FroalaEditor from 'react-froala-wysiwyg';
 import toMarkdown from 'to-markdown';
 import MarkdownIt from 'markdown-it';
+import * as actions from './../Actions/publishEditorActions';
 
-
+@connect()
 export class EditorContainer extends React.Component {
   static propTypes = {
     value:      PropTypes.string,
     inputType:  PropTypes.string,
     hideEditor: PropTypes.func,
-    save:       PropTypes.func
+    save:       PropTypes.func,
+    dispatch:   PropTypes.func,
+  };
+
+  onAddFile = (data) => {
+    this.props.dispatch(actions.uploadFile(data));
   };
 
   onCancel = () => {
@@ -26,6 +33,7 @@ export class EditorContainer extends React.Component {
       inputType={this.props.inputType}
       onCancel={this.onCancel}
       onSave={this.props.save}
+      onAddFile={this.onAddFile}
     />);
   }
 }
@@ -120,7 +128,6 @@ export class Editor extends React.Component {
 
   changeMode = (type) => {
     this.setState({ inputType: type });
-    console.log(type);
     if (type === 'markdown') {
       this.setState({ markdown: toMarkdown(this.state.html) });
     } else {
@@ -137,8 +144,8 @@ export class Editor extends React.Component {
     return (<div className="publish-editor">
       <div className="header">
         <ButtonGroup onChange={this.changeMode} activeKey={this.state.inputType}>
-          <Button key="rte">Classic</Button>
           <Button key="markdown">Markdown</Button>
+          <Button key="rte">Classic</Button>
         </ButtonGroup>
         <Button className="pull-right" confirm onClick={this.onCancel}>Cancel</Button>
         <Button className="pull-right" onClick={this.onSave}>Save</Button>
