@@ -123,7 +123,8 @@ img.emojione, svg.emojione {
         top: -8px;
         left: 25px;
         font-size: 12px;
-        padding: 2px;
+        padding: 2px 4px;
+        border-radius: 4px;
         font-weight: bold;
       }
       &:hover > .knuckles.message-counter {
@@ -420,15 +421,15 @@ img.emojione, svg.emojione {
           margin-top: 2px;
           position: relative;
 
-          .message-counter {
+          .knuckles.message-counter {
             font-family: "Open Sans", serif;
             font-size: 12px;
             position: absolute;
             left: 30px;
             top: 2px;
-            border-radius: 2px;
             display: block;
-            padding: 2px;
+            padding: 2px 4px;
+            border-radius: 4px;
             font-weight: 600;
           }
 
