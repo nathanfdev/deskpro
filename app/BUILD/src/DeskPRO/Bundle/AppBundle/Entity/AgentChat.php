@@ -124,7 +124,7 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     /**
      * List of participating in chat entities.
      *
-     * @var AgentChatParticipant[] an id array of participants
+     * @var AgentChatParticipant[]|ArrayCollection an id array of participants
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant", mappedBy="chat",
      *     cascade={"persist", "remove"}, orphanRemoval=true)
      */
@@ -249,7 +249,7 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->setModelField('name', $name);
 
         return $this;
     }
