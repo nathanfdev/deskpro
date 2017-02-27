@@ -583,6 +583,11 @@ img.emojione, svg.emojione {
       .ui.im.avatar {
         cursor: pointer;
         margin-right: 3px;
+
+        .offline-block {
+          left: -1px !important;
+          top: -1px !important;
+        }
       }
 
       .control .icon.write.group-edit, .dots {
