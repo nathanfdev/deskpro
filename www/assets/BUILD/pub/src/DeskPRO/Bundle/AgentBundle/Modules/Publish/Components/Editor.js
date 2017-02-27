@@ -105,16 +105,17 @@ export class Editor extends React.Component {
       case 'rte':
       default: {
         const froalaConfig = {
-          // toolbarInline: true,
-          charCounterCount: false,
-          enter:            $.FroalaEditor.ENTER_BR,
-          key:              'qENARBFSTb1G1QJg1RA=='
+          imageUploadMethod: 'POST',
+          imageUploadURL:    `/api/v2/blobs/froala`,
+          charCounterCount:  false,
+          enter:             $.FroalaEditor.ENTER_BR,
+          key:               'qENARBFSTb1G1QJg1RA=='
         };
 
         if (window.DeskPRO_Window) {
           froalaConfig.events = {
             'froalaEditor.focus': () => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; },
-            'froalaEditor.blur':  () => { window.DeskPRO_Window.keyboardShortcuts.isPaused = false; }
+            'froalaEditor.blur':  () => { window.DeskPRO_Window.keyboardShortcuts.isPaused = false; },
           };
         }
         return (<FroalaEditor
