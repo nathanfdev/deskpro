@@ -261,6 +261,8 @@ class Container extends React.Component {
 
   openAttach() {
     this.editor.commands.exec('insertFile');
+    this.state.editorControls.getEditor()('popups.setContainer', 'file.insert', $('#replyForm'));
+    this.state.editorControls.getEditor()('popups.get', 'file.insert').css({ top: '25px', left: '325px' });
   }
 
   groupHeader() {
@@ -395,6 +397,8 @@ class Container extends React.Component {
       videoUploadURL:            `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
       videoDefaultWidth:         280,
       videoResize:               false,
+      videoDefaultDisplay:       'block',
+      videoSplitHTML:            'true',
       linkAlwaysBlank:           true,
       toolbarInline:             true,
       charCounterCount:          false,
@@ -440,7 +444,7 @@ class Container extends React.Component {
             />
           </div>
           {enabled ? (<div className="reply">
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit} id="replyForm">
               <FroalaEditor
                 tag="textarea"
                 config={froalaConfig}
