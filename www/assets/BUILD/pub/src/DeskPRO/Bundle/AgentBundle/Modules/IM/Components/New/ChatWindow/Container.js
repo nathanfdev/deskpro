@@ -117,6 +117,7 @@ class Container extends React.Component {
     this.initFroala       = this.initFroala.bind(this);
     this.bindFroalaEvents = this.bindFroalaEvents.bind(this);
     this.openLink         = this.openLink.bind(this);
+    this.openAttach       = this.openAttach.bind(this);
   }
 
   componentDidMount() {
@@ -255,6 +256,10 @@ class Container extends React.Component {
 
   openLink() {
     this.setState({ linkDrawerOpened: true });
+  }
+
+  openAttach() {
+    this.editor.commands.exec('insertFile');
   }
 
   groupHeader() {
@@ -436,7 +441,6 @@ class Container extends React.Component {
             <form onSubmit={this.handleSubmit}>
               <FroalaEditor
                 tag="textarea"
-                className="textarea"
                 config={froalaConfig}
                 model={this.state.message}
                 onModelChange={this.handleChange}
@@ -446,6 +450,11 @@ class Container extends React.Component {
                 className={classNames('fa fa-link reply-icon', { inactive: Object.keys(this.props.activeTabs).length < 1 })}
                 ref={(c) => { this.linkTrigger = c; }}
                 onClick={this.openLink}
+              />
+              <i
+                className="fa fa-paperclip reply-icon"
+                ref={(c) => { this.attachTrigger = c; }}
+                onClick={this.openAttach}
               />
               <i
                 className="fa fa-smile-o reply-icon emoji trigger"
