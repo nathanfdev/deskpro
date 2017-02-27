@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import { ListElement } from 'DeskPRO/Component/Semantic/List';
 import AbstractList from './AbstractList';
 import AvatarHelper from './AvatarHelper';
@@ -13,6 +14,7 @@ class GroupList extends AbstractList {
   getAvatar = AvatarHelper.renderGroupAvatar;
 
   getItem(item, type, titleProp) {
+    const { me } = this.props;
     let size = item.get('agents').size;
     if (size > 2) {
       size -= 1;
@@ -22,18 +24,21 @@ class GroupList extends AbstractList {
     return (
       <ListElement
         key={`${type}_${item.get('id')}`}
-        className="im team"
+        className="im group"
         imageNode={this.getAvatar(item)}
       >
         <div
           onClick={() => this.props.onGroupClick(item.get('id'))}
-          className="content team"
+          className="content group"
         >
           <div className="header">
             {item.get(titleProp)}
             {size ? <span className="agents-counter">({size})</span> : null}
           </div>
           <span className="agents-list">{this.getAgents(item)}</span>
+        </div>
+        <div className="group-overlay">
+          <i className={classNames('icon', { 'trash outline': item.get('admin') === me.get('id'), reply: item.get('admin') !== me.get('id') })} />
         </div>
       </ListElement>
     );
