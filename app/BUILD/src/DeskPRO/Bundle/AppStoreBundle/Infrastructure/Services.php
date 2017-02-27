@@ -26,31 +26,36 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
-/**
- * Representation of a Deskpro app store application
- */
-interface Application
+use DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator;
+use JsonSchema\Validator;
+use Doctrine\ORM;
+
+class Services
 {
     /**
-     * Returns the system identifier assigned to the application
-     *
-     * @return string
+     * @param ORM\EntityManager $entityManager
+     * @return ApplicationInstanceService
      */
-    function getId();
+    public static function createApplicationInstanceService(ORM\EntityManager $entityManager)
+    {
+        return new ApplicationInstanceService($entityManager);
+    }
 
     /**
-     * Returns the name given by the owner
-     *
-     * @return string
+     * @param FileLocator $schemaLocator
+     * @param ORM\EntityManager $entityManager
+     * @return ApplicationService
      */
-    function getName();
+    public static function createApplicationService(FileLocator $schemaLocator, ORM\EntityManager $entityManager)
+    {
+        $schemaPath = $schemaLocator->locate('@AppStoreBundle/Resources/manifest/schema.default.json');
+        $schemaInfo = new \SplFileInfo($schemaPath);
 
-    /**
-     * Returns the manifest
-     *
-     * @return string
-     */
-    function getManifest();
+        $service = new ApplicationService($entityManager, new Validator(), $schemaInfo);
+        return $service;
+    }
 }
+
+

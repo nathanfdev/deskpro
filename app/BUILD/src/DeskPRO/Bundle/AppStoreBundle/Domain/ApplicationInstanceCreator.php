@@ -26,27 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-use DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator;
-use JsonSchema\Validator;
-use Doctrine\ORM;
-
-class ApplicationServiceFactory
+interface ApplicationInstanceCreator
 {
     /**
-     * @param FileLocator $schemaLocator
-     * @param ORM\EntityManager $entityManager
-     * @return ApplicationService
+     * @param Application $application
+     * @param string|null $settings
+     * @return ApplicationInstance
      */
-    public static function createInstance(FileLocator $schemaLocator, ORM\EntityManager $entityManager)
-    {
-        $schemaPath = $schemaLocator->locate('@AppStoreBundle/Resources/manifest/schema.default.json');
-        $schemaInfo = new \SplFileInfo($schemaPath);
-
-        $service = new ApplicationService($entityManager, new Validator(), $schemaInfo);
-        return $service;
-    }
+    public function createInstance(Application $application, $settings = null);
 }
-
-

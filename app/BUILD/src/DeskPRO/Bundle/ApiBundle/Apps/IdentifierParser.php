@@ -10,7 +10,8 @@ class IdentifierParser
      */
     public function recognizeApplicationName($raw)
     {
-        return false;
+        //TODO: implement application name recognition
+        return false === (bool) preg_match('#^\d+$#', $raw);
     }
 
     /**
@@ -19,6 +20,7 @@ class IdentifierParser
      */
     public function recognizeApplicationInstanceId($raw)
     {
+        //TODO: implement application instance id recognition
         return (bool) preg_match('#^\d+$#', $raw);
     }
 }

@@ -63,7 +63,7 @@ class AppInstance implements Domain\ApplicationInstance
     private $settings;
 
     /**
-     * @ORM\Column(type="datetime", nullable=false)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $createdAt;
 
@@ -73,7 +73,17 @@ class AppInstance implements Domain\ApplicationInstance
     public function getApp()
     {
         return $this->app;
+
     }
+
+    /**
+     * @param App $app
+     */
+    public function setApp(App $app)
+    {
+        $this->app = $app;
+    }
+
 
     /**
      * @return mixed
@@ -81,6 +91,11 @@ class AppInstance implements Domain\ApplicationInstance
     public function getSettings()
     {
         return $this->settings;
+    }
+
+    public function setSettings($settings)
+    {
+        $this->settings = $settings;
     }
 
     /**
@@ -91,5 +106,21 @@ class AppInstance implements Domain\ApplicationInstance
     function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getScope()
+    {
+        return $this->scope;
+    }
+
+    /**
+     * @param mixed $scope
+     */
+    public function setScope($scope)
+    {
+        $this->scope = $scope;
     }
 }

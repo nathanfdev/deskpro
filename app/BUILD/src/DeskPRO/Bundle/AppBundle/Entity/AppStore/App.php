@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

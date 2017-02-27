@@ -43,20 +43,20 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 class AppStateController
 {
     /**
-     * @Rest\GET("/{app_name_or_instance_id}/state")
-     * @ParamConverter("instance", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
+     * @Rest\GET("/{application}/state")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
      * @ParamConverter("assetFilter", class="AppStoreBundle:Domain\AssetFilter", converter="DeskPRO\Bundle\ApiBundle\Apps\StateFilterParamConverter")
      *
-     * @param Entity\AppStore\AppInstance $instance
+     * @param Entity\AppStore\AppInstance $application
      * @param $stateFilter
      */
-    public function getState(Entity\AppStore\AppInstance $instance, AppStoreBundle\Domain\SearchStateFilter $stateFilter)
+    public function getState(Entity\AppStore\AppInstance $application, AppStoreBundle\Domain\SearchStateFilter $stateFilter)
     {
 
     }
 
     /**
-     * @Rest\POST("/{app_name_or_instance_id}/state")
+     * @Rest\POST("/{application}/state")
      *
      * @ParamConverter("state", class="AppBundle:Entity\AppStore\AppState", converter="DeskPRO\Bundle\ApiBundle\Apps\AppStateParamConverter")
      * @param Entity\AppStore\AppState $state
@@ -67,7 +67,7 @@ class AppStateController
     }
 
     /**
-     * @Rest\PUT("/{app_name_or_instance_id}/state")
+     * @Rest\PUT("/{application}/state")
      *
      * @ParamConverter("state", class="AppBundle:Entity\AppStore\AppState", converter="DeskPRO\Bundle\ApiBundle\Apps\AppStateParamConverter")
      * @param Entity\AppStore\AppState $state
@@ -76,5 +76,4 @@ class AppStateController
     {
 
     }
-
 }

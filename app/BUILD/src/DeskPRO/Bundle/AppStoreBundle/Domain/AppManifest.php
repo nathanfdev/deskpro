@@ -36,6 +36,12 @@ class AppManifest
     /** @var string */
     private $name;
 
+    /** @var string */
+    private $scope;
+
+    /** @var array */
+    private $defaultSettings;
+
     /**
      * @return string
      */
@@ -51,4 +57,38 @@ class AppManifest
     {
         $this->name = $name;
     }
+
+    /**
+     * @return string
+     */
+    public function getScope(): string
+    {
+        return $this->scope;
+    }
+
+    /**
+     * @param string $scope
+     */
+    public function setScope(string $scope)
+    {
+        $this->scope = $scope;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDefaultSettings()
+    {
+        return $this->defaultSettings;
+    }
+
+    /**
+     * @param array $defaultSettings
+     */
+    public function setDefaultSettings(array $defaultSettings)
+    {
+        $this->defaultSettings = $defaultSettings;
+    }
+
+
 }

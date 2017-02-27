@@ -49,5 +49,22 @@ class AppManifestJsonReader
     {
         $value = $manifestMap['name'];
         $manifest->setName($value);
+
+        $value = $manifestMap['scope'];
+        $manifest->setScope($value);
+
+        $value = $manifestMap['settings'];
+        $defaultSettings = [];
+        foreach ($value as $setting) {
+            if (
+                is_array($setting)
+                && array_key_exists('default_value', $setting)
+                && array_key_exists('name', $setting)
+            ) {
+                $defaultSettings[$setting['name']] = $setting['default_value'];
+            }
+        }
+        $manifest->setDefaultSettings($defaultSettings);
+
     }
 }
