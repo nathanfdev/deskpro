@@ -28,9 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
-use DeskPRO\Bundle\AppStoreBundle\Domain;
-use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationCreator;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
+use DeskPRO\Bundle\AppStoreBundle;
 use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -62,13 +60,13 @@ class AppsController extends FOSRestController {
     /**
      * @Rest\POST("", condition="request.headers.get('Content-Type') matches '#application/zip#i'")
      * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\ApiBundle\Apps\AppZipArchiveBundleParamConverter")
-     * @param Infrastructure\AppZipArchiveBundle $bundle
+     * @param AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle
      * @return string
      */
-    public function createFromZipFile(Infrastructure\AppZipArchiveBundle $bundle)
+    public function createFromZipFile(AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
     {
-        /** @var ApplicationCreator $applicationCreator */
-        $applicationCreator = $this->container->get(Domain\ApplicationCreator::class);
+        /** @var AppStoreBundle\Domain\ApplicationCreator $applicationCreator */
+        $applicationCreator = $this->container->get(AppStoreBundle\Domain\ApplicationCreator::class);
         $validBundle = $applicationCreator->verifyBundle($bundle);
 
         if (! $validBundle) { //TODO provide a more elaborate exception body
@@ -84,9 +82,10 @@ class AppsController extends FOSRestController {
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\ApiBundle\Apps\AppParamConverter")
      * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\ApiBundle\Apps\AppZipArchiveBundleParamConverter")
      * @param Entity\AppStore\App $application
+     * @param AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle
      * @return string
      */
-    public function updateFromZipFile(Entity\AppStore\App $application, Infrastructure\AppZipArchiveBundle $bundle)
+    public function updateFromZipFile(Entity\AppStore\App $application, AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
     {
         return $application;
     }
@@ -161,7 +160,7 @@ class AppsController extends FOSRestController {
      * @ParamConverter("assetFilter", class="AppStoreBundle:Domain\AssetFilter", converter="ApiBundle:Apps\AssetFilterParamConverter")
      *
      * @param Entity\AppStore\App $application
-     * @param $assetFilter
+     * @param AppStoreBundle\Domain\SearchAssetFilter $assetFilter
      */
     public function getAssets(Entity\AppStore\App $application, AppStoreBundle\Domain\SearchAssetFilter $assetFilter)
     {

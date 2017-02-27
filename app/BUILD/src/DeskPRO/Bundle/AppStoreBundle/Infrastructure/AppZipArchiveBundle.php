@@ -53,8 +53,10 @@ class AppZipArchiveBundle implements Domain\AppBundle
         try {
             $resource = $this->archive->open($path, \ZipArchive::CREATE);
             if (true === $resource) {
-                $manifest = $this->archive->getFromName('manifest.json');
-                return $manifest;
+                $manifest = $this->archive->getFromName(Domain\Constants::BUNDLE_MANIFEST_PATH);
+                if (!is_null($manifest) && is_string($manifest)) {
+                    return $manifest;
+                }
             }
         } finally {
             $this->archive->close();
