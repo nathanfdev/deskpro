@@ -27,6 +27,10 @@ export class EditorContainer extends React.Component {
     this.props.hideEditor();
   };
 
+  loadRemoteImages = (data, callback) => {
+    this.props.dispatch(actions.loadRemoteImages(data, callback));
+  };
+
   render() {
     return (<Editor
       value={this.props.value}
@@ -34,16 +38,18 @@ export class EditorContainer extends React.Component {
       onCancel={this.onCancel}
       onSave={this.props.save}
       onAddFile={this.onAddFile}
+      loadRemoteImages={this.loadRemoteImages}
     />);
   }
 }
 export class Editor extends React.Component {
   static propTypes = {
-    value:     PropTypes.string,
-    inputType: PropTypes.string,
-    onSave:    PropTypes.func,
-    onCancel:  PropTypes.func,
-    onAddFile: PropTypes.func
+    value:            PropTypes.string,
+    inputType:        PropTypes.string,
+    onSave:           PropTypes.func,
+    onCancel:         PropTypes.func,
+    onAddFile:        PropTypes.func,
+    loadRemoteImages: PropTypes.func
   };
   static defaultProps = {
     value:     '',
@@ -100,13 +106,20 @@ export class Editor extends React.Component {
   getEditor = () => {
     switch (this.state.inputType) {
       case 'markdown': {
-        return (<MarkdownEditor value={this.state.markdown} onChange={this.onChange} onAddFile={this.props.onAddFile} />);
+        return (
+          <MarkdownEditor
+            value={this.state.markdown}
+            onChange={this.onChange}
+            onAddFile={this.props.onAddFile}
+            loadRemoteImages={this.props.loadRemoteImages}
+          />
+        );
       }
       case 'rte':
       default: {
         const froalaConfig = {
           imageUploadMethod: 'POST',
-          imageUploadURL:    `/api/v2/blobs/froala`,
+          imageUploadURL:    '/api/v2/blobs/froala',
           charCounterCount:  false,
           enter:             $.FroalaEditor.ENTER_BR,
           key:               'qENARBFSTb1G1QJg1RA=='

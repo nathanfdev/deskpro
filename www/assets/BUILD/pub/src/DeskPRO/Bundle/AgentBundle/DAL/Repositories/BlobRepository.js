@@ -7,5 +7,8 @@ class BlobRepository extends ApiRepository {
   uploadFile(data) {
     return this.api.sendPost(`DP_API/${this.url}/form_data`, data, { processData: false, contentType: false, jsonPayload: false });
   }
+  loadRemoteImages(data) {
+    return this.api.sendPost(`DP_API/${this.url}/load_remote_images`, data);
+  }
 }
 export default BlobRepository;

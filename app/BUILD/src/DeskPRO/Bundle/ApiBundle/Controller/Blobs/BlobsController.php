@@ -39,8 +39,10 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVote
 use DeskPRO\Component\Pagerfanta\LimitedPager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Orb\Data\ContentTypes;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -122,6 +124,39 @@ class BlobsController extends CrudController
         $return['link'] = $blob->getDownloadUrl(true);
 
         return new Response(json_encode($return), Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Rest\Post("/load_remote_images")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function postLoadRemoteImagesAction(Request $request)
+    {
+        $fs = new Filesystem();
+
+        $images    = $request->get('images');
+        $tmpDir    = $this->get('deskpro.app_env')->getUserTmpDir();
+        $fileId    = uniqid('remote_images', true);
+        $tmpFolder = $tmpDir.DIRECTORY_SEPARATOR.'remote_images'.DIRECTORY_SEPARATOR.$fileId.DIRECTORY_SEPARATOR;
+        mkdir($tmpFolder, 0777, true);
+        foreach ($images as &$image) {
+            $filename = basename($image['source']);
+            $mimeType = ContentTypes::getContentTypeFromFilename($filename);
+
+            file_put_contents($tmpFolder.$filename, fopen($image['source'], 'r'));
+            $blob = $this->get('blob.storage')->createBlobRecordFromFile(
+                $tmpFolder.$filename,
+                $filename,
+                $mimeType
+            );
+            $image['blob'] = $blob;
+        }
+        $fs->remove($tmpFolder);
+
+        return View::create($this->wrap($images), Response::HTTP_CREATED);
     }
 
     /**

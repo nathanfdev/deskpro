@@ -2,6 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import CM from 'codemirror';
 import MarkdownIt from 'markdown-it';
+import toMarkdown from 'to-markdown';
 import 'inline-attachment/src/inline-attachment';
 
 import 'codemirror/mode/xml/xml';
@@ -13,11 +14,12 @@ import * as Icons from './Icons';
 
 class MarkdownEditor extends React.Component {
   static propTypes = {
-    onChange:  React.PropTypes.func,
-    onAddFile: React.PropTypes.func,
-    options:   React.PropTypes.object,
-    path:      React.PropTypes.string,
-    value:     React.PropTypes.string,
+    onChange:         React.PropTypes.func,
+    onAddFile:        React.PropTypes.func,
+    loadRemoteImages: React.PropTypes.func,
+    options:          React.PropTypes.object,
+    path:             React.PropTypes.string,
+    value:            React.PropTypes.string,
   };
   static defaultProps = {
     onChange() {},
@@ -67,8 +69,13 @@ class MarkdownEditor extends React.Component {
   }
 
   onPaste = (cm, event) => {
-    const items = (event.clipboardData || event.originalEvent.clipboardData).items;
-    this.getItemsToUpload(items);
+    const data = (event.clipboardData || event.originalEvent.clipboardData);
+    if (data.types.indexOf('text/html') > -1) {
+      this.importHtml(data.getData('text/html'));
+      event.preventDefault();
+    } else {
+      this.getItemsToUpload(data.items);
+    }
   };
 
   onDrop = (cm, event) => {
@@ -109,6 +116,44 @@ class MarkdownEditor extends React.Component {
         }
       }
     }
+  };
+
+  importHtml = (html) => {
+    const markdown = toMarkdown(
+      html,
+      {
+        gfm:        true,
+        converters: [
+          {
+            filter: ['div', 'span'],
+            replacement(content) {
+              return content;
+            }
+          }
+        ]
+      });
+    this.props.onChange(markdown);
+    this.parseImages(markdown);
+  };
+
+  parseImages = (markdown) => {
+    const images = [];
+    markdown.replace(/!\[[^\]]+]\(([^)]+)\)/g, (m, key) => {
+      images.push({
+        match:  m,
+        source: key
+      });
+    });
+    this.props.loadRemoteImages(images, blobs => this.replaceRemoteImages(markdown, blobs));
+  };
+
+  replaceRemoteImages = (markdown, blobs) => {
+    let result = markdown;
+    blobs.forEach((element) => {
+      const image = element.match.replace(element.source, element.blob.download_url);
+      result = result.replace(element.match, image);
+    });
+    this.props.onChange(result);
   };
 
   appendImage = (data) => {
