@@ -28,8 +28,18 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-interface StateFinder
+interface ApplicationStateFinder
 {
-    function findApplicationState(SearchStateFilter $assetFilter);
+    /**
+     * @param ApplicationStateId $id
+     * @return ApplicationState
+     */
+    public function find(ApplicationStateId $id);
+
+    /**
+     * @param SearchStateFilter $assetFilter
+     * @return ApplicationState[]
+     */
+    public function findApplicationState(SearchStateFilter $assetFilter);
 }
 

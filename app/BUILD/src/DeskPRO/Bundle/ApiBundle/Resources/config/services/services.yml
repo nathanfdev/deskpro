@@ -110,4 +110,12 @@ services:
     tags:
         - { name: request.param_converter, converter: DeskPRO\Bundle\ApiBundle\Apps\AppZipArchiveBundleParamConverter }
 
+  DeskPRO\Bundle\ApiBundle\ParamConverter\SerializedParamConverter:
+    class: DeskPRO\Bundle\ApiBundle\ParamConverter\SerializedParamConverter
+    arguments: ["@jms_serializer"]
+    tags:
+        - { name: request.param_converter, converter: DeskPRO\Bundle\ApiBundle\ParamConverter\SerializedParamConverter }
+
+
+
 

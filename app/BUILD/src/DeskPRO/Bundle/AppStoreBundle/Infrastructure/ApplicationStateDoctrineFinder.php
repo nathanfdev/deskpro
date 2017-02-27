@@ -29,10 +29,10 @@
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DeskPRO\Bundle\AppBundle\Entity;
-use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationFinder;
+use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Doctrine\ORM;
 
-class ApplicationDoctrineFinder implements ApplicationFinder
+class ApplicationStateDoctrineFinder implements Domain\ApplicationStateFinder
 {
     /** @var ORM\EntityManager */
     private $entityManager;
@@ -43,17 +43,21 @@ class ApplicationDoctrineFinder implements ApplicationFinder
     }
 
     /**
-     * @param $name
-     * @return mixed
+     * @param Domain\ApplicationStateId $id
+     * @return Entity\AppStore\AppAsset
      */
-    function findByName($name)
+    public function find(Domain\ApplicationStateId $id)
     {
+        //TODO do not assume the application state id is the same as the persistence id
         $qb = $this->entityManager->createQueryBuilder();
         $qb
-            ->from(Entity\AppStore\App::class, 'a')
+            ->from(Entity\AppStore\AppState::class, 'a')
             ->select('a')
+            ->innerJoin('a.appInstance', 'i')
             ->where('a.name = :name')
-            ->setParameter('name', $name)
+            ->andWhere('i.id = :instance')
+            ->setParameter('name', $id->getName())
+            ->setParameter('instance', $id->getInstanceId())
         ;
 
         $result = $qb->getQuery()->getResult();
@@ -61,33 +65,17 @@ class ApplicationDoctrineFinder implements ApplicationFinder
             return null;
         }
 
-        /** @var Entity\AppStore\App $instance */
+        /** @var Entity\AppStore\AppAsset $instance */
         $instance = array_pop($result);
         return $instance;
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param Domain\SearchStateFilter $assetFilter
+     * @return Domain\ApplicationState[]
      */
-    function findByInstanceId($id)
+    public function findApplicationState(Domain\SearchStateFilter $assetFilter)
     {
-        $qb = $this->entityManager->createQueryBuilder();
-        $qb
-            ->from(Entity\AppStore\AppInstance::class, 'i')
-            ->select('i, a')
-            ->innerJoin('i.app', 'a')
-            ->where('i.id = :id')
-            ->setParameter('id', $id)
-        ;
-
-        $result = $qb->getQuery()->getResult();
-        if (1 != count($result)) { //instance not found or more than one
-            return null;
-        }
-
-        /** @var Entity\AppStore\AppInstance $instance */
-        $instance = array_pop($result);
-        return $instance->getApp();
+        return [];
     }
 }

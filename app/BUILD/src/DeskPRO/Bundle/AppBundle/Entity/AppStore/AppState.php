@@ -32,7 +32,11 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="app2_app_state")
+ * @ORM\Table(
+ *  name="app2_app_state", uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="state_unique", columns={"app_instance_id", "name"})
+ *  }
+    )
  */
 class AppState
 {
@@ -77,7 +81,103 @@ class AppState
     private $targetId;
 
     /**
-     * @ORM\Column(type="datetime", nullable=false)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $createdAt;
+
+    /**
+     * @return AppInstance
+     */
+    public function getAppInstance(): AppInstance
+    {
+        return $this->appInstance;
+    }
+
+    /**
+     * @param AppInstance $appInstance
+     */
+    public function setAppInstance(AppInstance $appInstance)
+    {
+        $this->appInstance = $appInstance;
+    }
+
+    /**false
+     * @return mixed
+     */
+    public function getScope()
+    {
+        return $this->scope;
+    }
+
+    /**
+     * @param mixed $scope
+     */
+    public function setScope($scope)
+    {
+        $this->scope = $scope;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOwnerId()
+    {
+        return $this->ownerId;
+    }
+
+    /**
+     * @param mixed $ownerId
+     */
+    public function setOwnerId($ownerId)
+    {
+        $this->ownerId = $ownerId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTargetId()
+    {
+        return $this->targetId;
+    }
+
+    /**
+     * @param mixed $targetId
+     */
+    public function setTargetId($targetId)
+    {
+        $this->targetId = $targetId;
+    }
 }

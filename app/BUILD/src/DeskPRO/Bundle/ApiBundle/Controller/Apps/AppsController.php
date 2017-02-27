@@ -52,7 +52,7 @@ class AppsController extends FOSRestController {
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
      * @return string
      */
-    public function getApplication(Entity\AppStore\AppInstance $application)
+    public function getApplicationAction(Entity\AppStore\AppInstance $application)
     {
         return $application;
     }
@@ -63,7 +63,7 @@ class AppsController extends FOSRestController {
      * @param AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle
      * @return string
      */
-    public function createFromZipFile(AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
+    public function createFromZipFileAction(AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
     {
         /** @var AppStoreBundle\Domain\ApplicationCreator $applicationCreator */
         $applicationCreator = $this->container->get(AppStoreBundle\Domain\ApplicationCreator::class);
@@ -89,7 +89,7 @@ class AppsController extends FOSRestController {
      * @param AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle
      * @return string
      */
-    public function updateFromZipFile(Entity\AppStore\App $application, AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
+    public function updateFromZipFileAction(Entity\AppStore\App $application, AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
     {
         return $application;
     }
@@ -99,7 +99,7 @@ class AppsController extends FOSRestController {
      * @ParamConverter("file", class="SplFileInfo", converter="DeskPRO\Bundle\ApiBundle\ParamConverter\RequestBodyToTemporaryFileConverter")
      * @return string
      */
-    public function createFromUrl()
+    public function createFromUrlAction()
     {
         throw new ServiceUnavailableHttpException('endpoint not available');
     }
@@ -109,7 +109,7 @@ class AppsController extends FOSRestController {
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\ApiBundle\Apps\AppParamConverter")
      * @param Entity\AppStore\App $application
      */
-    public function updateAppFromUrl(Entity\AppStore\App $application)
+    public function updateAppFromUrlAction(Entity\AppStore\App $application)
     {
         throw new ServiceUnavailableHttpException('endpoint not available');
     }
@@ -120,7 +120,7 @@ class AppsController extends FOSRestController {
      * @param Entity\AppStore\AppInstance $instance
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
      */
-    public function deleteApplication(Entity\AppStore\AppInstance $instance)
+    public function deleteApplicationAction(Entity\AppStore\AppInstance $instance)
     {
         throw new ServiceUnavailableHttpException('endpoint not available');
     }
@@ -133,7 +133,7 @@ class AppsController extends FOSRestController {
      *
      * @return array
      */
-    public function getManifest(Entity\AppStore\App $application)
+    public function getManifestAction(Entity\AppStore\App $application)
     {
         $manifestString = $application->getManifest();
         $manifestArray = json_decode($manifestString, true);
@@ -149,7 +149,7 @@ class AppsController extends FOSRestController {
      *
      * @return array
      */
-    public function getSettings(Entity\AppStore\AppInstance $application)
+    public function getSettingsAction(Entity\AppStore\AppInstance $application)
     {
         $settingsString = $application->getSettings();
         $settingsArray = json_decode($settingsString, true);
@@ -166,7 +166,7 @@ class AppsController extends FOSRestController {
      * @param Entity\AppStore\App $application
      * @param AppStoreBundle\Domain\SearchAssetFilter $assetFilter
      */
-    public function getAssets(Entity\AppStore\App $application, AppStoreBundle\Domain\SearchAssetFilter $assetFilter)
+    public function getAssetsAction(Entity\AppStore\App $application, AppStoreBundle\Domain\SearchAssetFilter $assetFilter)
     {
 
     }

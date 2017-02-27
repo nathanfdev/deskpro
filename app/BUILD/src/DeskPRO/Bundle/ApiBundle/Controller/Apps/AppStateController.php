@@ -28,52 +28,96 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
+use DeskPRO\Bundle\ApiBundle\Apps\AppStateRepresentation;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class AppsController
  *
  * @ApiModes("all")
- * @Rest\Route("/apps")
+ * @Rest\Route("/apps/{application}")
  */
-class AppStateController
+class AppStateController extends BaseController
 {
     /**
-     * @Rest\GET("/{application}/state")
+     * @Rest\GET("/state")
+     *
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
      * @ParamConverter("assetFilter", class="AppStoreBundle:Domain\AssetFilter", converter="DeskPRO\Bundle\ApiBundle\Apps\StateFilterParamConverter")
      *
      * @param Entity\AppStore\AppInstance $application
      * @param $stateFilter
      */
-    public function getState(Entity\AppStore\AppInstance $application, AppStoreBundle\Domain\SearchStateFilter $stateFilter)
+    public function getStateAction(Entity\AppStore\AppInstance $application, AppStoreBundle\Domain\SearchStateFilter $stateFilter)
     {
 
     }
 
     /**
-     * @Rest\POST("/{application}/state")
+     * @Rest\POST("/state")
      *
-     * @ParamConverter("state", class="AppBundle:Entity\AppStore\AppState", converter="DeskPRO\Bundle\ApiBundle\Apps\AppStateParamConverter")
-     * @param Entity\AppStore\AppState $state
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
+     * @ParamConverter("representation", class="DeskPRO\Bundle\ApiBundle\Apps\AppStateRepresentation", converter="DeskPRO\Bundle\ApiBundle\ParamConverter\SerializedParamConverter")
+     * @param Entity\AppStore\AppInstance $application
+     * @param AppStateRepresentation $representation
+     * @return AppStateRepresentation
      */
-    public function createState(Entity\AppStore\AppState $state)
+    public function postStateAction(Entity\AppStore\AppInstance $application, AppStateRepresentation $representation)
     {
+        $state = new Entity\AppStore\AppState();
+        $representation->mapToAppStateEntity($state);
+        $state->setAppInstance($application);
 
+        $em = $this->getManager();
+        $em->persist($state);
+        $em->flush();
+
+        return $representation;
     }
 
     /**
-     * @Rest\PUT("/{application}/state")
+     * @Rest\PUT("/state/{name}")
+     *
+     * @ParamConverter("state", class="AppBundle:Entity\AppStore\AppState", converter="DeskPRO\Bundle\ApiBundle\Apps\AppStateParamConverter")
+     * @ParamConverter("representation", class="DeskPRO\Bundle\ApiBundle\Apps\AppStateRepresentation", converter="DeskPRO\Bundle\ApiBundle\ParamConverter\SerializedParamConverter")
+     * @param Entity\AppStore\AppState $state
+     * @param AppStateRepresentation $representation
+     * @return AppStateRepresentation
+     */
+    public function putStateAction(Entity\AppStore\AppState $state, AppStateRepresentation $representation)
+    {
+        $representation->mapToAppStateEntity($state);
+
+        $em = $this->getManager();
+        $em->persist($state);
+        $em->flush();
+
+        return $representation;
+    }
+
+    /**
+     * @Rest\DELETE("/state/{name}")
      *
      * @ParamConverter("state", class="AppBundle:Entity\AppStore\AppState", converter="DeskPRO\Bundle\ApiBundle\Apps\AppStateParamConverter")
      * @param Entity\AppStore\AppState $state
+     * @return AppStateRepresentation
      */
-    public function updateState(Entity\AppStore\AppState $state)
+    public function deleteStateAction(Entity\AppStore\AppState $state)
     {
+        $representation = new AppStateRepresentation();
+        $representation->mapFromAppStateEntity($state);
 
+        $em = $this->getManager();
+        $em->remove($state);
+        $em->flush();
+
+        return $representation;
     }
 }

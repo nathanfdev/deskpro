@@ -37,7 +37,8 @@ class ParamConverters
      */
     public static function createAppStateConverter(ORM\EntityManager $entityManager)
     {
-        return new AppStateParamConverter($entityManager, new IdentifierParser());
+        $finder = new Infrastructure\ApplicationStateDoctrineFinder($entityManager);
+        return new AppStateParamConverter($finder, new IdentifierParser());
     }
 
     /**
