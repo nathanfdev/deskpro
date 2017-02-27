@@ -17,7 +17,7 @@ import EmojiBox from './EmojiBox';
 import AvatarHelper from '../IMTabs/AvatarHelper';
 
 emojione.imagePathSVGSprites = `./..${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg`;
-emojione.imageType = 'png';
+emojione.imageType = 'svg';
 emojione.sprites = true;
 
 class Container extends React.Component {
@@ -217,6 +217,7 @@ class Container extends React.Component {
     const editor = this.editor;
     const html = emoji.shortname;
     editor.events.focus();
+    editor.selection.restore();
     editor.html.insert(html);
   }
 
@@ -340,6 +341,7 @@ class Container extends React.Component {
     const propertyName = `${item.tabType}_id`;
     const message = `{{${item.tabType.charAt(0).toLowerCase()}-${item.page.meta[propertyName]}}}: ${item.title}`;
     this.editor.events.focus();
+    this.editor.selection.restore();
     this.editor.html.insert(message);
   }
 
@@ -404,7 +406,7 @@ class Container extends React.Component {
       immediateReactModelUpdate: true,
       key:                       'qENARBFSTb1G1QJg1RA==',
       events:                    {
-        'froalaEditor.focus':       () => { this.editor.selection.restore(); Container.onFocus(); },
+        'froalaEditor.focus':       Container.onFocus,
         'froalaEditor.blur':        () => { this.editor.selection.save(); Container.onBlur(); },
         'froalaEditor.initialized': this.bindFroalaEvents
       }
