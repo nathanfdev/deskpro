@@ -30,6 +30,26 @@ class MarkdownEditor extends React.Component {
     return <span className="MDEditor_toolbarButton_icon">{icon}</span>;
   }
 
+  static renderHtml(md, markdown) {
+    const result = markdown.replace(/\{\{ img\(([^)]+)\) }}/g, '/file.php/$1');
+    return md.render(result);
+  }
+
+  static toMarkdown(html) {
+    const markdown = toMarkdown(html, {
+      gfm:        true,
+      converters: [
+        {
+          filter: ['div', 'span'],
+          replacement(content) {
+            return content;
+          }
+        }
+      ]
+    });
+    return markdown.replace(/\(\/file\.php\/([^)]+)\)/g, '({{ img($1) }})');
+  }
+
   constructor(props) {
     super(props);
     this.md = new MarkdownIt({
@@ -40,7 +60,7 @@ class MarkdownEditor extends React.Component {
     this.state = {
       isFocused: false,
       cs:        {},
-      html:      this.md.render(props.value)
+      html:      MarkdownEditor.renderHtml(this.md, props.value)
     };
   }
 
@@ -119,19 +139,7 @@ class MarkdownEditor extends React.Component {
   };
 
   importHtml = (html) => {
-    const markdown = toMarkdown(
-      html,
-      {
-        gfm:        true,
-        converters: [
-          {
-            filter: ['div', 'span'],
-            replacement(content) {
-              return content;
-            }
-          }
-        ]
-      });
+    const markdown = MarkdownEditor.toMarkdown(html);
     this.props.onChange(markdown);
     this.parseImages(markdown);
   };
@@ -150,16 +158,21 @@ class MarkdownEditor extends React.Component {
   replaceRemoteImages = (markdown, blobs) => {
     let result = markdown;
     blobs.forEach((element) => {
-      const image = element.match.replace(element.source, element.blob.download_url);
+      const image = element.match.replace(
+        element.source,
+        `{{ img(${element.blob.blob_auth}/${element.blob.filename}) }}`
+      );
       result = result.replace(element.match, image);
     });
     this.props.onChange(result);
   };
 
   appendImage = (data) => {
-    let code = `[${data.filename}](${data.download_url})`;
+    let code;
     if (data.content_type.match(/^image/)) {
-      code = `!${code}`;
+      code = `![${data.filename}]({{ img(${data.blob_auth}/${data.filename}) }})`;
+    } else {
+      code = `[${data.filename}](${data.download_url})`;
     }
     this.codeMirror.replaceSelection(code);
   };
@@ -181,7 +194,7 @@ class MarkdownEditor extends React.Component {
   codemirrorValueChanged = (doc) => {
     const newValue = doc.getValue();
     this.currentCodemirrorValue = newValue;
-    this.setState({ html: this.md.render(newValue) });
+    this.setState({ html: MarkdownEditor.renderHtml(this.md, newValue) });
     this.props.onChange(newValue);
   };
 

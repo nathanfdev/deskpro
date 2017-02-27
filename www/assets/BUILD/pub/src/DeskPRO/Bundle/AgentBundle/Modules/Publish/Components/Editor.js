@@ -5,7 +5,6 @@ import MarkdownEditor from 'DeskPRO/Component/Markdown/MarkdownEditor';
 import 'froala-editor/js/froala_editor.pkgd.min';
 import $ from 'jquery';
 import FroalaEditor from 'react-froala-wysiwyg';
-import toMarkdown from 'to-markdown';
 import MarkdownIt from 'markdown-it';
 import * as actions from './../Actions/publishEditorActions';
 
@@ -62,9 +61,14 @@ export class Editor extends React.Component {
   constructor(props) {
     super(props);
     const inputType = this.props.inputType ? this.props.inputType : 'rte';
+    this.md = new MarkdownIt({
+      html:        false,
+      linkify:     true,
+      typographer: true
+    });
     this.state = {
       html:     this.props.value,
-      markdown: toMarkdown(this.props.value),
+      markdown: MarkdownEditor.toMarkdown(this.props.value),
       inputType
     };
   }
@@ -73,7 +77,7 @@ export class Editor extends React.Component {
     this.props.onCancel();
     this.setState({
       html:     this.props.value,
-      markdown: toMarkdown(this.props.value)
+      markdown: MarkdownEditor.toMarkdown(this.props.value)
     });
   };
 
@@ -84,12 +88,7 @@ export class Editor extends React.Component {
       input = this.state.html;
       html = input;
     } else {
-      const md = new MarkdownIt({
-        html:        false,
-        linkify:     true,
-        typographer: true
-      });
-      html = md.render(this.state.markdown);
+      html = MarkdownEditor.renderHtml(this.md, this.state.markdown);
       input = this.state.markdown;
     }
     this.props.onSave(html, input, this.state.inputType);
@@ -141,16 +140,13 @@ export class Editor extends React.Component {
   };
 
   changeMode = (type) => {
-    this.setState({ inputType: type });
-    if (type === 'markdown') {
-      this.setState({ markdown: toMarkdown(this.state.html) });
-    } else {
-      const md = new MarkdownIt({
-        html:        false,
-        linkify:     true,
-        typographer: true
-      });
-      this.setState({ html: md.render(this.state.markdown) });
+    if (type !== this.state.inputType) {
+      this.setState({ inputType: type });
+      if (type === 'markdown') {
+        this.setState({ markdown: MarkdownEditor.toMarkdown(this.state.html) });
+      } else {
+        this.setState({ html: MarkdownEditor.renderHtml(this.md, this.state.markdown) });
+      }
     }
   };
 
