@@ -348,3 +348,50 @@ Feature: /organizations endpoint
     Then the JSON node "data.members" should have 2 elements
     And the JSON node "data.members[0]" should be equal to "{u2}"
     And the JSON node "data.members[1]" should be equal to "{u4}"
+
+  Scenario: I set phone number country code w/o plus char
+    When I send a POST request to "/api/v2/organizations" with body:
+    """
+{
+  "name": "Ebay",
+  "contact_data": {
+    "phone": [
+      {
+        "type": "mobile",
+        "code": "1",
+        "number": "234-534-5345"
+      }
+    ]
+  }
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.contact_data[0].contact_type" should be equal to "phone"
+    And the JSON node "data.contact_data[0].code" should be equal to "+1"
+    And the JSON node "data.contact_data[0].number" should be equal to "234-534-5345"
+
+  Scenario Outline: I set country by name
+    When I send a POST request to "/api/v2/organizations" with body:
+    """
+{
+  "name": "Ebay",
+  "contact_data": {
+    "address": [
+      {
+        "address": "address",
+        "city": "city",
+        "state": "state",
+        "zip": "zip",
+        "country": "<country>"
+      }
+    ]
+  }
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.contact_data[0].country" should be equal to "<country>"
+
+    Examples:
+      | country        |
+      | United Kingdom |
+      | United States  |
