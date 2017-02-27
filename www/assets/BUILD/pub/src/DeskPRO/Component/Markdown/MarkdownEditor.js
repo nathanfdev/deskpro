@@ -2,11 +2,15 @@ import React from 'react';
 import classNames from 'classnames';
 import CM from 'codemirror';
 import MarkdownIt from 'markdown-it';
+import emoji from 'markdown-it-emoji';
+import MarkdownItContainer from 'markdown-it-container';
 import toMarkdown from 'to-markdown';
 import 'inline-attachment/src/inline-attachment';
 
 import 'codemirror/mode/xml/xml';
-import 'codemirror/mode/markdown/markdown';
+import 'codemirror/mode/gfm/gfm';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/php/php';
 import 'codemirror/addon/edit/continuelist';
 
 import { getCursorState, applyFormat } from './format';
@@ -23,7 +27,8 @@ class MarkdownEditor extends React.Component {
   };
   static defaultProps = {
     onChange() {},
-    onAddFile() {}
+    onAddFile() {},
+    loadRemoteImages() {}
   };
 
   static renderIcon(icon) {
@@ -57,6 +62,30 @@ class MarkdownEditor extends React.Component {
       linkify:     true,
       typographer: true
     });
+    this.md
+      .use(emoji)
+      .use(MarkdownItContainer, 'warning', {
+        render(tokens, idx) {
+          return tokens[idx].nesting === 1
+            ? '<div class="block warning">\n'
+            : '</div>\n';
+        }
+      })
+      .use(MarkdownItContainer, 'error', {
+        render(tokens, idx) {
+          return tokens[idx].nesting === 1
+            ? '<div class="block error">\n'
+            : '</div>\n';
+        }
+      })
+      .use(MarkdownItContainer, 'info', {
+        render(tokens, idx) {
+          return tokens[idx].nesting === 1
+            ? '<div class="block info">\n'
+            : '</div>\n';
+        }
+      })
+    ;
     this.state = {
       isFocused: false,
       cs:        {},
@@ -106,8 +135,10 @@ class MarkdownEditor extends React.Component {
 
   getOptions() {
     return Object.assign({
-      mode:           'markdown',
+      mode:           'gfm',
       lineNumbers:    false,
+      theme:          'default',
+      lineWrapping:   true,
       indentWithTabs: true,
       tabSize:        '2',
     }, this.props.options);
@@ -140,7 +171,7 @@ class MarkdownEditor extends React.Component {
 
   importHtml = (html) => {
     const markdown = MarkdownEditor.toMarkdown(html);
-    this.props.onChange(markdown);
+    this.codeMirror.replaceSelection(markdown);
     this.parseImages(markdown);
   };
 
@@ -152,11 +183,11 @@ class MarkdownEditor extends React.Component {
         source: key
       });
     });
-    this.props.loadRemoteImages(images, blobs => this.replaceRemoteImages(markdown, blobs));
+    this.props.loadRemoteImages(images, blobs => this.replaceRemoteImages(blobs));
   };
 
-  replaceRemoteImages = (markdown, blobs) => {
-    let result = markdown;
+  replaceRemoteImages = (blobs) => {
+    let result = this.props.value;
     blobs.forEach((element) => {
       const image = element.match.replace(
         element.source,
@@ -206,7 +237,7 @@ class MarkdownEditor extends React.Component {
   renderButton(formatKey, label, action) {
     const onClickAction = (!action) ? this.toggleFormat.bind(this, formatKey) : action;
 
-    const isTextIcon = (formatKey === 'h1' || formatKey === 'h2' || formatKey === 'h3');
+    const isTextIcon = (['h1', 'h2', 'h3', 'code'].indexOf(formatKey) !== -1);
     const className = classNames('MDEditor_toolbarButton', {
       'MDEditor_toolbarButton--pressed': this.state.cs[formatKey]
     }, (`MDEditor_toolbarButton--${formatKey}`));
@@ -232,7 +263,10 @@ class MarkdownEditor extends React.Component {
         {this.renderButton('oList', 'ol')}
         {this.renderButton('uList', 'ul')}
         {this.renderButton('quote', 'q')}
-        {/* this.renderButton('link', 'a')*/}
+        {this.renderButton('info', 'i')}
+        {this.renderButton('warning', '!')}
+        {this.renderButton('error', '!')}
+        {this.renderButton('code', '>')}
       </div>
     );
   }

@@ -6,6 +6,9 @@ import linkSvg from './link.svg';
 import uListSvg from './uList.svg';
 import oListSvg from './oList.svg';
 import quoteSvg from './quote.svg';
+import infoSvg from './info.svg';
+import warningSvg from './warning.svg';
+import errorSvg from './error.svg';
 
 export const bold = <Isvg src={boldSvg} />;
 export const italic = <Isvg src={italicSvg} />;
@@ -13,3 +16,6 @@ export const link = <Isvg src={linkSvg} />;
 export const uList = <Isvg src={uListSvg} />;
 export const oList = <Isvg src={oListSvg} />;
 export const quote = <Isvg src={quoteSvg} />;
+export const info = <Isvg src={infoSvg} />;
+export const warning = <Isvg src={warningSvg} />;
+export const error = <Isvg src={errorSvg} />;

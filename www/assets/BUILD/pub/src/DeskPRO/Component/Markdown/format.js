@@ -1,12 +1,16 @@
 const FORMATS = {
-  h1:     { type: 'block', token: 'header-1', before: '#', re: /^#\s+/, placeholder: 'Heading' },
-  h2:     { type: 'block', token: 'header-2', before: '##', re: /^##\s+/, placeholder: 'Heading' },
-  h3:     { type: 'block', token: 'header-3', before: '###', re: /^###\s+/, placeholder: 'Heading' },
-  bold:   { type: 'inline', token: 'strong', before: '**', after: '**', placeholder: 'bold text' },
-  italic: { type: 'inline', token: 'em', before: '_', after: '_', placeholder: 'italic text' },
-  quote:  { type: 'block', token: 'quote', re: /^>\s+/, before: '>', placeholder: 'quote' },
-  oList:  { type: 'block', before: '1. ', re: /^\d+\.\s+/, placeholder: 'List' },
-  uList:  { type: 'block', before: '* ', re: /^[*-]\s+/, placeholder: 'List' },
+  h1:      { type: 'block', token: 'header-1', before: '#', re: /^#\s+/, placeholder: 'Heading' },
+  h2:      { type: 'block', token: 'header-2', before: '##', re: /^##\s+/, placeholder: 'Heading' },
+  h3:      { type: 'block', token: 'header-3', before: '###', re: /^###\s+/, placeholder: 'Heading' },
+  bold:    { type: 'inline', token: 'strong', before: '**', after: '**', placeholder: 'bold text' },
+  italic:  { type: 'inline', token: 'em', before: '_', after: '_', placeholder: 'italic text' },
+  quote:   { type: 'block', token: 'quote', re: /^>\s+/, before: '>', placeholder: 'quote' },
+  oList:   { type: 'block', before: '1. ', re: /^\d+\.\s+/, placeholder: 'List' },
+  uList:   { type: 'block', before: '* ', re: /^[*-]\s+/, placeholder: 'List' },
+  info:    { type: 'multiLineBlock', before: '::: info', after: ':::', placeholder: 'Message' },
+  warning: { type: 'multiLineBlock', before: '::: warning', after: ':::', placeholder: 'Message' },
+  error:   { type: 'multiLineBlock', before: '::: error', after: ':::', placeholder: 'Message' },
+  code:    { type: 'multiLineBlock', before: '```', after: '```', placeholder: 'Code' },
 };
 
 const FORMAT_TOKENS = {};
@@ -108,6 +112,27 @@ const operations = {
     cm.focus();
   },
   blockRemove(cm, format) {
+    const startPoint = cm.getCursor('start');
+    const line = cm.getLine(startPoint.line);
+    const text = line.replace(format.re, '');
+    cm.replaceRange(text, { line: startPoint.line, ch: 0 }, { line: startPoint.line, ch: line.length + 1 });
+    cm.setSelection({ line: startPoint.line, ch: 0 }, { line: startPoint.line, ch: text.length });
+    cm.focus();
+  },
+  multiLineBlockApply(cm, format) {
+    const startPoint = cm.getCursor('start');
+    const endPoint   = cm.getCursor('to');
+    const line       = cm.getRange(cm.getCursor('from'), cm.getCursor('to'));
+    const content    = line.length ? line : format.placeholder;
+    const text       = `${format.before}\n${content}\n${format.after}`;
+    cm.replaceRange(text, startPoint, endPoint);
+    cm.setSelection(
+      { line: startPoint.line + 1, ch: 0 },
+      { line: endPoint.line + 1, ch: content.length }
+    );
+    cm.focus();
+  },
+  multiLineBlockRemove(cm, format) {
     const startPoint = cm.getCursor('start');
     const line = cm.getLine(startPoint.line);
     const text = line.replace(format.re, '');

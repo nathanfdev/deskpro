@@ -44,6 +44,8 @@
     "lscache": "^1.0.5",
     "mark.js": "github:julmot/mark.js",
     "markdown-it": "^8.2.2",
+    "markdown-it-container": "^2.0.0",
+    "markdown-it-emoji": "^1.3.0",
     "medium-editor": "5.21.0",
     "mime-types": "2.1.9",
     "moment": "2.10.6",
