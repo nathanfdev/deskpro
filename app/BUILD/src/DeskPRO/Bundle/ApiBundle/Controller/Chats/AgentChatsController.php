@@ -162,6 +162,11 @@ class AgentChatsController extends CrudController
      */
     public function putAction($id, Request $request)
     {
+        /** @var AgentChat $chat */
+        $chat = $this->findEntity($id, $request);
+        if ($chat->getAdmin() && $chat->getAdmin() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Access denied'); // temporary stub I guess
+        }
         $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupEntityContext($id, $request));
 
         return $this->handleForm($this->findEntity($id, $request), $request, ['person' => $this->getUser()]);

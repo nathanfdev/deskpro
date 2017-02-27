@@ -126,6 +126,12 @@ class AgentChatType extends AbstractType
         $multiple = false;
         switch ($type) {
             case AgentChat::TYPE_GROUP:
+                $form->add('admin', EntityType::class, [
+                    'class'       => Person::class,
+                    'constraints' => [
+                        new Assert\NotNull(),
+                    ],
+                ]);
                 $form->add('name', TextType::class, [
                     'required'    => true,
                     'constraints' => [
@@ -239,6 +245,9 @@ class AgentChatType extends AbstractType
         $formType = $this->getFormType($event);
         if (($formType === AgentChat::TYPE_AGENT || $formType === AgentChat::TYPE_GROUP) && !$agentChat->getId()) {
             $agentChat->addParticipant($this->getPerson($event));
+        }
+        if ($formType === AgentChat::TYPE_GROUP) {
+            $agentChat->setAdmin($this->getPerson($event));
         }
     }
 

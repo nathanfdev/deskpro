@@ -277,7 +277,7 @@ class Container extends React.Component {
         <Segment vertical className={classNames('group participants', { expanded: expandGroupHeader })}>
           <span className="control">
             <i className="fa fa-times" onClick={() => this.setState({ expandGroupHeader: false })} />
-            <i
+            { current.get('admin') === me.get('id') ? (<i
               className="write icon group-edit"
               onClick={
                 () => {
@@ -287,7 +287,7 @@ class Container extends React.Component {
                   );
                 }
               }
-            />
+            />) : null }
           </span>
           {localAgents.map(
             (agentId) => {
