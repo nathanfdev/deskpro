@@ -14,7 +14,7 @@ export class AgentChatRepository extends ApiRepository {
    */
   startChat(entityId, type, groupName = '') {
     const params = { type };
-    if (Number(entityId)) {
+    if ((typeof entityId === 'number' && parseInt(entityId, 10) > 0) && type !== 'group') {
       params.participant = entityId;
     } else if (Array.isArray(entityId) && type === 'group') {
       if (groupName) {

@@ -10,8 +10,7 @@ import { Header } from 'DeskPRO/Component/Semantic/Common';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 
-class GroupAddDrawer extends React.Component
-{
+class GroupAddDrawer extends React.Component {
   static propTypes = {
     me:            PropTypes.object.isRequired,
     agents:        PropTypes.object.isRequired,
@@ -59,6 +58,7 @@ class GroupAddDrawer extends React.Component
       checkedAgents:      props.checkedAgents,
       checkedAgentsCount: GroupAddDrawer.recalculateChecked(props.checkedAgents),
       groupName:          '',
+      edited:             false,
       startedSelecting:   false
     };
     this.agentClick  = this.agentClick.bind(this);
@@ -73,13 +73,13 @@ class GroupAddDrawer extends React.Component
       this.setState({
         checkedAgents:      props.checkedAgents,
         checkedAgentsCount: GroupAddDrawer.recalculateChecked(props.checkedAgents),
-        groupName:          props.editChat.get('name') || this.state.groupName
+        groupName:          props.editChat.get('name') && !this.state.edited ? props.editChat.get('name') : this.state.groupName
       });
     }
   }
 
   onChange(event) {
-    this.setState({ groupName: event.target.value });
+    this.setState({ groupName: event.target.value, edited: true });
   }
 
   getAgentsHeader() {
@@ -115,19 +115,34 @@ class GroupAddDrawer extends React.Component
     );
   }
 
+  clearState(callback) {
+    const clearState = {
+      checkedAgents:      {},
+      checkedAgentsCount: 0,
+      groupName:          '',
+      edited:             false
+    };
+    if (callback) {
+      this.setState(clearState, callback);
+    } else {
+      this.setState(clearState);
+    }
+  }
 
   clickOut() {
-    this.setState({ checkedAgents: {}, checkedAgentsCount: 0, groupName: '' }, this.props.clickOut);
+    this.clearState(this.props.clickOut);
   }
 
   createGroup() {
     const agents = Immutable.fromJS(this.state.checkedAgents).filter(item => item).toJS();
     this.props.createGroup(Object.keys(agents), this.state.groupName);
+    this.clearState();
   }
 
   updateGroup() {
     const agents = Immutable.fromJS(this.state.checkedAgents).filter(item => item).toJS();
     this.props.updateGroup(this.props.editChat.get('id'), Object.keys(agents), this.state.groupName);
+    this.clearState();
   }
 
   renderAgent(agent) {
