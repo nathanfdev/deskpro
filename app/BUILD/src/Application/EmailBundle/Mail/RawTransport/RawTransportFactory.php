@@ -80,11 +80,21 @@ class RawTransportFactory
         }
 
         switch ($config->getType()) {
-            case 'smtp':     $tr = $this->createSmtpTransport($config); break;
-            case 'gmail':    $tr = $this->createGmailTransport($config); break;
-            case 'office365':$tr = $this->createOffice365Transport($config); break;
-            case 'php_mail': $tr = $this->createPhpMailTransport($config); break;
-            case 'exchange': $tr = $this->createExchangeTransport($config); break;
+            case 'smtp':
+                $tr = $this->createSmtpTransport($config);
+                break;
+            case 'gmail':
+                $tr = $this->createGmailTransport($config);
+                break;
+            case 'office365':
+                $tr = $this->createOffice365Transport($config);
+                break;
+            case 'php_mail':
+                $tr = $this->createPhpMailTransport($config);
+                break;
+            case 'exchange':
+                $tr = $this->createExchangeTransport($config);
+                break;
             default:
                 $this->logger->error('Unknown account type: %s', $config->getType());
                 throw new \InvalidArgumentException("Unknown account type: {$config->getType()}");
@@ -107,6 +117,10 @@ class RawTransportFactory
             $config->secure_mode == 'none' ? null : $config->secure_mode
         );
 
+        if ($config->secure_mode && $config->isDisableCertValidation()) {
+            $tr->setStreamOptions(['ssl' => ['allow_self_signed' => true, 'verify_peer' => false]]);
+        }
+
         if (!empty($config->user)) {
             $tr->setUsername($config->user);
         }
@@ -122,15 +136,13 @@ class RawTransportFactory
         }
         $tr->registerPlugin($tr_logger);
 
-        $raw_tr = new RawSmtpTransport($tr);
-
-        return $raw_tr;
+        return new RawSmtpTransport($tr);
     }
 
     /**
      * @param OutgoingAccount\GmailConfig $config
      *
-     * @return \Swift_SmtpTransport
+     * @return RawSmtpTransport
      */
     public function createGmailTransport(OutgoingAccount\GmailConfig $config)
     {
@@ -161,15 +173,13 @@ class RawTransportFactory
         $tr->setTimeout(120);
         $tr->registerPlugin(new TransportLogger($this->logger));
 
-        $raw_tr = new RawSmtpTransport($tr);
-
-        return $raw_tr;
+        return new RawSmtpTransport($tr);
     }
 
     /**
      * @param OutgoingAccount\Office365Config $config
      *
-     * @return \Swift_SmtpTransport
+     * @return RawSmtpTransport
      */
     public function createOffice365Transport(OutgoingAccount\Office365Config $config)
     {
@@ -179,15 +189,13 @@ class RawTransportFactory
         $tr->setTimeout(120);
         $tr->registerPlugin(new TransportLogger($this->logger));
 
-        $raw_tr = new RawSmtpTransport($tr);
-
-        return $raw_tr;
+        return new RawSmtpTransport($tr);
     }
 
     /**
      * @param OutgoingAccount\PhpMailConfig $conifg
      *
-     * @return \Swift_MailTransport
+     * @return RawSwiftmailerTransport
      */
     public function createPhpMailTransport(OutgoingAccount\PhpMailConfig $conifg)
     {
@@ -195,9 +203,7 @@ class RawTransportFactory
 
         $tr->registerPlugin(new TransportLogger($this->logger));
 
-        $raw_tr = new RawSwiftmailerTransport($tr, new Rfc2822Decoder());
-
-        return $raw_tr;
+        return new RawSwiftmailerTransport($tr, new Rfc2822Decoder());
     }
 
     /**
