@@ -64,7 +64,6 @@ class TicketHandler extends AbstractEntityHandler
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setDateResolved($model->getDateResolved())
             ->setDateArchived($model->getDateArchived())
-            ->setIsHold($model->isHold())
         ;
 
         if ($model->getDateCreated()) {
@@ -171,6 +170,11 @@ class TicketHandler extends AbstractEntityHandler
             $this->createOrUpdateTicketMessage($messageModel, $entity);
         }
 
+        // set on hold status after message updates otherwise it will be overwritten
+        $entity->setIsHold($model->isHold());
+        $this->persister->persistAndFlush($entity, $model);
+
+        // write ticket log message
         $ticketLogEntity = new Entity\TicketLog();
         $ticketLogEntity
             ->setTicket($entity)
