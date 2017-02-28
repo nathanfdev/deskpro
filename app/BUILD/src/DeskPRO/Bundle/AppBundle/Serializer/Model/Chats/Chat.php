@@ -111,6 +111,15 @@ class Chat
     protected $agent = null;
 
     /**
+     * BC copy of agent id.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    protected $agent_id = null;
+
+    /**
      * Status of the chat conversation.
      *
      * @JMS\Type("string")
@@ -226,15 +235,17 @@ class Chat
      */
     public function __construct(ChatConversation $chat)
     {
-        $this->id                   = $chat->getId();
-        $this->conversationId       = $chat->getId();
-        $this->subject              = $chat->getSubjectLine();
-        $this->subjectLine          = $chat->getSubjectLine();
-        $this->department           = $chat->getDepartment();
-        $this->departmentId         = $chat->getDepartment() ? $chat->getDepartment()->getId() : 0;
-        $this->departmentName       = $chat->getDepartment() ? $chat->getDepartment()->getFullTitle() : '';
-        $this->person               = $chat->getPerson();
-        $this->agent                = $chat->getAgent();
+        $this->id             = $chat->getId();
+        $this->conversationId = $chat->getId();
+        $this->subject        = $chat->getSubjectLine();
+        $this->subjectLine    = $chat->getSubjectLine();
+        $this->department     = $chat->getDepartment();
+        $this->departmentId   = $chat->getDepartment() ? $chat->getDepartment()->getId() : 0;
+        $this->departmentName = $chat->getDepartment() ? $chat->getDepartment()->getFullTitle() : '';
+        $this->person         = $chat->getPerson();
+        $this->agent          = $chat->getAgent();
+        // BC with legacy message format
+        $this->agent_id             = $chat->getAgentId();
         $this->personName           = $chat->getPersonName();
         $this->personEmail          = $chat->getPersonEmail();
         $this->dateCreated          = $chat->getDateCreated();
