@@ -554,7 +554,7 @@ class TicketController extends AbstractController
      */
     public function getMessagePageAction($ticket_id, $page)
     {
-        if (!is_int($page) || $page < 1) {
+        if (!(int) $page) {
             return $this->createResponse(sprintf('Incorrect page number: %s', $page), Response::HTTP_BAD_REQUEST);
         }
 

@@ -616,15 +616,13 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         self.setReplyAsOptionName(replyAsState, true);
 				storedNoteText = self.textarea.getCode();
 				self.textarea.setCode(storedReplyText || '');
-				if(!self.signatureSet) {
-					self.addSignature();
-					self.signatureSet = true;
-				}
       }
     });
 
-		$toggle.children('li:first').trigger('click');
-
+    if(!self.isNote && !self.signatureSet) {
+      self.addSignature();
+      self.signatureSet = true;
+    }
 
 		var $problems = this.getEl('select_problem');
 		$problems.on('change', function () {
@@ -890,10 +888,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			success: function(data) {
 				if (data.error) {
 					if (data.is_dupe) {
-						DeskPRO_Window.showConfirm('The ticket you tried to submit is an exact duplicate of an existing ticket. This new ticket was not saved.', function() {
-							DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.dupe_ticket_id)
-						}, function() {}, 'View Existing Ticket', 'hidden');
-					} else {
+            DeskPRO_Window.showConfirm(
+              'The ticket you tried to submit is an exact duplicate of an existing ticket. This new ticket was not saved.',
+              function() {
+                DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.dupe_ticket_id);
+              },
+              function() {
+              }, 'View Existing Ticket', 'hidden');
+          } else {
 						Array.each(data.error_codes, function(code) {
 							this.showErrorCode(code);
 						}, this);
@@ -1509,7 +1511,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 							api.insertHtml('<span class="editor-inserting-var snippet-' + snippetId + '" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
 
 							var personId = self.getEl('user_searchbox').find('input.person-id').val() || 0;
-							self.pauseSend = true
+							self.pauseSend = true;
 							$.ajax({
 								url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
 								dataType: 'json',
