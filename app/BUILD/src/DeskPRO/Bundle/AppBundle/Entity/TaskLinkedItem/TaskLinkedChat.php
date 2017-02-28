@@ -74,7 +74,7 @@ class TaskLinkedChat extends AbstractTaskLinkedItem
      * @JMS\Type("entity<Application\DeskPRO\Entity\ChatConversation>")
      *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\ChatConversation")
-     * @ORM\JoinColumn(name="chat_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="chat_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
      * @Assert\NotBlank()
      *
