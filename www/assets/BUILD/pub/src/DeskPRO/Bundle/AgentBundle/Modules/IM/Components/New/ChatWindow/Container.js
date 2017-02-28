@@ -117,6 +117,7 @@ class Container extends React.Component {
     this.initFroala       = this.initFroala.bind(this);
     this.bindFroalaEvents = this.bindFroalaEvents.bind(this);
     this.openLink         = this.openLink.bind(this);
+    this.closeLink        = this.closeLink.bind(this);
     this.openAttach       = this.openAttach.bind(this);
   }
 
@@ -219,6 +220,8 @@ class Container extends React.Component {
     editor.events.focus();
     editor.selection.restore();
     editor.html.insert(html);
+    this.handleChange(editor.html.get());
+    this.closeEmoji();
   }
 
   handleChange(text) {
@@ -257,6 +260,10 @@ class Container extends React.Component {
 
   openLink() {
     this.setState({ linkDrawerOpened: true });
+  }
+
+  closeLink() {
+    this.setState({ linkDrawerOpened: false });
   }
 
   openAttach() {
@@ -341,10 +348,13 @@ class Container extends React.Component {
 
   handleLink(item) {
     const propertyName = `${item.tabType}_id`;
-    const message = `{{${item.tabType.charAt(0).toLowerCase()}-${item.page.meta[propertyName]}}}: ${item.title}`;
-    this.editor.events.focus();
-    this.editor.selection.restore();
-    this.editor.html.insert(message);
+    const message      = `{{${item.tabType.charAt(0).toLowerCase()}-${item.page.meta[propertyName]}}}: ${item.title}`;
+    const editor       = this.editor;
+    editor.events.focus();
+    editor.selection.restore();
+    editor.html.insert(message);
+    this.handleChange(editor.html.get());
+    this.closeLink();
   }
 
 
@@ -362,7 +372,7 @@ class Container extends React.Component {
 
     return this.linkTrigger ?
       (<Detached zIndex={99999} isOpen={this.state.linkDrawerOpened} positionTarget={this.linkTrigger} positionMy="right+25 top+35">
-        <ClickOut onClickOut={() => { this.setState({ linkDrawerOpened: false }); }}>
+        <ClickOut onClickOut={this.closeLink}>
           <div className="attach-list">
             <Header content="Current tabs" level={4} className="attach-header" />
             <List elements={items} />
