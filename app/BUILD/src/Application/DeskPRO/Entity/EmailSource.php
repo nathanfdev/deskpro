@@ -260,6 +260,14 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return Blob
+     */
+    public function getBlob()
+    {
+        return $this->blob;
+    }
+
+    /**
      * Get the full raw source of the email.
      *
      * @deprecated
@@ -275,6 +283,22 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $this->_raw = App::getContainer()->getBlobStorage()->copyBlobRecordToString($this->blob);
 
         return $this->_raw;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSourceInfo()
+    {
+        return $this->source_info;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getLogBlob()
+    {
+        return $this->log_blob;
     }
 
     /**

@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Doctrine\ORM\NoResultException;
 
 class TicketMessage extends AbstractEntityRepository
 {
@@ -100,7 +101,7 @@ class TicketMessage extends AbstractEntityRepository
      * Fetch the first message of a ticket.
      *
      *
-     * @param int|Ticket $ticket A ticket ID or the ID of a ticket
+     * @param int|Entity\Ticket $ticket A ticket ID or the ID of a ticket
      *
      * @throws NoResultException If there is no message. This shouldn't happen
      *                           because a ticket should always have a message. So it's quite exceptional indeed!
@@ -122,7 +123,7 @@ class TicketMessage extends AbstractEntityRepository
             ')->setParameter(1, $ticket)->setMaxResults(1)->getSingleResult();
 
             return $message;
-        } catch (\Doctrine\ORM\NoResultException $e) {
+        } catch (NoResultException $e) {
             return;
         }
     }
