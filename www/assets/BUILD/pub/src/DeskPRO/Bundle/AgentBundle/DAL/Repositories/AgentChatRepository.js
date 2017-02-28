@@ -77,6 +77,14 @@ export class AgentChatRepository extends ApiRepository {
   updateChat(chatId, ids, name) {
     return this.api.sendPut(`DP_API/${this.url}/${chatId}`, { type: 'group', participant: ids, name });
   }
+
+  deleteGroup(chatId) {
+    return this.api.sendDelete(`DP_API/${this.url}/${chatId}/delete`);
+  }
+
+  leaveGroup(chatId) {
+    return this.api.sendDelete(`DP_API/${this.url}/${chatId}/leave`);
+  }
 }
 
 export default AgentChatRepository;

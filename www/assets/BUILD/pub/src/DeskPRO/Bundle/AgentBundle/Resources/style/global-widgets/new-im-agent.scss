@@ -417,15 +417,33 @@ img.emojione, svg.emojione {
 
       .item {
         &.group {
-          .group-overlay {
-            background: white;
-            width: 55px;
+
+          .confirmation, .group-overlay {
             height: 100%;
+            border-left: 1px solid $dp-sonic-primary;
+            display: none;
             position: absolute;
             right: 0;
             top: 0;
-            border-left: 1px solid $dp-sonic-primary;
-            display: none;
+          }
+
+          .confirmation {
+            width: 390px;
+            background: $dp-morning-sky;
+            line-height: 45px;
+
+            span {
+              color: $dp-sonic-primary;
+              margin-left: 10px;
+              + span {
+                margin-left: 20px;
+              }
+            }
+          }
+
+          .group-overlay {
+            background: white;
+            width: 55px;
             text-align: center;
 
             .icon {
@@ -434,14 +452,36 @@ img.emojione, svg.emojione {
               margin: 20%;
             }
           }
+
+          &.hover {
+            background: transparent;
+            .group-overlay {
+              background: $dp-morning-sky;
+            }
+          }
+
+          &.confirmation {
+            .confirmation {
+              display: block;
+            }
+          }
+
           &:hover {
             .group-overlay {
               display: block;
-              &:hover {
-                background: transparent;
+            }
+          }
+
+          &.confirmation {
+            background: transparent;
+
+            &:hover {
+              .group-overlay {
+                display: none;
               }
             }
           }
+
         }
         &.agent, &.department, &.team, &.group {
           padding: 8px 5px 8px 15px;

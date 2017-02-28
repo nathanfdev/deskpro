@@ -20,6 +20,7 @@ class TopBarRecentImList extends RecentList {
     children:          PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     onRecentClick:     PropTypes.func.isRequired,
     me:                PropTypes.object.isRequired,
+    current:           PropTypes.object.isRequired,
     agents:            PropTypes.object.isRequired,
     people:            PropTypes.object.isRequired,
     departments:       PropTypes.object.isRequired,
@@ -71,6 +72,8 @@ class TopBarRecentImList extends RecentList {
         return !props.hiddenChats[chat.get('id')] || props.hiddenChats[chat.get('id')] < (Date.parse(date));
       });
     }
+    sorted = sorted.filter(chat => props.chats.has(chat.get('id')));
+
     this.setState({ chats: sorted });
   }
 

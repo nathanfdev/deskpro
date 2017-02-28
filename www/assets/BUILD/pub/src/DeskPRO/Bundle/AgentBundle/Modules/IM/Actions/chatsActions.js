@@ -133,3 +133,23 @@ export const loadGroups = createAction(
     return {};
   }
 );
+
+export const deleteGroup = createAction(
+  'IM_DELETE_GROUP',
+  chatId => (dispatch) => {
+    repository('AgentChat').deleteGroup(chatId).then(() => {
+      dispatch(removeFromCollection('AgentChat', 'recent', [chatId]));
+      dispatch(removeFromCollection('AgentChat', 'group', [chatId]));
+    });
+  }
+);
+
+export const leaveGroup = createAction(
+  'IM_DELETE_GROUP',
+  chatId => (dispatch) => {
+    repository('AgentChat').leaveGroup(chatId).then(() => {
+      dispatch(removeFromCollection('AgentChat', 'recent', [chatId]));
+      dispatch(removeFromCollection('AgentChat', 'group', [chatId]));
+    });
+  }
+);

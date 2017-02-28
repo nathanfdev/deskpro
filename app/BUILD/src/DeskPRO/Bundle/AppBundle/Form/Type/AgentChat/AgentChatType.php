@@ -126,12 +126,6 @@ class AgentChatType extends AbstractType
         $multiple = false;
         switch ($type) {
             case AgentChat::TYPE_GROUP:
-                $form->add('admin', EntityType::class, [
-                    'class'       => Person::class,
-                    'constraints' => [
-                        new Assert\NotNull(),
-                    ],
-                ]);
                 $form->add('name', TextType::class, [
                     'required'    => true,
                     'constraints' => [

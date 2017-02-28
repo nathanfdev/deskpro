@@ -213,4 +213,89 @@ class AgentChatsController extends CrudController
             $qb->setParameter('search', "%$search%");
         }
     }
+
+    /**
+     * This endpoint gives an ability to start chat with some person, team, department or with everyone in helpdesk.
+     *
+     * @ApiDoc(
+     *     section = "Chats",
+     *     resourceDescription="Operations about agent chats",
+     *     description = "delete group",
+     *     requirements={
+     *      {
+     *          "name"="id",
+     *          "dataType"="integer",
+     *          "requirement"="\d+",
+     *          "description"="a chat id"
+     *      }
+     *     },
+     *     statusCodes = {
+     *       204 = "Chat was deleted",
+     *       403 = "You are not admin or chat is not group chat"
+     *     }
+     * )
+     * @Rest\Delete("/{id}/delete")
+     *
+     * @param int $id
+     *
+     * @return View
+     */
+    public function deleteGroupAction($id)
+    {
+        /** @var AgentChat $chat */
+        $chat = $this->findOr404(static::$entity, $id);
+        if ($chat->getAdmin() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('You are not admin for this chat');
+        }
+        if ($chat->getType() !== AgentChat::TYPE_GROUP) {
+            throw $this->createAccessDeniedException(sprintf('You are allowed to delete %s chat', $chat->getType()));
+        }
+        $entityManager = $this->get('doctrine.orm.default_entity_manager');
+        $entityManager->remove($chat);
+        $entityManager->flush();
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * This endpoint gives an ability to start chat with some person, team, department or with everyone in helpdesk.
+     *
+     * @ApiDoc(
+     *     section = "Chats",
+     *     resourceDescription="Operations about agent chats",
+     *     description = "leave group",
+     *     requirements={
+     *      {
+     *          "name"="id",
+     *          "dataType"="integer",
+     *          "requirement"="\d+",
+     *          "description"="a chat id"
+     *      }
+     *     },
+     *     statusCodes = {
+     *       204 = "Chat was deleted",
+     *       403 = "You are admin or chat is not group chat"
+     *     }
+     * )
+     * @Rest\Delete("/{id}/leave")
+     *
+     * @param int $id
+     *
+     * @return View
+     */
+    public function leaveGroupAction($id)
+    {
+        /** @var AgentChat $chat */
+        $chat = $this->findOr404(static::$entity, $id);
+        if ($chat->getAdmin() === $this->getUser()) {
+            throw $this->createAccessDeniedException('You are not allowed to leave chat, only delete it');
+        }
+        if ($chat->getType() !== AgentChat::TYPE_GROUP) {
+            throw $this->createAccessDeniedException(sprintf('You are allowed to delete %s chat', $chat->getType()));
+        }
+        $chat->removeParticipant($this->getUser());
+        $this->get('doctrine.orm.default_entity_manager')->flush();
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
+    }
 }
