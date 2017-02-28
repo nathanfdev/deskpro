@@ -31,6 +31,7 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Form\Model\NewTicket;
 use Application\AgentBundle\Validator\NewTicketValidator;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Chat\AgentChat;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Debug\Data\TicketContextData;
 use Application\DeskPRO\Debug\Data\TicketData;
@@ -68,8 +69,10 @@ use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketMessageTranslated;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
+use Application\DeskPRO\HttpKernel\Exception\NoPermissionException;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
+use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketActions\AgentAction;
@@ -77,6 +80,7 @@ use Application\DeskPRO\Tickets\TicketActions\AgentTeamAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
+use Application\DeskPRO\Tickets\TicketDisplay;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\Tickets\TicketSplit;
@@ -84,6 +88,7 @@ use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Connection;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Dates;
@@ -155,7 +160,9 @@ class TicketController extends AbstractController
         // Custom fields
         //------------------------------
 
-        $layout      = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($ticket->getDepartmentId());
+        $layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout(
+            $ticket->getDepartmentId()
+        );
         $layout      = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $ticket);
         $view_layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
 
@@ -165,9 +172,12 @@ class TicketController extends AbstractController
 
         $custom_fields        = $field_manager->getDisplayArrayForObject($ticket);
         $person_fields_group  = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
-        $custom_person_fields = $person_field_manager->getDisplayArrayForObject($ticket->getPerson(), $person_fields_group);
-        $org_fields_group     = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
-        $custom_org_fields    = $organization
+        $custom_person_fields = $person_field_manager->getDisplayArrayForObject(
+            $ticket->getPerson(),
+            $person_fields_group
+        );
+        $org_fields_group  = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
+        $custom_org_fields = $organization
             ? $org_field_manager->getDisplayArrayForObject($organization, $org_fields_group)
             : [];
 
@@ -184,7 +194,10 @@ class TicketController extends AbstractController
         // new custom fields
         $new_field_manager = $this->container->getCustomFieldManager();
         $new_custom_fields = $new_field_manager->createFormForOwner(
-            $ticket, $ticket->getPerson(), null, ['allow_edit' => true]
+            $ticket,
+            $ticket->getPerson(),
+            null,
+            ['allow_edit' => true]
         );
         if ($organization) {
             $new_field_manager->merge(
@@ -237,22 +250,33 @@ class TicketController extends AbstractController
         //------------------------------
 
         $tasks = $this->em->getRepository(Task::class)->findLinkedTicketTasks($ticket, $this->person, true);
-        usort($tasks, function ($a, $b) {
-            $a_time = $a->date_due ? $a->date_due->getTimestamp() : 0;
-            $b_time = $b->date_due ? $b->date_due->getTimestamp() : 0;
+        usort(
+            $tasks,
+            function ($a, $b) {
+                $a_time = $a->date_due ? $a->date_due->getTimestamp() : 0;
+                $b_time = $b->date_due ? $b->date_due->getTimestamp() : 0;
 
-            if ($a_time == $b_time) {
-                return 0;
+                if ($a_time == $b_time) {
+                    return 0;
+                }
+
+                return ($a_time < $b_time) ? -1 : 1;
             }
-
-            return ($a_time < $b_time) ? -1 : 1;
-        });
+        );
 
         $addable_slas = $this->em->getRepository(Sla::class)->getAddableSlas($ticket);
         $ticket_api   = [];
         foreach ([
-                     'id', 'subject', 'ref', 'status', 'hidden_status', 'creation_system', 'is_hold',
-                     'urgency', 'total_user_waiting', 'total_to_first_reply',
+                     'id',
+                     'subject',
+                     'ref',
+                     'status',
+                     'hidden_status',
+                     'creation_system',
+                     'is_hold',
+                     'urgency',
+                     'total_user_waiting',
+                     'total_to_first_reply',
                  ] as $key) {
             $ticket_api[$key] = $ticket->$key;
         }
@@ -325,7 +349,9 @@ class TicketController extends AbstractController
 
         $edit_person = $this->person->hasPerm('agent_people.edit');
         if ($edit_person) {
-            if (!$this->person->canAdmin() && $ticket->getPerson()->isAgent() && $ticket->getPerson() !== $this->person) {
+            if (!$this->person->canAdmin() && $ticket->getPerson()->isAgent() && $ticket->getPerson(
+                ) !== $this->person
+            ) {
                 $edit_person = false;
             }
         }
@@ -338,8 +364,10 @@ class TicketController extends AbstractController
         $newticket->setValuesFromTicket($ticket);
 
         $validator = new NewTicketValidator();
-        $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id ?: 0);
-        $layout    = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET);
+        $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout(
+            $newticket->department_id ?: 0
+        );
+        $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET);
         $validator->setLayout($layout);
 
         $validator_errors = [];
@@ -360,34 +388,40 @@ class TicketController extends AbstractController
             'count'    => 0,
         ];
 
+        $ticketRepo   = $this->em->getRepository(Ticket::class);
         $parentTicket = $ticket->getParentTicket();
         if ($parentTicket && $parentTicket->getStatus() !== 'hidden' && $this->checkPerm($parentTicket, 'view')) {
             $linked_tickets['parent'] = $parentTicket;
 
             // Find siblings
             $linked_tickets['siblings'] = $this->permCheckArray(
-                $this->em->getRepository(Ticket::class)->getLinkedTickets($parentTicket),
+                $ticketRepo->getLinkedTickets($parentTicket),
                 'view'
             );
-            $linked_tickets['siblings'] = array_filter($linked_tickets['siblings'], function ($t) use ($ticket) {
-                if ($t->id == $ticket->getId()) {
-                    return false;
-                } else {
-                    return true;
+            $linked_tickets['siblings'] = array_filter(
+                $linked_tickets['siblings'],
+                function ($t) use ($ticket) {
+                    if ($t->id == $ticket->getId()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
                 }
-            });
+            );
         }
 
         $linked_tickets['children'] = $this->permCheckArray(
-            $this->em->getRepository(Ticket::class)->getLinkedTickets($ticket),
+            $ticketRepo->getLinkedTickets($ticket),
             'view'
         );
 
-        $linked_tickets['count'] = array_sum([
-            $linked_tickets['parent'] ? 1 : 0,
-            count($linked_tickets['siblings']),
-            count($linked_tickets['children']),
-        ]);
+        $linked_tickets['count'] = array_sum(
+            [
+                $linked_tickets['parent'] ? 1 : 0,
+                count($linked_tickets['siblings']),
+                count($linked_tickets['children']),
+            ]
+        );
 
         //------------------------------
         // Pre-load person and org
@@ -403,7 +437,7 @@ class TicketController extends AbstractController
                 ['title' => 'asc']
             );
 
-            if ($problem = $ticket->problems->first()) {
+            if ($problem = $ticket->getProblems()->first()) {
                 $rep            = $this->em->getRepository(Problem::class);
                 $problem_counts = $rep->getCountsForAgentInterface([$problem], $this->person);
                 $incidents      = (int) @$problem_counts[$problem->id];
@@ -462,9 +496,11 @@ class TicketController extends AbstractController
             'agent_signature_html' => $this->person->getSignatureHtml(),
 
             'addable_slas'         => $addable_slas,
-            'person_object_counts' => $this->em->getRepository(Person::class)->getPersonObjectCounts($ticket->getPerson()),
-            'open_problems'        => $open_problems,
-            'incidents'            => $incidents,
+            'person_object_counts' => $this->em->getRepository(Person::class)->getPersonObjectCounts(
+                $ticket->getPerson()
+            ),
+            'open_problems' => $open_problems,
+            'incidents'     => $incidents,
         ];
 
         if (App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) {
@@ -533,9 +569,28 @@ class TicketController extends AbstractController
         $ticket_perms                        = [];
         $ticket_perms['delete']              = $this->person->PermissionsManager->TicketChecker->canDelete($ticket);
         $ticket_perms['reply']               = $this->person->PermissionsManager->TicketChecker->canReply($ticket);
-        $ticket_perms['modify_set_archived'] = $this->person->PermissionsManager->TicketChecker->canSetArchived($ticket);
+        $ticket_perms['modify_set_archived'] = $this->person->PermissionsManager->TicketChecker->canSetArchived(
+            $ticket
+        );
 
-        foreach (['department', 'slas', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaiting_user', 'set_resolved', 'set_unresolved', 'billing'] as $p) {
+        foreach ([
+                     'department',
+                     'slas',
+                     'fields',
+                     'assign_agent',
+                     'assign_team',
+                     'assign_self',
+                     'cc',
+                     'merge',
+                     'labels',
+                     'notes',
+                     'set_hold',
+                     'set_awaiting_agent',
+                     'set_awaiting_user',
+                     'set_resolved',
+                     'set_unresolved',
+                     'billing',
+                 ] as $p) {
             $ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
         }
 
@@ -574,17 +629,25 @@ class TicketController extends AbstractController
         $counts           = $this->em->getRepository(TicketLog::class)->countTicketLogTypes($all_ticket_logs);
         $counts['attach'] = count($ticket_attachments);
 
-        return $this->render('AgentBundle:Ticket:ticket-attach-list.html.twig', [
-            'ticket'            => $ticket,
-            'filter'            => 'attach',
-            'counts'            => $counts,
-            'attachments'       => $ticket_attachments,
-            'attach_to_message' => $attach_to_message,
-        ]);
+        return $this->render(
+            'AgentBundle:Ticket:ticket-attach-list.html.twig',
+            [
+                'ticket'            => $ticket,
+                'filter'            => 'attach',
+                'counts'            => $counts,
+                'attachments'       => $ticket_attachments,
+                'attach_to_message' => $attach_to_message,
+            ]
+        );
     }
 
-    protected function _getTicketLogsBlockInfo(\Application\DeskPRO\Entity\Ticket $ticket, $page = 1, $filter = null, $up_to_page = false, $per_page = null)
-    {
+    protected function _getTicketLogsBlockInfo(
+        Ticket $ticket,
+        $page = 1,
+        $filter = null,
+        $up_to_page = false,
+        $per_page = null
+    ) {
         if (!$per_page) {
             if ($filter) {
                 // 50 when filtered because entries are "loose"
@@ -600,7 +663,10 @@ class TicketController extends AbstractController
         $all_ticket_logs = $this->em->getRepository(TicketLog::class)->getLogsForTicket($ticket, $options);
 
         $counts           = $this->em->getRepository(TicketLog::class)->countTicketLogTypes($all_ticket_logs);
-        $counts['attach'] = $this->db->fetchColumn('SELECT COUNT(*) FROM tickets_attachments WHERE ticket_id = ?', [$ticket->id]);
+        $counts['attach'] = $this->db->fetchColumn(
+            'SELECT COUNT(*) FROM tickets_attachments WHERE ticket_id = ?',
+            [$ticket->id]
+        );
 
         if ($filter) {
             $all_ticket_logs = $this->em->getRepository(TicketLog::class)->filterTicketLogs($all_ticket_logs, $filter);
@@ -635,11 +701,16 @@ class TicketController extends AbstractController
         }
 
         if ($sendmail_source_ids) {
-            $sendmail_source_status = $this->db->fetchAllKeyed('
+            $sendmail_source_status = $this->db->fetchAllKeyed(
+                '
                 SELECT id, status
                 FROM sendmail_sources
                 WHERE id IN (?)
-            ', [$sendmail_source_ids], 'id', [\Doctrine\DBAL\Connection::PARAM_INT_ARRAY]);
+            ',
+                [$sendmail_source_ids],
+                'id',
+                [Connection::PARAM_INT_ARRAY]
+            );
         } else {
             $sendmail_source_status = [];
         }
@@ -659,20 +730,31 @@ class TicketController extends AbstractController
         return $info;
     }
 
-    protected function _getMessageBlockInfo(Ticket $ticket, $page, array $ticket_attachments = [], $is_pdf = false, $is_print = false)
-    {
+    protected function _getMessageBlockInfo(
+        Ticket $ticket,
+        $page,
+        array $ticket_attachments = [],
+        $is_pdf = false,
+        $is_print = false
+    ) {
         $per_page = ($is_pdf || $is_print) ? 500 : 25;
 
-        $all_message_ids = $this->db->fetchAllCol('
+        $all_message_ids = $this->db->fetchAllCol(
+            '
             SELECT id
             FROM tickets_messages
             WHERE ticket_id = ?
             ORDER BY date_created DESC
-        ', [$ticket->getId()]);
+        ',
+            [$ticket->getId()]
+        );
 
         $message_numbers = [];
         if ($all_message_ids) {
-            $message_numbers = array_combine(array_values($all_message_ids), array_reverse(array_keys($all_message_ids)));
+            $message_numbers = array_combine(
+                array_values($all_message_ids),
+                array_reverse(array_keys($all_message_ids))
+            );
         }
 
         $message_count = count($all_message_ids);
@@ -685,22 +767,30 @@ class TicketController extends AbstractController
         /** @var TicketMessage[] $ticket_messages */
         $ticket_messages = $ticketMessageRepo->getByIds($message_ids);
 
-        usort($ticket_messages, function (TicketMessage $a, TicketMessage $b) {
-            $ts_a = $a->getDateCreated()->getTimestamp();
-            $ts_b = $b->getDateCreated()->getTimestamp();
+        usort(
+            $ticket_messages,
+            function (TicketMessage $a, TicketMessage $b) {
+                $ts_a = $a->getDateCreated()->getTimestamp();
+                $ts_b = $b->getDateCreated()->getTimestamp();
 
-            if ($ts_a == $ts_b) {
-                return 0;
+                if ($ts_a == $ts_b) {
+                    return 0;
+                }
+
+                return ($ts_a < $ts_b) ? -1 : 1;
             }
-
-            return ($ts_a < $ts_b) ? -1 : 1;
-        });
+        );
 
         if (empty($ticket_attachments)) {
-            $ticket_attachments = $this->em->getRepository(TicketAttachment::class)->getAttachmentsForMessages($ticket_messages);
+            $ticket_attachments = $this->em->getRepository(TicketAttachment::class)->getAttachmentsForMessages(
+                $ticket_messages
+            );
         }
 
-        $ticket_messages_translated = $this->em->getRepository(TicketMessageTranslated::class)->getForMessages($ticket_messages, $this->person->getLanguage()->getLocale());
+        $ticket_messages_translated = $this->em->getRepository(TicketMessageTranslated::class)->getForMessages(
+            $ticket_messages,
+            $this->person->getLanguage()->getLocale()
+        );
 
         foreach ($ticket_messages as $message) {
             $messageId = $message->getId();
@@ -740,12 +830,14 @@ class TicketController extends AbstractController
         $all_feedback = $this->em->getRepository(TicketFeedback::class)->getFeedbackForTicket($ticket);
 
         // Ticket logs to do with forwarded messages
-        $fwd_logs = $this->em->createQuery("
+        $fwd_logs = $this->em->createQuery(
+            "
             SELECT log, person
             FROM DeskPRO:TicketLog log
             LEFT JOIN log.person person
             WHERE log.ticket = ?0 AND log.action_type = 'message_forwarded'
-        ")->execute([$ticket]);
+        "
+        )->execute([$ticket]);
 
         $ticket_fwd_logs = [];
         foreach ($fwd_logs as $log) {
@@ -763,26 +855,29 @@ class TicketController extends AbstractController
             } else {
                 $tpl = 'AgentBundle:Ticket:ticket-messages-batch.html.twig';
             }
-            $ticket_messages_block = $this->renderView($tpl, [
-                'ticket'                     => $ticket,
-                'ticket_messages'            => $ticket_messages,
-                'ticket_messages_translated' => $ticket_messages_translated,
-                'ticket_messages_num'        => $ticket_messages_num,
-                'ticket_message_attachments' => $ticket_message_attachments,
-                'ticket_fwd_logs'            => $ticket_fwd_logs,
-                'ticket_attachments'         => $ticket_attachments,
-                'all_feedback'               => $all_feedback,
-                'message_page'               => $page,
-                'message_count'              => $message_count,
-                'message_page_count'         => $num_pages,
-            ]);
+            $ticket_messages_block = $this->renderView(
+                $tpl,
+                [
+                    'ticket'                     => $ticket,
+                    'ticket_messages'            => $ticket_messages,
+                    'ticket_messages_translated' => $ticket_messages_translated,
+                    'ticket_messages_num'        => $ticket_messages_num,
+                    'ticket_message_attachments' => $ticket_message_attachments,
+                    'ticket_fwd_logs'            => $ticket_fwd_logs,
+                    'ticket_attachments'         => $ticket_attachments,
+                    'all_feedback'               => $all_feedback,
+                    'message_page'               => $page,
+                    'message_count'              => $message_count,
+                    'message_page_count'         => $num_pages,
+                ]
+            );
         }
 
         $incidents     = 0;
         $problem_id    = 0;
         $problem_title = null;
         if ($this->person->hasPerm('agent_problems.view')) {
-            if ($problem = $ticket->problems->first()) {
+            if ($problem = $ticket->getProblems()->first()) {
                 $rep            = $this->em->getRepository(Problem::class);
                 $problem_counts = $rep->getCountsForAgentInterface([$problem], $this->person);
                 $incidents      = (int) @$problem_counts[$problem->id];
@@ -915,10 +1010,12 @@ class TicketController extends AbstractController
             throw $e;
         }
 
-        return $this->createJsonResponse([
-            'success'  => 1,
-            'can_view' => $this->person->PermissionsManager->TicketChecker->canView($ticket),
-        ]);
+        return $this->createJsonResponse(
+            [
+                'success'  => 1,
+                'can_view' => $this->person->PermissionsManager->TicketChecker->canView($ticket),
+            ]
+        );
     }
 
     //###########################################################################
@@ -934,16 +1031,20 @@ class TicketController extends AbstractController
         if ($this->in->getUInt('person_id')) {
             $person = $this->em->find(Person::class, $this->in->getUInt('person_id'));
         } elseif ($email_address = $this->in->getString('email_address')) {
-            if (!\Orb\Validator\StringEmail::isValueValid($email_address)) {
-                return $this->createJsonResponse([
-                    'error'      => true,
-                    'error_code' => 'invalid_email',
-                ]);
+            if (!StringEmail::isValueValid($email_address)) {
+                return $this->createJsonResponse(
+                    [
+                        'error'      => true,
+                        'error_code' => 'invalid_email',
+                    ]
+                );
             } elseif (App::$container->getEmailAccountManager()->findAccountForEmailAddress($email_address)) {
-                return $this->createJsonResponse([
-                    'error'      => true,
-                    'error_code' => 'invalid_email_gatewayaccount',
-                ]);
+                return $this->createJsonResponse(
+                    [
+                        'error'      => true,
+                        'error_code' => 'invalid_email_gatewayaccount',
+                    ]
+                );
             }
 
             $person = $this->em->getRepository(Person::class)->findOneByEmail($email_address);
@@ -955,23 +1056,27 @@ class TicketController extends AbstractController
         }
 
         if (!$person) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         if ($person->is_agent) {
-            return $this->createJsonResponse([
-                'error'      => true,
-                'error_code' => 'is_agent',
-                'cc_list'    => $this->_getTicketCcList($ticket),
-            ]);
+            return $this->createJsonResponse(
+                [
+                    'error'      => true,
+                    'error_code' => 'is_agent',
+                    'cc_list'    => $this->_getTicketCcList($ticket),
+                ]
+            );
         }
 
         if ($person->id) {
             if ($ticket->hasParticipantPerson($person) || $ticket->person->getId() == $person->getId()) {
-                return $this->createJsonResponse([
-                    'error'      => true,
-                    'error_code' => 'is_dupe',
-                ]);
+                return $this->createJsonResponse(
+                    [
+                        'error'      => true,
+                        'error_code' => 'is_dupe',
+                    ]
+                );
             }
         }
 
@@ -996,10 +1101,12 @@ class TicketController extends AbstractController
             throw $e;
         }
 
-        return $this->createJsonResponse([
-            'success' => true,
-            'cc_list' => $this->_getTicketCcList($ticket),
-        ]);
+        return $this->createJsonResponse(
+            [
+                'success' => true,
+                'cc_list' => $this->_getTicketCcList($ticket),
+            ]
+        );
     }
 
     //###########################################################################
@@ -1009,13 +1116,15 @@ class TicketController extends AbstractController
     protected function _getTicketCcList($ticket)
     {
         // New reply box
-        $participants = $this->em->createQuery('
+        $participants = $this->em->createQuery(
+            '
             SELECT p
             FROM DeskPRO:TicketParticipant p
             LEFT JOIN p.person person
             LEFT JOIN p.person_email person_email
             WHERE p.ticket = ?1
-        ')->setParameter(1, $ticket)->execute();
+        '
+        )->setParameter(1, $ticket)->execute();
 
         $participant_ids = [];
         $agent_parts     = [];
@@ -1030,10 +1139,13 @@ class TicketController extends AbstractController
             }
         }
 
-        $cc_list = $this->renderView('AgentBundle:Ticket:view-user-cc-list.html.twig', [
-            'user_parts'   => $user_parts,
-            'ticket_perms' => $this->_getTicketPerms($ticket),
-        ]);
+        $cc_list = $this->renderView(
+            'AgentBundle:Ticket:view-user-cc-list.html.twig',
+            [
+                'user_parts'   => $user_parts,
+                'ticket_perms' => $this->_getTicketPerms($ticket),
+            ]
+        );
 
         return $cc_list;
     }
@@ -1049,11 +1161,13 @@ class TicketController extends AbstractController
         $person = $this->em->find(Person::class, $this->in->getUInt('person_id'));
 
         if ($person) {
-            $part = $this->em->createQuery('
+            $part = $this->em->createQuery(
+                '
                 SELECT part
                 FROM DeskPRO:TicketParticipant part
                 WHERE part.ticket = ?0 AND part.person = ?1
-            ')->setParameters([$ticket, $person])->setMaxResults(1)->getOneOrNullResult();
+            '
+            )->setParameters([$ticket, $person])->setMaxResults(1)->getOneOrNullResult();
 
             if (!$part) {
                 return $this->createJsonResponse(['success' => false]);
@@ -1078,7 +1192,9 @@ class TicketController extends AbstractController
     {
         $ticket = $this->getTicketOr404($ticket_id, 'modify_assign_agent');
 
-        $agents = $this->em->getRepository(Person::class)->getPeopleFromIds($this->in->getCleanValueArray('agent_part_ids', 'uint', 'discard'));
+        $agents = $this->em->getRepository(Person::class)->getPeopleFromIds(
+            $this->in->getCleanValueArray('agent_part_ids', 'uint', 'discard')
+        );
 
         $this->db->beginTransaction();
 
@@ -1141,7 +1257,11 @@ class TicketController extends AbstractController
             $ticket = $this->getTicketOr404($ticket_id, 'reply');
         }
 
-        $ticket_context = $this->container->getTicketManager()->createAgentExecutorContext($this->person, 'newreply', 'web');
+        $ticket_context = $this->container->getTicketManager()->createAgentExecutorContext(
+            $this->person,
+            'newreply',
+            'web'
+        );
         $ticket_context->getVars()->set('is_via_replybox', true);
         $this->container->getTicketManager()->markAsManaged($ticket);
 
@@ -1171,7 +1291,7 @@ class TicketController extends AbstractController
 
         $set_status = null;
         if ($macro) {
-            foreach ($macro->actions as $action) {
+            foreach ($macro->getActions() as $action) {
                 $action = $factory->createFromInfo($action);
                 if ($action) {
                     if ($action instanceof AgentAction || $action instanceof AgentTeamAction || $action instanceof ReplyAction || $action instanceof ReplySnippetAction) {
@@ -1236,7 +1356,12 @@ class TicketController extends AbstractController
             $message->message = $message_text;
 
             $notify_agent_ids = [];
-            preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $this->in->getRaw('message'), $matches, PREG_SET_ORDER);
+            preg_match_all(
+                '/<span[^>]+data-notify-agent-id="(\d+)"/i',
+                $this->in->getRaw('message'),
+                $matches,
+                PREG_SET_ORDER
+            );
             foreach ($matches as $match) {
                 $notify_agent_ids[] = $match[1];
             }
@@ -1250,7 +1375,7 @@ class TicketController extends AbstractController
         }
 
         if ($notify_agent_ids && $message['is_agent_note']) {
-            $agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
+            $agent_chat = new AgentChat($this->person, $this->session->getEntity());
             $agent_chat->disableOfflineEmailAlert(); // we'll handle offline notifs as part of normal notifications
 
             $notify_chat  = [];
@@ -1265,7 +1390,9 @@ class TicketController extends AbstractController
                 $notify_chat[$agent->id] = $agent;
 
                 $pref = $agent->getPref('agent_notif.ticket_mention', 'always_send');
-                if ($pref == 'always_send' || ($pref == 'smart_send' && !$this->container->getAgentData()->isAgentOnline($agent))) {
+                if ($pref == 'always_send' || ($pref == 'smart_send' && !$this->container->getAgentData(
+                        )->isAgentOnline($agent))
+                ) {
                     $notify_email[$agent->id] = $agent;
                 }
             }
@@ -1285,7 +1412,11 @@ class TicketController extends AbstractController
                         $ticket->getId(),
                         Strings::prepareWysiwygHtml(Strings::trimHtml($this->in->getHtmlCore('message')))
                     );
-                    $this->container->get('deskpro.notification.service')->sendNote($this->person, $agentIds, $newIMtext);
+                    $this->container->get('deskpro.notification.service')->sendNote(
+                        $this->person,
+                        $agentIds,
+                        $newIMtext
+                    );
                 }
             }
 
@@ -1321,9 +1452,12 @@ class TicketController extends AbstractController
 
         if ($snippet_ids = $this->in->getString('options.snippet_ids')) {
             $snippet_ids = explode(',', $snippet_ids);
-            $snippet_ids = array_map(function ($x) {
-                return (int) trim($x);
-            }, $snippet_ids);
+            $snippet_ids = array_map(
+                function ($x) {
+                    return (int) trim($x);
+                },
+                $snippet_ids
+            );
             $snippet_ids = Arrays::removeFalsey($snippet_ids);
             $snippet_ids = array_unique($snippet_ids, SORT_NUMERIC);
 
@@ -1343,12 +1477,19 @@ class TicketController extends AbstractController
             $this->em->persist($macroLog);
         }
 
-        if ($dupe_message = $this->em->getRepository(TicketMessage::class)->checkDupeMessage($message, $ticket, 5 * 60)) {
-            return $this->createJsonResponse([
-                'dupe_message' => true,
-                'message_id'   => $dupe_message['id'],
-                'time'         => $dupe_message->date_created->getTimestamp(),
-            ]);
+        if ($dupe_message = $this->em->getRepository(TicketMessage::class)->checkDupeMessage(
+            $message,
+            $ticket,
+            5 * 60
+        )
+        ) {
+            return $this->createJsonResponse(
+                [
+                    'dupe_message' => true,
+                    'message_id'   => $dupe_message['id'],
+                    'time'         => $dupe_message->date_created->getTimestamp(),
+                ]
+            );
         } else {
             $ticket->addMessage($message);
 
@@ -1358,7 +1499,10 @@ class TicketController extends AbstractController
         }
 
         // havent persisted the messag yet, it was just for dupe checking
-        if ((App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) && $this->in->getUInt('charge_time')) {
+        if ((App::getSetting('core_tickets.enable_billing') || App::getSetting(
+                    'core_tickets.enable_timelog'
+                )) && $this->in->getUInt('charge_time')
+        ) {
             $charge = $ticket->addCharge($this->person, $this->in->getUInt('charge_time'));
         } else {
             $charge = false;
@@ -1385,7 +1529,7 @@ class TicketController extends AbstractController
         $rem_parts     = [];
         $changed_parts = false;
 
-        $email_validator = new \Orb\Validator\StringEmail();
+        $email_validator = new StringEmail();
 
         $del_cc_emails = $this->container->getIn()->getCleanValueArray('delcc', 'string', 'discard');
         $del_cc_emails = array_map('strtolower', $del_cc_emails);
@@ -1393,13 +1537,18 @@ class TicketController extends AbstractController
         $add_cc_emails = $this->container->getIn()->getCleanValueArray('addcc', 'string', 'discard');
         $add_cc_emails = array_map('strtolower', $add_cc_emails);
 
-        $add_cc_emails = array_filter($add_cc_emails, function ($v) use ($del_cc_emails) {
-            return !in_array($v, $del_cc_emails);
-        });
+        $add_cc_emails = array_filter(
+            $add_cc_emails,
+            function ($v) use ($del_cc_emails) {
+                return !in_array($v, $del_cc_emails);
+            }
+        );
 
         if ($add_cc_emails) {
             foreach ($add_cc_emails as $email) {
-                if (!$email || !$email_validator->isValid($email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($email)) {
+                if (!$email || !$email_validator->isValid($email) || App::$container->getEmailAccountManager(
+                    )->findAccountForEmailAddress($email)
+                ) {
                     continue;
                 }
 
@@ -1477,11 +1626,13 @@ class TicketController extends AbstractController
 
                 if ($this->in->getBool('options.do_kbpending')) {
                     $kb_pending = new ArticlePendingCreate();
-                    $kb_pending->fromArray([
-                        'person'  => $this->person,
-                        'ticket'  => $ticket,
-                        'message' => $message,
-                    ]);
+                    $kb_pending->fromArray(
+                        [
+                            'person'  => $this->person,
+                            'ticket'  => $ticket,
+                            'message' => $message,
+                        ]
+                    );
                     $this->em->persist($kb_pending);
                 }
             }
@@ -1496,20 +1647,25 @@ class TicketController extends AbstractController
         }
 
         if (!$message['is_agent_note'] || $macro) {
-            $participants = $this->em->createQuery('
+            $participants = $this->em->createQuery(
+                '
                 SELECT p
                 FROM DeskPRO:TicketParticipant p
                 LEFT JOIN p.person person
                 LEFT JOIN p.person_email person_email
-                WHERE p.ticket = ?1 AND person.is_agent = true
-            ')->setParameter(1, $ticket)->execute();
+                WHERE p.ticket = ?1 AND person.is_agent = TRUE
+            '
+            )->setParameter(1, $ticket)->execute();
 
             $updated_agent_parts_count = count($participants);
 
-            $updated_agent_parts = $this->renderView('AgentBundle:Ticket:view-participants-agents.html.twig', [
-                'ticket'       => $ticket,
-                'participants' => $participants,
-            ]);
+            $updated_agent_parts = $this->renderView(
+                'AgentBundle:Ticket:view-participants-agents.html.twig',
+                [
+                    'ticket'       => $ticket,
+                    'participants' => $participants,
+                ]
+            );
         }
 
         $client_messages = false;
@@ -1529,13 +1685,15 @@ class TicketController extends AbstractController
         );
 
         // New reply box
-        $participants = $this->em->createQuery('
+        $participants = $this->em->createQuery(
+            '
             SELECT p
             FROM DeskPRO:TicketParticipant p
             LEFT JOIN p.person person
             LEFT JOIN p.person_email person_email
             WHERE p.ticket = ?1
-        ')->setParameter(1, $ticket)->execute();
+        '
+        )->setParameter(1, $ticket)->execute();
 
         $participant_ids = [];
         $agent_parts     = [];
@@ -1553,34 +1711,43 @@ class TicketController extends AbstractController
         $agents      = $this->em->getRepository(Person::class)->getAgents();
         $agent_teams = $this->em->getRepository(AgentTeam::class)->findAll();
 
-        $replybox = $this->renderView('AgentBundle:Ticket:replybox.html.twig', [
-            'agents'               => $agents,
-            'agent_teams'          => $agent_teams,
-            'ticket'               => $ticket,
-            'participants'         => $participants,
-            'participant_ids'      => $participant_ids,
-            'agent_parts'          => $agent_parts,
-            'user_parts'           => $user_parts,
-            'agent_signature'      => $this->person->getSignature(),
-            'agent_signature_html' => $this->person->getSignatureHtml(),
-            'ticket_perms'         => $this->_getTicketPerms($ticket),
-        ]);
+        $replybox = $this->renderView(
+            'AgentBundle:Ticket:replybox.html.twig',
+            [
+                'agents'               => $agents,
+                'agent_teams'          => $agent_teams,
+                'ticket'               => $ticket,
+                'participants'         => $participants,
+                'participant_ids'      => $participant_ids,
+                'agent_parts'          => $agent_parts,
+                'user_parts'           => $user_parts,
+                'agent_signature'      => $this->person->getSignature(),
+                'agent_signature_html' => $this->person->getSignatureHtml(),
+                'ticket_perms'         => $this->_getTicketPerms($ticket),
+            ]
+        );
 
-        $cc_list = $this->renderView('AgentBundle:Ticket:view-user-cc-list.html.twig', [
-            'user_parts'   => $user_parts,
-            'ticket_perms' => $this->_getTicketPerms($ticket),
-        ]);
+        $cc_list = $this->renderView(
+            'AgentBundle:Ticket:view-user-cc-list.html.twig',
+            [
+                'user_parts'   => $user_parts,
+                'ticket_perms' => $this->_getTicketPerms($ticket),
+            ]
+        );
 
         if ($charge) {
-            $charge_html = $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', [
-                'ticket' => $ticket,
-                'charge' => $charge,
-            ]);
+            $charge_html = $this->renderView(
+                'AgentBundle:Ticket:view-billing-row.html.twig',
+                [
+                    'ticket' => $ticket,
+                    'charge' => $charge,
+                ]
+            );
         } else {
             $charge_html = false;
         }
 
-        $drafts                = $this->em->getRepository(Draft::class)->getActiveDrafts('ticket', $ticket->id);
+        $drafts                = $this->em->getRepository(Draft::class)->getActiveDrafts('ticket', $ticket->getId());
         $data['active_drafts'] = $this->_renderActiveDrafts($ticket, $drafts);
 
         $error_messages = [];
@@ -1589,7 +1756,9 @@ class TicketController extends AbstractController
             $newticket->setValuesFromTicket($ticket);
             $validator = new NewTicketValidator();
 
-            $layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($ticket->department->id);
+            $layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout(
+                $ticket->getDepartment()->getId()
+            );
             $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $ticket);
             $validator->setLayout($layout);
             if (!$validator->isValid($newticket)) {
@@ -1609,28 +1778,31 @@ class TicketController extends AbstractController
             $refresh_tab = false;
         }
 
-        $data = array_merge($data, [
-            'via_reply'                      => true,
-            'updated_agent_parts_html'       => isset($updated_agent_parts) ? $updated_agent_parts : '',
-            'updated_agent_parts_html_count' => isset($updated_agent_parts_count) ? $updated_agent_parts_count : null,
-            'replybox_html'                  => $replybox,
-            'charge_html'                    => $charge_html,
-            'changed_agent'                  => $changed_agent,
-            'agent_id'                       => $ticket['agent_id'],
-            'changed_team'                   => $changed_team,
-            'agent_team_id'                  => $ticket['agent_team_id'],
-            'status'                         => $ticket['status'],
-            'close_tab'                      => $close_tab,
-            'refresh_tab'                    => $refresh_tab,
-            'client_messages'                => $client_messages,
-            'cc_list'                        => $cc_list,
-            'error_messages'                 => $error_messages ?: false,
-            'notified_agents'                => $notify_agent_ids,
-            'can_view'                       => $can_view,
-            'api_data'                       => $ticket->toApiData(),
+        $data = array_merge(
+            $data,
+            [
+                'via_reply'                      => true,
+                'updated_agent_parts_html'       => isset($updated_agent_parts) ? $updated_agent_parts : '',
+                'updated_agent_parts_html_count' => isset($updated_agent_parts_count) ? $updated_agent_parts_count : null,
+                'replybox_html'                  => $replybox,
+                'charge_html'                    => $charge_html,
+                'changed_agent'                  => $changed_agent,
+                'agent_id'                       => $ticket['agent_id'],
+                'changed_team'                   => $changed_team,
+                'agent_team_id'                  => $ticket['agent_team_id'],
+                'status'                         => $ticket['status'],
+                'close_tab'                      => $close_tab,
+                'refresh_tab'                    => $refresh_tab,
+                'client_messages'                => $client_messages,
+                'cc_list'                        => $cc_list,
+                'error_messages'                 => $error_messages ?: false,
+                'notified_agents'                => $notify_agent_ids,
+                'can_view'                       => $can_view,
+                'api_data'                       => $ticket->toApiData(),
 
-            'message' => $message['message'],
-        ]);
+                'message' => $message['message'],
+            ]
+        );
 
         return $this->createJsonResponse($data);
     }
@@ -1645,13 +1817,15 @@ class TicketController extends AbstractController
         );
 
         // New reply box
-        $participants = $this->em->createQuery('
+        $participants = $this->em->createQuery(
+            '
             SELECT p
             FROM DeskPRO:TicketParticipant p
             LEFT JOIN p.person person
             LEFT JOIN p.person_email person_email
             WHERE p.ticket = ?1
-        ')->setParameter(1, $ticket)->execute();
+        '
+        )->setParameter(1, $ticket)->execute();
 
         $participant_ids = [];
         $agent_parts     = [];
@@ -1669,29 +1843,35 @@ class TicketController extends AbstractController
         $agents      = $this->em->getRepository(Person::class)->getAgents();
         $agent_teams = $this->em->getRepository(AgentTeam::class)->findAll();
 
-        $replybox = $this->renderView('AgentBundle:Ticket:replybox.html.twig', [
-            'agents'               => $agents,
-            'agent_teams'          => $agent_teams,
-            'ticket'               => $ticket,
-            'participants'         => $participants,
-            'participant_ids'      => $participant_ids,
-            'agent_parts'          => $agent_parts,
-            'user_parts'           => $user_parts,
-            'agent_signature'      => $this->person->getSignature(),
-            'agent_signature_html' => $this->person->getSignatureHtml(),
-            'ticket_perms'         => $this->_getTicketPerms($ticket),
-        ]);
+        $replybox = $this->renderView(
+            'AgentBundle:Ticket:replybox.html.twig',
+            [
+                'agents'               => $agents,
+                'agent_teams'          => $agent_teams,
+                'ticket'               => $ticket,
+                'participants'         => $participants,
+                'participant_ids'      => $participant_ids,
+                'agent_parts'          => $agent_parts,
+                'user_parts'           => $user_parts,
+                'agent_signature'      => $this->person->getSignature(),
+                'agent_signature_html' => $this->person->getSignatureHtml(),
+                'ticket_perms'         => $this->_getTicketPerms($ticket),
+            ]
+        );
 
-        $data = array_merge($data, [
-            'updated_agent_parts_html'       => 1,
-            'updated_agent_parts_html_count' => 1,
-            'replybox_html'                  => $replybox,
-            'agent_id'                       => $ticket['agent_id'],
-            'agent_team_id'                  => $ticket['agent_team_id'],
-            'status'                         => $ticket['status'],
-            'close_tab'                      => false,
-            'api_data'                       => $ticket->toApiData(),
-        ]);
+        $data = array_merge(
+            $data,
+            [
+                'updated_agent_parts_html'       => 1,
+                'updated_agent_parts_html_count' => 1,
+                'replybox_html'                  => $replybox,
+                'agent_id'                       => $ticket['agent_id'],
+                'agent_team_id'                  => $ticket['agent_team_id'],
+                'status'                         => $ticket['status'],
+                'close_tab'                      => false,
+                'api_data'                       => $ticket->toApiData(),
+            ]
+        );
 
         return $this->createJsonResponse($data);
     }
@@ -1713,11 +1893,13 @@ class TicketController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        return $this->createJsonResponse([
-            'message_id'   => $message->getId(),
-            'message_text' => $message->getMessageFullText() ?: $message->getMessageText(),
-            'message_html' => $message->getMessageFull() ?: $message->getMessageHtml(),
-        ]);
+        return $this->createJsonResponse(
+            [
+                'message_id'   => $message->getId(),
+                'message_text' => $message->getMessageFullText() ?: $message->getMessageText(),
+                'message_html' => $message->getMessageFull() ?: $message->getMessageHtml(),
+            ]
+        );
     }
 
     public function ajaxSaveMessageTextAction($message_id)
@@ -1768,11 +1950,13 @@ class TicketController extends AbstractController
             throw $e;
         }
 
-        return $this->createJsonResponse([
-            'message_id'   => $message->getId(),
-            'message_text' => $message->getMessageText(),
-            'message_html' => $message->getMessageHtml(),
-        ]);
+        return $this->createJsonResponse(
+            [
+                'message_id'   => $message->getId(),
+                'message_text' => $message->getMessageText(),
+                'message_html' => $message->getMessageHtml(),
+            ]
+        );
     }
 
     public function ajaxSetNoteAction($message_id)
@@ -1800,10 +1984,13 @@ class TicketController extends AbstractController
             $this->em->persist($message);
             $this->em->flush();
 
-            $ticket->getStateChangeRecorder()->recordData('message_note_status', [
-                'message_id'    => $message->id,
-                'is_agent_note' => $message->is_agent_note,
-            ]);
+            $ticket->getStateChangeRecorder()->recordData(
+                'message_note_status',
+                [
+                    'message_id'    => $message->id,
+                    'is_agent_note' => $message->is_agent_note,
+                ]
+            );
 
             $ticket_context = $tm->createAgentExecutorContext($this->person, 'update', 'web');
             $tm->saveTicket($ticket, $ticket_context);
@@ -1812,17 +1999,25 @@ class TicketController extends AbstractController
             if (!$message->is_agent_note) {
                 $ticket->resetStateChangeRecorder();
                 $ticket_context = $tm->createAgentExecutorContext($message->person, 'newreply', 'web');
-                $ticket->getStateChangeRecorder()->recordData('free', ['message' => 'This message was converted from a note into a reply by '.$this->person->getDisplayContact()]);
+                $ticket->getStateChangeRecorder()->recordData(
+                    'free',
+                    [
+                        'message' => 'This message was converted from a note into a reply by '.$this->person->getDisplayContact(
+                            ),
+                    ]
+                );
                 $ticket->getStateChangeRecorder()->record('message', null, $message);
                 $tm->saveTicket($ticket, $ticket_context);
             }
         }
 
-        return $this->createJsonResponse([
-            'message_id' => $message->getId(),
-            'ticket_id'  => $ticket->getId(),
-            'is_note'    => $message->is_agent_note,
-        ]);
+        return $this->createJsonResponse(
+            [
+                'message_id' => $message->getId(),
+                'ticket_id'  => $ticket->getId(),
+                'is_note'    => $message->is_agent_note,
+            ]
+        );
     }
 
     public function deleteMessageAction($message_id)
@@ -1839,29 +2034,37 @@ class TicketController extends AbstractController
         }
 
         if (count($ticket->messages) == 1) {
-            $this->db->replace('tickets_deleted', [
-                'ticket_id'     => $ticket->id,
-                'by_person_id'  => $this->person->id,
-                'new_ticket_id' => 0,
-                'reason'        => $this->in->getString('reason'),
-                'date_created'  => date('Y-m-d H:i:s'),
-            ]);
+            $this->db->replace(
+                'tickets_deleted',
+                [
+                    'ticket_id'     => $ticket->getId(),
+                    'by_person_id'  => $this->person->getId(),
+                    'new_ticket_id' => 0,
+                    'reason'        => $this->in->getString('reason'),
+                    'date_created'  => date('Y-m-d H:i:s'),
+                ]
+            );
 
             $ticket->setStatus('hidden.deleted');
             $this->em->persist($ticket);
 
             $hidden_data = $this->_getHiddenBarData($ticket);
 
-            return $this->createJsonResponse([
-                'success'        => true,
-                'ticket_deleted' => true,
-                'hidden_html'    => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', [
-                    'ticket'           => $ticket,
-                    'ticket_perms'     => $this->_getTicketPerms($ticket),
-                    'ticket_deleted'   => $hidden_data['ticket_deleted'],
-                    'hard_delete_time' => $hidden_data['hard_delete_time'],
-                ]),
-            ]);
+            return $this->createJsonResponse(
+                [
+                    'success'        => true,
+                    'ticket_deleted' => true,
+                    'hidden_html'    => $this->renderView(
+                        'AgentBundle:Ticket:view-hidden-bar.html.twig',
+                        [
+                            'ticket'           => $ticket,
+                            'ticket_perms'     => $this->_getTicketPerms($ticket),
+                            'ticket_deleted'   => $hidden_data['ticket_deleted'],
+                            'hard_delete_time' => $hidden_data['hard_delete_time'],
+                        ]
+                    ),
+                ]
+            );
         } else {
             $m                            = $message;
             $log_data                     = [];
@@ -1883,9 +2086,11 @@ class TicketController extends AbstractController
             $this->em->remove($message);
             $this->em->flush();
 
-            return $this->createJsonResponse([
-                'success' => true,
-            ]);
+            return $this->createJsonResponse(
+                [
+                    'success' => true,
+                ]
+            );
         }
     }
 
@@ -1903,14 +2108,17 @@ class TicketController extends AbstractController
         }
 
         if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
-        return $this->render('AgentBundle:Ticket:message-attachments-overlay.html.twig', [
-            'ticket'      => $ticket,
-            'message'     => $message,
-            'attachments' => $message->attachments,
-        ]);
+        return $this->render(
+            'AgentBundle:Ticket:message-attachments-overlay.html.twig',
+            [
+                'ticket'      => $ticket,
+                'message'     => $message,
+                'attachments' => $message->attachments,
+            ]
+        );
     }
 
     public function deleteMessageAttachmentAction($message_id, $attachment_id)
@@ -1930,7 +2138,7 @@ class TicketController extends AbstractController
 
         $attachment = false;
         foreach ($message->attachments as $test_attachment) {
-            if ($test_attachment->id == $attachment_id) {
+            if ($test_attachment->getId() == $attachment_id) {
                 $attachment = $test_attachment;
                 break;
             }
@@ -1941,7 +2149,7 @@ class TicketController extends AbstractController
         }
 
         if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         $ticket_log              = new TicketLog();
@@ -1949,10 +2157,10 @@ class TicketController extends AbstractController
         $ticket_log->person      = $this->person;
         $ticket_log->action_type = 'attach_removed';
         $ticket_log->id_object   = $message->getId();
-        $ticket_log->id_before   = $attachment->id;
+        $ticket_log->id_before   = $attachment->getId();
 
-        $blob                     = $attachment->blob;
-        $log_data['attach_id']    = $attachment->id;
+        $blob                     = $attachment->getBlob();
+        $log_data['attach_id']    = $attachment->getId();
         $log_data['blob_id']      = $blob->id;
         $log_data['filename']     = $blob->filename;
         $log_data['filesize']     = $blob->filesize;
@@ -1962,21 +2170,25 @@ class TicketController extends AbstractController
         $this->em->persist($ticket_log);
         $this->em->remove($attachment);
 
-        $embed_code       = str_replace(':image:', ':[^:]*:', preg_quote($attachment->blob->getEmbedCode(true, 'image'), '/'));
+        $embed_code = str_replace(
+            ':image:',
+            ':[^:]*:',
+            preg_quote($attachment->getBlob()->getEmbedCode(true, 'image'), '/')
+        );
         $message->message = preg_replace("/$embed_code/i", '', $message->message);
         $this->em->persist($message);
 
         // need this to be removed, but don't want to trigger a change log for it as we're inserting it manually
         $message->attachments->removeElement($attachment);
 
-        $this->container->getBlobStorage()->deleteBlobRecord($attachment->blob);
-        $this->db->delete('tickets_attachments', ['id' => $attachment->id]);
+        $this->container->getBlobStorage()->deleteBlobRecord($attachment->getBlob());
+        $this->db->delete('tickets_attachments', ['id' => $attachment->getId()]);
 
         $ticket_attachments         = [];
         $ticket_message_attachments = [];
         foreach ($message->attachments as $message_attach) {
-            $ticket_attachments[$message_attach->id]    = $message_attach;
-            $ticket_message_attachments[$message->id][] = $message_attach->id;
+            $ticket_attachments[$message_attach->getId()] = $message_attach;
+            $ticket_message_attachments[$message->id][]   = $message_attach->getId();
         }
 
         $this->em->flush();
@@ -1984,15 +2196,20 @@ class TicketController extends AbstractController
         // Delete the blob itself
         $this->container->getBlobStorage()->deleteBlobRecord($blob);
 
-        return $this->createJsonResponse([
-            'success'      => true,
-            'message_html' => $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', [
-                'message'                    => $message,
-                'ticket_message_attachments' => $ticket_message_attachments,
-                'ticket_attachments'         => $ticket_attachments,
-                'ticket'                     => $ticket,
-            ]),
-        ]);
+        return $this->createJsonResponse(
+            [
+                'success'      => true,
+                'message_html' => $this->renderView(
+                    'AgentBundle:Ticket:ticket-message.html.twig',
+                    [
+                        'message'                    => $message,
+                        'ticket_message_attachments' => $ticket_message_attachments,
+                        'ticket_attachments'         => $ticket_attachments,
+                        'ticket'                     => $ticket,
+                    ]
+                ),
+            ]
+        );
     }
 
     //###########################################################################
@@ -2017,7 +2234,6 @@ class TicketController extends AbstractController
         $new_field_manager    = $this->container->getCustomFieldManager();
         $person_field_manager = $this->container->getPersonFieldManager();
         $org_field_manager    = $this->container->getOrgFieldManager();
-        $error_messages       = [];
 
         $perms_before = $this->_getTicketPerms($ticket);
 
@@ -2045,7 +2261,7 @@ class TicketController extends AbstractController
                 $ticket_edit->setPersonContext($this->person);
 
                 // Validate based on department...
-                $newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
+                $newticket = new NewTicket($this->em, $this->person);
                 $newticket->setValuesFromTicket($ticket);
 
                 foreach (['category_id', 'priority_id', 'product_id', 'workflow_id'] as $f) {
@@ -2070,8 +2286,14 @@ class TicketController extends AbstractController
                 }
 
                 $validator = new NewTicketValidator();
-                $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
-                $layout    = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $newticket->getMockTicket());
+                $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout(
+                    $newticket->department_id
+                );
+                $layout = LayoutDisplay::createFromLayout(
+                    $layout,
+                    LayoutDisplay::EDIT_TICKET,
+                    $newticket->getMockTicket()
+                );
                 $validator->setLayout($layout);
 
                 $actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');
@@ -2080,11 +2302,17 @@ class TicketController extends AbstractController
                     // Validation not on dep changes,
                     // because changing dep could change validation options
                     $new_department_id = $actions['department_id'];
-                } elseif ($ticket->status == 'hidden' && count($actions) == 2 && isset($actions['status']) && isset($actions['hidden_status'])) {
+                } elseif ($ticket->status == 'hidden' && count(
+                        $actions
+                    ) == 2 && isset($actions['status']) && isset($actions['hidden_status'])
+                ) {
                     // skip validation just restoring a deleted ticket, validation will apply after
                 } else {
                     $params     = $request->request;
-                    $noValidate = array_intersect(array_keys($params->get('actions') ?: []), ['agent_team_id', 'agent_id']) || $params->has('set_agent_part_ids');
+                    $noValidate = array_intersect(
+                            array_keys($params->get('actions') ?: []),
+                            ['agent_team_id', 'agent_id']
+                        ) || $params->has('set_agent_part_ids');
 
                     if (!$noValidate && !$validator->isValid($newticket)) {
                         $free   = [];
@@ -2094,7 +2322,9 @@ class TicketController extends AbstractController
                             $fields[] = $info['field'];
                         }
 
-                        return $this->createJsonResponse(['error' => true, 'error_messages' => $free, 'fields' => $fields]);
+                        return $this->createJsonResponse(
+                            ['error' => true, 'error_messages' => $free, 'fields' => $fields]
+                        );
                     }
                 }
 
@@ -2103,11 +2333,13 @@ class TicketController extends AbstractController
                 // If department is changed,
                 // then we re-output the holder template
                 $is_dep_changed = false;
-                $event_listener = new PropertyChangedCallback(function ($sender, $propertyName, $oldValue, $newValue) use (&$is_dep_changed) {
-                    if ($propertyName == 'department') {
-                        $is_dep_changed = true;
+                $event_listener = new PropertyChangedCallback(
+                    function ($sender, $propertyName, $oldValue, $newValue) use (&$is_dep_changed) {
+                        if ($propertyName == 'department') {
+                            $is_dep_changed = true;
+                        }
                     }
-                });
+                );
                 $ticket->addPropertyChangedListener($event_listener);
 
                 if ($this->in->getBool('with_set_agent_parts')) {
@@ -2122,11 +2354,22 @@ class TicketController extends AbstractController
                         $field_manager->saveFormToObject($post_custom_fields, $ticket);
                         $this->em->persist($ticket);
 
-                        $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout, ['allow_edit' => true]);
+                        $new_custom_fields = $new_field_manager->createFormForOwner(
+                            $ticket,
+                            $ticket->person,
+                            $layout,
+                            ['allow_edit' => true]
+                        );
                         if ($org = $ticket->person->organization) {
-                            $new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner(
-                                $ticket, $org, $layout, ['allow_edit' => true]
-                            ));
+                            $new_field_manager->merge(
+                                $new_custom_fields,
+                                $new_field_manager->createFormForOwner(
+                                    $ticket,
+                                    $org,
+                                    $layout,
+                                    ['allow_edit' => true]
+                                )
+                            );
                         }
                         $new_custom_fields->handleRequest($this->request);
 
@@ -2134,12 +2377,18 @@ class TicketController extends AbstractController
                     }
 
                     if ($this->request->request->has('custom_person_fields')) {
-                        $person_field_manager->saveFormToObject($this->request->get('custom_person_fields') ?: [], $ticket->person);
+                        $person_field_manager->saveFormToObject(
+                            $this->request->get('custom_person_fields') ?: [],
+                            $ticket->person
+                        );
                         $this->em->persist($ticket->person);
                     }
 
                     if ($this->request->request->has('custom_org_fields') && $ticket->person->organization) {
-                        $org_field_manager->saveFormToObject($this->request->get('custom_org_fields') ?: [], $ticket->person->organization);
+                        $org_field_manager->saveFormToObject(
+                            $this->request->get('custom_org_fields') ?: [],
+                            $ticket->person->organization
+                        );
                         $this->em->persist($ticket->person->organization);
                     }
 
@@ -2161,9 +2410,8 @@ class TicketController extends AbstractController
                                     break;
 
                                 case -1 === $id && $this->person->hasPerm('agent_problems.create') && $title:
-                                    $problem          = new Problem();
-                                    $problem->creator = $this->person;
-                                    $problem->title   = $title;
+                                    $problem = new Problem();
+                                    $problem->setCreator($this->person)->setTitle($title);
                                     $this->em->persist($problem);
                                     $this->em->flush($problem);
                                     $ticket->associateProblem($problem);
@@ -2181,16 +2429,27 @@ class TicketController extends AbstractController
             }
         }
 
-        $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, null, ['allow_edit' => true]);
+        $new_custom_fields = $new_field_manager->createFormForOwner(
+            $ticket,
+            $ticket->person,
+            null,
+            ['allow_edit' => true]
+        );
         if ($org = $ticket->person->organization) {
-            $new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner($ticket, $org, null, ['allow_edit' => true]));
+            $new_field_manager->merge(
+                $new_custom_fields,
+                $new_field_manager->createFormForOwner($ticket, $org, null, ['allow_edit' => true])
+            );
         }
 
         $data = ['data' => []];
         if (isset($result['new_reply'])) {
-            $data['data']['new_reply'] = $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', [
-                'message' => $result['new_reply'],
-            ]);
+            $data['data']['new_reply'] = $this->renderView(
+                'AgentBundle:Ticket:ticket-message.html.twig',
+                [
+                    'message' => $result['new_reply'],
+                ]
+            );
         }
 
         // need to reload the whole ticket if we flipped the language type
@@ -2304,7 +2563,11 @@ class TicketController extends AbstractController
                 }
             }
 
-            if (count($old_page_ids) != count($new_page_ids) || array_diff($old_page_ids, $new_page_ids) || array_diff($new_page_ids, $old_page_ids)) {
+            if (count($old_page_ids) != count($new_page_ids) || array_diff($old_page_ids, $new_page_ids) || array_diff(
+                    $new_page_ids,
+                    $old_page_ids
+                )
+            ) {
                 $data['data']['refresh'] = true;
             }
         }
@@ -2357,23 +2620,26 @@ class TicketController extends AbstractController
                 ['title' => 'asc']
             );
 
-            if ($problem = $ticket->problems->first()) {
+            if ($problem = $ticket->getProblems()->first()) {
                 $rep            = $this->em->getRepository(Problem::class);
                 $problem_counts = $rep->getCountsForAgentInterface([$problem], $this->person);
                 $incidents      = (int) @$problem_counts[$problem->id];
             }
         }
 
-        return $this->renderView('AgentBundle:Ticket:view-page-display-holders.html.twig', [
-            'ticket'               => $ticket,
-            'ticket_options'       => $ticket_options,
-            'custom_fields'        => $custom_fields,
-            'custom_person_fields' => $custom_person_fields,
-            'custom_org_fields'    => $custom_org_fields,
-            'new_custom_fields'    => $new_custom_fields->createView(),
-            'open_problems'        => $open_problems,
-            'incidents'            => $incidents,
-        ]);
+        return $this->renderView(
+            'AgentBundle:Ticket:view-page-display-holders.html.twig',
+            [
+                'ticket'               => $ticket,
+                'ticket_options'       => $ticket_options,
+                'custom_fields'        => $custom_fields,
+                'custom_person_fields' => $custom_person_fields,
+                'custom_org_fields'    => $custom_org_fields,
+                'new_custom_fields'    => $new_custom_fields->createView(),
+                'open_problems'        => $open_problems,
+                'incidents'            => $incidents,
+            ]
+        );
     }
 
     public function getDataHoldersAction($ticket_id)
@@ -2435,7 +2701,7 @@ class TicketController extends AbstractController
     public function ajaxGetMacroAction($ticket_id)
     {
         if (!$ticket_id) {
-            $ticket = new \Application\DeskPRO\Entity\Ticket();
+            $ticket = new Ticket();
         } else {
             $ticket = $this->getTicketOr404($ticket_id);
         }
@@ -2447,16 +2713,20 @@ class TicketController extends AbstractController
         /** @var $macro \Application\DeskPRO\Entity\TicketMacro */
         $macro = $this->em->getRepository(TicketMacro::class)->find($macro_id);
 
-        if (!$macro || (!$macro->is_global && $macro->person && $macro->person->getId() != $this->person->getId())) {
+        if (!$macro || (!$macro->is_global && $macro->getPerson() && $macro->getPerson()->getId(
+                ) != $this->person->getId())
+        ) {
             throw $this->createNotFoundException();
         }
 
         $descriptions = $macro->getActionDescriptions();
 
-        return $this->createJsonResponse([
-            'macro_id'     => $macro->id,
-            'descriptions' => $descriptions,
-        ]);
+        return $this->createJsonResponse(
+            [
+                'macro_id'     => $macro->getId(),
+                'descriptions' => $descriptions,
+            ]
+        );
     }
 
     public function applyMacroAction($ticket_id, $macro_id)
@@ -2467,7 +2737,9 @@ class TicketController extends AbstractController
         /** @var $macro \Application\DeskPRO\Entity\TicketMacro */
         $macro = $this->em->getRepository(TicketMacro::class)->find($macro_id);
 
-        if (!$macro || (!$macro->is_global && $macro->person && $macro->person->getId() != $this->person->getId())) {
+        if (!$macro || (!$macro->is_global && $macro->getPerson() && $macro->getPerson()->getId(
+                ) != $this->person->getId())
+        ) {
             throw $this->createNotFoundException();
         }
 
@@ -2487,13 +2759,19 @@ class TicketController extends AbstractController
 
                 $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
 
-                $newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
+                $newticket = new NewTicket($this->em, $this->person);
                 $newticket->setValuesFromTicket($ticket);
                 $newticket->status = $ticket->status;
 
                 $validator = new NewTicketValidator();
-                $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
-                $layout    = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $newticket->getMockTicket());
+                $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout(
+                    $newticket->department_id
+                );
+                $layout = LayoutDisplay::createFromLayout(
+                    $layout,
+                    LayoutDisplay::EDIT_TICKET,
+                    $newticket->getMockTicket()
+                );
                 $validator->setLayout($layout);
 
                 if (!$validator->isValid($newticket)) {
@@ -2515,13 +2793,19 @@ class TicketController extends AbstractController
 
                     $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
 
-                    $newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
+                    $newticket = new NewTicket($this->em, $this->person);
                     $newticket->setValuesFromTicket($ticket);
                     $newticket->status = $ticket->status;
 
                     $validator = new NewTicketValidator();
-                    $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
-                    $layout    = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $newticket->getMockTicket());
+                    $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout(
+                        $newticket->department_id
+                    );
+                    $layout = LayoutDisplay::createFromLayout(
+                        $layout,
+                        LayoutDisplay::EDIT_TICKET,
+                        $newticket->getMockTicket()
+                    );
                     $validator->setLayout($layout);
 
                     if (!$validator->isValid($newticket)) {
@@ -2554,22 +2838,26 @@ class TicketController extends AbstractController
         }
 
         if ($permission_errors) {
-            return $this->createJsonResponse([
-                'ticket_id' => $ticket->getId(),
-                'macro_id'  => $macro->getId(),
-                'success'   => false,
-                'error'     => 'permissions',
-            ]);
+            return $this->createJsonResponse(
+                [
+                    'ticket_id' => $ticket->getId(),
+                    'macro_id'  => $macro->getId(),
+                    'success'   => false,
+                    'error'     => 'permissions',
+                ]
+            );
         }
 
         $can_view = $this->person->PermissionsManager->TicketChecker->canView($ticket);
 
-        return $this->createJsonResponse([
-            'ticket_id' => $ticket->getId(),
-            'macro_id'  => $macro->getId(),
-            'close_tab' => (isset($GLOBALS['DP_TICKET_CLOSE_TAB']) && $GLOBALS['DP_TICKET_CLOSE_TAB']) || !$can_view,
-            'success'   => true,
-        ]);
+        return $this->createJsonResponse(
+            [
+                'ticket_id' => $ticket->getId(),
+                'macro_id'  => $macro->getId(),
+                'close_tab' => (isset($GLOBALS['DP_TICKET_CLOSE_TAB']) && $GLOBALS['DP_TICKET_CLOSE_TAB']) || !$can_view,
+                'success'   => true,
+            ]
+        );
     }
 
     public function ajaxGetMessageQuoteAction($message_id)
@@ -2579,10 +2867,12 @@ class TicketController extends AbstractController
         $message_quote = wordwrap($message->getMessageText(), 75, "\n", true);
         $message_quote = preg_replace('#^#m', '> ', $message_quote);
 
-        return $this->createJsonResponse([
-            'message_id'    => $message['id'],
-            'message_quote' => $message_quote,
-        ]);
+        return $this->createJsonResponse(
+            [
+                'message_id'    => $message['id'],
+                'message_quote' => $message_quote,
+            ]
+        );
     }
 
     //###########################################################################
@@ -2618,23 +2908,30 @@ class TicketController extends AbstractController
         $set_agent_ids = $this->in->getCleanValueArray('person_ids', 'uint', 'discard');
         $ticket->setParticipantAgentIds($set_agent_ids);
 
-        $this->em->transactional(function ($em) use ($ticket) {
-            $em->persist($ticket);
-            $em->flush();
-        });
+        $this->em->transactional(
+            function ($em) use ($ticket) {
+                $em->persist($ticket);
+                $em->flush();
+            }
+        );
 
-        $participants = $this->em->createQuery('
+        $participants = $this->em->createQuery(
+            '
             SELECT p
             FROM DeskPRO:TicketParticipant p
             LEFT JOIN p.person person
             LEFT JOIN p.person_email person_email
             WHERE p.ticket = ?1
-        ')->setParameter(1, $ticket)->execute();
+        '
+        )->setParameter(1, $ticket)->execute();
 
-        return $this->render('AgentBundle:Ticket:view-participants-agents.html.twig', [
-            'ticket'       => $ticket,
-            'participants' => $participants,
-        ]);
+        return $this->render(
+            'AgentBundle:Ticket:view-participants-agents.html.twig',
+            [
+                'ticket'       => $ticket,
+                'participants' => $participants,
+            ]
+        );
     }
 
     public function ticketChargeFormAction($ticket_id)
@@ -2684,10 +2981,10 @@ class TicketController extends AbstractController
         $ticket_log->ticket      = $ticket;
         $ticket_log->person      = $this->person;
         $ticket_log->action_type = 'new_billing';
-        $ticket_log->id_object   = $charge->id;
+        $ticket_log->id_object   = $charge->getId();
         $ticket_log->details     = [
-            'new_amount' => $charge->amount,
-            'new_time'   => $charge->charge_time,
+            'new_amount' => $charge->getAmount(),
+            'new_time'   => $charge->getChargeTime(),
         ];
 
         $field_manager = $this->container->getBillingFieldManager();
@@ -2725,10 +3022,12 @@ class TicketController extends AbstractController
             }
         }
         if (!$is_valid) {
-            return $this->createJsonResponse([
-                'inserted'              => false,
-                'invalid_custom_fields' => $invalid_custom_fields,
-            ]);
+            return $this->createJsonResponse(
+                [
+                    'inserted'              => false,
+                    'invalid_custom_fields' => $invalid_custom_fields,
+                ]
+            );
         }
 
         $this->em->persist($ticket);
@@ -2741,7 +3040,10 @@ class TicketController extends AbstractController
             $class      = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
             $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
             $obj        = unserialize($serialized);
-            $method     = new \ReflectionMethod('Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange');
+            $method     = new \ReflectionMethod(
+                'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator',
+                'getLogDataForChange'
+            );
             $method->setAccessible(true);
             $details = $ticket_log->details;
 
@@ -2757,21 +3059,25 @@ class TicketController extends AbstractController
 
         // todo need a transaction joined with above
         $details               = $ticket_log->details;
-        $details['charge_id']  = $charge->id;
-        $ticket_log->id_object = $charge->id;
+        $details['charge_id']  = $charge->getId();
+        $ticket_log->id_object = $charge->getId();
         $ticket_log->details   = $details;
         $this->em->flush();
 
-        return $this->createJsonResponse([
-            'inserted' => true,
-            'html'     => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', [
-                'ticket_perms'   => $this->_getTicketPerms($ticket),
-                'ticket'         => $ticket,
-                'charge'         => $charge,
-                'billing_fields' => $billing_fields,
-                'ticket_perms'   => $this->_getTicketPerms($ticket),
-            ]),
-        ]);
+        return $this->createJsonResponse(
+            [
+                'inserted' => true,
+                'html'     => $this->renderView(
+                    'AgentBundle:Ticket:view-billing-row.html.twig',
+                    [
+                        'ticket_perms'   => $this->_getTicketPerms($ticket),
+                        'ticket'         => $ticket,
+                        'charge'         => $charge,
+                        'billing_fields' => $billing_fields,
+                    ]
+                ),
+            ]
+        );
     }
 
     //###########################################################################
@@ -2786,9 +3092,11 @@ class TicketController extends AbstractController
         $charge = $this->em->getRepository(TicketCharge::class)->findOneBy(['ticket' => $ticket, 'id' => $charge_id]);
 
         if (!$charge) {
-            return $this->createJsonResponse([
-                'success' => false,
-            ]);
+            return $this->createJsonResponse(
+                [
+                    'success' => false,
+                ]
+            );
         }
 
         $field_manager = $this->container->getBillingFieldManager();
@@ -2811,14 +3119,16 @@ class TicketController extends AbstractController
             }
         }
         if (!$is_valid) {
-            return $this->createJsonResponse([
-                'success'               => false,
-                'invalid_custom_fields' => $invalid_custom_fields,
-            ]);
+            return $this->createJsonResponse(
+                [
+                    'success'               => false,
+                    'invalid_custom_fields' => $invalid_custom_fields,
+                ]
+            );
         }
 
-        $old_amount = $charge->amount;
-        $old_time   = $charge->charge_time;
+        $old_amount = $charge->getAmount();
+        $old_time   = $charge->getChargeTime();
 
         $amount = $this->in->getFloat('amount');
 
@@ -2828,7 +3138,7 @@ class TicketController extends AbstractController
             + $this->in->getUInt('seconds')
         );
 
-        if ($charge->charge_time) {
+        if ($charge->getChargeTime()) {
             $charge->charge_time = $time;
         } else {
             $charge->amount = $amount;
@@ -2838,31 +3148,33 @@ class TicketController extends AbstractController
         $ticket_log->ticket      = $ticket;
         $ticket_log->person      = $this->person;
         $ticket_log->action_type = 'modify_billing';
-        $ticket_log->id_object   = $charge->id;
+        $ticket_log->id_object   = $charge->getId();
         $details                 = [];
 
         if ($created = $this->in->getString('date_created')) {
             try {
                 $dt = new \DateTime($created, new \DateTimeZone($this->person->getTimezone()));
                 $dt->setTimezone(new \DateTimeZone('UTC'));
-                $details['old_created'] = $charge->date_created;
+                $details['old_created'] = $charge->getDateCreated();
                 $details['new_created'] = $dt;
                 $charge->date_created   = $dt;
             } catch (\Exception $e) {
-                return $this->createJsonResponse([
-                    'success' => false,
-                ]);
+                return $this->createJsonResponse(
+                    [
+                        'success' => false,
+                    ]
+                );
             }
         }
 
-        if ($old_amount !== $charge->amount) {
+        if ($old_amount !== $charge->getAmount()) {
             $details['old_amount'] = $old_amount;
-            $details['new_amount'] = $charge->amount;
+            $details['new_amount'] = $charge->getAmount();
         }
 
-        if ($old_time !== $charge->charge_time) {
+        if ($old_time !== $charge->getChargeTime()) {
             $details['old_time'] = $old_time;
-            $details['new_time'] = $charge->charge_time;
+            $details['new_time'] = $charge->getChargeTime();
         }
 
         $field_manager->saveFormToObject($custom_fields, $charge);
@@ -2870,7 +3182,10 @@ class TicketController extends AbstractController
             $class      = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
             $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
             $obj        = unserialize($serialized);
-            $method     = new \ReflectionMethod('Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange');
+            $method     = new \ReflectionMethod(
+                'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator',
+                'getLogDataForChange'
+            );
             $method->setAccessible(true);
 
             foreach ($changes as $change) {
@@ -2882,7 +3197,7 @@ class TicketController extends AbstractController
         }
 
         if ($details) {
-            $details['charge_id'] = $charge->id;
+            $details['charge_id'] = $charge->getId();
             $ticket_log->details  = $details;
             $this->em->persist($ticket_log);
         }
@@ -2890,15 +3205,20 @@ class TicketController extends AbstractController
         $this->em->flush();
         $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
 
-        return $this->createJsonResponse([
-            'updated' => true,
-            'html'    => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', [
-                'ticket'         => $ticket,
-                'charge'         => $charge,
-                'billing_fields' => $billing_fields,
-                'ticket_perms'   => $this->_getTicketPerms($ticket),
-            ]),
-        ]);
+        return $this->createJsonResponse(
+            [
+                'updated' => true,
+                'html'    => $this->renderView(
+                    'AgentBundle:Ticket:view-billing-row.html.twig',
+                    [
+                        'ticket'         => $ticket,
+                        'charge'         => $charge,
+                        'billing_fields' => $billing_fields,
+                        'ticket_perms'   => $this->_getTicketPerms($ticket),
+                    ]
+                ),
+            ]
+        );
     }
 
     public function deleteChargeAction($ticket_id, $charge_id, $security_token)
@@ -2911,23 +3231,25 @@ class TicketController extends AbstractController
         $charge = $this->em->getRepository(TicketCharge::class)->findOneBy(['ticket' => $ticket, 'id' => $charge_id]);
 
         if (!$charge) {
-            return $this->createJsonResponse([
-                'success' => false,
-            ]);
+            return $this->createJsonResponse(
+                [
+                    'success' => false,
+                ]
+            );
         }
 
         $ticket_log              = new TicketLog();
         $ticket_log->ticket      = $ticket;
         $ticket_log->person      = $this->person;
         $ticket_log->action_type = 'delete_billing';
-        $ticket_log->id_object   = $charge->id;
+        $ticket_log->id_object   = $charge->getId();
         $ticket_log->details     = [
-            'charge_id'   => $charge->id,
-            'old_amount'  => $charge->amount,
-            'old_time'    => $charge->charge_time,
-            'old_created' => $charge->date_created,
+            'charge_id'   => $charge->getId(),
+            'old_amount'  => $charge->getAmount(),
+            'old_time'    => $charge->getChargeTime(),
+            'old_created' => $charge->getDateCreated(),
         ];
-        foreach ($charge->custom_data as $data) {
+        foreach ($charge->getCustomData() as $data) {
             /* @var $data Entity\CustomDataBilling */
             $charge->getStateChangeRecorder()->record('custom_data.'.$data['root_field']['id'], $data, null, true);
         }
@@ -2936,17 +3258,18 @@ class TicketController extends AbstractController
         $class      = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
         $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
         $obj        = unserialize($serialized);
-        $method     = new \ReflectionMethod('Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange');
+        $method     = new \ReflectionMethod(
+            'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator',
+            'getLogDataForChange'
+        );
         $method->setAccessible(true);
         $details = $ticket_log->details;
 
         foreach ($changes as $change) {
-            foreach ($changes as $change) {
-                if (0 !== strpos($change->getField(), 'custom_data.')) {
-                    continue;
-                }
-                $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
+            if (0 !== strpos($change->getField(), 'custom_data.')) {
+                continue;
             }
+            $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
         }
         $ticket_log->details = $details;
 
@@ -2954,9 +3277,11 @@ class TicketController extends AbstractController
         $this->em->remove($charge);
         $this->em->flush();
 
-        return $this->createJsonResponse([
-            'success' => true,
-        ]);
+        return $this->createJsonResponse(
+            [
+                'success' => true,
+            ]
+        );
     }
 
     //###########################################################################
@@ -2971,11 +3296,11 @@ class TicketController extends AbstractController
 
         $sla = $this->em->getRepository(Sla::class)->find($this->in->getUInt('sla_id'));
         if (!$sla || $sla->apply_type != 'manual') {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'slas')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         $ticket_sla = $ticket->addSla($sla);
@@ -2988,11 +3313,14 @@ class TicketController extends AbstractController
 
             $data = [
                 'inserted' => true,
-                'html'     => $this->renderView('AgentBundle:Ticket:view-sla-row.html.twig', [
-                    'ticket'       => $ticket,
-                    'ticket_sla'   => $ticket_sla,
-                    'ticket_perms' => $this->_getTicketPerms($ticket),
-                ]),
+                'html'     => $this->renderView(
+                    'AgentBundle:Ticket:view-sla-row.html.twig',
+                    [
+                        'ticket'       => $ticket,
+                        'ticket_sla'   => $ticket_sla,
+                        'ticket_perms' => $this->_getTicketPerms($ticket),
+                    ]
+                ),
             ];
         } else {
             $data = ['inserted' => false];
@@ -3020,11 +3348,11 @@ class TicketController extends AbstractController
 
         $sla = $this->em->getRepository(Sla::class)->find($sla_id);
         if (!$sla || $sla->apply_type != 'manual') {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'slas')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         $this->ensureAuthToken('delete_sla', $security_token);
@@ -3060,25 +3388,32 @@ class TicketController extends AbstractController
     /**
      * Soft-deletes a ticket.
      *
-     * @param  $ticket_id
+     * @param $ticket_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function deleteAction($ticket_id)
     {
         $ticket = $this->getTicketOr404($ticket_id, 'delete');
 
         if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         $ticket_person = $ticket->person;
 
-        $this->db->replace('tickets_deleted', [
-            'ticket_id'     => $ticket->id,
-            'by_person_id'  => $this->person->id,
-            'new_ticket_id' => 0,
-            'reason'        => $this->in->getString('reason'),
-            'date_created'  => date('Y-m-d H:i:s'),
-        ]);
+        $this->db->replace(
+            'tickets_deleted',
+            [
+                'ticket_id'     => $ticket->id,
+                'by_person_id'  => $this->person->id,
+                'new_ticket_id' => 0,
+                'reason'        => $this->in->getString('reason'),
+                'date_created'  => date('Y-m-d H:i:s'),
+            ]
+        );
 
         $this->em->getConnection()->beginTransaction();
 
@@ -3098,10 +3433,13 @@ class TicketController extends AbstractController
         if ($this->in->getBool('ban') && !$ticket_person->is_agent) {
             foreach ($ticket->person->emails as $email) {
                 $email_addy = strtolower($email->email);
-                App::getDb()->replace('ban_emails', [
-                    'banned_email' => $email_addy,
-                    'is_pattern'   => 0,
-                ]);
+                App::getDb()->replace(
+                    'ban_emails',
+                    [
+                        'banned_email' => $email_addy,
+                        'is_pattern'   => 0,
+                    ]
+                );
             }
 
             $person       = $ticket->person;
@@ -3112,22 +3450,31 @@ class TicketController extends AbstractController
 
         $hidden_data = $this->_getHiddenBarData($ticket);
 
-        return $this->createJsonResponse([
-            'success'     => true,
-            'banned'      => $this->in->getBool('ban'),
-            'hidden_html' => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', [
-                'ticket'           => $ticket,
-                'ticket_perms'     => $this->_getTicketPerms($ticket),
-                'ticket_deleted'   => $hidden_data['ticket_deleted'],
-                'hard_delete_time' => $hidden_data['hard_delete_time'],
-            ]),
-        ]);
+        return $this->createJsonResponse(
+            [
+                'success'     => true,
+                'banned'      => $this->in->getBool('ban'),
+                'hidden_html' => $this->renderView(
+                    'AgentBundle:Ticket:view-hidden-bar.html.twig',
+                    [
+                        'ticket'           => $ticket,
+                        'ticket_perms'     => $this->_getTicketPerms($ticket),
+                        'ticket_deleted'   => $hidden_data['ticket_deleted'],
+                        'hard_delete_time' => $hidden_data['hard_delete_time'],
+                    ]
+                ),
+            ]
+        );
     }
 
     /**
      * Spam a ticket.
      *
-     * @param  $ticket_id
+     * @param $ticket_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function spamAction($ticket_id)
     {
@@ -3148,27 +3495,35 @@ class TicketController extends AbstractController
         if ($this->in->getBool('ban') && !$ticket_person->is_agent) {
             foreach ($ticket->person->emails as $email) {
                 $email_addy = strtolower($email->email);
-                App::getDb()->replace('ban_emails', [
-                    'banned_email' => $email_addy,
-                    'is_pattern'   => 0,
-                ]);
+                App::getDb()->replace(
+                    'ban_emails',
+                    [
+                        'banned_email' => $email_addy,
+                        'is_pattern'   => 0,
+                    ]
+                );
             }
         }
 
         $hidden_data = $this->_getHiddenBarData($ticket);
 
-        return $this->createJsonResponse([
-            'success'     => true,
-            'hidden_html' => $this->renderView('AgentBundle:Ticket:view-hidden-bar.html.twig', [
-                'ticket'           => $ticket,
-                'ticket_perms'     => $this->_getTicketPerms($ticket),
-                'ticket_deleted'   => $hidden_data['ticket_deleted'],
-                'hard_delete_time' => $hidden_data['hard_delete_time'],
-            ]),
-        ]);
+        return $this->createJsonResponse(
+            [
+                'success'     => true,
+                'hidden_html' => $this->renderView(
+                    'AgentBundle:Ticket:view-hidden-bar.html.twig',
+                    [
+                        'ticket'           => $ticket,
+                        'ticket_perms'     => $this->_getTicketPerms($ticket),
+                        'ticket_deleted'   => $hidden_data['ticket_deleted'],
+                        'hard_delete_time' => $hidden_data['hard_delete_time'],
+                    ]
+                ),
+            ]
+        );
     }
 
-    protected function _getHiddenBarData(\Application\DeskPRO\Entity\Ticket $ticket)
+    protected function _getHiddenBarData(Ticket $ticket)
     {
         $hard_delete_time = null;
         $ticket_deleted   = false;
@@ -3180,14 +3535,18 @@ class TicketController extends AbstractController
                 $date_deleted = $ticket_deleted['date_created'];
             }
 
-            $hard_delete_time = $date_deleted->getTimestamp() + $this->container->getSetting('core_tickets.hard_delete_time');
+            $hard_delete_time = $date_deleted->getTimestamp() + $this->container->getSetting(
+                    'core_tickets.hard_delete_time'
+                );
             $hard_delete_time = max(0, $hard_delete_time - time());
 
             if ($hard_delete_time) {
                 $hard_delete_time = Dates::secsToReadable($hard_delete_time);
             }
         } elseif ($ticket['hidden_status'] == 'spam') {
-            $hard_delete_time = $ticket->date_status->getTimestamp() + $this->container->getSetting('core_tickets.spam_delete_time');
+            $hard_delete_time = $ticket->date_status->getTimestamp() + $this->container->getSetting(
+                    'core_tickets.spam_delete_time'
+                );
             $hard_delete_time = max(0, $hard_delete_time - time());
 
             if ($hard_delete_time) {
@@ -3209,9 +3568,12 @@ class TicketController extends AbstractController
     {
         $ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
 
-        return $this->render('AgentBundle:Ticket:change-user-overlay.html.twig', [
-            'ticket' => $ticket,
-        ]);
+        return $this->render(
+            'AgentBundle:Ticket:change-user-overlay.html.twig',
+            [
+                'ticket' => $ticket,
+            ]
+        );
     }
 
     public function changeUserOverlayPreviewAction($ticket_id, $new_person_id)
@@ -3222,10 +3584,13 @@ class TicketController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        return $this->render('AgentBundle:Ticket:change-user-overlay-preview.html.twig', [
-            'ticket'     => $ticket,
-            'new_person' => $new_person,
-        ]);
+        return $this->render(
+            'AgentBundle:Ticket:change-user-overlay-preview.html.twig',
+            [
+                'ticket'     => $ticket,
+                'new_person' => $new_person,
+            ]
+        );
     }
 
     public function changeUserAction($ticket_id)
@@ -3244,16 +3609,20 @@ class TicketController extends AbstractController
             $name  = $this->in->getString('name');
             $email = $this->in->getString('email');
 
-            if (!$email || !\Orb\Validator\StringEmail::isValueValid($email)) {
-                return $this->createJsonResponse([
-                    'success' => false,
-                    'error'   => 'Please enter a valid email address',
-                ]);
+            if (!$email || !StringEmail::isValueValid($email)) {
+                return $this->createJsonResponse(
+                    [
+                        'success' => false,
+                        'error'   => 'Please enter a valid email address',
+                    ]
+                );
             } elseif (App::$container->getEmailAccountManager()->findAccountForEmailAddress($email)) {
-                return $this->createJsonResponse([
-                    'success' => false,
-                    'error'   => 'The email address you entered belongs to a an account in Admin > Tickets > Email Accounts. You cannot set an email account as the ticket user.',
-                ]);
+                return $this->createJsonResponse(
+                    [
+                        'success' => false,
+                        'error'   => 'The email address you entered belongs to a an account in Admin > Tickets > Email Accounts. You cannot set an email account as the ticket user.',
+                    ]
+                );
             }
 
             $new_person = $this->em->getRepository(Person::class)->findOneByEmail($email);
@@ -3265,20 +3634,24 @@ class TicketController extends AbstractController
         }
 
         if ($new_person->getId() == $ticket->person->getId()) {
-            return $this->createJsonResponse([
-                'success'       => true,
-                'ticket_id'     => $ticket['id'],
-                'old_person_id' => $old_person->getId(),
-                'new_person_id' => $new_person->getId(),
-            ]);
+            return $this->createJsonResponse(
+                [
+                    'success'       => true,
+                    'ticket_id'     => $ticket['id'],
+                    'old_person_id' => $old_person->getId(),
+                    'new_person_id' => $new_person->getId(),
+                ]
+            );
         }
 
         if ($new_person->getId()) {
-            $part = $this->em->createQuery('
+            $part = $this->em->createQuery(
+                '
                     SELECT part
                     FROM DeskPRO:TicketParticipant part
                     WHERE part.ticket = ?0 AND part.person = ?1
-                ')->setParameters([$ticket, $new_person])->setMaxResults(1)->getOneOrNullResult();
+                '
+            )->setParameters([$ticket, $new_person])->setMaxResults(1)->getOneOrNullResult();
             if ($part) {
                 $this->em->remove($part);
             }
@@ -3305,12 +3678,14 @@ class TicketController extends AbstractController
             throw $e;
         }
 
-        return $this->createJsonResponse([
-            'success'       => true,
-            'ticket_id'     => $ticket['id'],
-            'old_person_id' => $old_person->getId(),
-            'new_person_id' => $new_person->getId(),
-        ]);
+        return $this->createJsonResponse(
+            [
+                'success'       => true,
+                'ticket_id'     => $ticket['id'],
+                'old_person_id' => $old_person->getId(),
+                'new_person_id' => $new_person->getId(),
+            ]
+        );
     }
 
     //###########################################################################
@@ -3334,17 +3709,27 @@ class TicketController extends AbstractController
             $other_custom_fields = false;
         }
 
-        return $this->render('AgentBundle:Ticket:merge-overlay.html.twig', [
-            'ticket'              => $ticket,
-            'custom_fields'       => $custom_fields,
-            'other_ticket'        => $other_ticket,
-            'other_custom_fields' => $other_custom_fields,
-            'can_merge'           => $can_merge,
-        ]);
+        return $this->render(
+            'AgentBundle:Ticket:merge-overlay.html.twig',
+            [
+                'ticket'              => $ticket,
+                'custom_fields'       => $custom_fields,
+                'other_ticket'        => $other_ticket,
+                'other_custom_fields' => $other_custom_fields,
+                'can_merge'           => $can_merge,
+            ]
+        );
     }
 
     /**
      * Merge a ticket interface.
+     *
+     * @param $ticket_id
+     * @param $other_ticket_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function mergeAction($ticket_id, $other_ticket_id)
     {
@@ -3370,15 +3755,17 @@ class TicketController extends AbstractController
         } catch (\InvalidArgumentException $e) {
             throw $this->createNotFoundException('You cannot merge a ticket with itself');
         } catch (\Exception $e) {
-            $this->em->rollback(false);
+            $this->em->rollback();
             throw $e;
         }
 
-        return $this->createJsonResponse([
-            'success' => true,
-            'id'      => $ticket['id'],
-            'old_id'  => $old_ticket_id,
-        ]);
+        return $this->createJsonResponse(
+            [
+                'success' => true,
+                'id'      => $ticket['id'],
+                'old_id'  => $old_ticket_id,
+            ]
+        );
     }
 
     //###########################################################################
@@ -3398,10 +3785,13 @@ class TicketController extends AbstractController
             $message = null;
         }
 
-        return $this->render('AgentBundle:Ticket:split-overlay.html.twig', [
-            'ticket'  => $ticket,
-            'message' => $message,
-        ]);
+        return $this->render(
+            'AgentBundle:Ticket:split-overlay.html.twig',
+            [
+                'ticket'  => $ticket,
+                'message' => $message,
+            ]
+        );
     }
 
     public function splitSaveAction($ticket_id)
@@ -3424,11 +3814,13 @@ class TicketController extends AbstractController
                 $code = 'all_messages';
             }
 
-            return $this->createJsonResponse([
-                'error'      => true,
-                'error_code' => $code,
-                'message'    => $e->getMessage(),
-            ]);
+            return $this->createJsonResponse(
+                [
+                    'error'      => true,
+                    'error_code' => $code,
+                    'message'    => $e->getMessage(),
+                ]
+            );
         } catch (\Exception $e) {
             $this->em->rollback();
             throw $e;
@@ -3441,11 +3833,13 @@ class TicketController extends AbstractController
 
         $this->em->flush();
 
-        return $this->createJsonResponse([
-            'success'            => true,
-            'ticket_id'          => $new_ticket ? $new_ticket['id'] : null,
-            'old_ticket_deleted' => false,
-        ]);
+        return $this->createJsonResponse(
+            [
+                'success'            => true,
+                'ticket_id'          => $new_ticket ? $new_ticket['id'] : null,
+                'old_ticket_deleted' => false,
+            ]
+        );
     }
 
     public function forwardOverlayAction($ticket_id, $message_id)
@@ -3460,18 +3854,26 @@ class TicketController extends AbstractController
         $date_created = clone $message->date_created;
         $date_created->setTimezone($this->person->getDateTimezone());
 
-        $top = trim($this->container->get('templating.email.twig')->render('DeskPRO:emails_common:ticket-fwd-out-header.html.twig', [
-            'agent'   => $this->person,
-            'ticket'  => $ticket,
-            'message' => $message,
-        ]));
+        $top = trim(
+            $this->container->get('templating.email.twig')->render(
+                'DeskPRO:emails_common:ticket-fwd-out-header.html.twig',
+                [
+                    'agent'   => $this->person,
+                    'ticket'  => $ticket,
+                    'message' => $message,
+                ]
+            )
+        );
 
-        return $this->render('AgentBundle:Ticket:forward-overlay.html.twig', [
-            'ticket'       => $ticket,
-            'message'      => $message,
-            'date_created' => $date_created,
-            'top'          => $top,
-        ]);
+        return $this->render(
+            'AgentBundle:Ticket:forward-overlay.html.twig',
+            [
+                'ticket'       => $ticket,
+                'message'      => $message,
+                'date_created' => $date_created,
+                'top'          => $top,
+            ]
+        );
     }
 
     public function forwardSendAction($ticket_id, $message_id)
@@ -3534,10 +3936,12 @@ class TicketController extends AbstractController
         }
 
         if ($helpdesk_addresses) {
-            return $this->createJsonResponse([
-                'error'     => 'to_helpdesk_address',
-                'addresses' => $helpdesk_addresses,
-            ]);
+            return $this->createJsonResponse(
+                [
+                    'error'     => 'to_helpdesk_address',
+                    'addresses' => $helpdesk_addresses,
+                ]
+            );
         }
 
         if (!$tos) {
@@ -3555,11 +3959,16 @@ class TicketController extends AbstractController
         $date_created->setTimezone($this->person->getDateTimezone());
         $date_created = $date_created->format($this->container->getSetting('core.date_fulltime'));
 
-        $top = trim($this->container->get('templating.email.twig')->render('DeskPRO:emails_common:ticket-fwd-out-header.html.twig', [
-            'agent'   => $this->person,
-            'ticket'  => $ticket,
-            'message' => $message,
-        ]));
+        $top = trim(
+            $this->container->get('templating.email.twig')->render(
+                'DeskPRO:emails_common:ticket-fwd-out-header.html.twig',
+                [
+                    'agent'   => $this->person,
+                    'ticket'  => $ticket,
+                    'message' => $message,
+                ]
+            )
+        );
 
         if ($custom_message) {
             if ($top) {
@@ -3586,7 +3995,8 @@ class TicketController extends AbstractController
 
         if ($message->getPerson()->isAgent()) {
             $to = $ticket->getPerson();
-            $top .= 'To: '.$to->getDisplayName().' &lt;<a href="mailto:'.$to->getPrimaryEmailAddress().'">'.$to->getPrimaryEmailAddress().'</a>&gt;<br/>';
+            $top .= 'To: '.$to->getDisplayName().' &lt;<a href="mailto:'.$to->getPrimaryEmailAddress(
+                ).'">'.$to->getPrimaryEmailAddress().'</a>&gt;<br/>';
         } else {
             if ($ticket->getEmailAccount()) {
                 $to = $ticket->getEmailAccount();
@@ -3622,7 +4032,9 @@ class TicketController extends AbstractController
         $account = null;
         if ($this->container->getSetting('core_tickets.fwd_use_account')) {
             try {
-                $account = $this->container->getEmailAccountManager()->getAccount($this->container->getSetting('core_tickets.fwd_use_account'));
+                $account = $this->container->getEmailAccountManager()->getAccount(
+                    $this->container->getSetting('core_tickets.fwd_use_account')
+                );
                 if (!($account && $account->is_enabled && $account->outgoing_account)) {
                     $account = null;
                 }
@@ -3665,7 +4077,7 @@ class TicketController extends AbstractController
             }
         }
 
-        $ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $this->person);
+        $ticketdisplay = new TicketDisplay($ticket, $this->person);
 
         $attach_attachments = [];
         $max                = App::getSetting('core.sendemail_attach_maxsize');
@@ -3688,27 +4100,35 @@ class TicketController extends AbstractController
         $this->container->getMailer()->send($email);
 
         // Log the action
-        $this->db->insert('tickets_logs', [
-            'ticket_id'   => $ticket->id,
-            'person_id'   => $this->person->id,
-            'action_type' => 'message_forwarded',
-            'details'     => serialize([
-                'message_id'     => $message_id,
-                'agent_id'       => $this->person->id,
-                'agent_name'     => $this->person->getDisplayName(),
-                'to'             => array_keys($tos),
-                'cc'             => array_keys($ccs),
-                'bcc'            => array_keys($bccs),
-                'all_rec_string' => implode(', ', array_merge(array_keys($tos), array_keys($ccs), array_keys($bccs))),
-                'to_string'      => implode(', ', array_keys($tos)),
-                'cc_string'      => implode(', ', array_keys($ccs)),
-                'bcc_string'     => implode(', ', array_keys($bccs)),
-                'from_email'     => $from_email,
-                'from_name'      => $from_name,
-                'custom_message' => $custom_message ?: null,
-            ]),
-            'date_created' => date('Y-m-d H:i:s'),
-        ]);
+        $this->db->insert(
+            'tickets_logs',
+            [
+                'ticket_id'   => $ticket->id,
+                'person_id'   => $this->person->id,
+                'action_type' => 'message_forwarded',
+                'details'     => serialize(
+                    [
+                        'message_id'     => $message_id,
+                        'agent_id'       => $this->person->id,
+                        'agent_name'     => $this->person->getDisplayName(),
+                        'to'             => array_keys($tos),
+                        'cc'             => array_keys($ccs),
+                        'bcc'            => array_keys($bccs),
+                        'all_rec_string' => implode(
+                            ', ',
+                            array_merge(array_keys($tos), array_keys($ccs), array_keys($bccs))
+                        ),
+                        'to_string'      => implode(', ', array_keys($tos)),
+                        'cc_string'      => implode(', ', array_keys($ccs)),
+                        'bcc_string'     => implode(', ', array_keys($bccs)),
+                        'from_email'     => $from_email,
+                        'from_name'      => $from_name,
+                        'custom_message' => $custom_message ?: null,
+                    ]
+                ),
+                'date_created' => date('Y-m-d H:i:s'),
+            ]
+        );
 
         return $this->createJsonResponse(['success' => true]);
     }
@@ -3734,7 +4154,14 @@ class TicketController extends AbstractController
         if ($this->in->getBool('raw')) {
             $this->ensureAuthToken('view_raw', $this->in->getString('raw'));
         } else {
-            $note = '<div style="font-family: sans-serif; font-size: 11px;border-bottom: 1px solid #C5C5C5; margin-bottom: 3px; padding-bottom: 3px;">This is a safe version of the raw HTML message. <a href="'.$this->generateUrl('agent_ticket_message_raw', ['ticket_id' => $ticket_id, 'message_id' => $message_id, 'raw' => App::getSession()->generateSecurityToken('view_raw')]).'">Click here to view the original message with no modifications</a>. Note that a malicious user may have injected harmful HTML into the message and viewing the original message may result in harmful code being executed.</div>';
+            $note = '<div style="font-family: sans-serif; font-size: 11px;border-bottom: 1px solid #C5C5C5; margin-bottom: 3px; padding-bottom: 3px;">This is a safe version of the raw HTML message. <a href="'.$this->generateUrl(
+                    'agent_ticket_message_raw',
+                    [
+                        'ticket_id'  => $ticket_id,
+                        'message_id' => $message_id,
+                        'raw'        => App::getSession()->generateSecurityToken('view_raw'),
+                    ]
+                ).'">Click here to view the original message with no modifications</a>. Note that a malicious user may have injected harmful HTML into the message and viewing the original message may result in harmful code being executed.</div>';
 
             $purifier = new \HTMLPurifier();
             $config   = \HTMLPurifier_Config::createDefault();
@@ -3742,8 +4169,14 @@ class TicketController extends AbstractController
             $config->set('Core.Encoding', 'UTF-8');
             $config->set('HTML.TidyLevel', 'none');
             // Everything but script/iframe/applet/object
-            $config->set('HTML.Allowed', 'a,abbr,acronym,address,area,b,base,basefont,bdo,big,blockquote,body,br,button,caption,center,cite,code,col,colgroup,dd,del,dfn,dir,div,dl,dt,em,fieldset,font,form,frame,frameset,h1,2,h3,h4,h5,h6,head,hr,html,i,img,input,ins,kbd,label,legend,li,link,map,menu,meta,noframes,noscript,ol,optgroup,option,p,pre,q,s,samp,select,small,span,strike,strong,style,su,sup,table,tbody,td,textarea,tfoot,th,thead,title,tr,tt,u,ul,var');
-            $config->set('HTML.AllowedAttributes', 'class,id,alt,title,align,border,width,height,valign,style,cellspacing,cellpadding,colspan,rowspan,bgcolor,dir,href,target,name,rel,size,type,value,src');
+            $config->set(
+                'HTML.Allowed',
+                'a,abbr,acronym,address,area,b,base,basefont,bdo,big,blockquote,body,br,button,caption,center,cite,code,col,colgroup,dd,del,dfn,dir,div,dl,dt,em,fieldset,font,form,frame,frameset,h1,2,h3,h4,h5,h6,head,hr,html,i,img,input,ins,kbd,label,legend,li,link,map,menu,meta,noframes,noscript,ol,optgroup,option,p,pre,q,s,samp,select,small,span,strike,strong,style,su,sup,table,tbody,td,textarea,tfoot,th,thead,title,tr,tt,u,ul,var'
+            );
+            $config->set(
+                'HTML.AllowedAttributes',
+                'class,id,alt,title,align,border,width,height,valign,style,cellspacing,cellpadding,colspan,rowspan,bgcolor,dir,href,target,name,rel,size,type,value,src'
+            );
             $config->set('URI.DisableExternalResources', true);
 
             $message_raw = $note.$purifier->purify($message_raw, $config);
@@ -3793,8 +4226,14 @@ class TicketController extends AbstractController
                 $config->set('Core.Encoding', 'UTF-8');
                 $config->set('HTML.TidyLevel', 'none');
                 // Everything but script/iframe/applet/object
-                $config->set('HTML.Allowed', 'a,abbr,acronym,address,area,b,base,basefont,bdo,big,blockquote,body,br,button,caption,center,cite,code,col,colgroup,dd,del,dfn,dir,div,dl,dt,em,fieldset,font,form,frame,frameset,h1,2,h3,h4,h5,h6,head,hr,html,i,img,input,ins,kbd,label,legend,li,link,map,menu,meta,noframes,noscript,ol,optgroup,option,p,pre,q,s,samp,select,small,span,strike,strong,style,su,sup,table,tbody,td,textarea,tfoot,th,thead,title,tr,tt,u,ul,var');
-                $config->set('HTML.AllowedAttributes', 'class,id,alt,title,align,border,width,height,valign,style,cellspacing,cellpadding,colspan,rowspan,bgcolor,dir,href,target,name,rel,size,type,value,src');
+                $config->set(
+                    'HTML.Allowed',
+                    'a,abbr,acronym,address,area,b,base,basefont,bdo,big,blockquote,body,br,button,caption,center,cite,code,col,colgroup,dd,del,dfn,dir,div,dl,dt,em,fieldset,font,form,frame,frameset,h1,2,h3,h4,h5,h6,head,hr,html,i,img,input,ins,kbd,label,legend,li,link,map,menu,meta,noframes,noscript,ol,optgroup,option,p,pre,q,s,samp,select,small,span,strike,strong,style,su,sup,table,tbody,td,textarea,tfoot,th,thead,title,tr,tt,u,ul,var'
+                );
+                $config->set(
+                    'HTML.AllowedAttributes',
+                    'class,id,alt,title,align,border,width,height,valign,style,cellspacing,cellpadding,colspan,rowspan,bgcolor,dir,href,target,name,rel,size,type,value,src'
+                );
                 $config->set('URI.DisableExternalResources', true);
                 $message_raw = $purifier->purify($message_raw, $config);
                 break;
@@ -3848,14 +4287,16 @@ class TicketController extends AbstractController
             $ticket = $this->getTicketOr404($this->in->getUInt('ticket_id'));
 
             $message = null;
+            /** @var \Application\DeskPRO\EntityRepository\TicketMessage $ticketMessageRepo */
+            $ticketMessageRepo = $this->em->getRepository(TicketMessage::class);
             if ($this->in->getUInt('message_id')) {
-                $message = $this->em->getRepository(TicketMessage::class)->find($this->in->getUInt('message_id'));
+                $message = $ticketMessageRepo->find($this->in->getUInt('message_id'));
             }
             if (!$message || $message->ticket != $ticket) {
-                $message = $this->em->getRepository(TicketMessage::class)->getFirstTicketMessage($ticket);
+                $message = $ticketMessageRepo->getFirstTicketMessage($ticket);
             }
         } else {
-            $ticket  = new \Application\DeskPRO\Entity\Ticket();
+            $ticket  = new Ticket();
             $message = null;
 
             if ($this->settings->get('core.default_ticket_dep')) {
@@ -3886,13 +4327,10 @@ class TicketController extends AbstractController
                     $attach->blob['content_type']
                 );
 
-                $attach_data = [];
-
+                $attach_data         = [];
                 $attach_data['blob'] = $new_blob->toArray();
-
-                $attach_data['url'] = $new_blob->getDownloadUrl(true);
-
-                $attachments[] = $attach_data;
+                $attach_data['url']  = $new_blob->getDownloadUrl(true);
+                $attachments[]       = $attach_data;
             }
         }
 
@@ -3907,9 +4345,15 @@ class TicketController extends AbstractController
         $person                    = $pid ? $personRep->find($pid) : new Person();
         $custom_person_fields_form = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
         $custom_org_fields_form    = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
-        $custom_person_fields      = $this->container->getPersonFieldManager()->getDisplayArrayForObject($person, $custom_person_fields_form);
-        $custom_org_fields         = $person->organization
-            ? $this->container->getOrgFieldManager()->getDisplayArrayForObject($person->organization, $custom_org_fields_form)
+        $custom_person_fields      = $this->container->getPersonFieldManager()->getDisplayArrayForObject(
+            $person,
+            $custom_person_fields_form
+        );
+        $custom_org_fields = $person->organization
+            ? $this->container->getOrgFieldManager()->getDisplayArrayForObject(
+                $person->organization,
+                $custom_org_fields_form
+            )
             : [];
 
         $layouts = $this->container->getTicketLayoutManager()->getAgentLayouts();
@@ -3927,33 +4371,36 @@ class TicketController extends AbstractController
             ['title' => 'asc']
         );
 
-        return $this->render('AgentBundle:Ticket:newticket.html.twig', [
-            'ticket'               => $ticket,
-            'person'               => $person,
-            'message'              => $message,
-            'attachments'          => isset($attachments) ? $attachments : null,
-            'agents'               => $agents,
-            'agent_signature'      => $this->person->getSignature(),
-            'agent_signature_html' => $this->person->getSignatureHtml(),
-            'agent_teams'          => $agent_teams,
-            'ticket_options'       => $ticket_options,
-            'custom_fields'        => $custom_fields,
-            'new_custom_fields'    => $new_custom_fields->createView(),
-            'billing_fields'       => $billing_fields,
-            'open_problems'        => $open_problems,
-            'custom_person_fields' => $custom_person_fields,
-            'custom_org_fields'    => $custom_org_fields,
-            'brands'               => $brands,
-        ]);
+        return $this->render(
+            'AgentBundle:Ticket:newticket.html.twig',
+            [
+                'ticket'               => $ticket,
+                'person'               => $person,
+                'message'              => $message,
+                'attachments'          => isset($attachments) ? $attachments : null,
+                'agents'               => $agents,
+                'agent_signature'      => $this->person->getSignature(),
+                'agent_signature_html' => $this->person->getSignatureHtml(),
+                'agent_teams'          => $agent_teams,
+                'ticket_options'       => $ticket_options,
+                'custom_fields'        => $custom_fields,
+                'new_custom_fields'    => $new_custom_fields->createView(),
+                'billing_fields'       => $billing_fields,
+                'open_problems'        => $open_problems,
+                'custom_person_fields' => $custom_person_fields,
+                'custom_org_fields'    => $custom_org_fields,
+                'brands'               => $brands,
+            ]
+        );
     }
 
     public function newSaveAction(Request $request)
     {
         if (!$this->person->hasPerm('agent_tickets.create')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
-        $newTicket = new \Application\AgentBundle\Form\Model\NewTicket(
+        $newTicket = new NewTicket(
             $this->em,
             $this->person
         );
@@ -3991,13 +4438,13 @@ class TicketController extends AbstractController
             }
 
             if ($macro) {
-                foreach ($macro->actions as $action) {
+                foreach ($macro->getActions() as $action) {
                     $action = $factory->createFromInfo($action);
                     if ($action) {
-                        if ($action instanceof AgentAction || $action instanceof AgentTeamAction || $action instanceof ReplyAction || $action instanceof ReplySnippetAction) {
-                            // Ignore, the replybox itself changed for these actions
-                        } elseif ($action instanceof StatusAction) {
+                        if ($action instanceof StatusAction) {
                             $set_status = $action->getFullStatus();
+                        } elseif ($action instanceof AgentAction || $action instanceof AgentTeamAction || $action instanceof ReplyAction || $action instanceof ReplySnippetAction) {
+                            // Ignore, the replybox itself changed for these actions
                         } else {
                             $collection->add($action);
                         }
@@ -4034,7 +4481,7 @@ class TicketController extends AbstractController
 
                 if (!$new_email && !$this->in->getString('newticket.person.name')) {
                     $errors['person_no_user'] = true;
-                } elseif (!\Orb\Validator\StringEmail::isValueValid($new_email)) {
+                } elseif (!StringEmail::isValueValid($new_email)) {
                     $errors['person_email_address'] = true;
                 } elseif (App::$container->getEmailAccountManager()->findAccountForEmailAddress($new_email)) {
                     $errors['person_email_address_gateway'] = true;
@@ -4079,7 +4526,10 @@ class TicketController extends AbstractController
 
             $billingAmount = null;
             $billingTime   = null;
-            if ($this->settings->get('core_tickets.enable_billing') || $this->settings->get('core_tickets.enable_timelog')) {
+            if ($this->settings->get('core_tickets.enable_billing') || $this->settings->get(
+                    'core_tickets.enable_timelog'
+                )
+            ) {
                 if ($this->in->getString('billing_type') == 'amount') {
                     $billingAmount = $this->in->getFloat('amount');
                 } else {
@@ -4092,9 +4542,15 @@ class TicketController extends AbstractController
             }
 
             // Validate based on department...
-            $validator = new \Application\AgentBundle\Validator\NewTicketValidator();
-            $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newTicket->department_id);
-            $layout    = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newTicket->getMockTicket());
+            $validator = new NewTicketValidator();
+            $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout(
+                $newTicket->department_id
+            );
+            $layout = LayoutDisplay::createFromLayout(
+                $layout,
+                LayoutDisplay::NEW_TICKET,
+                $newTicket->getMockTicket()
+            );
 
             if (isset($check_person) && $check_person) {
                 $newTicket->setValuesFromTicket(null, $check_person, $check_person->organization);
@@ -4113,7 +4569,8 @@ class TicketController extends AbstractController
                         HandlerAbstract::CONTEXT_AGENT
                     );
                     foreach ($billing_errors as $code) {
-                        $all_billing_errors[] = '(Billing) '.$field['title'].': '.$this->container->getTranslator()->getPhraseText(
+                        $all_billing_errors[] = '(Billing) '.$field['title'].': '.$this->container->getTranslator(
+                            )->getPhraseText(
                                 preg_replace('#^(.*?)\.#', 'user.error.form_', $code)
                             );
                     }
@@ -4127,7 +4584,9 @@ class TicketController extends AbstractController
                 }
                 $free = array_merge($free, $all_billing_errors);
 
-                return $this->createJsonResponse(['error' => true, 'error_codes' => ['free' => true], 'error_messages' => $free]);
+                return $this->createJsonResponse(
+                    ['error' => true, 'error_codes' => ['free' => true], 'error_messages' => $free]
+                );
             }
 
             //------------------------------
@@ -4148,19 +4607,28 @@ class TicketController extends AbstractController
                 }
 
                 if ($comment) {
-                    $newTicket->setPreSaveCallback(function (\Application\DeskPRO\Entity\Ticket $ticket) use ($comment, $comment_type, $comment_id, $comment_action) {
-                        $ticket->getTicketLogger()->recordExtra('created_via_comment', [
-                            'comment_type'          => $comment_type,
-                            'comment_id'            => $comment_id,
-                            'comment_action'        => $comment_action,
-                            'comment_content_id'    => $comment->getObject()->getId(),
-                            'comment_content_title' => $comment->getObject()->getTitle(),
-                        ]);
-                    });
+                    $newTicket->setPreSaveCallback(
+                        function (Ticket $ticket) use ($comment, $comment_type, $comment_id, $comment_action) {
+                            $ticket->getTicketLogger()->recordExtra(
+                                'created_via_comment',
+                                [
+                                    'comment_type'          => $comment_type,
+                                    'comment_id'            => $comment_id,
+                                    'comment_action'        => $comment_action,
+                                    'comment_content_id'    => $comment->getObject()->getId(),
+                                    'comment_content_title' => $comment->getObject()->getTitle(),
+                                ]
+                            );
+                        }
+                    );
                 }
 
                 $newTicket->add_cc_person    = $this->in->getCleanValueArray('newticket.add_cc_person', 'uint');
-                $newTicket->add_cc_newperson = $this->in->getCleanValueArray('newticket.add_cc_newperson', 'raw', 'discard');
+                $newTicket->add_cc_newperson = $this->in->getCleanValueArray(
+                    'newticket.add_cc_newperson',
+                    'raw',
+                    'discard'
+                );
 
                 $newTicket->save();
                 $ticket = $newTicket->getTicket();
@@ -4170,7 +4638,7 @@ class TicketController extends AbstractController
                 if ($this->in->getUInt('parent_ticket_id')) {
                     $parent_ticket = $this->em->find(Ticket::class, $this->in->getUInt('parent_ticket_id'));
                     if ($parent_ticket) {
-                        $ticket->parent_ticket = $parent_ticket;
+                        $ticket->setParentTicket($parent_ticket);
                     }
                 }
 
@@ -4193,51 +4661,49 @@ class TicketController extends AbstractController
                 // Billing/time
                 //------------------------------
 
-                    if ($billingAmount || $billingTime) {
-                        if ($charge = $ticket->addCharge($this->person, $billingTime, $billingAmount)) {
-                            $this->em->persist($charge);
-                            $this->em->persist($ticket);
-                            $this->em->flush();
+                if ($billingAmount || $billingTime) {
+                    if ($charge = $ticket->addCharge($this->person, $billingTime, $billingAmount)) {
+                        $this->em->persist($charge);
+                        $this->em->persist($ticket);
+                        $this->em->flush();
 
-                            $ticket_log              = new TicketLog();
-                            $ticket_log->ticket      = $ticket;
-                            $ticket_log->person      = $this->person;
-                            $ticket_log->action_type = 'new_billing';
-                            $ticket_log->details     = [
-                                'new_amount' => $charge->amount,
-                                'new_time'   => $charge->charge_time,
-                            ];
-                            $this->em->persist($ticket_log);
+                        $ticket_log              = new TicketLog();
+                        $ticket_log->ticket      = $ticket;
+                        $ticket_log->person      = $this->person;
+                        $ticket_log->action_type = 'new_billing';
+                        $ticket_log->details     = [
+                            'new_amount' => $charge->getAmount(),
+                            'new_time'   => $charge->getChargeTime(),
+                        ];
+                        $this->em->persist($ticket_log);
 
-                            if (!empty($post_billing_fields)) {
-                                $billing_field_manager->saveFormToObject($post_billing_fields, $charge);
-                                $changes = $charge->getStateChangeRecorder()->getChanges();
+                        if (!empty($post_billing_fields)) {
+                            $billing_field_manager->saveFormToObject($post_billing_fields, $charge);
+                            $changes = $charge->getStateChangeRecorder()->getChanges();
 
-                                $class      = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
-                                $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
-                                $obj        = unserialize($serialized);
-                                $method     = new \ReflectionMethod(
-                                    'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange'
-                                );
-                                $method->setAccessible(true);
-                                $details = $ticket_log->details;
+                            $class      = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
+                            $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
+                            $obj        = unserialize($serialized);
+                            $method     = new \ReflectionMethod(
+                                'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator', 'getLogDataForChange'
+                            );
+                            $method->setAccessible(true);
+                            $details = $ticket_log->details;
 
-                                foreach ($changes as $change) {
-                                    foreach ($changes as $change) {
-                                        if (0 !== strpos($change->getField(), 'custom_data.')) {
-                                            continue;
-                                        }
-                                        $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
-                                    }
+                            foreach ($changes as $change) {
+                                if (0 !== strpos($change->getField(), 'custom_data.')) {
+                                    continue;
                                 }
+                                $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
                             }
-
-                            $details['charge_id']  = $charge->id;
-                            $ticket_log->id_object = $charge->id;
-                            $ticket_log->details   = $details;
-                            $this->em->flush();
                         }
+
+                        $details['charge_id']  = $charge->getId();
+                        $ticket_log->id_object = $charge->getId();
+                        $ticket_log->details   = $details;
+                        $this->em->flush();
                     }
+                }
 
                 //------------------------------
                 // Add CC's
@@ -4257,14 +4723,16 @@ class TicketController extends AbstractController
                         if (!$email && !$name) {
                             continue;
                         }
-                        if ($email && !\Orb\Validator\StringEmail::isValueValid($email)) {
+                        if ($email && !StringEmail::isValueValid($email)) {
                             continue;
                         }
 
-                        $p = Person::newContactPerson([
-                            'name'  => $name,
-                            'email' => $email,
-                        ]);
+                        $p = Person::newContactPerson(
+                            [
+                                'name'  => $name,
+                                'email' => $email,
+                            ]
+                        );
                         $this->em->persist($p);
                         $this->em->flush();
 
@@ -4328,9 +4796,8 @@ class TicketController extends AbstractController
                     if ($checker->canAssociateProblem($ticket)) {
                         if (-1 === $id && $title) {
                             if ($this->person->hasPerm('agent_problems.create')) {
-                                $problem          = new Problem();
-                                $problem->creator = $this->person;
-                                $problem->title   = $title;
+                                $problem = new Problem();
+                                $problem->setCreator($this->person)->setTitle($title);
                                 $this->em->persist($problem);
                                 $this->em->flush($problem);
                             }
@@ -4340,7 +4807,7 @@ class TicketController extends AbstractController
                             }
                         }
 
-                        if ($problem && $problem->is_open) {
+                        if (isset($problem) && $problem->isOpen()) {
                             $ticket->associateProblem($problem);
                             $this->em->flush();
                         }
@@ -4349,9 +4816,12 @@ class TicketController extends AbstractController
 
                 if ($snippet_ids = $this->in->getString('options.snippet_ids')) {
                     $snippet_ids = explode(',', $snippet_ids);
-                    $snippet_ids = array_map(function ($x) {
-                        return (int) trim($x);
-                    }, $snippet_ids);
+                    $snippet_ids = array_map(
+                        function ($x) {
+                            return (int) trim($x);
+                        },
+                        $snippet_ids
+                    );
                     $snippet_ids = Arrays::removeFalsey($snippet_ids);
                     $snippet_ids = array_unique($snippet_ids, SORT_NUMERIC);
 
@@ -4359,7 +4829,11 @@ class TicketController extends AbstractController
                         $snippet = $this->em->find(TextSnippet::class, $snip_id);
 
                         if ($snippet) {
-                            $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
+                            $snippetLog = Entity\TicketObjectUseLog::createSnippetLog(
+                                $ticket,
+                                $this->getPerson(),
+                                $snippet
+                            );
                             $this->em->persist($snippetLog);
                             $this->em->flush();
                         }
@@ -4373,41 +4847,50 @@ class TicketController extends AbstractController
 
                 $ticket->recomputeHash();
                 if ($dupe_ticket = $this->em->getRepository(Ticket::class)->checkDupeTicket($ticket)) {
-                    $e            = new \Application\DeskPRO\Tickets\DuplicateTicketException();
+                    $e            = new DuplicateTicketException();
                     $e->ticket_id = $dupe_ticket->id;
                     throw $e;
                 }
 
                 $this->db->commit();
-            } catch (\Application\DeskPRO\Tickets\DuplicateTicketException $e) {
+            } catch (DuplicateTicketException $e) {
                 $this->db->rollback();
 
-                return $this->createJsonResponse([
-                    'error'          => true,
-                    'is_dupe'        => true,
-                    'dupe_ticket_id' => $e->ticket_id,
-                ]);
+                return $this->createJsonResponse(
+                    [
+                        'error'          => true,
+                        'is_dupe'        => true,
+                        'dupe_ticket_id' => $e->ticket_id,
+                    ]
+                );
             } catch (\Exception $e) {
                 $this->db->rollback();
 
-                return $this->createJsonResponse([
-                    'error'   => true,
-                    'message' => $e->getMessage(),
-                ], 400);
+                return $this->createJsonResponse(
+                    [
+                        'error'   => true,
+                        'message' => $e->getMessage(),
+                    ],
+                    400
+                );
             }
 
-            return $this->createJsonResponse([
-                'success'      => true,
-                'ticket_id'    => $ticket['id'],
-                'can_view'     => $this->person->PermissionsManager->TicketChecker->canView($ticket),
-                'comment_id'   => $comment_id,
-                'comment_type' => $comment_type,
-            ]);
+            return $this->createJsonResponse(
+                [
+                    'success'      => true,
+                    'ticket_id'    => $ticket['id'],
+                    'can_view'     => $this->person->PermissionsManager->TicketChecker->canView($ticket),
+                    'comment_id'   => $comment_id,
+                    'comment_type' => $comment_type,
+                ]
+            );
         }
 
-        return $this->createJsonResponse([
-            'success' => false,
-        ]);
+        return $this->createJsonResponse(
+            [
+                'success' => false,
+            ]
+        );
     }
 
     protected function _getCommentEntityName($typename)
@@ -4435,14 +4918,16 @@ class TicketController extends AbstractController
             $person = $this->em->find(Person::class, $person_id);
         }
         if (!$person && $this->in->getString('email')) {
-            $person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($this->in->getString('email'));
+            $person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail(
+                $this->in->getString('email')
+            );
         }
 
         $session = null;
         if ($this->in->getUInt('session_id')) {
             $session = $this->em->find(Session::class, $this->in->getUInt('session_id'));
         }
-        if ($session && $session->person) {
+        if ($session && $session->getPerson()) {
             $person = $session;
         }
 
@@ -4452,10 +4937,13 @@ class TicketController extends AbstractController
 
         $api_data = $person->toApiData();
 
-        return $this->render('AgentBundle:Ticket:newticket-person-row.html.twig', [
-            'person'   => $person,
-            'api_data' => $api_data,
-        ]);
+        return $this->render(
+            'AgentBundle:Ticket:newticket-person-row.html.twig',
+            [
+                'person'   => $person,
+                'api_data' => $api_data,
+            ]
+        );
     }
 
     /**
@@ -4479,20 +4967,32 @@ class TicketController extends AbstractController
         $mock              = new Entity\Ticket();
         $new_custom_fields = $manager->createFormForOwner($mock, $person, $layout, ['allow_edit' => true]);
         if ($org = $person->organization) {
-            $manager->merge($new_custom_fields, $manager->createFormForOwner($mock, $org, $layout, ['allow_edit' => true]));
+            $manager->merge(
+                $new_custom_fields,
+                $manager->createFormForOwner($mock, $org, $layout, ['allow_edit' => true])
+            );
         }
         $custom_person_fields_form = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
         $custom_org_fields_form    = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
-        $custom_person_fields      = $this->container->getPersonFieldManager()->getDisplayArrayForObject($person, $custom_person_fields_form);
-        $custom_org_fields         = $person->organization
-            ? $this->container->getOrgFieldManager()->getDisplayArrayForObject($person->organization, $custom_org_fields_form)
+        $custom_person_fields      = $this->container->getPersonFieldManager()->getDisplayArrayForObject(
+            $person,
+            $custom_person_fields_form
+        );
+        $custom_org_fields = $person->organization
+            ? $this->container->getOrgFieldManager()->getDisplayArrayForObject(
+                $person->organization,
+                $custom_org_fields_form
+            )
             : [];
 
-        return $this->render('AgentBundle:Ticket:newticket-custom-fields-row.html.twig', [
-            'new_custom_fields'    => $new_custom_fields->createView(),
-            'custom_person_fields' => $custom_person_fields,
-            'custom_org_fields'    => $custom_org_fields,
-        ]);
+        return $this->render(
+            'AgentBundle:Ticket:newticket-custom-fields-row.html.twig',
+            [
+                'new_custom_fields'    => $new_custom_fields->createView(),
+                'custom_person_fields' => $custom_person_fields,
+                'custom_org_fields'    => $custom_org_fields,
+            ]
+        );
     }
 
     public function lockTicketAction($ticket_id)
@@ -4500,9 +5000,11 @@ class TicketController extends AbstractController
         $ticket = $this->getTicketOr404($ticket_id);
 
         if ($ticket->hasLock()) {
-            return $this->createJsonResponse([
-                'error' => true,
-            ]);
+            return $this->createJsonResponse(
+                [
+                    'error' => true,
+                ]
+            );
         }
 
         $ticket->setLockedByAgent($this->person);
@@ -4565,21 +5067,26 @@ class TicketController extends AbstractController
             $output[$ticket->id] = $this->_renderActiveDrafts($ticket, $drafts[$ticket->id]);
         }
 
-        return $this->createJsonResponse([
-            'drafts' => $output,
-        ]);
+        return $this->createJsonResponse(
+            [
+                'drafts' => $output,
+            ]
+        );
     }
 
-    protected function _renderActiveDrafts(\Application\DeskPRO\Entity\Ticket $ticket, array $drafts)
+    protected function _renderActiveDrafts(Ticket $ticket, array $drafts)
     {
         $output = [];
 
         unset($drafts[$this->person->id]);
         foreach ($drafts as $id => $draft) {
-            $output[] = $this->renderView('AgentBundle:Ticket:ticket-message-draft.html.twig', [
-                'draft'  => $draft,
-                'ticket' => $ticket,
-            ]);
+            $output[] = $this->renderView(
+                'AgentBundle:Ticket:ticket-message-draft.html.twig',
+                [
+                    'draft'  => $draft,
+                    'ticket' => $ticket,
+                ]
+            );
         }
 
         return $output;
@@ -4597,7 +5104,9 @@ class TicketController extends AbstractController
 
         $ticket = $this->getTicketOr404($ticket_id);
 
-        $tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'ticket-debug-'.$ticket->id.'_'.date('YmdHis').'_'.DpStrings::random(4, Strings::CHARS_ALPHANUM_IU);
+        $tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'ticket-debug-'.$ticket->id.'_'.date(
+                'YmdHis'
+            ).'_'.DpStrings::random(4, Strings::CHARS_ALPHANUM_IU);
         if (!mkdir($tmpdir, 0777, true)) {
             echo 'Could not create temp dir: '.$tmpdir;
             exit;
@@ -4698,42 +5207,64 @@ CSS;
                 foreach ($message->attachments as $attach) {
                     $attach_data = $attach->toArray();
                     unset($attach_data['ticket'], $attach_data['message'], $attach_data['person'], $attach_data['visitor']);
-                    $attach_data['blob']   = $attach->blob->toArray();
+                    $attach_data['blob']   = $attach->getBlob()->toArray();
                     $data['attachments'][] = $attach_data;
                 }
             }
 
             file_put_contents($tmpdir.'/message-'.$message->id.'.json', json_encode($data));
 
-            if ($message->email_source && $message->email_source->blob) {
+            if ($message->email_source && $message->email_source->getBlob()) {
                 try {
-                    $this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir.'/message-'.$message->id.'-source.eml', $message->email_source->blob);
+                    $this->container->getBlobStorage()
+                        ->copyBlobRecordToFile(
+                            $tmpdir.'/message-'.$message->id.'-source.eml',
+                            $message->email_source->getBlob()
+                        );
                 } catch (\Exception $e) {
-                    file_put_contents($tmpdir.'/message-'.$message->id.'-source.eml', "Could not download blob: {$e->getMessage()}");
+                    file_put_contents(
+                        $tmpdir.'/message-'.$message->id.'-source.eml',
+                        "Could not download blob: {$e->getMessage()}"
+                    );
                 }
             }
 
-            if ($message->email_source && $message->email_source->source_info) {
-                file_put_contents($tmpdir.'/message-'.$message->id.'.source_info.txt', $message->email_source->getSourceInfoAsString());
+            if ($message->email_source && $message->email_source->getSourceInfo()) {
+                file_put_contents(
+                    $tmpdir.'/message-'.$message->id.'.source_info.txt',
+                    $message->email_source->getSourceInfoAsString()
+                );
             }
 
-            if ($message->email_source && $message->email_source->log_blob) {
-                $this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir.'/message-'.$message->id.'.log', $message->email_source->log_blob);
+            if ($message->email_source && $message->email_source->getLogBlob()) {
+                $this->container->getBlobStorage()
+                    ->copyBlobRecordToFile(
+                        $tmpdir.'/message-'.$message->id.'.log',
+                        $message->email_source->getLogBlob()
+                    );
             }
         }
 
-        $tm_logs = $this->em->createQuery('
+        $tm_logs = $this->em->createQuery(
+            '
             SELECT tm_log, b
             FROM DeskPRO:TicketProcLog tm_log
             LEFT JOIN tm_log.blob b
             WHERE tm_log.ticket = ?0
-        ')->execute([$ticket]);
+        '
+        )->execute([$ticket]);
 
         foreach ($tm_logs as $tm_log) {
             try {
-                $this->container->getBlobStorage()->copyBlobRecordToFile($tmpdir.'/'.$tm_log->blob->filename, $tm_log->blob);
+                $this->container->getBlobStorage()->copyBlobRecordToFile(
+                    $tmpdir.'/'.$tm_log->blob->filename,
+                    $tm_log->blob
+                );
             } catch (\Exception $e) {
-                file_put_contents($tmpdir.'/message-'.$message->id.'-source.eml', "Could not download blob: {$e->getMessage()}");
+                file_put_contents(
+                    $tmpdir.'/message-'.$message->id.'-source.eml',
+                    "Could not download blob: {$e->getMessage()}"
+                );
             }
         }
 
@@ -4743,7 +5274,8 @@ CSS;
         $zip = new \PclZip($outfile);
         $zip->add(
             $tmpdir,
-            \PCLZIP_OPT_REMOVE_PATH, dirname($tmpdir)
+            \PCLZIP_OPT_REMOVE_PATH,
+            dirname($tmpdir)
         );
 
         header('Content-Type: application/zip; filename=ticket-debug-'.$ticket->id.'.zip');
@@ -4797,17 +5329,24 @@ CSS;
 
         $self = $this;
 
-        return array_filter($tickets, function ($t) use ($self, $check_perm) {
-            return $self->checkPerm($t, $check_perm);
-        });
+        return array_filter(
+            $tickets,
+            function ($t) use ($self, $check_perm) {
+                return $self->checkPerm($t, $check_perm);
+            }
+        );
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\Ticket
+     * @param int  $ticket_id
+     * @param null $check_perm
+     *
+     * @return Ticket
      */
     protected function getTicketOr404($ticket_id, $check_perm = null)
     {
-        $q = $this->em->createQuery('
+        $q = $this->em->createQuery(
+            '
             SELECT t, person, person_primary_email, agent,
                 agent_team, language, department, product, category, workflow, priority,
                 organization, locked_by_agent
@@ -4825,7 +5364,8 @@ CSS;
             LEFT JOIN t.organization organization
             LEFT JOIN t.locked_by_agent locked_by_agent
             WHERE t.id = ?0
-        ');
+        '
+        );
         $q->setParameters([$ticket_id]);
 
         $ticket = $q->getOneOrNullResult();
@@ -4843,11 +5383,11 @@ CSS;
         }
 
         if (!$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
-            throw new \Application\DeskPRO\HttpKernel\Exception\NoPermissionException('You are not allowed to view this ticket');
+            throw new NoPermissionException('You are not allowed to view this ticket');
         }
 
         if ($check_perm && !$this->checkPerm($ticket, $check_perm)) {
-            throw new \Application\DeskPRO\HttpKernel\Exception\NoPermissionException("There is no ticket with ID $ticket_id");
+            throw new NoPermissionException("There is no ticket with ID $ticket_id");
         }
 
         return $ticket;
@@ -4857,7 +5397,7 @@ CSS;
     {
         try {
             $ticket = $this->getTicketOr404($ticket_id);
-        } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+        } catch (NotFoundHttpException $e) {
             // try to find a delete log
             $delete_log = $this->em->getRepository(TicketDeleted::class)->findOneBy(['ticket_id' => $ticket_id]);
             if ($delete_log) {
@@ -4869,7 +5409,7 @@ CSS;
 
         try {
             $linkedTicket = $this->getTicketOr404($linked_ticket_id);
-        } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+        } catch (NotFoundHttpException $e) {
             // try to find a delete log
             $delete_log = $this->em->getRepository(TicketDeleted::class)->findOneBy(['ticket_id' => $linked_ticket_id]);
             if ($delete_log) {
@@ -4879,15 +5419,10 @@ CSS;
             }
         }
 
-        if ($this->in->getBool('isParent')) {
-            $ticket->parent_ticket = $linkedTicket;
-        } else {
-            $linkedTicket->parent_ticket = $ticket;
-        }
+        $ticket->setParentTicket($this->in->getBool('isParent') ? $linkedTicket : $ticket);
 
         $this->em->persist($ticket);
         $this->em->persist($linkedTicket);
-
         $this->em->flush();
 
         return $this->createJsonResponse(['success' => 1]);
@@ -4896,8 +5431,8 @@ CSS;
     public function linkExistingOverlayAction($ticket_id)
     {
         try {
-            $ticket = $this->getTicketOr404($ticket_id);
-        } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+            $this->getTicketOr404($ticket_id);
+        } catch (NotFoundHttpException $e) {
             // try to find a delete log
             $delete_log = $this->em->getRepository(TicketDeleted::class)->findOneBy(['ticket_id' => $ticket_id]);
             if ($delete_log) {
@@ -4929,7 +5464,7 @@ CSS;
             throw $this->createNotFoundException();
         }
 
-        $linked_ticket->parent_ticket = null;
+        $linked_ticket->setParentTicket();
         $this->em->persist($linked_ticket);
         $this->em->flush();
 
@@ -4945,7 +5480,7 @@ CSS;
     {
         $ticket = $this->getTicketOr404($ticket_id);
 
-        if (!$problem = $ticket->problems->first()) {
+        if (!$problem = $ticket->getProblems()->first()) {
             throw new NotFoundHttpException();
         }
 
@@ -4980,7 +5515,7 @@ CSS;
     {
         $ticket = $this->getTicketOr404($ticket_id);
 
-        if (!$problem = $ticket->problems->first()) {
+        if (!$problem = $ticket->getProblems()->first()) {
             throw new NotFoundHttpException();
         }
 
@@ -5013,13 +5548,16 @@ CSS;
         $departments = $this->container->getDataService('Department')
             ->getPersonDepartments($this->person, 'tickets', [], 'assign', $brand);
 
-        return $this->render('AgentBundle:Common:select-department.html.twig', [
-            'name'        => 'newticket[department_id]',
-            'id'          => 'dep',
-            'departments' => $departments,
-            'add_attr'    => 'data-style-type="icons" data-select-icon-size="22"',
-            'with_blank'  => true,
-        ]);
+        return $this->render(
+            'AgentBundle:Common:select-department.html.twig',
+            [
+                'name'        => 'newticket[department_id]',
+                'id'          => 'dep',
+                'departments' => $departments,
+                'add_attr'    => 'data-style-type="icons" data-select-icon-size="22"',
+                'with_blank'  => true,
+            ]
+        );
     }
 
     /**

@@ -144,6 +144,14 @@ class TicketMacro extends DomainObject
     /**
      * @return array
      */
+    public function getActions()
+    {
+        return $this->actions;
+    }
+
+    /**
+     * @return array
+     */
     public function getActionsArrayDesc()
     {
         $ret = [];
