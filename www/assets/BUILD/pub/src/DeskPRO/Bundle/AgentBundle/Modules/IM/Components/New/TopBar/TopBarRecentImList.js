@@ -78,7 +78,16 @@ class TopBarRecentImList extends RecentList {
   }
 
   getItems() {
-    return this.state.chats.slice(0, 10).map(agent => this.getItem(agent));
+    const { current, chats } = this.props;
+    let stateChats = this.state.chats.slice(0, 10);
+    if (current.get('id') && !stateChats.has(current.get('id'))) {
+      const chat = chats.get(current.get('id'));
+      stateChats = stateChats.set(current.get('id'), chat.set('added', Date.now()));
+      stateChats = stateChats.sort((a, b) => b.get('added') - a.get('added'));
+      stateChats = stateChats.slice(0, 10);
+    }
+
+    return stateChats.map(agent => this.getItem(agent));
   }
 
   getHeaderHelper(chat) {
