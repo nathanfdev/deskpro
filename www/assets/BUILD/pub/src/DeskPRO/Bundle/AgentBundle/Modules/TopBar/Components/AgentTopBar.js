@@ -111,6 +111,8 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.loadMessages     = this.loadMessages.bind(this);
     this.onChatSearch     = this.onChatSearch.bind(this);
     this.onHideChat       = this.onHideChat.bind(this);
+    this.deleteGroup      = this.deleteGroup.bind(this);
+    this.leaveGroup       = this.leaveGroup.bind(this);
   }
 
   refreshCounts() {
@@ -175,13 +177,13 @@ export class AgentTopBarContainer extends SeparateComponent {
   }
 
   onSubmit(message) {
-    let testMessage = striptags(message);
+    let testMessage = striptags(message, ['img', 'svg', 'video', 'object', 'embed']);
     testMessage = testMessage.replace(/(&nbsp;\s)+$/g, '');
     testMessage = testMessage.replace(/(&nbsp;|\s)+$/g, '');
     testMessage = testMessage.replace(/^(&nbsp;|\s)+/g, '');
     testMessage = testMessage.replace(/(&nbsp;|\s)+$/g, '');
 
-    if (testMessage.trim()) {
+    if (testMessage.trim() || message.indexOf('<video') !== -1) { // another dancing around froala, it wraps <video> into <span>
       const { dispatch, current, me } = this.props;
       dispatch(messagesActions.addMessage(current.get('id'), message, uuid(), me));
     }
@@ -272,6 +274,14 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.props.dispatch(chatsActions.updateChat(chatId, ids, name));
   }
 
+  deleteGroup(chat) {
+    this.props.dispatch(chatsActions.deleteGroup(chat.get('id')));
+  }
+
+  leaveGroup(chat) {
+    this.props.dispatch(chatsActions.leaveGroup(chat.get('id')));
+  }
+
   getPath = () => {
     let path;
     if (!this.state.searchQuery) {
@@ -283,22 +293,9 @@ export class AgentTopBarContainer extends SeparateComponent {
   };
 
   markNewMessages() {
-    if (!this.props.updatingMessages) {
-      const ids = [];
-      const uuids = [];
-      const { messages, dispatch } = this.props;
-
-      const msg = messages.hasIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
-      msg.map((message) => {
-        if (message.id && message.status < 2 && message.person !== this.props.me.get('id')) {
-          ids.push(message.id);
-          uuids.push(message.uuid);
-        }
-        return true;
-      });
-      if (ids.length > 0) {
-        dispatch(messagesActions.markMessages(ids, uuids, this.props.current.get('id')));
-      }
+    const { updatingMessages, current, dispatch, counts } = this.props;
+    if (!updatingMessages && counts.nested && counts.nested[current.get('id')] && counts.nested[current.get('id')].count > 0) {
+      dispatch(messagesActions.markAllMessagesAsRead(current.get('id')));
     }
   }
 
@@ -358,7 +355,9 @@ export class AgentTopBarContainer extends SeparateComponent {
       onChatSearch:       this.onChatSearch,
       searchQuery:        this.state.searchQuery,
       onToggleChat:       this.onToggleChat,
-      onHideChat:         this.onHideChat
+      onHideChat:         this.onHideChat,
+      deleteGroup:        this.deleteGroup,
+      leaveGroup:         this.leaveGroup
     };
     return <AgentTopBar {...props} ref={(c) => { this.agentTopBar = c; }} />;
   }
@@ -420,7 +419,9 @@ export class AgentTopBar extends React.Component {
     userChatEnabled:     PropTypes.bool,
     onlineAgents:        PropTypes.object,
     onToggleChat:        PropTypes.func,
-    onHideChat:          PropTypes.func
+    onHideChat:          PropTypes.func,
+    deleteGroup:         PropTypes.func,
+    leaveGroup:          PropTypes.func
   };
 
   onChatVolumeUpdate = (newVal) => {
@@ -452,12 +453,15 @@ export class AgentTopBar extends React.Component {
     const { onChatSearch, onScroll, openGroupDrawer, markNewMessages, onSubmit, toggleImOverlay } = this.props;
     const { searchQuery, counts, groupChats, checkedAgents, me, myDepartments, myTeams, recentChats } = this.props;
     const { agents, people, onSearchFocus, onSearchBlur, editChat, updateGroup, loadMessages, activeTabs } = this.props;
-    const { recentLoaded, groupLoaded, overlayShown, hiddenChats, onHideChat, drafts, saveDraft }  = this.props;
+    const { recentLoaded, groupLoaded, overlayShown, hiddenChats, drafts, saveDraft }  = this.props;
+    const { leaveGroup, deleteGroup, onHideChat } = this.props;
+
     const groupDrawerTarget = document.getElementById('im-button');
 
     return (<TopBarItem childrenWrapper="im-list">
       <TopBarRecentImList
         me={me}
+        current={current}
         agents={agents}
         people={people}
         departments={myDepartments}
@@ -495,6 +499,8 @@ export class AgentTopBar extends React.Component {
           onFocus={onSearchFocus}
           onBlur={onSearchBlur}
           searchQuery={searchQuery}
+          deleteGroup={deleteGroup}
+          leaveGroup={leaveGroup}
           dispatch={this.props.dispatch}
         >
           <IMButton />

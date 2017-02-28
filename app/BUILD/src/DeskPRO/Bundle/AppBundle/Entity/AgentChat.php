@@ -122,9 +122,19 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     protected $name;
 
     /**
+     * @var Person
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="admin_id", referencedColumnName="id", onDelete="SET NULL")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     */
+    protected $admin;
+
+    /**
      * List of participating in chat entities.
      *
-     * @var AgentChatParticipant[] an id array of participants
+     * @var AgentChatParticipant[]|ArrayCollection an id array of participants
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant", mappedBy="chat",
      *     cascade={"persist", "remove"}, orphanRemoval=true)
      */
@@ -249,7 +259,27 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->setModelField('name', $name);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getAdmin()
+    {
+        return $this->admin;
+    }
+
+    /**
+     * @param Person $admin
+     *
+     * @return $this
+     */
+    public function setAdmin(Person $admin)
+    {
+        $this->setModelField('admin', $admin);
 
         return $this;
     }

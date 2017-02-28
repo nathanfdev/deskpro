@@ -59,7 +59,7 @@ export class UserPhoto extends React.Component {
   }
 
   render() {
-    const { type, text, children, className, title } = this.props;
+    const { type, text, children, className, title, width, height } = this.props;
 
     const spanProps = {
       style:     this.getStyle(),
@@ -74,10 +74,22 @@ export class UserPhoto extends React.Component {
       spanProps.title = title;
     }
 
+    const offlineProps = {
+      width,
+      height,
+      lineHeight:   height,
+      textAlign:    'center',
+      position:     'absolute',
+      top:          0,
+      left:         0,
+      borderRadius: '500rem'
+    };
+
     return (
       <span {...spanProps}>
         {text && <span className="text" style={this.getTextStyle()}>{text}</span>}
         {children}
+        <span className="offline-block" style={offlineProps} />
       </span>
     );
   }

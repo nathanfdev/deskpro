@@ -28,9 +28,13 @@ export class Avatar extends React.Component {
     }
     if (gravatar) {
       return (
-        <Gravatar gravatar={gravatar} size={size}>
-          <UserPhoto type="gravatar" className={className} />
-        </Gravatar>
+        <TextAvatar {...this.props}>
+          <UserPhoto type="text" className={className}>
+            <Gravatar gravatar={gravatar} size={size}>
+              <UserPhoto type="gravatar" className={className} />
+            </Gravatar>
+          </UserPhoto>
+        </TextAvatar>
       );
     }
 

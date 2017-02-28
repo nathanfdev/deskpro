@@ -52,10 +52,16 @@ img.emojione, svg.emojione {
     top: -1px;
   }
 
+  &.offline > .offline-block {
+    display: inline-block;
+    background: #fff;
+    opacity: 0.5;
+  }
+
   &.gravatar {
     position: absolute;
-    top: 0;
-    left: 1px !important;
+    top: -1px;
+    left: 0 !important;
   }
 }
 
@@ -111,17 +117,14 @@ img.emojione, svg.emojione {
           left: 0;
           top: 0;
         }
-
-        &.offline {
-          opacity: 0.5;
-        }
       }
       > .knuckles.message-counter {
         position: absolute;
         top: -8px;
         left: 25px;
         font-size: 12px;
-        padding: 2px;
+        padding: 2px 4px;
+        border-radius: 4px;
         font-weight: bold;
       }
       &:hover > .knuckles.message-counter {
@@ -248,11 +251,6 @@ img.emojione, svg.emojione {
     padding: 0;
     border: none;
 
-    .offline {
-      .header, .avatar {
-        opacity: 0.5;
-      }
-    }
 
     .online {
       .avatar:before {
@@ -322,6 +320,10 @@ img.emojione, svg.emojione {
         margin: 10px 15px;
         cursor: pointer;
 
+        .ui.im.avatar.image .gravatar + .offline-block {
+          left: -1px !important;
+        }
+
         &:hover {
           color: $dp-sonic-primary;
           background: $dp-morning-sky;
@@ -374,7 +376,11 @@ img.emojione, svg.emojione {
         color: $dp-greyscale-600;
         font-size: 16px;
         padding: 20px 34px;
-        border-left: 3px solid $dp-greyscale-50;;
+        margin: 0;
+        border: none;
+        border-bottom: 1px solid $dp-greyscale-250;
+        width: 150px;
+        text-align: center;
 
         .dp-im-tab-menu-icon {
           font-size: 16px;
@@ -383,19 +389,23 @@ img.emojione, svg.emojione {
       }
 
       .im.item.unactive {
-        border-top: none;
-        border-left: 1px solid $dp-greyscale-50;
-        border-right: 1px solid $dp-greyscale-50;
         color: $dp-greyscale-450;
-        border-bottom: 1px solid;
+        border-bottom: 1px solid $dp-greyscale-250;
       }
 
-      .im.item.unactive ~ .im.item.active {
-        border-left: 1px solid $dp-greyscale-400;
+      .im.item.active {
+        border-bottom: none;
+        border-left: 1px solid $dp-greyscale-250;
+        border-right: 1px solid $dp-greyscale-250;
+        border-top: 1px solid $dp-greyscale-250;
       }
 
-      .im.item:last-of-type {
-        border-right: 1px solid $dp-greyscale-50;
+      .im.item.active:first-of-type {
+        border-left: 1px solid transparent;
+      }
+
+      .im.item.active:last-of-type {
+        border-right: 1px solid transparent;
       }
     }
 
@@ -406,20 +416,101 @@ img.emojione, svg.emojione {
       }
 
       .item {
-        &.agent, &.department, &.team {
-          padding: 8px 15px;
+        &.group {
+
+          .confirmation, .group-overlay {
+            height: 100%;
+            border-left: 1px solid $dp-sonic-primary;
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 0;
+          }
+
+          .confirmation {
+            width: 390px;
+            background: $dp-morning-sky;
+            line-height: 45px;
+
+            span {
+              color: $dp-sonic-primary;
+              margin-left: 10px;
+              + span {
+                margin-left: 20px;
+              }
+            }
+          }
+
+          .group-overlay {
+            background: white;
+            width: 55px;
+            text-align: center;
+
+            .icon {
+              font-size: 20px;
+              color: $dp-sonic-primary;
+              margin: 20%;
+            }
+          }
+
+          &.hover {
+            background: transparent;
+            .group-overlay {
+              background: $dp-morning-sky;
+            }
+          }
+
+          &.confirmation {
+            .confirmation {
+              display: block;
+            }
+          }
+
+          &:hover {
+            .group-overlay {
+              display: block;
+            }
+          }
+
+          &.confirmation {
+            background: transparent;
+
+            &:hover {
+              .group-overlay {
+                display: none;
+              }
+            }
+          }
+
+        }
+        &.agent, &.department, &.team, &.group {
+          padding: 8px 5px 8px 15px;
+          margin-right: 10px;
+          border-radius: 0;
           margin-top: 2px;
           position: relative;
 
-          .message-counter {
+          .ui.avatar.im.image.everyone {
+            width: auto;
+            height: auto;
+            margin: 0;
+            padding: 0;
+            svg {
+              width: 24px;
+              height: 24px;
+            }
+          }
+
+
+          .knuckles.message-counter {
             font-family: "Open Sans", serif;
             font-size: 12px;
             position: absolute;
             left: 30px;
             top: 2px;
-            border-radius: 2px;
             display: block;
-            padding: 2px;
+            padding: 2px 4px;
+            border-radius: 4px;
             font-weight: 600;
           }
 
@@ -456,7 +547,7 @@ img.emojione, svg.emojione {
             background-image: linear-gradient(to right, transparent, $dp-morning-sky);
           }
 
-          &.agent, &.department, &.team {
+          &.agent, &.department, &.team, &.group {
             .content {
               .header, .description {
                 color: $dp-sonic-primary;
@@ -465,8 +556,8 @@ img.emojione, svg.emojione {
           }
         }
         .content {
-          &.agent, &.department, &.team {
-            overflow: hidden;
+          &.agent, &.department, &.team, &.group {
+            overflow: visible;
             height: 30px;
             line-height: 28px;
             white-space: nowrap;
@@ -478,6 +569,10 @@ img.emojione, svg.emojione {
               font-weight: 400;
               color: $dp-greyscale-850;
               display: inline-block;
+            }
+
+            .description {
+              padding-top: 3px;
             }
           }
         }
@@ -500,11 +595,6 @@ img.emojione, svg.emojione {
     }
 
     .ui.list .item.agent {
-      &.offline {
-        .header, .avatar {
-          opacity: 0.5;
-        }
-      }
       &.online {
         &:before {
           background: #74C365;
@@ -563,8 +653,9 @@ img.emojione, svg.emojione {
         cursor: pointer;
         margin-right: 3px;
 
-        &.offline {
-          opacity: 0.5;
+        .offline-block {
+          left: -1px !important;
+          top: -1px !important;
         }
       }
 
@@ -835,10 +926,6 @@ img.emojione, svg.emojione {
                   -moz-background-size: 100%;
                   background-size: 100%;
 
-                  &.offline {
-                    opacity: 0.5;
-                  }
-
                   .text {
                     font-size: 10px;
                     position: absolute;
@@ -865,7 +952,7 @@ img.emojione, svg.emojione {
         .fr-wrapper {
           background: #fff;
           min-height: 40px;
-          padding: 10px 40px 10px 10px;
+          padding: 10px 60px 10px 10px;
           width: 100%;
           outline: none;
           border: 1px solid $dp-greyscale-450;

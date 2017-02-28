@@ -17,7 +17,7 @@ import EmojiBox from './EmojiBox';
 import AvatarHelper from '../IMTabs/AvatarHelper';
 
 emojione.imagePathSVGSprites = `./..${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg`;
-emojione.imageType = 'png';
+emojione.imageType = 'svg';
 emojione.sprites = true;
 
 class Container extends React.Component {
@@ -117,6 +117,7 @@ class Container extends React.Component {
     this.initFroala       = this.initFroala.bind(this);
     this.bindFroalaEvents = this.bindFroalaEvents.bind(this);
     this.openLink         = this.openLink.bind(this);
+    this.openAttach       = this.openAttach.bind(this);
   }
 
   componentDidMount() {
@@ -131,7 +132,9 @@ class Container extends React.Component {
   }
 
   componentWillUnmount() {
-    this.state.editorControls.destroy();
+    if (this.state.editorControls) { // there is a chance that component was mounted and immediately unmounted
+      this.state.editorControls.destroy();
+    }
   }
 
   getPath = (props) => {
@@ -214,6 +217,7 @@ class Container extends React.Component {
     const editor = this.editor;
     const html = emoji.shortname;
     editor.events.focus();
+    editor.selection.restore();
     editor.html.insert(html);
   }
 
@@ -223,10 +227,12 @@ class Container extends React.Component {
   }
 
   handleSubmit(event) {
-    event.preventDefault();
-    this.props.onSubmit(this.state.message);
-    this.props.saveDraft(this.props.current.get('id'), '');
-    this.setState({ message: '' });
+    if (!this.editor.core.isEmpty()) {
+      event.preventDefault();
+      this.props.onSubmit(this.state.message);
+      this.props.saveDraft(this.props.current.get('id'), '');
+      this.setState({ message: '' });
+    }
   }
 
   initFroala(initControls) {
@@ -253,6 +259,12 @@ class Container extends React.Component {
     this.setState({ linkDrawerOpened: true });
   }
 
+  openAttach() {
+    this.editor.commands.exec('insertFile');
+    this.state.editorControls.getEditor()('popups.setContainer', 'file.insert', $('#replyForm'));
+    this.state.editorControls.getEditor()('popups.get', 'file.insert').css({ top: '25px', left: '325px' });
+  }
+
   groupHeader() {
     const { current, agents, onAgentClick, openGroupDrawer, me } = this.props;
     const { expandGroupHeader, searching } = this.state;
@@ -265,7 +277,7 @@ class Container extends React.Component {
         <Segment vertical className={classNames('group participants', { expanded: expandGroupHeader })}>
           <span className="control">
             <i className="fa fa-times" onClick={() => this.setState({ expandGroupHeader: false })} />
-            <i
+            { current.get('admin') === me.get('id') ? (<i
               className="write icon group-edit"
               onClick={
                 () => {
@@ -275,7 +287,7 @@ class Container extends React.Component {
                   );
                 }
               }
-            />
+            />) : null }
           </span>
           {localAgents.map(
             (agentId) => {
@@ -331,6 +343,7 @@ class Container extends React.Component {
     const propertyName = `${item.tabType}_id`;
     const message = `{{${item.tabType.charAt(0).toLowerCase()}-${item.page.meta[propertyName]}}}: ${item.title}`;
     this.editor.events.focus();
+    this.editor.selection.restore();
     this.editor.html.insert(message);
   }
 
@@ -372,29 +385,32 @@ class Container extends React.Component {
     }
 
     const froalaConfig = {
-      imageUploadMethod:              'POST',
-      imageUploadParams:              { _rt: window.DP_REQUEST_TOKEN, json: true },
-      imageUploadURL:                 `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
-      imageDefaultWidth:              280,
-      fileUploadMethod:               'POST',
-      fileUploadParams:               { _rt: window.DP_REQUEST_TOKEN, json: true },
-      fileUploadURL:                  `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
-      videoUploadMethod:              'POST',
-      videoUploadParams:              { _rt: window.DP_REQUEST_TOKEN, json: true },
-      videoUploadURL:                 `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
-      videoDefaultWidth:              280,
-      videoResize:                    false,
-      toolbarInline:                  true,
-      charCounterCount:               false,
-      toolbarButtons:                 ['bold', 'italic', 'underline', 'strikeThrough', 'color', '-', 'align', 'formatOL', 'formatUL', 'insertImage', '-', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
-      toolbarVisibleWithoutSelection: true,
-      shortcutsEnabled:               ['bold', 'italic', 'underline'],
-      enter:                          $.FroalaEditor.ENTER_BR,
-      placeholderText:                false,
-      immediateReactModelUpdate:      true,
-      key:                            'qENARBFSTb1G1QJg1RA==',
-      events:                         {
-        'froalaEditor.focus':       () => { this.editor.selection.restore(); Container.onFocus(); },
+      imageUploadMethod:         'POST',
+      imageUploadParams:         { _rt: window.DP_REQUEST_TOKEN, json: true },
+      imageUploadURL:            `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
+      imageDefaultWidth:         280,
+      fileUploadMethod:          'POST',
+      fileUploadParams:          { _rt: window.DP_REQUEST_TOKEN, json: true },
+      fileUploadURL:             `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
+      videoUploadMethod:         'POST',
+      videoUploadParams:         { _rt: window.DP_REQUEST_TOKEN, json: true },
+      videoUploadURL:            `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
+      videoDefaultWidth:         280,
+      videoResize:               false,
+      videoDefaultDisplay:       'block',
+      videoSplitHTML:            'true',
+      linkAlwaysBlank:           true,
+      toolbarInline:             true,
+      charCounterCount:          false,
+      toolbarButtons:            ['bold', 'italic', 'underline', 'strikeThrough', 'color', '-', 'align', 'formatOL', 'formatUL', 'insertImage', '-', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
+      shortcutsEnabled:          ['bold', 'italic', 'underline'],
+      quickInsertButtons:        ['image', 'file', 'video'],
+      enter:                     $.FroalaEditor.ENTER_BR,
+      placeholderText:           false,
+      immediateReactModelUpdate: true,
+      key:                       'qENARBFSTb1G1QJg1RA==',
+      events:                    {
+        'froalaEditor.focus':       Container.onFocus,
         'froalaEditor.blur':        () => { this.editor.selection.save(); Container.onBlur(); },
         'froalaEditor.initialized': this.bindFroalaEvents
       }
@@ -428,10 +444,9 @@ class Container extends React.Component {
             />
           </div>
           {enabled ? (<div className="reply">
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit} id="replyForm">
               <FroalaEditor
                 tag="textarea"
-                className="textarea"
                 config={froalaConfig}
                 model={this.state.message}
                 onModelChange={this.handleChange}
@@ -441,6 +456,11 @@ class Container extends React.Component {
                 className={classNames('fa fa-link reply-icon', { inactive: Object.keys(this.props.activeTabs).length < 1 })}
                 ref={(c) => { this.linkTrigger = c; }}
                 onClick={this.openLink}
+              />
+              <i
+                className="fa fa-paperclip reply-icon"
+                ref={(c) => { this.attachTrigger = c; }}
+                onClick={this.openAttach}
               />
               <i
                 className="fa fa-smile-o reply-icon emoji trigger"

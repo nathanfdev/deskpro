@@ -41,6 +41,8 @@ export default class IMOverlay extends React.Component {
     departmentsLoaded:  PropTypes.bool.isRequired,
     agentsLoaded:       PropTypes.bool.isRequired,
     groupLoaded:        PropTypes.bool.isRequired,
+    deleteGroup:        PropTypes.func.isRequired,
+    leaveGroup:         PropTypes.func.isRequired,
     dispatch:           PropTypes.func.isRequired
   };
 
@@ -117,7 +119,7 @@ export default class IMOverlay extends React.Component {
 
   getGroupsTab() {
     const { agents, departments, me, onParticipantClick, createNewGroup, teams, groups, onRecentClick } = this.props;
-    const { agentsLoaded, teamsLoaded, departmentsLoaded, groupLoaded } = this.props;
+    const { agentsLoaded, teamsLoaded, departmentsLoaded, groupLoaded, deleteGroup, leaveGroup } = this.props;
     const loaded = agentsLoaded && teamsLoaded && departmentsLoaded && groupLoaded;
     const content = (
       <Loader loaded={loaded} opacity={0} width={4} color="#4696dc">
@@ -139,6 +141,8 @@ export default class IMOverlay extends React.Component {
             {groups.size > 0 ? <GroupList
               agents={agents}
               onGroupClick={onRecentClick}
+              deleteGroup={deleteGroup}
+              leaveGroup={leaveGroup}
               groups={groups} me={me}
               filter={this.state.filter}
             /> : null}

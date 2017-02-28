@@ -20,6 +20,7 @@ class TopBarRecentImList extends RecentList {
     children:          PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     onRecentClick:     PropTypes.func.isRequired,
     me:                PropTypes.object.isRequired,
+    current:           PropTypes.object.isRequired,
     agents:            PropTypes.object.isRequired,
     people:            PropTypes.object.isRequired,
     departments:       PropTypes.object.isRequired,
@@ -71,11 +72,22 @@ class TopBarRecentImList extends RecentList {
         return !props.hiddenChats[chat.get('id')] || props.hiddenChats[chat.get('id')] < (Date.parse(date));
       });
     }
+    sorted = sorted.filter(chat => props.chats.has(chat.get('id')));
+
     this.setState({ chats: sorted });
   }
 
   getItems() {
-    return this.state.chats.slice(0, 10).map(agent => this.getItem(agent));
+    const { current, chats } = this.props;
+    let stateChats = this.state.chats.slice(0, 10);
+    if (current.get('id') && !stateChats.has(current.get('id'))) {
+      const chat = chats.get(current.get('id'));
+      stateChats = stateChats.set(current.get('id'), chat.set('added', Date.now()));
+      stateChats = stateChats.sort((a, b) => b.get('added') - a.get('added'));
+      stateChats = stateChats.slice(0, 10);
+    }
+
+    return stateChats.map(agent => this.getItem(agent));
   }
 
   getHeaderHelper(chat) {

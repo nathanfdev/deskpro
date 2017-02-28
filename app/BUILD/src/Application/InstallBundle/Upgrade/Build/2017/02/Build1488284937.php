@@ -26,33 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
-use Doctrine\ORM\EntityRepository;
-
-/**
- * Class AgentChatMessage.
- */
-class AgentChatMessageRepository extends EntityRepository
+class Build1488284937 extends AbstractBuild
 {
-    /**
-     * @param AgentChat $chat
-     * @param Person    $person
-     *
-     * @return int[]
-     */
-    public function getAgentChatMessagesIdByChat(AgentChat $chat, Person $person)
+    public function run()
     {
-        $qb = $this->createQueryBuilder('acm')
-            ->select('acm.id')
-            ->andWhere('acm.chat = :chat')
-            ->andWhere('acm.person != :person')
-            ->andWhere('acm.status != 2')
-            ->setParameter('chat', $chat)
-            ->setParameter('person', $person);
-
-        return $qb->getQuery()->getScalarResult();
+        $this->out('Add admin to chats');
+        $this->execDbQuery('default', 'ALTER TABLE agent_chat ADD admin_id INT DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE agent_chat ADD CONSTRAINT FK_C8064849642B8210 FOREIGN KEY (admin_id) REFERENCES people (id) ON DELETE SET NULL');
+        $this->execDbQuery('default', 'CREATE INDEX IDX_C8064849642B8210 ON agent_chat (admin_id)');
     }
 }

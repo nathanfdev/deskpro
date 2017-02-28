@@ -51,11 +51,17 @@ export default createReducer(initialState, {
     }
   ),
 
-  [actions.addMessageOptimistic]:   MessagesHelper.addMessageOptimistic,
-  [actions.markMessagesOptimistic]: MessagesHelper.markMessagesOptimistic,
+  [actions.addMessageOptimistic]:      MessagesHelper.addMessageOptimistic,
+  [actions.markMessagesOptimistic]:    MessagesHelper.markMessagesOptimistic,
+  [actions.markAllMessagesOptimistic]: MessagesHelper.markAllMessagesOptimistic,
 
   [actions.markMessages]: async({
     success: MessagesHelper.markMessages,
+    done:    state => state.set('updatingMessages', false)
+  }),
+
+  [actions.markAllMessagesAsRead]: async({
+    success: MessagesHelper.markAllMessagesAsRead,
     done:    state => state.set('updatingMessages', false)
   }),
 
