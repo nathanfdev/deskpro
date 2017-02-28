@@ -952,7 +952,7 @@ img.emojione, svg.emojione {
         .fr-wrapper {
           background: #fff;
           min-height: 40px;
-          padding: 10px 60px 10px 10px;
+          padding: 10px 75px 10px 10px;
           width: 100%;
           outline: none;
           border: 1px solid $dp-greyscale-450;
@@ -986,7 +986,7 @@ img.emojione, svg.emojione {
 
           &.fa-paperclip {
             color: $dp-greyscale-850;
-            right: 50px;
+            right: 60px;
           }
 
           &.fa-link {
@@ -994,7 +994,7 @@ img.emojione, svg.emojione {
               color: $dp-greyscale-450;
             }
             color: $dp-greyscale-850;
-            right: 30px;
+            right: 35px;
           }
 
           &.fa-smile-o{
