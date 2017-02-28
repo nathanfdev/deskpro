@@ -63,8 +63,9 @@ class ActiveDirectory extends AbstractAdapter
     {
         $options = array_merge($this->usersource->options, ['ldapClass' => Ldap::class]);
         $adapter = new \Orb\Auth\Adapter\ActiveDirectory($options);
+        $appEnv  = App::$container->get('deskpro.app_env');
 
-        if (App::getConfig('debug.enable_usersource_log') && $adapter instanceof \Orb\Log\Loggable) {
+        if (($appEnv->isDebug() || $appEnv->getConfig('logs.enable_usersource_log')) && $adapter instanceof \Orb\Log\Loggable) {
             $logger = App::$container->getUsersourceLogger();
             $adapter->setLogger($logger);
         }

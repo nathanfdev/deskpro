@@ -245,14 +245,13 @@ class PersonEmail extends DomainObject
      */
     public function setEmail($email)
     {
-        $email_domain = null;
-
+        $emailDomain = '';
         if ($email && strpos($email, '@')) {
-            list(, $email_domain) = explode('@', $email, 2);
+            list(, $emailDomain) = explode('@', $email, 2);
         }
 
         $this->setModelField('email', strtolower($email));
-        $this->setModelField('email_domain', $email_domain);
+        $this->setModelField('email_domain', $emailDomain);
 
         return $this;
     }

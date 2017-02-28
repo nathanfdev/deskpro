@@ -231,7 +231,8 @@ class LdapPagedSearcher implements \Iterator
 
     protected function logIfPossible($orb_priority, $message, array $info = [])
     {
-        if (!App::getConfig('debug.enable_usersource_log')) {
+        $appEnv = App::$container->get('deskpro.app_env');
+        if (!$appEnv->isDebug() && !$appEnv->getConfig('logs.enable_usersource_log')) {
             return;
         }
 
