@@ -51,6 +51,11 @@ export const isFullScreenSelector = createSelector(
   windowDimensions => windowDimensions.get('width') < 450
 );
 
+export const isLandscapeModeSelector = createSelector(
+  windowDimensionsSelector,
+  windowDimensions => windowDimensions.get('height') < 500
+);
+
 export const widgetDimensionsSelector = createSelector(
   dimensionsSelector,
   dimensions => dimensions.get('widget')
@@ -106,7 +111,8 @@ export const widgetPositionSelector = createSelector(
 export const isBubbleSelector = createSelector(
   widgetTypeSelector,
   isFullScreenSelector,
-  (widgetType, fullScreen) => widgetType === 'bubble' && !fullScreen
+  isLandscapeModeSelector,
+  (widgetType, fullScreen, landscapeMode) => widgetType === 'bubble' && !fullScreen && !landscapeMode
 );
 
 export const liveDemoSelector = createSelector(

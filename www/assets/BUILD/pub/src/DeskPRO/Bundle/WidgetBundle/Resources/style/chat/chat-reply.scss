@@ -290,3 +290,19 @@
     }
   }
 }
+
+&.landscape-mode {
+  .dpdesignportal-chat-form {
+    .message-container {
+      height: 25px;
+
+      .textarea {
+        height: 25px;
+      }
+    }
+
+    button.send {
+      height: 25px;
+    }
+  }
+}

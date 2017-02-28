@@ -64,9 +64,11 @@ export class MessageListContainer extends React.Component {
       $powered.show();
     }
 
-    $(this.node.node).css('height', height);
-    if (this.node.scrollBottom) {
-      this.node.scrollBottom();
+    if (this.node) {
+      $(this.node.node).css('height', height);
+      if (this.node.scrollBottom) {
+        this.node.scrollBottom();
+      }
     }
   }
 

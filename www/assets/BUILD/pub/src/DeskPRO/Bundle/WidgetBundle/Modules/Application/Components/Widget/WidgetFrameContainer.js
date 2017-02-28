@@ -9,7 +9,8 @@ import {
   widgetPositionSelector,
   isBubbleSelector,
   helpButtonSizeSelector,
-  isFullScreenSelector
+  isFullScreenSelector,
+  isLandscapeModeSelector
 } from '../../Selectors/dpWindow';
 import { widgetLoadedSelector } from '../../Selectors/bootstrap';
 import { store } from '../../../../Services/store';
@@ -21,7 +22,8 @@ import { store } from '../../../../Services/store';
   widgetPosition:   widgetPositionSelector(state),
   isBubble:         isBubbleSelector(state),
   size:             helpButtonSizeSelector(state),
-  fullScreen:       isFullScreenSelector(state)
+  fullScreen:       isFullScreenSelector(state),
+  landscapeMode:    isLandscapeModeSelector(state)
 }))
 export default class WidgetFrameContainer extends React.Component {
 
@@ -34,7 +36,8 @@ export default class WidgetFrameContainer extends React.Component {
     isBubble:         PropTypes.bool,
     children:         PropTypes.any, // eslint-disable-line react/forbid-prop-types
     size:             PropTypes.string,
-    fullScreen:       PropTypes.bool
+    fullScreen:       PropTypes.bool,
+    landscapeMode:    PropTypes.bool
   };
 
   componentDidMount() {
@@ -53,11 +56,11 @@ export default class WidgetFrameContainer extends React.Component {
   }
 
   toggleParentWindowScroll = () => {
-    const { widgetOpened, fullScreen } = this.props;
+    const { widgetOpened, fullScreen, landscapeMode } = this.props;
     const $body = $('html, body', parent.window.document);
 
     // for mobile only
-    if (!fullScreen) {
+    if (!fullScreen && !landscapeMode) {
       return;
     }
 
@@ -75,7 +78,7 @@ export default class WidgetFrameContainer extends React.Component {
   };
 
   render() {
-    const { windowDimensions, fullScreen } = this.props;
+    const { windowDimensions, fullScreen, landscapeMode } = this.props;
     const { widgetOpened, widgetLoaded, widgetPosition, isBubble, children, size } = this.props;
     const childProps = children.props;
     const windowWidth = windowDimensions.get('width');
@@ -125,7 +128,8 @@ export default class WidgetFrameContainer extends React.Component {
 
             widgetPosition,
             isBubble,
-            fullScreen
+            fullScreen,
+            landscapeMode
           })}
         </Provider>
       </Frame>
