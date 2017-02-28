@@ -13,11 +13,13 @@ import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'Des
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { isLoadedCollectionSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { defaultBrandSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/common';
 import { IMOverlay, IMButton, TopBarRecentImList, GroupAddDrawer } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/TopBar';
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
 import VoiceMenu from '../../Voice/Components/VoiceMenu/VoiceMenuContainer';
+import AvatarHelper from '../../IM/Components/New/IMTabs/AvatarHelper';
 import { isVoiceEnabledSelector } from '../../Voice/Selectors/client';
 import { onlineUserChatAgentsSelector, userChatEnabledSelector } from '../../Agent/Selectors/agents';
 import { toggleUserChat } from '../../Agent/Actions/agentActions';
@@ -31,6 +33,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   hiddenChats:         state.IM.chats.get('hiddenChats'),
   myDepartments:       collectionSelectorFactory('Department', 'my_tickets')(state),
   myTeams:             collectionSelectorFactory('AgentTeam', 'my')(state),
+  defaultBrand:        defaultBrandSelector(state),
   me:                  meSelector(state),
   counts:              state.IM.messages.get('counts'),
   current:             state.IM.chats.get('current'),
@@ -63,6 +66,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     chatDepartments:     PropTypes.object.isRequired,
     myDepartments:       PropTypes.object.isRequired,
     myTeams:             PropTypes.object.isRequired,
+    defaultBrand:        PropTypes.object,
     recentChats:         PropTypes.object.isRequired,
     groupChats:          PropTypes.object.isRequired,
     hiddenChats:         PropTypes.object.isRequired,
@@ -157,6 +161,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     if (Notify.needsPermission && Notify.isSupported()) {
       Notify.requestPermission();
     }
+    AvatarHelper.setBrandLogoUrl(this.props.defaultBrand.get('logo_url'));
   }
 
   participantClick(id, type) {

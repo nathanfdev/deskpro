@@ -61,6 +61,7 @@ export const preloadData    = createAction(
 
       if (window.DP_HAS_NEW_IM) {
         batchComponents.alerts = { endpoint: 'notify/setup/action-alerts' };
+        batchComponents.defaultBrand  = { endpoint: 'brands/default' };
       }
 
       dispatch(loadAgentPhraseTranslations());
@@ -98,6 +99,7 @@ export const preloadData    = createAction(
             dispatch(setImMe(data.me.person));
             dispatch(setupActionAlerts(data.alerts));
             dispatch(loadDrafts());
+            dispatch(setCollection('Brand', 'default', [data.defaultBrand]));
             // a simple way to subscribe TabBars events
 
             const hiddenChats = localStorage.getItem('hiddenChats') ? JSON.parse(localStorage.getItem('hiddenChats')) : {};

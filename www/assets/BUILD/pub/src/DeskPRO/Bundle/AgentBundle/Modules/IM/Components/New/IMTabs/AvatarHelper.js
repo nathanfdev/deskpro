@@ -10,6 +10,13 @@ import {
 import { chooseColor, darkerColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 
 class AvatarHelper {
+
+  static brandLogoUrl = '';
+
+  static setBrandLogoUrl(logoUrl) {
+    AvatarHelper.brandLogoUrl = logoUrl;
+  }
+
   static renderDepartmentAvatar(department) {
     return <DepartmentAvatar department={department} size={24} className="ui avatar image im" />;
   }
@@ -31,6 +38,17 @@ class AvatarHelper {
     let title = '';
     if (notificationsCount !== false) {
       title = `Everyone chat. ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+    }
+
+    if (AvatarHelper.brandLogoUrl) {
+      const props = {
+        size:      24,
+        url:       AvatarHelper.brandLogoUrl,
+        gravatar:  null,
+        className: 'ui avatar image im',
+        title
+      };
+      return <Avatar {...props} />;
     }
 
     return <EveryoneIM title={title} />;
