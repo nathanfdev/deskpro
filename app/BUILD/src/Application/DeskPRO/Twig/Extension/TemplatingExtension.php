@@ -36,7 +36,13 @@ namespace Application\DeskPRO\Twig\Extension;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\ManualTopic;
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
@@ -231,6 +237,7 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFilter('trans', [$this, 'dummy']),
             new \Twig_SimpleFilter('transchoice', [$this, 'dummy']),
             new \Twig_SimpleFilter('plain_template_filter', [$this, 'plain_template_filter']),
+            new \Twig_SimpleFilter('content', [$this, 'replaceContent']),
 
             // Override for custom UTF-8 handling
             new \Twig_SimpleFilter('upper', [$this, 'strUpper']),
@@ -1832,5 +1839,78 @@ class TemplatingExtension extends \Twig_Extension
     public function dummy($ret)
     {
         return $ret;
+    }
+
+    public function replaceContent($content)
+    {
+        return preg_replace_callback_array(
+            [
+                '|{{\s*img\(([^/]+)/[^)]+\)\s*}}|' => function ($match) {
+                    return $this->getBlobImage(trim($match[1]));
+                },
+                '|<a href="{{\s*content\(([^,]+),([^),]+)\)\s*}}">([^<]*)</a>|' => function ($match) {
+                    $type = trim($match[1]);
+                    $id = trim($match[2]);
+                    $title = empty($match[3]) ? '' : trim($match[3]);
+
+                    return $this->getManualInternalLink($type, $id, $title);
+                },
+                '|{{\s*content_link\(([^,]+),([^),]+)(,[^)]+)?\)\s*}}|' => function ($match) {
+                    $type = trim($match[1]);
+                    $id = trim($match[2]);
+                    $title = empty($match[3]) ? '' : trim($match[3]);
+
+                    return $this->getManualInternalLink($type, $id, $title);
+                },
+            ],
+            $content
+        );
+    }
+
+    public function getBlobImage($string)
+    {
+        /** @var Blob $blob */
+        $blob = $this->getContainer()->getEm()->getRepository(Blob::class)->getByAuthCode($string);
+        if ($blob) {
+            return $blob->getDownloadUrl();
+        }
+
+        return '';
+    }
+
+    public function getManualInternalLink($type, $id, $title = '')
+    {
+        $em = $this->getContainer()->getEm();
+        switch ($type) {
+            case 'article':
+            case 'knowledgebase':
+            case 'knowledgebase_article':
+                $object = $em->getRepository(Article::class)->find($id);
+                break;
+            case 'news':
+                $object = $em->getRepository(News::class)->find($id);
+                break;
+            case 'feedback':
+                $object = $em->getRepository(Feedback::class)->find($id);
+                break;
+            case 'download':
+                $object = $em->getRepository(Download::class)->find($id);
+                break;
+            case 'manual':
+            case 'manual_topic':
+                $object = $em->getRepository(ManualTopic::class)->find($id);
+                break;
+            default:
+                $object = null;
+        }
+        if (!$object) {
+            return '-- Broken link - '.$type.':'.$id.' --';
+        }
+        $url = $this->getContainer()->get('object_router')->getPortalUrl($object);
+        if (!$title) {
+            $title = $object->getTitle();
+        }
+
+        return '<a href="'.$url.'">'.$title.'</a>';
     }
 }

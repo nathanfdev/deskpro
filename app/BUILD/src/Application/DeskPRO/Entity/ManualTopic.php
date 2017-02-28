@@ -69,6 +69,13 @@ class ManualTopic extends ContentAbstract
      */
     protected $parent;
 
+    /**
+     * Topic without content used for structure.
+     *
+     * @var bool
+     */
+    protected $no_content = false;
+
     protected function addSlugHistory($oldSlug)
     {
         $history = new ManualTopicSlugHistory($this, $oldSlug);
@@ -153,6 +160,26 @@ class ManualTopic extends ContentAbstract
     public function setParent($parent)
     {
         $this->setModelField('parent', $parent);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNoContent()
+    {
+        return $this->no_content;
+    }
+
+    /**
+     * @param bool $no_content
+     *
+     * @return ManualTopic
+     */
+    public function setNoContent($no_content)
+    {
+        $this->setModelField('no_content', $no_content);
 
         return $this;
     }
@@ -301,6 +328,13 @@ class ManualTopic extends ContentAbstract
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'hidden_status',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'no_content',
+                'type'       => 'boolean',
+                'columnName' => 'no_content',
             ]
         );
         $metadata->mapField(

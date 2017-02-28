@@ -200,9 +200,14 @@ class ManualController extends PublishController
                     ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
                     : $this->in->getCleanValue('content', 'html'));
 
+                $manualTopic->setContentInput($this->in->getStringRaw('content_input'));
+                $manualTopic->setContentInputType($this->in->getString('content_input_type'));
+
                 $data['content_html'] = $this->renderView('AgentBundle:Manual:view-content-tab.html.twig', [
                     'manual_topic' => $manualTopic,
                 ]);
+
+                $data['content_input'] = $manualTopic->getContentInput();
 
                 /** @var ManualTopicRevision $rev */
                 $rev = ContentRevisionUtil::findOrCreate($manualTopic, 'content', $this->person);

@@ -1,6 +1,6 @@
 <div class="full-tab-content">
 	<div class="manual-topic-content-wrap content-post-wrap">
-		{{ manual_topic.content_html|raw }}
+		{{ manual_topic.content_html|content|raw }}
 	</div>
 	<div class="manual-topic-editor-wrap article-editor-wrap" style="display: none">
 		<div class="manual-topic-editor">
@@ -12,6 +12,7 @@
 				</div>
 			{% endif %}
 			<textarea class="edit-content-field" name="manual_topic[content]" rows="5" cols="50">{{ state.manual_topic.content|default(manual_topic.content) }}</textarea>
+			<input type="hidden" class="content_input_type" name="content_input_type" value="{{ manual_topic.content_input_type }}">
 			<textarea class="edit-content-field-default" style="display: none;">{{manual_topic.content}}</textarea>
 		</div>
 	</div>

@@ -35,9 +35,11 @@ class MarkdownEditor extends React.Component {
     return <span className="MDEditor_toolbarButton_icon">{icon}</span>;
   }
 
-  static renderHtml(md, markdown) {
-    const result = markdown.replace(/\{\{ img\(([^)]+)\) }}/g, '/file.php/$1');
-    return md.render(result);
+  static prerenderHtml(html) {
+    return html
+      .replace(/\{\{ img\(([^)]+)\) }}/g, '/file.php/$1')
+      .replace(/\{\{ content\(([^)]+)\) }}/g, '#')
+      .replace(/\{\{\s*content_link\(([^,]+),([^),]+)(,[^)]+)?\)\s*}}/g, '<a href="#">$1:$2</a>');
   }
 
   static toMarkdown(html) {
@@ -58,9 +60,8 @@ class MarkdownEditor extends React.Component {
   constructor(props) {
     super(props);
     this.md = new MarkdownIt({
-      html:        false,
-      linkify:     true,
-      typographer: true
+      html:    false,
+      linkify: true
     });
     this.md
       .use(emoji)
@@ -89,7 +90,7 @@ class MarkdownEditor extends React.Component {
     this.state = {
       isFocused: false,
       cs:        {},
-      html:      MarkdownEditor.renderHtml(this.md, props.value)
+      html:      this.renderHtml(props.value)
     };
   }
 
@@ -225,7 +226,7 @@ class MarkdownEditor extends React.Component {
   codemirrorValueChanged = (doc) => {
     const newValue = doc.getValue();
     this.currentCodemirrorValue = newValue;
-    this.setState({ html: MarkdownEditor.renderHtml(this.md, newValue) });
+    this.setState({ html: this.renderHtml(newValue) });
     this.props.onChange(newValue);
   };
 
@@ -233,6 +234,10 @@ class MarkdownEditor extends React.Component {
     e.preventDefault();
     applyFormat(this.codeMirror, formatKey);
   }
+
+  renderHtml = markdown => this.md.render(markdown)
+      .replace(/!\[([^\]]+)]\((\{\{.+}})\)/g, (m, alt, src) => (`<img src="${src}" alt="${alt}" />`))
+      .replace(/\[([^\]]+)]\((\{\{.+}})\)/g, (m, content, href) => (`<a href="${href}">${content}</a>`));
 
   renderButton(formatKey, label, action) {
     const onClickAction = (!action) ? this.toggleFormat.bind(this, formatKey) : action;
@@ -286,7 +291,7 @@ class MarkdownEditor extends React.Component {
           />
         </div>
         <h3>Preview</h3>
-        <div className="preview" dangerouslySetInnerHTML={{ __html: this.state.html }} />
+        <div className="preview" dangerouslySetInnerHTML={{ __html: MarkdownEditor.prerenderHtml(this.state.html) }} />
       </div>
     );
   }

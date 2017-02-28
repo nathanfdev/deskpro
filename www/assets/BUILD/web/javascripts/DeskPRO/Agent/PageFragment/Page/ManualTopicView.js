@@ -555,6 +555,8 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
       value: inputMode
     });
 
+    $('input.content_input_type', this.wrapper).val(inputMode);
+
     $('input.edit-content-attach:checked', this.getEl('content_ed')).each(function() {
       data.push({
         name: 'attach[]',

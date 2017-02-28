@@ -146,6 +146,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
+{% if (manual_topic.no_content == false) %}
 <div class="profile-box-container reply-box-wrap">
 	<header>
 		<nav  id="{{baseId}}_bodytabs">
@@ -254,6 +255,7 @@ pageMeta.baseId = '{{ baseId }}';
 		{# /Main Tabs #}
 </section>
 </div>
+{% endif %}
 
 <div class="inline-editable" style="display:none">
 	<div class="title">
