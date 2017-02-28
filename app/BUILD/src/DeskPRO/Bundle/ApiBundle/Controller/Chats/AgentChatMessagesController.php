@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatMessageType;
 use DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentMarkMessageType;
+use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkAllMessagesEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkMessageEvent;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
@@ -161,25 +162,23 @@ class AgentChatMessagesController extends CrudSubController
         $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupContext($request));
 
         /** @var AgentChat $chat */
-        $chat                       = $this->findParentOr404();
-        $entityManager              = $this->get('doctrine.orm.default_entity_manager');
-        $agentChatMessageRepository = $entityManager->getRepository(AgentChatMessage::class);
-        $ids                        = $agentChatMessageRepository->getAgentChatMessagesIdByChat($chat, $this->getUser());
-        $qb                         = $this->getManager()->createQueryBuilder();
+        $chat = $this->findParentOr404();
+        $qb   = $this->getManager()->createQueryBuilder();
         $qb
             ->update(static::$entity, 'e')
             ->set('e.status', ':status')
-            ->where('e.id IN(:ids)')
+            ->where('e.status != :status2')
+            ->andWhere('e.person = :user')
+            ->orWhere('e.person IS NULL')
             ->setParameter('status', 2)
-            ->setParameter('ids', $ids)
+            ->setParameter('status2', 2)
+            ->setParameter('user', $this->getUser())
         ;
 
         $qb->getQuery()->execute();
 
         $dispatcher = $this->get('event_dispatcher');
-        foreach ($ids as $id) {
-            $dispatcher->dispatch(MarkMessageEvent::EVENT_NAME, new MarkMessageEvent($id, 2));
-        }
+        $dispatcher->dispatch(MarkAllMessagesEvent::EVENT_NAME, new MarkAllMessagesEvent($chat->getId(), 2));
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
