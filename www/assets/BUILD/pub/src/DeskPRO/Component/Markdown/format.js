@@ -11,6 +11,7 @@ const FORMATS = {
   warning: { type: 'multiLineBlock', before: '::: warning', after: ':::', placeholder: 'Message' },
   error:   { type: 'multiLineBlock', before: '::: error', after: ':::', placeholder: 'Message' },
   code:    { type: 'multiLineBlock', before: '```', after: '```', placeholder: 'Code' },
+  link:    { type: 'inline', before: '[Link](', after: ')', placeholder: 'http://url' },
 };
 
 const FORMAT_TOKENS = {};
@@ -58,13 +59,15 @@ export function getCursorState(cm, pos) {
 
 const operations = {
   inlineApply(cm, format) {
-    const startPoint = cm.getCursor('start');
-    const endPoint = cm.getCursor('end');
+    const startPoint = cm.getCursor('from');
+    const endPoint = cm.getCursor('to');
 
-    cm.replaceSelection(format.before + cm.getSelection() + format.after);
+    const content = cm.getSelection().length ? cm.getSelection() : format.placeholder;
+
+    cm.replaceSelection(format.before + content + format.after);
 
     startPoint.ch += format.before.length;
-    endPoint.ch += format.after.length;
+    endPoint.ch = startPoint.ch + content.length;
     cm.setSelection(startPoint, endPoint);
     cm.focus();
   },
