@@ -237,6 +237,24 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('file2.txt', $entity->messages[0]->getAttachments()[0]->getBlob()->getFilename());
     }
 
+    public function test_ticket_on_hold()
+    {
+        $message1 = new Model\TicketMessage();
+        $message1->setOid(1);
+        $message1->setMessage('message');
+        $message1->setPerson(1);
+
+        $model = $this->createBaseModel();
+        $model->setAsHold(true);
+        $model->addMessage($message1);
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertTrue($entity->isHold());
+    }
+
     /**
      * @return Model\Ticket
      */
