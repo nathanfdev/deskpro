@@ -101,7 +101,7 @@ class MassActionsController extends BaseController
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        return Response::HTTP_OK;
+        return new Response('', Response::HTTP_OK);
     }
 
     /**

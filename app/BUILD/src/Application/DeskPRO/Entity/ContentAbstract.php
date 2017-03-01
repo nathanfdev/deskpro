@@ -113,8 +113,6 @@ abstract class ContentAbstract extends DomainObject
      * The main content originally input, markdown or HTML.
      *
      * @var string
-     *
-     * @Assert\NotBlank()
      */
     protected $content_input = '';
 
