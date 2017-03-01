@@ -34,6 +34,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Labels\LabelManager;
 use DateTime;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -328,7 +329,7 @@ abstract class ContentAbstract extends DomainObject
     /**
      * @deprecated use $this->get('object_router')->getPortalUrl($this) instead
      *
-     * @return $this
+     * @return string
      */
     public function getLink()
     {
@@ -336,17 +337,17 @@ abstract class ContentAbstract extends DomainObject
     }
 
     /**
+     * @param bool $absolute
+     *
      * @return string
      *
      * @deprecated use $this->get('object_router')->getPortalUrl($this, 'permalink') instead
      */
     public function getPermalink($absolute = true)
     {
-        if ($absolute) {
-            return App::getObjectRouter()->getPortalUrl($this, 'permalink');
-        }
-
-        return App::getObjectRouter()->getPortalPath($this, 'permalink');
+        return $absolute ?
+            App::getObjectRouter()->getPortalUrl($this, 'permalink')
+            : App::getObjectRouter()->getPortalPath($this, 'permalink');
     }
 
     public function setTitle($title)
@@ -417,6 +418,9 @@ abstract class ContentAbstract extends DomainObject
             $status_code = str_replace('hidden.', '', $status_code);
             $this->setModelField('status', 'hidden');
             $this->setModelField('hidden_status', $status_code);
+            if ($status_code === self::HIDDEN_STATUS_UNPUBLISHED) {
+                $this->setModelField('date_published', null);
+            }
         } else {
             $this->setModelField('status', $status_code);
             $this->setModelField('hidden_status', null);
@@ -509,6 +513,10 @@ abstract class ContentAbstract extends DomainObject
     /**
      * Get an excerpt of the content suitable for display in a search listing. So this means
      * no html, and collapsed whitespace.
+     *
+     * @param int $length
+     *
+     * @return string
      */
     public function getSearchSummary($length = 100)
     {
@@ -762,7 +770,7 @@ abstract class ContentAbstract extends DomainObject
     {
         if ($this->_label_manager === null) {
             $name                 = Util::getBaseClassname($this);
-            $this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:Label'.$name);
+            $this->_label_manager = new LabelManager($this, 'DeskPRO:Label'.$name);
         }
 
         return $this->_label_manager;
@@ -800,19 +808,27 @@ abstract class ContentAbstract extends DomainObject
     }
 
     /**
-     * @return string
+     * @param $title
+     *
+     * @return ContentAbstract
      */
     public function setRealTitle($title)
     {
         $this->setModelField('title', $title);
+
+        return $this;
     }
 
     /**
-     * @return string
+     * @param $content
+     *
+     * @return ContentAbstract
      */
     public function setRealContent($content)
     {
         $this->setModelField('content', $content);
+
+        return $this;
     }
 
     /**
