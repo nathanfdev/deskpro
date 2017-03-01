@@ -45,15 +45,14 @@ class Services
 
     /**
      * @param FileLocator $schemaLocator
-     * @param ORM\EntityManager $entityManager
-     * @return ApplicationService
+     * @return AppBundleValidator
      */
-    public static function createApplicationService(FileLocator $schemaLocator, ORM\EntityManager $entityManager)
+    public static function createAppBundleValidator(FileLocator $schemaLocator)
     {
         $schemaPath = $schemaLocator->locate('@AppStoreBundle/Resources/manifest/schema.default.json');
         $schemaInfo = new \SplFileInfo($schemaPath);
 
-        $service = new ApplicationService($entityManager, new Validator(), $schemaInfo);
+        $service = new AppBundleValidator(new Validator(), $schemaInfo);
         return $service;
     }
 

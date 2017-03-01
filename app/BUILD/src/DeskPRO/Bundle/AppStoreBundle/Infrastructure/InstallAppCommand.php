@@ -75,8 +75,8 @@ class InstallAppCommand extends ContainerAwareCommand
         $bundleLocation = $input->getArgument('bundle');
         $bundle = new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($bundleLocation));
 
-        $applicationCreator = $this->getContainer()->get(AppStoreBundle\Domain\ApplicationCreator::class);
-        $validBundle = $applicationCreator->verifyBundle($bundle);
+        $bundleValidator = $this->getContainer()->get(AppStoreBundle\Domain\AppBundleValidator::class);
+        $validBundle = $bundleValidator->verifyBundle($bundle);
 
         if (! $validBundle) { //TODO provide a more elaborate exception body
             $output->writeln("<error>File is not a valid deskpro app bundle file: $bundleLocation</error>");

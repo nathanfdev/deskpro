@@ -90,9 +90,9 @@ class AppsController extends FOSRestController
      */
     public function createFromZipFileAction(AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
     {
-        /** @var AppStoreBundle\Domain\ApplicationCreator $applicationCreator */
-        $applicationCreator = $this->container->get(AppStoreBundle\Domain\ApplicationCreator::class);
-        $validBundle = $applicationCreator->verifyBundle($bundle);
+        /** @var AppStoreBundle\Domain\AppBundleValidator $bundleValidator */
+        $bundleValidator = $this->container->get(AppStoreBundle\Domain\AppBundleValidator::class);
+        $validBundle = $bundleValidator->validateBundle($bundle);
 
         if (! $validBundle) { //TODO provide a more elaborate exception body
             throw new UnprocessableEntityHttpException('invalid bundle');

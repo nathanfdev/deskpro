@@ -28,17 +28,12 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-interface ApplicationCreator
+interface AppBundleValidator
 {
     /**
      * @param AppBundle $bundle
      * @return boolean
      */
-    public function verifyBundle(AppBundle $bundle);
+    public function validateBundle(AppBundle $bundle);
 
-    /**
-     * @param AppBundle $bundle
-     * @return Application
-     */
-    public function createApplication(AppBundle $bundle);
 }
