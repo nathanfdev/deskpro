@@ -9,3 +9,15 @@ services:
     factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationInstanceService]
     arguments: ["@doctrine.orm.default_entity_manager"]
 
+  DeskPRO\Bundle\AppStoreBundle\Domain\AssetFinder:
+    class: DeskPRO\Bundle\AppStoreBundle\Domain\AssetFinder
+    factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationAssetService]
+    arguments: ["@doctrine.orm.default_entity_manager"]
+
+  DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationFinder:
+    class: DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationFinder
+    factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationFinder]
+    arguments: ["@doctrine.orm.default_entity_manager"]
+
+
+

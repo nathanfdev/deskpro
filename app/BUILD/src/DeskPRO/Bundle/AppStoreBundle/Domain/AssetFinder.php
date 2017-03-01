@@ -31,9 +31,10 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 interface AssetFinder
 {
     /**
+     * @param Application $application
      * @param SearchAssetFilter $assetFilter
-     * @return []
+     * @return  []
      */
-    function findApplicationAssets(SearchAssetFilter $assetFilter);
+    function findApplicationAssets(Application $application, SearchAssetFilter $assetFilter);
 }
 

@@ -34,6 +34,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -43,7 +44,31 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
  * @ApiModes("all")
  * @Rest\Route("/apps")
  */
-class AppsController extends FOSRestController {
+class AppsController extends FOSRestController
+{
+    /**
+     * @Rest\GET("")
+     *
+     * @param HttpFoundation\Request $request
+     * @return string
+     */
+    public function listApplicationAction(HttpFoundation\Request $request)
+    {
+        //convert query params into a filter
+        $searchFilter = null;
+        if ($request->attributes->has('scope')) {
+            $searchFilter = new AppStoreBundle\Domain\SearchApplicationFilter($request->attributes->get('scope'));
+        }
+
+        /** @var AppStoreBundle\Domain\ApplicationFinder $applicationFinder */
+        $applicationFinder = $this->container->get(AppStoreBundle\Domain\ApplicationFinder::class);
+        if (is_null($searchFilter)) {
+            return $applicationFinder->findAll();
+        }
+
+        return $applicationFinder->findByFilter($searchFilter);
+    }
+
 
     /**
      * @Rest\GET("/{application}")
@@ -83,15 +108,15 @@ class AppsController extends FOSRestController {
 
     /**
      * @Rest\POST("/{application}", condition="request.headers.get('Content-Type') matches '#application/zip#i'")
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\ApiBundle\Apps\AppParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
      * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\ApiBundle\Apps\AppZipArchiveBundleParamConverter")
-     * @param Entity\AppStore\App $application
+     * @param Entity\AppStore\AppInstance $application
      * @param AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle
      * @return string
      */
-    public function updateFromZipFileAction(Entity\AppStore\App $application, AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
+    public function updateFromZipFileAction(Entity\AppStore\AppInstance $application, AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
     {
-        return $application;
+        throw new ServiceUnavailableHttpException('endpoint not available');
     }
 
     /**
@@ -135,6 +160,7 @@ class AppsController extends FOSRestController {
      */
     public function getManifestAction(Entity\AppStore\App $application)
     {
+        //TODO getManifest should return an object
         $manifestString = $application->getManifest();
         $manifestArray = json_decode($manifestString, true);
 
@@ -151,6 +177,7 @@ class AppsController extends FOSRestController {
      */
     public function getSettingsAction(Entity\AppStore\AppInstance $application)
     {
+        //TODO getSettings should return an object
         $settingsString = $application->getSettings();
         $settingsArray = json_decode($settingsString, true);
 
@@ -161,13 +188,17 @@ class AppsController extends FOSRestController {
      * @Rest\GET("/{application}/assets")
      *
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\ApiBundle\Apps\AppParamConverter")
-     * @ParamConverter("assetFilter", class="AppStoreBundle:Domain\AssetFilter", converter="ApiBundle:Apps\AssetFilterParamConverter")
+     * @ParamConverter("searchFilter", class="AppStoreBundle:Domain\AssetFilter", converter="DeskPRO\Bundle\ApiBundle\Apps\AssetFilterParamConverter")
      *
      * @param Entity\AppStore\App $application
-     * @param AppStoreBundle\Domain\SearchAssetFilter $assetFilter
+     * @param AppStoreBundle\Domain\SearchAssetFilter $searchFilter
      */
-    public function getAssetsAction(Entity\AppStore\App $application, AppStoreBundle\Domain\SearchAssetFilter $assetFilter)
+    public function listAssetsAction(Entity\AppStore\App $application, AppStoreBundle\Domain\SearchAssetFilter $searchFilter)
     {
+        /** @var AppStoreBundle\Domain\AssetFinder $assetFinder */
+        $assetFinder = $this->container->get(AppStoreBundle\Domain\AssetFinder::class);
+        $assets = $assetFinder->findApplicationAssets($application, $searchFilter);
 
+        return $assets;
     }
 }

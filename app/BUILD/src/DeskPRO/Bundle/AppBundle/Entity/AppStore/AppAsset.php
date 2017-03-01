@@ -28,13 +28,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
 
+use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
  * @ORM\Table(name="app2_app_asset")
  */
-class AppAsset
+class AppAsset implements Domain\ApplicationAsset
 {
     /**
      * @ORM\Id()

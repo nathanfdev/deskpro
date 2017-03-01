@@ -31,6 +31,17 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 interface ApplicationFinder
 {
     /**
+     * @return Application[]
+     */
+    function findAll();
+
+    /**
+     * @param SearchApplicationFilter $filter
+     * @return Application[]
+     */
+    function findByFilter(SearchApplicationFilter $filter);
+
+    /**
      * Finds one application by name
      *
      * @param string $name

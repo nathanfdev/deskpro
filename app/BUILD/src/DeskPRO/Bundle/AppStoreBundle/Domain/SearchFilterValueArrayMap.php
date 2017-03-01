@@ -48,7 +48,7 @@ class SearchFilterValueArrayMap implements SearchAssetFilterValueMap, SearchStat
     /**
      * @return string
      */
-    public function getFilePathPattern(): string
+    public function getFilePathPattern()
     {
         return $this->filePathPattern;
     }
@@ -64,7 +64,7 @@ class SearchFilterValueArrayMap implements SearchAssetFilterValueMap, SearchStat
     /**
      * @return string
      */
-    public function getFileExtension(): string
+    public function getFileExtension()
     {
         return $this->fileExtension;
     }

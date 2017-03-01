@@ -26,56 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
-class SearchAssetFilter
+use DeskPRO\Bundle\AppStoreBundle\Domain;
+use Doctrine\ORM;
+use DeskPRO\Bundle\AppBundle\Entity;
+
+class AssetDoctrineFinder implements Domain\AssetFinder
 {
-    /** @var string */
-    private $fileExtension;
+    /** @var ORM\EntityManager */
+    private $entityManager;
 
-    /** @var string */
-    private $pathPattern;
-
-    /** @var string */
-    private $pathMatchingStrategy = 'prefix';
-
-    /**
-     * SearchAssetFilter constructor.
-     * @param string|null $fileExtension
-     * @param string|null $pathPattern
-     * @param bool $usePrefixPathMatchingStrategy
-     */
-    public function __construct($fileExtension = null, $pathPattern = null, $usePrefixPathMatchingStrategy = false)
+    public function __construct(ORM\EntityManager $entityManager)
     {
-        $this->fileExtension = $fileExtension;
-        $this->pathPattern = $pathPattern;
-
-        if (! $usePrefixPathMatchingStrategy) {
-            $this->pathMatchingStrategy = 'exact';
-        }
+        $this->entityManager = $entityManager;
     }
 
     /**
-     * @return string
+     * @param Domain\Application $application
+     * @param Domain\SearchAssetFilter $assetFilter
+     * @return Domain\ApplicationAsset[]
      */
-    public function getFileExtension()
+    function findApplicationAssets(Domain\Application $application, Domain\SearchAssetFilter $assetFilter)
     {
-        return $this->fileExtension;
-    }
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb
+            ->from(Entity\AppStore\AppAsset::class, 'asset')
+            ->select('asset')
+            ->innerJoin('asset.app', 'app')
+            ->where('app = :app')
+            ->setParameter('app', $application->getId())
+        ;
 
-    /**
-     * @return string
-     */
-    public function getPathPattern()
-    {
-        return $this->pathPattern;
-    }
-
-    /**
-     * @return bool
-     */
-    public function usePrefixPathMatchingStrategy()
-    {
-        return $this->pathMatchingStrategy == 'prefix';
+        $result = $qb->getQuery()->getResult();
+        return $result;
     }
 }

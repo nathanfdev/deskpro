@@ -56,6 +56,24 @@ class Services
         $service = new ApplicationService($entityManager, new Validator(), $schemaInfo);
         return $service;
     }
+
+    /**
+     * @param ORM\EntityManager $entityManager
+     * @return AssetDoctrineFinder
+     */
+    public static function createApplicationAssetService(ORM\EntityManager $entityManager)
+    {
+        return new AssetDoctrineFinder($entityManager);
+    }
+
+    /**
+     * @param ORM\EntityManager $entityManager
+     * @return ApplicationDoctrineFinder
+     */
+    public static function createApplicationFinder(ORM\EntityManager $entityManager)
+    {
+        return new ApplicationDoctrineFinder($entityManager);
+    }
 }
 
 

@@ -28,54 +28,24 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-class SearchAssetFilter
+class SearchApplicationFilter
 {
     /** @var string */
-    private $fileExtension;
-
-    /** @var string */
-    private $pathPattern;
-
-    /** @var string */
-    private $pathMatchingStrategy = 'prefix';
+    private $scope;
 
     /**
-     * SearchAssetFilter constructor.
-     * @param string|null $fileExtension
-     * @param string|null $pathPattern
-     * @param bool $usePrefixPathMatchingStrategy
+     * @param string|null $scope
      */
-    public function __construct($fileExtension = null, $pathPattern = null, $usePrefixPathMatchingStrategy = false)
+    public function __construct($scope = null)
     {
-        $this->fileExtension = $fileExtension;
-        $this->pathPattern = $pathPattern;
-
-        if (! $usePrefixPathMatchingStrategy) {
-            $this->pathMatchingStrategy = 'exact';
-        }
+        $this->scope = $scope;
     }
 
     /**
      * @return string
      */
-    public function getFileExtension()
+    public function getScope()
     {
-        return $this->fileExtension;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPathPattern()
-    {
-        return $this->pathPattern;
-    }
-
-    /**
-     * @return bool
-     */
-    public function usePrefixPathMatchingStrategy()
-    {
-        return $this->pathMatchingStrategy == 'prefix';
+        return $this->scope;
     }
 }

@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationFinder;
+use DeskPRO\Bundle\AppStoreBundle\Domain\SearchApplicationFilter;
 use Doctrine\ORM;
 
 class ApplicationDoctrineFinder implements ApplicationFinder
@@ -40,6 +41,23 @@ class ApplicationDoctrineFinder implements ApplicationFinder
     public function __construct(ORM\EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
+    }
+
+    function findAll()
+    {
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb
+            ->from(Entity\AppStore\App::class, 'a')
+            ->select('a')
+        ;
+
+        $result = $qb->getQuery()->getResult();
+        return $result;
+    }
+
+    function findByFilter(SearchApplicationFilter $filter)
+    {
+        return $this->findAll();
     }
 
     /**
