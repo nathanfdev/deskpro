@@ -57,6 +57,18 @@ class DeskproBlobStorage implements Loggable
     protected $adapters = [];
 
     /**
+     * Map of adapterId => int of failure counts.
+     *
+     * @var array
+     */
+    protected $failed_adapters_counts = [];
+
+    /**
+     * @var bool
+     */
+    protected $ignore_fail_limits = false;
+
+    /**
      * @var string[]
      */
     protected $disabled_adapters = [];
@@ -133,6 +145,24 @@ class DeskproBlobStorage implements Loggable
     public function isPhysicalDeleteEnabled()
     {
         return $this->enable_physical_delete;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIgnoreFailLimits()
+    {
+        return $this->ignore_fail_limits;
+    }
+
+    public function enableIgnoreFailLimits()
+    {
+        $this->ignore_fail_limits = true;
+    }
+
+    public function disableIgnoreFailLimits()
+    {
+        $this->ignore_fail_limits = false;
     }
 
     /**
@@ -356,10 +386,20 @@ class DeskproBlobStorage implements Loggable
         $blob->setMeta('batch', $batch);
 
         $prev_e = null;
+
+        /* @var $adapter \Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter */
         foreach ($this->_getOrderedAdaptersForBlobArray($blob_array) as $adapter_id => $adapter) {
+            if (
+                !$this->ignore_fail_limits
+                && isset($this->failed_adapters_counts[$adapter_id])
+                && $adapter->getFailLimitPerRequest()
+                && $adapter->getFailLimitPerRequest() >= $this->failed_adapters_counts[$adapter_id]
+            ) {
+                $this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromFile) Skipping $adapter_id because fail count of {$this->failed_adapters_counts[$adapter_id]} has met the limit of {$adapter->getFailLimitPerRequest()}");
+                continue;
+            }
             $this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Attempting adapter: $adapter_id");
 
-            /* @var $adapter \Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter */
             try {
                 if ($adapter_id == 'fs') {
                     $authcode = $batch.DpStrings::random(10, Strings::CHARS_KEY_ALPHA).$blob_entity_tmp->getId().$blob_entity_tmp->getNameHash();
@@ -378,6 +418,11 @@ class DeskproBlobStorage implements Loggable
                 // Success, dont try others
                 break;
             } catch (\Exception $e) {
+                if (!isset($this->failed_adapters_counts[$adapter_id])) {
+                    $this->failed_adapters_counts[$adapter_id] = 0;
+                }
+                ++$this->failed_adapters_counts[$adapter_id];
+
                 $this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromFile) $adapter_id failed: {$e->getCode()} {$e->getMessage()}");
                 if (isset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND'])) {
                     SystemErrorHandler::logException($e);
@@ -504,10 +549,20 @@ class DeskproBlobStorage implements Loggable
         $blob->setMeta('batch', $batch);
 
         $prev_e = null;
+
+        /* @var $adapter \Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter */
         foreach ($this->_getOrderedAdaptersForBlobArray($blob_array) as $adapter_id => $adapter) {
+            if (
+                !$this->ignore_fail_limits
+                && isset($this->failed_adapters_counts[$adapter_id])
+                && $adapter->getFailLimitPerRequest()
+                && $adapter->getFailLimitPerRequest() >= $this->failed_adapters_counts[$adapter_id]
+            ) {
+                $this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromFile) Skipping $adapter_id because fail count of {$this->failed_adapters_counts[$adapter_id]} has met the limit of {$adapter->getFailLimitPerRequest()}");
+                continue;
+            }
             $this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Attempting adapter: $adapter_id");
 
-            /* @var $adapter \Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter */
             try {
                 if ($adapter_id == 'fs') {
                     $authcode = $batch.DpStrings::random(10, Strings::CHARS_KEY_ALPHA).$blob_entity_tmp->getId().$blob_entity_tmp->getNameHash();
@@ -526,6 +581,11 @@ class DeskproBlobStorage implements Loggable
                 // Success, dont try others
                 break;
             } catch (\Exception $e) {
+                if (!isset($this->failed_adapters_counts[$adapter_id])) {
+                    $this->failed_adapters_counts[$adapter_id] = 0;
+                }
+                ++$this->failed_adapters_counts[$adapter_id];
+
                 $this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromString) $adapter_id failed: {$e->getCode()} {$e->getMessage()}");
                 if (isset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND'])) {
                     SystemErrorHandler::logException($e);
