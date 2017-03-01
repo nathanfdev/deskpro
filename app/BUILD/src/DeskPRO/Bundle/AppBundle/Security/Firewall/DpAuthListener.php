@@ -163,10 +163,16 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         return;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return LoginAbuseCheck
+     */
     protected function createAntiAbuseEvent(Request $request)
     {
-        $abuseCheck = new LoginAbuseCheck($request->get('username'), $request->getClientIp());
         $request->getSession()->set('last_username', $request->get('username'));
+
+        $abuseCheck = new LoginAbuseCheck($request->get('username'), $request->getClientIp());
         $abuseCheck->markAsCheckOnly(true);
         $abuseCheck->setResponse(new RedirectResponse($this->container->get('router')->generate('portal_login')));
 
@@ -205,7 +211,12 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 // We expect a redirect to be required
             } elseif ($result->isRedirectRequired()) {
                 $return = $request->get('return');
-                $session->set('auth_return', $return);
+
+                // set return path only if it's defined in query params, otherwise it could be set in auth listener
+                // so don't clear it
+                if ($return) {
+                    $session->set('_security.'.$this->providerKey.'.target_path', $return);
+                }
 
                 $r = $this->redirect($result->getRedirectUrl());
                 $r->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'Yes');
