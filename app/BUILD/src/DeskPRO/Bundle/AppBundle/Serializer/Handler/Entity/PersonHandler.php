@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
@@ -152,7 +153,7 @@ class PersonHandler extends AbstractEntityHandler
                 WHERE `s`.`person_id` IN (?)
                 GROUP BY (`s`.`person_id`)
                 ',
-                [implode(',', array_keys($this->personIds))]
+                [array_keys($this->personIds)], [Connection::PARAM_INT_ARRAY]
             );
         }
 
