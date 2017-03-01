@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -41,6 +42,19 @@ class ErrorController extends AbstractController
     public function showExceptionAction(FlattenException $exception, $logger = null)
     {
         $requestStack = $this->get('request_stack');
+
+        // detect recursions
+        // in some edge cases we can get exceptions in sub requests (using in http cache)
+        // so it causes infinity recursion loops
+        $reflection = new \ReflectionClass(RequestStack::class);
+        $property   = $reflection->getProperty('requests');
+        $property->setAccessible(true);
+
+        $requests = $property->getValue($requestStack);
+        if (count($requests) > 2) {
+            return new Response('', $exception->getStatusCode());
+        }
+
         if ($requestStack->getParentRequest() && $requestStack->getParentRequest()->attributes->has('tag_request')) {
             // an error here means we're an error inside of rendering a tag (either inline or esi)
             // Any 500 type error will have been logged by the exception handler, and any 300s or 400s
