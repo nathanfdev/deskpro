@@ -417,6 +417,9 @@ abstract class ContentAbstract extends DomainObject
             $status_code = str_replace('hidden.', '', $status_code);
             $this->setModelField('status', 'hidden');
             $this->setModelField('hidden_status', $status_code);
+            if ($status_code === self::HIDDEN_STATUS_UNPUBLISHED) {
+                $this->setModelField('date_published', null);
+            }
         } else {
             $this->setModelField('status', $status_code);
             $this->setModelField('hidden_status', null);
