@@ -550,11 +550,11 @@ img.emojione, svg.emojione {
         }
         .content {
           &.agent, &.department, &.team, &.group {
-            overflow: visible;
+            overflow: hidden;
             height: 30px;
             line-height: 28px;
             white-space: nowrap;
-            max-width: 275px;
+            max-width: 320px;
 
             .header {
               font-family: "Open Sans", serif;
@@ -563,11 +563,18 @@ img.emojione, svg.emojione {
               color: $dp-greyscale-850;
               display: inline-block;
             }
+          }
+
+          &.department {
+            height: 38px;
+            padding-top: 4px;
+            padding-bottom: 4px;
 
             .description {
               padding-top: 3px;
             }
           }
+
         }
 
         &.department.recent {
