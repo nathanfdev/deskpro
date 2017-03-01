@@ -20,10 +20,10 @@ class StateFilterParamConverter implements ParamConverterInterface
     public function apply(Request $request, Configuration\ParamConverter $configuration)
     {
         $filterValues = new Domain\SearchFilterValueArrayMap();
-        $this->resolveFilterValues($request->attributes, $filterValues);
+        $this->resolveFilterValues($request->query, $filterValues);
 
         $attributeName = $configuration->getName();
-        $filter = $this->filters->convertValueMapToAssetFilter($filterValues);
+        $filter = $this->filters->convertValueMapToStateFilter($filterValues);
         $request->attributes->set($attributeName, $filter);
 
         return true;

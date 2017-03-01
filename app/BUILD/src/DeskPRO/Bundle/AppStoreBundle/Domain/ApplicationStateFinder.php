@@ -37,9 +37,10 @@ interface ApplicationStateFinder
     public function find(ApplicationStateId $id);
 
     /**
-     * @param SearchStateFilter $assetFilter
+     * @param ApplicationInstance $application
+     * @param SearchStateFilter $searchFilter
      * @return ApplicationState[]
      */
-    public function findApplicationState(SearchStateFilter $assetFilter);
+    public function findApplicationStateByFilter(ApplicationInstance $application, SearchStateFilter $searchFilter);
 }
 

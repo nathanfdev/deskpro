@@ -19,5 +19,10 @@ services:
     factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationFinder]
     arguments: ["@doctrine.orm.default_entity_manager"]
 
+  DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationStateFinder:
+    class: DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationStateFinder
+    factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationStateFinder]
+    arguments: ["@doctrine.orm.default_entity_manager"]
+
 
 

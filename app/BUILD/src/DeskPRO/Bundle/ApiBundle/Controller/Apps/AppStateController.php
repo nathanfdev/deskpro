@@ -42,26 +42,31 @@ use Symfony\Component\HttpFoundation\Request;
  * Class AppsController
  *
  * @ApiModes("all")
- * @Rest\Route("/apps/{application}")
+ * @Rest\Route("/apps/{application}/state")
  */
 class AppStateController extends BaseController
 {
     /**
-     * @Rest\GET("/state")
+     * @Rest\GET("")
      *
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
      * @ParamConverter("assetFilter", class="AppStoreBundle:Domain\AssetFilter", converter="DeskPRO\Bundle\ApiBundle\Apps\StateFilterParamConverter")
      *
      * @param Entity\AppStore\AppInstance $application
-     * @param $stateFilter
+     * @param AppStoreBundle\Domain\SearchStateFilter $stateFilter
+     * @return AppStoreBundle\Domain\ApplicationState[]
      */
-    public function getStateAction(Entity\AppStore\AppInstance $application, AppStoreBundle\Domain\SearchStateFilter $stateFilter)
+    public function listStateAction(Entity\AppStore\AppInstance $application, AppStoreBundle\Domain\SearchStateFilter $stateFilter)
     {
+        /** @var AppStoreBundle\Domain\ApplicationStateFinder $applicationStateFinder */
+        $applicationStateFinder = $this->container->get(AppStoreBundle\Domain\ApplicationStateFinder::class);
+        $list = $applicationStateFinder->findApplicationStateByFilter($application, $stateFilter);
 
+        return $list;
     }
 
     /**
-     * @Rest\POST("/state")
+     * @Rest\POST("")
      *
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
      * @ParamConverter("representation", class="DeskPRO\Bundle\ApiBundle\Apps\AppStateRepresentation", converter="DeskPRO\Bundle\ApiBundle\ParamConverter\SerializedParamConverter")
@@ -83,7 +88,7 @@ class AppStateController extends BaseController
     }
 
     /**
-     * @Rest\PUT("/state/{name}")
+     * @Rest\PUT("/{name}")
      *
      * @ParamConverter("state", class="AppBundle:Entity\AppStore\AppState", converter="DeskPRO\Bundle\ApiBundle\Apps\AppStateParamConverter")
      * @ParamConverter("representation", class="DeskPRO\Bundle\ApiBundle\Apps\AppStateRepresentation", converter="DeskPRO\Bundle\ApiBundle\ParamConverter\SerializedParamConverter")
@@ -103,7 +108,7 @@ class AppStateController extends BaseController
     }
 
     /**
-     * @Rest\DELETE("/state/{name}")
+     * @Rest\DELETE("/{name}")
      *
      * @ParamConverter("state", class="AppBundle:Entity\AppStore\AppState", converter="DeskPRO\Bundle\ApiBundle\Apps\AppStateParamConverter")
      * @param Entity\AppStore\AppState $state

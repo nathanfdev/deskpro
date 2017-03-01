@@ -74,6 +74,15 @@ class Services
     {
         return new ApplicationDoctrineFinder($entityManager);
     }
+
+    /**
+     * @param ORM\EntityManager $entityManager
+     * @return ApplicationStateDoctrineFinder
+     */
+    public static function createApplicationStateFinder(ORM\EntityManager $entityManager)
+    {
+        return new ApplicationStateDoctrineFinder($entityManager);
+    }
 }
 
 

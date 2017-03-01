@@ -40,6 +40,35 @@ class StateScope
     private $targetObjectId;
 
     /**
+     * @param $string
+     * @return null|StateScope
+     */
+    public static function parseString($string)
+    {
+        //TODO implement this
+        return null;
+    }
+
+    public static function convertToString(StateScope $scope)
+    {
+        $string = $scope->getPermission();
+
+        $targetObject = $scope->getTargetObjectName();
+        if (empty($targetObject)) {
+            return $string;
+        }
+        $string .= '.' . $targetObject;
+
+        $targetId = $scope->getTargetObjectId();
+        if (empty($targetId)) {
+            return $string;
+        }
+
+        $string .= ':' . $targetId;
+        return $string;
+    }
+
+    /**
      * @param $permission
      * @param $targetObjectName
      * @param $targetObjectId
@@ -54,7 +83,7 @@ class StateScope
     /**
      * @return string
      */
-    public function getPermission(): string
+    public function getPermission()
     {
         return $this->permission;
     }
@@ -62,7 +91,7 @@ class StateScope
     /**
      * @return string
      */
-    public function getTargetObjectName(): string
+    public function getTargetObjectName()
     {
         return $this->targetObjectName;
     }
@@ -70,7 +99,7 @@ class StateScope
     /**
      * @return string
      */
-    public function getTargetObjectId(): string
+    public function getTargetObjectId()
     {
         return $this->targetObjectId;
     }

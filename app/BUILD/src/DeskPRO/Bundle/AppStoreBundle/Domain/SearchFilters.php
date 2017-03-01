@@ -50,9 +50,11 @@ class SearchFilters
         return new SearchAssetFilter($fileExtension, $pathPattern, $usePrefixPathMatchingStrategy);
     }
 
-    public function convertValueMapToStateFilter(SearchStateFilterValueMap $map)
+    public function convertValueMapToStateFilter(SearchStateFilterValueMap $valueMap)
     {
-
+        //TODO parse filters list
+        $name = $valueMap->getStateVariableName();
+        return new SearchStateFilter([], $name);
     }
 
 }

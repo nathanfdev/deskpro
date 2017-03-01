@@ -96,7 +96,7 @@ class SearchFilterValueArrayMap implements SearchAssetFilterValueMap, SearchStat
     /**
      * @return string
      */
-    public function getStateVariableName(): string
+    public function getStateVariableName()
     {
         return $this->stateVariableName;
     }
@@ -112,7 +112,7 @@ class SearchFilterValueArrayMap implements SearchAssetFilterValueMap, SearchStat
     /**
      * @return string
      */
-    public function getShowPrivateSettings(): string
+    public function getShowPrivateSettings()
     {
         return $this->showPrivateSettings;
     }

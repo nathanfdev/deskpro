@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Doctrine\ORM;
+use Doctrine\ORM\QueryBuilder;
 
 class ApplicationStateDoctrineFinder implements Domain\ApplicationStateFinder
 {
@@ -71,11 +72,42 @@ class ApplicationStateDoctrineFinder implements Domain\ApplicationStateFinder
     }
 
     /**
-     * @param Domain\SearchStateFilter $assetFilter
+     * @param Domain\ApplicationInstance $application
+     * @param Domain\SearchStateFilter $searchFilter
      * @return Domain\ApplicationState[]
      */
-    public function findApplicationState(Domain\SearchStateFilter $assetFilter)
+    public function findApplicationStateByFilter(Domain\ApplicationInstance $application, Domain\SearchStateFilter $searchFilter)
     {
-        return [];
+        //TODO think about a custom query builder for a domain filter to orm filter
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb
+            ->from(Entity\AppStore\AppState::class, 'a')
+            ->select('a')
+            ->innerJoin('a.appInstance', 'i')
+            ->where('i.id = :instance')
+            ->setParameter('instance', $application->getId())
+        ;
+
+        $this->applySearchStateFilter($qb, $searchFilter);
+        $result = $qb->getQuery()->getResult();
+        return $result;
+    }
+
+    private function applySearchStateFilter(QueryBuilder $qb, Domain\SearchStateFilter $assetFilter)
+    {
+        $filterField = $assetFilter->getName();
+        if (! empty($filterField)) {
+            $qb->andWhere('a.name = :name')->setParameter('name', $filterField);
+        }
+
+        $scopeList = array_map(
+            function(Domain\StateScope $scope){
+                return Domain\StateScope::convertToString($scope);
+            },
+            $assetFilter->getScopeList()
+        );
+        if (! empty($scopeList)) {
+            $qb->andWhere('a.scope IN (:scope)')->setParameter('ids', $scopeList);
+        }
     }
 }
