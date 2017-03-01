@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
+import $ from 'jquery';
 import classNames from 'classnames';
 import emojione from 'emojione';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
@@ -52,6 +53,10 @@ class Message extends React.Component {
     return newMessage;
   }
 
+  componentDidMount() {
+    $('a:not([data-route])', this.message).attr('target', '_blank');
+  }
+
   getMessage() {
     let message = this.props.message.message;
     emojione.imagePathSVGSprites = `./..${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg`;
@@ -100,7 +105,7 @@ class Message extends React.Component {
     return (<Segment className={classNames('row', { search: searchQuery, result: searchQuery, my })}>
       {this.dateSep()}
       {my || searchQuery ? this.timestamp() : null}
-      <div className="message">
+      <div className="message" ref={(c) => { this.message = c; }}>
         {
           searchQuery
           ? (<div className="avatar wrapper">
