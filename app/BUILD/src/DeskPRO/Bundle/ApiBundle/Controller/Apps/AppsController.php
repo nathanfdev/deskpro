@@ -97,11 +97,10 @@ class AppsController extends FOSRestController
         if (! $validBundle) { //TODO provide a more elaborate exception body
             throw new UnprocessableEntityHttpException('invalid bundle');
         }
-        $application = $applicationCreator->createApplication($bundle);
 
         /** @var AppStoreBundle\Domain\ApplicationInstanceCreator $instanceCreator */
         $instanceCreator = $this->container->get(AppStoreBundle\Domain\ApplicationInstanceCreator::class);
-        $instance = $instanceCreator->createInstance($application);
+        $instance = $instanceCreator->createFirstInstance($bundle);
 
         return $instance;
     }

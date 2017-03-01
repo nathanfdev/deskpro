@@ -31,6 +31,12 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 interface ApplicationInstanceCreator
 {
     /**
+     * @param AppBundle $bundle
+     * @return ApplicationInstance
+     */
+    public function createFirstInstance(AppBundle $bundle);
+
+    /**
      * @param Application $application
      * @param string|null $settings
      * @return ApplicationInstance

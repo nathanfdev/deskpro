@@ -30,13 +30,15 @@ namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundle;
 use DeskPRO\Bundle\AppStoreBundle\Domain\Application;
 use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstance;
+use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceCreator;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use JsonSchema;
 use Doctrine\ORM;
 
-class ApplicationInstanceService implements Domain\ApplicationInstanceCreator
+class ApplicationInstanceService implements ApplicationInstanceCreator
 {
     /** @var ORM\EntityManager */
     private $entityManager;
@@ -49,6 +51,71 @@ class ApplicationInstanceService implements Domain\ApplicationInstanceCreator
         ORM\EntityManager $entityManager
     ) {
         $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @param AppBundle $bundle
+     * @return ApplicationInstance
+     */
+    public function createFirstInstance(AppBundle $bundle)
+    {
+        $entities = [];
+        $appEntity = $this->mapManifestStringToApp($bundle->getManifestAsString(), new Entity\AppStore\App());
+        $entities[] = $appEntity;
+
+        foreach ($bundle->listAllResources() as $resource) {
+            $asset = new Entity\AppStore\AppAsset();
+            $asset->setApp($appEntity);
+
+            $entities[] = $this->mapBundleResourceToAsset($resource, $asset);
+        }
+
+        $instanceEntity = new Entity\AppStore\AppInstance();
+        $instanceEntity->setApp($appEntity);
+        $this->mapApplicationToInstance($appEntity, $instanceEntity);
+        $entities[] = $instanceEntity;
+
+        $this->persist($entities);
+        return $instanceEntity;
+    }
+
+    /**
+     * @param $entities
+     */
+    private function persist($entities)
+    {
+        foreach ($entities as $entity) {
+            $this->entityManager->persist($entity);
+        }
+
+
+        $this->entityManager->flush();
+    }
+
+    private function mapBundleResourceToAsset(Domain\AppBundleResource $resource, Entity\AppStore\AppAsset $asset)
+    {
+        $asset->setPath( $resource->getPath() );
+        $asset->setContent( $resource->getContent() );
+
+        return $asset;
+    }
+
+    /**
+     * @param string $manifestString
+     * @param Entity\AppStore\App $app
+     * @return Entity\AppStore\App
+     */
+    private function mapManifestStringToApp($manifestString, Entity\AppStore\App $app)
+    {
+        $manifestReader = new Infrastructure\AppManifestJsonReader();
+        $manifest = $manifestReader->readManifest($manifestString);
+
+        $app->setManifest($manifestString);
+
+        $value = $manifest->getName();
+        $app->setName($value);
+
+        return $app;
     }
 
     /**

@@ -58,11 +58,25 @@ class AppStateController extends BaseController
      */
     public function listStateAction(Entity\AppStore\AppInstance $application, AppStoreBundle\Domain\SearchStateFilter $stateFilter)
     {
+        //TODO filter by current user
         /** @var AppStoreBundle\Domain\ApplicationStateFinder $applicationStateFinder */
         $applicationStateFinder = $this->container->get(AppStoreBundle\Domain\ApplicationStateFinder::class);
         $list = $applicationStateFinder->findApplicationStateByFilter($application, $stateFilter);
 
         return $list;
+    }
+
+    /**
+     * @Rest\GET("/{name}/{scope}")
+     *
+     * @ParamConverter("stateId", class="AppStoreBundle:Domain\AssetFilter", converter="DeskPRO\Bundle\ApiBundle\Apps\StateFilterParamConverter")
+     *
+     * @param AppStoreBundle\Domain\ApplicationStateId $stateId
+     * @param $scope
+     */
+    public function getStateAction(AppStoreBundle\Domain\ApplicationStateId $stateId, $scope)
+    {
+
     }
 
     /**

@@ -29,14 +29,12 @@
 namespace DeskPRO\Bundle\AppStoreBundle;
 
 use DeskPRO\Bundle\AppStoreBundle\DependencyInjection\AppStoreExtension;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\InstallAppCommand;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\Console;
 
 class AppStoreBundle extends Bundle
 {
-
-    /**
-     * {@inheritdoc}
-     */
     public function getContainerExtension()
     {
         return new AppStoreExtension();
@@ -50,5 +48,10 @@ class AppStoreBundle extends Bundle
     public function getPath()
     {
         return __DIR__;
+    }
+
+    public function registerCommands(Console\Application $application)
+    {
+        $application->add(new InstallAppCommand());
     }
 }
