@@ -170,4 +170,14 @@ abstract class AbstractStorageAdapter implements Loggable
      * @return int
      */
     abstract public function readBlobToStream(Blob $blob, $fp_target);
+
+    /**
+     * How many failures this adapter can have before the system begins to skip it.
+     *
+     * @return int
+     */
+    public function getFailLimitPerRequest()
+    {
+        return $this->options->get('fail_limit_per_request', 0);
+    }
 }

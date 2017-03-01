@@ -112,10 +112,11 @@ class BlobStorageService
                 ],
             ]);
             $s3_adapter = new AmazonS3Storage([
-                's3_client'       => $client,
-                'bucket'          => $container->getSetting('core.filestorage_s3_bucket'),
-                'file_url_domain' => $container->getSetting('core.filestorage_s3_file_url_domain'),
-                'base_path'       => $container->getSetting('core.filestorage_s3_basepath'),
+                's3_client'              => $client,
+                'bucket'                 => $container->getSetting('core.filestorage_s3_bucket'),
+                'file_url_domain'        => $container->getSetting('core.filestorage_s3_file_url_domain'),
+                'base_path'              => $container->getSetting('core.filestorage_s3_basepath'),
+                'fail_limit_per_request' => 1,
             ]);
             $s3_adapter->setLogger($logger);
         }

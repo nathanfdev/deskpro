@@ -59,6 +59,8 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         $ignore_error = $input->getOption('ignore-error');
         $limit        = $input->getOption('limit');
 
+        $bs->disableIgnoreFailLimits();
+
         if ($input->getOption('set-storage-loc')) {
             $set_aid = $input->getOption('set-storage-loc');
             $aids    = $bs->getAdapterIds();
