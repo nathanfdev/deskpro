@@ -71,7 +71,7 @@ class PersonOnboarding implements EntityInterface, NotifyPropertyChanged
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person", inversedBy="onboarding")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @Assert\NotNull()
