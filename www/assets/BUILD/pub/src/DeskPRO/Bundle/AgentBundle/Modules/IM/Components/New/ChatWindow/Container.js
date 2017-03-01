@@ -398,14 +398,14 @@ class Container extends React.Component {
       imageUploadMethod:         'POST',
       imageUploadParams:         { _rt: window.DP_REQUEST_TOKEN, json: true },
       imageUploadURL:            `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
-      imageDefaultWidth:         280,
+      imageDefaultWidth:         0,
       fileUploadMethod:          'POST',
       fileUploadParams:          { _rt: window.DP_REQUEST_TOKEN, json: true },
       fileUploadURL:             `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
       videoUploadMethod:         'POST',
       videoUploadParams:         { _rt: window.DP_REQUEST_TOKEN, json: true },
       videoUploadURL:            `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
-      videoDefaultWidth:         280,
+      videoDefaultWidth:         0,
       videoResize:               false,
       videoDefaultDisplay:       'block',
       videoSplitHTML:            'true',
