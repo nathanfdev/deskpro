@@ -12,7 +12,7 @@ export class Gravatar extends React.Component {
     const { gravatar, size } = this.props;
     const delimiter = gravatar.indexOf('?') === -1 ? '?' : '&';
 
-    return `${gravatar}${delimiter}default=blank${size ? `&s=${size}` : ''}`;
+    return `${gravatar}${delimiter}default=blank${size ? `&s=${size * 2}` : ''}`;
   }
 
   render() {

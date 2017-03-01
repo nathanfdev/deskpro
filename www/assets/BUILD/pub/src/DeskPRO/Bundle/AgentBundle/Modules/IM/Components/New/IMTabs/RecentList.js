@@ -62,11 +62,11 @@ class RecentList extends React.Component {
             }
           case 'department':
             return this.props.departments
-              .get(chat.getIn(['departments', 0, 'title']))
+              .getIn([chat.getIn(['departments', 0]), 'title'])
               .test(new RegExp(this.props.filter, 'gi'));
           case 'team':
             return this.props.teams
-              .get(chat.getIn(['agent_teams', 0, 'name']))
+              .getIn([chat.getIn(['agent_teams', 0]), 'name'])
               .test(new RegExp(this.props.filter, 'gi'));
           case 'group':
             return chat.get('name').test(new RegExp(this.props.filter, 'gi'));

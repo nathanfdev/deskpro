@@ -116,6 +116,9 @@ export class MessagesHelper {
       case 'notification.agent_chat.mark_message':
         handler = MessagesHelper.handleMarkMessage;
         break;
+      case 'notification.agent_chat.mark_all_messages':
+        handler = MessagesHelper.markAllMessagesAsRead;
+        break;
       default:
         handler = MessagesHelper.idle;
     }
