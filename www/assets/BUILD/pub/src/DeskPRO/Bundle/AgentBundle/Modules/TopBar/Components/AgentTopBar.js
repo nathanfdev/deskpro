@@ -161,7 +161,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     if (Notify.needsPermission && Notify.isSupported()) {
       Notify.requestPermission();
     }
-    if (this.prpos.defaultBrand) {
+    if (this.props.defaultBrand) {
       AvatarHelper.setBrandLogoUrl(this.props.defaultBrand.get('logo_url'));
     }
   }
