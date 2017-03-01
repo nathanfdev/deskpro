@@ -29,6 +29,7 @@
 namespace Application\ImportBundle\Writer\Mapper;
 
 use Application\DeskPRO\Entity\ImportMap;
+use Application\ImportBundle\Model\ImportMapKeyAwareInterface;
 use Application\ImportBundle\Model\OidAwareModelInterface;
 use Orb\Util\Strings;
 
@@ -110,8 +111,12 @@ class ImportMapMapper extends AbstractContainerMapper
      */
     public static function getImportMapKey($model)
     {
-        $modelClass = (new \ReflectionClass($model))->getShortName();
-        $modelClass = Strings::camelCaseToUnderscore($modelClass);
+        if ($model instanceof ImportMapKeyAwareInterface) {
+            $modelClass = $model::getImportMapKey();
+        } else {
+            $modelClass = (new \ReflectionClass($model))->getShortName();
+            $modelClass = Strings::camelCaseToUnderscore($modelClass);
+        }
 
         return 'importer_'.$modelClass;
     }
