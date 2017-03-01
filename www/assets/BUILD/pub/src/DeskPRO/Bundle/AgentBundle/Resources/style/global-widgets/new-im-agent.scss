@@ -48,12 +48,6 @@ img.emojione, svg.emojione {
     top: 0;
     border: 0.5px solid transparent;
   }
-
-  &.offline > .offline-block {
-    display: inline-block;
-    background: #fff;
-    opacity: 0.5;
-  }
 }
 
 .ui.topbar > .item > .im-list {
