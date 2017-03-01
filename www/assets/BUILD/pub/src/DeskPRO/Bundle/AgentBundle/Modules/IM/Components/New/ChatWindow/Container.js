@@ -2,6 +2,7 @@ import 'froala-editor/js/froala_editor.pkgd.min';
 import React, { PropTypes } from 'react';
 import Isvg from 'react-inlinesvg';
 import $ from 'jquery';
+import 'mark.js';
 import FroalaEditor from 'react-froala-wysiwyg';
 import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
