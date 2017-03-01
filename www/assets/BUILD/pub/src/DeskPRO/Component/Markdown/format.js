@@ -148,5 +148,14 @@ const operations = {
 export function applyFormat(cm, key) {
   const cs = getCursorState(cm);
   const format = FORMATS[key];
+
+  if ((['h1', 'h2', 'h3'].indexOf(key) !== -1)) {
+    ['h1', 'h2', 'h3'].forEach((type) => {
+      if (cs[type]) {
+        operations.blockRemove(cm, FORMATS[type]);
+      }
+    });
+  }
+
   operations[format.type + (cs[key] ? 'Remove' : 'Apply')](cm, format);
 }
