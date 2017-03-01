@@ -871,14 +871,6 @@ abstract class ContentAbstract extends DomainObject
     }
 
     /**
-     * @return string
-     */
-    public function getRealContent()
-    {
-        return $this->content;
-    }
-
-    /**
      * @param string $title
      *
      * @return $this
@@ -891,9 +883,7 @@ abstract class ContentAbstract extends DomainObject
     }
 
     /**
-     * @param $content
-     *
-     * @return ContentAbstract
+     * @return string
      */
     public function getRealContent()
     {
