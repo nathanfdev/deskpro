@@ -1495,7 +1495,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var data = {
 				authId: $(this).closest('li').find('a').first().data('blob-authid')
 			};
-			window.AgentLegacyBundle.renderMessageArchiveAttachment($rElement.get(0), data);
+			window.AgentLegacyBundle.renderMessageArchiveAttachment($rElement, data);
 		});
 
 		// open links in new window
