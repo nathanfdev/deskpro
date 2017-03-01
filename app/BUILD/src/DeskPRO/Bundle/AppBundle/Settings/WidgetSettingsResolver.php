@@ -169,11 +169,13 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return bool
      */
-    public function isEnabledOnPortal()
+    public function isEnabledOnPortal(Brand $brand = null)
     {
-        return (bool) $this->getSetting(self::ENABLED_ON_PORTAL);
+        return (bool) $this->getSetting(self::ENABLED_ON_PORTAL, $brand);
     }
 
     /**
@@ -187,7 +189,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         $model
             ->setUrl($this->getWidgetUrlSettings($brand))
             ->setSettings($this->getWidgetOptions($brand))
-            ->setEnabledOnPortal($this->isEnabledOnPortal())
+            ->setEnabledOnPortal($this->isEnabledOnPortal($brand))
             ->setBrand($brand)
         ;
 
