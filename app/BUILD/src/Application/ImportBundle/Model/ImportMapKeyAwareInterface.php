@@ -29,19 +29,12 @@
 namespace Application\ImportBundle\Model;
 
 /**
- * Exporting article category entity.
- *
- * Class ArticleCategory
+ * Interface ImportMapKeyAwareInterface.
  */
-class ArticleSubCategory extends AbstractArticleCategory implements ImportMapKeyAwareInterface
+interface ImportMapKeyAwareInterface
 {
-    use OidAwareModelTrait;
-
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    public static function getImportMapKey()
-    {
-        return 'article_category';
-    }
+    public static function getImportMapKey();
 }
