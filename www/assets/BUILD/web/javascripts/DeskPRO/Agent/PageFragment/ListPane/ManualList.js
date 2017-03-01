@@ -11,19 +11,6 @@ DeskPRO.Agent.PageFragment.ListPane.ManualList = new Orb.Class({
 	initPage: function(el) {
 		this.wrapper = el;
 
-		// this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
-		// 	prefId: 'manual-filter',
-		// 	resultId: this.meta.resultId,
-		// 	refreshUrl: this.meta.refreshUrl,
-		// 	prefSaveResultId: '0'
-		// });
-		// this.ownObject(this.displayOptions);
-    //
-		// this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
-    //
-		// });
-		// this.ownObject(this.selectionBar);
-
 		this.listWrapper = $('section.manual-simple-list', this.wrapper);
 
     var $rElement = $('<div></div>').insertAfter(this.listWrapper);
@@ -37,16 +24,6 @@ DeskPRO.Agent.PageFragment.ListPane.ManualList = new Orb.Class({
 			this.openTopic
 		);
 
-		// this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
-		// 	contentListEl: this.listWrapper
-		// });
-		// this.ownObject(this.relatedContentList);
-    //
-		// this.enableHighlightOpenRows('manual', 'manual_id', 'topic.manual-');
-    //
-		// this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
-    //
-		// Manual editor
 		this._initManualEditor();
 	},
 
@@ -121,7 +98,6 @@ DeskPRO.Agent.PageFragment.ListPane.ManualList = new Orb.Class({
 	},
 
 	openTopic: function(manualTopicId) {
-		console.log(manualTopicId);
-    window.DeskPRO_Window.runPageRoute(`manuals:/agent/manuals/topic/${manualTopicId}`);
+    window.DeskPRO_Window.runPageRoute("manuals:/agent/manuals/topic/" + manualTopicId);
 	}
 });
