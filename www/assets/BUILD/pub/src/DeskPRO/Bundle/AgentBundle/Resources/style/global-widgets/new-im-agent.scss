@@ -66,6 +66,18 @@ img.emojione, svg.emojione {
       position: relative;
       display: inline-block;
 
+      &.current {
+        > .ui.avatar.image {
+          border: 3px solid $dp-sonic-primary !important;
+          margin: 0 4px;
+
+          .text {
+            left: -1px;
+            top: -1px;
+          }
+        }
+      }
+
       .ui.avatar.image.im {
         svg {
           width: 24px;
