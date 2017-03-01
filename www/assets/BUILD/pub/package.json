@@ -10,6 +10,7 @@
     "bourbon": "4.2.6",
     "bourbon-neat": "1.7.2",
     "classnames": "2.1.5",
+    "codemirror": "^5.24.2",
     "cors": "2.7.1",
     "countries-list": "^1.2.0",
     "cropper": "1.0.0",
@@ -42,6 +43,9 @@
     "lodash": "3.10.1",
     "lscache": "^1.0.5",
     "mark.js": "github:julmot/mark.js",
+    "markdown-it": "^8.2.2",
+    "markdown-it-container": "^2.0.0",
+    "markdown-it-emoji": "^1.3.0",
     "medium-editor": "5.21.0",
     "mime-types": "2.1.9",
     "moment": "2.10.6",
@@ -77,6 +81,7 @@
     "react-scrollbar": "0.4.2",
     "react-select": "^1.0.0-beta13",
     "react-select-plus": "^1.0.0-beta12",
+    "react-sortable-tree": "^0.1.12",
     "react-stylesheet": "^1.0.2",
     "react-textarea-autosize": "4.0.2",
     "react-timeago": "3.0.0",
@@ -90,6 +95,7 @@
     "sprintf-js": "1.0.3",
     "store": "^1.3.20",
     "striptags": "2.1.1",
+    "to-markdown": "^3.0.3",
     "toastr": "^2.1.2"
   },
   "devDependencies": {

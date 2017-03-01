@@ -41,7 +41,7 @@ class NewNews
     /** @var string */
     public $title;
     /** @var int */
-    public $category_id;
+    public $manual_id;
     /** @var string */
     public $status;
     /** @var string */
@@ -88,7 +88,7 @@ class NewNews
             $news->setStatusCode('hidden.unpublished');
         }
 
-        $cat            = $this->_em->find('DeskPRO:NewsCategory', $this->category_id);
+        $cat            = $this->_em->find('DeskPRO:NewsCategory', $this->manual_id);
         $news->category = $cat;
 
         $this->_em->persist($news);

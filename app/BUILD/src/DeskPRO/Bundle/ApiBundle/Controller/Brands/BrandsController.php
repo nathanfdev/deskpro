@@ -104,6 +104,7 @@ class BrandsController extends CrudController
      *     statusCodes = {
      *       201 = "Brand was created",
      *     },
+     *     input="DeskPRO\Bundle\AppBundle\Form\Type\BrandType",
      *     output="Application\DeskPRO\Entity\Brand"
      * )
      * @Rest\Post("")

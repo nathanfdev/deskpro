@@ -77,6 +77,9 @@ class JsonBodyListener implements EventSubscriberInterface
         if (preg_match('#^/api/v2/twilio_callbacks/#', $request->getPathInfo())) {
             return;
         }
+        if (preg_match('#^/api/v2/blobs#', $request->getPathInfo())) {
+            return;
+        }
 
         $request->setFormat('json', 'application/json');
         $request->attributes->set('_format', 'json');

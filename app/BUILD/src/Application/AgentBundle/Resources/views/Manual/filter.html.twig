@@ -1,0 +1,151 @@
+{% extends 'AgentBundle::list-pane-layout.html.twig' %}
+{% set tplvars = { baseId: el_uid() } %}
+
+{######################################################################################################################}
+{# METADATA #}
+{######################################################################################################################}
+{% block top %}
+    <script>
+      pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.ManualList';
+      pageMeta.refreshUrl = '{{ path('agent_manuals_list', {'manual_id': manual.id}) }}';
+      pageMeta.url_fragment = '{{ url_fragment('agent_manuals_list', {'manual_id': manual.id}) }}';
+      pageMeta.baseId = '{{ tplvars.baseId }}';
+      pageMeta.manualId = {{ manual.id }};
+    </script>
+{% endblock top %}
+
+{######################################################################################################################}
+{# HEADER #}
+{######################################################################################################################}
+
+{% block pane_header %}
+    <ul class="pane-tabs" data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-active-classname="active">
+        <li class="tab active" data-tab-for="#{{ tplvars.baseId }}_tab_main"><i class="icon-dp-article"></i> {{ phrase('agent.publish.manual_list_title', {count: total_results|default(0)}) }}</li>
+
+        {% if manual %}
+            <li class="tab" data-tab-for="#{{ tplvars.baseId }}_tab_cat"><i class="icon-folder-close"></i> <span>{{ manual.title }}</span></li>
+        {% endif %}
+    </ul>
+{% endblock pane_header %}
+
+{######################################################################################################################}
+{# CONTENT #}
+{######################################################################################################################}
+
+{% block pane_content %}
+
+    {##################################}
+    {# Posts #}
+    {##################################}
+
+    <div id="{{ tplvars.baseId }}_tab_main">
+
+        {% include 'AgentBundle:Manual:filter-display-options.html.twig' %}
+        {% include 'AgentBundle:Manual:filter-control-bar.html.twig' %}
+
+        <section class="manual-simple-list list-listing no-check">
+            {% include 'AgentBundle:Manual:filter-page.html.twig' %}
+        </section>
+
+        {% if not results|length %}
+            <section class="list-listing no-results">
+                <p>{{ phrase('agent.general.there_are_no_results') }}</p>
+            </section>
+        {% endif %}
+
+        {% if results|length %}
+            <footer class="results-nav">
+                <div class="cursor">
+                    {% set phrase_part1 %}<span class="results-showing-count" id="{{ tplvars.baseId }}_showing_count">{{ ((cur_page - 1) * 50) + 1 }} - {{ showing_to }}</span>{% endset %}
+                    {% set phrase_part2 %}<span class="results-total-count" id="{{ tplvars.baseId }}_total_count">{{ total_results }}</span>{% endset %}
+                    {{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
+                </div>
+                {% if total_results > 50 %}
+                    <ul class="pagenav {% if cur_page == 1 %}no-prev{% endif %} {% if cur_page == num_pages %}no-next{% endif %}">
+                        {% if cur_page > 1 %}
+                            <li class="prev" data-route="listpane:{{ path('agent_manuals_list', {'manual_id': manual.id, p: cur_page - 1 }) }}"></li>
+                        {% else %}
+                            <li class="prev no-prev"></li>
+                        {% endif %}
+
+                        {% if cur_page < num_pages %}
+                            <li class="next" data-route="listpane:{{ path('agent_manuals_list', {'manual_id': manual.id, p: cur_page + 1 }) }}"></li>
+                        {% else %}
+                            <li class="next no-next"></li>
+                        {% endif %}
+                    </ul>
+                {% endif %}
+                <div class="loading">
+
+                </div>
+            </footer>
+        {% endif %}
+
+    </div>
+
+    {##################################}
+    {# Manual #}
+    {##################################}
+
+    {% if manual %}
+        <div class="list-listing">
+            <div id="{{ tplvars.baseId }}_tab_cat" style="display: none;">
+
+                <section class="pane-section last" id="{{ tplvars.baseId }}_del_manual">
+                    <header><h1>{{ phrase('agent.publish.delete_manual') }}</h1></header>
+                    <article style="padding: 10px;">
+                        <div class="dp-not-loading">
+                            <button class="dp-btn manual-del-trigger" data-save-url="{{ path('agent_publish_cats_adddel', {type: 'manual_topics', category_id: manual.id}) }}">{{ phrase('agent.publish.delete_manual_btn') }}</button>
+                        </div>
+                        <div class="dp-is-loading">
+                            <i class="spinner-flat"></i>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="pane-section">
+                    <header><h1>{{ phrase('agent.publish.edit_manual_btn') }}</h1></header>
+                    <article>
+                        <div class="pane-form">
+                            <table class="pane-form-table">
+                                <tbody>
+                                <tr>
+                                    <th width="100">{{ phrase('agent.general.title') }}</th>
+                                    <td>
+                                        <input type="hidden" name="category[id]" value="{{ manual.id }}" />
+                                        <input type="text" name="category[title]" value="{{ manual.title }}" />
+                                    </td>
+                                </tr>
+                                <tr class="vtop">
+                                    <th>{{ phrase('agent.general.permissions') }}</th>
+                                    <td>
+                                        <ul>
+                                            {% for ug in app.getUsergroups().getUserUsergroups() %}
+                                                <li>
+                                                    <label>
+                                                        <input class="ug-check ug-{{ ug.id }} {% if ug.sys_name %}ug-{{ ug.sys_name }}{% endif %}" type="checkbox" name="category[usergroups][]" value="{{ ug.id }}" {% if ug.id in cat_usergroups %}checked="checked"{% endif %} />
+                                                        {{ ug.title }}
+                                                    </label>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                </section>
+
+                <footer class="pane-footer" id="{{ tplvars.baseId }}_manualfoot">
+                    <div class="dp-not-loading">
+                        <button class="dp-btn manual-save-trigger" data-save-url="{{ path('agent_publish_savecats', {type: 'manual_topics'}) }}">{{ phrase('agent.general.save') }}</button>
+                    </div>
+                    <div class="dp-is-loading">
+                        <i class="spinner-flat"></i>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    {% endif %}
+{% endblock pane_content %}

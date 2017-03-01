@@ -12,9 +12,12 @@
 @import "raw/dropdown-chat";
 @import "global-widgets/im-container";
 @import "voice";
+@import "markdown-editor";
 @import "global-widgets/new-im-agent";
 @import 'global-widgets/window/scrollbar';
+@import 'global-widgets/publish';
 @import '../../../AppBundle/Resources/style/widget-modal';
+@import 'tree/node-renderer-default';
 
 .menu-with-panel {
   td {
@@ -778,5 +781,10 @@ i.icon.fitted {
         padding-left: 0;
       }
     }
+  }
+}
+.publish-editor {
+  .header {
+    margin-bottom: 10px;
   }
 }

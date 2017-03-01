@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\NewsComment as NewsCommentRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -62,7 +63,7 @@ class NewsComment extends CommentAbstract
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\NewsComment';
+        $metadata->customRepositoryClassName = NewsCommentRepository::class;
         $metadata->setPrimaryTable([
             'name'    => 'news_comments',
             'indexes' => [
@@ -160,7 +161,7 @@ class NewsComment extends CommentAbstract
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([
             'fieldName'    => 'news',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\News',
+            'targetEntity' => News::class,
             'mappedBy'     => null,
             'inversedBy'   => 'comments',
             'joinColumns'  => [
@@ -175,7 +176,7 @@ class NewsComment extends CommentAbstract
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'person',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'targetEntity' => Person::class,
             'mappedBy'     => null,
             'inversedBy'   => null,
             'joinColumns'  => [

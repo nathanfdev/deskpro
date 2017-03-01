@@ -1,0 +1,18 @@
+{% for manual in manuals %}
+	<li class="is-nav-item manual-{{ manual.id }}" id="publish_manual_{{ manual.id }}">
+		<div class="item with-title" data-route="listpane:{{ path('agent_manuals_list', {'manual_id':manual.id}) }}">
+			{% if manual_repo.getChildren(manual)|length %}
+				<i class="dp-toggle-icon click-through icon-caret-right"></i>
+			{% endif %}
+			<h3>
+				{% if depth and not manual_repo.getChildren(manual)|length %}&mdash;{% endif %}
+				<span class="title-text">{{ manual.title }}</span>
+			</h3>
+			<div class="dp-fader"></div>
+			<em class="counter list-counter"
+				id="kb_cat_count_{{ manual.id }}"
+				data-count="{{ counts[manual.id]|default(0) }}"
+			>{{ counts[manual.id]|default(0) }}</em>
+		</div>
+	</li>
+{% endfor %}

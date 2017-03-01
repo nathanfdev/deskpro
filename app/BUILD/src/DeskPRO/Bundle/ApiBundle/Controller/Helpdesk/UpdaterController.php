@@ -142,7 +142,7 @@ class UpdaterController extends BaseController
      *
      * @return View
      */
-    public function manualSheduleAction(Request $request)
+    public function manualScheduleAction(Request $request)
     {
         if ($this->get('deskpro.app_env')->getConfig('settings.disable_admin_deskpro_updates')) {
             throw $this->createAccessDeniedException('disable_admin_deskpro_updates is enabled');

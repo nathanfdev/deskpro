@@ -1211,7 +1211,8 @@ class Arrays
     /**
      * @param $array
      * @param string $order_key
-     * @param string $parent_id_key
+     * @param string $parent_key
+     * @param bool   $keep_keys
      */
     public static function sortFlatHierarchyArray(
         &$array,

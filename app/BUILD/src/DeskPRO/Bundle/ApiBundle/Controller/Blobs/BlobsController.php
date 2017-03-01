@@ -39,8 +39,10 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVote
 use DeskPRO\Component\Pagerfanta\LimitedPager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Orb\Data\ContentTypes;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -73,6 +75,88 @@ class BlobsController extends CrudController
         $blob   = $accept->accept($file);
 
         return View::create($this->wrap($blob), Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Rest\Post("/form_data")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function postFormDataAction(Request $request)
+    {
+        if ($request->request->has('file') && $request->request->has('name')) {
+            $dataUri  = $request->request->get('file');
+            $mimeType = 'application/octet-stream';
+            if (preg_match('|data:([^;]*);|', $dataUri, $matches)) {
+                $mimeType = $matches[1];
+            }
+            $binary = file_get_contents($dataUri);
+            $name   = $request->request->get('name');
+            if ($name === 'undefined' && preg_match('|^image/(.*)|', $mimeType, $matches)) {
+                $name = 'image.'.$matches[1];
+            }
+            $blob = $this->get('blob.storage')->createBlobRecordFromString(
+                $binary,
+                $name,
+                $mimeType
+            );
+
+            return View::create($this->wrap($blob), Response::HTTP_CREATED);
+        }
+        throw $this->createBadRequestException();
+    }
+
+    /**
+     * @Rest\Post("/froala")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function postFroalaAction(Request $request)
+    {
+        $file   = $request->files->get('file');
+        $accept = $this->getContainer()->getAttachmentAccepter();
+        $blob   = $accept->accept($file);
+
+        $return['link'] = $blob->getDownloadUrl(true);
+
+        return new Response(json_encode($return), Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Rest\Post("/load_remote_images")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function postLoadRemoteImagesAction(Request $request)
+    {
+        $fs = new Filesystem();
+
+        $images    = $request->get('images');
+        $tmpDir    = $this->get('deskpro.app_env')->getUserTmpDir();
+        $fileId    = uniqid('remote_images', true);
+        $tmpFolder = $tmpDir.DIRECTORY_SEPARATOR.'remote_images'.DIRECTORY_SEPARATOR.$fileId.DIRECTORY_SEPARATOR;
+        mkdir($tmpFolder, 0777, true);
+        foreach ($images as &$image) {
+            $filename = basename($image['source']);
+            $mimeType = ContentTypes::getContentTypeFromFilename($filename);
+
+            file_put_contents($tmpFolder.$filename, fopen($image['source'], 'r'));
+            $blob = $this->get('blob.storage')->createBlobRecordFromFile(
+                $tmpFolder.$filename,
+                $filename,
+                $mimeType
+            );
+            $image['blob'] = $blob;
+        }
+        $fs->remove($tmpFolder);
+
+        return View::create($this->wrap($images), Response::HTTP_CREATED);
     }
 
     /**

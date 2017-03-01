@@ -70,12 +70,17 @@ class AbstractCategoryRepository extends AbstractEntityRepository
         return;
     }
 
+    public function getCategoryField()
+    {
+        return 'category_id';
+    }
+
     /**
      * Runs through the hierarchy to reset 'depth' and 'root' values,
      * and updates all 'display_order' so that they are stored in
      * real tree order.
      *
-     * This isnt just "bad" thing, it sholud be called for example
+     * This isnt just "bad" thing, it should be called for example
      * when a new category is created, or one is deleted.
      */
     public function repair()

@@ -12,6 +12,8 @@ import { SideBarContainer } from './Modules/SideBar/Components/SideBar';
 import { AgentList } from './Modules/Agent/Components/AgentList';
 import { AgentOnboardingContainer }  from './Modules/Onboarding/Components/AgentOnboarding';
 import { ArchiveFilesContainer } from './Modules/Tickets/Components/Archive/ArchiveFiles';
+import { ManualTreeContainer } from './Modules/Publish/Components/List/ManualTree';
+import { EditorContainer } from './Modules/Publish/Components/Editor';
 import VoiceControlsContainer from './Modules/Voice/Components/Controls/VoiceControlsContainer';
 import VoiceTicketMessageContainer from './Modules/Voice/Components/TicketMessage/TicketMessageContainer';
 import AgentReducers from './AgentApp_Reducers';
@@ -130,6 +132,39 @@ class AgentLegacyApp {
       <Provider store={this.store}>
         <ArchiveFilesContainer
           authId={data.authId}
+        />
+      </Provider>,
+      node.get(0)
+    );
+  }
+
+  renderContentEditor(
+    node,
+    value,
+    inputType,
+    hideEditor,
+    save
+  ) {
+    ReactDOM.render(
+      <Provider store={this.store}>
+        <EditorContainer
+          value={value}
+          inputType={inputType}
+          hideEditor={hideEditor}
+          save={save}
+        />
+      </Provider>,
+      node
+    );
+  }
+
+  renderManualTopicsTree(node, manualId, height, openTopic) {
+    ReactDOM.render(
+      <Provider store={this.store}>
+        <ManualTreeContainer
+          manualId={manualId}
+          height={height}
+          openTopic={openTopic}
         />
       </Provider>,
       node

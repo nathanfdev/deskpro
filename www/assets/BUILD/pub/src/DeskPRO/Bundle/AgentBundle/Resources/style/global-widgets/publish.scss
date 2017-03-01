@@ -1,0 +1,10 @@
+@import '../../../../../../../node_modules/froala-editor/css/froala_editor.pkgd.min';
+
+.publish-editor {
+  .header .buttons {
+    float: none;
+  }
+}
+#dp_center .editor .tab {
+  box-sizing: border-box;
+}

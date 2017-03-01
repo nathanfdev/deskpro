@@ -1899,4 +1899,12 @@ return [
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2017/02/Build1488284937.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1488284937',
     ],
+    1488366652 => [
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2017/03/Build1488366652.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1488366652',
+    ],
+    1488366653 => [
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2017/03/Build1488366653.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1488366653',
+    ],
 ];

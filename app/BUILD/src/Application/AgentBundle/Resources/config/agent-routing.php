@@ -2113,6 +2113,53 @@ $collection->create('agent_feedback_merge', [
     'requirements' => ['feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'],
 ]);
 
+$collection->create('agent_manual_topic_new', [
+    'path'       => '/manuals/new',
+    'controller' => 'AgentBundle:Manual:newTopic',
+]);
+
+$collection->create('agent_manual_topic_view', [
+    'path'         => '/manuals/topic/{manual_topic_id}',
+    'controller'   => 'AgentBundle:Manual:view',
+    'requirements' => ['manual_topic_id' => '\\d+'],
+    'options'      => ['fragment_name' => 'm'],
+]);
+
+$collection->create('agent_manual_topic_revisionstab', [
+    'path'         => '/manuals/topic/{manual_topic_id}/view-revisions',
+    'controller'   => 'AgentBundle:Manual:viewRevisions',
+    'requirements' => ['manual_topic_id' => '\\d+'],
+]);
+
+$collection->create('agent_manual_topic_save', [
+    'path'         => '/manuals/topic/{manual_topic_id}/ajax-save',
+    'controller'   => 'AgentBundle:Manual:ajaxSave',
+    'requirements' => ['manual_topic_id' => '\\d+'],
+]);
+
+$collection->create('agent_manual_topic_new_save', [
+    'path'       => '/manuals/new/save',
+    'controller' => 'AgentBundle:Manual:newTopicSave',
+]);
+
+$collection->create('agent_manuals_list', [
+    'path'       => '/manuals/list/{manual_id}',
+    'controller' => 'AgentBundle:Manual:list',
+    'defaults'   => ['manual_id' => '0'],
+    'options'    => ['fragment_name' => 'manuals', 'fragment_type' => 'list'],
+]);
+
+$collection->create('agent_manual_topic_ajax_save_comment', [
+    'path'         => '/manuals/topic/{manual_topic_id}/ajax-save-comment',
+    'controller'   => 'AgentBundle:Manual:ajaxSaveComment',
+    'requirements' => ['manual_topic_id' => '\\d+'],
+]);
+
+$collection->create('agent_publish_manuals_newform', [
+    'path'       => '/manuals/new-form',
+    'controller' => 'AgentBundle:Manual:addCategoryForm',
+]);
+
 $collection->create('agent_agentchat_getonlineagents', [
     'path'       => '/agent-chat/get-online-agents.json',
     'controller' => 'AgentBundle:AgentChat:getOnlineAgents',

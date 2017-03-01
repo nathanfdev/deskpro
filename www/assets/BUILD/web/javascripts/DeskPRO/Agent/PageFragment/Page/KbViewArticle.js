@@ -799,51 +799,51 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.getEl('save_btn').off('click').on('click', (function(ev) {
 			ev.preventDefault();
 
-			var data = [];
-			data.push({
-				name: 'action',
-				value: 'content'
-			});
-			data.push({
-				name: 'content',
+		var data = [];
+		data.push({
+			name: 'action',
+			value: 'content'
+		});
+		data.push({
+			name: 'content',
 				value: $('.article-editor-wrap textarea:first', wrap).val()
-			});
-			data.push({
-				name: 'language_id',
+		});
+		data.push({
+			name: 'language_id',
 				value: wrap.find('.article-editor.wrap').find('.language_id').val()
-			});
+		});
 
 			$('input.edit-content-attach:checked', wrap).each(function() {
-				data.push({
-					name: 'attach[]',
-					value: $(this).val()
-				});
+			data.push({
+				name: 'attach[]',
+				value: $(this).val()
 			});
+		});
 
-			var showSaving = this.getEl('article_save').find('.mark-loading');
-			var showSaved  = this.getEl('article_save').find('.mark-saved');
+		var showSaving = this.getEl('article_save').find('.mark-loading');
+		var showSaved  = this.getEl('article_save').find('.mark-saved');
 
-			showSaved.stop().hide();
-			showSaving.show();
+		showSaved.stop().hide();
+		showSaving.show();
 
-			$.ajax({
-				url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
-				type: 'POST',
-				context: this,
-				data: data,
-				dataType: 'json',
-				complete: function() {
-					showSaving.hide();
-				},
-				success: function(data) {
-					this.getEl('content_ed').html(data.content_html);
-					this._initPostArea();
-					this._initArticleArea();
-					this.handleUnloadRevisions(data.revision_id);
+		$.ajax({
+			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'json',
+			complete: function() {
+        showSaving.hide();
+			},
+			success: function(data) {
+				this.getEl('content_ed').html(data.content_html);
+				this._initPostArea();
+				this._initArticleArea();
+				this.handleUnloadRevisions(data.revision_id);
 
-					showSaved.show().fadeOut(2000);
-				}
-			});
+				showSaved.show().fadeOut(2000);
+			}
+		});
 
 		}).bind(this));
 
@@ -875,7 +875,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			$('.revert-message-notice', edWrap).remove();
 		});
 
-		if (!this._hasInitEd) {
+    if (!this._hasInitEd) {
 			this._hasInitEd = true;
 
 			var txt = $('.edit-content-field', this.getEl('content_ed'));

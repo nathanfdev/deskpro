@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
@@ -50,7 +51,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @JMS\ExclusionPolicy("all")
  */
-class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName, Hierarchical
+class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchical
 {
     /**
      * The unique id of the category.

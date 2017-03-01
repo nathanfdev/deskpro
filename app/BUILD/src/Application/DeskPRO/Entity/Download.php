@@ -458,9 +458,9 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
         return $this->fileurl;
     }
 
-    protected function addSlugHistory($old_slug)
+    protected function addSlugHistory($oldSlug)
     {
-        $history = new DownloadSlugHistory($this, $old_slug);
+        $history = new DownloadSlugHistory($this, $oldSlug);
         $this->slug_history->add($history);
 
         return $history;
@@ -563,6 +563,27 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'content',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'content_input',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'content_input',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'content_input_type',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'content_input_type',
             ]
         );
         $metadata->mapField(

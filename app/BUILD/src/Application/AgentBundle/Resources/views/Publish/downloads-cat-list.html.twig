@@ -5,7 +5,7 @@
 				<i class="dp-toggle-icon click-through icon-caret-right"></i>
 			{% endif %}
 			<h3>
-				{% if depth and not kb_repo.getChildren(cat)|length %}&mdash;{% endif %}
+				{% if depth and not download_repo.getChildren(cat)|length %}&mdash;{% endif %}
 				<span class="title-text">{{ cat.title }}</span>
 			</h3>
 			<div class="dp-fader"></div>
