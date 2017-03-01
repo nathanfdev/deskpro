@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\People\PasswordPolicyValidator;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
+use DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
@@ -618,6 +619,11 @@ class Person extends DomainObject implements
     protected $voiceQueues;
 
     /**
+     * @var PersonOnboarding[]|ArrayCollection
+     */
+    protected $onboarding;
+
+    /**
      * A "contact person" is simply a person record. They have no login credentials, they are not
      * a full user.
      *
@@ -699,6 +705,7 @@ class Person extends DomainObject implements
         $this->tickets                = new ArrayCollection();
         $this->chats                  = new ArrayCollection();
         $this->voiceQueues            = new ArrayCollection();
+        $this->onboarding             = new ArrayCollection();
 
         $this->_initPersonLogger();
         $this->_person_logger->recordExtra('person_created', true);
@@ -3540,6 +3547,27 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @param PersonOnboarding $onboarding
+     *
+     * @return $this
+     */
+    public function addOnboarding(PersonOnboarding $onboarding)
+    {
+        $existing = $this->onboarding->filter(function (PersonOnboarding $existOnboarding) use ($onboarding) {
+            return $onboarding->getOnboardingClass() === $existOnboarding->getOnboardingClass();
+        });
+
+        if (!$existing->count()) {
+            $onboarding->setPerson($this);
+            $this->onboarding->add($onboarding);
+
+            $this->_onPropertyChanged('onboarding', $this->onboarding, $this->onboarding);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param bool  $primary
      * @param bool  $deep
      * @param array $visited
@@ -3850,7 +3878,7 @@ class Person extends DomainObject implements
                     'on'.ucfirst($event)
                 );
             }
-            foreach ([Events::prePersist, Events::preUpdate, Events::preFlush] as $event) {
+            foreach ([Events::prePersist, Events::preUpdate] as $event) {
                 $metadata->addEntityListener(
                     $event,
                     PersonOnboardingListener::class,
@@ -4532,6 +4560,14 @@ class Person extends DomainObject implements
             'targetEntity' => VoiceQueue::class,
             'mappedBy'     => 'agents',
             'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+        ]);
+
+        $metadata->mapOneToMany([
+            'fieldName'     => 'onboarding',
+            'targetEntity'  => PersonOnboarding::class,
+            'mappedBy'      => 'person',
+            'orphanRemoval' => true,
+            'cascade'       => ['persist', 'remove', 'merge'],
         ]);
     }
 
