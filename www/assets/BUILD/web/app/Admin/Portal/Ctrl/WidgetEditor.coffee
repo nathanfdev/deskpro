@@ -233,20 +233,14 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       reg = @$scope.reg_group.id
       if group.id == everyone
         for own id,g of @$scope.user_group_permission
-          if parseInt(id) != everyone && @$scope.user_group_permission[group.id]
-            @$scope.user_group_permission[id] = false
+          if parseInt(id) != everyone && !@$scope.user_group_permission[group.id]
+            @$scope.user_group_permission[id] = true
         return true
       else if group.id == reg
         for own id,g of @$scope.user_group_permission
-          if parseInt(id) != everyone && parseInt(id) != reg && @$scope.user_group_permission[group.id]
-            @$scope.user_group_permission[id] = false
-        if !@$scope.user_group_permission[everyone] && !@$scope.user_group_permission[reg]
-          @$scope.user_group_permission[everyone] = true
+          if parseInt(id) != everyone && parseInt(id) != reg && !@$scope.user_group_permission[group.id]
+            @$scope.user_group_permission[id] = true
         return true
-      else
-        if !@$scope.user_group_permission[group.id]
-          @$scope.user_group_permission[everyone] = true
-          @$scope.user_group_permission[reg] = true
       return true
 
     checkRights: (group) ->
