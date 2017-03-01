@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, ButtonGroup } from 'DeskPRO/Component/Semantic/Button';
-import MarkdownEditor from 'DeskPRO/Component/Markdown/MarkdownEditor';
 import 'froala-editor/js/froala_editor.pkgd.min';
 import $ from 'jquery';
 import FroalaEditor from 'react-froala-wysiwyg';
-import * as actions from './../Actions/publishEditorActions';
+import MarkdownEditor from './MarkdownEditor';
+import * as actions from '../../Actions/publishEditorActions';
 
 @connect()
 export class EditorContainer extends React.Component {
