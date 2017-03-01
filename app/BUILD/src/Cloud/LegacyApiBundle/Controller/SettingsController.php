@@ -33,8 +33,8 @@
 namespace Cloud\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\BrandSetting;
-use Application\DeskPRO\Entity\TmpData;
 use Application\LegacyApiBundle\Controller\SettingsController as BaseSettingsController;
+use Cloud\LegacyApiBundle\Helper\CloudBrandHelper;
 use Orb\Util\OptionsArray;
 
 class SettingsController extends BaseSettingsController
@@ -104,25 +104,7 @@ class SettingsController extends BaseSettingsController
             $set_settings['core.deskpro_url'] = $url;
 
             if ($domain != $this->settings->get('core.cloud_custom_domain')) {
-                $tmpdata = new TmpData();
-                $tmpdata->setType('dpc_set_domain');
-                $tmpdata->setData('by_person', $this->person->getId());
-                $tmpdata->setData('set_domain', $domain);
-                $tmpdata->date_expire = new \DateTime('+30 minutes');
-
-                $this->em->persist($tmpdata);
-                $this->em->flush();
-
-                $url = DP_MA_SERVER_SECURE.'/cloud/call/'.DPC_SITE_ID.'/'.$tmpdata->getCode();
-
-                try {
-                    $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
-                    $client->setMethod(\Zend\Http\Request::METHOD_GET);
-                    $client->setUri($url);
-                    $client->send();
-                } catch (\Exception $e) {
-                    return $this->createApiErrorResponse('error_activating_domain', 'There was a problem activating your custom domain. Please try again later.');
-                }
+                CloudBrandHelper::flushBrandDomains();
             }
         } else {
             $set_settings['core.cloud_custom_domain'] = null;

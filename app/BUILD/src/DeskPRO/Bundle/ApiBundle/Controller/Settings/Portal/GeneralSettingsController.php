@@ -127,7 +127,13 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
     public function postAction(Request $request, Brand $brand)
     {
         $model = $this->getModel($brand);
-        $this->handleForm($request, $model);
+
+        $form = $this->createForm($this->getType(), $model);
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
 
         $em = $this->getManager();
         if ($brand->getId() != $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand')) {
@@ -144,10 +150,20 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
             }
 
             $brand->setUrl($urlHostChecker->simplifyUrl($url));
+            $model->setDeskproUrl($brand->getUrl());
+        } else {
+            $brand->setUrl(null);
+            $model->setDeskproUrl(null);
         }
         $brand->setName($model->getBrandName());
         $em->persist($brand);
         $em->flush();
+
+        $this->persistModel($model);
+
+        if (defined('DPC_IS_CLOUD')) {
+            \Cloud\LegacyApiBundle\Helper\CloudBrandHelper::flushBrandDomains();
+        }
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
