@@ -5,7 +5,6 @@ import MarkdownIt from 'markdown-it';
 import emoji from 'markdown-it-emoji';
 import MarkdownItContainer from 'markdown-it-container';
 import toMarkdown from 'to-markdown';
-import 'inline-attachment/src/inline-attachment';
 
 import 'codemirror/mode/xml/xml';
 import 'codemirror/mode/gfm/gfm';
