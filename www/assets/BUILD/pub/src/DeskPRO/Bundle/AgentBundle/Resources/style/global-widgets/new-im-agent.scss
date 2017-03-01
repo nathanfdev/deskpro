@@ -426,13 +426,16 @@ img.emojione, svg.emojione {
 
           .group-overlay {
             background: white;
-            width: 55px;
+            width: 48px;
             text-align: center;
 
             .icon {
               font-size: 20px;
+              &.reply {
+                font-size: 18px;
+              }
               color: $dp-sonic-primary;
-              margin: 20%;
+              margin: 27%;
             }
           }
 
