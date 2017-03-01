@@ -137,19 +137,6 @@ class ArticleCategoryHandler extends AbstractEntityHandler
 
             $newTitles[] = $subModel->getTitle();
         }
-
-        // remove deleted sub categories
-        foreach ($model->getCategories() as $newCategory) {
-            $newTitles[$newCategory->getTitle()] = $newCategory;
-        }
-
-        foreach ($entity->getChildren() as $subEntity) {
-            if (!in_array($subEntity->getTitle(), $newTitles) && !in_array($subEntity->getId(), $newIds)) {
-                $this->logger->debug("Removing article sub category `{$subEntity->getTitle()}`");
-                $entity->getChildren()->removeElement($subEntity);
-                $this->persister->removeAndFlush($subEntity);
-            }
-        }
     }
 
     /**
