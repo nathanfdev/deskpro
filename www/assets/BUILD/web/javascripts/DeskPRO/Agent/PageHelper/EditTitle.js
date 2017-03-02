@@ -50,6 +50,9 @@ DeskPRO.Agent.PageFragment.Page.EditTitle = new Orb.Class({
 					if (page.handleUnloadRevisions) {
 						page.handleUnloadRevisions(retData.revision_id);
 					}
+					if (page.newTitleCallback) {
+            page.newTitleCallback();
+					}
 				}
 			});
 		};

@@ -142,16 +142,16 @@ class AgentLegacyApp {
     node,
     value,
     inputType,
-    hideEditor,
-    save
+    save,
+    updateSource
   ) {
     ReactDOM.render(
       <Provider store={this.store}>
         <EditorContainer
           value={value}
           inputType={inputType}
-          hideEditor={hideEditor}
           save={save}
+          updateSource={updateSource}
         />
       </Provider>,
       node

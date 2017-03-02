@@ -76,6 +76,15 @@ class ManualTopic extends ContentAbstract
      */
     protected $no_content = false;
 
+    /**
+     * The main content originally input type, markdown or HTML.
+     *
+     * @var string
+     *
+     * @Assert\NotBlank()
+     */
+    protected $content_input_type = self::CONTENT_TYPE_MARKDOWN;
+
     protected function addSlugHistory($oldSlug)
     {
         $history = new ManualTopicSlugHistory($this, $oldSlug);

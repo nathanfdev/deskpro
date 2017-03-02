@@ -73,6 +73,8 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4>{{ phrase('agent.publish.post') }}</h4>
 		<textarea type="text" name="newtopic[content]" id="{{baseId}}_content">{{ state.topic.content }}</textarea>
+		<input type="hidden" name="newtopic[content_input]" id="{{baseId}}_content_input" value="">
+		<input type="hidden" name="newtopic[content_input_type]" id="{{baseId}}_content_input_type" value="markdown">
 	</div>
 </div>
 

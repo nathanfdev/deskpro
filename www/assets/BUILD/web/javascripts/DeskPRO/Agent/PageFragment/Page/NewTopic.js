@@ -58,11 +58,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 	},
 
 	activate: function() {
-		var selectedCat = $('#publish_outline_newscat_list').find('.nav-selected').data('cat-id');
-		if (selectedCat) {
-			this.getEl('cat').find("option[value=\"" + selectedCat + "\"]").prop('selected', true);
-			this.getEl('cat').trigger('change');
-		}
+
 	},
 
 	destroyPage: function() {
@@ -125,8 +121,8 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/manuals/topic/' + data.news_id);
 				}
 
-				this.markForReload();
 				this.closeSelf();
+        window.document.dispatchEvent(new CustomEvent('dpManualReloadTree'));
 			}
 		});
 	},
@@ -197,8 +193,6 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 
 	_initContentSection: function() {
 
-		var self = this;
-
 		this.getEl('content').css({
 			width: this.wrapper.width() - 80
 		});
@@ -207,18 +201,23 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		var h = $(window).height();
 		this.getEl('content').css('height', Math.max(h - 500, 200));
 
-		DP.rteTextarea(this.getEl('content'), {
-			setup: function(ed) {
-				ed.onClick.add(function() {
-					self.getEl('content_section').addClass('done');
-				});
-				ed.onKeyPress.add(function() {
-					if (self.stateSaver) {
-						self.stateSaver.triggerChange();
-					}
-				});
+		var textArea = this.getEl('content');
+		var contentInput = this.getEl('content_input');
+		var contentInputType = this.getEl('content_input_type');
+    var $rElement = $('<div></div>').insertAfter(textArea);
+    textArea.hide();
+    window.AgentLegacyBundle.renderContentEditor(
+      $rElement.get(0),
+      textArea.val(),
+      'markdown',
+      false,
+			false,
+			function (html, input, type) {
+      	textArea.val(html);
+				contentInput.val(input);
+				contentInputType.val(type);
 			}
-		});
+    );
 	},
 
 	//#########################################################################
