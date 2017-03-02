@@ -168,7 +168,7 @@ class AgentChatMessagesController extends CrudSubController
             ->update(static::$entity, 'e')
             ->set('e.status', ':status')
             ->where('e.status != :status2')
-            ->andWhere('e.person = :user')
+            ->andWhere('e.person != :user')
             ->orWhere('e.person IS NULL')
             ->setParameter('status', 2)
             ->setParameter('status2', 2)
