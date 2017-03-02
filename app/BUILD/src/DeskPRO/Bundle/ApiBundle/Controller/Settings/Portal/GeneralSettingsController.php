@@ -135,26 +135,24 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
             throw new InvalidFormException($form);
         }
 
+        /** @var UrlHostChecker $urlHostChecker */
+        $urlHostChecker = $this->get('url_host_checker');
+        $url            = $model->getDeskproUrl();
+
         $em = $this->getManager();
         if ($brand->getId() != $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand')) {
-            $url = $model->getDeskproUrl();
-            /** @var UrlHostChecker $urlHostChecker */
-            $urlHostChecker = $this->get('url_host_checker');
-            $helpdeskUrl    = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
-            $helpdeskUrl    = $urlHostChecker->simplifyUrl($helpdeskUrl);
+            $helpdeskUrl = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
+            $helpdeskUrl = $urlHostChecker->simplifyUrl($helpdeskUrl);
 
             if (false !== strpos($url, $helpdeskUrl)) {
                 throw new BadRequestHttpException(
                     'Your brand URL must be a completely separate URL, it cannot be a sub-directory of any of your existing brands.'
                 );
             }
-
-            $brand->setUrl($urlHostChecker->simplifyUrl($url));
-            $model->setDeskproUrl($brand->getUrl());
-        } else {
-            $brand->setUrl(null);
-            $model->setDeskproUrl(null);
         }
+
+        $brand->setUrl($urlHostChecker->simplifyUrl($url));
+
         $brand->setName($model->getBrandName());
         $em->persist($brand);
         $em->flush();
