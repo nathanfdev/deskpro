@@ -110,7 +110,7 @@ class BrandMapper extends AbstractContainerMapper
         }
 
         // check for leaf department
-        if ($defaultDepartment->getChildren()->count()) {
+        if ($defaultDepartment && $defaultDepartment->getChildren()->count()) {
             foreach ($defaultDepartment->getAllChildren() as $childDepartment) {
                 if ($childDepartment->isLeaf()) {
                     return $childDepartment;

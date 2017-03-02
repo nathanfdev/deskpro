@@ -42,6 +42,7 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
      */
     public function setUp()
     {
+        $this->clearTable('departments');
         $this->clearTable('tickets');
         $this->clearTable('ticket_categories');
         $this->clearTable('people');
@@ -253,6 +254,46 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
 
         $entity = $this->getBaseEntity();
         $this->assertTrue($entity->isHold());
+    }
+
+    public function test_leaf_department_detect()
+    {
+        $brand = $this->getRepository(Entity\Brand::class)->findOneBy(['name' => 'default']);
+
+        $department = new Entity\Department();
+        $department->setRealTitle('d');
+        $department->addBrand($brand);
+
+        $department1 = new Entity\Department();
+        $department1->setRealTitle('d1');
+        $department1->addBrand($brand);
+
+        $department1a = new Entity\Department();
+        $department1a->setRealTitle('d1a');
+        $department1a->addBrand($brand);
+
+        $department2 = new Entity\Department();
+        $department2->setRealTitle('d2');
+        $department2->addBrand($brand);
+
+        $department1->addChild($department1a);
+        $department->addChild($department1);
+        $department->addChild($department2);
+
+        $this->em()->persist($department1a);
+        $this->em()->persist($department1);
+        $this->em()->persist($department2);
+        $this->em()->persist($department);
+        $this->em()->flush();
+
+        $model = $this->createBaseModel();
+        $model->setDepartment('d');
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertEquals('d1a', $entity->getDepartment()->getRealTitle());
     }
 
     /**
