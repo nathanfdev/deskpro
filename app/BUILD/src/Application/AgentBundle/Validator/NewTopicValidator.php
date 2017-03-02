@@ -33,7 +33,7 @@
 namespace Application\AgentBundle\Validator;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Manual;
+use Application\DeskPRO\Entity\Guide;
 use Orb\Validator\AbstractValidator;
 
 class NewTopicValidator extends AbstractValidator
@@ -45,12 +45,12 @@ class NewTopicValidator extends AbstractValidator
      */
     protected function checkIsValid($topic)
     {
-        if (!$topic->manual_id) {
-            $this->addError('manual_id.invalid');
+        if (!$topic->guide_id) {
+            $this->addError('guide_id.invalid');
         } else {
-            $cat = App::getOrm()->find(Manual::class, $topic->manual_id);
+            $cat = App::getOrm()->find(Guide::class, $topic->guide_id);
             if (!$cat) {
-                $this->addError('manual_id.invalid');
+                $this->addError('guide_id.invalid');
             }
         }
 

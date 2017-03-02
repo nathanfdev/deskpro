@@ -44,10 +44,10 @@ class NewNewsValidator extends AbstractValidator
      */
     protected function checkIsValid($news)
     {
-        if (!$news->manual_id) {
+        if (!$news->category_id) {
             $this->addError('category_id.invalid');
         } else {
-            $cat = App::getOrm()->find('DeskPRO:NewsCategory', $news->manual_id);
+            $cat = App::getOrm()->find('DeskPRO:NewsCategory', $news->category_id);
             if (!$cat) {
                 $this->addError('category_id.invalid');
             }

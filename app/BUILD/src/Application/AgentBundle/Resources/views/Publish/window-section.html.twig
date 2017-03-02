@@ -170,16 +170,16 @@
 			<header>
 				<h1>
 					<em class="dp-collapsible-toggle-btn"><i class="icon-x"></i></em>
-                    {{ phrase('agent.general.manuals') }}
+                    {{ phrase('agent.general.guides') }}
 				</h1>
 			</header>
 			<article>
 				<ul class="nav-list nav-list-small nav-list-tree">
-                    {% include 'AgentBundle:Publish:manuals-list.html.twig' with {'manuals': manuals, 'counts': manuals_counts, 'depth': 0 } %}
+                    {% include 'AgentBundle:Publish:guides-list.html.twig' with {'guides': guides, 'counts': guides_counts, 'depth': 0 } %}
 					<li class="new-cat-trigger new-cat">
-						<div class="item" data-route="poppage:{{ path('agent_publish_manuals_newform', {type: 'manual_topics', brand_id: selected_brand_id}) }}">
+						<div class="item" data-route="poppage:{{ path('agent_publish_guides_newform', {type: 'topics', brand_id: selected_brand_id}) }}">
 							<i class="icon-folder-close-alt"></i>
-							<h3>{{ phrase('agent.publish.add_new_manual') }}</h3>
+							<h3>{{ phrase('agent.publish.add_new_guide') }}</h3>
 						</div>
 					</li>
 				</ul>

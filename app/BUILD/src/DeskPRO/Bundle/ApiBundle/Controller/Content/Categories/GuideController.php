@@ -28,12 +28,12 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Categories;
 
-use Application\DeskPRO\Entity\Manual;
-use Application\DeskPRO\Entity\ManualTopic;
+use Application\DeskPRO\Entity\Guide;
+use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
-use DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Content\GuideType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,56 +41,56 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class ManualController.
+ * Class GuideController.
  *
- * @Feature("manuals")
+ * @Feature("guides")
  * @ApiModes("all")
- * @Rest\Route("/content/manuals")
- * @ApiDoc(target="all", section="Content", output="Application\DeskPRO\Entity\Manual")
+ * @Rest\Route("/guides")
+ * @ApiDoc(target="all", section="Content", output="Application\DeskPRO\Entity\Guide")
  * @ApiDoc(
  *     target="postAction",
  *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualType",
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Content\GuideType",
  *      "options"={"method"="POST"},
  *      "name"=""
  *     }
  * )
  */
-class ManualController extends AbstractCategoriesController
+class GuideController extends AbstractCategoriesController
 {
-    public static $entity = Manual::class;
-    public static $type   = ManualType::class;
+    public static $entity = Guide::class;
+    public static $type   = GuideType::class;
 
     /**
      * @ApiDoc(
-     *      description="give a topics tree list of a manual",
+     *      description="give a topics tree list of a guide",
      *      statusCodes={
      *          201="Created",
      *          400="Bad Request"
      *      }
      * )
-     * @Rest\Get("/tree/{manualId}")
+     * @Rest\Get("/tree/{guideId}")
      *
      * @param Request $request
-     * @param $manualId
+     * @param $guideId
      *
      * @return JsonResponse
      */
-    public function getTreeAction(Request $request, $manualId)
+    public function getTreeAction(Request $request, $guideId)
     {
-        /** @var Manual $manual */
-        $manual = $this->getRepository(Manual::class)->find($manualId);
+        /** @var Guide $guide */
+        $guide = $this->getRepository(Guide::class)->find($guideId);
 
-        if (!$manual) {
+        if (!$guide) {
             throw $this->createNotFoundException();
         }
 
         $results = $this->getManager()->getConnection()->fetchAllKeyed('
                 SELECT t.id, t.title, IFNULL(t.parent_id, 0) as parent_id
-                FROM manual_topics t
-                WHERE t.manual_id = ?
+                FROM topics t
+                WHERE t.guide_id = ?
                 ORDER BY display_order ASC
-            ', [$manual->getId()], 'id');
+            ', [$guide->getId()], 'id');
 
         return new JsonResponse(self::objectToArray(Arrays::intoHierarchy($results)));
     }
@@ -103,19 +103,19 @@ class ManualController extends AbstractCategoriesController
      *          400="Bad Request"
      *      }
      * )
-     * @Rest\Put("/tree/{manualId}")
+     * @Rest\Put("/tree/{guideId}")
      *
      * @param Request $request
-     * @param $manualId
+     * @param $guideId
      *
      * @return Response
      */
-    public function putTreeAction(Request $request, $manualId)
+    public function putTreeAction(Request $request, $guideId)
     {
-        /** @var Manual $manual */
-        $manual = $this->getRepository(Manual::class)->find($manualId);
+        /** @var Guide $guide */
+        $guide = $this->getRepository(Guide::class)->find($guideId);
 
-        if (!$manual) {
+        if (!$guide) {
             throw $this->createNotFoundException();
         }
 
@@ -126,10 +126,10 @@ class ManualController extends AbstractCategoriesController
         $tree = Arrays::flattenHierarchy($tree);
 
         $em   = $this->getManager();
-        $repo = $em->getRepository(ManualTopic::class);
+        $repo = $em->getRepository(Topic::class);
 
         // Might need performance optimisation
-        foreach ($manual->getTopics() as $topic) {
+        foreach ($guide->getTopics() as $topic) {
             $treeElement = $tree[$topic->getId()];
             if (($topic->getParent() && $topic->getParent()->getId() !== $treeElement['parent_id'])
                 || ($treeElement['parent_id'] && !$topic->getParent())

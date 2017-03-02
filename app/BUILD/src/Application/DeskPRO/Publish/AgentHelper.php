@@ -39,13 +39,13 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\GlossaryWord;
-use Application\DeskPRO\Entity\Manual;
-use Application\DeskPRO\Entity\ManualTopic;
-use Application\DeskPRO\Entity\ManualTopicComment;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Topic;
+use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\People\PersonContextInterface;
 use Orb\Util\Arrays;
 
@@ -58,14 +58,14 @@ class AgentHelper implements PersonContextInterface
     const DOWNLOADS = 'downloads';
     const NEWS      = 'news';
     const FEEDBACK  = 'feedback';
-    const MANUAL    = 'manual_topics';
+    const TOPICS    = 'topics';
 
     /** @var array */
     protected $enabled_types = [
         self::ARTICLES,
         self::DOWNLOADS,
         self::NEWS,
-        self::MANUAL,
+        self::TOPICS,
     ];
 
     /**
@@ -515,13 +515,13 @@ class AgentHelper implements PersonContextInterface
                 'entity'       => FeedbackComment::class,
                 'id_field'     => 'feedback_id',
             ],
-            'manual_topics' => [
-                'content_type'   => 'manual_topics',
-                'table'          => 'manual_topic_comments',
-                'entity'         => ManualTopicComment::class,
-                'category_table' => 'manuals',
-                'category_field' => 'manual_id',
-                'id_field'       => 'manual_topic_id',
+            'topics' => [
+                'content_type'   => 'topics',
+                'table'          => 'topic_comments',
+                'entity'         => TopicComment::class,
+                'category_table' => 'guides',
+                'category_field' => 'guide_id',
+                'id_field'       => 'topic_id',
             ],
         ];
 
@@ -612,11 +612,11 @@ class AgentHelper implements PersonContextInterface
                 'id_field'     => 'feedback_id',
                 'rev_table'    => 'feedback_revisions',
             ],
-            'manual_topics' => [
-                'content_type' => 'manual_topic',
-                'entity'       => ManualTopic::class,
-                'id_field'     => 'manual_topic_id',
-                'rev_table'    => 'manual_topic_revisions',
+            'topics' => [
+                'content_type' => 'topic',
+                'entity'       => Topic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'topic_revisions',
             ],
         ];
 
@@ -692,11 +692,11 @@ class AgentHelper implements PersonContextInterface
                 'id_field'     => 'feedback_id',
                 'rev_table'    => 'feedback_revisions',
             ],
-            'manual_topics' => [
-                'content_type' => 'manual_topics',
-                'entity'       => ManualTopic::class,
-                'id_field'     => 'manual_topic_id',
-                'rev_table'    => 'manual_topic_revisions',
+            'topics' => [
+                'content_type' => 'topics',
+                'entity'       => Topic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'topic_revisions',
             ],
         ];
 
@@ -763,11 +763,11 @@ class AgentHelper implements PersonContextInterface
                 'id_field'     => 'feedback_id',
                 'rev_table'    => 'feedback_revisions',
             ],
-            'manual_topics' => [
-                'content_type' => 'manual_topics',
-                'entity'       => ManualTopic::class,
-                'id_field'     => 'manual_topic_id',
-                'rev_table'    => 'manual_topic_revisions',
+            'topics' => [
+                'content_type' => 'topics',
+                'entity'       => Topic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'topic_revisions',
             ],
         ];
 
@@ -836,8 +836,8 @@ class AgentHelper implements PersonContextInterface
             case self::FEEDBACK:
                 return Feedback::class;
                 break;
-            case self::MANUAL:
-                return ManualTopic::class;
+            case self::TOPICS:
+                return Topic::class;
                 break;
         }
 
@@ -869,8 +869,8 @@ class AgentHelper implements PersonContextInterface
             case self::FEEDBACK:
                 return FeedbackCategory::class;
                 break;
-            case self::MANUAL:
-                return Manual::class;
+            case self::TOPICS:
+                return Guide::class;
                 break;
         }
 

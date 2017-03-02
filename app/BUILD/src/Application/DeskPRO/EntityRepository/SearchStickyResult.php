@@ -37,8 +37,8 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\ManualTopic;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Topic;
 
 class SearchStickyResult extends AbstractEntityRepository
 {
@@ -52,8 +52,8 @@ class SearchStickyResult extends AbstractEntityRepository
             $objectType = 'DeskPRO:News';
         } elseif ($object instanceof Feedback) {
             $objectType = 'DeskPRO:Feedback';
-        } elseif ($object instanceof ManualTopic) {
-            $objectType = 'DeskPRO:ManualTopic';
+        } elseif ($object instanceof Topic) {
+            $objectType = 'DeskPRO:Topic';
         } else {
             throw new \InvalidArgumentException('Unknown type');
         }

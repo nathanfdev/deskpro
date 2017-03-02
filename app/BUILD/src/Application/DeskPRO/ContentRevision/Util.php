@@ -39,11 +39,11 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadRevision;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackRevision;
-use Application\DeskPRO\Entity\ManualTopic;
-use Application\DeskPRO\Entity\ManualTopicRevision;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsRevision;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Topic;
+use Application\DeskPRO\Entity\TopicRevision;
 
 class Util
 {
@@ -226,9 +226,9 @@ class Util
                 return 'feedback';
                 break;
 
-            case ManualTopic::class:
-            case ManualTopicRevision::class:
-                return 'manual_topic';
+            case Topic::class:
+            case TopicRevision::class:
+                return 'topic';
                 break;
         }
 
@@ -272,11 +272,11 @@ class Util
                 }
                 break;
 
-            case ManualTopic::class:
+            case Topic::class:
                 if ($entity_name) {
-                    return 'DeskPRO:ManualTopicRevision';
+                    return 'DeskPRO:TopicRevision';
                 } else {
-                    return ManualTopicRevision::class;
+                    return TopicRevision::class;
                 }
                 break;
         }

@@ -1,19 +1,19 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
-DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
+DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
 	initializeProperties: function() {
 		this.parent();
-		this.TYPENAME = 'manual_topics';
+		this.TYPENAME = 'topics';
 	},
 
 	initMetaData: function() {
 		DeskPRO_Window.recentTabs.add(
-			'manual_topic',
-			this.meta.manual_topic_id,
+			'topic',
+			this.meta.topic_id,
 			this.meta.title,
-			BASE_URL + 'agent/manual_topic/post/' + this.meta.manual_topic_id
+			BASE_URL + 'agent/topic/post/' + this.meta.topic_id
 		);
 	},
 
@@ -22,7 +22,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 		var self = this;
 		this.wrapper = el;
 
-		this.manual_topic_id = this.getMetaData('manual_topic_id');
+		this.topic_id = this.getMetaData('topic_id');
 
 		this._initBasic();
 
@@ -43,13 +43,13 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 		}
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
-			typename: 'manual_topics',
-			content_id: this.meta.manual_topic_id,
+			typename: 'topics',
+			content_id: this.meta.topic_id,
 			listEl: $('section.linked-content:first', this.wrapper),
 			disabled: !this.meta.canEdit,
 			onContentLinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'agent/manuals/topic/' + self.meta.manual_topic_id + '/ajax-save',
+					url: BASE_URL + 'agent/guides/topic/' + self.meta.topic_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'add-related' },
 					context: this,
@@ -58,7 +58,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 			},
 			onContentUnlinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'agent/manuals/topic/' + self.meta.manual_topic_id + '/ajax-save',
+					url: BASE_URL + 'agent/guides/topic/' + self.meta.topic_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'remove-related' },
 					context: this,
@@ -69,7 +69,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 		this.ownObject(this.relatedContent);
 
 		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
-			revisionCompareUrl: BASE_URL + 'agent/manuals/compare-revs/{OLD}/{NEW}'
+			revisionCompareUrl: BASE_URL + 'agent/guides/compare-revs/{OLD}/{NEW}'
 		});
 		this.ownObject(this.miscContent);
 
@@ -77,25 +77,25 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 			triggerElement: '.who-voted-trigger',
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'agent/publish/rating-who-voted/manual_topics/' + this.meta.manual_topic_id
+				url: BASE_URL + 'agent/publish/rating-who-voted/topics/' + this.meta.topic_id
 			}
 		});
 		this.ownObject(this.whoVotedOverlay);
 
 		this.addEvent('activate', function() {
-			var params = { detail: {id: this.meta.manual_topic_id}};
-			window.document.dispatchEvent(new CustomEvent('dpSelectManualTopic', params));
+			var params = { detail: {id: this.meta.topic_id}};
+			window.document.dispatchEvent(new CustomEvent('dpSelectTopic', params));
 		});
 	},
 
 	newTitleCallback: function () {
-		window.document.dispatchEvent(new CustomEvent('dpManualReloadTree'));
+		window.document.dispatchEvent(new CustomEvent('dpGuideReloadTree'));
 	},
 
 	destroyPage: function() {
 		// Workaround for tinymce bug to do with remove()
 		// We'll manually remove the node ourselves
-		var el = $('.manual-topics-editor-wrap', this.getEl('content_ed'));
+		var el = $('.topics-editor-wrap', this.getEl('content_ed'));
 		if (el[0]) {
 			el.get(0).parentNode.removeChild(el.get(0));
 		}
@@ -125,7 +125,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
-				if ($(info.tabContent).is('.manual-topic-content')) {
+				if ($(info.tabContent).is('.topic-content')) {
 					self.getEl('content_edit_btns').show();
 				} else {
 					self.getEl('content_edit_btns').hide();
@@ -141,7 +141,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 				}
 				if ($(info.tabContent).is('.revisions-tab') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
-						url: BASE_URL + 'agent/manuals/topic/' + this.meta.manual_topic_id + '/view-revisions',
+						url: BASE_URL + 'agent/guides/topic/' + this.meta.topic_id + '/view-revisions',
 						type: 'GET',
 						dataType: 'html',
 						context: self,
@@ -159,7 +159,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 		if (this.meta.canEdit) {
 			var editTitle = new DeskPRO.Agent.PageFragment.Page.EditTitle(
 				this,
-				BASE_URL + 'agent/manuals/topic/' + this.meta.manual_topic_id + '/ajax-save'
+				BASE_URL + 'agent/guides/topic/' + this.meta.topic_id + '/ajax-save'
 			);
 		}
 	},
@@ -189,7 +189,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 			}
 
 			$.ajax({
-				url: BASE_URL + 'agent/manuals/topic/' + self.meta.manual_topic_id + '/ajax-save',
+				url: BASE_URL + 'agent/guides/topic/' + self.meta.topic_id + '/ajax-save',
 				type: 'POST',
 				data: {action: 'status', status: status},
 				context: self,
@@ -202,7 +202,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 		});
 
 		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
-			ajaxSaveUrl: BASE_URL + 'agent/manuals/topic/' + self.meta.manual_topic_id + '/ajax-save',
+			ajaxSaveUrl: BASE_URL + 'agent/guides/topic/' + self.meta.topic_id + '/ajax-save',
 			statusMenu: this.statusMenu
 		});
 		this.ownObject(this.deleteHelper);
@@ -212,7 +212,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 
 		catSel.on('change', function() {
 			$.ajax({
-				url: BASE_URL + 'agent/manuals/topic/' + self.meta.manual_topic_id + '/ajax-save',
+				url: BASE_URL + 'agent/guides/topic/' + self.meta.topic_id + '/ajax-save',
 				type: 'POST',
 				data: { action: 'category', category_id: $(this).val() },
 				dataType: 'json',
@@ -319,7 +319,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 
 	removeAutoUnPubOptions: function() {
 		$.ajax({
-			url: BASE_URL + 'agent/manuals/topic/' + this.getMetaData('manual_topic_id') + '/ajax-save',
+			url: BASE_URL + 'agent/guides/topic/' + this.getMetaData('topic_id') + '/ajax-save',
 			type: 'POST',
 			data: {action: 'remove-auto-unpub'},
 			context: this,
@@ -352,7 +352,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/manuals/topic/' + this.getMetaData('manual_topic_id') + '/ajax-save',
+			url: BASE_URL + 'agent/guides/topic/' + this.getMetaData('topic_id') + '/ajax-save',
 			type: 'POST',
 			data: data,
 			context: this,
@@ -414,7 +414,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 
 	removeAutoPubOptions: function() {
 		$.ajax({
-			url: BASE_URL + 'agent/manuals/topic/' + this.getMetaData('manual_topic_id') + '/ajax-save',
+			url: BASE_URL + 'agent/guides/topic/' + this.getMetaData('topic_id') + '/ajax-save',
 			type: 'POST',
 			data: {action: 'remove-auto-pub'},
 			context: this,
@@ -442,7 +442,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/manuals/topic/' + this.getMetaData('manual_topic_id') + '/ajax-save',
+			url: BASE_URL + 'agent/guides/topic/' + this.getMetaData('topic_id') + '/ajax-save',
 			type: 'POST',
 			data: data,
 			context: this,
@@ -482,7 +482,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/manuals/topic/' + this.getMetaData('manual_topic_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/guides/topic/' + this.getMetaData('topic_id') + '/ajax-save-comment',
 			type: 'POST',
 			context: this,
 			data: data,
@@ -498,7 +498,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 				DeskPRO_Window.util.modCountEl(this.getEl('count_comments'), '+');
 
 				if (DeskPRO_Window.sections.publish_section) {
-					DeskPRO_Window.sections.publish_section.modCommentCount('manual_topic', '+');
+					DeskPRO_Window.sections.publish_section.modCommentCount('topic', '+');
 				}
 			}
 		});
@@ -518,7 +518,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 
 		this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
 			stateId: 'editarticle',
-			listenOn: $('.manual-topic-editor-wrap:first', wrap)
+			listenOn: $('.topic-editor-wrap:first', wrap)
 		});
 		this.ownObject(this.editStateSaver);
 	},
@@ -555,16 +555,16 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
     var showSaved  = this.getEl('article_save').find('.mark-saved');
 
     showSaved.stop().hide();
-    window.document.dispatchEvent(new CustomEvent('dpManualTopicSaving'));
+    window.document.dispatchEvent(new CustomEvent('dpTopicSaving'));
 
     $.ajax({
-      url: BASE_URL + 'agent/manuals/topic/' + this.meta.manual_topic_id + '/ajax-save',
+      url: BASE_URL + 'agent/guides/topic/' + this.meta.topic_id + '/ajax-save',
       type: 'POST',
       context: this,
       data: data,
       dataType: 'json',
       complete: function() {
-        window.document.dispatchEvent(new CustomEvent('dpManualTopicSaved'));
+        window.document.dispatchEvent(new CustomEvent('dpTopicSaved'));
       },
       success: function(data) {
       	self._initPostArea();
@@ -577,8 +577,8 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 
 	showEditor: function() {
 
-		$('.manual-topic-content-wrap', this.getEl('content_ed')).hide();
-		$('.manual-topic-editor-wrap', this.getEl('content_ed')).show();
+		$('.topic-content-wrap', this.getEl('content_ed')).hide();
+		$('.topic-editor-wrap', this.getEl('content_ed')).show();
 
 		if (!this._hasInitEd) {
 			this._hasInitEd = true;
@@ -639,7 +639,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 			triggerElement: $('button.compare-trigger', this.wrapper),
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'agent/manuals/compare-revs/' + old_id + '/' + new_id
+				url: BASE_URL + 'agent/guides/compare-revs/' + old_id + '/' + new_id
 			},
 			destroyOnClose: true
 		});
@@ -653,7 +653,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 
 	_initEditSlug: function() {
 		var slugEl = this.getEl('slug');
-		var id = this.meta.manual_topic_id;
+		var id = this.meta.topic_id;
 
 		this.getEl('editslug').on('click', function(ev) {
 			Orb.cancelEvent(ev);
@@ -661,7 +661,7 @@ DeskPRO.Agent.PageFragment.Page.ManualTopicView = new Orb.Class({
 				newSlug = newSlug.toLowerCase().replace(/[^0-9a-zA-Z_\-]/g, '-').replace(/\-{2,}/g, '-').replace(/^\-/, '').replace(/\-$/, '');
 				slugEl.text(newSlug);
 				$.ajax({
-					url: BASE_URL + 'agent/manuals/topic/' + id + '/ajax-save',
+					url: BASE_URL + 'agent/guides/topic/' + id + '/ajax-save',
 					type: 'POST',
 					data: { slug: newSlug, action: 'slug' },
 					context: this,

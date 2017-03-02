@@ -28,151 +28,38 @@
 
 namespace Application\DeskPRO\Entity;
 
-use DateTime;
+use Application\DeskPRO\EntityRepository\TopicComment as TopicCommentRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as JMS;
 
-class ManualTopicRevision extends RevisionAbstract
+class TopicComment extends CommentAbstract
 {
+    const OBJ_PROP = 'topic';
+
     /**
-     * @JMS\Type("entity<Application\DeskPRO\Entity\ManualTopic>")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Topic>")
      * @JMS\Groups({"list", "details"})
      *
-     * @var ManualTopic
+     * @var Topic
      */
-    protected $manual_topic;
+    protected $topic;
 
     /**
-     * Revision title of topic.
+     * @return Topic
+     */
+    public function getTopic()
+    {
+        return $this->topic;
+    }
+
+    /**
+     * @param Topic $topic
      *
-     * @var string
+     * @return TopicComment
      */
-    protected $title = '';
-
-    /**
-     * Revision content of topic.
-     *
-     * @var string
-     */
-    protected $content = '';
-
-    /**
-     * @return ManualTopic
-     */
-    public function getManualTopic()
+    public function setTopic($topic)
     {
-        return $this->manual_topic;
-    }
-
-    /**
-     * @param ManualTopic $manual_topic
-     *
-     * @return ManualTopicRevision
-     */
-    public function setManualTopic($manual_topic)
-    {
-        $this->setModelField('manual_topic', $manual_topic);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param string $title
-     *
-     * @return ManualTopicRevision
-     */
-    public function setTitle($title)
-    {
-        $this->setModelField('title', $title);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContent()
-    {
-        return $this->content;
-    }
-
-    /**
-     * @param string $content
-     *
-     * @return ManualTopicRevision
-     */
-    public function setContent($content)
-    {
-        $this->setModelField('content', $content);
-
-        return $this;
-    }
-
-    /**
-     * @return Person
-     */
-    public function getPerson()
-    {
-        return $this->person;
-    }
-
-    /**
-     * @param Person $person
-     *
-     * @return ManualTopicRevision
-     */
-    public function setPerson($person)
-    {
-        $this->setModelField('person', $person);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param string $status
-     *
-     * @return ManualTopicRevision
-     */
-    public function setStatus($status)
-    {
-        $this->setModelField('status', $status);
-
-        return $this;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getDateCreated()
-    {
-        return $this->date_created;
-    }
-
-    /**
-     * @param DateTime $date_created
-     *
-     * @return ManualTopicRevision
-     */
-    public function setDateCreated($date_created)
-    {
-        $this->setModelField('date_created', $date_created);
+        $this->setModelField('topic', $topic);
 
         return $this;
     }
@@ -184,24 +71,14 @@ class ManualTopicRevision extends RevisionAbstract
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(['name' => 'manual_topic_revisions']);
+        $metadata->customRepositoryClassName = TopicCommentRepository::class;
+        $metadata->setPrimaryTable([
+            'name'    => 'topic_comments',
+            'indexes' => [
+                'status_idx' => ['columns' => ['status', 'is_reviewed']],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField([
-            'fieldName'  => 'title',
-            'type'       => 'string',
-            'precision'  => 0,
-            'scale'      => 0,
-            'nullable'   => false,
-            'columnName' => 'title',
-        ]);
-        $metadata->mapField([
-            'fieldName'  => 'content',
-            'type'       => 'text',
-            'precision'  => 0,
-            'scale'      => 0,
-            'nullable'   => false,
-            'columnName' => 'content',
-        ]);
         $metadata->mapField([
             'fieldName'  => 'id',
             'type'       => 'integer',
@@ -210,6 +87,59 @@ class ManualTopicRevision extends RevisionAbstract
             'nullable'   => false,
             'columnName' => 'id',
             'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'ip_address',
+            'type'       => 'string',
+            'length'     => 30,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'ip_address',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'visitor_id',
+            'type'       => 'string',
+            'length'     => 120,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'visitor_id',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'email',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'email',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'name',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'name',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'website',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'website',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'content',
+            'type'       => 'text',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'content',
         ]);
         $metadata->mapField([
             'fieldName'  => 'status',
@@ -221,6 +151,14 @@ class ManualTopicRevision extends RevisionAbstract
             'columnName' => 'status',
         ]);
         $metadata->mapField([
+            'fieldName'  => 'is_reviewed',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_reviewed',
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_created',
             'type'       => 'datetime',
             'precision'  => 0,
@@ -230,13 +168,13 @@ class ManualTopicRevision extends RevisionAbstract
         ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([
-            'fieldName'    => 'manual_topic',
-            'targetEntity' => ManualTopic::class,
+            'fieldName'    => 'topic',
+            'targetEntity' => Topic::class,
             'mappedBy'     => null,
-            'inversedBy'   => 'revisions',
+            'inversedBy'   => 'comments',
             'joinColumns'  => [
                 [
-                    'name'                 => 'manual_topic_id',
+                    'name'                 => 'topic_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => true,
                     'onDelete'             => 'cascade',
@@ -258,6 +196,7 @@ class ManualTopicRevision extends RevisionAbstract
                     'columnDefinition'     => null,
                 ],
             ],
+            'dpApi' => true,
         ]);
     }
 }

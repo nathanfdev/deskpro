@@ -1,7 +1,7 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.ManualList = new Orb.Class({
-	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
+DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
+	Extends:          DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	initializeProperties: function() {
 		this.parent();
@@ -11,42 +11,42 @@ DeskPRO.Agent.PageFragment.ListPane.ManualList = new Orb.Class({
 	initPage: function(el) {
 		this.wrapper = el;
 
-		this.listWrapper = $('section.manual-simple-list', this.wrapper);
+		this.listWrapper = $('section.guide-simple-list', this.wrapper);
 
     var $rElement = $('<div></div>').insertAfter(this.listWrapper);
 
     this.listWrapper.hide();
 
-    window.AgentLegacyBundle.renderManualTopicsTree(
+    window.AgentLegacyBundle.renderTopicsTree(
       $rElement.get(0),
-      this.meta.manualId,
+      this.meta.guideId,
       900,
 			this.openTopic
 		);
 
-		this._initManualEditor();
+		this._initGuideEditor();
 	},
 
-	_initManualEditor: function() {
+	_initGuideEditor: function() {
 		var self = this;
-		var manualEl = this.getEl('tab_cat');
-		if (!manualEl[0]) {
+		var guideEl = this.getEl('tab_cat');
+		if (!guideEl[0]) {
 			return;
 		}
 
-		this.getEl('manualfoot').find('.manual-save-trigger').on('click', function(ev){
+		this.getEl('guidefoot').find('.guide-save-trigger').on('click', function(ev){
 			Orb.cancelEvent(ev);
 
-			var postData = manualEl.find('input, select').serializeArray();
+			var postData = guideEl.find('input, select').serializeArray();
 
-			self.getEl('manualfoot').addClass('dp-loading-on');
+			self.getEl('guidefoot').addClass('dp-loading-on');
 			$.ajax({
 				url: $(this).data('save-url'),
 				data: postData,
 				type: 'POST',
 				dataType: 'json',
 				complete: function() {
-					self.getEl('manualfoot').removeClass('dp-loading-on');
+					self.getEl('guidefoot').removeClass('dp-loading-on');
 				},
 				success: function() {
 					DeskPRO_Window.sections.publish_section.reload();
@@ -54,21 +54,21 @@ DeskPRO.Agent.PageFragment.ListPane.ManualList = new Orb.Class({
 			});
 		});
 
-		var delManual = this.getEl('del_manual');
-		delManual.find('.manual-del-trigger').on('click', function(ev) {
+		var delGuide = this.getEl('del_guide');
+		delGuide.find('.guide-del-trigger').on('click', function(ev) {
 			Orb.cancelEvent(ev);
-			delManual.addClass('dp-loading-on');
+			delGuide.addClass('dp-loading-on');
 
 			$.ajax({
 				url: $(this).data('save-url'),
 				type: 'POST',
 				dataType: 'json',
 				complete: function() {
-					delManual.removeClass('dp-loading-on');
+					delGuide.removeClass('dp-loading-on');
 				},
 				success: function(ret) {
 					if (ret.error_code && ret.error_code == 'not_empty') {
-						DeskPRO_Window.showAlert('The manual could not be deleted because it is not empty.');
+						DeskPRO_Window.showAlert('The guide could not be deleted because it is not empty.');
 						return;
 					}
 
@@ -78,7 +78,7 @@ DeskPRO.Agent.PageFragment.ListPane.ManualList = new Orb.Class({
 			});
 		});
 
-		allUg = manualEl.find('.ug-check');
+		allUg = guideEl.find('.ug-check');
 		ugEveryone = allUg.filter('.ug-1');
 		ugOther    = allUg.not('.ug-1');
 
@@ -97,7 +97,7 @@ DeskPRO.Agent.PageFragment.ListPane.ManualList = new Orb.Class({
 		updateChecks(ugEveryone.prop('checked'));
 	},
 
-	openTopic: function(manualTopicId) {
-    window.DeskPRO_Window.runPageRoute("manuals:/agent/manuals/topic/" + manualTopicId);
+	openTopic: function(topicId) {
+    window.DeskPRO_Window.runPageRoute("guides:/agent/guides/topic/" + topicId);
 	}
 });

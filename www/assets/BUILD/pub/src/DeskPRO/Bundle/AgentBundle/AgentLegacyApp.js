@@ -12,7 +12,7 @@ import { SideBarContainer } from './Modules/SideBar/Components/SideBar';
 import { AgentList } from './Modules/Agent/Components/AgentList';
 import { AgentOnboardingContainer }  from './Modules/Onboarding/Components/AgentOnboarding';
 import { ArchiveFilesContainer } from './Modules/Tickets/Components/Archive/ArchiveFiles';
-import { ManualTreeContainer } from './Modules/Publish/Components/List/ManualTree';
+import { GuideTreeContainer } from './Modules/Publish/Components/List/GuideTree';
 import { EditorContainer } from './Modules/Publish/Components/Editor/Editor';
 import VoiceControlsContainer from './Modules/Voice/Components/Controls/VoiceControlsContainer';
 import VoiceTicketMessageContainer from './Modules/Voice/Components/TicketMessage/TicketMessageContainer';
@@ -158,11 +158,11 @@ class AgentLegacyApp {
     );
   }
 
-  renderManualTopicsTree(node, manualId, height, openTopic) {
+  renderTopicsTree(node, guideId, height, openTopic) {
     ReactDOM.render(
       <Provider store={this.store}>
-        <ManualTreeContainer
-          manualId={manualId}
+        <GuideTreeContainer
+          guideId={guideId}
           height={height}
           openTopic={openTopic}
         />

@@ -28,21 +28,21 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\EntityRepository\ManualTopic as ManualTopicRepository;
+use Application\DeskPRO\EntityRepository\Topic as TopicRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ManualTopic extends ContentAbstract
+class Topic extends ContentAbstract
 {
-    const CONTENT_TYPE = 'manualtopic';
+    const CONTENT_TYPE = 'topic';
 
     /**
-     * @var Manual
+     * @var Guide
      */
-    protected $manual;
+    protected $guide;
 
     /**
      * Revisions of this Manual Topic.
@@ -65,9 +65,9 @@ class ManualTopic extends ContentAbstract
     /**
      * Topic`s parent.
      *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\ManualTopic>")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Topic>")
      *
-     * @var ManualTopic
+     * @var Topic
      */
     protected $parent;
 
@@ -89,28 +89,28 @@ class ManualTopic extends ContentAbstract
 
     protected function addSlugHistory($oldSlug)
     {
-        $history = new ManualTopicSlugHistory($this, $oldSlug);
+        $history = new TopicSlugHistory($this, $oldSlug);
         $this->slug_history->add($history);
 
         return $history;
     }
 
     /**
-     * @return Manual
+     * @return Guide
      */
-    public function getManual()
+    public function getGuide()
     {
-        return $this->manual;
+        return $this->guide;
     }
 
     /**
-     * @param Manual $manual
+     * @param Guide $guide
      *
-     * @return ManualTopic
+     * @return Topic
      */
-    public function setManual($manual)
+    public function setGuide($guide)
     {
-        $this->setModelField('manual', $manual);
+        $this->setModelField('guide', $guide);
 
         return $this;
     }
@@ -126,7 +126,7 @@ class ManualTopic extends ContentAbstract
     /**
      * @param ArrayCollection $revisions
      *
-     * @return ManualTopic
+     * @return Topic
      */
     public function setRevisions($revisions)
     {
@@ -146,7 +146,7 @@ class ManualTopic extends ContentAbstract
     /**
      * @param int $display_order
      *
-     * @return ManualTopic
+     * @return Topic
      */
     public function setDisplayOrder($display_order)
     {
@@ -156,7 +156,7 @@ class ManualTopic extends ContentAbstract
     }
 
     /**
-     * @return ManualTopic
+     * @return Topic
      */
     public function getParent()
     {
@@ -164,9 +164,9 @@ class ManualTopic extends ContentAbstract
     }
 
     /**
-     * @param ManualTopic $parent
+     * @param Topic $parent
      *
-     * @return ManualTopic
+     * @return Topic
      */
     public function setParent($parent)
     {
@@ -186,7 +186,7 @@ class ManualTopic extends ContentAbstract
     /**
      * @param bool $no_content
      *
-     * @return ManualTopic
+     * @return Topic
      */
     public function setNoContent($no_content)
     {
@@ -202,10 +202,10 @@ class ManualTopic extends ContentAbstract
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = ManualTopicRepository::class;
+        $metadata->customRepositoryClassName = TopicRepository::class;
         $metadata->setPrimaryTable(
             [
-                'name'    => 'manual_topics',
+                'name'    => 'topics',
                 'indexes' => [
                     'date_published_idx'    => ['columns' => [0 => 'date_published']],
                     'date_updated_idx'      => ['columns' => ['date_updated']],
@@ -420,13 +420,13 @@ class ManualTopic extends ContentAbstract
         );
         $metadata->mapManyToOne(
             [
-                'fieldName'    => 'manual',
-                'targetEntity' => Manual::class,
+                'fieldName'    => 'guide',
+                'targetEntity' => Guide::class,
                 'mappedBy'     => null,
                 'inversedBy'   => 'topics',
                 'joinColumns'  => [
                     0 => [
-                        'name'                 => 'manual_id',
+                        'name'                 => 'guide_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
@@ -439,9 +439,9 @@ class ManualTopic extends ContentAbstract
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'revisions',
-                'targetEntity' => ManualTopicRevision::class,
+                'targetEntity' => TopicRevision::class,
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'mappedBy'     => 'manual_topic',
+                'mappedBy'     => 'topic',
             ]
         );
         $metadata->mapManyToOne(
@@ -483,17 +483,17 @@ class ManualTopic extends ContentAbstract
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'slug_history',
-                'targetEntity' => ManualTopicSlugHistory::class,
+                'targetEntity' => TopicSlugHistory::class,
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'mappedBy'     => 'manual_topic',
+                'mappedBy'     => 'topic',
             ]
         );
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'comments',
-                'targetEntity' => ManualTopicComment::class,
+                'targetEntity' => TopicComment::class,
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'mappedBy'     => 'manual_topic',
+                'mappedBy'     => 'topic',
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );

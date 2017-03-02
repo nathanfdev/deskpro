@@ -34,6 +34,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-class ManualTopicSlugHistory extends AbstractEntityRepository
+class TopicSlugHistory extends AbstractEntityRepository
 {
 }

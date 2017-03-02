@@ -1,0 +1,19 @@
+<div class="full-tab-content">
+	<div class="topic-content-wrap content-post-wrap">
+		{{ topic.content_html|content|raw }}
+	</div>
+	<div class="topic-editor-wrap article-editor-wrap" style="display: none">
+		<div class="topic-editor">
+			{% if state.topic.content %}
+				<div class="revert-message-notice">
+					{{ phrase('agent.general.unsaved_changes_were_restored') }}
+					<button class="revert-default">{{ phrase('agent.publish.discard_unsaved_changes') }}</button>
+					<br />
+				</div>
+			{% endif %}
+			<textarea class="edit-content-field" name="topic[content]" rows="5" cols="50">{{ state.topic.content|default(topic.content) }}</textarea>
+			<input type="hidden" class="content_input_type" name="content_input_type" value="{{ topic.content_input_type }}">
+			<textarea class="edit-content-field-default" style="display: none;">{{topic.content}}</textarea>
+		</div>
+	</div>
+</div>

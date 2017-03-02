@@ -31,7 +31,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
 
-class Manual extends AbstractEntityRepository
+class Guide extends AbstractEntityRepository
 {
     public function getBySlug($slug)
     {
@@ -46,17 +46,17 @@ class Manual extends AbstractEntityRepository
     public function getAllCounts()
     {
         $counts = App::getDb()->fetchAllKeyed('
-            SELECT m.id as manual_id, COUNT(t.id) as count
-            FROM manuals AS m
-              LEFT JOIN manual_topics AS t
-                ON t.manual_id = m.id
+            SELECT m.id as guide_id, COUNT(t.id) as count
+            FROM guides AS m
+              LEFT JOIN topics AS t
+                ON t.guide_id = m.id
             GROUP BY m.id
             ORDER BY m.id ASC
-        ', [], 'manual_id');
+        ', [], 'guide_id');
 
         $result = [];
         foreach ($counts as $count) {
-            $result[$count['manual_id']] = $count['count'];
+            $result[$count['guide_id']] = $count['count'];
         }
 
         return $result;
@@ -64,16 +64,16 @@ class Manual extends AbstractEntityRepository
 
     public function getPermissionTableName()
     {
-        return 'manual2usergroup';
+        return 'guide2usergroup';
     }
 
     public function getCategoryField()
     {
-        return 'manual_id';
+        return 'guide_id';
     }
 
     /**
-     * Not used in manuals be it is called by PublishController.
+     * Not used in guides be it is called by PublishController.
      */
     public function repair()
     {

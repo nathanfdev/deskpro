@@ -33,17 +33,17 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Manual;
-use Application\DeskPRO\Entity\ManualTopic;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Topic;
 
 class NewTopic
 {
     /** @var string */
     public $title;
     /** @var int */
-    public $manual_id;
+    public $guide_id;
     /** @var int */
     public $parent_id;
     /** @var string */
@@ -56,7 +56,7 @@ class NewTopic
     /** @var array */
     public $attach = [];
     /** @var News */
-    protected $_manual_topic;
+    protected $_topic;
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -74,7 +74,7 @@ class NewTopic
     {
         $this->_em->beginTransaction();
 
-        $topic = new ManualTopic();
+        $topic = new Topic();
         $topic->setPerson($this->_person_context);
         $topic->setTitle($this->title);
 
@@ -88,10 +88,10 @@ class NewTopic
             $topic->setStatusCode('hidden.unpublished');
         }
 
-        $manual = $this->_em->find(Manual::class, $this->manual_id);
-        $topic->setManual($manual);
+        $guide = $this->_em->find(Guide::class, $this->guide_id);
+        $topic->setGuide($guide);
 
-        $parent = $this->_em->find(ManualTopic::class, $this->parent_id);
+        $parent = $this->_em->find(Topic::class, $this->parent_id);
         if ($parent) {
             $topic->setParent($parent);
         }
@@ -101,11 +101,11 @@ class NewTopic
 
         $this->_em->commit();
 
-        $this->_manual_topic = $topic;
+        $this->_topic = $topic;
     }
 
     public function getTopic()
     {
-        return $this->_manual_topic;
+        return $this->_topic;
     }
 }

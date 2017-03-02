@@ -16,7 +16,7 @@ pageMeta.baseId = '{{ baseId }}';
 <a class="tab-anchor" href="#">&nbsp;</a>
 
 <div class="form-header-error" style="display: none">
-	{{ phrase('agent.publish.no_manuals_error') }}
+	{{ phrase('agent.publish.no_guides_error') }}
 </div>
 <div class="form-outer">
 
@@ -35,17 +35,17 @@ pageMeta.baseId = '{{ baseId }}';
 			</select>
 		</div>
 		<div class="col">
-			<h4>{{ phrase('agent.general.manual') }}</h4>
+			<h4>{{ phrase('agent.general.guide') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
-				'name': 'newtopic[manual_id]',
-				'id': baseId ~ '_manual',
-				'add_classname': 'manual_id',
+				'name': 'newtopic[guide_id]',
+				'id': baseId ~ '_guide',
+				'add_classname': 'guide_id',
 				'add_attr': '',
-				'categories': manuals,
+				'categories': guides,
 				'allow_parent_sel': true,
-				'selected': state.topic.manual_id
+				'selected': state.topic.guide_id
 			} %}
-			<div class="error-message manual_id">{{ phrase('agent.publish.please_select_manual') }}</div>
+			<div class="error-message guide_id">{{ phrase('agent.publish.please_select_guide') }}</div>
 		</div>
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.status') }}</h4>
@@ -66,9 +66,8 @@ pageMeta.baseId = '{{ baseId }}';
             'add_attr': '',
             'categories': topics,
             'allow_parent_sel': true,
-            'selected': state.topic.manual_id
+            'selected': state.topic.parent_id
             } %}
-			<div class="error-message manual_id">{{ phrase('agent.publish.please_select_manual') }}</div>
 		</div>
 		<br class="clear" />
 	</div>

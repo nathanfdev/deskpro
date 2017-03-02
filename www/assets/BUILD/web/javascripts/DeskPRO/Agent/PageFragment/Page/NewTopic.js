@@ -15,7 +15,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		this.wrapper = el;
 		this.parent(el);
 
-		if (!this.getEl('manual').find('option')[0]) {
+		if (!this.getEl('guide').find('option')[0]) {
 			this.wrapper.find('.form-header-error').show();
 			this.wrapper.find('.form-outer').hide();
 			this.markForReload();
@@ -100,7 +100,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		this.wrapper.addClass('loading');
 
 		$.ajax({
-			url: BASE_URL + 'agent/manuals/new/save',
+			url: BASE_URL + 'agent/guides/new/save',
 			type: 'POST',
 			data: formData,
 			dataType: 'json',
@@ -118,11 +118,11 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 				}
 
 				if (data.news_id) {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/manuals/topic/' + data.news_id);
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/guides/topic/' + data.news_id);
 				}
 
 				this.closeSelf();
-        window.document.dispatchEvent(new CustomEvent('dpManualReloadTree'));
+        window.document.dispatchEvent(new CustomEvent('dpGuideReloadTree'));
 			}
 		});
 	},

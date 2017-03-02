@@ -28,12 +28,12 @@ export class EditorContainer extends React.Component {
   }
 
   componentWillMount = () => {
-    window.document.addEventListener('dpManualTopicSaving', () => {
+    window.document.addEventListener('dpTopicSaving', () => {
       this.setState({
         saving: true
       });
     });
-    window.document.addEventListener('dpManualTopicSaved', () => {
+    window.document.addEventListener('dpTopicSaved', () => {
       this.setState({
         saving: false
       });

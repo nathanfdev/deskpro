@@ -329,7 +329,7 @@ services:
       - { name: form.type }
 
   form.manual:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Content\GuideType
     arguments:
       - "@brand_form_helper"
     tags:

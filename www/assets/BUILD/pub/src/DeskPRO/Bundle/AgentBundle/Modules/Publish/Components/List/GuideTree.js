@@ -3,15 +3,15 @@ import { connect } from 'react-redux';
 import SortableTree from 'react-sortable-tree';
 import classNames from 'classnames';
 import Renderer from 'DeskPRO/Component/Tree/Renderer';
-import * as actions from '../../Actions/manualListActions';
-import { treeSelector } from '../../Selectors/manual';
+import * as actions from '../../Actions/guideListActions';
+import { treeSelector } from '../../Selectors/guide';
 
 @connect(state => ({
   tree: treeSelector(state)
 }))
-export class ManualTreeContainer extends React.Component {
+export class GuideTreeContainer extends React.Component {
   static propTypes = {
-    manualId:  PropTypes.number,
+    guideId:   PropTypes.number,
     height:    PropTypes.number,
     tree:      PropTypes.object,
     openTopic: PropTypes.func,
@@ -24,20 +24,20 @@ export class ManualTreeContainer extends React.Component {
   }
 
   handleChange = (treeData) => {
-    this.props.dispatch(actions.saveTree(this.props.manualId, treeData));
+    this.props.dispatch(actions.saveTree(this.props.guideId, treeData));
   };
 
   reloadTree = () => {
-    this.props.dispatch(actions.loadTree(this.props.manualId));
+    this.props.dispatch(actions.loadTree(this.props.guideId));
   };
 
   render() {
     let tree = [];
-    if (this.props.tree.size && this.props.tree.get('id') === this.props.manualId) {
+    if (this.props.tree.size && this.props.tree.get('id') === this.props.guideId) {
       tree = this.props.tree.get('tree').toJS();
     }
     return (
-      <ManualTree
+      <GuideTree
         tree={tree}
         height={this.props.height}
         handleChange={this.handleChange}
@@ -47,7 +47,7 @@ export class ManualTreeContainer extends React.Component {
     );
   }
 }
-export class ManualTree extends React.Component {
+export class GuideTree extends React.Component {
   static propTypes = {
     tree:         PropTypes.array,
     height:       PropTypes.number,
@@ -71,14 +71,14 @@ export class ManualTree extends React.Component {
   }
 
   componentWillMount = () => {
-    window.document.addEventListener('dpSelectManualTopic', (e) => {
+    window.document.addEventListener('dpSelectTopic', (e) => {
       if (e.detail.id) {
         this.setState({
           active: e.detail.id
         });
       }
     });
-    window.document.addEventListener('dpManualReloadTree', () => {
+    window.document.addEventListener('dpGuideReloadTree', () => {
       this.props.reloadTree();
     });
   };

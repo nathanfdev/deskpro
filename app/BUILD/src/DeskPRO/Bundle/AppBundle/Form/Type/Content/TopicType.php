@@ -29,10 +29,10 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Content;
 
 use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\Language;
-use Application\DeskPRO\Entity\Manual;
-use Application\DeskPRO\Entity\ManualTopic;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -42,7 +42,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ManualTopicType extends AbstractType
+class TopicType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -67,11 +67,11 @@ class ManualTopicType extends AbstractType
                     ContentAbstract::STATUS_HIDDEN,
                 ],
             ])
-            ->add('manual', EntityType::class, [
-                'class' => Manual::class,
+            ->add('guide', EntityType::class, [
+                'class' => Guide::class,
             ])
             ->add('parent', EntityType::class, [
-                'class' => ManualTopic::class,
+                'class' => Topic::class,
             ])
             ->add('author', PersonAssignType::class, [
                 'property_path' => 'person',
@@ -88,7 +88,7 @@ class ManualTopicType extends AbstractType
         $resolver
             ->setRequired('person')
             ->setDefaults([
-                'data_class' => ManualTopic::class,
+                'data_class' => Topic::class,
             ])
             ->setAllowedTypes('person', Person::class)
         ;

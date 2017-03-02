@@ -41,9 +41,9 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\ManualTopic;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
@@ -1896,9 +1896,9 @@ class TemplatingExtension extends \Twig_Extension
             case 'download':
                 $object = $em->getRepository(Download::class)->find($id);
                 break;
-            case 'manual':
-            case 'manual_topic':
-                $object = $em->getRepository(ManualTopic::class)->find($id);
+            case 'guide':
+            case 'topic':
+                $object = $em->getRepository(Topic::class)->find($id);
                 break;
             default:
                 $object = null;
