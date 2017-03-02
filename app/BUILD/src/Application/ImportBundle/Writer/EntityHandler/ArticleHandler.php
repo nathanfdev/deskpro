@@ -62,14 +62,20 @@ class ArticleHandler extends AbstractEntityHandler
             ->setStatus($model->getStatus())
             ->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()))
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
-            ->setDatePublished($model->getDatePublished())
-            ->setDateEnd($model->getDateEnd())
             ->setEndAction($model->getEndAction())
             ->setViewCount($model->getViewCount())
         ;
 
         if ($model->getDateCreated()) {
             $entity->setDateCreated($model->getDateCreated());
+        }
+        if ($model->getDatePublished()) {
+            $entity->setDatePublished($model->getDatePublished());
+        } else {
+            $entity->setDatePublished($entity->getDateCreated());
+        }
+        if ($model->getDateEnd()) {
+            $entity->setDateEnd($model->getDateEnd());
         }
 
         $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getArticleCustomDefMapper(), $model, $entity);
