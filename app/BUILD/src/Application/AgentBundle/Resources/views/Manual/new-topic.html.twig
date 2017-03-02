@@ -57,6 +57,19 @@ pageMeta.baseId = '{{ baseId }}';
 				<option value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
 			</select>
 		</div>
+		<div class="col">
+			<h4>{{ phrase('agent.general.parent') }}</h4>
+            {% include 'AgentBundle:Common:select-standard.html.twig' with {
+            'name': 'newtopic[parent_id]',
+            'id': baseId ~ '_parent',
+            'add_classname': 'parent_id',
+            'add_attr': '',
+            'categories': topics,
+            'allow_parent_sel': true,
+            'selected': state.topic.manual_id
+            } %}
+			<div class="error-message manual_id">{{ phrase('agent.publish.please_select_manual') }}</div>
+		</div>
 		<br class="clear" />
 	</div>
 </div>

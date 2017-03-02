@@ -1,0 +1,134 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace Application\DeskPRO\EntityRepository;
+
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
+
+class ManualTopic extends AbstractEntityRepository
+{
+    /**
+     * @var null|array
+     */
+    protected $topicHierarchy = null;
+
+    /**
+     * @var string
+     */
+    protected $tableName;
+
+    /**
+     * @var array
+     */
+    protected $topicIds;
+
+    /**
+     * @var array
+     */
+    protected $topics;
+
+    /**
+     * @var array
+     */
+    protected $topicParentMap;
+
+    /**
+     * @var array
+     */
+    protected $topicNames;
+
+    /**
+     * @var array
+     */
+    protected $topicHierarchyFlat;
+
+    public function __construct(EntityManager $em, ClassMetadata $class)
+    {
+        parent::__construct($em, $class);
+        $this->tableName = $class->getTableName();
+    }
+
+    /**
+     * Get a plain hierarchy array.
+     *
+     * @param bool $reset
+     *
+     * @return array|null
+     */
+    public function getInHierarchy($reset = false)
+    {
+        if (!$reset && $this->topicHierarchy !== null) {
+            return $this->topicHierarchy;
+        }
+
+        if (is_array($reset)) {
+            $topics = $reset;
+        } else {
+            $select = 'id, parent_id, title';
+
+            $topics = $this->_em->getConnection()->fetchAllKeyed("
+                SELECT $select
+                FROM {$this->tableName}
+                ORDER BY display_order ASC, id ASC
+            ", [], 'id');
+        }
+
+        $this->topicIds = [];
+        foreach ($topics as &$c) {
+            foreach (['id', 'parent_id', 'brand_id'] as $k) {
+                if (!empty($c[$k])) {
+                    $c[$k] = (int) $c[$k];
+                }
+            }
+            $c['url_slug'] = $c['id'].'-'.Strings::slugifyTitle($c['title']);
+
+            if (!isset($c['user_title']) || !$c['user_title']) {
+                $c['user_title'] = $c['title'];
+            }
+
+            $this->topicIds[]       = $c['id'];
+            $this->topics[$c['id']] = $c;
+        }
+        unset($c);
+
+        foreach ($topics as $c) {
+            $this->topicParentMap[$c['id']] = $c['parent_id'] ? $c['parent_id'] : 0;
+        }
+
+        $this->topicNames = Arrays::flattenToIndex($topics, 'title');
+
+        $topics                   = Arrays::intoHierarchy($topics, null);
+        $this->topicHierarchy     = $topics;
+        $this->topicHierarchyFlat = Arrays::flattenHierarchy($topics);
+
+        return $this->topicHierarchy;
+    }
+}

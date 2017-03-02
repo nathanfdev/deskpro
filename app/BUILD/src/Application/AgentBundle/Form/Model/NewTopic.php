@@ -44,6 +44,8 @@ class NewTopic
     public $title;
     /** @var int */
     public $manual_id;
+    /** @var int */
+    public $parent_id;
     /** @var string */
     public $status;
     /** @var string */
@@ -88,6 +90,11 @@ class NewTopic
 
         $manual = $this->_em->find(Manual::class, $this->manual_id);
         $topic->setManual($manual);
+
+        $parent = $this->_em->find(ManualTopic::class, $this->parent_id);
+        if ($parent) {
+            $topic->setParent($parent);
+        }
 
         $this->_em->persist($topic);
         $this->_em->flush();

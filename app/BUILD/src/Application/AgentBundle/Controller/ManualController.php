@@ -273,18 +273,19 @@ class ManualController extends PublishController
 
     public function newTopicAction()
     {
-        $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
-
         $manuals = $this->em->getRepository(Manual::class)->findAll();
 
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.new_topic', $this->person->id);
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
+        $topics = $this->em->getRepository(ManualTopic::class)->getInHierarchy();
+
         return $this->render('AgentBundle:Manual:new-topic.html.twig', [
             'manuals' => $manuals,
             'state'   => $state,
             'brands'  => $brands,
+            'topics'  => $topics,
         ]);
     }
 

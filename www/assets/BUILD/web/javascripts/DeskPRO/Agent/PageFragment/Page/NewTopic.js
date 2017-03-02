@@ -211,7 +211,6 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
       textArea.val(),
       'markdown',
       false,
-			false,
 			function (html, input, type) {
       	textArea.val(html);
 				contentInput.val(input);

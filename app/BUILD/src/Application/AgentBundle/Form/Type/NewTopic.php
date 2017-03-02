@@ -51,6 +51,7 @@ class NewTopic extends AbstractType
             ->add('title', TextType::class)
             ->add('content', TextareaType::class, ['filter_clean' => false])
             ->add('manual_id', TextType::class)
+            ->add('parent_id', TextType ::class)
             ->add('status', TextType::class)
             ->add('slug', TextType::class)
             ->add('attach', CollectionType::class, [
