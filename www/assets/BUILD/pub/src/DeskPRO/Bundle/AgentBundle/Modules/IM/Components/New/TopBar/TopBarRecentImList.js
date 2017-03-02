@@ -111,7 +111,7 @@ class TopBarRecentImList extends RecentList {
   renderRemoveButton(chat) { // eslint-disable-line class-methods-use-this
     return (
       <i
-        className="close icon remove"
+        className="close icon remove circle"
         onClick={(event) => {
           event.stopPropagation();
           this.props.onHideChat(chat);

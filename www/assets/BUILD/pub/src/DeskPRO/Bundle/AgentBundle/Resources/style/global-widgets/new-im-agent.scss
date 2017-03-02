@@ -98,15 +98,14 @@ img.emojione, svg.emojione {
         top: -9px;
         right: -5px;
         color: $dp-greyscale-850;
+
         &:before {
           content: "";
         }
       }
 
-      &:hover {
-        .icon.close:before {
-          content: "\f00d";
-        }
+      &:hover .icon.close:before {
+        content: "\f057";
       }
 
       > .im.avatar {
