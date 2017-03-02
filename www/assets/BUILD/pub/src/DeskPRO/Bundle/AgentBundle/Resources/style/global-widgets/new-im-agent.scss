@@ -48,12 +48,6 @@ img.emojione, svg.emojione {
     top: 0;
     border: 0.5px solid transparent;
   }
-
-  &.offline > .offline-block {
-    display: inline-block;
-    background: #fff;
-    opacity: 0.5;
-  }
 }
 
 .ui.topbar > .item > .im-list {
@@ -65,6 +59,18 @@ img.emojione, svg.emojione {
     > .im.wrapper {
       position: relative;
       display: inline-block;
+
+      &.current {
+        > .ui.avatar.image {
+          border: 3px solid $dp-sonic-primary !important;
+          margin: 0 4px;
+
+          .text {
+            left: -1px;
+            top: -1px;
+          }
+        }
+      }
 
       .ui.avatar.image.im {
         svg {
@@ -81,8 +87,8 @@ img.emojione, svg.emojione {
         border-radius: 500rem;
         border: 1px solid gray;
         position: absolute;
-        bottom: -2px;
-        right: 6px;
+        bottom: -5px;
+        right: 4px;
       }
 
       .icon.close {
@@ -92,15 +98,14 @@ img.emojione, svg.emojione {
         top: -9px;
         right: -5px;
         color: $dp-greyscale-850;
+
         &:before {
           content: "";
         }
       }
 
-      &:hover {
-        .icon.close:before {
-          content: "\f00d";
-        }
+      &:hover .icon.close:before {
+        content: "\f057";
       }
 
       > .im.avatar {
@@ -426,13 +431,16 @@ img.emojione, svg.emojione {
 
           .group-overlay {
             background: white;
-            width: 55px;
+            width: 48px;
             text-align: center;
 
             .icon {
               font-size: 20px;
+              &.reply {
+                font-size: 18px;
+              }
               color: $dp-sonic-primary;
-              margin: 20%;
+              margin: 27%;
             }
           }
 
@@ -541,11 +549,11 @@ img.emojione, svg.emojione {
         }
         .content {
           &.agent, &.department, &.team, &.group {
-            overflow: visible;
+            overflow: hidden;
             height: 30px;
             line-height: 28px;
             white-space: nowrap;
-            max-width: 275px;
+            max-width: 320px;
 
             .header {
               font-family: "Open Sans", serif;
@@ -554,11 +562,18 @@ img.emojione, svg.emojione {
               color: $dp-greyscale-850;
               display: inline-block;
             }
+          }
+
+          &.department {
+            height: 38px;
+            padding-top: 4px;
+            padding-bottom: 4px;
 
             .description {
               padding-top: 3px;
             }
           }
+
         }
 
         &.department.recent {
@@ -571,7 +586,7 @@ img.emojione, svg.emojione {
             }
 
             .description {
-              max-width: 185px;
+              max-width: 325px;
             }
           }
         }
@@ -669,7 +684,7 @@ img.emojione, svg.emojione {
       &.expanded {
         padding: 8px 20px;
 
-        .ui.im.avatar {
+        > .ui.im.avatar {
           margin-right: 10px;
           margin-bottom: 5px;
           margin-top: 5px;

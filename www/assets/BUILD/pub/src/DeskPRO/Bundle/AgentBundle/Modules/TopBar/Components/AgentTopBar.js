@@ -469,6 +469,7 @@ export class AgentTopBar extends React.Component {
       <TopBarRecentImList
         me={me}
         current={current}
+        chating={chating}
         agents={agents}
         people={people}
         departments={myDepartments}

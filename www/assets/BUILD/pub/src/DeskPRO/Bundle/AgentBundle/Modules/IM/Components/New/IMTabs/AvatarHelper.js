@@ -27,6 +27,7 @@ class AvatarHelper {
 
   static renderAgentAvatar(agent, size = 24, className = []) {
     return (<PersonAvatar
+      key={`agent_${agent.get('id')}`}
       color={chooseColor(agent.get('id'))}
       borderColor={darkerColor(agent.get('id'), 0.2)}
       person={agent} size={size}

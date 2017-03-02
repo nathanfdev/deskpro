@@ -45,8 +45,8 @@ export class UserPhoto extends React.Component {
     const { width, height, color, borderColor } = this.props;
 
     const style = {
-      width:      `${width - 1}px`,
-      height:     `${height - 1}px`,
+      width:      `${width}px`,
+      height:     `${height}px`,
       lineHeight: `${height}px`,
       display:    'inline-block',
       textAlign:  'center',

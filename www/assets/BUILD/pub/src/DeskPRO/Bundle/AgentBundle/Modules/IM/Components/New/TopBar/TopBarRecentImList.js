@@ -111,12 +111,16 @@ class TopBarRecentImList extends RecentList {
   renderRemoveButton(chat) { // eslint-disable-line class-methods-use-this
     return (
       <i
-        className="close icon remove"
+        className="close icon remove circle"
         onClick={(event) => {
           event.stopPropagation();
           this.props.onHideChat(chat);
         }
     } />);
+  }
+
+  getClassNames(chat) {
+    return classNames('im wrapper', { current: chat.get('id') === this.props.current.get('id') && this.props.chating });
   }
 
   renderAgent(chat) {
@@ -151,7 +155,7 @@ class TopBarRecentImList extends RecentList {
 
     return (
       <span
-        className="im wrapper"
+        className={this.getClassNames(chat)}
         id={`chat-${chat.get('id')}`}
         onClick={() => onRecentClick(chat.get('id'))}
       >
@@ -178,7 +182,7 @@ class TopBarRecentImList extends RecentList {
 
     return (
       <span
-        className="im wrapper"
+        className={this.getClassNames(chat)}
         id={`chat-${chat.get('id')}`}
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
@@ -204,7 +208,7 @@ class TopBarRecentImList extends RecentList {
 
     return (
       <span
-        className="im wrapper"
+        className={this.getClassNames(chat)}
         id={`chat-${chat.get('id')}`}
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
@@ -220,7 +224,7 @@ class TopBarRecentImList extends RecentList {
 
     return (
       <span
-        className="im wrapper"
+        className={this.getClassNames(chat)}
         id={`chat-${chat.get('id')}`}
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
@@ -236,7 +240,7 @@ class TopBarRecentImList extends RecentList {
 
     return (
       <span
-        className="im wrapper"
+        className={this.getClassNames(chat)}
         id={`chat-${chat.get('id')}`}
         onClick={() => this.props.onRecentClick(chat.get('id'))}
       >
