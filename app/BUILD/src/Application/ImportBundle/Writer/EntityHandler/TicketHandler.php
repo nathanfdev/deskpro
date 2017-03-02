@@ -162,6 +162,17 @@ class TicketHandler extends AbstractEntityHandler
             $entity->setDepartment($this->mappers->getBrandMapper()->getDefaultDepartment($ticketBrand));
         }
 
+        // ensure we are using leaf department
+        $ticketDepartment = $entity->getDepartment();
+        if ($ticketDepartment && !$ticketDepartment->isLeaf()) {
+            foreach ($ticketDepartment->getAllChildren() as $childDepartment) {
+                if ($childDepartment->isLeaf()) {
+                    $entity->setDepartment($childDepartment);
+                    break;
+                }
+            }
+        }
+
         // persist basic entity
         $this->persister->persistAndFlush($entity, $model);
 
