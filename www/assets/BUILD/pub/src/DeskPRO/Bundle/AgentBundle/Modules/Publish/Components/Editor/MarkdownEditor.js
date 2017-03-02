@@ -21,7 +21,7 @@ class MarkdownEditor extends React.Component {
     onAddFile:        React.PropTypes.func,
     loadRemoteImages: React.PropTypes.func,
     options:          React.PropTypes.object,
-    path:             React.PropTypes.string,
+    name:             React.PropTypes.string,
     value:            React.PropTypes.string,
   };
   static defaultProps = {
@@ -195,7 +195,8 @@ class MarkdownEditor extends React.Component {
       );
       result = result.replace(element.match, image);
     });
-    this.props.onChange(result);
+    const html = this.renderHtml(result);
+    this.props.onChange(result, html);
   };
 
   appendImage = (data) => {
@@ -225,8 +226,9 @@ class MarkdownEditor extends React.Component {
   codemirrorValueChanged = (doc) => {
     const newValue = doc.getValue();
     this.currentCodemirrorValue = newValue;
-    this.setState({ html: this.renderHtml(newValue) });
-    this.props.onChange(newValue);
+    const html = this.renderHtml(newValue);
+    this.setState({ html });
+    this.props.onChange(newValue, html);
   };
 
   toggleFormat(formatKey, e) {
@@ -284,7 +286,7 @@ class MarkdownEditor extends React.Component {
         <div className={editorClassName}>
           <textarea
             ref={(c) => { this.codeMirrorNode = c; }}
-            name={this.props.path}
+            name={this.props.name}
             defaultValue={this.props.value}
             autoComplete="off"
           />

@@ -1,5 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { pushPayloadToCollection, async } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
+import { setFullPayload, async } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
 import * as actions from '../Actions/manualListActions';
 
 export const manualsTree = {
@@ -8,6 +8,6 @@ export const manualsTree = {
 
 export default createReducer(manualsTree, {
   [actions.loadTree]: async({
-    success: pushPayloadToCollection('tree')
+    success: setFullPayload('tree')
   })
 });

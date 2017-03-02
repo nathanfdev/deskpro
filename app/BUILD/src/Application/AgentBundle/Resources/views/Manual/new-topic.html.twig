@@ -57,6 +57,19 @@ pageMeta.baseId = '{{ baseId }}';
 				<option value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
 			</select>
 		</div>
+		<div class="col">
+			<h4>{{ phrase('agent.general.parent') }}</h4>
+            {% include 'AgentBundle:Common:select-standard.html.twig' with {
+            'name': 'newtopic[parent_id]',
+            'id': baseId ~ '_parent',
+            'add_classname': 'parent_id',
+            'add_attr': '',
+            'categories': topics,
+            'allow_parent_sel': true,
+            'selected': state.topic.manual_id
+            } %}
+			<div class="error-message manual_id">{{ phrase('agent.publish.please_select_manual') }}</div>
+		</div>
 		<br class="clear" />
 	</div>
 </div>
@@ -73,6 +86,8 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4>{{ phrase('agent.publish.post') }}</h4>
 		<textarea type="text" name="newtopic[content]" id="{{baseId}}_content">{{ state.topic.content }}</textarea>
+		<input type="hidden" name="newtopic[content_input]" id="{{baseId}}_content_input" value="">
+		<input type="hidden" name="newtopic[content_input_type]" id="{{baseId}}_content_input_type" value="markdown">
 	</div>
 </div>
 

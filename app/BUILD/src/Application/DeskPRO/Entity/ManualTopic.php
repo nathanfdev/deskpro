@@ -28,10 +28,12 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\ManualTopic as ManualTopicRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ManualTopic extends ContentAbstract
 {
@@ -75,6 +77,15 @@ class ManualTopic extends ContentAbstract
      * @var bool
      */
     protected $no_content = false;
+
+    /**
+     * The main content originally input type, markdown or HTML.
+     *
+     * @var string
+     *
+     * @Assert\NotBlank()
+     */
+    protected $content_input_type = self::CONTENT_TYPE_MARKDOWN;
 
     protected function addSlugHistory($oldSlug)
     {
@@ -191,6 +202,7 @@ class ManualTopic extends ContentAbstract
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = ManualTopicRepository::class;
         $metadata->setPrimaryTable(
             [
                 'name'    => 'manual_topics',

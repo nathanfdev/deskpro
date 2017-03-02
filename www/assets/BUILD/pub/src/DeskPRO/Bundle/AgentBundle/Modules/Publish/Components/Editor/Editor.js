@@ -1,20 +1,43 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, ButtonGroup } from 'DeskPRO/Component/Semantic/Button';
-import MarkdownEditor from 'DeskPRO/Component/Markdown/MarkdownEditor';
 import 'froala-editor/js/froala_editor.pkgd.min';
+import classNames from 'classnames';
 import $ from 'jquery';
 import FroalaEditor from 'react-froala-wysiwyg';
-import * as actions from './../Actions/publishEditorActions';
+import MarkdownEditor from './MarkdownEditor';
+import * as actions from '../../Actions/publishEditorActions';
 
 @connect()
 export class EditorContainer extends React.Component {
   static propTypes = {
-    value:      PropTypes.string,
-    inputType:  PropTypes.string,
-    hideEditor: PropTypes.func,
-    save:       PropTypes.func,
-    dispatch:   PropTypes.func,
+    value:        PropTypes.string,
+    inputType:    PropTypes.string,
+    hideEditor:   PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
+    save:         PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
+    updateSource: PropTypes.func,
+    dispatch:     PropTypes.func
+  };
+
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      saving: false
+    };
+  }
+
+  componentWillMount = () => {
+    window.document.addEventListener('dpManualTopicSaving', () => {
+      this.setState({
+        saving: true
+      });
+    });
+    window.document.addEventListener('dpManualTopicSaved', () => {
+      this.setState({
+        saving: false
+      });
+    });
   };
 
   onAddFile = (data, callback) => {
@@ -22,7 +45,9 @@ export class EditorContainer extends React.Component {
   };
 
   onCancel = () => {
-    this.props.hideEditor();
+    if (this.props.hideEditor) {
+      this.props.hideEditor();
+    }
   };
 
   loadRemoteImages = (data, callback) => {
@@ -35,8 +60,11 @@ export class EditorContainer extends React.Component {
       inputType={this.props.inputType}
       onCancel={this.onCancel}
       onSave={this.props.save}
+      saving={this.state.saving}
       onAddFile={this.onAddFile}
       loadRemoteImages={this.loadRemoteImages}
+      updateSource={this.props.updateSource}
+      hideEditor={this.props.hideEditor}
     />);
   }
 }
@@ -44,17 +72,21 @@ export class Editor extends React.Component {
   static propTypes = {
     value:            PropTypes.string,
     inputType:        PropTypes.string,
-    onSave:           PropTypes.func,
+    onSave:           PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
+    saving:           PropTypes.bool,
     onCancel:         PropTypes.func,
     onAddFile:        PropTypes.func,
-    loadRemoteImages: PropTypes.func
+    loadRemoteImages: PropTypes.func,
+    updateSource:     PropTypes.func,
+    hideEditor:       PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
   };
   static defaultProps = {
     value:     '',
     inputType: 'markdown',
     onSave() {},
     onCancel() {},
-    onAddFile() {}
+    onAddFile() {},
+    updateSource() {},
   };
 
   constructor(props) {
@@ -88,12 +120,18 @@ export class Editor extends React.Component {
     this.props.onSave(html, input, this.state.inputType);
   };
 
-  onChange = (value) => {
+  onChange = (value, html) => {
     this.setState({ markdown: value });
+    if (!this.props.onSave) {
+      this.props.updateSource(html, value, 'markdown');
+    }
   };
 
   onContentChange = (content) => {
     this.setState({ html: content });
+    if (!this.props.onSave) {
+      this.props.updateSource(content, content, 'rte');
+    }
   };
 
   getEditor = () => {
@@ -152,8 +190,14 @@ export class Editor extends React.Component {
           <Button key="markdown">Markdown</Button>
           <Button key="rte">Classic</Button>
         </ButtonGroup>
-        <Button className="pull-right" confirm onClick={this.onCancel}>Cancel</Button>
-        <Button className="pull-right" onClick={this.onSave}>Save</Button>
+        {this.props.hideEditor ? <Button className="pull-right" confirm onClick={this.onCancel}>Cancel</Button> : ''}
+        {this.props.onSave ?
+          <Button
+            className={classNames('pull-right', { loading: this.props.saving })}
+            onClick={this.onSave}
+          >
+            Save
+          </Button> : '' }
       </div>
       <div className="editor">
         {this.getEditor()}

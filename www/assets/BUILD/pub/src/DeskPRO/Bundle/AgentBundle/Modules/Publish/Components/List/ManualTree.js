@@ -7,31 +7,34 @@ import * as actions from '../../Actions/manualListActions';
 import { treeSelector } from '../../Selectors/manual';
 
 @connect(state => ({
-  trees: treeSelector(state)
+  tree: treeSelector(state)
 }))
 export class ManualTreeContainer extends React.Component {
   static propTypes = {
     manualId:  PropTypes.number,
     height:    PropTypes.number,
-    trees:     PropTypes.object,
+    tree:      PropTypes.object,
     openTopic: PropTypes.func,
     dispatch:  PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
-    this.props.dispatch(actions.loadTree(this.props.manualId));
+    this.reloadTree();
   }
 
   handleChange = (treeData) => {
     this.props.dispatch(actions.saveTree(this.props.manualId, treeData));
   };
 
+  reloadTree = () => {
+    this.props.dispatch(actions.loadTree(this.props.manualId));
+  };
+
   render() {
-    const trees = this.props.trees.filter(x => x.get('id') === this.props.manualId);
     let tree = [];
-    if (trees.size) {
-      tree = trees.first().get('tree').toJS();
+    if (this.props.tree.size && this.props.tree.get('id') === this.props.manualId) {
+      tree = this.props.tree.get('tree').toJS();
     }
     return (
       <ManualTree
@@ -39,6 +42,7 @@ export class ManualTreeContainer extends React.Component {
         height={this.props.height}
         handleChange={this.handleChange}
         onClick={node => this.props.openTopic(node.id)}
+        reloadTree={this.reloadTree}
       />
     );
   }
@@ -49,11 +53,13 @@ export class ManualTree extends React.Component {
     height:       PropTypes.number,
     onClick:      PropTypes.func,
     handleChange: PropTypes.func,
+    reloadTree:   PropTypes.func,
   };
   static defaultProps = {
     height: 800,
     onClick() {},
-    handleChange() {}
+    handleChange() {},
+    reloadTree() {}
   };
 
   constructor(props) {
@@ -64,6 +70,19 @@ export class ManualTree extends React.Component {
     };
   }
 
+  componentWillMount = () => {
+    window.document.addEventListener('dpSelectManualTopic', (e) => {
+      if (e.detail.id) {
+        this.setState({
+          active: e.detail.id
+        });
+      }
+    });
+    window.document.addEventListener('dpManualReloadTree', () => {
+      this.props.reloadTree();
+    });
+  };
+
   componentWillReceiveProps(nextProps) {
     this.setState({
       treeData: nextProps.tree
@@ -71,9 +90,15 @@ export class ManualTree extends React.Component {
   }
 
   onClick = (node) => {
-    this.setState({
-      active: node
-    });
+    if (node.id.toInt() === this.state.active) {
+      this.setState({
+        active: null
+      });
+    } else {
+      this.setState({
+        active: node.id.toInt()
+      });
+    }
     this.props.onClick(node);
   };
 
@@ -84,10 +109,16 @@ export class ManualTree extends React.Component {
     this.props.handleChange(treeData);
   };
 
-  generateNodeProps = rowInfo => ({
-    onClick:   () => this.onClick(rowInfo.node),
-    className: classNames({ active: rowInfo.node === this.state.active })
-  });
+  generateNodeProps = (rowInfo) => {
+    let id = rowInfo.node.id;
+    if (typeof id === 'string') {
+      id = window.parseInt(id, 10);
+    }
+    return ({
+      onClick:   () => this.onClick(rowInfo.node),
+      className: classNames({ active: id === this.state.active })
+    });
+  };
 
   render() {
     return (
