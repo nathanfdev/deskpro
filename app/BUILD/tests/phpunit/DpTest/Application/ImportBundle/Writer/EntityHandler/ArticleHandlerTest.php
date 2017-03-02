@@ -249,11 +249,14 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
 
         $entity = $this->getArticleEntity();
         $this->assertNotNull($entity);
-        $this->assertCount(2, $entity->getCategories());
-        $this->assertEquals('sub category 3', $entity->getCategories()[0]->getTitle());
-        $this->assertEquals('sub category 2', $entity->getCategories()[0]->getParent()->getTitle());
-        $this->assertEquals('category 1', $entity->getCategories()[0]->getParent()->getParent()->getTitle());
-        $this->assertEquals('category 4', $entity->getCategories()[1]->getTitle());
+        $this->assertCount(4, $entity->getCategories());
+        $this->assertEquals('sub category 2', $entity->getCategories()[0]->getTitle());
+        $this->assertEquals('category 1', $entity->getCategories()[0]->getParent()->getTitle());
+        $this->assertEquals('category 3', $entity->getCategories()[1]->getTitle());
+        $this->assertEquals('sub category 3', $entity->getCategories()[2]->getTitle());
+        $this->assertEquals('sub category 2', $entity->getCategories()[2]->getParent()->getTitle());
+        $this->assertEquals('category 1', $entity->getCategories()[2]->getParent()->getParent()->getTitle());
+        $this->assertEquals('category 4', $entity->getCategories()[3]->getTitle());
     }
 
     public function test_create_and_update_article_with_custom_data()

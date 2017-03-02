@@ -61,12 +61,16 @@ class FeedbackHandler extends AbstractEntityHandler
             ->setStatus($model->getStatus())
             ->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()))
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
-            ->setDatePublished($model->getDatePublished())
             ->setViewCount($model->getViewCount())
         ;
 
         if ($model->getDateCreated()) {
             $entity->setDateCreated($model->getDateCreated());
+        }
+        if ($model->getDatePublished()) {
+            $entity->setDatePublished($model->getDatePublished());
+        } else {
+            $entity->setDatePublished($entity->getDateCreated());
         }
 
         // update feedback category
