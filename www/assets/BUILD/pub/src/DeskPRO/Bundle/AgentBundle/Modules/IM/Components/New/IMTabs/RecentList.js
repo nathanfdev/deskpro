@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
-import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
-import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import AvatarHelper from './AvatarHelper';
 import AbstractList from './AbstractList';
 
@@ -93,13 +91,7 @@ class RecentList extends React.Component {
           className.push('offline');
         }
 
-        return (<PersonAvatar
-          key={`agent_${agentId}`}
-          person={agent}
-          size={14}
-          className={classNames(className)}
-          color={chooseColor(agent)}
-        />);
+        return AvatarHelper.renderAgentAvatar(agent, 20, classNames(className));
       }
     );
   }

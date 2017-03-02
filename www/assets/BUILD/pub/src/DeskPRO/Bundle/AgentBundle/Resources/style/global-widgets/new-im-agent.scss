@@ -684,7 +684,7 @@ img.emojione, svg.emojione {
       &.expanded {
         padding: 8px 20px;
 
-        .ui.im.avatar {
+        > .ui.im.avatar {
           margin-right: 10px;
           margin-bottom: 5px;
           margin-top: 5px;
