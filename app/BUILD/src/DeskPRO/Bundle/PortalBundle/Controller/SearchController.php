@@ -456,6 +456,7 @@ class SearchController extends AbstractController
             'news'     => PortalSettingsResolver::APPS_NEWS,
             'download' => PortalSettingsResolver::APPS_DOWNLOADS,
             'feedback' => PortalSettingsResolver::APPS_FEEDBACK,
+            'guide'    => PortalSettingsResolver::APPS_GUIDES,
         ];
 
         $limitTypesArray = array_filter($limitTypesArray,

@@ -108,6 +108,7 @@ class PublishController extends AbstractController
             PortalSettingsResolver::APPS_KB        => false,
             PortalSettingsResolver::APPS_DOWNLOADS => false,
             PortalSettingsResolver::APPS_NEWS      => false,
+            PortalSettingsResolver::APPS_GUIDES    => false,
         ];
 
         /** @var Brand[] $brands */

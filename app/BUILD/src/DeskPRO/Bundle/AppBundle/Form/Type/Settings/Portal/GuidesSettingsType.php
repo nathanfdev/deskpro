@@ -28,42 +28,21 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GeneralSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GuidesSettings;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class GeneralSettingsType.
+ * Class GuidesSettingsType.
  */
-class GeneralSettingsType extends AbstractType
+class GuidesSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function getParent()
     {
-        $builder
-            ->add('site_name', TextType::class)
-            ->add('brand_name', TextType::class)
-            ->add('site_url', UrlType::class)
-            ->add('deskpro_name', TextType::class)
-            ->add('deskpro_url', UrlType::class)
-            ->add('apps_feedback', ApiBooleanType::class)
-            ->add('apps_kb', ApiBooleanType::class)
-            ->add('apps_news', ApiBooleanType::class)
-            ->add('apps_downloads', ApiBooleanType::class)
-            ->add('apps_guides', ApiBooleanType::class)
-            ->add('iface_portal', ApiBooleanType::class)
-            ->add('iface_widget', ApiBooleanType::class)
-            ->add('show_ratings', ApiBooleanType::class)
-            ->add('show_ratings_min_votes', IntegerType::class)
-            ->add('publish_comments', ApiBooleanType::class)
-        ;
+        return AppSettingsType::class;
     }
 
     /**
@@ -72,7 +51,7 @@ class GeneralSettingsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => GeneralSettings::class,
+            'data_class' => GuidesSettings::class,
         ]);
     }
 }

@@ -109,6 +109,11 @@ class GeneralPortalSettings
     /**
      * @var bool
      */
+    public $apps_guides;
+
+    /**
+     * @var bool
+     */
     public $iface_portal;
 
     /**
@@ -180,7 +185,7 @@ class GeneralPortalSettings
             }
         }
 
-        if ($this->apps_downloads || $this->apps_feedback || $this->apps_kb || $this->apps_news) {
+        if ($this->apps_downloads || $this->apps_feedback || $this->apps_kb || $this->apps_news || $this->apps_guides) {
             $export_settings['portal_mode'] = 'publish';
         } else {
             $export_settings['portal_mode'] = 'tickets';

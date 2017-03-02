@@ -1955,6 +1955,16 @@ define(function() {
     data: {type: 'feedback'}
   });
 
+  //###
+  //# Guides::Settings
+  //###
+  routes.push({
+    id: 'portal.guides_settings',
+    url: '/guides/settings',
+    templateName: 'GuidesSettings/guides-settings.html',
+    controller: 'Admin_GuidesSettings_Ctrl_GuidesSettings'
+  });
+
   //##################################################################################################################
   // Chat
   //##################################################################################################################

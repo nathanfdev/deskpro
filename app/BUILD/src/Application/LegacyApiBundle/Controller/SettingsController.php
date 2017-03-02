@@ -592,6 +592,14 @@ class SettingsController extends AbstractController implements ProtectedControll
                 ];
                 break;
 
+            case 'guides':
+                $settings = [
+                    'enabled'       => (bool) $this->settings->get('core.apps_guides'),
+                    'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_guides'),
+                    'subscriptions' => (bool) $this->settings->get('user.guides_subscriptions'),
+                ];
+                break;
+
             default:
                 throw $this->createNotFoundException();
         }

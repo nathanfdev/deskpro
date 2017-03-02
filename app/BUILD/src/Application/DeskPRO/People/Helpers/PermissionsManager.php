@@ -486,6 +486,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             PortalSettingsResolver::APPS_DOWNLOADS   => false,
             PortalSettingsResolver::APPS_NEWS        => false,
             PortalSettingsResolver::APPS_FEEDBACK    => false,
+            PortalSettingsResolver::APPS_GUIDES      => false,
             PortalSettingsResolver::PUBLISH_COMMENTS => false,
         ];
 
