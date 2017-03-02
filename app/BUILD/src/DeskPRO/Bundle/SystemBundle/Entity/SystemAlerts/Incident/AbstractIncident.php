@@ -35,7 +35,6 @@ namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
-use DeskPRO\Bundle\SystemBundle\Exception\DenormalizationException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -328,10 +327,6 @@ abstract class AbstractIncident implements Incident
      */
     public function getFailureEventsCount()
     {
-        if ($this->failureEventsCount + $this->successEventsCount !== $this->getEventsCount()) {
-            throw new DenormalizationException('Total events count is not equal to sum of failure and success counts');
-        }
-
         return $this->failureEventsCount;
     }
 
