@@ -100,12 +100,6 @@ class ArticleHandler extends AbstractEntityHandler
             $newCategories->add($categoryEntity);
         }
 
-        foreach ($entity->getCategories() as $category) {
-            if (!$newCategories->contains($category)) {
-                $entity->removeFromCategory($category);
-            }
-        }
-
         // persist basic entity
         $this->persister->persistAndFlush($entity, $model);
 
