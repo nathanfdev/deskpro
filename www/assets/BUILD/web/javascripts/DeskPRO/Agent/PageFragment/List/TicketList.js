@@ -106,6 +106,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
       };
     })();
     this.addEvent('activate', this.fillListItems, this);
+    this.addEvent('activate', function() {
+      this.$scope.$safeApply();
+    }, this);
   },
 
   updateSlaListForTicket: function(info) {
