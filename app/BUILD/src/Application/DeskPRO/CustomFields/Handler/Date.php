@@ -227,7 +227,7 @@ class Date extends HandlerAbstract
         }
 
         // Timestamp value
-        if (strlen($data) == 10 && ctype_digit($data)) {
+        if (ctype_digit($data) && in_array(strlen($data), [9, 10])) {
             $data = date($this->getFormat(), $data);
         }
 
