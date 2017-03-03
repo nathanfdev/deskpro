@@ -25,6 +25,13 @@ class Scrollarea extends ScrollArea {
       this.autoscroll = false;
     }
   }
+
+  setStateFromEvent(newState, eventType) {
+    if (this.props.onScroll) {
+      this.props.onScroll({ ...newState, component: this });
+    }
+    this.setState({ ...newState, eventType });
+  }
 }
 
 export default Scrollarea;

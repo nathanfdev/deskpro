@@ -184,6 +184,37 @@ class AgentChatMessagesController extends CrudSubController
     }
 
     /**
+     * @ApiDoc(
+     *      description="get page where this message is",
+     *      statusCodes={
+     *          204="Returned if success",
+     *          400={
+     *              "Returned if given status was wrong",
+     *              "Returned if ids list was wrong formed"
+     *          }
+     *      }
+     * )
+     * @Rest\Get("/{id}/page")
+     *
+     * @param $id
+     * @param $request
+     *
+     * @return View
+     */
+    public function findMessagePageAction($id, Request $request)
+    {
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb->from(static::$entity, 'e');
+        $this->applyListFilters($qb, 'e', $request);
+        $this->applySorting($qb, 'e', $request);
+        $qb->andWhere('e.id > :id')->setParameter('id', $id);
+        $qb->select('count(e.id) as value');
+        $count = $qb->getQuery()->getSingleScalarResult();
+
+        return $this->wrap(ceil($count / static::$listPerPage) ?: 1);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)

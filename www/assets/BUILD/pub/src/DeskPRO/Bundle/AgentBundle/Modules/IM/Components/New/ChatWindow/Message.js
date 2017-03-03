@@ -9,12 +9,13 @@ import AvatarHelper from '../IMTabs/AvatarHelper';
 
 class Message extends React.Component {
   static propTypes = {
-    me:           PropTypes.object.isRequired,
-    message:      PropTypes.object.isRequired,
-    previous:     PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired,
-    searchQuery:  PropTypes.string,
-    agent:        PropTypes.object,
-    onAgentClick: PropTypes.func.isRequired
+    me:                   PropTypes.object.isRequired,
+    message:              PropTypes.object.isRequired,
+    previous:             PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired,
+    searchQuery:          PropTypes.string,
+    agent:                PropTypes.object,
+    onAgentClick:         PropTypes.func.isRequired,
+    onSearchMessageClick: PropTypes.func.isRequired
   };
 
   static renderSeparator(dateCreated) {
@@ -55,6 +56,7 @@ class Message extends React.Component {
 
   componentDidMount() {
     $('a:not([data-route])', this.message).attr('target', '_blank');
+    $('a', this.message).on('click', (e) => { e.stopPropagation(); return e; });
   }
 
   componentDidUpdate() {
@@ -105,8 +107,15 @@ class Message extends React.Component {
   }
 
   render() {
-    const { searchQuery, message, me, agent, onAgentClick } = this.props;
+    const { searchQuery, message, me, agent, onAgentClick, onSearchMessageClick } = this.props;
     const my = message.person === me.get('id') && !searchQuery;
+    const contentProps = {
+      className:               'content dont-break-out',
+      dangerouslySetInnerHTML: this.getMessage()
+    };
+    if (searchQuery) {
+      contentProps.onClick = (e) => { console.log(e); onSearchMessageClick(message); };
+    }
     return (<Segment className={classNames('row', { search: searchQuery, result: searchQuery, my })}>
       {this.dateSep()}
       {my || searchQuery ? this.timestamp() : null}
@@ -137,7 +146,7 @@ class Message extends React.Component {
             </div>
             )
           : null}
-        <div className="content dont-break-out" dangerouslySetInnerHTML={this.getMessage()} />
+        <div {...contentProps} />
       </div>
       {!my && !searchQuery ? this.timestamp() : null}
     </Segment>);
