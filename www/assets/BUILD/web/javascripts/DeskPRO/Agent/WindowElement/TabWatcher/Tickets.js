@@ -8,7 +8,6 @@ DeskPRO.Agent.WindowElement.TabWatcher.Tickets = new Orb.Class({
 
 	initialize: function() {
 		this.addEvent('activateTab', this.activateTab, this);
-		this.addEvent('deactivateTab', this.deactivateTab, this);
 
 		this.releasing = {};
 
@@ -33,9 +32,5 @@ DeskPRO.Agent.WindowElement.TabWatcher.Tickets = new Orb.Class({
 			this.releasing[ticketId].abort();
 			delete this.releasing[ticketId];
 		}
-	},
-
-	deactivateTab: function(tab) {
-
 	}
 });
