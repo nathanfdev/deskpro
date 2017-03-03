@@ -637,12 +637,14 @@ SQL
               ('8', NULL, 'downloads.use', 1, 1),
               ('8', NULL, 'news.use', 1, 1),
               ('8', NULL, 'chat.use', 1, 1),
+              ('8', NULL, 'guides.use', 1, 1),
 
               ('7', NULL, 'articles.use', 1, 1),
               ('7', NULL, 'feedback.use', 1, 1),
               ('7', NULL, 'downloads.use', 1, 1),
               ('7', NULL, 'news.use', 1, 1),
               ('7', NULL, 'chat.use', 1, 1);
+              ('7', NULL, 'guides.use', 1, 1),
             "
         );
 

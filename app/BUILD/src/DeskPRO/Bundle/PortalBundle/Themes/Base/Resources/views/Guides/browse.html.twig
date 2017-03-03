@@ -1,0 +1,14 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block inner_content %}
+    <div class="breadcrumbs">
+    {% show breadcrumbs %}
+    </div>
+    <div class="guides browse-page">
+    <header class="section-header padded">
+        <h1>{{ guide.title }}</h1>
+    </header>
+    <div class="column-full">
+    </div>
+    </div>
+{% endblock inner_content %}

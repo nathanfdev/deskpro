@@ -370,6 +370,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             'downloads.use' => true,
             'news.use'      => true,
             'chat.use'      => true,
+            'guides.use'    => true,
         ];
 
         $crossBrandAppSettings = $this->getBrandAppSettings();
@@ -394,6 +395,9 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             return false;
         }
         if ($name === 'news.use' && !$crossBrandAppSettings['core.apps_news']) {
+            return false;
+        }
+        if ($name === 'guides.use' && !$crossBrandAppSettings['core.apps_guides']) {
             return false;
         }
         if ($name === 'chat.use' || $name === 'agent_chat.use') {

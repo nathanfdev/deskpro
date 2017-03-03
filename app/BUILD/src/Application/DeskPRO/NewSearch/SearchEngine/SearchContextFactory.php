@@ -82,6 +82,10 @@ class SearchContextFactory
             $ids = $permissionBag->getAllowedDownloadCategories();
             $context->setDownloadCategoryIds($ids);
         }
+        if ($person->hasPerm('guides.use')) {
+            $ids = $permissionBag->getAllowedGuides();
+            $context->setGuideIds($ids);
+        }
 
         return $context;
     }

@@ -16,6 +16,7 @@
 			<li dp-tab-btn="main.perms.chat"><a href="#"><i class="fa fa-comment"></i> Chat</a></li>
 			<li dp-tab-btn="main.perms.feedback"><a href="#"><i class="fa fa-inbox"></i> Feedback</a></li>
 			<li dp-tab-btn="main.perms.articles"><a href="#"><i class="fa fa-file-text"></i> Articles</a></li>
+			<li dp-tab-btn="main.perms.guides"><a href="#"><i class="fa fa-book"></i> Guides</a></li>
 			<li dp-tab-btn="main.perms.downloads"><a href="#"><i class="fa fa-download"></i> Downloads</a></li>
 			<li dp-tab-btn="main.perms.news"><a href="#"><i class="fa fa-list-alt"></i> News</a></li>
 		</ul>
@@ -186,6 +187,50 @@
 	</table>
 
 	{# /ARTICLES PERMISSIONS #}
+
+	{# GUIDES PERMISSIONS #}
+
+	<table class="table table-hover" dp-tab-body="main.perms.guides">
+		<tbody>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_use_guides') }}</td>
+				<td>
+					{{ _self.perm_toggle('guide', 'use') }}
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_use_topics') }}</td>
+				<td>
+					{{ _self.perm_toggle('guide', 'rate') }}
+				</td>
+			</tr>
+
+			{% if cross_brand_setting('user.publish_comments') %}
+
+				<tr>
+					<td width="100%">{{ phrase('admin.user_groups.submit_topic_comments') }}</td>
+					<td>
+						{{ _self.perm_toggle('guide', 'comment') }}
+					</td>
+				</tr>
+
+			{% endif %}
+
+			{% if cross_brand_setting('user.publish_comments') %}
+
+				<tr>
+					<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_comment_no_review') }}</td>
+					<td>
+						{{ _self.perm_toggle('guide', 'no_comment_validate') }}
+					</td>
+				</tr>
+
+			{% endif %}
+
+		</tbody>
+	</table>
+
+	{# /GUIDES PERMISSIONS #}
 
 	{# DOWNLOADS PERMISSIONS #}
 

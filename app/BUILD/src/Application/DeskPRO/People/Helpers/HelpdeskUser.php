@@ -115,6 +115,10 @@ class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \
             return true;
         }
 
+        if ($this->person->hasPerm('guides.use')) {
+            return true;
+        }
+
         return false;
     }
 }
