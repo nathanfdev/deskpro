@@ -456,5 +456,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 	destroy: function() {
 		this.page = null;
     this.$scope && this.$scope.$destroy();
+    this.display && this.display.remove();
 	}
 });

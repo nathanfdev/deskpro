@@ -156,7 +156,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.ownObject(this.changePic);
 
 		this.ticketFields = new DeskPRO.Agent.PageHelper.TicketFields(this);
-		this.ownObject(this.ticketFields);
 
 		this._initMessage(this.wrapper.find('.messages-wrap'));
 
@@ -1252,6 +1251,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.ticketReplyBox.destroy();
 			this.ticketReplyBox = null;
 		}
+		if (this.valueForm) {
+		  this.valueForm.remove();
+      this.valueForm = null;
+    }
+    if (this.ticketFields) {
+		  this.ticketFields.destroy();
+		  this.ticketFields = null;
+    }
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: this.getMetaData('ticket_id') });
 	},
 
