@@ -32,6 +32,9 @@
 
 namespace Application\EmailBundle\SourceMapper\EmailRateLimit;
 
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig;
+use Application\DeskPRO\Entity\EmailAccount;
+use DeskPRO\Component\Util\ListUtils;
 use Symfony\Component\DependencyInjection\Container;
 
 class EmailRateLimitFactory
@@ -53,13 +56,14 @@ class EmailRateLimitFactory
             return new NullEmailRateLimit();
         }
 
-        $accountIds = array_map(function ($r) {
-            return $r['id'];
-        }, $container->get('database_connection')->fetchAll("
-            SELECT id
-            FROM email_accounts
-            WHERE outgoing_account LIKE '%PhpMailConfig%'
-        "));
+        $accounts = $container->get('email.email_account_manager')->getAllAccounts('with_transport');
+        $accounts = ListUtils::filter($accounts, function (EmailAccount $ac) {
+            return !($ac->getOutgoingAccount() instanceof SmtpConfig);
+        });
+
+        $accountIds = ListUtils::map($accounts, function (EmailAccount $ac) {
+            return $ac->getId();
+        });
 
         if (!$accountIds) {
             return new NullEmailRateLimit();
