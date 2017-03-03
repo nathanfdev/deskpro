@@ -3,6 +3,7 @@ import striptags from 'striptags';
 import $ from 'jquery';
 import emojione from 'emojione';
 import Message from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/ChatWindow/Message';
+import { startChat } from '../Modules/IM/Actions/chatsActions';
 
 class NotificationsHandler {
   constructor(props) {
@@ -19,9 +20,13 @@ class NotificationsHandler {
           const notification = new Notify(
             data.title,
             {
-              body:    summary,
-              timeout: 5,
-              icon:    data.icon
+              body:        summary,
+              timeout:     5,
+              icon:        data.icon,
+              notifyClick: () => {
+                this.options.dispatch(startChat(null, data.chat));
+                $(window).focus();
+              }
             }
           );
           notification.show();

@@ -105,6 +105,7 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
     {
         $message = $this->getChatMessage($event);
         $data    = [
+            'chatId'  => $message->getChat()->getId(),
             'title'   => sprintf('%s sent a message to you', $message->getPersonName()),
             'summary' => $message->getMessage(),
             'icon'    => $this->avatarResolver->getAvatar($message->getPerson(), 64),
