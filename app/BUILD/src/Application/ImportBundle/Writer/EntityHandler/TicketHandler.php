@@ -153,9 +153,16 @@ class TicketHandler extends AbstractEntityHandler
         // ensure that the ticket has brand and department
         // they are optional so set default ones if they are empty
         if (!$entity->getBrand()) {
-            $entity->setBrand($this->mappers->getBrandMapper()->getDefaultBrand());
+            // if department is assigned and has a brand
+            // then set the first brand from the department
+            if ($entity->getDepartment() && $entity->getDepartment()->getBrands()->count()) {
+                $entity->setBrand($entity->getDepartment()->getBrands()->first());
+            } else {
+                $entity->setBrand($this->mappers->getBrandMapper()->getDefaultBrand());
+            }
         }
 
+        // ensure ticket's department and brand are related
         $ticketBrand      = $entity->getBrand();
         $ticketDepartment = $entity->getDepartment();
         if (!$ticketDepartment || ($ticketBrand && !$ticketBrand->getDepartments()->contains($ticketDepartment))) {

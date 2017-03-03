@@ -296,6 +296,32 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('d1a', $entity->getDepartment()->getRealTitle());
     }
 
+    public function test_get_brand_from_department()
+    {
+        $customBrand = new Entity\Brand();
+        $customBrand->setName('custom brand');
+
+        $this->em()->persist($customBrand);
+        $this->em()->flush();
+
+        $department = new Entity\Department();
+        $department->setRealTitle('custom department');
+        $department->addBrand($customBrand);
+
+        $this->em()->persist($department);
+        $this->em()->flush();
+
+        $model = $this->createBaseModel();
+        $model->setDepartment('custom department');
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertEquals('custom department', $entity->getDepartment()->getRealTitle());
+        $this->assertEquals('custom brand', $entity->getBrand()->getName());
+    }
+
     /**
      * @return Model\Ticket
      */
