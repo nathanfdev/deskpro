@@ -83,13 +83,13 @@ class EmailRateLimitFactory
         }
 
         if (defined('DPC_SITE_FLAG_DISABLE_OUTMAIL')) {
-            return [['time' => 1, 'count' => 1, 'actions' => ['rate_limit']]];
+            return [['time' => 0, 'count' => 0, 'actions' => ['rate_limit']]];
         }
 
         // Demos
         if (DPC_DEMO_EXPIRE) {
             if (DPC_SITE_IS_SUSPICIOUS) {
-                return [['time' => 1, 'count' => 1, 'actions' => ['rate_limit']]];
+                return [['time' => 0, 'count' => 0, 'actions' => ['rate_limit']]];
             }
 
             if (DPC_SITE_IS_APPROVED) {
@@ -110,7 +110,7 @@ class EmailRateLimitFactory
         // New accounts (30 days)
         } elseif (DPC_SITE_CREATED_AT > (time() - 3369600)) {
             if (DPC_SITE_IS_SUSPICIOUS) {
-                return [['time' => 1, 'count' => 1, 'actions' => ['rate_limit']]];
+                return [['time' => 0, 'count' => 0, 'actions' => ['rate_limit']]];
             }
 
             if (DPC_SITE_IS_APPROVED) {
