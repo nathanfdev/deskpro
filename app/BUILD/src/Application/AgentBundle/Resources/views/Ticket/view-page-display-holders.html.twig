@@ -9,7 +9,7 @@
 				<span class="prop-val language_id">{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}None{% endif %}</span>
 			</td>
 		</tr>
-		<tr class="mode-edit" ng-show="isEditMode('language')">
+		<tr class="mode-edit ng-hide" ng-show="isEditMode('language')">
 			<th width="80">{{ phrase('agent.general.language') }}:</th>
 			<td>
 				{% include 'AgentBundle:Common:select-language.html.twig' with {
@@ -43,7 +43,7 @@
                 </span>
             </td>
         </tr>
-        <tr class="mode-edit" ng-show="isEditMode('category')">
+        <tr class="mode-edit ng-hide" ng-show="isEditMode('category')">
             <th width="80">{{ phrase('agent.general.category') }}:</th>
             <td>
                 <select name="ticket[category_id]" id="{{ baseId }}_ticket_category_id" data-prop-id="category_id"
@@ -106,7 +106,7 @@
 
         {% if (_as and ticket.problems.isEmpty()) or (_ds and not ticket.problems.isEmpty()) %}
 
-            <tr class="mode-edit" ng-show="isEditMode('problem')">
+            <tr class="mode-edit ng-hide" ng-show="isEditMode('problem')">
                 <th width="80">{{ phrase('agent.problems.problem') }}:</th>
                 <td>
                     {% set open_problems = open_problems ? open_problems : [] %}
@@ -174,7 +174,7 @@
                 </tr>
             {% endfor %}
         {% endif %}
-        <tr class="mode-edit" ng-show="isEditMode('product')">
+        <tr class="mode-edit ng-hide" ng-show="isEditMode('product')">
             <th width="80">{{ phrase('agent.general.product') }}:</th>
             <td>
                 <select name="ticket[product_id]" id="{{ baseId }}_ticket_product_id" data-prop-id="product"
@@ -219,7 +219,7 @@
                 </span>
             </td>
         </tr>
-        <tr class="mode-edit" ng-show="isEditMode('priority')">
+        <tr class="mode-edit ng-hide" ng-show="isEditMode('priority')">
             <th width="80">{{ phrase('agent.general.priority') }}:</th>
             <td>
                 <select name="ticket[priority_id]" id="{{ baseId }}_ticket_priority_id" data-prop-id="priority_id"
@@ -252,7 +252,7 @@
                 </span>
             </td>
         </tr>
-        <tr class="mode-edit" ng-show="isEditMode('workflow')">
+        <tr class="mode-edit ng-hide" ng-show="isEditMode('workflow')">
             <th width="80">{{ phrase('agent.general.workflow') }}:</th>
             <td>
                 <select name="ticket[workflow_id]" id="{{ baseId }}_ticket_workflow_id" data-prop-id="workflow_id"
@@ -293,7 +293,7 @@
                 </div>
             </td>
         </tr>
-        <tr class="mode-edit" ng-show="isEditMode('ticket_field_{{ f.id }}')">
+        <tr class="mode-edit ng-hide" ng-show="isEditMode('ticket_field_{{ f.id }}')">
             <th width="80">{{ f.title }}:</th>
             <td>
                 <div class="custom-field field-input ticket_field_{{ f.id }}" data-item-id="{{ f.id }}">
@@ -326,7 +326,7 @@
                 </div>
             </td>
         </tr>
-        <tr class="mode-edit" ng-show="isEditMode('user_field_{{ f.id }}')">
+        <tr class="mode-edit ng-hide" ng-show="isEditMode('user_field_{{ f.id }}')">
             <th width="80">{{ f.title }}:</th>
             <td>
                 <div class="custom-field field-input user_field_{{ f.id }}" data-item-id="{{ f.id }}">
@@ -359,7 +359,7 @@
                 </div>
             </td>
         </tr>
-        <tr class="mode-edit" ng-show="isEditMode('org_field_{{ f.id }}')">
+        <tr class="mode-edit ng-hide" ng-show="isEditMode('org_field_{{ f.id }}')">
             <th width="80">{{ f.title }}:</th>
             <td>
                 <div class="custom-field field-input org_field_{{ f.id }}" data-item-id="{{ f.id }}">
@@ -390,7 +390,7 @@
                 </div>
             </td>
         </tr>
-        <tr class="mode-edit" ng-show="isEditMode('custom_field_{{ id }}')">
+        <tr class="mode-edit ng-hide" ng-show="isEditMode('custom_field_{{ id }}')">
             <th width="80">{{ form_label(f) }}:</th>
             <td>
                 <div class="custom-field field-input custom_field_{{ id }}" data-item-id="{{ id }}">
