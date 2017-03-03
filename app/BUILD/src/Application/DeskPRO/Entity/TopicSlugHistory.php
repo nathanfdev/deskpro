@@ -29,14 +29,15 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\EntityRepository\TopicSlugHistory as TopicSlugHistoryRepository;
 use DateTime;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Class ManualTopicSlugHistory.
+ * Class TopicSlugHistory.
  */
-class ManualTopicSlugHistory extends DomainObject
+class TopicSlugHistory extends DomainObject
 {
     /**
      * @var int
@@ -44,9 +45,9 @@ class ManualTopicSlugHistory extends DomainObject
     protected $id;
 
     /**
-     * @var ManualTopic
+     * @var Topic
      */
-    protected $manual_topic;
+    protected $topic;
 
     /**
      * @var string
@@ -58,9 +59,9 @@ class ManualTopicSlugHistory extends DomainObject
      */
     protected $date_created;
 
-    public function __construct(ManualTopic $manualTopic, $oldSlug)
+    public function __construct(Topic $topic, $oldSlug)
     {
-        $this->setContent($manualTopic);
+        $this->setContent($topic);
         $this->setSlug($oldSlug);
         $this->setDateCreated(new DateTime());
     }
@@ -76,7 +77,7 @@ class ManualTopicSlugHistory extends DomainObject
     /**
      * @param int $id
      *
-     * @return ManualTopicSlugHistory
+     * @return TopicSlugHistory
      */
     public function setId($id)
     {
@@ -86,21 +87,21 @@ class ManualTopicSlugHistory extends DomainObject
     }
 
     /**
-     * @return ManualTopic
+     * @return Topic
      */
     public function getContent()
     {
-        return $this->manual_topic;
+        return $this->topic;
     }
 
     /**
-     * @param ManualTopic $manual_topic
+     * @param Topic $topic
      *
-     * @return ManualTopicSlugHistory
+     * @return TopicSlugHistory
      */
-    public function setContent(ManualTopic $manual_topic)
+    public function setContent(Topic $topic)
     {
-        $this->setModelField('manual_topic', $manual_topic);
+        $this->setModelField('topic', $topic);
 
         return $this;
     }
@@ -116,7 +117,7 @@ class ManualTopicSlugHistory extends DomainObject
     /**
      * @param string $slug
      *
-     * @return ManualTopicSlugHistory
+     * @return TopicSlugHistory
      */
     public function setSlug($slug)
     {
@@ -136,7 +137,7 @@ class ManualTopicSlugHistory extends DomainObject
     /**
      * @param DateTime $date_created
      *
-     * @return ManualTopicSlugHistory
+     * @return TopicSlugHistory
      */
     public function setDateCreated($date_created)
     {
@@ -152,8 +153,8 @@ class ManualTopicSlugHistory extends DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ManualTopicSlugHistory';
-        $metadata->setPrimaryTable(['name' => 'manual_topic_slug_history']);
+        $metadata->customRepositoryClassName = TopicSlugHistoryRepository::class;
+        $metadata->setPrimaryTable(['name' => 'topic_slug_history']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             [
@@ -184,8 +185,8 @@ class ManualTopicSlugHistory extends DomainObject
             'unique'     => true,
         ]);
         $metadata->mapManyToOne([
-            'fieldName'    => 'manual_topic',
-            'targetEntity' => 'Application\DeskPRO\Entity\ManualTopic',
+            'fieldName'    => 'topic',
+            'targetEntity' => Topic::class,
             'cascade'      => [
                 0 => 'remove',
                 1 => 'persist',
@@ -194,7 +195,7 @@ class ManualTopicSlugHistory extends DomainObject
             'inversedBy'  => 'slug_history',
             'joinColumns' => [
                 [
-                    'name'                 => 'manual_topic_id',
+                    'name'                 => 'topic_id',
                     'referencedColumnName' => 'id',
                     'onDelete'             => 'cascade',
                     'nullable'             => false,

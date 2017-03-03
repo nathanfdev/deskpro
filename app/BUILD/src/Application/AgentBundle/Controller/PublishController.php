@@ -45,7 +45,7 @@ use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
-use Application\DeskPRO\Entity\Manual;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
@@ -180,12 +180,12 @@ class PublishController extends AbstractController
         $downloadCatsCounts = $this->publishHelper->getCategoryCounts(PublishHelper::DOWNLOADS);
 
         //------------------------------
-        // Manuals
+        // Guides
         //------------------------------
 
-        $manuals       = $this->em->getRepository(Manual::class)->findAll();
-        $manualRepo    = $this->em->getRepository(Manual::class);
-        $manualsCounts = $this->em->getRepository(Manual::class)->getAllCounts();
+        $guides       = $this->em->getRepository(Guide::class)->findAll();
+        $guideRepo    = $this->em->getRepository(Guide::class);
+        $guidesCounts = $this->em->getRepository(Guide::class)->getAllCounts();
 
         //------------------------------
         // Glossary
@@ -228,9 +228,9 @@ class PublishController extends AbstractController
             'download_repo'        => $downloadRepo,
             'download_cats_counts' => $downloadCatsCounts,
 
-            'manuals'        => $manuals,
-            'manual_repo'    => $manualRepo,
-            'manuals_counts' => $manualsCounts,
+            'guides'        => $guides,
+            'guide_repo'    => $guideRepo,
+            'guides_counts' => $guidesCounts,
 
             'app_settings'      => $appSettings,
             'brands'            => $brands,
@@ -803,8 +803,8 @@ class PublishController extends AbstractController
             case 'news':
                 $entityName = NewsCategory::class;
                 break;
-            case 'manual':
-                $entityName = Manual::class;
+            case 'topics':
+                $entityName = Guide::class;
                 break;
         }
 
@@ -971,8 +971,8 @@ class PublishController extends AbstractController
             case 'news':
                 $entityName = NewsCategory::class;
                 break;
-            case 'manual':
-                $entityName = Manual::class;
+            case 'guide':
+                $entityName = Guide::class;
                 break;
         }
 
@@ -1008,8 +1008,8 @@ class PublishController extends AbstractController
             case 'news':
                 $class = NewsCategory::class;
                 break;
-            case 'manual':
-                $class = Manual::class;
+            case 'guide':
+                $class = Guide::class;
                 break;
         }
 
@@ -1096,7 +1096,7 @@ class PublishController extends AbstractController
                 $url = $this->generateUrl('agent_downloads_list', ['category_id' => $cat->getId()]);
                 break;
             case 'manuals':
-                $url = $this->generateUrl('agent_manuals_list', ['manual_id' => $cat->getId()]);
+                $url = $this->generateUrl('agent_guides_list', ['guide_id' => $cat->getId()]);
                 break;
             case 'news':
                 $url = $this->generateUrl('agent_news_list', ['category_id' => $cat->getId()]);

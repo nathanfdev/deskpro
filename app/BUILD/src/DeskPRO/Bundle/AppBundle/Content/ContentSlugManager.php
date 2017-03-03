@@ -35,10 +35,10 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadSlugHistory;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackSlugHistory;
-use Application\DeskPRO\Entity\ManualTopic;
-use Application\DeskPRO\Entity\ManualTopicSlugHistory;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsSlugHistory;
+use Application\DeskPRO\Entity\Topic;
+use Application\DeskPRO\Entity\TopicSlugHistory;
 use DeskPRO\Component\Util\TypeUtils;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
@@ -207,8 +207,8 @@ class ContentSlugManager
                 return $this->getEm()->getRepository(Feedback::class);
             case Download::CONTENT_TYPE:
                 return $this->getEm()->getRepository(Download::class);
-            case ManualTopic::CONTENT_TYPE:
-                return $this->getEm()->getRepository(ManualTopic::class);
+            case Topic::CONTENT_TYPE:
+                return $this->getEm()->getRepository(Topic::class);
             default:
                 throw new \InvalidArgumentException('no content type provided');
         }
@@ -230,8 +230,8 @@ class ContentSlugManager
                 return $this->getEm()->getRepository(FeedbackSlugHistory::class);
             case Download::CONTENT_TYPE:
                 return $this->getEm()->getRepository(DownloadSlugHistory::class);
-            case ManualTopic::CONTENT_TYPE:
-                return $this->getEm()->getRepository(ManualTopicSlugHistory::class);
+            case Topic::CONTENT_TYPE:
+                return $this->getEm()->getRepository(TopicSlugHistory::class);
             default:
                 throw new \InvalidArgumentException('no content type provided');
         }

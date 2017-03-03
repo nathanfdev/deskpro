@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Content;
 
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\Manual;
+use Application\DeskPRO\Entity\Guide;
 use DeskPRO\Bundle\AppBundle\Form\BrandFormHelper;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -39,7 +39,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ManualType extends AbstractType
+class GuideType extends AbstractType
 {
     /**
      * @var BrandFormHelper
@@ -76,7 +76,7 @@ class ManualType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => Manual::class,
+                'data_class' => Guide::class,
             ])
         ;
     }
@@ -90,7 +90,7 @@ class ManualType extends AbstractType
     {
         $form = $event->getForm();
 
-        /** @var Manual $data */
+        /** @var Guide $data */
         $data = $form->getData();
         if (!$data->getBrand()) {
             $data->setBrand($this->brandHelper->getCurrentBrand());

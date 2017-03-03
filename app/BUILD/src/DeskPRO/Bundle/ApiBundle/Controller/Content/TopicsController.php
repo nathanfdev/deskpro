@@ -28,30 +28,30 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 
-use Application\DeskPRO\Entity\Manual;
-use Application\DeskPRO\Entity\ManualTopic;
+use Application\DeskPRO\Entity\Guide;
+use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
-use DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualTopicType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Content\TopicType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class ManualTopicsController.
+ * Class TopicsController.
  *
- * @Feature("manuals")
+ * @Feature("guides")
  * @ApiModes("all")
- * @Rest\Route("/content/manual_topics")
- * @ApiDoc(target="all", section="Content", output="Application\DeskPRO\Entity\ManualTopic")
+ * @Rest\Route("/topics")
+ * @ApiDoc(target="all", section="Content", output="Application\DeskPRO\Entity\Topic")
  * @ApiDoc(
  *     target="listAction,countAction",
  *     filters={
  *          {"name"="author", "dataType"="string", "pattern"="\d+|me", "description"="filter by author, provide an id or 'me' for current user"},
- *          {"name"="manual", "dataType"="integer", "pattern"="\d+|[\d+]", "description"="filter category, could be an array or just digit"},
+ *          {"name"="guide", "dataType"="integer", "pattern"="\d+|[\d+]", "description"="filter category, could be an array or just digit"},
  *          {"name"="group_by", "dataType"="string", "pattern"="author|category|period_created|period_updated", "description"="how to group downloads"},
  *          {"name"="status", "dataType"="string", "pattern"="published|archived|hidden", "description"="filter by status"},
  *          {"name"="hidden_status", "dataType"="integer", "pattern"="unpublished|deleted|spam|draft", "description"="select for article with given id"},
@@ -76,17 +76,17 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiDoc(
  *     target="postAction",
  *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Content\ManualTopicType",
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Content\TopicType",
  *      "options"={"method"="POST"},
  *      "name"=""
  *     }
  * )
  */
-class ManualTopicsController extends AbstractContentController
+class TopicsController extends AbstractContentController
 {
-    public static $entity     = ManualTopic::class;
-    public static $category   = Manual::class;
-    public static $type       = ManualTopicType::class;
+    public static $entity     = Topic::class;
+    public static $category   = Guide::class;
+    public static $type       = TopicType::class;
     public static $exposeOnly = ['get', 'list', 'count', 'delete', 'post'];
 
     /**

@@ -29,7 +29,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\EntityRepository\Manual as ManualRepository;
+use Application\DeskPRO\EntityRepository\Guide as ManualRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -37,10 +37,10 @@ use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class Manual extends DomainObject
+class Guide extends DomainObject
 {
     /**
-     * The unique id of the category.
+     * The unique id of the guide.
      *
      * @var int
      * @JMS\Expose()
@@ -81,10 +81,10 @@ class Manual extends DomainObject
     /**
      * Manual topics in this manual.
      *
-     * @JMS\Groups("manuals")
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\ManualTopic>>")
+     * @JMS\Groups("guides")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Topic>>")
      *
-     * @var ManualTopic[]|ArrayCollection
+     * @var Topic[]|ArrayCollection
      */
     protected $topics;
 
@@ -102,7 +102,7 @@ class Manual extends DomainObject
     /**
      * Brand linked to the category.
      *
-     * @JMS\Groups("manuals")
+     * @JMS\Groups("guides")
      * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
      *
      * @var Brand
@@ -187,7 +187,7 @@ class Manual extends DomainObject
     /**
      * @param int $display_order
      *
-     * @return Manual
+     * @return Guide
      */
     public function setDisplayOrder($display_order)
     {
@@ -197,7 +197,7 @@ class Manual extends DomainObject
     }
 
     /**
-     * @return ManualTopic[]|ArrayCollection
+     * @return Topic[]|ArrayCollection
      */
     public function getTopics()
     {
@@ -207,7 +207,7 @@ class Manual extends DomainObject
     /**
      * @param ArrayCollection $topics
      *
-     * @return Manual
+     * @return Guide
      */
     public function setTopics($topics)
     {
@@ -280,7 +280,7 @@ class Manual extends DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = ManualRepository::class;
-        $metadata->setPrimaryTable(['name' => 'manuals']);
+        $metadata->setPrimaryTable(['name' => 'guides']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             [
@@ -330,8 +330,8 @@ class Manual extends DomainObject
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'topics',
-                'targetEntity' => ManualTopic::class,
-                'mappedBy'     => 'manual',
+                'targetEntity' => Topic::class,
+                'mappedBy'     => 'guide',
             ]
         );
         $metadata->mapManyToMany(
@@ -340,11 +340,11 @@ class Manual extends DomainObject
                 'targetEntity' => Usergroup::class,
                 'cascade'      => ['persist', 'merge'],
                 'joinTable'    => [
-                    'name'        => 'manual2usergroup',
+                    'name'        => 'guide2usergroup',
                     'schema'      => null,
                     'joinColumns' => [
                         [
-                            'name'                 => 'manual_id',
+                            'name'                 => 'guide_id',
                             'referencedColumnName' => 'id',
                             'nullable'             => true,
                             'onDelete'             => 'cascade',

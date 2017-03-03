@@ -33,7 +33,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
-class ManualTopic extends AbstractEntityRepository
+class Topic extends AbstractEntityRepository
 {
     /**
      * @var null|array

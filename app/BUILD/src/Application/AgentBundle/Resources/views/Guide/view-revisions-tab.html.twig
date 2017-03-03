@@ -8,7 +8,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for rev in manual_topic.revisions %}
+			{% for rev in topic.revisions %}
 				<tr class="rev-{{rev.id}}">
 					<td width="30">{{ loop.index }}</td>
 					<td>
@@ -24,7 +24,7 @@
 	</table>
 </div>
 
-{% if manual_topic.revisions|length >= 2 %}
+{% if topic.revisions|length >= 2 %}
 	<div style="text-align: right;padding-top: 8px;">
 		<button class="clean-white compare-trigger">{{ phrase('agent.publish.compare_selected') }}</button>
 	</div>

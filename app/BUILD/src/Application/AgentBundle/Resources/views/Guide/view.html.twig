@@ -1,10 +1,10 @@
 {% import 'AgentBundle:Common:optionbox-macros.html.twig' as optionbox %}
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.ManualTopicView';
-pageMeta.title = {{manual_topic.title|json_encode|raw}};
-pageMeta.manual_topic_id = {{manual_topic.id}};
-pageMeta.url_fragment  = '{{ url_fragment('agent_manual_topic_view', {'manual_topic_id': manual_topic.id}) }}';
-pageMeta.obj_code = 'manual_topic_{{ manual_topic.id }}';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.TopicView';
+pageMeta.title = {{topic.title|json_encode|raw}};
+pageMeta.topic_id = {{topic.id}};
+pageMeta.url_fragment  = '{{ url_fragment('agent_topic_view', {'topic_id': topic.id}) }}';
+pageMeta.obj_code = 'topic_{{ topic.id }}';
 pageMeta.canEdit   = {% if not perms.can_edit %}false{% else %}true{% endif %};
 pageMeta.canDelete = {% if not perms.can_delete %}false{% else %}true{% endif %};
 
@@ -12,27 +12,27 @@ pageMeta.canDelete = {% if not perms.can_delete %}false{% else %}true{% endif %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
 {# scroll containers #}
-<div class="layout-content page-listing page-manual-topic-view {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
+<div class="layout-content page-listing page-topic-view {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
 <div class="dp-page-content">
 {# /scroll containers #}
 
-<div class="delete-notice" {% if manual_topic.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
+<div class="delete-notice" {% if topic.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
 	{{ phrase('agent.general.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.undelete') }}</button>
 </div>
 
 <header class="page-header">
-	<h4 class="id-number">#{{ manual_topic.id }}</h4>
+	<h4 class="id-number">#{{ topic.id }}</h4>
 	<div style="float:left; padding-left: 8px;">
 		<select id="{{ baseId }}_status">
-			<option {% if manual_topic.status == 'published' %}selected="selected"{% endif %} value="published">{{ phrase('agent.publish.status_published') }}</option>
-			<option {% if manual_topic.getStatusCode == 'hidden.unpublished' %}selected="selected"{% endif %} value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
-			<option {% if manual_topic.status == 'archived' %}selected="selected"{% endif %} value="archived">{{ phrase('agent.publish.status_archived') }}</option>
-			<option {% if manual_topic.getStatusCode() == 'hidden.draft' %}selected="selected"{% endif %} value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
+			<option {% if topic.status == 'published' %}selected="selected"{% endif %} value="published">{{ phrase('agent.publish.status_published') }}</option>
+			<option {% if topic.getStatusCode == 'hidden.unpublished' %}selected="selected"{% endif %} value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
+			<option {% if topic.status == 'archived' %}selected="selected"{% endif %} value="archived">{{ phrase('agent.publish.status_archived') }}</option>
+			<option {% if topic.getStatusCode() == 'hidden.draft' %}selected="selected"{% endif %} value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
 		</select>
 	</div>
 	<h1>
-		<span id="{{baseId}}_showname">{{ manual_topic.title }}</span>
-		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ manual_topic.title }}" /></span>
+		<span id="{{baseId}}_showname">{{ topic.title }}</span>
+		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ topic.title }}" /></span>
 		<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>
 		<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
 	</h1>
@@ -46,8 +46,8 @@ pageMeta.baseId = '{{ baseId }}';
 					'add_attr': '',
 					'with_blank': 0,
 					'blank_title': '',
-					'categories': manuals,
-					'selected': manual_topic.manual.id,
+					'categories': guides,
+					'selected': topic.guide.id,
 					'allow_parent_sel': true,
 					'id': baseId ~ '_cat'
 				} %}
@@ -67,7 +67,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<dl class="info-list">
 				<dt>{{ phrase('agent.publish.slug') }}</dt>
 				<dd>
-					<span id="{{ baseId }}_slug">{{ manual_topic.slug }}</span>
+					<span id="{{ baseId }}_slug">{{ topic.slug }}</span>
 					<button class="clean-white" id="{{ baseId }}_editslug" data-prompt="{{ phrase('agent.publish.slug_edit_prompt') }}">
 						{{ phrase('agent.publish.slug_edit') }}
 					</button>
@@ -76,35 +76,35 @@ pageMeta.baseId = '{{ baseId }}';
 				<dt>{{ phrase('agent.general.rating') }}</dt>
 				<dd>
                     {% set phrase_part %}
-                    <span class="link-look who-voted-trigger">{{ phrase('agent.general.count_votecount_votes', {'count': manual_topic.num_ratings}) }}</span>
+                    <span class="link-look who-voted-trigger">{{ phrase('agent.general.count_votecount_votes', {'count': topic.num_ratings}) }}</span>
                     {% endset %}
-                    {{ phrase('agent.general.percent_helpful_subphrase', {'percent':manual_topic.rating_percent,'subphrase':phrase_part}, true) }}<br />
-                    <small>{{ phrase('agent.general.found_article_helpful_or_not', {'up_votes':manual_topic.up_votes,'down_votes':manual_topic.down_votes}) }}</small>
+                    {{ phrase('agent.general.percent_helpful_subphrase', {'percent':topic.rating_percent,'subphrase':phrase_part}, true) }}<br />
+                    <small>{{ phrase('agent.general.found_article_helpful_or_not', {'up_votes':topic.up_votes,'down_votes':topic.down_votes}) }}</small>
 				</dd>
 
 				<dt></dt>
 				<dd>
 					{{ phrase('agent.general.created_timeago_by_x_on_y', {
-						'timeago': '<time class="timeago" datetime="' ~ manual_topic.date_created|date('c', 'UTC') ~'"></time>',
-						'name': manual_topic.person.display_name|escape,
-						'date': '<time>' ~ manual_topic.date_created|date('fulltime') ~ '</time>'
+						'timeago': '<time class="timeago" datetime="' ~ topic.date_created|date('c', 'UTC') ~'"></time>',
+						'name': topic.person.display_name|escape,
+						'date': '<time>' ~ topic.date_created|date('fulltime') ~ '</time>'
 					}, true) }}
 				</dd>
 
 
-				<dd id="{{baseId}}_auto_unpub" {% if not (manual_topic.status == 'published') %}style="display: none"{% endif %}>
-					<span class="auto-unpublish" {% if not manual_topic.date_end %}style="display: none"{% endif %}>
-						{% set phrase_part1 %}<span class="end-action opt" data-val="{{manual_topic.end_action|default('unpublish')}}">{{manual_topic.end_action|default(phrase('agent.general.unpublish'))}}</span>{% endset %}
+				<dd id="{{baseId}}_auto_unpub" {% if not (topic.status == 'published') %}style="display: none"{% endif %}>
+					<span class="auto-unpublish" {% if not topic.date_end %}style="display: none"{% endif %}>
+						{% set phrase_part1 %}<span class="end-action opt" data-val="{{topic.end_action|default('unpublish')}}">{{topic.end_action|default(phrase('agent.general.unpublish'))}}</span>{% endset %}
 						{% set phrase_part2 %}
 							<div style="display: inline-block; position: relative;">
-								<span class="end-date opt" {% if manual_topic.date_end %}data-val="{{ manual_topic.date_end|date('j M, y') }}"{% endif %}> {% if manual_topic.date_end %}{{ manual_topic.date_end|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
+								<span class="end-date opt" {% if topic.date_end %}data-val="{{ topic.date_end|date('j M, y') }}"{% endif %}> {% if topic.date_end %}{{ topic.date_end|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
 							</div>
 						{% endset %}
 						{{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
-						<input type="text" class="end-date-input" value="{{ manual_topic.date_end|date('j M, y') }}" style="display: none; height: 10px;" />
+						<input type="text" class="end-date-input" value="{{ topic.date_end|date('j M, y') }}" style="display: none; height: 10px;" />
 						(<span class="remove-auto-unpublish options-text">{{ phrase('agent.general.remove') }}</span>)
 					</span>
-					<span class="options-text auto-unpublish-set" {% if manual_topic.date_end %}style="display: none"{% endif %}>
+					<span class="options-text auto-unpublish-set" {% if topic.date_end %}style="display: none"{% endif %}>
 						{{ phrase('agent.publish.set_auto_unpublish_date') }}
 					</span>
 					<br />
@@ -115,19 +115,19 @@ pageMeta.baseId = '{{ baseId }}';
 					</ul>
 				</dd>
 
-				<dd id="{{baseId}}_auto_pub" {% if not (manual_topic.hidden_status == 'unpublished') %}style="display: none"{% endif %}>
-					<span class="auto-publish" {% if not manual_topic.date_published %}style="display: none"{% endif %}>
+				<dd id="{{baseId}}_auto_pub" {% if not (topic.hidden_status == 'unpublished') %}style="display: none"{% endif %}>
+					<span class="auto-publish" {% if not topic.date_published %}style="display: none"{% endif %}>
 						{% set phrase_part1 %}{{ phrase('agent.general.publish') }}{% endset %}
 						{% set phrase_part2 %}
 							<div style="display: inline-block; position: relative;">
-								<span class="pub-date opt" {% if manual_topic.date_published %}data-val="{{ manual_topic.date_published|date('U') }}"{% endif %}> {% if manual_topic.date_published %}{{ manual_topic.date_published|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
+								<span class="pub-date opt" {% if topic.date_published %}data-val="{{ topic.date_published|date('U') }}"{% endif %}> {% if topic.date_published %}{{ topic.date_published|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
 							</div>
 						{% endset %}
 						{{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
-						<input type="text" class="pub-date-input" value="{{ manual_topic.date_published|date('j M, y') }}000" style="display: none; height: 10px;" />
+						<input type="text" class="pub-date-input" value="{{ topic.date_published|date('j M, y') }}000" style="display: none; height: 10px;" />
 						(<span class="remove-auto-publish options-text">{{ phrase('agent.general.remove') }}</span>)
 					</span>
-					<span class="options-text auto-publish-set" {% if manual_topic.date_published %}style="display: none"{% endif %}>
+					<span class="options-text auto-publish-set" {% if topic.date_published %}style="display: none"{% endif %}>
 						{{ phrase('agent.publish.set_auto_publish_date') }}
 					</span>
 				</dd>
@@ -135,7 +135,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</dl>
 
 			<div class="controls" id="{{baseId}}_action_buttons">
-				<button class="clean-white delete nodelete-hide" {% if manual_topic.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.delete') }}</button>
+				<button class="clean-white delete nodelete-hide" {% if topic.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.delete') }}</button>
 				<button class="clean-white permalink" data-prompt="{{ phrase('agent.publish.permalink_copy_prompt') }}">
 					{{ phrase('agent.general.copy_permalink') }}
 				</button>
@@ -146,14 +146,14 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
-{% if (manual_topic.no_content == false) %}
+{% if (topic.no_content == false) %}
 <div class="profile-box-container reply-box-wrap">
 	<header>
 		<nav  id="{{baseId}}_bodytabs">
 			<ul>
-				<li class="on" data-tab-for="#{{baseId}}_tab_contents .manual-topic-content"><span>{{ phrase('agent.general.page') }}</span></li>
+				<li class="on" data-tab-for="#{{baseId}}_tab_contents .topic-content"><span>{{ phrase('agent.general.page') }}</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.general.comments') }} (<span id="{{baseId}}_count_comments">{{comments|length|default(0)}}</span>)</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.general.label_revisions') }} (<span id="{{baseId}}_count_revs">{{manual_topic.revisions|length|default(0)}}</span>)</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.general.label_revisions') }} (<span id="{{baseId}}_count_revs">{{topic.revisions|length|default(0)}}</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.general.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.general.search') }}</span></li>
 			</ul>
@@ -164,15 +164,15 @@ pageMeta.baseId = '{{ baseId }}';
 		{# Tab Contents #}
 		<div id="{{baseId}}_tab_contents">
 			{# Tab: Content #}
-			<div class="deskpro-tab-item manual-topic-content on">
+			<div class="deskpro-tab-item topic-content on">
 				{# Content #}
 				<nav class="sub-box-nav noedit-hide">
 					<ul class="option-buttons right" id="{{baseId}}_content_edit_btns">
 						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('agent.general.ucfirst_edit') }}</span></li>
 					</ul>
 				</nav>
-				<div id="{{baseId}}_content_ed" class="manual-topic-content content-tab-item">
-				{% include 'AgentBundle:Manual:view-content-tab.html.twig' %}
+				<div id="{{baseId}}_content_ed" class="topic-content content-tab-item">
+				{% include 'AgentBundle:Guide:view-content-tab.html.twig' %}
 				</div>
 				{# /Content #}
 			</div>
@@ -184,7 +184,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<div class="messages-wrap" id="{{baseId}}_comments_wrap">
 							{% for comment in comments %}
 								{% set comment_num = loop.index %}
-								{% include 'AgentBundle:Manual:view-comment.html.twig' %}
+								{% include 'AgentBundle:Guide:view-comment.html.twig' %}
 							{% endfor %}
 						</div>
 					</div>
@@ -222,7 +222,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 			{# Tab: Revisions #}
 			<div id="{{baseId}}_revs" class="deskpro-tab-item content-tab-item revisions-tab">
-				{% include 'AgentBundle:Manual:view-revisions-tab.html.twig' %}
+				{% include 'AgentBundle:Guide:view-revisions-tab.html.twig' %}
 			</div>
 			{# /Tab: Revisions #}
 
@@ -259,7 +259,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="inline-editable" style="display:none">
 	<div class="title">
-		<input type="text" name="title" value="{{ manual_topic.title }}"/>
+		<input type="text" name="title" value="{{ topic.title }}"/>
 		<input type="hidden" name="action" value="title" />
 	</div>
 </div>

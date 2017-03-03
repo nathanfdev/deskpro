@@ -41,8 +41,8 @@ class AddButton extends React.Component {
         items.push(<MenuItem key="feedback" onClick={this.addFeedback}>
           <i className="icon thumbs outline up" /> {agentPhrases.get('agent.general.feedback')}</MenuItem>);
         if (window.DESKPRO_APP_SETTINGS['core.apps_manuals']) {
-          items.push(<MenuItem key="manual_topic" onClick={this.addManualTopic}>
-            <i className="icon book" /> {agentPhrases.get('agent.general.manual_topic')}</MenuItem>);
+          items.push(<MenuItem key="topic" onClick={this.addTopic}>
+            <i className="icon book" /> {agentPhrases.get('agent.general.topic')}</MenuItem>);
         }
       }
       if (window.DESKPRO_APP_SETTINGS['core.apps_tasks'] && window.DESKPRO_PERSON_PERMS['agent_tasks.use']) {
@@ -96,8 +96,8 @@ class AddButton extends React.Component {
     this.closePopup();
   };
 
-  addManualTopic = () => {
-    window.DeskPRO_Window.newManualTopicLoader.toggle();
+  addTopic = () => {
+    window.DeskPRO_Window.newTopicLoader.toggle();
     this.closePopup();
   };
 

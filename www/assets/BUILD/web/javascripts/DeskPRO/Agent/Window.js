@@ -1221,7 +1221,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				case 'knowledgebase':
 				case 'news':
 				case 'downloads':
-				case 'manuals':
+				case 'guides':
 				case 'category':
 				case 'status':
 				case 'label':
@@ -1689,7 +1689,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		};
 		var handler = null;
 		var sectionId = null;
-		if (testcl('.Kb') || testcl('.News') || testcl('.Download') || testcl('.Publish') || testcl('PublishSearch') || testcl('.Manual')) {
+		if (testcl('.Kb') || testcl('.News') || testcl('.Download') || testcl('.Publish') || testcl('PublishSearch') || testcl('.Guide')) {
 			sectionId = 'publish_section';
 		} else if (testcl('.Ticket') || testcl('.NewCustomFilter')) {
 			sectionId = 'tickets_section';
@@ -2739,7 +2739,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.addPageRouteLoader('article', cb.bind(this));
 		this.addPageRouteLoader('download', cb.bind(this));
 		this.addPageRouteLoader('news', cb.bind(this));
-		this.addPageRouteLoader('manuals', cb.bind(this));
+		this.addPageRouteLoader('guides', cb.bind(this));
 		this.addPageRouteLoader('feedback', cb.bind(this));
 		this.addPageRouteLoader('org', cb.bind(this));
 
@@ -2866,9 +2866,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				tabRoute: 'page:' + BASE_URL + 'agent/feedback/new',
 				autostart: autostart
 			});
-      this.newManualTopicLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-        loadUrl: BASE_URL + 'agent/manuals/new',
-        tabRoute: 'page:' + BASE_URL + 'agent/manuals/new',
+      this.newTopicLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+        loadUrl: BASE_URL + 'agent/guides/new',
+        tabRoute: 'page:' + BASE_URL + 'agent/guides/new',
         autostart: autostart
       });
 		}

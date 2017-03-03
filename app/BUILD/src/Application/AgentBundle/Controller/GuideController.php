@@ -34,58 +34,58 @@ use Application\AgentBundle\Validator\NewTopicValidator;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\Manual;
-use Application\DeskPRO\Entity\ManualTopic;
-use Application\DeskPRO\Entity\ManualTopicComment;
-use Application\DeskPRO\Entity\ManualTopicRevision;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Entity\SearchStickyResult;
+use Application\DeskPRO\Entity\Topic;
+use Application\DeskPRO\Entity\TopicComment;
+use Application\DeskPRO\Entity\TopicRevision;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use DateTime;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 
-class ManualController extends PublishController
+class GuideController extends PublishController
 {
-    public function viewAction($manual_topic_id)
+    public function viewAction($topic_id)
     {
-        /** @var ManualTopic $manualTopic */
-        $manualTopic = $this->em->find(ManualTopic::class, $manual_topic_id);
+        /** @var Topic $topic */
+        $topic = $this->em->find(Topic::class, $topic_id);
 
-        if (!$manualTopic) {
+        if (!$topic) {
             throw $this->createNotFoundException();
         }
 
-        $comments = $this->em->getRepository(ManualTopicComment::class)->getComments($manualTopic);
+        $comments = $this->em->getRepository(TopicComment::class)->getComments($topic);
 
-        $relatedFinder  = new RelatedContentFinder($this->person, $manualTopic);
+        $relatedFinder  = new RelatedContentFinder($this->person, $topic);
         $relatedContent = $relatedFinder->getRelatedEntities(true);
 
-        $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.editmanualtopic', $this->person->id);
+        $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.edittopic', $this->person->id);
 
-        $stickySearchWords = $this->em->getRepository(SearchStickyResult::class)->getWordsForObject($manualTopic);
-        $ratedSearches     = $this->em->getRepository(SearchLog::class)->getRatedSearchesFor('manualtopic', $manualTopic['id'], 'counted');
+        $stickySearchWords = $this->em->getRepository(SearchStickyResult::class)->getWordsForObject($topic);
+        $ratedSearches     = $this->em->getRepository(SearchLog::class)->getRatedSearchesFor('topic', $topic['id'], 'counted');
 
-        if ($manualTopic->getManual() && $manualTopic->getManual()->getBrand()) {
-            $brand = $manualTopic->getManual()->getBrand();
+        if ($topic->getGuide() && $topic->getGuide()->getBrand()) {
+            $brand = $topic->getGuide()->getBrand();
         } else {
             $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
             $brand   = $this->em->getRepository(Brand::class)->find($brandId);
         }
-        $manuals = $this->em->getRepository(Manual::class)->findBy(['brand' => $brand]);
+        $guides = $this->em->getRepository(Guide::class)->findBy(['brand' => $brand]);
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
         $perms = [
-            'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($manualTopic),
-            'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($manualTopic),
+            'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($topic),
+            'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($topic),
         ];
 
-        return $this->render('AgentBundle:Manual:view.html.twig', [
-            'manual_topic'        => $manualTopic,
+        return $this->render('AgentBundle:Guide:view.html.twig', [
+            'topic'               => $topic,
             'comments'            => $comments,
-            'manuals'             => $manuals,
+            'guides'              => $guides,
             'related_content'     => $relatedContent,
             'state'               => $state,
             'sticky_search_words' => $stickySearchWords,
@@ -95,25 +95,25 @@ class ManualController extends PublishController
         ]);
     }
 
-    public function viewRevisionsAction($manual_topic_id)
+    public function viewRevisionsAction($topic_id)
     {
-        $manualTopic = $this->em->find(ManualTopic::class, $manual_topic_id);
+        $topic = $this->em->find(Topic::class, $topic_id);
 
-        return $this->render('AgentBundle:Manual:view-revisions-tab.html.twig', [
-            'manual_topic' => $manualTopic,
+        return $this->render('AgentBundle:Guide:view-revisions-tab.html.twig', [
+            'topic' => $topic,
         ]);
     }
 
-    public function ajaxSaveCommentAction($manual_topic_id)
+    public function ajaxSaveCommentAction($topic_id)
     {
-        $manualTopic = $this->em->find(ManualTopic::class, $manual_topic_id);
+        $topic = $this->em->find(Topic::class, $topic_id);
 
-        if (!$manualTopic || !$this->in->getString('content')) {
+        if (!$topic || !$this->in->getString('content')) {
             throw $this->createNotFoundException();
         }
 
-        $comment = new ManualTopicComment();
-        $comment->setManualTopic($manualTopic);
+        $comment = new TopicComment();
+        $comment->setTopic($topic);
         $comment->setPerson($this->person);
         $comment->setContent($this->in->getString('content'));
         $comment->setStatus('visible');
@@ -126,28 +126,28 @@ class ManualController extends PublishController
         $this->em->persist($comment);
         $this->em->flush();
 
-        return $this->render('AgentBundle:Manual:view-comment.html.twig', [
+        return $this->render('AgentBundle:Guide:view-comment.html.twig', [
             'comment' => $comment,
         ]);
     }
 
-    public function ajaxSaveAction($manual_topic_id)
+    public function ajaxSaveAction($topic_id)
     {
-        $manualTopic = $this->em->find(ManualTopic::class, $manual_topic_id);
-        $rev         = null;
+        $topic = $this->em->find(Topic::class, $topic_id);
+        $rev   = null;
 
-        if (!$manualTopic) {
+        if (!$topic) {
             throw $this->createNotFoundException();
         }
 
         $action = $this->in->getString('action');
 
         if ($action == 'delete') {
-            if (!$this->person->PermissionsManager->PublishChecker->canDelete($manualTopic)) {
+            if (!$this->person->PermissionsManager->PublishChecker->canDelete($topic)) {
                 return $this->createJsonResponse(['success' => false]);
             }
         } else {
-            if (!$this->person->PermissionsManager->PublishChecker->canEdit($manualTopic)) {
+            if (!$this->person->PermissionsManager->PublishChecker->canEdit($topic)) {
                 return $this->createJsonResponse(['success' => false]);
             }
         }
@@ -158,26 +158,26 @@ class ManualController extends PublishController
 
         switch ($action) {
             case 'status':
-                $manualTopic->setStatusCode($this->in->getString('status'));
-                if ($manualTopic['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
-                    $manualTopic['status_code'] = 'hidden.unpublished';
+                $topic->setStatusCode($this->in->getString('status'));
+                if ($topic['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
+                    $topic['status_code'] = 'hidden.unpublished';
                 }
                 break;
 
             case 'title':
-                $manualTopic->setTitle($this->in->getString('title'));
-                /** @var ManualTopicRevision $rev */
-                $rev = ContentRevisionUtil::findOrCreate($manualTopic, 'title', $this->person);
-                $rev->setTitle($manualTopic->getTitle());
+                $topic->setTitle($this->in->getString('title'));
+                /** @var TopicRevision $rev */
+                $rev = ContentRevisionUtil::findOrCreate($topic, 'title', $this->person);
+                $rev->setTitle($topic->getTitle());
                 break;
 
             case 'slug':
-                $manualTopic->setSlug(Strings::slugifyTitle($this->in->getString('slug')) ?: 'view');
-                $data['slug'] = $manualTopic['slug'];
+                $topic->setSlug(Strings::slugifyTitle($this->in->getString('slug')) ?: 'view');
+                $data['slug'] = $topic['slug'];
                 break;
 
             case 'add-related':
-                $updater = new RelatedContentUpdate($manualTopic);
+                $updater = new RelatedContentUpdate($topic);
                 $updater->addRelated(
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
@@ -185,7 +185,7 @@ class ManualController extends PublishController
                 break;
 
             case 'remove-related':
-                $updater = new RelatedContentUpdate($manualTopic);
+                $updater = new RelatedContentUpdate($topic);
                 $updater->removeRelated(
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
@@ -194,66 +194,66 @@ class ManualController extends PublishController
 
             case 'content':
 
-                $this->em->getRepository(PersonPref::class)->deletePrefForPersonId('agent.ui.state.editmanualtopic', $this->person->id);
+                $this->em->getRepository(PersonPref::class)->deletePrefForPersonId('agent.ui.state.edittopic', $this->person->id);
 
-                $manualTopic->setContent($this->person->hasPerm('agent_publish.can_insert_html')
+                $topic->setContent($this->person->hasPerm('agent_publish.can_insert_html')
                     ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
                     : $this->in->getCleanValue('content', 'html'));
 
-                $manualTopic->setContentInput($this->in->getStringRaw('content_input'));
-                $manualTopic->setContentInputType($this->in->getString('content_input_type'));
+                $topic->setContentInput($this->in->getStringRaw('content_input'));
+                $topic->setContentInputType($this->in->getString('content_input_type'));
 
-                $data['content_html'] = $this->renderView('AgentBundle:Manual:view-content-tab.html.twig', [
-                    'manual_topic' => $manualTopic,
+                $data['content_html'] = $this->renderView('AgentBundle:Guide:view-content-tab.html.twig', [
+                    'topic' => $topic,
                 ]);
 
-                $data['content_input'] = $manualTopic->getContentInput();
+                $data['content_input'] = $topic->getContentInput();
 
-                /** @var ManualTopicRevision $rev */
-                $rev = ContentRevisionUtil::findOrCreate($manualTopic, 'content', $this->person);
-                $rev->setContent($manualTopic->getContent());
+                /** @var TopicRevision $rev */
+                $rev = ContentRevisionUtil::findOrCreate($topic, 'content', $this->person);
+                $rev->setContent($topic->getContent());
 
                 break;
 
-            case 'manual':
-                $manual = $this->em->find(Manual::class, $this->in->getUInt('category_id'));
-                $manualTopic->setManual($manual);
-                $data['manual_id'] = $manual->getId();
+            case 'guide':
+                $guide = $this->em->find(Guide::class, $this->in->getUInt('category_id'));
+                $topic->setGuide($guide);
+                $data['guide_id'] = $guide->getId();
                 break;
 
             case 'delete':
-                $manualTopic->status_code = 'hidden.deleted';
+                $topic->status_code = 'hidden.deleted';
                 break;
 
             case 'undelete':
-                $manualTopic->status_code = 'published';
+                $topic->status_code = 'published';
                 break;
 
             case 'auto-unpub':
                 $date   = date_create('@'.$this->in->getUInt('end_timestamp'));
                 $action = $this->in->getString('end_action');
 
-                $manualTopic->date_end   = $date;
-                $manualTopic->end_action = $action;
+                $topic->date_end   = $date;
+                $topic->end_action = $action;
                 break;
 
             case 'remove-auto-unpub':
-                $manualTopic->date_end   = null;
-                $manualTopic->end_action = null;
+                $topic->date_end   = null;
+                $topic->end_action = null;
                 break;
 
             case 'auto-pub':
                 $date = date_create('@'.$this->in->getUInt('pub_timestamp'));
 
-                $manualTopic->setDatePublished($date);
+                $topic->setDatePublished($date);
                 break;
 
             case 'remove-auto-pub':
-                $manualTopic->setDatePublished(null);
+                $topic->setDatePublished(null);
                 break;
         }
 
-        $this->em->persist($manualTopic);
+        $this->em->persist($topic);
 
         if ($rev) {
             $this->em->persist($rev);
@@ -273,19 +273,19 @@ class ManualController extends PublishController
 
     public function newTopicAction()
     {
-        $manuals = $this->em->getRepository(Manual::class)->findAll();
+        $guides = $this->em->getRepository(Guide::class)->findAll();
 
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.new_topic', $this->person->id);
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
-        $topics = $this->em->getRepository(ManualTopic::class)->getInHierarchy();
+        $topics = $this->em->getRepository(Topic::class)->getInHierarchy();
 
-        return $this->render('AgentBundle:Manual:new-topic.html.twig', [
-            'manuals' => $manuals,
-            'state'   => $state,
-            'brands'  => $brands,
-            'topics'  => $topics,
+        return $this->render('AgentBundle:Guide:new-topic.html.twig', [
+            'guides' => $guides,
+            'state'  => $state,
+            'brands' => $brands,
+            'topics' => $topics,
         ]);
     }
 
@@ -322,8 +322,8 @@ class ManualController extends PublishController
             $this->em->getRepository(PersonPref::class)->deletePrefForPersonId('agent.ui.state.new_topic', $this->person->id);
 
             return $this->createJsonResponse([
-                'success'         => true,
-                'manual_topic_id' => $topic['id'],
+                'success'  => true,
+                'topic_id' => $topic['id'],
             ]);
         } else {
             return $this->createJsonResponse([
@@ -332,37 +332,37 @@ class ManualController extends PublishController
         }
     }
 
-    public function listAction($manual_id)
+    public function listAction($guide_id)
     {
-        $manual = null;
-        if ($manual_id) {
-            /** @var Manual $manual */
-            $manual = $this->em->getRepository(Manual::class)->find($manual_id);
+        $guide = null;
+        if ($guide_id) {
+            /** @var Guide $guide */
+            $guide = $this->em->getRepository(Guide::class)->find($guide_id);
         }
 
-        if (!$manual) {
+        if (!$guide) {
             throw $this->createNotFoundException();
         }
 
-        $results = $manual->getTopics();
+        $results = $guide->getTopics();
 
         $totalResults = count($results);
 
-        $tpl = 'AgentBundle:Manual:filter.html.twig';
+        $tpl = 'AgentBundle:Guide:filter.html.twig';
 
-        $manualUserGroups = [];
-        if ($manual) {
-            $manualUserGroups = $this->db->fetchAllCol('
+        $guideUserGroups = [];
+        if ($guide) {
+            $guideUserGroups = $this->db->fetchAllCol('
                 SELECT usergroup_id
-                FROM manual2usergroup
-                WHERE manual_id = ?
-            ', [$manual->getId()]);
+                FROM guide2usergroup
+                WHERE guide_id = ?
+            ', [$guide->getId()]);
         }
 
         return $this->render($tpl, [
             'results'        => $results,
-            'manual'         => $manual,
-            'cat_usergroups' => $manualUserGroups,
+            'guide'          => $guide,
+            'cat_usergroups' => $guideUserGroups,
             'total_results'  => $totalResults,
             'num_pages'      => 1,
             'cur_page'       => 1,
@@ -377,8 +377,8 @@ class ManualController extends PublishController
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
-        return $this->render('AgentBundle:Publish:new-manual.html.twig', [
-            'type'           => 'manual',
+        return $this->render('AgentBundle:Publish:new-guide.html.twig', [
+            'type'           => 'guide',
             'all_categories' => [],
             'brands'         => $brands,
             'brand_id'       => $brandId,

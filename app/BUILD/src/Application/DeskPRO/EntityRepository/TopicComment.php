@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-class ManualTopicComment extends CommentAbstract
+class TopicComment extends CommentAbstract
 {
-    const FIELD = 'manual_topic';
+    const FIELD = 'topic';
 }

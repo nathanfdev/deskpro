@@ -6,11 +6,11 @@
 {######################################################################################################################}
 {% block top %}
     <script>
-      pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.ManualList';
-      pageMeta.refreshUrl = '{{ path('agent_manuals_list', {'manual_id': manual.id}) }}';
-      pageMeta.url_fragment = '{{ url_fragment('agent_manuals_list', {'manual_id': manual.id}) }}';
+      pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.GuideList';
+      pageMeta.refreshUrl = '{{ path('agent_guides_list', {'guide_id': guide.id}) }}';
+      pageMeta.url_fragment = '{{ url_fragment('agent_guides_list', {'guide_id': guide.id}) }}';
       pageMeta.baseId = '{{ tplvars.baseId }}';
-      pageMeta.manualId = {{ manual.id }};
+      pageMeta.guideId = {{ guide.id }};
     </script>
 {% endblock top %}
 
@@ -20,10 +20,10 @@
 
 {% block pane_header %}
     <ul class="pane-tabs" data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-active-classname="active">
-        <li class="tab active" data-tab-for="#{{ tplvars.baseId }}_tab_main"><i class="icon-dp-article"></i> {{ phrase('agent.publish.manual_list_title', {count: total_results|default(0)}) }}</li>
+        <li class="tab active" data-tab-for="#{{ tplvars.baseId }}_tab_main"><i class="icon-dp-article"></i> {{ phrase('agent.publish.guide_list_title', {count: total_results|default(0)}) }}</li>
 
-        {% if manual %}
-            <li class="tab" data-tab-for="#{{ tplvars.baseId }}_tab_cat"><i class="icon-folder-close"></i> <span>{{ manual.title }}</span></li>
+        {% if guide %}
+            <li class="tab" data-tab-for="#{{ tplvars.baseId }}_tab_cat"><i class="icon-folder-close"></i> <span>{{ guide.title }}</span></li>
         {% endif %}
     </ul>
 {% endblock pane_header %}
@@ -40,12 +40,11 @@
 
     <div id="{{ tplvars.baseId }}_tab_main">
 
-        {% include 'AgentBundle:Manual:filter-display-options.html.twig' %}
-        {% include 'AgentBundle:Manual:filter-control-bar.html.twig' %}
+        {% include 'AgentBundle:Guide:filter-display-options.html.twig' %}
+        {% include 'AgentBundle:Guide:filter-control-bar.html.twig' %}
 
-        <section class="manual-simple-list list-listing no-check">
-            {% include 'AgentBundle:Manual:filter-page.html.twig' %}
-        </section>
+        <section class="guide-simple-list list-listing no-check"></section>
+
 
         {% if not results|length %}
             <section class="list-listing no-results">
@@ -63,13 +62,13 @@
                 {% if total_results > 50 %}
                     <ul class="pagenav {% if cur_page == 1 %}no-prev{% endif %} {% if cur_page == num_pages %}no-next{% endif %}">
                         {% if cur_page > 1 %}
-                            <li class="prev" data-route="listpane:{{ path('agent_manuals_list', {'manual_id': manual.id, p: cur_page - 1 }) }}"></li>
+                            <li class="prev" data-route="listpane:{{ path('agent_guides_list', {'guide_id': guide.id, p: cur_page - 1 }) }}"></li>
                         {% else %}
                             <li class="prev no-prev"></li>
                         {% endif %}
 
                         {% if cur_page < num_pages %}
-                            <li class="next" data-route="listpane:{{ path('agent_manuals_list', {'manual_id': manual.id, p: cur_page + 1 }) }}"></li>
+                            <li class="next" data-route="listpane:{{ path('agent_guides_list', {'guide_id': guide.id, p: cur_page + 1 }) }}"></li>
                         {% else %}
                             <li class="next no-next"></li>
                         {% endif %}
@@ -84,18 +83,18 @@
     </div>
 
     {##################################}
-    {# Manual #}
+    {# Guide #}
     {##################################}
 
-    {% if manual %}
+    {% if guide %}
         <div class="list-listing">
             <div id="{{ tplvars.baseId }}_tab_cat" style="display: none;">
 
-                <section class="pane-section last" id="{{ tplvars.baseId }}_del_manual">
-                    <header><h1>{{ phrase('agent.publish.delete_manual') }}</h1></header>
+                <section class="pane-section last" id="{{ tplvars.baseId }}_del_guide">
+                    <header><h1>{{ phrase('agent.publish.delete_guide') }}</h1></header>
                     <article style="padding: 10px;">
                         <div class="dp-not-loading">
-                            <button class="dp-btn manual-del-trigger" data-save-url="{{ path('agent_publish_cats_adddel', {type: 'manual_topics', category_id: manual.id}) }}">{{ phrase('agent.publish.delete_manual_btn') }}</button>
+                            <button class="dp-btn guide-del-trigger" data-save-url="{{ path('agent_publish_cats_adddel', {type: 'topics', category_id: guide.id}) }}">{{ phrase('agent.publish.delete_guide_btn') }}</button>
                         </div>
                         <div class="dp-is-loading">
                             <i class="spinner-flat"></i>
@@ -104,7 +103,7 @@
                 </section>
 
                 <section class="pane-section">
-                    <header><h1>{{ phrase('agent.publish.edit_manual_btn') }}</h1></header>
+                    <header><h1>{{ phrase('agent.publish.edit_guide_btn') }}</h1></header>
                     <article>
                         <div class="pane-form">
                             <table class="pane-form-table">
@@ -112,8 +111,8 @@
                                 <tr>
                                     <th width="100">{{ phrase('agent.general.title') }}</th>
                                     <td>
-                                        <input type="hidden" name="category[id]" value="{{ manual.id }}" />
-                                        <input type="text" name="category[title]" value="{{ manual.title }}" />
+                                        <input type="hidden" name="category[id]" value="{{ guide.id }}" />
+                                        <input type="text" name="category[title]" value="{{ guide.title }}" />
                                     </td>
                                 </tr>
                                 <tr class="vtop">
@@ -137,9 +136,9 @@
                     </article>
                 </section>
 
-                <footer class="pane-footer" id="{{ tplvars.baseId }}_manualfoot">
+                <footer class="pane-footer" id="{{ tplvars.baseId }}_guidefoot">
                     <div class="dp-not-loading">
-                        <button class="dp-btn manual-save-trigger" data-save-url="{{ path('agent_publish_savecats', {type: 'manual_topics'}) }}">{{ phrase('agent.general.save') }}</button>
+                        <button class="dp-btn guide-save-trigger" data-save-url="{{ path('agent_publish_savecats', {type: 'topics'}) }}">{{ phrase('agent.general.save') }}</button>
                     </div>
                     <div class="dp-is-loading">
                         <i class="spinner-flat"></i>
