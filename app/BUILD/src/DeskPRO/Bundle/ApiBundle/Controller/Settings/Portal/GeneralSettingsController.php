@@ -127,27 +127,41 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
     public function postAction(Request $request, Brand $brand)
     {
         $model = $this->getModel($brand);
-        $this->handleForm($request, $model);
+
+        $form = $this->createForm($this->getType(), $model);
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        /** @var UrlHostChecker $urlHostChecker */
+        $urlHostChecker = $this->get('url_host_checker');
+        $url            = $model->getDeskproUrl();
 
         $em = $this->getManager();
         if ($brand->getId() != $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand')) {
-            $url = $model->getDeskproUrl();
-            /** @var UrlHostChecker $urlHostChecker */
-            $urlHostChecker = $this->get('url_host_checker');
-            $helpdeskUrl    = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
-            $helpdeskUrl    = $urlHostChecker->simplifyUrl($helpdeskUrl);
+            $helpdeskUrl = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
+            $helpdeskUrl = $urlHostChecker->simplifyUrl($helpdeskUrl);
 
             if (false !== strpos($url, $helpdeskUrl)) {
                 throw new BadRequestHttpException(
                     'Your brand URL must be a completely separate URL, it cannot be a sub-directory of any of your existing brands.'
                 );
             }
-
-            $brand->setUrl($urlHostChecker->simplifyUrl($url));
         }
+
+        $brand->setUrl($urlHostChecker->simplifyUrl($url));
+
         $brand->setName($model->getBrandName());
         $em->persist($brand);
         $em->flush();
+
+        $this->persistModel($model);
+
+        if (defined('DPC_IS_CLOUD')) {
+            \Cloud\LegacyApiBundle\Helper\CloudBrandHelper::flushBrandDomains();
+        }
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
