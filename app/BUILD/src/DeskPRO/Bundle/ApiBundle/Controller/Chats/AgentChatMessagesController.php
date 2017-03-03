@@ -168,7 +168,7 @@ class AgentChatMessagesController extends CrudSubController
             ->update(static::$entity, 'e')
             ->set('e.status', ':status')
             ->where('e.status != :status2')
-            ->andWhere('e.person = :user')
+            ->andWhere('e.person != :user')
             ->orWhere('e.person IS NULL')
             ->setParameter('status', 2)
             ->setParameter('status2', 2)
@@ -181,6 +181,37 @@ class AgentChatMessagesController extends CrudSubController
         $dispatcher->dispatch(MarkAllMessagesEvent::EVENT_NAME, new MarkAllMessagesEvent($chat->getId(), 2));
 
         return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="get page where this message is",
+     *      statusCodes={
+     *          204="Returned if success",
+     *          400={
+     *              "Returned if given status was wrong",
+     *              "Returned if ids list was wrong formed"
+     *          }
+     *      }
+     * )
+     * @Rest\Get("/{id}/page")
+     *
+     * @param $id
+     * @param $request
+     *
+     * @return View
+     */
+    public function findMessagePageAction($id, Request $request)
+    {
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb->from(static::$entity, 'e');
+        $this->applyListFilters($qb, 'e', $request);
+        $this->applySorting($qb, 'e', $request);
+        $qb->andWhere('e.id > :id')->setParameter('id', $id);
+        $qb->select('count(e.id) as value');
+        $count = $qb->getQuery()->getSingleScalarResult();
+
+        return $this->wrap(ceil($count / static::$listPerPage) ?: 1);
     }
 
     /**

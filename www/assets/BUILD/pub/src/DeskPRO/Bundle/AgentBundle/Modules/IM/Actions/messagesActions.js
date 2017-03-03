@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export const setImMe = createAction(
   'SET_IM_ME',
@@ -123,5 +123,15 @@ export const loadDrafts = createAction(
     }
 
     return drafts;
+  }
+);
+
+export const searchMessageClick = createAction(
+  'IM_SEARCH_MESSAGE_CLICK',
+  message => (dispatch) => {
+    api.sendGet(`DP_API/agent_chats/${message.chat}/messages/${message.id}/page?order_by=date_created`).success((response) => {
+      dispatch(loadMessages(message.chat, '', response.data));
+    });
+    return {};
   }
 );

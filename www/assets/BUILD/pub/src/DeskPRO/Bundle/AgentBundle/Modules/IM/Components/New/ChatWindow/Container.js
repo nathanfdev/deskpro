@@ -23,27 +23,28 @@ emojione.sprites = true;
 
 class Container extends React.Component {
   static propTypes = {
-    me:              PropTypes.object.isRequired,
-    agents:          PropTypes.object.isRequired,
-    people:          PropTypes.object.isRequired,
-    departments:     PropTypes.object.isRequired,
-    teams:           PropTypes.object.isRequired,
-    current:         PropTypes.object.isRequired,
-    searchQuery:     PropTypes.string,
-    isOpen:          PropTypes.bool.isRequired,
-    onClose:         PropTypes.func,
-    saveDraft:       PropTypes.func,
-    onSubmit:        PropTypes.func,
-    onChange:        PropTypes.func,
-    activeTabs:      PropTypes.object,
-    messages:        PropTypes.object,
-    loadMessages:    PropTypes.func,
-    loadingMessages: PropTypes.bool.isRequired,
-    markNewMessages: PropTypes.func,
-    openGroupDrawer: PropTypes.func,
-    onScroll:        PropTypes.func,
-    onChatSearch:    PropTypes.func,
-    onAgentClick:    PropTypes.func.isRequired
+    me:                   PropTypes.object.isRequired,
+    agents:               PropTypes.object.isRequired,
+    people:               PropTypes.object.isRequired,
+    departments:          PropTypes.object.isRequired,
+    teams:                PropTypes.object.isRequired,
+    current:              PropTypes.object.isRequired,
+    searchQuery:          PropTypes.string,
+    isOpen:               PropTypes.bool.isRequired,
+    onClose:              PropTypes.func,
+    saveDraft:            PropTypes.func,
+    onSubmit:             PropTypes.func,
+    onChange:             PropTypes.func,
+    activeTabs:           PropTypes.object,
+    messages:             PropTypes.object,
+    loadMessages:         PropTypes.func,
+    loadingMessages:      PropTypes.bool.isRequired,
+    markNewMessages:      PropTypes.func,
+    openGroupDrawer:      PropTypes.func,
+    onScroll:             PropTypes.func,
+    onChatSearch:         PropTypes.func,
+    onAgentClick:         PropTypes.func.isRequired,
+    onSearchMessageClick: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -108,18 +109,19 @@ class Container extends React.Component {
       editorControls:    null
     };
 
-    this.destroyEditor    = () => {};
-    this.openEmoji        = this.openEmoji.bind(this);
-    this.closeEmoji       = this.closeEmoji.bind(this);
-    this.handleChange     = this.handleChange.bind(this);
-    this.addEmoji         = this.addEmoji.bind(this);
-    this.handleSubmit     = this.handleSubmit.bind(this);
-    this.handleKeydown    = this.handleKeydown.bind(this);
-    this.initFroala       = this.initFroala.bind(this);
-    this.bindFroalaEvents = this.bindFroalaEvents.bind(this);
-    this.openLink         = this.openLink.bind(this);
-    this.closeLink        = this.closeLink.bind(this);
-    this.openAttach       = this.openAttach.bind(this);
+    this.destroyEditor        = () => {};
+    this.openEmoji            = this.openEmoji.bind(this);
+    this.closeEmoji           = this.closeEmoji.bind(this);
+    this.handleChange         = this.handleChange.bind(this);
+    this.addEmoji             = this.addEmoji.bind(this);
+    this.handleSubmit         = this.handleSubmit.bind(this);
+    this.handleKeydown        = this.handleKeydown.bind(this);
+    this.initFroala           = this.initFroala.bind(this);
+    this.bindFroalaEvents     = this.bindFroalaEvents.bind(this);
+    this.openLink             = this.openLink.bind(this);
+    this.closeLink            = this.closeLink.bind(this);
+    this.openAttach           = this.openAttach.bind(this);
+    this.onSearchMessageClick = this.onSearchMessageClick.bind(this);
   }
 
   componentDidMount() {
@@ -137,6 +139,13 @@ class Container extends React.Component {
     if (this.state.editorControls) { // there is a chance that component was mounted and immediately unmounted
       this.state.editorControls.destroy();
     }
+  }
+
+  onSearchMessageClick(message) {
+    this.setState({ searching: false }, () => {
+      this.props.onChatSearch('');
+      this.props.onSearchMessageClick(message);
+    });
   }
 
   getPath = (props) => {
@@ -179,7 +188,6 @@ class Container extends React.Component {
     }
     this.setState({ searching: !this.state.searching, expandGroupHeader: false });
   }
-
 
   refresh(props) {
     if (
@@ -384,7 +392,8 @@ class Container extends React.Component {
   }
 
   render() {
-    const { isOpen, loadingMessages, onScroll, markNewMessages, searchQuery, onAgentClick } = this.props;
+    const { isOpen, loadingMessages, onScroll, searchQuery } = this.props;
+    const { markNewMessages, onAgentClick } = this.props;
     const { current, messages, me, agents, teams, departments, people } = this.props;
     const header = this.getHeader();
     let enabled = true;
@@ -452,6 +461,7 @@ class Container extends React.Component {
               markNewMessages={markNewMessages}
               onScroll={onScroll}
               onAgentClick={onAgentClick}
+              onSearchMessageClick={this.onSearchMessageClick}
             />
           </div>
           {enabled ? (<div className="reply">
