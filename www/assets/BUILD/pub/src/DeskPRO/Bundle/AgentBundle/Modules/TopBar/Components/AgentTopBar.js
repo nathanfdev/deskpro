@@ -150,9 +150,9 @@ export class AgentTopBarContainer extends SeparateComponent {
   }
 
   recentClick(chatId) {
-    const { current, dispatch } = this.props;
+    const { current, dispatch, chating } = this.props;
 
-    if (current && chatId === current.get('id')) {
+    if (current && chatId === current.get('id') && chating) {
       dispatch(chatsActions.closeChat(chatId));
     } else {
       dispatch(chatsActions.startChat(null, chatId));
