@@ -40,7 +40,7 @@ class AddButton extends React.Component {
           <i className="icon download" /> {agentPhrases.get('agent.general.download')}</MenuItem>);
         items.push(<MenuItem key="feedback" onClick={this.addFeedback}>
           <i className="icon thumbs outline up" /> {agentPhrases.get('agent.general.feedback')}</MenuItem>);
-        if (window.DESKPRO_APP_SETTINGS['core.apps_manuals']) {
+        if (window.DESKPRO_APP_SETTINGS['core.apps_guides']) {
           items.push(<MenuItem key="topic" onClick={this.addTopic}>
             <i className="icon book" /> {agentPhrases.get('agent.general.topic')}</MenuItem>);
         }
