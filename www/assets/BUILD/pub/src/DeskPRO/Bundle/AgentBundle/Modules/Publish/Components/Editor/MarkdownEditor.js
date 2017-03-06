@@ -292,7 +292,7 @@ class MarkdownEditor extends React.Component {
           />
         </div>
         <h3>Preview</h3>
-        <div className="preview" dangerouslySetInnerHTML={{ __html: MarkdownEditor.prerenderHtml(this.state.html) }} />
+        <div className="preview guides" dangerouslySetInnerHTML={{ __html: MarkdownEditor.prerenderHtml(this.state.html) }} />
       </div>
     );
   }

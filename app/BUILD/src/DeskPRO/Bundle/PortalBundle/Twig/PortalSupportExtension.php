@@ -469,6 +469,8 @@ class PortalSupportExtension extends \Twig_Extension
                 return preg_match('#^portal_feedback#', $route);
             case 'tickets':
                 return preg_match('#^portal_tickets#', $route) || $route === 'portal_new_ticket';
+            case 'guides':
+                return preg_match('#^portal_guides#', $route);
         }
 
         return false;

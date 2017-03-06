@@ -31,7 +31,6 @@ namespace Application\DeskPRO\EntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Util\Arrays;
-use Orb\Util\Strings;
 
 class Topic extends AbstractEntityRepository
 {
@@ -79,7 +78,8 @@ class Topic extends AbstractEntityRepository
     /**
      * Get a plain hierarchy array.
      *
-     * @param bool $reset
+     * @param bool       $reset
+     * @param Guide|null $guide
      *
      * @return array|null
      */
@@ -92,7 +92,7 @@ class Topic extends AbstractEntityRepository
         if (is_array($reset)) {
             $topics = $reset;
         } else {
-            $select = 'id, parent_id, title';
+            $select = 'id, parent_id, title, slug';
 
             $qb = $this->_em->getConnection()->createQueryBuilder();
             $qb->select($select);
@@ -102,8 +102,8 @@ class Topic extends AbstractEntityRepository
 
             $params = [];
             if ($guide) {
-                $qb->where('guide = ?');
-                $params[] = $guide;
+                $qb->where('guide_id = ?');
+                $params[] = $guide->getId();
             }
 
             $topics = $this->_em->getConnection()->fetchAllKeyed($qb->getSQL(), $params, 'id');
@@ -116,7 +116,6 @@ class Topic extends AbstractEntityRepository
                     $c[$k] = (int) $c[$k];
                 }
             }
-            $c['url_slug'] = $c['id'].'-'.Strings::slugifyTitle($c['title']);
 
             if (!isset($c['user_title']) || !$c['user_title']) {
                 $c['user_title'] = $c['title'];

@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\Topic;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -47,6 +48,7 @@ class GuidesController extends AbstractController
      * @Route("/guides", name="user_guides_home")
      * @Security("is_granted('USE_GUIDES')")
      * @PageHttpCache()
+     * @Feature("guides")
      *
      * @param Request $request
      * @param string  $_format
@@ -128,70 +130,18 @@ class GuidesController extends AbstractController
      */
     public function browseAction(Request $request, Guide $guide, $_format)
     {
-        $page   = $request->query->getInt('page', 1);
-        $person = $this->getCurrentPerson();
-
-        // RSS
-
-//        if ('rss' === $_format) {
-//            $pager = $this->getGuidesDataService()->getGuidesPager(
-//                $guide,
-//                $page,
-//                $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
-//                $person
-//            );
-
-//            return $this->render('PortalBundle:Guides:feed.rss.twig', [
-//                'pager'      => $pager,
-//                'category'   => $guide,
-//                'page_title' => $this->createPageTitle()->guides($guide),
-//            ]);
-//        }
-//        $rssLink = $this->generateUrl('portal_guides_browse', ['slug' => $guide->getSlug(), '_format' => 'rss']);
-
-        // BREADCRUMBS
-
-//        if ($guide) {
-//            $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuidesCategory($guide);
-//        } else {
-//            $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuides();
-//        }
-
-        // SUBSCRIBE
-
-//        $isSubscribed = false;
-//        if (
-//            $this->getBrandSetting('user.guides_subscriptions', false)
-//            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD_CATEGORY, $guide)
-//        ) {
-//            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($guide, $this->getUser());
-//        }
-
-        // PAGER
-
-//        $count = $this->getBrandSetting('portal.per_page_content');
-        $topics = $this->getGuidesDataService()->getGuideChildren($guide, $person);
-
-        // RENDER THEME
-
         return $this->renderThemeView(
             'Theme:Guides:browse.html.twig',
             [
-                'guide' => $guide,
-//                'breadcrumbs'   => $breadcrumbs,
-//                'count'         => $count,
-                'page'   => $page,
-                'topics' => $topics,
-//                'is_subscribed' => $isSubscribed,
+                'guide'      => $guide,
                 'page_title' => $this->createPageTitle()->guides($guide),
-//                'rss_link'      => $rssLink,
             ]
         );
     }
 
     /**
+     * @Route("/guides/topic/{slug}", name="portal_guides_topic_view")
      * @Route("/guides/{guide_slug}/{slug}")
-     * @Route("/guides/topic/{slug}", name="portal_topic_view")
      * @ParamConverter(name="topic", converter="deskpro_slug")
      * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_TOPIC', topic)")
      * @PageHttpCache(content="topic")
@@ -199,8 +149,17 @@ class GuidesController extends AbstractController
      * @param Request $request
      * @param Topic   $topic
      * @param int     $visitor_id
+     *
+     * @return Response
      */
     public function viewAction(Request $request, Topic $topic, $visitor_id)
     {
+        return $this->renderThemeView(
+            'Theme:Guides:view.html.twig',
+            [
+                'topic' => $topic,
+                'guide' => $topic->getGuide(),
+            ]
+        );
     }
 }

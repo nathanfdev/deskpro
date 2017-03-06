@@ -43,9 +43,15 @@ use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\Entity\TopicRevision;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use DateTime;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class GuideController.
+ *
+ * @Feature("guides")
+ */
 class GuideController extends PublishController
 {
     public function viewAction($topic_id)

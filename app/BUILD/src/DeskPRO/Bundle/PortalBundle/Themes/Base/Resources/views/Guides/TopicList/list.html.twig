@@ -1,8 +1,22 @@
+{% macro topic_children(topic, current_topic) %}
+    {% if topic.children|length > 0 %}
+        <ul>
+            {% for child in topic.children %}
+                <li class="topic-item {% if (current_topic and (child.slug == current_topic.slug)) %}active{% endif %}">
+                    <a href="{{ path('portal_guides_topic_view', {slug: child.slug}) }}">{{child.title}}</a>
+                    {{ _self.topic_children(child, current_topic) }}
+                </li>
+            {% endfor %}
+        </ul>
+    {%  endif %}
+{% endmacro %}
+
 {% if topics|length > 0 %}
-    <ul class="topic-list">
+    <ul>
         {% for topic in topics %}
-            <li class="topic-item">
-                <a href="{{ portal_path(topic) }}">{{topic.title}}</a>
+            <li class="topic-item {% if (current_topic and (topic.slug == current_topic.slug)) %}active{% endif %}">
+                <a href="{{ path('portal_guides_topic_view', {slug: topic.slug}) }}">{{topic.title}}</a>
+                {{ _self.topic_children(topic, current_topic) }}
             </li>
         {% endfor %}
     </ul>

@@ -23,7 +23,8 @@ export class EditorContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      saving: false
+      saving: false,
+      saved:  false
     };
   }
 
@@ -35,8 +36,10 @@ export class EditorContainer extends React.Component {
     });
     window.document.addEventListener('dpTopicSaved', () => {
       this.setState({
-        saving: false
+        saving: false,
+        saved:  true
       });
+      setTimeout(() => { this.setState({ saved: false }); }, 3000);
     });
   };
 
@@ -61,6 +64,7 @@ export class EditorContainer extends React.Component {
       onCancel={this.onCancel}
       onSave={this.props.save}
       saving={this.state.saving}
+      saved={this.state.saved}
       onAddFile={this.onAddFile}
       loadRemoteImages={this.loadRemoteImages}
       updateSource={this.props.updateSource}
@@ -74,6 +78,7 @@ export class Editor extends React.Component {
     inputType:        PropTypes.string,
     onSave:           PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
     saving:           PropTypes.bool,
+    saved:            PropTypes.bool,
     onCancel:         PropTypes.func,
     onAddFile:        PropTypes.func,
     loadRemoteImages: PropTypes.func,
@@ -196,7 +201,7 @@ export class Editor extends React.Component {
             className={classNames('pull-right', { loading: this.props.saving })}
             onClick={this.onSave}
           >
-            Save
+            {this.props.saved ? 'Saved' : 'Save'}
           </Button> : '' }
       </div>
       <div className="editor">

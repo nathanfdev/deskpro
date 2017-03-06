@@ -1,0 +1,132 @@
+.guides {
+  font-family: Lato;
+
+  h1 {
+    font-size: 22px;
+    font-weight: bold;
+  }
+  h2 {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  h3 {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  h4 {
+    font-size: 16px;
+    font-weight: normal;
+  }
+  a.internal_link {
+    text-decoration: none;
+    display: inline-block;
+    background-color: #f4f4f4;
+    border: 1px solid #f4f4f4;
+    border-radius: 2px;
+    padding: 1px 3px;
+    color: #6e6e6e;
+    &:hover {
+      border: 1px solid $dp-sonic-primary;
+      background-color: $dp-morning-sky;
+      color: $dp-sonic-primary;
+    }
+    &:before {
+      font: normal normal normal 14px/1 FontAwesome;
+      font-size: 1.20em;
+      margin-right: 5px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    &.article:before,
+    &.knowledgebase:before,
+    &.knowledgebase_article:before {
+      content: "\F022";
+    }
+    &.download:before {
+      content: "\f019";
+    }
+    &.news:before {
+      content: "\F133";
+    }
+    &.feedback:before {
+      content: "\F087";
+    }
+    &.guide:before,
+    &.topic:before {
+      content: "\F02D";
+    }
+  }
+  .section-header {
+    h1 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .publication_date,
+    .last_update_date {
+      font-size: 12px;
+      label {
+        color: #8b8b8b;
+      }
+      margin-right: 20px;
+    }
+  }
+  .topic-list {
+    width: 216px;
+    float: left;
+    border-right: 1px solid #efefef;
+    border-collapse: collapse;
+    margin-right: -1px;
+    & > .guide {
+      font-size: 13px;
+      color: #333;
+    }
+    & > ul {
+      margin: 0;
+      padding: 0;
+      & > li {
+        list-style: none;
+        & > a {
+          font-size: 12px;
+          font-weight: bold;
+          text-transform: uppercase;
+          text-decoration: none;
+          color: #709FD6;
+        }
+        & > ul {
+          margin: 0;
+          padding: 0;
+          li {
+            list-style: none;
+            a {
+              font-size: 12px;
+              text-decoration: none;
+              color: #8b8b8b;
+            }
+            ul {
+              padding-left: 15px;
+            }
+          }
+        }
+      }
+    }
+    li.active > a {
+      background-color: #eff8fd;
+      color: #709FD6;
+      height: 23px;
+      width: 100%;
+      display: inline-block;
+      border-right: 2px solid #709fd6;
+      margin-right: -1px;
+    }
+  }
+  & > .topic {
+    width: 664px;
+    float: left;
+    border-left: 1px solid #efefef;
+    padding-left: 24px;
+    img {
+      max-width: 640px;
+    }
+  }
+}

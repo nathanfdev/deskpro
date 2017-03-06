@@ -29,6 +29,8 @@
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\Guide;
+use Application\DeskPRO\Entity\Topic;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
@@ -37,6 +39,11 @@ use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class GuidesController.
+ *
+ * @Feature("guides")
+ */
 class GuidesController extends AbstractController
 {
     /**
@@ -46,12 +53,15 @@ class GuidesController extends AbstractController
      * @TagOptions(
      *     defaults={
      *          "guide": null,
+     *          "topic": null,
      *     },
      *     allowed_types={
-     *          "guide":{"Application\DeskPRO\Entity\Guide","int","string"}
+     *          "guide":{"Application\DeskPRO\Entity\Guide","int","string"},
+     *          "topic":{"Application\DeskPRO\Entity\Topic","int","string","null"}
      *     },
      *     attribute_expressions={
-     *          "guide": "service('data.guides').getGuide(options['guide'])"
+     *          "guide": "service('data.guides').getGuide(options['guide'])",
+     *          "topic": "service('data.guides').getTopic(options['topic'])"
      *     }
      * )
      *
@@ -60,10 +70,11 @@ class GuidesController extends AbstractController
      * @param TagRequest $tagRequest
      * @param array      $options
      * @param Guide      $guide
+     * @param Topic      $topic
      *
      * @return Response
      */
-    public function topicListAction(TagRequest $tagRequest, array $options, Guide $guide)
+    public function topicListAction(TagRequest $tagRequest, array $options, Guide $guide, Topic $topic = null)
     {
         $person = $this->getCurrentPerson();
 
@@ -75,8 +86,9 @@ class GuidesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Guides:TopicList/list.html.twig',
             [
-                'topics' => $topics,
-                'guide'  => $guide,
+                'topics'        => $topics,
+                'guide'         => $guide,
+                'current_topic' => $topic,
             ]
         );
     }

@@ -37,7 +37,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\TopicComment;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
-use DeskPRO\Component\Util\ListUtils;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -131,15 +130,7 @@ class GuidesDataService extends AbstractDataService
                     }
                 }
                 $result = $that->getTopicsRepo()
-                    ->findBy([
-                        'parent' => null,
-                        'guide'  => $guide,
-                    ]);
-
-                $result = ListUtils::sortByFnValue($result, function ($topic) {
-                    /* @var Topic $topic */
-                    return $topic->getDisplayOrder();
-                });
+                    ->getInHierarchy(false, $guide);
 
                 return $result;
             }
