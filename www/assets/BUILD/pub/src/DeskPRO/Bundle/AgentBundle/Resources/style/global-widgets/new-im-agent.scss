@@ -53,38 +53,27 @@ img.emojione, svg.emojione {
 .ui.topbar > .item > .im-list {
   .im.recent {
     margin: 0 3px;
+
     &.empty {
       margin: 0 8px;
     }
+
     > .im.wrapper {
       position: relative;
       display: inline-block;
 
-      > .ui.avatar.image {
+      > .ui.avatar.image.im {
+        margin: 0 7px;
+
+        .text {
+          left: 0;
+          top: 0;
+        }
+
         .gravatar {
           border: 0.5px solid white;
         }
-      }
 
-      &.current {
-        > .ui.avatar.image {
-          border: 3px solid $dp-sonic-primary !important;
-          margin: 0 4px;
-
-          .text {
-            left: -1px;
-            top: -1px;
-          }
-
-          .gravatar {
-            top: -1px;
-            right: 1px;
-            border: 1px solid $dp-sonic-primary;
-          }
-        }
-      }
-
-      .ui.avatar.image.im {
         svg {
           width: 24px;
           height: 24px;
@@ -112,22 +101,13 @@ img.emojione, svg.emojione {
         color: $dp-greyscale-850;
 
         &:before {
+          position: absolute;
+          top: 0;
+          right: 0;
           content: "";
         }
       }
 
-      &:hover .icon.close:before {
-        content: "\f057";
-      }
-
-      > .im.avatar {
-        margin: 0 7px;
-
-        .text {
-          left: 0;
-          top: 0;
-        }
-      }
       > .knuckles.message-counter {
         position: absolute;
         top: -8px;
@@ -137,8 +117,42 @@ img.emojione, svg.emojione {
         border-radius: 4px;
         font-weight: bold;
       }
-      &:hover > .knuckles.message-counter {
-        display: none;
+
+      &.current {
+        > .ui.avatar.image {
+          border: 3px solid $dp-sonic-primary !important;
+          margin: 0 4px;
+
+          .text {
+            left: -1px;
+            top: -1px;
+          }
+
+          .gravatar {
+            top: -1px;
+            right: 1px;
+            border: 1px solid $dp-sonic-primary;
+          }
+        }
+
+        .icon.close {
+          top: -6px;
+          right: -5px;
+        }
+
+        .agent-online {
+          bottom: -2px;
+        }
+      }
+
+      &:hover {
+        .icon.close:before {
+          content: "\f057";
+        }
+
+        > .knuckles.message-counter {
+          display: none;
+        }
       }
     }
   }
