@@ -253,8 +253,12 @@ img.emojione, svg.emojione {
       .ui.search {
         width: 100%;
 
-        input[type=search]:invalid + i.icon.remove {
-          display: none;
+        input[type=search] {
+          padding-right: 2em !important;
+          
+          &:invalid + i.icon.remove {
+            display: none;
+          }
         }
 
         .icon.remove, .icon.search {
@@ -269,7 +273,7 @@ img.emojione, svg.emojione {
 
         .right {
           left: auto;
-          right: 3px;
+          right: 13px;
         }
       }
     }
