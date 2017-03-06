@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
-import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
-import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
-import classNames from 'classnames';
+import AvatarHelper from './AvatarHelper';
 
 class EveryoneSegment extends React.Component {
 
@@ -10,15 +8,6 @@ class EveryoneSegment extends React.Component {
     agents:             PropTypes.object.isRequired,
     onParticipantClick: PropTypes.func.isRequired
   };
-
-  static getAvatar(agent) {
-    const classes = ['ui', 'avatar', 'image', 'im'];
-    if (!agent.get('online')) {
-      classes.push('offline');
-    }
-
-    return <PersonAvatar person={agent} size={24} className={classNames(classes)} color={chooseColor(agent.get('id'))} />;
-  }
 
   render() {
     return (
@@ -28,7 +17,7 @@ class EveryoneSegment extends React.Component {
         vertical
       >
         <div onClick={() => this.props.onParticipantClick(0, 'everyone')}>
-          {this.props.agents.slice(0, 13).map(agent => EveryoneSegment.getAvatar(agent))}
+          {this.props.agents.slice(0, 14).map(agent => AvatarHelper.renderAgentAvatar(agent, 24, [], agent.get('name')))}
         </div>
       </Segment>);
   }

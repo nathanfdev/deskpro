@@ -9,7 +9,9 @@ class AgentTeamList extends AbstractList {
     teams: PropTypes.object.isRequired
   };
 
-  getAvatar = AvatarHelper.renderAgentTeamAvatar;
+  getAvatar(item) { // eslint-disable-line class-methods-use-this
+    return AvatarHelper.renderAgentTeamAvatar(item, item.get('name'));
+  }
 
   getItems() {
     return this.filterList(this.props.teams, 'name').map(team => this.getItem(team, 'team', 'name'));

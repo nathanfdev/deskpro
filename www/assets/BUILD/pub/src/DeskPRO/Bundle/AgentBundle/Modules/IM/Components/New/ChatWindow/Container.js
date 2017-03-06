@@ -324,7 +324,7 @@ class Container extends React.Component {
 
               return (
                 <span key={`agent_span_${agentId}`} onClick={() => onAgentClick(agentId, 'agent')}>
-                  {AvatarHelper.renderAgentAvatar(agent, 24, className)}
+                  {AvatarHelper.renderAgentAvatar(agent, 24, className, agent.get('name'))}
                 </span>
               );
             }

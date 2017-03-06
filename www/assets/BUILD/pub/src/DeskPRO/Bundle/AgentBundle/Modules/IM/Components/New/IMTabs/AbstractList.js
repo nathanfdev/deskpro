@@ -70,7 +70,7 @@ class AbstractList extends React.Component {
           className.push('offline');
         }
 
-        return AvatarHelper.renderAgentAvatar(agent, 20, classNames(className));
+        return AvatarHelper.renderAgentAvatar(agent, 20, classNames(className), agent.get('name'));
       }
     );
   }

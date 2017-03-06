@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ReactTooltip from 'react-tooltip';
 import classNames from 'classnames';
 import { isDarkBg, colorLuminance } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 
@@ -14,8 +15,7 @@ export class UserPhoto extends React.Component {
     borderColor: PropTypes.string,
     children:    PropTypes.node,
     className:   PropTypes.string,
-    title:       PropTypes.string,
-    noOffline:   PropTypes.bool
+    title:       PropTypes.string
   };
 
   static defaultProps = {
@@ -64,7 +64,7 @@ export class UserPhoto extends React.Component {
   }
 
   render() {
-    const { type, text, children, className, title, width, height, noOffline } = this.props;
+    const { type, text, children, className, title } = this.props;
 
     const spanProps = {
       style:     this.getStyle(),
@@ -75,26 +75,17 @@ export class UserPhoto extends React.Component {
         })
     };
 
+    const id = new Date().getTime();
     if (title) {
-      spanProps.title = title;
+      spanProps['data-tip'] = title;
+      spanProps['data-for'] = `tooltip-${id}`;
     }
 
-    const offlineProps = {
-      width:        width + 2,
-      height:       height + 2,
-      lineHeight:   height + 2,
-      textAlign:    'center',
-      position:     'absolute',
-      top:          '-1px',
-      left:         '-1px',
-      borderRadius: '500rem'
-    };
-
     return (
-      <span {...spanProps}>
+      <span {...spanProps} >
         {text && <span className={classNames('text', className)} style={this.getTextStyle()}>{text}</span>}
         {children}
-        { !noOffline ? <span className="offline-block" style={offlineProps} /> : null }
+        {title ? <ReactTooltip delayShow={1000} id={`tooltip-${id}`} effect="solid" place="top" className="im-tooltip" /> : null }
       </span>
     );
   }

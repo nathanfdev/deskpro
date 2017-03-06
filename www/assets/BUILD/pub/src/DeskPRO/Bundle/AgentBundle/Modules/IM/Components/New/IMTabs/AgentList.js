@@ -23,7 +23,7 @@ class AgentList extends AbstractList {
       <ListElement
         key={agent.get('id')}
         className={classNames(className)}
-        imageNode={this.getAvatar(agent)}
+        imageNode={this.getAvatar(agent, 24, [], agent.get('name'))}
       >
         <div
           onClick={() => this.props.onParticipantClick(agent.get('id'), 'agent')}

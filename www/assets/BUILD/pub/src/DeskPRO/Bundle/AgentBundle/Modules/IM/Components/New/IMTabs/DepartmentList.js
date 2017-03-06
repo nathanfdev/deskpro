@@ -8,7 +8,9 @@ class DepartmentList extends AbstractList {
     departments: PropTypes.object.isRequired
   };
 
-  getAvatar = AvatarHelper.renderDepartmentAvatar;
+  getAvatar(item) { // eslint-disable-line class-methods-use-this
+    return AvatarHelper.renderDepartmentAvatar(item, item.get('title'));
+  }
 
   getItems() {
     return this

@@ -13,7 +13,9 @@ class GroupList extends AbstractList {
     leaveGroup:   PropTypes.func.isRequired
   };
 
-  getAvatar = AvatarHelper.renderGroupAvatar;
+  getAvatar(item) { // eslint-disable-line class-methods-use-this
+    return AvatarHelper.renderGroupAvatar(item, null, item.get('name'));
+  }
 
   constructor(props) {
     super(props);
