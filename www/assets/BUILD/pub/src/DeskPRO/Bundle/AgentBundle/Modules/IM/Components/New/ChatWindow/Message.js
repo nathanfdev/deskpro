@@ -56,7 +56,6 @@ class Message extends React.Component {
 
   componentDidMount() {
     $('a:not([data-route])', this.message).attr('target', '_blank');
-    $('a', this.message).on('click', (e) => { e.stopPropagation(); return e; });
   }
 
   componentDidUpdate() {
@@ -114,7 +113,7 @@ class Message extends React.Component {
       dangerouslySetInnerHTML: this.getMessage()
     };
     if (searchQuery) {
-      contentProps.onClick = (e) => { console.log(e); onSearchMessageClick(message); };
+      contentProps.onClick = (e) => { if (!$(e.target).is('a')) { onSearchMessageClick(message); } };
     }
     return (<Segment className={classNames('row', { search: searchQuery, result: searchQuery, my })}>
       {this.dateSep()}
