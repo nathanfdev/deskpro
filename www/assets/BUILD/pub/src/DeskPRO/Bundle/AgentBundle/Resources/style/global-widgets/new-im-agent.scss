@@ -24,13 +24,19 @@ img.emojione, svg.emojione {
   filter: grayscale(0);
 }
 
-.ui.im.avatar {
+.active #im-button {
+  border: 3px solid $dp-sonic-primary;
+  margin: 0 4px;
+}
 
+
+
+.ui.im.avatar {
   &#im-button, &#im-button svg {
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    -o-border-radius: 0px;
-    border-radius: 0px;
+    -webkit-border-radius: 500rem;
+    -moz-border-radius: 500rem;
+    -o-border-radius: 500rem;
+    border-radius: 500rem;
   }
 
   width: 24px;
