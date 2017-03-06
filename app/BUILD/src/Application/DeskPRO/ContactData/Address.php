@@ -52,6 +52,14 @@ class Address extends AbstractContactData
         $contact_record->field_3 = isset($input['state']) ? $input['state'] : '';
         $contact_record->field_4 = isset($input['zip']) ? $input['zip'] : '';
         $contact_record->field_5 = isset($input['country']) ? $input['country'] : '';
+
+        $fullAddress = '';
+        foreach (range(1, 5) as $i) {
+            $method = 'getField'.$i;
+            $fullAddress .= ' '.$contact_record->$method();
+        }
+        // Searchable value without punctuation etc
+        $contact_record->field_10 = preg_replace('#[^0-9a-zA-Z\s]#', '', $fullAddress);
     }
 
     /**
