@@ -65,7 +65,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 					case 'product':
 						return this.getProductId();
 				}
-        fieldId = ((fieldId || '')+'').replace('ticket_field_');
+        fieldId = ((fieldId || '')+'').replace('ticket_field_', '');
 				return this.getFieldValue('custom_fields[field_' + fieldId + ']');
 			},
 			getUserFieldValue: function(fieldId) {
@@ -164,8 +164,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			if ($scope.isEditMode(field)) return;
 			if ($event.target.tagName === 'A') return;
 
-      self.initFieldWidgets($($event.currentTarget).closest('tbody.'+field));
-
 			var getSelected = function() {
 				if (window.getSelection) {
 					return window.getSelection().toString();
@@ -236,6 +234,15 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 			self.updateDisplay();
 		};
+
+    if (window.DESKPRO_TICKET_DISPLAY) {
+      var reader = self.ticketReader;
+			var fields = window.DESKPRO_TICKET_DISPLAY.getLayout(reader.getDepartmentId()).getFields();
+			for (var i = 0; i < fields.length; i++) {
+				var $row = self.display.find('tbody.item.' + fields[i].id + ':first');
+				self.initFieldWidgets($row);
+			}
+    }
 	},
 
 	updateDisplay: function() {
