@@ -108,7 +108,6 @@ class GuidesDataService extends AbstractDataService
      */
     public function getGuideChildren($guide, Person $person)
     {
-        return [];
         $that = $this;
 
         return $this->generateAndCache(
@@ -122,6 +121,10 @@ class GuidesDataService extends AbstractDataService
                     $person
                 )->getAllowedGuides();
 
+                if (!in_array($guide->getId(), $allowedIds)) {
+                    throw new \Exception('Unauthorized guide');
+                }
+
                 if (!$guide instanceof Guide) { // if not already category, try to make it one
                     if (!$guide = $that->getGuide($guide)) {
                         throw new \InvalidArgumentException(sprintf('could not convert "%s" into a guide'));
@@ -130,7 +133,6 @@ class GuidesDataService extends AbstractDataService
                 $result = $that->getTopicsRepo()
                     ->findBy([
                         'parent' => null,
-                        'id'     => $allowedIds,
                         'guide'  => $guide,
                     ]);
 

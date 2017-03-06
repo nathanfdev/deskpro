@@ -763,6 +763,7 @@ return [
     'portal.tickets.view_will_notify_you'                   => 'We have received your message and will send you an email notification as soon as an agent has added a comment.',
     'portal.tickets.view_you_created'                       => 'You created this ticket {{ ago }}.',
     'portal.tickets.new_ticket_button'                      => 'Create a new ticket',
+    'portal.topics.none'                                    => 'No topics yet',
     'portal.widget.help_button'                             => 'Help',
     'portal.widget.popup_title'                             => 'Customer Support',
     'portal.widget.popup_message'                           => 'Need help? Just reply to start a live chat with one of our team.',

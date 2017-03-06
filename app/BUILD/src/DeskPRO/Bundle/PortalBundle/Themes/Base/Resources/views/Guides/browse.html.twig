@@ -9,6 +9,7 @@
         <h1>{{ guide.title }}</h1>
     </header>
     <div class="column-full">
+        {% show topic_list with {guide: guide} %}
     </div>
     </div>
 {% endblock inner_content %}

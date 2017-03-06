@@ -83,7 +83,7 @@ class Topic extends AbstractEntityRepository
      *
      * @return array|null
      */
-    public function getInHierarchy($reset = false)
+    public function getInHierarchy($reset = false, $guide = null)
     {
         if (!$reset && $this->topicHierarchy !== null) {
             return $this->topicHierarchy;
@@ -94,11 +94,19 @@ class Topic extends AbstractEntityRepository
         } else {
             $select = 'id, parent_id, title';
 
-            $topics = $this->_em->getConnection()->fetchAllKeyed("
-                SELECT $select
-                FROM {$this->tableName}
-                ORDER BY display_order ASC, id ASC
-            ", [], 'id');
+            $qb = $this->_em->getConnection()->createQueryBuilder();
+            $qb->select($select);
+            $qb->from($this->tableName);
+            $qb->orderBy('display_order', 'ASC');
+            $qb->addOrderBy('id', 'ASC');
+
+            $params = [];
+            if ($guide) {
+                $qb->where('guide = ?');
+                $params[] = $guide;
+            }
+
+            $topics = $this->_em->getConnection()->fetchAllKeyed($qb->getSQL(), $params, 'id');
         }
 
         $this->topicIds = [];

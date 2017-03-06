@@ -1,0 +1,11 @@
+{% if topics|length > 0 %}
+    <ul class="topic-list">
+        {% for topic in topics %}
+            <li class="topic-item">
+                <a href="{{ portal_path(topic) }}">{{topic.title}}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <strong>{{ phrase('portal.topics.none') }}</strong>
+{% endif %}

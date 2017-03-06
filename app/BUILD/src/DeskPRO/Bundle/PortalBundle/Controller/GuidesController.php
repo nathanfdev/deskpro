@@ -26,19 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\Topic;
-use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -149,7 +140,7 @@ class GuidesController extends AbstractController
 //                $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
 //                $person
 //            );
-//
+
 //            return $this->render('PortalBundle:Guides:feed.rss.twig', [
 //                'pager'      => $pager,
 //                'category'   => $guide,
@@ -186,241 +177,30 @@ class GuidesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Guides:browse.html.twig',
             [
-                'guide'         => $guide,
+                'guide' => $guide,
 //                'breadcrumbs'   => $breadcrumbs,
 //                'count'         => $count,
-                'page'          => $page,
-                'topics'         => $topics,
+                'page'   => $page,
+                'topics' => $topics,
 //                'is_subscribed' => $isSubscribed,
-                'page_title'    => $this->createPageTitle()->guides($guide),
+                'page_title' => $this->createPageTitle()->guides($guide),
 //                'rss_link'      => $rssLink,
             ]
         );
     }
 
     /**
-     * @Route("/guides/files/{slug}", name="portal_guides_view")
-     * @Route("/guides/files/{slug}", name="user_guides_file")
-     * @ParamConverter(name="file", converter="deskpro_slug")
-     * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_DOWNLOAD', file)")
-     * @PageHttpCache(content="file")
+     * @Route("/guides/{guide_slug}/{slug}")
+     * @Route("/guides/topic/{slug}", name="portal_topic_view")
+     * @ParamConverter(name="topic", converter="deskpro_slug")
+     * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_TOPIC', topic)")
+     * @PageHttpCache(content="topic")
      *
      * @param Request $request
-     * @param Topic   $file
-     * @param string  $visitor_id
-     *
-     * @return Response
+     * @param Topic   $topic
+     * @param int     $visitor_id
      */
-    public function viewAction(Request $request, Topic $file, $visitor_id)
+    public function viewAction(Request $request, Topic $topic, $visitor_id)
     {
-        if (!$file->getBlob() && !$file->getFileurl()) {
-            throw $this->createNotFoundException('could not find downloadable content for download id='.$file->getId());
-        }
-
-        // COMMENT FORM
-
-        $newCommentForm = null;
-        if ($this->isGranted(ContentCommentVoter::COMMENT_DOWNLOAD, $file)) {
-            $formHandler = $this->get('form_handler.comment');
-            $comment     = new DownloadComment();
-            $comment->setVisitorId($visitor_id);
-            $comment->setIpAddress($request->getClientIp());
-            $newCommentForm = $formHandler->createForm($comment, $request);
-            $form_result    = $formHandler->handle($newCommentForm, $request, $file, $comment);
-            if ($form_result instanceof Response) {
-                return $form_result;
-            }
-        }
-
-        // BREADCRUMBS
-
-        $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuidesFile($file);
-
-        // RATING
-
-        $rating = $this->findContentRating($file, $visitor_id);
-
-        // NUM RATINGS
-
-        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($file);
-
-        // SUBSCRIPTION
-
-        $isSubscribed = false;
-        if (
-            $this->getBrandSetting('user.guides_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD, $file)
-        ) {
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($file, $this->getUser());
-        }
-
-        $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
-        $check->markAsCheckOnly();
-        $this->get('anti_abuse')->check($check);
-
-        // RENDER THEME
-
-        return $this->renderThemeView(
-            'Theme:Guides:view.html.twig',
-            [
-                'file'               => $file,
-                'content_type'       => Topic::CONTENT_TYPE,
-                'content_id'         => $file->getId(),
-                'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
-                'breadcrumbs'        => $breadcrumbs,
-                'rating'             => $rating,
-                'is_subscribed'      => $isSubscribed,
-                'page_title'         => $this->createPageTitle()->guides($file),
-                'show_rating_counts' => $showRatingCounts,
-                'rating_counts'      => $ratingCounts,
-                'lockout'            => $check->isLockoutRecommended(),
-                'lockout_time'       => $check->getLockoutTime(true),
-            ]
-        );
-    }
-
-    /**
-     * @Route("/guides/files/{slug}/download", name="portal_guides_download")
-     * @ParamConverter("file", options={"slug" = "slug"})
-     * @Security("is_granted('USE_GUIDES') and is_granted('DOWNLOAD_DOWNLOAD', file)")
-     *
-     * @param Topic $file
-     *
-     * @return Response
-     */
-    public function downloadAction(Topic $file)
-    {
-        $file->incrementDownloadCount();
-        $this->getEm()->flush($file);
-
-        if ($file->getFileurl()) {
-            return $this->redirect($file->getFileurl());
-        }
-
-        return $this->redirectToRoute('serve_blob', [
-            'blob_auth_id' => $file->getBlob()->getAuthId(),
-            'filename'     => $file->getFilenameSafe(),
-            'dl'           => 1,
-        ]);
-    }
-
-    /**
-     * @Route("/guides/files/{slug}/vote-up", name="portal_guides_vote_up", defaults={"up_or_down":"up"})
-     * @Route("/guides/files/{slug}/vote-down", name="portal_guides_vote_down", defaults={"up_or_down":"down"})
-     * @ParamConverter(name="file", converter="deskpro_slug")
-     * @Security("is_granted('USE_GUIDES') and is_granted('RATE_DOWNLOAD', file)")
-     * @AutoPostOnGetRequest()
-     *
-     * @param Topic  $file
-     * @param string $visitor_id
-     * @param string $up_or_down
-     *
-     * @return Response
-     */
-    public function downloadRateAction(Topic $file, $visitor_id, $up_or_down)
-    {
-        $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
-
-        if ('down' === $up_or_down) {
-            $this->getRatingsHelper()->rateContentDown($file, $visitor_id, $person);
-        } else {
-            $this->getRatingsHelper()->rateContentUp($file, $visitor_id, $person);
-        }
-
-        $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
-
-        return $this->redirectToRoute('portal_guides_view', ['slug' => $file->getSlug()]);
-    }
-
-    /**
-     * @Route("/guides/files/{slug}/toggle-subscription", name="portal_guides_files_toggle_subscription")
-     * @ParamConverter(name="file", converter="deskpro_slug")
-     * @Security("is_granted('USE_GUIDES') and is_granted('SUBSCRIBE_DOWNLOAD', file)")
-     * @AutoPostOnGetRequest()
-     *
-     * @param Topic $file
-     *
-     * @return Response
-     */
-    public function guidesSubscriptionAction(Topic $file)
-    {
-        $person              = $this->getUser();
-        $subscriptionsHelper = $this->getSubscriptionsHelper();
-
-        if ($subscriptionsHelper->isSubscribedContent($file, $person)) {
-            $subscriptionsHelper->unsubscribeFromContent($file, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.download_unsubscribe'));
-        } else {
-            $subscriptionsHelper->subscribeToContent($file, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.download_subscribe'));
-        }
-
-        return $this->redirectToRoute('portal_guides_view', ['slug' => $file->getSlug()]);
-    }
-
-    /**
-     * @Route("/guides/category/toggle-subscription/{slug}", name="portal_guides_category_toggle_subscription")
-     * @ParamConverter(name="category", converter="deskpro_slug")
-     * @Security("is_granted('USE_GUIDES') and is_granted('SUBSCRIBE_DOWNLOAD_CATEGORY', category)")
-     * @AutoPostOnGetRequest()
-     *
-     * @param Guide $guide
-     *
-     * @return Response
-     */
-    public function guidesCategorySubscriptionAction(Guide $guide)
-    {
-        $person              = $this->getUser();
-        $subscriptionsHelper = $this->getSubscriptionsHelper();
-
-        if ($subscriptionsHelper->isSubscribedCategory($guide, $person)) {
-            $subscriptionsHelper->unsubscribeFromCategory($guide, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.guide_unsubscribe'));
-        } else {
-            $subscriptionsHelper->subscribeToCategory($guide, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.guide_subscribe'));
-        }
-
-        return $this->redirectToRoute('portal_guides_browse', ['slug' => $guide->getSlug()]);
-    }
-
-    /**
-     * @Route("/guides/root/toggle-subscription", name="portal_guides_root_category_toggle_subscription")
-     * @Security("is_granted('ROLE_USER') and is_granted('USE_GUIDES')")
-     * @AutoPostOnGetRequest()
-     *
-     * @return Response
-     */
-    public function guidesRootCategorySubscriptionAction()
-    {
-        $person              = $this->getUser();
-        $subscriptionsHelper = $this->getSubscriptionsHelper();
-
-        if ($subscriptionsHelper->isSubscribedRootCategory('guides', $person)) {
-            $subscriptionsHelper->unsubscribeFromRootCategory('guides', $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.download_cat_unsubscribe'));
-        } else {
-            $subscriptionsHelper->subscribeToRootCategory('guides', $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.download_cat_subscribe'));
-        }
-
-        return $this->redirectToRoute('portal_guides');
-    }
-
-    /**
-     * @Route("/guides/files/subscriptions/unsubscribe", name="portal_guides_unsubscribe_all")
-     * NOTE: we don't check if they have access to this content, because we might
-     *       let someone UN-subscribe from all even if they don't have access to some
-     *       of the categories anymore
-     * @Security("is_granted('ROLE_USER') and is_granted('USE_GUIDES')")
-     * @AutoPostOnGetRequest()
-     */
-    public function guidesUnsubscribeAllAction()
-    {
-        $this->getSubscriptionsHelper()->unsubscribeFromAll('guides', $this->getUser());
-
-        $this->addFlash('success', $this->phrase('portal.flashes.download_unsubscribe_everything'));
-
-        return $this->redirectToRoute('portal_home');
     }
 }
