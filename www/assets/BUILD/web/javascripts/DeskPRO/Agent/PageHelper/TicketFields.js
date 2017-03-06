@@ -55,6 +55,16 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				return $field.filter(':checked').map(function(i, el) { return el.value; }).get();
 			},
 			getTicketFieldValue: function(fieldId) {
+				switch (fieldId) {
+					case 'category':
+						return this.getCategoryId();
+					case 'workflow':
+            return this.getWorkflowId();
+					case 'priority':
+						return this.getPriorityId();
+					case 'product':
+						return this.getProductId();
+				}
         fieldId = ((fieldId || '')+'').replace('ticket_field_');
 				return this.getFieldValue('custom_fields[field_' + fieldId + ']');
 			},
