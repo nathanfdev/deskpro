@@ -31,10 +31,6 @@ class AgentList extends AbstractList {
         >
           <div className="header">{agent.get('name')}</div>
         </div>
-        <div className="timestamp last-seen content right floated">
-          {AbstractList.getTimestamp(agent.get('last_seen'))}
-        </div>
-
       </ListElement>
     );
   }
