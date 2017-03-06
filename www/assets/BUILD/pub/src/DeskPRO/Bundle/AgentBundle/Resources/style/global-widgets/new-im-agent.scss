@@ -556,6 +556,10 @@ img.emojione, svg.emojione {
             color: $dp-greyscale-450;
             font-family: "Open Sans", serif;
           }
+
+          &.department .timestamp::before {
+            height: 38px;
+          }
         }
         &:hover {
           background: $dp-morning-sky;
@@ -590,7 +594,7 @@ img.emojione, svg.emojione {
           }
 
           &.department {
-            height: 38px;
+            height: 42px;
             padding-top: 4px;
             padding-bottom: 4px;
 
