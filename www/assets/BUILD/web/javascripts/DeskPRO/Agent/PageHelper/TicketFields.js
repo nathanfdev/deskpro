@@ -388,8 +388,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		this.page.getEl('field_errors').hide();
 		this.display.find('[data-prop-id]').each(function() {
 			var prop = changeManager.getPropertyManager($(this).data('prop-id'));
-			prop.setValue($(this).val());
-
 			changeManager.addChange(prop);
 		});
 
