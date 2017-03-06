@@ -44,7 +44,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				if ($field.attr('type') === 'hidden') {
 					return $.trim($field.parent().text());
 				}
-				if ($field.is('input:not(:radio, :checkbox), textarea, select')) {
+				if ($field.is('input:not(:radio, :checkbox), textarea')) {
 					return $field.val();
 				}
 				$field = $('[name="' + name + '"], [name="' + name + '[]"]', $holders);
@@ -55,7 +55,17 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				return $field.filter(':checked').map(function(i, el) { return el.value; }).get();
 			},
 			getTicketFieldValue: function(fieldId) {
-        fieldId = ((fieldId || '')+'').replace('ticket_field_');
+				switch (fieldId) {
+					case 'category':
+						return this.getCategoryId();
+					case 'workflow':
+            return this.getWorkflowId();
+					case 'priority':
+						return this.getPriorityId();
+					case 'product':
+						return this.getProductId();
+				}
+        fieldId = ((fieldId || '')+'').replace('ticket_field_', '');
 				return this.getFieldValue('custom_fields[field_' + fieldId + ']');
 			},
 			getUserFieldValue: function(fieldId) {
@@ -154,8 +164,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			if ($scope.isEditMode(field)) return;
 			if ($event.target.tagName === 'A') return;
 
-      self.initFieldWidgets($($event.currentTarget).closest('tbody.'+field));
-
 			var getSelected = function() {
 				if (window.getSelection) {
 					return window.getSelection().toString();
@@ -226,6 +234,15 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 			self.updateDisplay();
 		};
+
+    if (window.DESKPRO_TICKET_DISPLAY) {
+      var reader = self.ticketReader;
+			var fields = window.DESKPRO_TICKET_DISPLAY.getLayout(reader.getDepartmentId()).getFields();
+			for (var i = 0; i < fields.length; i++) {
+				var $row = self.display.find('tbody.item.' + fields[i].id + ':first');
+				self.initFieldWidgets($row);
+			}
+    }
 	},
 
 	updateDisplay: function() {
