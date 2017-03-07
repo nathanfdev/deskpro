@@ -110,18 +110,6 @@ class Container extends React.Component {
     };
 
     this.destroyEditor        = () => {};
-    this.openEmoji            = this.openEmoji.bind(this);
-    this.closeEmoji           = this.closeEmoji.bind(this);
-    this.handleChange         = this.handleChange.bind(this);
-    this.addEmoji             = this.addEmoji.bind(this);
-    this.handleSubmit         = this.handleSubmit.bind(this);
-    this.handleKeydown        = this.handleKeydown.bind(this);
-    this.initFroala           = this.initFroala.bind(this);
-    this.bindFroalaEvents     = this.bindFroalaEvents.bind(this);
-    this.openLink             = this.openLink.bind(this);
-    this.closeLink            = this.closeLink.bind(this);
-    this.openAttach           = this.openAttach.bind(this);
-    this.onSearchMessageClick = this.onSearchMessageClick.bind(this);
   }
 
   componentDidMount() {
@@ -141,12 +129,12 @@ class Container extends React.Component {
     }
   }
 
-  onSearchMessageClick(message) {
+  onSearchMessageClick = (message) => {
     this.setState({ searching: false }, () => {
       this.props.onChatSearch('');
       this.props.onSearchMessageClick(message);
     });
-  }
+  };
 
   getPath = (props) => {
     let path;
@@ -208,13 +196,13 @@ class Container extends React.Component {
     this.props.onChatSearch('');
   }
 
-  openEmoji() {
+  openEmoji = () => {
     this.setState({ emojiOpened: true });
-  }
+  };
 
-  closeEmoji() {
+  closeEmoji = () => {
     this.setState({ emojiOpened: false });
-  }
+  };
 
   closeContainer() {
     this.closeEmoji();
@@ -223,7 +211,7 @@ class Container extends React.Component {
     this.props.onClose(this.props.current.get('id'));
   }
 
-  addEmoji(emoji) {
+  addEmoji = (emoji) => {
     const editor = this.editor;
     const html = emoji.shortname;
     editor.events.focus();
@@ -231,55 +219,55 @@ class Container extends React.Component {
     editor.html.insert(html);
     this.handleChange(editor.html.get());
     this.closeEmoji();
-  }
+  };
 
-  handleChange(text) {
+  handleChange = (text) => {
     this.setState({ message: text });
     this.props.onChange(text);
-  }
+  };
 
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     if (!this.editor.core.isEmpty()) {
       event.preventDefault();
       this.props.onSubmit(this.state.message);
       this.props.saveDraft(this.props.current.get('id'), '');
       this.setState({ message: '' });
     }
-  }
+  };
 
-  initFroala(initControls) {
+  initFroala = (initControls) => {
     this.setState({ editorControls: initControls });
     initControls.initialize();
-  }
+  };
 
-  bindFroalaEvents(e, editor) {
+  bindFroalaEvents = (e, editor) => {
     this.editor = editor;
     editor.events.on('keydown', this.handleKeydown, true);
     editor.events.focus();
-  }
+  };
 
-  handleKeydown(e) {
+  handleKeydown = (e) => {
     if (e.keyCode === 13 && !(e.ctrlKey || e.metaKey || e.shiftKey || e.altKey)) {
       e.stopPropagation();
       this.handleSubmit(e);
       return false;
     }
     return e;
-  }
+  };
 
-  openLink() {
+  openLink = () => {
     this.setState({ linkDrawerOpened: true });
-  }
+  };
 
-  closeLink() {
+  closeLink = () => {
     this.setState({ linkDrawerOpened: false });
-  }
+  };
 
-  openAttach() {
+  openAttach = () => {
     this.editor.commands.exec('insertFile');
     this.state.editorControls.getEditor()('popups.setContainer', 'file.insert', $('#replyForm'));
     this.state.editorControls.getEditor()('popups.get', 'file.insert').css({ top: '25px', left: '325px' });
-  }
+  };
 
   groupHeader() {
     const { current, agents, onAgentClick, openGroupDrawer, me } = this.props;

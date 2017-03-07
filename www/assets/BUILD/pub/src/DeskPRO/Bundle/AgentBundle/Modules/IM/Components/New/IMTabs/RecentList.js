@@ -45,7 +45,6 @@ class RecentList extends React.Component {
     return RecentList.sortList(this.props.chats).map(this.getItem.bind(this));
   }
 
-
   getAgents(container) {
     return container.get('agents').map(
       (agentId) => {

@@ -61,11 +61,6 @@ class GroupAddDrawer extends React.Component {
       edited:             false,
       startedSelecting:   false
     };
-    this.agentClick  = this.agentClick.bind(this);
-    this.createGroup = this.createGroup.bind(this);
-    this.updateGroup = this.updateGroup.bind(this);
-    this.onChange    = this.onChange.bind(this);
-    this.clickOut    = this.clickOut.bind(this);
   }
 
   componentWillReceiveProps(props) {
@@ -78,9 +73,9 @@ class GroupAddDrawer extends React.Component {
     }
   }
 
-  onChange(event) {
+  onChange = (event) => {
     this.setState({ groupName: event.target.value, edited: true });
-  }
+  };
 
   getAgentsHeader() {
     return (
@@ -100,7 +95,7 @@ class GroupAddDrawer extends React.Component {
     );
   }
 
-  agentClick(agent) {
+  agentClick = (agent) => {
     this.props.agentClick(agent);
     const alreadyChecked = !!this.state.checkedAgents[agent.get('id')];
     const newCheckedAgents = this.state.checkedAgents;
@@ -113,7 +108,7 @@ class GroupAddDrawer extends React.Component {
         checkedAgentsCount: GroupAddDrawer.recalculateChecked(this.state.checkedAgents)
       }
     );
-  }
+  };
 
   clearState(callback) {
     const clearState = {
@@ -129,21 +124,21 @@ class GroupAddDrawer extends React.Component {
     }
   }
 
-  clickOut() {
+  clickOut = () => {
     this.clearState(this.props.clickOut);
-  }
+  };
 
-  createGroup() {
+  createGroup = () => {
     const agents = Immutable.fromJS(this.state.checkedAgents).filter(item => item).toJS();
     this.props.createGroup(Object.keys(agents), this.state.groupName);
     this.clearState();
-  }
+  };
 
-  updateGroup() {
+  updateGroup = () => {
     const agents = Immutable.fromJS(this.state.checkedAgents).filter(item => item).toJS();
     this.props.updateGroup(this.props.editChat.get('id'), Object.keys(agents), this.state.groupName);
     this.clearState();
-  }
+  };
 
   renderAgent(agent) {
     if (agent.get('id') === this.props.me.get('id')) {

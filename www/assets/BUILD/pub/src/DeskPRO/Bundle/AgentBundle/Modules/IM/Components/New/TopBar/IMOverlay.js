@@ -58,7 +58,6 @@ export default class IMOverlay extends React.Component {
     this.state = {
       filter: ''
     };
-    this.onListFilter = this.onListFilter.bind(this);
   }
 
   componentWillMount() {
@@ -71,9 +70,9 @@ export default class IMOverlay extends React.Component {
     }
   }
 
-  onListFilter(filter) {
+  onListFilter = (filter) => {
     this.setState({ filter });
-  }
+  };
 
   getHeader(header, list) {
     if (this.state.filter) {

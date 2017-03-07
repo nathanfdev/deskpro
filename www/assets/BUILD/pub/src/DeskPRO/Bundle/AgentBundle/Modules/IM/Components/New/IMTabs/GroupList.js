@@ -24,7 +24,6 @@ class GroupList extends AbstractList {
       underConfirm:  false,
       confirmHandle: () => {}
     };
-    this.cancelConfirmation = this.cancelConfirmation.bind(this);
   }
 
   handleClick(chat) {
@@ -50,9 +49,9 @@ class GroupList extends AbstractList {
     return chat.get('admin') === this.props.me.get('id');
   }
 
-  cancelConfirmation() {
+  cancelConfirmation = () => {
     this.setState({ underConfirm: false });
-  }
+  };
 
   getItem(item, type, titleProp) {
     let size = item.get('agents').size;

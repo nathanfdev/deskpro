@@ -26,11 +26,8 @@ class MessageList extends React.Component {
 
   constructor(props) {
     super(props);
-    this.firstScroll = null;
     this.messageToScrollId = null;
     this.messages = {};
-    this.onSearchMessageClick = this.onSearchMessageClick.bind(this);
-    this.onScrollToMessage = this.onScrollToMessage.bind(this);
   }
 
   componentDidMount() {
@@ -43,10 +40,10 @@ class MessageList extends React.Component {
     markNewMessages();
   }
 
-  onSearchMessageClick(message) {
+  onSearchMessageClick = (message) => {
     this.messageToScrollId = message.getMessageObject().id;
     this.props.onSearchMessageClick(message.getMessageObject());
-  }
+  };
 
   onScrollToMessage = () => {
     this.messageToScrollId = null;
