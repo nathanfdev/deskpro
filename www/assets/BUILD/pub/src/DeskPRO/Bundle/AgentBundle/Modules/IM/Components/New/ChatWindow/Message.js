@@ -54,13 +54,18 @@ class Message extends React.Component {
     return newMessage;
   }
 
+  constructor(props) {
+    super(props);
+    this.messageNode = null;
+  }
+
   componentDidMount() {
-    $('a:not([data-route])', this.message).attr('target', '_blank');
+    $('a:not([data-route])', this.messageNode).attr('target', '_blank');
   }
 
   componentDidUpdate() {
     if (this.props.searchQuery) {
-      const $context = $('.content', this.message);
+      const $context = $('.content', this.messageNode);
       $context.unmark();
       $context.mark(this.props.searchQuery, { element: 'span', className: 'search-result' });
     }
@@ -79,16 +84,12 @@ class Message extends React.Component {
     };
   }
 
-  dateSep() {
-    const { message, previous } = this.props;
-    const date = moment(message.date_created);
-    const previousDate = moment(previous.date_created);
+  getMessageObject() {
+    return this.props.message;
+  }
 
-    if ((previous && previousDate.dayOfYear() !== date.dayOfYear()) || !previous) {
-      return Message.renderSeparator(message.date_created);
-    }
-
-    return null;
+  getNode() {
+    return this.messageNode;
   }
 
   timestamp() {
@@ -105,20 +106,39 @@ class Message extends React.Component {
     </div>);
   }
 
+  dateSep() {
+    const { message, previous } = this.props;
+    const date = moment(message.date_created);
+    const previousDate = moment(previous.date_created);
+
+    if ((previous && previousDate.dayOfYear() !== date.dayOfYear()) || !previous) {
+      return Message.renderSeparator(message.date_created);
+    }
+
+    return null;
+  }
+
+  isSearchResult() {
+    return this.props.searchQuery;
+  }
+
   render() {
     const { searchQuery, message, me, agent, onAgentClick, onSearchMessageClick } = this.props;
     const my = message.person === me.get('id') && !searchQuery;
-    const contentProps = {
-      className:               'content dont-break-out',
-      dangerouslySetInnerHTML: this.getMessage()
-    };
+    const contentProps = { className: 'content dont-break-out', dangerouslySetInnerHTML: this.getMessage() };
+    const messageProps = { className: 'message', ref: (c) => { this.messageNode = c; } };
+    if (!searchQuery) {
+      messageProps.id = `chat-${message.chat}-message-${message.id}`;
+      messageProps.ref = (x) => { this.messageNode = x; };
+    }
+
     if (searchQuery) {
-      contentProps.onClick = (e) => { if (!$(e.target).is('a')) { onSearchMessageClick(message); } };
+      contentProps.onClick = (e) => { if (e.target.tagName !== 'a') { onSearchMessageClick(this); } };
     }
     return (<Segment className={classNames('row', { search: searchQuery, result: searchQuery, my })}>
       {this.dateSep()}
       {my || searchQuery ? this.timestamp() : null}
-      <div className="message" ref={(c) => { this.message = c; }}>
+      <div {...messageProps} >
         {
           searchQuery
           ? (<div className="avatar wrapper">
