@@ -80,7 +80,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.getEl('linked_wrap_tab').hide();
 		}
 
-		try {
+    this.clips = [];
+    try {
 			var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
 			if (flashEnabled) {
 				// Set timeout to have it exec in global scope,
@@ -88,7 +89,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				window.setTimeout(function() {
 					self.wrapper.find('.copy-btn').each(function() {
 						var btnEl = this;
-						var btn = $(this);
 
 						try {
 							var clip = new ZeroClipboard(this, {
@@ -105,11 +105,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 								DeskPRO_Window.util.showSavePuff($(this).closest('.id-number'));
 							});
 
-							self.addEvent('destroy', function() {
-								try {
-									clip.unglue(btnEl);
-								} catch (e) {}
-							});
+							self.clips.push(clip);
+
 							self.addEvent('activate', function() {
 								try {
 									clip.reposition();
@@ -117,6 +114,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							});
 						} catch (e) {}
 					});
+
+          self.addEvent('activate', function() {
+            self.clips.forEach(function(clip){
+              try {
+                clip.reposition();
+              } catch (e) {}
+            });
+          });
+
 				}, 100);
 			} else {
 				this.wrapper.find('.copy-btn').remove();
@@ -381,7 +387,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					});
 				}
 			});
-			this.ownObject(this.merge);
 
 			this.mergeMenu = new (function() {
 				var menuEl = null;
@@ -1249,16 +1254,29 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.$scope && this.$scope.$destroy();
 		if (this.ticketReplyBox) {
 			this.ticketReplyBox.destroy();
-			this.ticketReplyBox = null;
 		}
-		if (this.valueForm) {
-		  this.valueForm.remove();
-      this.valueForm = null;
-    }
     if (this.ticketFields) {
 		  this.ticketFields.destroy();
-		  this.ticketFields = null;
     }
+    if (this.merge) {
+			this.merge.destroy();
+		}
+		delete this.ticketReplyBox;
+    delete this.ticketFields;
+    delete this.valueForm;
+    delete this.merge;
+    delete this.mergeMenu;
+
+    console.info(this.clips);
+    this.clips.forEach(function(clip){
+    	console.info(clip);
+      clip.destroy();
+      delete clip.options;
+      delete clip.htmlBridge;
+      delete clip.handlers;
+		});
+    delete this.clips;
+
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: this.getMetaData('ticket_id') });
 	},
 

@@ -141,7 +141,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 					}
 				});
 
-				self.wrapper.data('with-page-fragment', null);
+				self.wrapper.data('page-fragment', null);
 			}
 
 			if (self.destroyObjects) {
