@@ -19,6 +19,7 @@ Feature: /agent_chats endpoint
     And the header "Location" should be equal to "/api/v2/agent_chats/{lastCreatedId}"
     And the JSON node "data" should exist
     And the JSON node "data.id" should be equal to "{lastCreatedId}"
+    And the JSON node "data.date_last_message" should be equal to "null"
     And the JSON node "data.agents" should exist
     And the JSON node "data.agents" should have 2 elements
     And the JSON node "data.agents[0]" should be equal to "{darthvader@empire.galaxy}"
