@@ -40,6 +40,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class GuidesController.
+ *
+ * @Feature("guides")
  */
 class GuidesController extends AbstractController
 {
@@ -48,7 +50,6 @@ class GuidesController extends AbstractController
      * @Route("/guides", name="user_guides_home")
      * @Security("is_granted('USE_GUIDES')")
      * @PageHttpCache()
-     * @Feature("guides")
      *
      * @param Request $request
      * @param string  $_format
@@ -66,51 +67,13 @@ class GuidesController extends AbstractController
             return $this->redirectToRoute('portal_guides_browse', ['slug' => $guides[0]->getSlug()]);
         }
 
-        // RSS
-
-//        if ('rss' === $_format) {
-//            $pager = $this->getGuidesDataService()->getGuidesPager(
-//                null,
-//                $request->query->getInt('page', 1),
-//                $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
-//                $person
-//            );
-
-//            return $this->render('PortalBundle:Guides:feed.rss.twig', [
-//                'pager'      => $pager,
-//                'category'   => null,
-//                'page_title' => $this->createPageTitle()->guides(),
-//            ]);
-//        }
-//        $rssLink = $this->generateUrl(
-//            'portal_guides',
-//            ['_format' => 'rss']
-//        );
-
-        // BREADCRUMBS
-
-//        $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuides();
-
-        // SUBSCRIPTION
-
-//        $isSubscribed = false;
-//        if ($this->getUser() && $this->getBrandSetting('user.guides_subscriptions', false)) {
-//            // waiting info regarding article category subscriptions
-//            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('guides', $this->getUser());
-//        }
-
-        // RENDER THEME
-
         return $this->renderThemeView(
             'Theme:Guides:index.html.twig',
             [
                 'page'               => $page,
                 'count'              => $this->getBrandSetting('portal.per_page_content'),
-                'breadcrumbs'        => $breadcrumbs,
                 'show_category_link' => true,
                 'page_title'         => $this->createPageTitle()->guides(),
-                'rss_link'           => $rssLink,
-                'is_subscribed'      => $isSubscribed,
             ]
         );
     }

@@ -12,7 +12,10 @@
 {% endmacro %}
 
 {% if topics|length > 0 %}
-    <ul>
+    <script>
+        var topicList = '{{ topics|json_encode|raw }}';
+    </script>
+    <ul class="dpx-topic-list">
         {% for topic in topics %}
             <li class="topic-item {% if (current_topic and (topic.slug == current_topic.slug)) %}active{% endif %}">
                 <a href="{{ path('portal_guides_topic_view', {slug: topic.slug}) }}">{{topic.title}}</a>
