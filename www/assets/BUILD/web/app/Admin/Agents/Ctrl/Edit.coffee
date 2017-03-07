@@ -128,7 +128,7 @@ define [
       return false
 
     canCreateNewTicket: ->
-      return @perm_form['ticket']? && @perm_form['ticket'].create
+      return @perm_form && @perm_form['ticket']? && @perm_form['ticket'].create
 
     changeUse: (type) ->
       return if !@perm_form[type]? || true == @perm_form[type].use
