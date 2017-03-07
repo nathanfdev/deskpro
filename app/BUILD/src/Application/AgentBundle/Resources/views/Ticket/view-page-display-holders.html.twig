@@ -1,7 +1,7 @@
 {% if not baseId %}{% set baseId = el_uid() %}{% endif %}
 {% if app.languages.isMultiLang() %}
 	<tbody class="ticket_language language_id language standard-field item-on {% if not ticket.language.title %}no-value{% endif %}" data-item-type="ticket_language">
-		<tr class="mode-display" ng-show="!isEditMode('language')" ng-click="editField($event, 'language')">
+		<tr class="mode-display" ng-show="!isEditMode('language')" ng-click="editField('language', $event)">
 			<th width="80">
 				<span class="language_id label">{{ phrase('agent.general.language') }}:</span>
 			</th>
@@ -33,7 +33,7 @@
            data-default-value="{{ app.getSetting('core.default_ticket_cat') }}"
            ng-show="fields['category']"
     >
-        <tr class="mode-display" ng-show="!isEditMode('category')" ng-click="editField($event, 'category')">
+        <tr class="mode-display" ng-show="!isEditMode('category')" ng-click="editField('category', $event)">
             <th width="80">
                 <span class="category_id label">{{ phrase('agent.general.category') }}:</span>
             </th>
@@ -75,7 +75,7 @@
 
 {% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.view') %}
     <tbody class="problem problem_id standard-field item" data-item-type="ticket_problem">
-        <tr class="mode-display" ng-show="!isEditMode('problem')" ng-click="editField($event, 'problem')">
+        <tr class="mode-display" ng-show="!isEditMode('problem')" ng-click="editField('problem', $event)">
             <th width="80">
                 <span class="problem_id label">{{ phrase('agent.problems.problem') }}:</span>
             </th>
@@ -155,7 +155,7 @@
            data-default-value="{{ app.getSetting('core.default_prod_id') }}"
            ng-show="fields['product']"
     >
-        <tr class="mode-display" ng-show="!isEditMode('product')" ng-click="editField($event, 'product')">
+        <tr class="mode-display" ng-show="!isEditMode('product')" ng-click="editField('product', $event)">
             <th width="80">
                 <span class="product label">{{ phrase('agent.general.product') }}:</span>
             </th>
@@ -209,7 +209,7 @@
            data-default-value="{{ app.getSetting('core.default_ticket_pri') }}"
            ng-show="fields['priority']"
     >
-        <tr class="mode-display" ng-show="!isEditMode('priority')" ng-click="editField($event, 'priority')">
+        <tr class="mode-display" ng-show="!isEditMode('priority')" ng-click="editField('priority', $event)">
             <th width="80">
                 <span class="priority_id label">{{ phrase('agent.general.priority') }}:</span>
             </th>
@@ -242,7 +242,7 @@
            data-default-value="{{ app.getSetting('core.default_ticket_work') }}"
            ng-show="fields['workflow']"
     >
-        <tr class="mode-display" ng-show="!isEditMode('workflow')" ng-click="editField($event, 'workflow')">
+        <tr class="mode-display" ng-show="!isEditMode('workflow')" ng-click="editField('workflow', $event)">
             <th width="80">
                 <span class="workflow_id label">{{ phrase('agent.general.workflow') }}:</span>
             </th>
@@ -281,7 +281,7 @@
           ng-show="fields['ticket_field_{{ f.id }}']"
     >
         <tr class="mode-display" ng-show="!isEditMode('ticket_field_{{ f.id }}')"
-            ng-click="editField($event, 'ticket_field_{{ f.id }}')">
+            ng-click="editField('ticket_field_{{ f.id }}', $event)">
             <th width="80">
                 <span class="custom-field edit-trigger ticket_field_{{ f.id }}" data-item-id="{{ f.id }}">
                     {{ f.title }} :
@@ -314,7 +314,7 @@
           ng-show="fields['user_field_{{ f.id }}']"
     >
         <tr class="mode-display" ng-show="!isEditMode('user_field_{{ f.id }}')"
-            ng-click="editField($event, 'user_field_{{ f.id }}')">
+            ng-click="editField('user_field_{{ f.id }}', $event)">
             <th width="80">
                 <span class="custom-field edit-trigger user_field_{{ f.id }}" data-item-id="{{ f.id }}">
                     {{ f.title }} :
@@ -347,7 +347,7 @@
           ng-show="fields['org_field_{{ f.id }}']"
     >
         <tr class="mode-display" ng-show="!isEditMode('org_field_{{ f.id }}')"
-            ng-click="editField($event, 'org_field_{{ f.id }}')">
+            ng-click="editField('org_field_{{ f.id }}', $event)">
             <th width="80">
                 <span class="custom-field edit-trigger org_field_{{ f.id }}" data-item-id="{{ f.id }}">
                     {{ f.title }} :
@@ -378,7 +378,7 @@
            ng-show="fields['custom_field_{{ id }}']"
     >
         <tr class="mode-display" ng-show="!isEditMode('custom_field_{{ id }}')"
-            ng-click="editField($event, 'custom_field_{{ id }}')">
+            ng-click="editField('custom_field_{{ id }}', $event)">
             <th width="80">
                 <span class="custom-field edit-trigger custom_field_{{ id }}" data-item-id="{{ id }}">
                     {{ f.vars.label }} :
