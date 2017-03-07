@@ -98,7 +98,7 @@ class GroupList extends AbstractList {
   }
 
   getItems() {
-    return this.filterList(this.props.groups, 'name').map(group => this.getItem(group, 'group', 'name'));
+    return this.props.groups.map(group => this.getItem(group, 'group', 'name'));
   }
 }
 
