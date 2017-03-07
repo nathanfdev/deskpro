@@ -340,7 +340,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
     updateLiveDemo: () ->
       @$scope.flag_has_changed = @hasChanged()
-      localStorage.setItem 'dpWidgetSettings'+@$scope.brand_id, JSON.stringify(@getWidgetSaveData())
+      try
+        localStorage.setItem 'dpWidgetSettings'+@$scope.brand_id, JSON.stringify(@getWidgetSaveData())
+      catch
+        console.log('dpWidgetSettings were not saved in local storage')
+
       if (@getDpWidget())
         @getDpWidget().dispatchCustomEvent('reloadLiveDemoOptions', @getOptions(true))
         @getDpWidget().dispatchCustomEvent('reloadLiveDemoSettings', @$scope.global_settings)
