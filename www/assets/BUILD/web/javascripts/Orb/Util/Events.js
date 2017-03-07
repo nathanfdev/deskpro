@@ -128,6 +128,9 @@ Orb.Util.Events = {
 			}
 		});
 
+		// console.info('before', this.__events[type]);
+    // console.info('after', newFns);
+
 		if (hasChange) {
 			this.__events[type] = newFns;
 
@@ -139,20 +142,27 @@ Orb.Util.Events = {
 		return this;
 	},
 
-	removeEvents: function(events, context){
+	removeEvents: function(events){
 		var type;
+		var self = this;
+		if (!events) {
+			events = [];
+		}
+		if (events.length === undefined) {
+			events = [events];
+		}
 
 		this.__initEventsObj();
 
 		this.__preventCleanupTagged = true;
 
-		for (type in this.__events){
-			if (events && events != type) continue;
-			var fns = this.__events[type];
-			for (var i = fns.length; i--;) if (i in fns){
-				this.removeEvent(type, fns[i], context);
-			}
-		}
+		events.forEach(function(type) {
+      var fns = self.__events[type];
+      if (!fns) return;
+      for (var i = 0; i < fns.length; i++) {
+        self.removeEvent(type, fns[i][0], fns[i][1]);
+      }
+		});
 
 		this.__preventCleanupTagged = false;
 		this.__cleanupTaggedEvents();
@@ -194,5 +204,15 @@ Orb.Util.Events = {
 				newTaggedFns = null;
 			}
 		}, this);
+	},
+
+	destroyEvents: function() {
+		var self = this;
+		setTimeout(function(){
+      console.info('before', self.__events);
+      self.removeEvents(Object.keys(self.__events));
+      console.info('after', self.__events);
+		}, 0);
+
 	}
 };

@@ -923,14 +923,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		//------------------------------
 
 		var statusMenuTrigger = this.el.find('.status-menu-trigger');
-		var footerEl = this.el.find('footer').first();
 		var statusMenu = this.getElById('status_menu');
-		var statusMenuH = null;
-		var statusBackdrop = null;
-		var statusMacroFilter = null;
 		var statusMacroList = statusMenu.find('.macro-list');
 		var statusMacroListMap = null;
-		var statusListItems = null;
 		var replyAsType = this.getElById('reply_as_type');
 
 		var statusMenuMenu = new DeskPRO.UI.Menu2(statusMenu, {
@@ -978,6 +973,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				}
 			}
 		});
+
+		this.statusMenuMenu = statusMenuMenu;
 
 		var closeStatusMenu = function() {
 			statusMenuMenu.close();
@@ -1349,5 +1346,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		if (this.snippetsViewer) {
 			this.snippetsViewer.destroy();
 		}
+		if (this.statusMenu) {
+			this.statusMenu.destroy();
+			delete this.statusMenu;
+		}
+    if (this.statusMenuMenu) {
+      this.statusMenuMenu.destroy();
+      delete this.statusMenuMenu;
+    }
 	}
 });
