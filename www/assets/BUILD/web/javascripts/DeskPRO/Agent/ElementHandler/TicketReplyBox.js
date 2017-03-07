@@ -11,14 +11,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	},
 
 	initPage: function() {
-		var self = this;
+    this.lang = eval(this.el.data('dp-lang') || '{}');
+    var self = this;
 		this.page = this.el.closest('.with-page-fragment').data('page-fragment');
 
 		if (!this.page && this.initRetries-- > 0) {
 			return setTimeout(this.initPage.bind(this), this.initRetryTimeout);
 		}
-
-		this.lang = eval(this.el.data('dp-lang') || '{}');
 
 		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
 		this.textarea = textarea;
@@ -1348,11 +1347,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		}
 		if (this.statusMenu) {
 			this.statusMenu.destroy();
-			delete this.statusMenu;
+			this.statusMenu = null;
 		}
     if (this.statusMenuMenu) {
       this.statusMenuMenu.destroy();
-      delete this.statusMenuMenu;
+      this.statusMenuMenu = null;
     }
 	}
 });

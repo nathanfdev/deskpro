@@ -173,7 +173,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initVoice();
 
 		// Change email menu
-		var emailText = this.getEl('user_email_text');
 		var emailChangeTrig = this.getEl('user_email_menu_trigger');
 		var emailChangeMenu = this.getEl('user_email_menu');
 		var emailChangeBackdrop = null;
@@ -209,7 +208,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						var emailId = item.data('email-id');
 						var text = item.text().trim();
 
-						emailText.text(text);
+						self.getEl('user_email_text').text(text);
 						closeEmailChangeMenu();
 
 						$.ajax({
@@ -1244,17 +1243,33 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     if (this.merge) {
 			this.merge.destroy();
 		}
-		delete this.ticketReplyBox;
-    delete this.ticketFields;
-    delete this.valueForm;
-    delete this.merge;
-    delete this.mergeMenu;
+		if (this.statusMenu) {
+			this.statusMenu.destroy();
+			this.statusMenu = null;
+		}
+		if (this.removeMenu) {
+			this.removeMenu.destroy();
+			this.removeMenu = null;
+		}
+		if (this.actionsMenu) {
+			this.actionsMenu.destroy();
+			this.actionsMenu = null;
+		}
+		if (this.messageActionsMenu) {
+			this.messageActionsMenu.destroy();
+		}
+
+		this.ticketReplyBox = null;
+    this.ticketFields = null;
+    this.valueForm = null;
+    this.merge = null;
+    this.mergeMenu = null;
 
     var btns = this.wrapper.find('.copy-btn');
     if (btns.length && this.clip) {
       this.clip.unglue(btns);
 		}
-    delete this.clip;
+    this.clip = null;
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: this.getMetaData('ticket_id') });
 	},
@@ -1950,7 +1965,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	_initTicketActionsMenu: function() {
 		var self = this;
 
-		var removeMenu = new DeskPRO.UI.Menu({
+		this.removeMenu = new DeskPRO.UI.Menu({
 			triggerElement: this.getEl('remove_menu_trigger'),
 			menuElement: this.getEl('remove_menu'),
 			onItemClicked: function(info) {
@@ -1974,7 +1989,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 
-		var actionsMenu = new DeskPRO.UI.Menu({
+		this.actionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: this.getEl('actions_menu_trigger'),
 			menuElement: this.getEl('actions_menu'),
 			onBeforeMenuOpened: function(info) {
@@ -2935,7 +2950,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		var menuVis2  = this.getEl('task_menu_vis').clone().appendTo(this.wrapper);
 
-		var statusMenu = new DeskPRO.UI.Menu({
+		this.statusMenu = new DeskPRO.UI.Menu({
 			menuElement: this.getEl('task_menu_vis'),
 			onItemClicked: function(info) {
 				$('input.input-vis', openForEl).val($(info.itemEl).data('vis'));

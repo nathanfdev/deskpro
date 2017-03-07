@@ -169,7 +169,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	 * @return {Object}
 	 */
 	getTab: function(id) {
-		if (this.tabs[id] == undefined) {
+		if (this.tabs[id] == undefined || this.tabs[id] === null) {
 			return null;
 		}
 
@@ -557,7 +557,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		var data = this.tabs[id];
-		delete this.tabs[id];
+		this.tabs[id] = null;
 		this.tabCount--;
 		if (this.tabCount <= 0) {
 			$('body').addClass('without-tabs').removeClass('with-tabs');

@@ -90,7 +90,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			DeskPRO_Window.initInterfaceServices(wrapper);
 
 			if (!this.noDeleteHtmlString) {
-				delete this.html;
+				this.html = null;
 			}
 
 			this.initPage(wrapper);

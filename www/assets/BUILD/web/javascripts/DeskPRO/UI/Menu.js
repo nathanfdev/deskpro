@@ -56,7 +56,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		if (this.options.parentMenu) {
 			this.parentMenu = this.options.parentMenu;
-			delete this.options.parentMenu;
+			this.options.parentMenu = null;
 		}
 
 		if (DeskPRO.UI.Menu_Instances[this.options.objectGroup] === undefined) {
@@ -238,6 +238,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 		// Close all other instances (only matters for parent instances)
 		if (!this.parentMenu) {
 			Object.each(DeskPRO.UI.Menu_Instances[this.options.objectGroup], function(v, k) {
+				if (!v) return;
 				if (v.isMenuOpen()) {
 					v.closeMenu();
 				}
@@ -847,7 +848,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 			this.options.menuEl.remove();
 		}
 
-		delete DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId];
+		DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId] = null;
 
 		Array.each(this.subMenus, function(menuInfo) {
 			if (!menuInfo.OBJ_DESTROYED) {
@@ -856,10 +857,10 @@ DeskPRO.UI.Menu = new Orb.Class({
 		});
 
 		this.subMenus = [];
-    delete this.elements;
-    delete this.options.subMenuConfig;
-    delete this.options.menuElement;
-    delete this.options.triggerElement;
-    delete this.options;
+    this.elements = null;
+    this.options.subMenuConfig = null;
+    this.options.menuElement = null;
+    this.options.triggerElement = null;
+    this.options = null;
 	}
 });
