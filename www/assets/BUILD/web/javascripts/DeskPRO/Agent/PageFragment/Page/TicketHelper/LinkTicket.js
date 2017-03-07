@@ -4,8 +4,6 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 	Implements: [Orb.Util.Events, Orb.Util.Options],
 
 	initialize: function(page, options) {
-		var self = this;
-
 		this.options = {
 			loadUrl: '',
 			saveUrl: '',
@@ -14,8 +12,6 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 
 		this.setOptions(options);
 		this.page = page;
-
-		this.page.addEvent('destroy', this.destroy, this);
 	},
 
 	_initOverlay: function() {
@@ -120,6 +116,9 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 	destroy: function() {
 		if (this.overlay) {
 			this.overlay.destroy();
+			this.overlay = null;
 		}
+		this.page = null;
+		this.wrapperEl = null;
 	}
 });

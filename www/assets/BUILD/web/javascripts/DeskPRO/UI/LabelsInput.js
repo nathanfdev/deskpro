@@ -150,6 +150,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 	destroy: function() {
 		this.getLabels = function() { return []; };
 		this.getFormData = function() { return []; };
+		this.options.onChange = null;
 		this.input = null;
 		this.options = null;
 	}

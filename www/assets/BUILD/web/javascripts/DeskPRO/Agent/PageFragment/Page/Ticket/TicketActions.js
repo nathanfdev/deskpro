@@ -20,9 +20,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		this.changeManager = this.page.changeManager;
 		this.ticketId = this.page.meta.ticket_id;
 
-		var wrapper = this.page.wrapper;
-		var actionsButtons = this.getEl('action_buttons');
-
 		this.page.getEl('flag').on('change', function() {
 			var value = $(this).val();
 			var prop = self.changeManager.getPropertyManager('flag');
@@ -402,5 +399,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 	 */
 	getEl: function(id) {
 		return this.page.getEl(id);
+	},
+
+	destroy: function() {
+		this.page = null;
+		this.changeManager = null;
 	}
 });

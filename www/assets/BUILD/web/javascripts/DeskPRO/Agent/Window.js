@@ -304,6 +304,7 @@ DeskPRO.Agent.Window = new Orb.Class({
         options.pasteZone = null;
 				if (options.page) {
 					options.namespace = options.page.OBJ_ID + '_fileupload';
+					options.page = null;
 				}
 
 				if (!options.namespace) {

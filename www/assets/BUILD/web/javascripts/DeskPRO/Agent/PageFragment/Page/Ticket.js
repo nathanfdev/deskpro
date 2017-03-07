@@ -260,11 +260,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: this.getMetaData('ticket_id') });
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.tab.opened', { type: 'tickets', id: this.getMetaData('ticket_id') });
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
-			if (ticket_ids.indexOf(this.getMetaData('ticket_id')) !== -1) {
-				DeskPRO_Window.removePage(this);
-			}
-		}).bind(this), this.pageUid);
+		this.deletedTicketMessageListener = (function(ticket_ids) {
+      if (ticket_ids.indexOf(this.getMetaData('ticket_id')) !== -1) {
+        DeskPRO_Window.removePage(this);
+      }
+    }).bind(this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', this.deletedTicketMessageListener, this.pageUid);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.reload', function (info) {
 			self.getReplyTextArea().trigger('dp_autosave_trigger');
@@ -1234,6 +1235,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	destroyPage: function() {
 		this.$scope && this.$scope.$destroy();
+
+    if (this.deletedTicketMessageListener) {
+      DeskPRO_Window.getMessageBroker().removeMessageListener('tickets.deleted', this.deletedTicketMessageListener, this.pageUid);
+      this.deletedTicketMessageListener = null;
+    }
+
 		if (this.ticketReplyBox) {
 			this.ticketReplyBox.destroy();
 		}
@@ -1257,6 +1264,22 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 		if (this.messageActionsMenu) {
 			this.messageActionsMenu.destroy();
+		}
+		if (this.changeManager) {
+			this.changeManager.destroy();
+			this.changeManager = null;
+		}
+		if (this.changePic) {
+      this.changePic.destroy();
+      this.changePic = null;
+		}
+		if (this.linkExistingTicket) {
+      this.linkExistingTicket.destroy();
+      this.linkExistingTicket = null;
+		}
+		if (this.labelsInput) {
+      this.labelsInput.destroy();
+      this.labelsInput = null;
 		}
 
 		this.ticketReplyBox = null;
