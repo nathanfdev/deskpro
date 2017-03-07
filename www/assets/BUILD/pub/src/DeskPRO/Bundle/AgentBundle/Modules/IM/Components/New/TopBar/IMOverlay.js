@@ -62,6 +62,7 @@ export default class IMOverlay extends React.Component {
 
   componentWillMount() {
     const { dispatch } = this.props;
+    window.addEventListener('keyup', this.onEscape);
     dispatch(loadActiveTabs());
     if (window.DeskPRO_Window && window.DeskPRO_Window.TabBar) {
       window.DeskPRO_Window.TabBar.addEvent('addTab', () => dispatch(loadActiveTabs()));
@@ -69,6 +70,16 @@ export default class IMOverlay extends React.Component {
       window.DeskPRO_Window.TabBar.addEvent('removeTab', () => dispatch(loadActiveTabs()));
     }
   }
+
+  componentWillUnmount() {
+    window.removeEventListener('keyup', this.onEscape);
+  }
+
+  onEscape = (e) => {
+    if (e.keyCode === 27 && this.props.isOpen === true) {
+      this.props.toggleOverlay();
+    }
+  };
 
   onListFilter = (filter) => {
     this.setState({ filter });

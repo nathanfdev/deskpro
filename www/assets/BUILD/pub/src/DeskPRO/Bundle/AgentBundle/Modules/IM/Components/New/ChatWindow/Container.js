@@ -112,6 +112,10 @@ class Container extends React.Component {
     this.destroyEditor        = () => {};
   }
 
+  componentWillMount() {
+    window.addEventListener('keyup', this.onEscape);
+  }
+
   componentDidMount() {
     this.refresh(this.props);
   }
@@ -127,6 +131,7 @@ class Container extends React.Component {
     if (this.state.editorControls) { // there is a chance that component was mounted and immediately unmounted
       this.state.editorControls.destroy();
     }
+    window.addEventListener('keyup', this.onEscape);
   }
 
   onSearchMessageClick = (message) => {
@@ -134,6 +139,12 @@ class Container extends React.Component {
       this.props.onChatSearch('');
       this.props.onSearchMessageClick(message);
     });
+  };
+
+  onEscape = (e) => {
+    if (e.keyCode === 27 && this.props.isOpen) {
+      this.closeContainer();
+    }
   };
 
   getPath = (props) => {

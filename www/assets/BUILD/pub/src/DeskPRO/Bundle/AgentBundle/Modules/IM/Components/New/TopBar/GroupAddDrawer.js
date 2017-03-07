@@ -63,6 +63,10 @@ class GroupAddDrawer extends React.Component {
     };
   }
 
+  componentWillMount() {
+    window.addEventListener('keyup', this.onEscape);
+  }
+
   componentWillReceiveProps(props) {
     if (!this.state.startedSelecting) {
       this.setState({
@@ -72,6 +76,16 @@ class GroupAddDrawer extends React.Component {
       });
     }
   }
+
+  componentWillUnmount() {
+    window.addEventListener('keyup', this.onEscape);
+  }
+
+  onEscape = (e) => {
+    if (e.keyCode === 27 && this.props.isOpen) {
+      this.clickOut();
+    }
+  };
 
   onChange = (event) => {
     this.setState({ groupName: event.target.value, edited: true });
