@@ -87,6 +87,13 @@ $brand-danger: #d9534f !default;
       }
     }
 
+    &.collapsed {
+      span {
+        overflow: hidden;
+        height: 25px;
+      }
+    }
+
     &:focus {
       outline: none;
       border: 1px solid $button-color;
