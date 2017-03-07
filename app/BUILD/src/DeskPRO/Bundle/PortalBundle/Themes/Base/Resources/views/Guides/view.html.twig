@@ -7,7 +7,7 @@
             <hr>
             {% show topic_list with {guide: guide, topic: topic} %}
         </div>
-        <div class="topic">
+        <div class="topic" id="react_portal_bundle">
             <header class="section-header">
                 <h1>{{ topic.title }}</h1>
                 <span class="publication_date">
@@ -29,5 +29,16 @@
 
         </div>
     </div>
+    <script>
+      var routePath = window.location.hash.replace(/#\//, '');
+      if (routePath[0] != '/')
+        routePath = '/' + routePath;
+
+      var reactProps = {
+        routePath: routePath
+      };
+
+      window.PortalBundle.render(reactProps, document.getElementById('react_portal_bundle'));
+    </script>
 
 {% endblock inner_content %}

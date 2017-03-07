@@ -9,11 +9,10 @@ class TopicListWidget extends PageWidget {
     this.$element.hide();
     this.$rElement = $('<div class="dp-react-widget"></div>').insertAfter(this.$element);
 
-    const component = React.createElement(TopicList, {
-      topics: JSON.parse(window.topicList)
-    });
-
-    ReactDOM.render(component, this.$rElement.get(0));
+    ReactDOM.render(
+      <TopicList topics={JSON.parse(window.topicList)} />,
+      this.$rElement.get(0)
+    );
   }
 }
 export default TopicListWidget;
