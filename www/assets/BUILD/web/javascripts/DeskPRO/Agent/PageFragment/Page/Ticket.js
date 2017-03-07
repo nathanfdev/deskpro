@@ -267,11 +267,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     }).bind(this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', this.deletedTicketMessageListener, this.pageUid);
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.reload', function (info) {
-			self.getReplyTextArea().trigger('dp_autosave_trigger');
-		});
+		this.reloadListener = function (info) {
+      self.getReplyTextArea().trigger('dp_autosave_trigger');
+    };
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.reload', this.reloadListener);
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.locked-status', function(info) {
+		this.lockedStatusListener = function(info) {
       if (self.meta.ticket_id != info.ticket_id) return;
 
       if (info.locked_by) {
@@ -299,7 +300,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         self.getEl('unlock_ticket').hide();
       }
 
-		}, null, [this.OBJ_ID]);
+    };
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.locked-status', this.lockedStatusListener, null, [this.OBJ_ID]);
 
 		this.addEvent('shortcutFocusReply', function(ev) {
 			ev.preventDefault();
@@ -1240,6 +1242,23 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       DeskPRO_Window.getMessageBroker().removeMessageListener('tickets.deleted', this.deletedTicketMessageListener, this.pageUid);
       this.deletedTicketMessageListener = null;
     }
+    if (this.lockedStatusListener) {
+      DeskPRO_Window.getMessageBroker().removeMessageListener(
+      	'agent-notification.tickets.locked-status',
+				this.lockedStatusListener,
+				null
+			);
+      this.lockedStatusListener = null;
+    }
+    if (this.reloadListener) {
+      DeskPRO_Window.getMessageBroker().removeMessageListener('agent.ui.reload', this.reloadListener);
+    	this.reloadListener = null;
+		}
+		if (this.slaUpdatedListener) {
+      DeskPRO_Window.getMessageBroker().removeMessageListener('agent.ticket-sla-updated', this.slaUpdatedListener, this.pageUid);
+      this.slaUpdatedListener = null;
+    }
+
 
 		if (this.ticketReplyBox) {
 			this.ticketReplyBox.destroy();
@@ -3396,49 +3415,50 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 
 			// manage sla updates to the ticket
-			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-sla-updated', function(info) {
-				if (info.ticket_id == self.getMetaData('ticket_id')) {
-					rows.find('tr').each(function() {
-						var row = $(this);
-						if (row.data('sla-id') == info.sla_id) {
-							if (info.removed) {
-								row.remove();
-								rowRemoved(info.sla_id);
-							} else {
-								row.find('.sla-status-icon').removeClass(info.original_status).addClass(info.sla_status);
-								row.data('sla-status', info.sla_status);
+			this.slaUpdatedListener = function(info) {
+        if (info.ticket_id == self.getMetaData('ticket_id')) {
+          rows.find('tr').each(function() {
+            var row = $(this);
+            if (row.data('sla-id') == info.sla_id) {
+              if (info.removed) {
+                row.remove();
+                rowRemoved(info.sla_id);
+              } else {
+                row.find('.sla-status-icon').removeClass(info.original_status).addClass(info.sla_status);
+                row.data('sla-status', info.sla_status);
 
-								row.find('.warn-date').html(
-									info.warn_date
-										? $('<time class="timeago" datetime="' + info.warn_date + '"></time>').timeago()
-										: 'N/A'
-								);
-								row.find('.fail-date').html(
-									info.fail_date
-										? $('<time class="timeago" datetime="' + info.fail_date + '"></time>').timeago()
-										: 'N/A'
-								);
+                row.find('.warn-date').html(
+                  info.warn_date
+                    ? $('<time class="timeago" datetime="' + info.warn_date + '"></time>').timeago()
+                    : 'N/A'
+                );
+                row.find('.fail-date').html(
+                  info.fail_date
+                    ? $('<time class="timeago" datetime="' + info.fail_date + '"></time>').timeago()
+                    : 'N/A'
+                );
 
-								if (info.is_completed) {
-									row.find('.delete').addClass('completed').removeClass('delete');
-								} else {
-									row.find('.completed').addClass('delete').removeClass('completed');
-								}
+                if (info.is_completed) {
+                  row.find('.delete').addClass('completed').removeClass('delete');
+                } else {
+                  row.find('.completed').addClass('delete').removeClass('completed');
+                }
 
-								tabHeader.find('.sla-pip').each(function() {
-									var pip = $(this);
-									if (pip.data('sla-id') == info.sla_id) {
-										pip.removeClass(info.original_status).addClass(info.sla_status);
-										return false;
-									}
-								});
-							}
+                tabHeader.find('.sla-pip').each(function() {
+                  var pip = $(this);
+                  if (pip.data('sla-id') == info.sla_id) {
+                    pip.removeClass(info.original_status).addClass(info.sla_status);
+                    return false;
+                  }
+                });
+              }
 
-							return false;
-						}
-					});
-				}
-			}, this.pageUid);
+              return false;
+            }
+          });
+        }
+      };
+			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-sla-updated', this.slaUpdatedListener, this.pageUid);
 		}
 	},
 

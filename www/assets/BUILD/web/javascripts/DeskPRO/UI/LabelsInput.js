@@ -153,5 +153,6 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		this.options.onChange = null;
 		this.input = null;
 		this.options = null;
+		this.destroyEvents();
 	}
 });

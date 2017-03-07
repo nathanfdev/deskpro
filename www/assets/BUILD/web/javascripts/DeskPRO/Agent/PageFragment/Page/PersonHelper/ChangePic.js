@@ -150,5 +150,6 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 			this.overlay = null;
 		}
 		this.page = null;
+		this.destroyEvents();
 	}
 });

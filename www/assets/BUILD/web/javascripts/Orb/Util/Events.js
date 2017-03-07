@@ -183,35 +183,16 @@ Orb.Util.Events = {
 	},
 
 	__cleanupTaggedEvents: function() {
-		return;
 		Object.each(this.__events_tagged, function(tag_fns, tag) {
-			var newTaggedFns = [], hasChange = false;
-			Array.each(tag_fns, function(tag_fn) {
-				if (fn != tag_fn) {
-					newTaggedFns.push(fn);
-				} else {
-					hasChange = true;
-				}
-			});
-
-			if (hasChange) {
-				if (newTaggedFns.length) {
-					this.__events_tagged[tag] = newTaggedFns;
-				} else {
-					delete this.__events_tagged[tag];
-				}
-			} else {
-				newTaggedFns = null;
-			}
+			var newTaggedFns = [];
+      this.__events_tagged[tag] = newTaggedFns;
 		}, this);
 	},
 
 	destroyEvents: function() {
 		var self = this;
 		setTimeout(function(){
-      console.info('before', self.__events);
-      self.removeEvents(Object.keys(self.__events));
-      console.info('after', self.__events);
+      self.__events && self.removeEvents(Object.keys(self.__events));
 		}, 0);
 
 	}

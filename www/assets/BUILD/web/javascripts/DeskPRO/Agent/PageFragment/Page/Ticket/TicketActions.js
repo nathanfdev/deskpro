@@ -243,7 +243,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		//------------------------------
 
 		var macroMenu = this.getEl('macros_menu');
-		var statusMenuMenu = new DeskPRO.UI.Menu2(macroMenu, {
+		var statusMenuMenu = this.statusMenuMenu = new DeskPRO.UI.Menu2(macroMenu, {
 			positionBy: this.getEl('macros_menu_trigger'),
 			openBelow: true,
 			onFilterUpdated: function(info) {
@@ -402,7 +402,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 	},
 
 	destroy: function() {
+		if (this.statusMenuMenu) {
+			this.statusMenuMenu.destroy();
+			this.statusMenuMenu = null;
+		}
 		this.page = null;
 		this.changeManager = null;
+		this.destroyEvents();
 	}
 });

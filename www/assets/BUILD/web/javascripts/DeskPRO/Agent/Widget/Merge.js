@@ -288,11 +288,11 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 		}
 		if (this.mergeMenu) {
 			this.mergeMenu.destroy();
+			this.mergeMenu = null;
 		}
-    delete this.overlay;
-    delete this.mergeMenu;
-    delete this.mergeButtons;
-		delete this.trigger;
-		delete this.options;
+    this.overlay = null;
+    this.mergeButtons = null;
+		this.trigger = null;
+		this.options = null;
 	}
 });

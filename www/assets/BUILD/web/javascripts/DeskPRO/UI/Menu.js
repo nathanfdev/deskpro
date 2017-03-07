@@ -862,5 +862,6 @@ DeskPRO.UI.Menu = new Orb.Class({
     this.options.menuElement = null;
     this.options.triggerElement = null;
     this.options = null;
+    this.destroyEvents();
 	}
 });

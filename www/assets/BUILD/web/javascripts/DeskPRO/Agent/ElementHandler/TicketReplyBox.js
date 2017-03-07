@@ -927,7 +927,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var statusMacroListMap = null;
 		var replyAsType = this.getElById('reply_as_type');
 
-		var statusMenuMenu = new DeskPRO.UI.Menu2(statusMenu, {
+		var statusMenuMenu = this.statusMenuMenu = new DeskPRO.UI.Menu2(statusMenu, {
 			positionBy: self.getElById('reply_btn_group'),
 			onBeforeMenuOpen: function(info) {
 				var statusMenu = info.statusMenu;
@@ -973,8 +973,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			}
 		});
 
-		this.statusMenuMenu = statusMenuMenu;
-
 		var closeStatusMenu = function() {
 			statusMenuMenu.close();
 		};
@@ -990,25 +988,27 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			openStatusMenu();
 		});
 
-		$('#settingswin').on('dp_macros_updated', function(ev) {
-			Array.each(ev.macroItems, function(info) {
-				var has = statusMacroList.find('.res-ticketmacro-' + info.id);
-				if (has[0]) {
-					return;
-				}
+		this.onMacrosUpdated = function(ev) {
+      Array.each(ev.macroItems, function (info) {
+        var has = statusMacroList.find('.res-ticketmacro-' + info.id);
+        if (has[0]) {
+          return;
+        }
 
-				var li = $('<li><div class="on-icon"><i class="icon-okay"></i></div><span class="macro-title"></span></li>');
-				if (self.page) {
-					li.data('get-macro-url', BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/ajax-get-macro?macro_id=' + info.id + '&macro_reply_context=1');
-				}
-				li.data('label', 'Send Reply and ' + info.title);
-				li.data('type', 'macro:'+info.id);
-				li.attr('data-type', 'macro:'+info.id);
-				li.find('.macro-title').text(info.title);
+        var li = $('<li><div class="on-icon"><i class="icon-okay"></i></div><span class="macro-title"></span></li>');
+        if (self.page) {
+          li.data('get-macro-url', BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/ajax-get-macro?macro_id=' + info.id + '&macro_reply_context=1');
+        }
+        li.data('label', 'Send Reply and ' + info.title);
+        li.data('type', 'macro:' + info.id);
+        li.attr('data-type', 'macro:' + info.id);
+        li.find('.macro-title').text(info.title);
 
-				statusMacroList.append(li);
-			});
-		});
+        statusMacroList.append(li);
+      });
+    };
+		$('#settingswin').on('dp_macros_updated', this.onMacrosUpdated);
+
 
 		if (this.page) {
 			this.page.setTicketReplyBox(this);
@@ -1353,5 +1353,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       this.statusMenuMenu.destroy();
       this.statusMenuMenu = null;
     }
+    if (this.onMacrosUpdated) {
+      $('#settingswin').off('dp_macros_updated', this.onMacrosUpdated);
+      this.onMacrosUpdated = null;
+		}
 	}
 });

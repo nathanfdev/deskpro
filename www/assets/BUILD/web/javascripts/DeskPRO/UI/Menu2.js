@@ -21,8 +21,6 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 		var statusMenuH = null;
 		var statusBackdrop = null;
 		var statusMacroFilter = null;
-		var statusMacroList = statusMenu.find('.macro-list');
-		var statusMacroListMap = null;
 		var statusListItems = null;
 		var currentOpenSubmenu = null;
 
@@ -291,5 +289,20 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 		this.open  = openStatusMenu;
 		this.close = closeStatusMenu;
 		this.closeAll = closeStatusMenuAll;
-	}
+	},
+
+  destroy: function() {
+
+    this.closeMenu();
+
+    if (this.options.menuEl) {
+      this.options.menuEl.remove();
+    }
+
+    this.options.subMenuConfig = null;
+    this.options.menuElement = null;
+    this.options.triggerElement = null;
+    this.options = null;
+    this.destroyEvents();
+  }
 });
