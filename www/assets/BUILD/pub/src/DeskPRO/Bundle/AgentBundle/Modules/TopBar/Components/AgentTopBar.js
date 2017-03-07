@@ -506,6 +506,7 @@ export class AgentTopBar extends React.Component {
           createNewGroup={() => openGroupDrawer()}
           isOpen={overlayShown}
           chats={recentChats}
+          startedByMeChats={startedByMeChats}
           groups={groupChats}
           toggleOverlay={toggleImOverlay}
           departmentsLoaded={myDepartmentsLoaded}
