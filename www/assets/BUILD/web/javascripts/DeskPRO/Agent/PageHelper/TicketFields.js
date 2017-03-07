@@ -44,7 +44,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				if ($field.attr('type') === 'hidden') {
 					return $.trim($field.parent().text());
 				}
-				if ($field.is('input:not(:radio, :checkbox), textarea')) {
+				if ($field.is('input:not(:radio, :checkbox), textarea, select:not(.with-select2)')) {
 					return $field.val();
 				}
 				$field = $('[name="' + name + '"], [name="' + name + '[]"]', $holders);
