@@ -59,7 +59,7 @@ class DownloadHandlerTest extends AbstractEntityHandlerTest
     {
         $model = $this->createBaseModel();
         $this->writer->writeData($model);
-        $entity    = $this->getDownloadEntity();
+        $entity    = $this->getBaseEntity();
         $importMap = $this->em()->getRepository(Entity\ImportMap::class)->findOneBy([
             'typename' => ImportMapMapper::getImportMapKey($model),
             'old_id'   => 1,
@@ -73,7 +73,7 @@ class DownloadHandlerTest extends AbstractEntityHandlerTest
         $model->setTitle('download_updated');
         $this->writer->writeData($model);
 
-        $entityUpdated = $this->getDownloadEntity('download_updated');
+        $entityUpdated = $this->getBaseEntity('download_updated');
 
         $this->assertNotNull($entityUpdated);
         $this->assertEquals($entity->getId(), $entityUpdated->getId());
@@ -99,7 +99,7 @@ class DownloadHandlerTest extends AbstractEntityHandlerTest
 
         $this->writer->writeData($model);
 
-        $entity = $this->getDownloadEntity();
+        $entity = $this->getBaseEntity();
         $this->assertNotNull($entity);
         $this->assertEquals('download', $entity->getTitle());
         $this->assertEquals('content', $entity->getContentPlain());
@@ -114,6 +114,23 @@ class DownloadHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('file1.txt', $entity->getBlob()->getFilename());
         $this->assertEquals('label 1', $entity->getLabels()[0]->getLabel());
         $this->assertEquals('label 2', $entity->getLabels()[1]->getLabel());
+    }
+
+    public function test_default_category()
+    {
+        $category = new Entity\DownloadCategory();
+        $category->setRealTitle('cat');
+
+        $this->em()->persist($category);
+        $this->em()->flush($category);
+
+        $model = $this->createBaseModel();
+
+        $this->writer->writeData($model);
+
+        $entity = $this->getBaseEntity();
+        $this->assertNotNull($entity);
+        $this->assertNotNull($entity->getCategory());
     }
 
     /**
@@ -135,7 +152,7 @@ class DownloadHandlerTest extends AbstractEntityHandlerTest
      *
      * @return Entity\Download
      */
-    private function getDownloadEntity($name = 'download')
+    private function getBaseEntity($name = 'download')
     {
         return $this->em()->getRepository(Entity\Download::class)->findOneBy([
             'title' => $name,

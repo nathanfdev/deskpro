@@ -40,4 +40,9 @@ interface CategoryMapperInterface extends MapperInterface
      * @return mixed
      */
     public function findOneByTitle($title, $parentId = null);
+
+    /**
+     * @return mixed
+     */
+    public function getDefaultCategory();
 }

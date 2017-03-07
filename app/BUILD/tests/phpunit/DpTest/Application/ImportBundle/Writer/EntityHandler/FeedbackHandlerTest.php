@@ -59,7 +59,7 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
     {
         $model = $this->createBaseModel();
         $this->writer->writeData($model);
-        $entity    = $this->getFeedbackEntity();
+        $entity    = $this->getBaseEntity();
         $importMap = $this->em()->getRepository(Entity\ImportMap::class)->findOneBy([
             'typename' => ImportMapMapper::getImportMapKey($model),
             'old_id'   => 1,
@@ -73,7 +73,7 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
         $model->setTitle('title_updated');
         $this->writer->writeData($model);
 
-        $entityUpdated = $this->getFeedbackEntity('title_updated');
+        $entityUpdated = $this->getBaseEntity('title_updated');
 
         $this->assertNotNull($entityUpdated);
         $this->assertEquals($entity->getId(), $entityUpdated->getId());
@@ -103,7 +103,7 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
 
         $this->writer->writeData($model);
 
-        $entity = $this->getFeedbackEntity();
+        $entity = $this->getBaseEntity();
         $this->assertNotNull($entity);
         $this->assertEquals('title', $entity->getTitle());
         $this->assertEquals('content', $entity->getContentPlain());
@@ -119,6 +119,23 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
         $this->assertCount(1, $entity->getCustomData());
         $this->assertEquals('custom val', $entity->getCustomData()[0]->getInput());
         $this->assertCount(1, $entity->getAttachments());
+    }
+
+    public function test_default_category()
+    {
+        $category = new Entity\FeedbackCategory();
+        $category->setRealTitle('cat');
+
+        $this->em()->persist($category);
+        $this->em()->flush($category);
+
+        $model = $this->createBaseModel();
+
+        $this->writer->writeData($model);
+
+        $entity = $this->getBaseEntity();
+        $this->assertNotNull($entity);
+        $this->assertNotNull($entity->getCategory());
     }
 
     /**
@@ -140,7 +157,7 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
      *
      * @return Entity\Feedback
      */
-    private function getFeedbackEntity($name = 'title')
+    private function getBaseEntity($name = 'title')
     {
         return $this->em()->getRepository(Entity\Feedback::class)->findOneBy([
             'title' => $name,
