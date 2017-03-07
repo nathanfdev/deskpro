@@ -98,7 +98,9 @@
 	<div class="addresses">
 		<ul>
 			{% for contact in contact_data.address %}
-				<li class="address tipped" data-tipped='{% if contact.rec.comment %}{{ contact.rec.comment }}<br />{% endif %}<img src="{{ contact.map_url }}" width="200" height="200" />' data-tipped-options="hook: 'leftmiddle'">
+				<li class="address tipped" data-as-html="true"
+					data-tipped="{% if contact.rec.comment %}{{ contact.rec.comment }}<br />{% endif %}<img src='{{ contact.map_url|raw }}' />"
+                    data-tipped-options="hook: 'leftmiddle'">
 					{{ contact.address_html|raw }} <br/>{% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
 				</li>
 			{% endfor %}
