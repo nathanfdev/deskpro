@@ -26,7 +26,8 @@ class MessageList extends React.Component {
 
   constructor(props) {
     super(props);
-    this.firstScroll = null;
+    this.messageToScrollId = null;
+    this.messages = {};
   }
 
   componentDidMount() {
@@ -38,6 +39,15 @@ class MessageList extends React.Component {
     if (loadingMessages) return;
     markNewMessages();
   }
+
+  onSearchMessageClick = (message) => {
+    this.messageToScrollId = message.getMessageObject().id;
+    this.props.onSearchMessageClick(message.getMessageObject());
+  };
+
+  onScrollToMessage = () => {
+    this.messageToScrollId = null;
+  };
 
   getPath = () => {
     let path;
@@ -73,7 +83,7 @@ class MessageList extends React.Component {
 
   renderList(msg) {
     let previous = false;
-    const { agents, people, searchQuery, me, onAgentClick, onSearchMessageClick } = this.props;
+    const { agents, people, searchQuery, me, onAgentClick } = this.props;
     return (
       <SegmentsGroup vertical>
         {
@@ -91,11 +101,12 @@ class MessageList extends React.Component {
               }
               result.push(
                 <Message
+                  ref={(x) => { this.messages[message.id] = x; }}
                   id={`chat-${message.chat}-message-${message.id}`}
                   key={message.id}
                   agent={agent}
                   searchQuery={searchQuery}
-                  onSearchMessageClick={onSearchMessageClick}
+                  onSearchMessageClick={this.onSearchMessageClick}
                   onAgentClick={onAgentClick}
                   message={message}
                   previous={previous}
@@ -131,12 +142,17 @@ class MessageList extends React.Component {
     const loaded = !loadingMessages || msg.size > 0;
 
     return (
-      <div className="dp-scrollable as-js-scrollbar as-vertical" id={`chat-container-${this.props.current.get('id')}`}>
+      <div
+        className="dp-scrollable as-js-scrollbar as-vertical"
+        id={`chat-container-${this.props.current.get('id')}`}
+      >
         <Scrollarea
           className="dpscrollarea"
           contentClassName="dpscrollarea"
           vertical
           onScroll={onScroll}
+          onScrollToMessage={this.onScrollToMessage}
+          messageToScroll={!loadingMessages ? this.messages[this.messageToScrollId] : null}
           ref={(c) => { this.scrollarea = c; }}
         >
           <Loader loaded={loaded} parentClassName="box">

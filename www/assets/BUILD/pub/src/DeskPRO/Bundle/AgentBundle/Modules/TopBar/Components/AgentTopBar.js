@@ -102,23 +102,6 @@ export class AgentTopBarContainer extends SeparateComponent {
         notificationCount: e.detail.count
       });
     });
-    this.toggleImOverlay      = this.toggleImOverlay.bind(this);
-    this.recentClick          = this.recentClick.bind(this);
-    this.participantClick     = this.participantClick.bind(this);
-    this.onChatClose          = this.onChatClose.bind(this);
-    this.saveDraft            = this.saveDraft.bind(this);
-    this.onSubmit             = this.onSubmit.bind(this);
-    this.markNewMessages      = this.markNewMessages.bind(this);
-    this.openGroupDrawer      = this.openGroupDrawer.bind(this);
-    this.createGroup          = this.createGroup.bind(this);
-    this.updateGroup          = this.updateGroup.bind(this);
-    this.onScroll             = this.onScroll.bind(this);
-    this.loadMessages         = this.loadMessages.bind(this);
-    this.onChatSearch         = this.onChatSearch.bind(this);
-    this.onHideChat           = this.onHideChat.bind(this);
-    this.deleteGroup          = this.deleteGroup.bind(this);
-    this.leaveGroup           = this.leaveGroup.bind(this);
-    this.onSearchMessageClick = this.onSearchMessageClick.bind(this);
   }
 
   refreshCounts() {
@@ -149,7 +132,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     }
   }
 
-  recentClick(chatId) {
+  recentClick = (chatId) => {
     const { current, dispatch, chating } = this.props;
 
     if (current && chatId === current.get('id') && chating) {
@@ -157,7 +140,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     } else {
       dispatch(chatsActions.startChat(null, chatId));
     }
-  }
+  };
 
   componentDidMount() {
     if (Notify.needsPermission && Notify.isSupported()) {
@@ -168,24 +151,23 @@ export class AgentTopBarContainer extends SeparateComponent {
     }
   }
 
-  participantClick(id, type) {
+  participantClick = (id, type) => {
     this.props.dispatch(chatsActions.startChat({ id, type }));
-  }
+  };
 
-  onChatClose(chatId) {
+  onChatClose = (chatId) => {
     this.props.dispatch(chatsActions.closeChat(chatId));
-  }
+  };
 
-  saveDraft(chatId, draft) {
+  saveDraft = (chatId, draft) => {
     this.props.dispatch(messagesActions.saveDraft(chatId, draft));
-  }
+  };
 
-
-  onHideChat(chat) {
+  onHideChat = (chat) => {
     this.props.dispatch(chatsActions.hideChat(chat.get('id'), Date.now()));
-  }
+  };
 
-  onSubmit(message) {
+  onSubmit = (message) => {
     let testMessage = striptags(message, ['img', 'svg', 'video', 'object', 'embed']);
     testMessage = testMessage.replace(/(&nbsp;\s)+$/g, '');
     testMessage = testMessage.replace(/(&nbsp;|\s)+$/g, '');
@@ -196,7 +178,7 @@ export class AgentTopBarContainer extends SeparateComponent {
       const { dispatch, current, me } = this.props;
       dispatch(messagesActions.addMessage(current.get('id'), message, uuid(), me));
     }
-  }
+  };
 
   componentWillMount = () => {
     const oldNotifIcon = document.getElementById('notifs_counts');
@@ -267,29 +249,29 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.props.dispatch(toggleUserChat(enabled));
   };
 
-  toggleImOverlay() {
+  toggleImOverlay = () => {
     this.props.dispatch(chatsActions.toggleOverlay());
-  }
+  };
 
-  openGroupDrawer(agentIds = [], chat = null) {
+  openGroupDrawer = (agentIds = [], chat = null) => {
     this.props.dispatch(chatsActions.openGroupDrawer(agentIds, chat));
-  }
+  };
 
-  createGroup(agentIds, groupName) {
+  createGroup = (agentIds, groupName) => {
     this.props.dispatch(chatsActions.startChat({ id: agentIds, type: 'group', name: groupName }));
-  }
+  };
 
-  updateGroup(chatId, ids, name) {
+  updateGroup = (chatId, ids, name) => {
     this.props.dispatch(chatsActions.updateChat(chatId, ids, name));
-  }
+  };
 
-  deleteGroup(chat) {
+  deleteGroup = (chat) => {
     this.props.dispatch(chatsActions.deleteGroup(chat.get('id')));
-  }
+  };
 
-  leaveGroup(chat) {
+  leaveGroup = (chat) => {
     this.props.dispatch(chatsActions.leaveGroup(chat.get('id')));
-  }
+  };
 
   getPath = () => {
     let path;
@@ -301,14 +283,14 @@ export class AgentTopBarContainer extends SeparateComponent {
     return path;
   };
 
-  markNewMessages() {
+  markNewMessages = () => {
     const { updatingMessages, current, dispatch, counts } = this.props;
     if (!updatingMessages && counts.nested && counts.nested[current.get('id')] && counts.nested[current.get('id')].count > 0) {
       dispatch(messagesActions.markAllMessagesAsRead(current.get('id')));
     }
-  }
+  };
 
-  onScroll(object) {
+  onScroll = (object) => {
     const messages = this.props.messages.getIn(this.getPath());
     if (messages) {
       const page = messages.page;
@@ -330,9 +312,9 @@ export class AgentTopBarContainer extends SeparateComponent {
         }
       });
     }
-  }
+  };
 
-  onChatSearch(searchQuery) {
+  onChatSearch = (searchQuery) => {
     let reload = false;
     if ((this.state.searchQuery !== searchQuery && searchQuery.length > 2) || searchQuery === '') {
       reload = true;
@@ -340,18 +322,18 @@ export class AgentTopBarContainer extends SeparateComponent {
     if (reload && !this.props.loadingMessages) {
       this.setState({ searchQuery, page: 1 }, () => { this.loadMessages(1); });
     }
-  }
+  };
 
-  loadMessages(page = 1) {
+  loadMessages = (page = 1) => {
     const { current, dispatch } = this.props;
     if (current.get('id')) {
       dispatch(messagesActions.loadMessages(current.get('id'), this.state.searchQuery, page));
     }
-  }
+  };
 
-  onSearchMessageClick(message) {
+  onSearchMessageClick = (message) => {
     this.props.dispatch(messagesActions.searchMessageClick(message));
-  }
+  };
 
   render() {
     const props = {

@@ -13,9 +13,7 @@ class DepartmentList extends AbstractList {
   }
 
   getItems() {
-    return this
-      .filterList(this.props.departments, 'title')
-      .map(department => this.getItem(department, 'department', 'title'));
+    return this.props.departments.map(department => this.getItem(department, 'department', 'title'));
   }
 }
 

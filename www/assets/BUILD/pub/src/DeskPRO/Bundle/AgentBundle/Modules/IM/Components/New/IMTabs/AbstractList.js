@@ -9,8 +9,7 @@ class AbstractList extends React.Component {
   static propTypes = {
     me:                 PropTypes.object.isRequired,
     agents:             PropTypes.object.isRequired,
-    onParticipantClick: PropTypes.func.isRequired,
-    filter:             PropTypes.string
+    onParticipantClick: PropTypes.func.isRequired
   };
 
   static getTimestamp(date) {
@@ -73,13 +72,6 @@ class AbstractList extends React.Component {
         return AvatarHelper.renderAgentAvatar(agent, 20, classNames(className), agent.get('name'));
       }
     );
-  }
-
-  filterList(list, titleProp) {
-    if (this.props.filter) {
-      return list.filter(item => item.get(titleProp).test(new RegExp(this.props.filter, 'gi')));
-    }
-    return list;
   }
 
   render() {

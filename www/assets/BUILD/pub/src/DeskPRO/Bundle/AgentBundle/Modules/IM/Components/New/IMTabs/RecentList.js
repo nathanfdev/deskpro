@@ -14,7 +14,6 @@ class RecentList extends React.Component {
     counts:        PropTypes.object.isRequired,
     chats:         PropTypes.object.isRequired,
     onRecentClick: PropTypes.func.isRequired,
-    filter:        PropTypes.string
   };
 
   static sortList(list) {
@@ -43,39 +42,8 @@ class RecentList extends React.Component {
   }
 
   getItems() {
-    let { chats } = this.props;
-    if (this.props.filter) {
-      chats = chats.filter((chat) => {
-        switch (chat.get('chat_type')) {
-          case 'agent':
-            {
-              let agentId = 0;
-              chat.get('agents').forEach((item) => {
-                if (item !== this.props.me.get('id')) {
-                  agentId = item;
-                }
-              });
-              const agent = this.props.agents.get(agentId);
-              return agent ? agent.get('name').test(new RegExp(this.props.filter, 'gi')) : true;
-            }
-          case 'department':
-            return this.props.departments
-              .getIn([chat.getIn(['departments', 0]), 'title'])
-              .test(new RegExp(this.props.filter, 'gi'));
-          case 'team':
-            return this.props.teams
-              .getIn([chat.getIn(['agent_teams', 0]), 'name'])
-              .test(new RegExp(this.props.filter, 'gi'));
-          case 'group':
-            return chat.get('name').test(new RegExp(this.props.filter, 'gi'));
-          default:
-            return true;
-        }
-      });
-    }
-    return RecentList.sortList(chats).map(this.getItem.bind(this));
+    return RecentList.sortList(this.props.chats).map(this.getItem.bind(this));
   }
-
 
   getAgents(container) {
     return container.get('agents').map(
@@ -213,7 +181,7 @@ class RecentList extends React.Component {
   }
 
   renderEveryone(chat) {
-    return 'everyone'.indexOf(this.props.filter.toLowerCase()) !== -1 ? (
+    return (
       <ListElement
         onClick={() => this.props.onRecentClick(chat.get('id'))}
         key="everyone"
@@ -230,7 +198,7 @@ class RecentList extends React.Component {
           <span>{AbstractList.getTimestamp(chat.get('date_last_message'))}</span>
         </div>
       </ListElement>
-    ) : null;
+    );
   }
 
   render() {

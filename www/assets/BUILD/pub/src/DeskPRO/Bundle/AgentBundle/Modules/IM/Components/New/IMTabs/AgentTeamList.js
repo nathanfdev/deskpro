@@ -14,7 +14,7 @@ class AgentTeamList extends AbstractList {
   }
 
   getItems() {
-    return this.filterList(this.props.teams, 'name').map(team => this.getItem(team, 'team', 'name'));
+    return this.props.teams.map(team => this.getItem(team, 'team', 'name'));
   }
 }
 
