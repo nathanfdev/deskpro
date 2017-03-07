@@ -11,6 +11,7 @@ const initialState = {
   chating:        false,
   groupCreation:  false,
   manuallyClosed: {},
+  startedByMe:    {},
   checkedAgents:  {},
   hiddenChats:    {},
   activeTabs:     {}
@@ -23,6 +24,13 @@ export default createReducer(initialState, {
   [actions.markChatAsManuallyClosed]: (state, payload) => {
     if (payload) {
       return state.setIn(['manuallyClosed', payload], true);
+    }
+
+    return state;
+  },
+  [actions.markChatAsStartedByMe]: (state, payload) => {
+    if (payload) {
+      return state.setIn(['startedByMe', payload], true);
     }
 
     return state;

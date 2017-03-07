@@ -13,6 +13,11 @@ export const markChatAsManuallyClosed = createAction(
   chatId => chatId
 );
 
+export const markChatAsStartedByMe = createAction(
+  'MARK_CHAT_AS_STARTED_BY_ME',
+  chatId => chatId
+);
+
 export const closeChat = createAction(
   'IM_CLOSE_CHAT',
   (chatId = null) => (dispatch) => {
@@ -82,6 +87,7 @@ export const startChat = createAction(
             records[response.data.id] = response.data;
             dispatch(addToCollection('AgentChat', 'recent', records, [parseInt(response.data.id, 10)]));
             dispatch(revealChat(response.data.id));
+            dispatch(markChatAsStartedByMe(response.data.id));
             if (response.data.chat_type === 'group') {
               dispatch(addToCollection('AgentChat', 'group', records, [parseInt(response.data.id, 10)]));
             }

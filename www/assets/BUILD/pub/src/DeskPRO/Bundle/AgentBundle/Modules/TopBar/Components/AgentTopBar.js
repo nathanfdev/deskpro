@@ -32,6 +32,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   recentChats:         collectionSelectorFactory('AgentChat', 'recent')(state),
   groupChats:          collectionSelectorFactory('AgentChat', 'group')(state),
   hiddenChats:         state.IM.chats.get('hiddenChats'),
+  startedByMeChats:    state.IM.chats.get('startedByMe'),
   myDepartments:       collectionSelectorFactory('Department', 'my_tickets')(state),
   myTeams:             collectionSelectorFactory('AgentTeam', 'my')(state),
   defaultBrand:        defaultBrandSelector(state),
@@ -71,6 +72,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     recentChats:         PropTypes.object.isRequired,
     groupChats:          PropTypes.object.isRequired,
     hiddenChats:         PropTypes.object.isRequired,
+    startedByMeChats:    PropTypes.object.isRequired,
     messages:            PropTypes.object,
     drafts:              PropTypes.object,
     counts:              PropTypes.object,
@@ -383,6 +385,7 @@ export class AgentTopBar extends React.Component {
     recentChats:          PropTypes.object.isRequired,
     groupChats:           PropTypes.object.isRequired,
     hiddenChats:          PropTypes.object.isRequired,
+    startedByMeChats:     PropTypes.object.isRequired,
     notificationCount:    PropTypes.number,
     dispatch:             PropTypes.func.isRequired,
     updateVolume:         PropTypes.func,
@@ -463,7 +466,7 @@ export class AgentTopBar extends React.Component {
     const { onChatSearch, onScroll, openGroupDrawer, markNewMessages, onSubmit, toggleImOverlay } = this.props;
     const { searchQuery, counts, groupChats, checkedAgents, me, myDepartments, myTeams, recentChats } = this.props;
     const { agents, people, onSearchFocus, onSearchBlur, editChat, updateGroup, loadMessages, activeTabs } = this.props;
-    const { recentLoaded, groupLoaded, overlayShown, hiddenChats, drafts, saveDraft }  = this.props;
+    const { recentLoaded, groupLoaded, overlayShown, hiddenChats, startedByMeChats, drafts, saveDraft }  = this.props;
     const { leaveGroup, deleteGroup, onHideChat, onSearchMessageClick } = this.props;
 
     const groupDrawerTarget = document.getElementById('im-button');
@@ -479,6 +482,7 @@ export class AgentTopBar extends React.Component {
         teams={myTeams}
         chats={recentChats}
         hiddenChats={hiddenChats}
+        startedByMeChats={startedByMeChats}
         counts={counts}
         onRecentClick={recentClick}
         teamsLoaded={myTeamsLoaded}

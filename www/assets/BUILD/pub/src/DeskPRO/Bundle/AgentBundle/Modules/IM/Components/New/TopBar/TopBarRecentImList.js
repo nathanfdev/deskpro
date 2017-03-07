@@ -31,7 +31,8 @@ class TopBarRecentImList extends RecentList {
     agentsLoaded:      PropTypes.bool.isRequired,
     counts:            PropTypes.object,
     onHideChat:        PropTypes.func,
-    hiddenChats:       PropTypes.object
+    hiddenChats:       PropTypes.object,
+    startedByMeChats:  PropTypes.object
   };
 
   static defaultProps = {
@@ -67,6 +68,9 @@ class TopBarRecentImList extends RecentList {
     let sorted = chats.sort((a, b) => b.get('added') - a.get('added'));
     if (props.hiddenChats) {
       sorted = sorted.filter((chat) => {
+        if (!chat.get('date_last_message') && !props.startedByMeChats.get(chat.get('id'))) {
+          return false;
+        }
         const date = chat.get('date_last_message') || chat.get('date_created');
 
         return !props.hiddenChats[chat.get('id')] || props.hiddenChats[chat.get('id')] < (Date.parse(date));
