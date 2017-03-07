@@ -218,8 +218,14 @@ img.emojione, svg.emojione {
   height: 535px;
 
   &:before {
+    top: -7px !important;
+  }
+
+  &.tabs:before {
     top: -9px !important;
   }
+
+
 
   .im.header {
     padding-right: 0;

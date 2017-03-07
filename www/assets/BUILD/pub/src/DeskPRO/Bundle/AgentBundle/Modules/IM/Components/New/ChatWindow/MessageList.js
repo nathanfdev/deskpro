@@ -48,9 +48,9 @@ class MessageList extends React.Component {
     this.props.onSearchMessageClick(message.getMessageObject());
   }
 
-  onScrollToMessage() {
-    this.scrollMessage = null;
-  }
+  onScrollToMessage = () => {
+    this.messageToScrollId = null;
+  };
 
   getPath = () => {
     let path;
