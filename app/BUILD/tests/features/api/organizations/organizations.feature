@@ -107,7 +107,7 @@ Feature: /organizations endpoint
         "city": "city",
         "state": "state",
         "zip": "zip",
-        "country": "UK"
+        "country": "GB"
       }
     ]
   }
@@ -177,7 +177,7 @@ Feature: /organizations endpoint
     And the JSON node "data[7].city" should be equal to "city"
     And the JSON node "data[7].state" should be equal to "state"
     And the JSON node "data[7].zip" should be equal to "zip"
-    And the JSON node "data[7].country" should be equal to "UK"
+    And the JSON node "data[7].country" should be equal to "GB"
     And the JSON node "data[7].comment" should be equal to 0
 
   Scenario: I update an organization
