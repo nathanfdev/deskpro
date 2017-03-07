@@ -80,7 +80,8 @@ class NewsHandler extends AbstractEntityHandler
                 $model->getCategory()
             ));
         } else {
-            $entity->setCategory(null);
+            // use default category
+            $entity->setCategory($this->mappers->getNewsCategoryMapper()->getDefaultCategory());
         }
 
         $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelNews::class);

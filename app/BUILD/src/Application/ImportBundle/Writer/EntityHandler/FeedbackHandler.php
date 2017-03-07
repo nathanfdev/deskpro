@@ -80,7 +80,8 @@ class FeedbackHandler extends AbstractEntityHandler
                 $model->getCategory()
             ));
         } else {
-            $entity->setCategory(null);
+            // use default category
+            $entity->setCategory($this->mappers->getFeedbackCategoryMapper()->getDefaultCategory());
         }
 
         $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getFeedbackCustomDefMapper(), $model, $entity);

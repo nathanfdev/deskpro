@@ -60,7 +60,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
     {
         $model = $this->createBaseModel();
         $this->writer->writeData($model);
-        $entity    = $this->getArticleEntity();
+        $entity    = $this->getBaseEntity();
         $importMap = $this->em()->getRepository(Entity\ImportMap::class)->findOneBy([
             'typename' => ImportMapMapper::getImportMapKey($model),
             'old_id'   => 1,
@@ -74,7 +74,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $model->setTitle('article_updated');
         $this->writer->writeData($model);
 
-        $entityUpdated = $this->getArticleEntity('article_updated');
+        $entityUpdated = $this->getBaseEntity('article_updated');
 
         $this->assertNotNull($entityUpdated);
         $this->assertEquals($entity->getId(), $entityUpdated->getId());
@@ -86,7 +86,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $model->setLabels(['label 1', 'label 2']);
 
         $this->writer->writeData($model);
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
 
         $this->assertCount(2, $entity->getLabels());
         $this->assertEquals('label 1', $entity->getLabels()[0]->getLabel());
@@ -95,7 +95,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->em()->clear();
         $model->setLabels(['label 1', 'label 3', 'label 4']);
         $this->writer->writeData($model);
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
 
         $this->assertCount(3, $entity->getLabels());
         $this->assertEquals('label 1', $entity->getLabels()[0]->getLabel());
@@ -107,7 +107,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
     {
         $model = $this->createBaseModel();
         $this->writer->writeData($model);
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
 
         $this->assertNotNull($entity);
         $this->assertNull($entity->getPerson());
@@ -119,7 +119,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $model->setPerson(1);
 
         $this->writer->writeData($model);
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
 
         $this->assertNotNull($entity);
         $this->assertNotNull($entity->getPerson());
@@ -128,7 +128,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $model->setPerson(null);
 
         $this->writer->writeData($model);
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
 
         $this->assertNotNull($entity);
         $this->assertNull($entity->getPerson());
@@ -140,7 +140,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $model->setPerson('unknown_email@deskpro.dev');
 
         $this->writer->writeData($model);
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
 
         $this->assertNotNull($entity);
         $this->assertNotNull($entity->getPerson());
@@ -164,7 +164,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->writer->writeData($model);
         $this->em()->clear();
 
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
 
         $this->assertNotNull($entity);
         $this->assertCount(2, $entity->getComments()->toArray());
@@ -183,7 +183,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->writer->writeData($model);
         $this->em()->clear();
 
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
         $oldId  = $entity->getComments()->first()->getId();
 
         $comment1->setContent('comment content updated');
@@ -191,7 +191,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->writer->writeData($model);
         $this->em()->clear();
 
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
 
         $this->assertNotNull($entity);
         $this->assertCount(1, $entity->getComments()->toArray());
@@ -213,7 +213,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->writer->writeData($model);
         $this->em()->clear();
 
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
 
         $this->assertNotNull($entity);
         $this->assertCount(2, $entity->getAttachments()->toArray());
@@ -221,7 +221,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->writer->writeData($model);
         $this->em()->clear();
 
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
 
         $this->assertNotNull($entity);
         $this->assertCount(2, $entity->getAttachments()->toArray());
@@ -235,7 +235,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->writer->writeData($model);
         $this->em()->clear();
 
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
         $this->assertNotNull($entity);
         $this->assertCount(2, $entity->getCategories());
         $this->assertEquals('sub category 2', $entity->getCategories()[0]->getTitle());
@@ -247,7 +247,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->writer->writeData($model);
         $this->em()->clear();
 
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
         $this->assertNotNull($entity);
         $this->assertCount(4, $entity->getCategories());
         $this->assertEquals('sub category 2', $entity->getCategories()[0]->getTitle());
@@ -276,14 +276,14 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->writer->writeData($model);
         $this->em()->clear();
 
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
         $this->assertNotNull($entity);
         $this->assertCount(2, $entity->getCustomData());
         $this->assertEquals('val1', $entity->getCustomData()[0]->getInput());
-        $this->assertEquals('field 1', $entity->getCustomData()[0]->root_field->getTitle());
+        $this->assertEquals('field 1', $entity->getCustomData()[0]->getRootField()->getTitle());
 
         $this->assertEquals('val2', $entity->getCustomData()[1]->getInput());
-        $this->assertEquals('Custom field 1', $entity->getCustomData()[1]->root_field->getTitle());
+        $this->assertEquals('Custom field 1', $entity->getCustomData()[1]->getRootField()->getTitle());
     }
 
     public function test_dynamically_add_choice_defs()
@@ -310,14 +310,14 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->writer->writeData($model);
         $this->em()->clear();
 
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
         $this->assertNotNull($entity);
         $this->assertCount(1, $entity->getCustomData());
-        $this->assertEquals('field 1', $entity->getCustomData()[0]->root_field->getTitle());
-        $this->assertEquals('sub choice 1a', $entity->getCustomData()[0]->field->getTitle());
-        $this->assertNotNull($entity->getCustomData()[0]->field->getOption('parent_id'));
+        $this->assertEquals('field 1', $entity->getCustomData()[0]->getRootField()->getTitle());
+        $this->assertEquals('sub choice 1a', $entity->getCustomData()[0]->getField()->getTitle());
+        $this->assertNotNull($entity->getCustomData()[0]->getField()->getOption('parent_id'));
 
-        $choiceDef = $this->em()->getRepository(Entity\CustomDefArticle::class)->find($entity->getCustomData()[0]->field->getOption('parent_id'));
+        $choiceDef = $this->em()->getRepository(Entity\CustomDefArticle::class)->find($entity->getCustomData()[0]->getField()->getOption('parent_id'));
         $this->assertNotNull($choiceDef);
         $this->assertEquals('sub choice 1', $choiceDef->getTitle());
     }
@@ -341,7 +341,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->writer->writeData($model);
         $this->em()->clear();
 
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
         $this->assertNotNull($entity);
         $this->assertCount(3, $entity->getCustomData());
 
@@ -353,9 +353,26 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->writer->writeData($model);
         $this->em()->clear();
 
-        $entity = $this->getArticleEntity();
+        $entity = $this->getBaseEntity();
         $this->assertNotNull($entity);
         $this->assertCount(2, $entity->getCustomData());
+    }
+
+    public function test_default_category()
+    {
+        $category = new Entity\ArticleCategory();
+        $category->setRealTitle('cat');
+
+        $this->em()->persist($category);
+        $this->em()->flush($category);
+
+        $model = $this->createBaseModel();
+
+        $this->writer->writeData($model);
+
+        $entity = $this->getBaseEntity();
+        $this->assertNotNull($entity);
+        $this->assertNotEmpty($entity->getCategories());
     }
 
     /**
@@ -377,7 +394,7 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
      *
      * @return Entity\Article
      */
-    private function getArticleEntity($name = 'article')
+    private function getBaseEntity($name = 'article')
     {
         return $this->em()->getRepository(Entity\Article::class)->findOneBy([
             'title' => $name,
