@@ -24,13 +24,60 @@ img.emojione, svg.emojione {
   filter: grayscale(0);
 }
 
-.ui.im.avatar {
+.active #im-button {
+  border: 3px solid $dp-sonic-primary;
+  margin: 0 4px;
+}
 
+.im-tooltip {
+  background-color: $dp-greyscale-50 !important;
+  color: $dp-greyscale-850 !important;
+  border: 1px solid $dp-sonic-midnight !important;
+  padding: 4px 8px !important;
+
+  &.show {
+    opacity: 1 !important;
+  }
+
+  &:after {
+    background: white;
+    box-shadow: none;
+    position: absolute;
+    content: '';
+    width: 12px;
+    height: 12px;
+    transform: rotate(45deg);
+  }
+
+  &.place-bottom:after {
+    left: 50% !important;
+    top: -7px !important;
+    bottom: auto;
+    margin-left: -7px !important;
+    border-top: 1px solid $dp-sonic-primary !important;
+    border-left: 1px solid $dp-sonic-primary !important;
+    border-right: none !important;
+    border-bottom: none !important;
+  }
+  &.place-top:after {
+    right: 50% !important;
+    bottom: -7px !important;
+    top: auto;
+    margin-right: -7px !important;
+    border-bottom: 1px solid $dp-sonic-primary !important;
+    border-right: 1px solid $dp-sonic-primary !important;
+    border-left: none !important;
+    border-top: none !important;
+  }
+}
+
+
+.ui.im.avatar {
   &#im-button, &#im-button svg {
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    -o-border-radius: 0px;
-    border-radius: 0px;
+    -webkit-border-radius: 500rem;
+    -moz-border-radius: 500rem;
+    -o-border-radius: 500rem;
+    border-radius: 500rem;
   }
 
   width: 24px;
@@ -50,87 +97,119 @@ img.emojione, svg.emojione {
   }
 }
 
-.ui.topbar > .item > .im-list {
-  .im.recent {
-    margin: 0 3px;
-    &.empty {
-      margin: 0 8px;
-    }
-    > .im.wrapper {
-      position: relative;
-      display: inline-block;
+.ui.topbar > .item {
+  &.im {
+    z-index: 101;
+  }
+  > .im-list {
+    .im.recent {
+      margin: 0 3px;
 
-      &.current {
-        > .ui.avatar.image {
-          border: 3px solid $dp-sonic-primary !important;
-          margin: 0 4px;
+      &.empty {
+        margin: 0 8px;
+      }
+
+      > .im.wrapper {
+        position: relative;
+        display: inline-block;
+
+        > .ui.avatar.image.im {
+          margin: 0 7px;
 
           .text {
-            left: -1px;
-            top: -1px;
+            left: 0;
+            top: 0;
+          }
+
+          .gravatar {
+            border: 0.5px solid transparent;
+          }
+
+          svg {
+            width: 24px;
+            height: 24px;
           }
         }
-      }
 
-      .ui.avatar.image.im {
-        svg {
-          width: 24px;
-          height: 24px;
+        .agent-online {
+          background: #74C365;
+          display: block;
+          width: 7px;
+          height: 7px;
+          border-radius: 500rem;
+          border: 1px solid gray;
+          position: absolute;
+          bottom: -5px;
+          right: 4px;
         }
-      }
 
-      .agent-online {
-        background: #74C365;
-        display: block;
-        width: 7px;
-        height: 7px;
-        border-radius: 500rem;
-        border: 1px solid gray;
-        position: absolute;
-        bottom: -5px;
-        right: 4px;
-      }
+        .icon.close {
+          position: absolute;
+          width: 14px;
+          height: 14px;
+          top: -9px;
+          right: -5px;
+          color: $dp-greyscale-850;
 
-      .icon.close {
-        position: absolute;
-        width: 14px;
-        height: 14px;
-        top: -9px;
-        right: -5px;
-        color: $dp-greyscale-850;
-
-        &:before {
-          content: "";
+          &:before {
+            position: absolute;
+            top: 0;
+            right: 0;
+            content: "";
+          }
         }
-      }
 
-      &:hover .icon.close:before {
-        content: "\f057";
-      }
-
-      > .im.avatar {
-        margin: 0 7px;
-
-        .text {
-          left: 0;
-          top: 0;
+        > .knuckles.message-counter {
+          position: absolute;
+          top: -8px;
+          left: 25px;
+          font-size: 12px;
+          padding: 2px 4px;
+          border-radius: 4px;
+          font-weight: bold;
         }
-      }
-      > .knuckles.message-counter {
-        position: absolute;
-        top: -8px;
-        left: 25px;
-        font-size: 12px;
-        padding: 2px 4px;
-        border-radius: 4px;
-        font-weight: bold;
-      }
-      &:hover > .knuckles.message-counter {
-        display: none;
+
+        &.current {
+          > .ui.avatar.image {
+            border: 3px solid $dp-sonic-primary !important;
+            margin: 0 4px;
+
+            .text {
+              left: -1px;
+              top: -1px;
+            }
+
+            .gravatar {
+              top: -1px;
+              right: 1px;
+              border: 1px solid $dp-sonic-primary;
+            }
+          }
+
+          .icon.close {
+            top: -6px;
+            right: -5px;
+          }
+
+          .agent-online {
+            bottom: -2px;
+          }
+        }
+
+        &:hover {
+          .icon.close:before {
+            content: "\f057";
+          }
+
+          > .knuckles.message-counter {
+            display: none;
+          }
+        }
       }
     }
   }
 }
+
 
 .ui.popup.im {
   max-width: initial;
@@ -221,8 +300,12 @@ img.emojione, svg.emojione {
       .ui.search {
         width: 100%;
 
-        input[type=search]:invalid + i.icon.remove {
-          display: none;
+        input[type=search] {
+          padding-right: 2em !important;
+
+          &:invalid + i.icon.remove {
+            display: none;
+          }
         }
 
         .icon.remove, .icon.search {
@@ -237,7 +320,7 @@ img.emojione, svg.emojione {
 
         .right {
           left: auto;
-          right: 3px;
+          right: 13px;
         }
       }
     }
@@ -265,6 +348,11 @@ img.emojione, svg.emojione {
     }
 
     .im.avatar {
+
+      &.user-photo.text-fallback {
+        padding-right: 0;
+      }
+
       margin-right: 5px;
 
       &.image {
@@ -295,6 +383,10 @@ img.emojione, svg.emojione {
         .text {
           font-size: 6px;
         }
+
+        .gravatar {
+          position: absolute;
+        }
       }
     }
 
@@ -311,6 +403,10 @@ img.emojione, svg.emojione {
         padding: 5px;
         margin: 10px 15px;
         cursor: pointer;
+
+        .gravatar {
+          top: -1px;
+        }
 
         &:hover {
           color: $dp-sonic-primary;
@@ -531,6 +627,10 @@ img.emojione, svg.emojione {
             color: $dp-greyscale-450;
             font-family: "Open Sans", serif;
           }
+
+          &.department .timestamp::before {
+            height: 38px;
+          }
         }
         &:hover {
           background: $dp-morning-sky;
@@ -565,7 +665,7 @@ img.emojione, svg.emojione {
           }
 
           &.department {
-            height: 38px;
+            height: 42px;
             padding-top: 4px;
             padding-bottom: 4px;
 
@@ -798,7 +898,7 @@ img.emojione, svg.emojione {
               list-style-type: decimal;
             }
 
-            img {
+            img, video {
               max-width: 280px !important;
             }
           }

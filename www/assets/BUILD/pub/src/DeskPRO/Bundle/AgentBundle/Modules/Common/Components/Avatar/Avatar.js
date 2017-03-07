@@ -31,7 +31,7 @@ export class Avatar extends React.Component {
         <TextAvatar {...this.props}>
           <UserPhoto type="text" className={className}>
             <Gravatar gravatar={gravatar} size={size}>
-              <UserPhoto type="gravatar" className={className} noOffline />
+              <UserPhoto type="gravatar" className={className} />
             </Gravatar>
           </UserPhoto>
         </TextAvatar>

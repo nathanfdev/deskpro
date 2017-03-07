@@ -486,7 +486,7 @@ export class AgentTopBar extends React.Component {
 
     const groupDrawerTarget = document.getElementById('im-button');
 
-    return (<TopBarItem childrenWrapper="im-list">
+    return (<TopBarItem className="im" childrenWrapper="im-list">
       <TopBarRecentImList
         me={me}
         current={current}

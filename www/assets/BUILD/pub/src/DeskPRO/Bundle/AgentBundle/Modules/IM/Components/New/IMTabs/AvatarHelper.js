@@ -17,16 +17,17 @@ class AvatarHelper {
     AvatarHelper.brandLogoUrl = logoUrl;
   }
 
-  static renderDepartmentAvatar(department) {
-    return <DepartmentAvatar department={department} size={24} className="ui avatar image im" />;
+  static renderDepartmentAvatar(department, title = null) {
+    return <DepartmentAvatar department={department} size={24} className="ui avatar image im" title={title} />;
   }
 
-  static renderAgentTeamAvatar(team) {
-    return <AgentTeamAvatar agentTeam={team} size={24} className="ui avatar image im" />;
+  static renderAgentTeamAvatar(team, title = null) {
+    return <AgentTeamAvatar agentTeam={team} size={24} className="ui avatar image im" title={title} />;
   }
 
-  static renderAgentAvatar(agent, size = 24, className = []) {
+  static renderAgentAvatar(agent, size = 24, className = [], title = null) {
     return (<PersonAvatar
+      title={title}
       key={`agent_${agent.get('id')}`}
       color={chooseColor(agent.get('id'))}
       borderColor={darkerColor(agent.get('id'), 0.2)}
@@ -55,7 +56,7 @@ class AvatarHelper {
     return <EveryoneIM title={title} />;
   }
 
-  static renderGroupAvatar(chat, notificationsCount = false) {
+  static renderGroupAvatar(chat, notificationsCount = false, title = null) {
     const name = chat.get('name');
     const text = (name && name.length ? name.substr(0, 2) : '');
     const props = {
@@ -71,6 +72,8 @@ class AvatarHelper {
     if (notificationsCount !== false) {
       const participantsCount = chat.get('agents').size;
       props.title = `${chat.get('name')} (${participantsCount} participant${participantsCount === 1 ? '' : 's'}). ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+    } else if (title) {
+      props.title = title;
     }
 
     return <Avatar {...props} />;

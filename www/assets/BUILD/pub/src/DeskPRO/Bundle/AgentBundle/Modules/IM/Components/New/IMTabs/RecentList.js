@@ -91,7 +91,7 @@ class RecentList extends React.Component {
           className.push('offline');
         }
 
-        return AvatarHelper.renderAgentAvatar(agent, 20, classNames(className));
+        return AvatarHelper.renderAgentAvatar(agent, 20, classNames(className), agent.get('name'));
       }
     );
   }
@@ -130,7 +130,7 @@ class RecentList extends React.Component {
       <ListElement
         key={`agent_${agentId}`}
         className={classNames(className)}
-        imageNode={AvatarHelper.renderAgentAvatar(agent)}
+        imageNode={AvatarHelper.renderAgentAvatar(agent, 24, [], agent.get('name'))}
       >
         <div className="content agent recent" onClick={() => this.props.onRecentClick(chat.get('id'))}>
           <div className="header">{agent.get('name')}</div>
@@ -150,7 +150,7 @@ class RecentList extends React.Component {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
         key={`department_${department.get('id')}`}
         className="im department recent"
-        imageNode={AvatarHelper.renderDepartmentAvatar(department)}
+        imageNode={AvatarHelper.renderDepartmentAvatar(department, `${department.get('title')} department`)}
       >
         <div className="content department" onClick={() => this.props.onRecentClick(chat.get('id'))}>
           <div className="header">department</div>
@@ -174,7 +174,7 @@ class RecentList extends React.Component {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
         key={`team_${team.get('id')}`}
         className="im team recent"
-        imageNode={AvatarHelper.renderAgentTeamAvatar(team)}
+        imageNode={AvatarHelper.renderAgentTeamAvatar(team, `${team.get('name')} team`)}
       >
         <div className="content team" onClick={() => this.props.onRecentClick(chat.get('id'))}>
           <div className="header">
@@ -196,7 +196,7 @@ class RecentList extends React.Component {
         onClick={() => this.props.onRecentClick(chat.get('id'))}
         key={`group_${chat.get('id')}`}
         className="im team recent"
-        imageNode={AvatarHelper.renderGroupAvatar(chat)}
+        imageNode={AvatarHelper.renderGroupAvatar(chat, null, `${chat.get('name')} group`)}
       >
         <div className="content team" onClick={() => this.props.onRecentClick(chat.get('id'))}>
           <div className="header">
