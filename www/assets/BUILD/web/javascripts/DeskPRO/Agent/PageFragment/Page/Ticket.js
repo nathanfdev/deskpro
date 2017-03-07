@@ -80,49 +80,32 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.getEl('linked_wrap_tab').hide();
 		}
 
-    this.clips = [];
+    this.clip = null;
     try {
 			var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
 			if (flashEnabled) {
 				// Set timeout to have it exec in global scope,
 				// so errors (eg flash has crashed) can be ignored and dont break the rest of this init
 				window.setTimeout(function() {
-					self.wrapper.find('.copy-btn').each(function() {
-						var btnEl = this;
+					try {
+						self.clip = new ZeroClipboard(self.wrapper.find('.copy-btn'));
 
-						try {
-							var clip = new ZeroClipboard(this, {
-								btnEl: this,
-								savePuffEl: self.getEl('idref_switch')
-							});
-							clip.on('mouseover', function(client, args) {
-								$(client.options.btnEl).addClass('over');
-							});
-							clip.on('mouseout', function(client, args) {
-								$(client.options.btnEl).removeClass('over');
-							});
-							clip.on('complete', function(client, args) {
-								DeskPRO_Window.util.showSavePuff($(this).closest('.id-number'));
-							});
+						self.clip.on('mouseover', function(client, args) {
+							$(client.options.btnEl).addClass('over');
+						});
+						self.clip.on('mouseout', function(client, args) {
+							$(client.options.btnEl).removeClass('over');
+						});
+						self.clip.on('complete', function(client, args) {
+							DeskPRO_Window.util.showSavePuff($(this).closest('.id-number'));
+						});
 
-							self.clips.push(clip);
-
-							self.addEvent('activate', function() {
-								try {
-									clip.reposition();
-								} catch (e) {}
-							});
-						} catch (e) {}
-					});
-
-          self.addEvent('activate', function() {
-            self.clips.forEach(function(clip){
-              try {
-                clip.reposition();
-              } catch (e) {}
-            });
-          });
-
+						self.addEvent('activate', function() {
+							try {
+								self.clip.reposition();
+							} catch (e) {}
+						});
+					} catch (e) {}
 				}, 100);
 			} else {
 				this.wrapper.find('.copy-btn').remove();
@@ -1267,15 +1250,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     delete this.merge;
     delete this.mergeMenu;
 
-    console.info(this.clips);
-    this.clips.forEach(function(clip){
-    	console.info(clip);
-      clip.destroy();
-      delete clip.options;
-      delete clip.htmlBridge;
-      delete clip.handlers;
-		});
-    delete this.clips;
+    var btns = this.wrapper.find('.copy-btn');
+    if (btns.length && this.clip) {
+      this.clip.unglue(btns);
+		}
+    delete this.clip;
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: this.getMetaData('ticket_id') });
 	},
