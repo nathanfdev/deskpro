@@ -28,7 +28,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
 @connect(state => ({
   agents:              collectionSelectorFactory('Person', 'agents')(state),
   people:              collectionSelectorFactory('Person', 'people')(state),
-  chatDepartments:     collectionSelectorFactory('Department', 'all_tickets')(state),
+  chatDepartments:     collectionSelectorFactory('Department', 'all_chat')(state),
   recentChats:         collectionSelectorFactory('AgentChat', 'recent')(state),
   groupChats:          collectionSelectorFactory('AgentChat', 'group')(state),
   hiddenChats:         state.IM.chats.get('hiddenChats'),
