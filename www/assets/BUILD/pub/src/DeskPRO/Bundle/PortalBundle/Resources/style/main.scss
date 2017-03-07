@@ -11690,7 +11690,7 @@ $datetime-hover-color: lighten($btn-primary-bg, 10%);
   direction: rtl;
 }
 .calendars-popup {
-  z-index: 1000;
+  z-index: 3000;
 }
 .calendars-disable {
   position: absolute;
