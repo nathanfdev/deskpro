@@ -370,7 +370,6 @@ class Container extends React.Component {
     this.closeLink();
   }
 
-
   renderAttachList() {
     const { activeTabs } = this.props;
 
