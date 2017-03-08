@@ -873,14 +873,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 
-    window.setTimeout(function closeTicketOnFail() {
+		this.closeTicketOnFail = function () {
       if (self.wrapper && self.wrapper.find('.with-handler-failed')[0]) {
         DeskPRO_Window.showConfirm("There was a problem loading some elements on this tab. The tab will re-load now.", function() {
           DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
           self.closeSelf();
         });
       }
-    }, 1500);
+    };
+    this.closeTicketOnFailTimeout = window.setTimeout(this.closeTicketOnFail, 1500);
 
     this.replaceLinks();
     this.initDeferred && this.initDeferred.resolve();
@@ -1236,8 +1237,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	destroyPage: function() {
-		this.$scope && this.$scope.$destroy();
-
     if (this.deletedTicketMessageListener) {
       DeskPRO_Window.getMessageBroker().removeMessageListener('tickets.deleted', this.deletedTicketMessageListener, this.pageUid);
       this.deletedTicketMessageListener = null;
@@ -1259,15 +1258,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       this.slaUpdatedListener = null;
     }
 
-
 		if (this.ticketReplyBox) {
 			this.ticketReplyBox.destroy();
+      this.ticketReplyBox = null;
 		}
     if (this.ticketFields) {
 		  this.ticketFields.destroy();
+      this.ticketFields = null;
     }
     if (this.merge) {
 			this.merge.destroy();
+      this.merge = null;
 		}
 		if (this.statusMenu) {
 			this.statusMenu.destroy();
@@ -1314,11 +1315,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       this.confirmCloseOverlay.destroy();
       this.confirmCloseOverlay = null;
 		}
+		if (this.closeTicketOnFail) {
+    	window.clearTimeout(this.closeTicketOnFailTimeout);
+    	this.closeTicketOnFail = null;
+		}
 
-		this.ticketReplyBox = null;
-    this.ticketFields = null;
     this.valueForm = null;
-    this.merge = null;
     this.mergeMenu = null;
 
     var btns = this.wrapper.find('.copy-btn');
@@ -1937,7 +1939,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				input: this.getEl('labels_input'),
 				onChange: this.saveLabels.bind(this)
 			});
-			this.ownObject(this.labelsInput);
 		}
 	},
 

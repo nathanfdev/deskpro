@@ -406,6 +406,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			this.statusMenuMenu.destroy();
 			this.statusMenuMenu = null;
 		}
+		if (this.macroOverlay) {
+			this.macroOverlay.destroy();
+			this.macroOverlay = null;
+		}
 		this.page = null;
 		this.changeManager = null;
 		this.destroyEvents();

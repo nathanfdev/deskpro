@@ -504,6 +504,10 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			this.elements.modal.remove();
       this.elements.modal = null;
 		}
+
+		this.options.contentElement = null;
+		this.options.triggerElement = null;
+
 		this.isThisDestroyed = true;
 
 		this.fireEvent('destroyed', [this]);
