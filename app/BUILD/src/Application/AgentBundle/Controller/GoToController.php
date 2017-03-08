@@ -41,11 +41,19 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVote
 
 class GoToController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function requireRequestToken($action, $arguments = null)
     {
         return false;
     }
 
+    /**
+     * @param int $id
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function ticketIdAction($id)
     {
         /** @var Ticket $ticket */
@@ -60,6 +68,11 @@ class GoToController extends AbstractController
         return $this->redirect('/agent/#app.tickets,inbox:agent,t:'.$id);
     }
 
+    /**
+     * @param string $ref
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function ticketRefAction($ref)
     {
         /** @var Ticket $ticket */
@@ -71,17 +84,21 @@ class GoToController extends AbstractController
         return $this->redirect('/agent/#app.tickets,inbox:agent,t:'.$ticket->getId());
     }
 
-    public function personIdAction($id)
+    /**
+     * @param Person $person
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function personIdAction(Person $person)
     {
-        /** @var Person $person */
-        $person = $this->getDoctrine()->getRepository(Person::class)->find($id);
-        if (!$person) {
-            $this->createNotFoundException();
-        }
-
-        return $this->redirect('/agent/#app.people,people:*,p:'.$id);
+        return $this->redirect('/agent/#app.people,people:*,p:'.$person->getId());
     }
 
+    /**
+     * @param string $emailAddress
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function personEmailAddressAction($emailAddress)
     {
         /** @var Person $person */
@@ -93,71 +110,65 @@ class GoToController extends AbstractController
         return $this->redirect('/agent/#app.people,people:*,p:'.$person->getId());
     }
 
-    public function organizationIdAction($id)
+    /**
+     * @param Organization $organization
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function organizationIdAction(Organization $organization)
     {
-        /** @var Organization $organization */
-        $organization = $this->getDoctrine()->getRepository(Organization::class)->find($id);
-        if (!$organization) {
-            $this->createNotFoundException();
-        }
-
-        return $this->redirect('/agent/#app.people,orgs,o:'.$id);
+        return $this->redirect('/agent/#app.people,orgs,o:'.$organization->getId());
     }
 
-    public function articleIdAction($id)
+    /**
+     * @param Article $article
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function articleIdAction(Article $article)
     {
-        /** @var Article $article */
-        $article = $this->getDoctrine()->getRepository(Article::class)->find($id);
-        if (!$article) {
-            $this->createNotFoundException();
-        }
-
-        return $this->redirect('/agent/#app.publish,knowledgebase:1,a:'.$id);
+        return $this->redirect('/agent/#app.publish,knowledgebase:1,a:'.$article->getId());
     }
 
-    public function downloadIdAction($id)
+    /**
+     * @param Download $download
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function downloadIdAction(Download $download)
     {
-        /** @var Download $download */
-        $download = $this->getDoctrine()->getRepository(Download::class)->find($id);
-        if (!$download) {
-            $this->createNotFoundException();
-        }
-
-        return $this->redirect('/agent/#app.publish,downloads:1,d:'.$id);
+        return $this->redirect('/agent/#app.publish,downloads:1,d:'.$download->getId());
     }
 
-    public function newsIdAction($id)
+    /**
+     * @param News $news
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function newsIdAction(News $news)
     {
-        /** @var News $news */
-        $news = $this->getDoctrine()->getRepository(News::class)->find($id);
-        if (!$news) {
-            $this->createNotFoundException();
-        }
-
-        return $this->redirect('/agent/#app.publish,news:1,n:'.$id);
+        return $this->redirect('/agent/#app.publish,news:1,n:'.$news->getId());
     }
 
-    public function feedbackIdAction($id)
+    /**
+     * @param Feedback $feedback
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function feedbackIdAction(Feedback $feedback)
     {
-        /** @var Feedback $feedback */
-        $feedback = $this->getDoctrine()->getRepository(Feedback::class)->find($id);
-        if (!$feedback) {
-            $this->createNotFoundException();
-        }
-
-        return $this->redirect('/agent/#app.feedback,fb_content,i:'.$id);
+        return $this->redirect('/agent/#app.feedback,fb_content,i:'.$feedback->getId());
     }
 
-    public function chatIdAction($id)
+    /**
+     * @param ChatConversation $conversation
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function chatIdAction(ChatConversation $conversation)
     {
-        /** @var ChatConversation $conversation */
-        $conversation = $this->getDoctrine()->getRepository(ChatConversation::class)->find($id);
-        if (!$conversation) {
-            $this->createNotFoundException();
-        }
-
         $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, new PermissionGroupContext($conversation));
 
-        return $this->redirect('/agent/#app.userchat,new:-1,c:'.$id);
+        return $this->redirect('/agent/#app.userchat,new:-1,c:'.$conversation->getId());
     }
 }
