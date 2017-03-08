@@ -7,13 +7,14 @@ import AbstractList from './AbstractList';
 class RecentList extends React.Component {
 
   static propTypes = {
-    me:            PropTypes.object.isRequired,
-    agents:        PropTypes.object.isRequired,
-    departments:   PropTypes.object.isRequired,
-    teams:         PropTypes.object.isRequired,
-    counts:        PropTypes.object.isRequired,
-    chats:         PropTypes.object.isRequired,
-    onRecentClick: PropTypes.func.isRequired,
+    me:               PropTypes.object.isRequired,
+    agents:           PropTypes.object.isRequired,
+    departments:      PropTypes.object.isRequired,
+    teams:            PropTypes.object.isRequired,
+    counts:           PropTypes.object.isRequired,
+    chats:            PropTypes.object.isRequired,
+    onRecentClick:    PropTypes.func.isRequired,
+    startedByMeChats: PropTypes.object.isRequired
   };
 
   static sortList(list) {
@@ -42,7 +43,10 @@ class RecentList extends React.Component {
   }
 
   getItems() {
-    return RecentList.sortList(this.props.chats).map(this.getItem.bind(this));
+    const { chats, startedByMeChats, me } = this.props;
+    const filtered = chats.filter(chat => chat.get('date_last_message') || startedByMeChats.get(chat.get('id')) || me.get('id') === chat.get('admin'));
+
+    return RecentList.sortList(filtered).map(this.getItem.bind(this));
   }
 
   getAgents(container) {

@@ -27,6 +27,7 @@ export default class IMOverlay extends React.Component {
     teams:              PropTypes.object.isRequired,
     counts:             PropTypes.object.isRequired,
     chats:              PropTypes.object.isRequired,
+    startedByMeChats:   PropTypes.object.isRequired,
     groups:             PropTypes.object.isRequired,
     children:           PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     onRecentClick:      PropTypes.func.isRequired,
@@ -95,7 +96,7 @@ export default class IMOverlay extends React.Component {
 
   getRecentTab() {
     const { agentsLoaded, teamsLoaded, departmentsLoaded, recentLoaded } = this.props;
-    const { me, agents, departments, teams, counts, onRecentClick } = this.props;
+    const { me, agents, departments, teams, startedByMeChats, counts, onRecentClick } = this.props;
     const loaded = agentsLoaded && teamsLoaded && departmentsLoaded && recentLoaded;
     const chats = this.filterRecent();
     const props = {
@@ -105,7 +106,8 @@ export default class IMOverlay extends React.Component {
       teams,
       counts,
       onRecentClick,
-      chats
+      chats,
+      startedByMeChats
     };
     const content = (
       <Loader loaded={loaded} opacity={0} width={4} color="#4696dc">

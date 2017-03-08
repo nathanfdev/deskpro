@@ -31,7 +31,8 @@ class TopBarRecentImList extends RecentList {
     agentsLoaded:      PropTypes.bool.isRequired,
     counts:            PropTypes.object,
     onHideChat:        PropTypes.func,
-    hiddenChats:       PropTypes.object
+    hiddenChats:       PropTypes.object,
+    startedByMeChats:  PropTypes.object
   };
 
   static defaultProps = {
@@ -55,6 +56,9 @@ class TopBarRecentImList extends RecentList {
 
   componentWillReceiveProps(props) {
     let { chats } = this.state;
+
+    const { hiddenChats, me, startedByMeChats } = props;
+
     if (props.chats) {
       RecentList
         .sortList(props.chats)
@@ -65,11 +69,14 @@ class TopBarRecentImList extends RecentList {
         });
     }
     let sorted = chats.sort((a, b) => b.get('added') - a.get('added'));
-    if (props.hiddenChats) {
+    if (hiddenChats) {
       sorted = sorted.filter((chat) => {
+        if (!chat.get('date_last_message') && !(startedByMeChats.get(chat.get('id')) || me.get('id') === chat.get('admin'))) {
+          return false;
+        }
         const date = chat.get('date_last_message') || chat.get('date_created');
 
-        return !props.hiddenChats[chat.get('id')] || props.hiddenChats[chat.get('id')] < (Date.parse(date));
+        return !hiddenChats[chat.get('id')] || hiddenChats[chat.get('id')] < (Date.parse(date));
       });
     }
     sorted = sorted.filter(chat => props.chats.has(chat.get('id')));

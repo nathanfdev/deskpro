@@ -105,7 +105,7 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
      * Obviously - last message date time.
      *
      * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
+     * @ORM\Column(type="datetime", nullable=true)
      * @JMS\Expose()
      * @JMS\Type("DateTime")
      */
@@ -163,7 +163,6 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
-        $this->setModelField('date_last_message', new \DateTime());
         $this->setModelField('participants', new ArrayCollection());
         $this->setModelField('messages', new ArrayCollection());
     }
