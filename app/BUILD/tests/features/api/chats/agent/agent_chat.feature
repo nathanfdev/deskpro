@@ -6,12 +6,13 @@ Feature: /agent_chats endpoint
     Given I'm authenticated as admin
 
   Scenario: I create chat with agent
-    Given an agent with "darthvader@empire.galaxy" email exists
+    Given an agent with "darthvader@deathstar.battle-stations" email exists
+    And there are no "AgentChat" records
     When I send a POST request to "/api/v2/agent_chats" with body:
     """
 {
   "type": "agent",
-  "participant": ~darthvader@empire.galaxy~
+  "participant": ~darthvader@deathstar.battle-stations~
 }
     """
     Then the response should be in JSON
@@ -19,27 +20,27 @@ Feature: /agent_chats endpoint
     And the header "Location" should be equal to "/api/v2/agent_chats/{lastCreatedId}"
     And the JSON node "data" should exist
     And the JSON node "data.id" should be equal to "{lastCreatedId}"
-    And the JSON node "data.date_last_message" should be equal to "null"
+    And the JSON node "data.date_last_message" should be null
     And the JSON node "data.agents" should exist
     And the JSON node "data.agents" should have 2 elements
-    And the JSON node "data.agents[0]" should be equal to "{darthvader@empire.galaxy}"
+    And the JSON node "data.agents[0]" should be equal to "{darthvader@deathstar.battle-stations}"
     And the JSON node "data.agents[1]" should be equal to "{admin}"
 
   Scenario: I reopen chat with agent
-    Given an agent with "darthvader@empire.galaxy" email exists
+    Given an agent with "darthvader@deathstar.battle-stations" email exists
     And only the following "AgentChat" records exist:
       | #                | Type  |
       | agent-agent-chat | agent |
     And only the following "AgentChatParticipant" records exist:
       | #  | Chat               | Person                     |
       | p1 | {agent-agent-chat} | {admin}                    |
-      | p2 | {agent-agent-chat} | {darthvader@empire.galaxy} |
+      | p2 | {agent-agent-chat} | {darthvader@deathstar.battle-stations} |
 
     When I send a POST request to "api/v2/agent_chats" with body:
     """
 {
   "type": "agent",
-  "participant": ~darthvader@empire.galaxy~
+  "participant": ~darthvader@deathstar.battle-stations~
 }
     """
     Then the response status code should be 302
@@ -47,12 +48,12 @@ Feature: /agent_chats endpoint
     And the header "Location" should be equal to "/api/v2/agent_chats/{agent-agent-chat}"
 
   Scenario: I try to create chat with user
-    Given a user with "chewie@falcon.galaxy" email exists
+    Given a user with "chewie@falcon.spaceship" email exists
     When I send a POST request to "api/v2/agent_chats" with body:
     """
 {
   "type": "agent",
-  "participant": ~chewie@falcon.galaxy~
+  "participant": ~chewie@falcon.spaceship~
 }
     """
     Then the response should be in JSON
@@ -61,14 +62,14 @@ Feature: /agent_chats endpoint
     And the JSON node "errors.fields.participant.errors[0].message" should be equal to "One or more of the given values is invalid."
 
   Scenario: I get an agent chat
-    Given an agent with "darthvader@empire.galaxy" email exists
+    Given an agent with "darthvader@deathstar.battle-stations" email exists
     And only the following "AgentChat" records exist:
       | #                | Type  |
       | agent-agent-chat | agent |
     And only the following "AgentChatParticipant" records exist:
       | #  | Chat               | Person                     |
       | p1 | {agent-agent-chat} | {admin}                    |
-      | p2 | {agent-agent-chat} | {darthvader@empire.galaxy} |
+      | p2 | {agent-agent-chat} | {darthvader@deathstar.battle-stations} |
     When I send a GET request to "/api/v2/agent_chats/{agent-agent-chat}"
     Then the response should be in JSON
     And the response status code should be 200
@@ -77,14 +78,14 @@ Feature: /agent_chats endpoint
     And the JSON node "data.chat_type" should be equal to "agent"
 
   Scenario: I get chat list
-    Given an agent with "darthvader@empire.galaxy" email exists
+    Given an agent with "darthvader@deathstar.battle-stations" email exists
     And only the following "AgentChat" records exist:
       | #                | Type  |
       | agent-agent-chat | agent |
     And only the following "AgentChatParticipant" records exist:
       | #  | Chat               | Person                     |
       | p1 | {agent-agent-chat} | {admin}                    |
-      | p2 | {agent-agent-chat} | {darthvader@empire.galaxy} |
+      | p2 | {agent-agent-chat} | {darthvader@deathstar.battle-stations} |
     When I send a GET request to "/api/v2/agent_chats"
     Then the response should be in JSON
     And the response status code should be 200
