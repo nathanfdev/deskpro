@@ -36,8 +36,6 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 
 class GoToController extends AbstractController
 {
@@ -167,8 +165,6 @@ class GoToController extends AbstractController
      */
     public function chatIdAction(ChatConversation $conversation)
     {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, new PermissionGroupContext($conversation));
-
         return $this->redirect('/agent/#app.userchat,new:-1,c:'.$conversation->getId());
     }
 }
