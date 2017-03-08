@@ -58,6 +58,7 @@ class ClientDeviceType extends AbstractType
                 ],
             ]);
         }
+
         $builder
             ->add('device_type', ChoiceType::class, [
                 'required'          => true,
@@ -67,6 +68,8 @@ class ClientDeviceType extends AbstractType
                     ClientDevice::TYPE_IOS_GENERIC,
                     ClientDevice::TYPE_IOS_IPAD,
                     ClientDevice::TYPE_IOS_IPHONE,
+                    ClientDevice::TYPE_ANDROID_PHONE,
+                    ClientDevice::TYPE_ANDROID_TABLET,
                 ],
                 'constraints' => [
                     new Assert\NotNull(),

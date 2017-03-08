@@ -48,10 +48,12 @@ class ClientDevice implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
-    const TYPE_GENERIC     = 'generic';
-    const TYPE_IOS_GENERIC = 'ios';
-    const TYPE_IOS_IPHONE  = 'ios.iphone';
-    const TYPE_IOS_IPAD    = 'ios.ipad';
+    const TYPE_GENERIC        = 'generic';
+    const TYPE_IOS_GENERIC    = 'ios';
+    const TYPE_IOS_IPHONE     = 'ios.iphone';
+    const TYPE_IOS_IPAD       = 'ios.ipad';
+    const TYPE_ANDROID_PHONE  = 'android.phone';
+    const TYPE_ANDROID_TABLET = 'android.tablet';
 
     const APP_TYPE_MOBILE = 'mobile';
 

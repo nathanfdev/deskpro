@@ -93,6 +93,7 @@ class ClientDeviceController extends CrudController
      * because we don't want 'register' to be interpretted as a string device_id itself
      *
      * @Rest\Put("/register/{id}", requirements={"id"="\d+|.*?"})
+     *
      * {@inheritdoc}
      */
     public function registerAction($id, Request $request)
@@ -124,6 +125,7 @@ class ClientDeviceController extends CrudController
      *      }
      * )
      * @Rest\Get("/{id}", requirements={"id"="\d+|.*?"})
+     *
      * {@inheritdoc}
      */
     public function getAction(Request $request, $id)
@@ -151,6 +153,7 @@ class ClientDeviceController extends CrudController
      *      }
      * )
      * @Rest\Put("/{id}", requirements={"id"="\d+|.*?"})
+     *
      * {@inheritdoc}
      */
     public function putAction($id, Request $request)
@@ -178,6 +181,7 @@ class ClientDeviceController extends CrudController
      *      }
      * )
      * @Rest\Delete("/{id}", requirements={"id"="\d+|.*?"})
+     *
      * {@inheritdoc}
      */
     public function deleteAction($id, Request $request)
