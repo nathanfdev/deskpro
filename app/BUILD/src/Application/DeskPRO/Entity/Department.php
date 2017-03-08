@@ -493,7 +493,9 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
         // OMG this should be refactored somehow, but right now it works
         // also we are interested in agents only
         if (!$this->_people) {
+            $people = [];
 
+            // get agents based on department permissions
             /** @var \Application\DeskPRO\EntityRepository\Department $repository */
             $repository  = $this->getRepository();
             $permissions = $repository->getPermissionsInfo($this);
@@ -519,7 +521,27 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
                 }
             }
 
-            $people        = App::getOrm()->getRepository(Person::class)->findBy(['id' => $personIds]);
+            $departmentAgents = App::getOrm()->getRepository(Person::class)->findBy(['id' => $personIds]);
+            foreach ($departmentAgents as $agent) {
+                $people[$agent->getId()] = $agent;
+            }
+
+            // get agents having all permissions
+            $qb = App::getOrm()->createQueryBuilder();
+            $qb
+                ->select('a')
+                ->from(Person::class, 'a')
+                ->join('a.usergroups', 'u')
+                ->where('u.sys_name IN (:all_perm_usergroups)')
+                ->setParameter('all_perm_usergroups', [Usergroup::AGENT_ALL_PERM, Usergroup::AGENT_ALL_SAFE_PERM])
+            ;
+
+            /** @var Person[] $allPermAgents */
+            $allPermAgents = $qb->getQuery()->getResult();
+            foreach ($allPermAgents as $agent) {
+                $people[$agent->getId()] = $agent;
+            }
+
             $this->_people = array_filter(
                 $people,
                 function ($person) {
