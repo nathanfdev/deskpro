@@ -7,6 +7,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 	initialize: function(page) {
 		var self = this;
 		this.page = page;
+    this.page.addEvent('destroy', this.destroy, this);
 		this.display = this.page.getEl('field_holders').find('.field-holders-table');
 
 		this.mode = 'view';
@@ -467,5 +468,11 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		this.updateDisplay();
 		this.$scope.$apply();
+	},
+
+	destroy: function() {
+		this.page = null;
+    this.$scope && this.$scope.$destroy();
+    this.display = null;
 	}
 });

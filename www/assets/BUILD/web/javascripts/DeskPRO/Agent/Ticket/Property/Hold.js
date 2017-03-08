@@ -39,10 +39,6 @@ DeskPRO.Agent.Ticket.Property.Hold = new Class({
 
 	_formEl: null,
 	getFormEl: function() {
-		if (this._formEl !== null) return this._formEl;
-
-		this._formEl = $('input.is_hold:first', this.ticketPage.valueForm);
-
-		return this._formEl;
+		$('input.is_hold:first', this.ticketPage.valueForm);
 	}
 });

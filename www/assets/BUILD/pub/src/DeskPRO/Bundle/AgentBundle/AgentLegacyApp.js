@@ -111,6 +111,10 @@ class AgentLegacyApp {
     return tabRef;
   }
 
+  unmountVoiceControls(node) { // eslint-disable-line
+    ReactDOM.unmountComponentAtNode(node);
+  }
+
   renderVoiceMessage(node, data) {
     let tabRef;
 

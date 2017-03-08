@@ -480,5 +480,9 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 		property.setIncomingValue(newValue);
 		property.pulseInterfaceElement();
+	},
+
+	destroy: function() {
+		this.ticketPage = null;
 	}
 });

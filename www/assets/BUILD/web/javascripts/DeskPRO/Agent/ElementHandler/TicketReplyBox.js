@@ -11,14 +11,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	},
 
 	initPage: function() {
-		var self = this;
+    this.lang = eval(this.el.data('dp-lang') || '{}');
+    var self = this;
 		this.page = this.el.closest('.with-page-fragment').data('page-fragment');
 
 		if (!this.page && this.initRetries-- > 0) {
 			return setTimeout(this.initPage.bind(this), this.initRetryTimeout);
 		}
-
-		this.lang = eval(this.el.data('dp-lang') || '{}');
 
 		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
 		this.textarea = textarea;
@@ -923,17 +922,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		//------------------------------
 
 		var statusMenuTrigger = this.el.find('.status-menu-trigger');
-		var footerEl = this.el.find('footer').first();
 		var statusMenu = this.getElById('status_menu');
-		var statusMenuH = null;
-		var statusBackdrop = null;
-		var statusMacroFilter = null;
 		var statusMacroList = statusMenu.find('.macro-list');
 		var statusMacroListMap = null;
-		var statusListItems = null;
 		var replyAsType = this.getElById('reply_as_type');
 
-		var statusMenuMenu = new DeskPRO.UI.Menu2(statusMenu, {
+		var statusMenuMenu = this.statusMenuMenu = new DeskPRO.UI.Menu2(statusMenu, {
 			positionBy: self.getElById('reply_btn_group'),
 			onBeforeMenuOpen: function(info) {
 				var statusMenu = info.statusMenu;
@@ -994,25 +988,27 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			openStatusMenu();
 		});
 
-		$('#settingswin').on('dp_macros_updated', function(ev) {
-			Array.each(ev.macroItems, function(info) {
-				var has = statusMacroList.find('.res-ticketmacro-' + info.id);
-				if (has[0]) {
-					return;
-				}
+		this.onMacrosUpdated = function(ev) {
+      Array.each(ev.macroItems, function (info) {
+        var has = statusMacroList.find('.res-ticketmacro-' + info.id);
+        if (has[0]) {
+          return;
+        }
 
-				var li = $('<li><div class="on-icon"><i class="icon-okay"></i></div><span class="macro-title"></span></li>');
-				if (self.page) {
-					li.data('get-macro-url', BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/ajax-get-macro?macro_id=' + info.id + '&macro_reply_context=1');
-				}
-				li.data('label', 'Send Reply and ' + info.title);
-				li.data('type', 'macro:'+info.id);
-				li.attr('data-type', 'macro:'+info.id);
-				li.find('.macro-title').text(info.title);
+        var li = $('<li><div class="on-icon"><i class="icon-okay"></i></div><span class="macro-title"></span></li>');
+        if (self.page) {
+          li.data('get-macro-url', BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/ajax-get-macro?macro_id=' + info.id + '&macro_reply_context=1');
+        }
+        li.data('label', 'Send Reply and ' + info.title);
+        li.data('type', 'macro:' + info.id);
+        li.attr('data-type', 'macro:' + info.id);
+        li.find('.macro-title').text(info.title);
 
-				statusMacroList.append(li);
-			});
-		});
+        statusMacroList.append(li);
+      });
+    };
+		$('#settingswin').on('dp_macros_updated', this.onMacrosUpdated);
+
 
 		if (this.page) {
 			this.page.setTicketReplyBox(this);
@@ -1337,6 +1333,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	},
 
 	destroy: function() {
+		this.page = null;
 		var textarea = this.getElById('replybox_txt');
 		if (textarea.data('redactor')) {
 			try {
@@ -1348,6 +1345,18 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		}
 		if (this.snippetsViewer) {
 			this.snippetsViewer.destroy();
+		}
+		if (this.statusMenu) {
+			this.statusMenu.destroy();
+			this.statusMenu = null;
+		}
+    if (this.statusMenuMenu) {
+      this.statusMenuMenu.destroy();
+      this.statusMenuMenu = null;
+    }
+    if (this.onMacrosUpdated) {
+      $('#settingswin').off('dp_macros_updated', this.onMacrosUpdated);
+      this.onMacrosUpdated = null;
 		}
 	}
 });
