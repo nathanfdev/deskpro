@@ -26,7 +26,7 @@ class Scrollarea extends ScrollArea {
       this.scrollBottom();
       this.autoscroll = false;
     }
-    if (this.messageToScroll && !this.messageToScroll.isSearchResult()) {
+    if (this.messageToScroll && !this.messageToScroll.isSearchResult() && this.messageToScroll.getNode()) {
       this.props.onScrollToMessage();
       const messageNodeRect = this.messageToScroll.getNode().getBoundingClientRect();
       const chatContextRect = this.wrapper.getBoundingClientRect();
