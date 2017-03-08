@@ -1,5 +1,6 @@
 import 'froala-editor/js/froala_editor.pkgd.min';
 import React, { PropTypes } from 'react';
+import ReactTooltip from 'react-tooltip';
 import Isvg from 'react-inlinesvg';
 import $ from 'jquery';
 import 'mark.js';
@@ -170,10 +171,12 @@ class Container extends React.Component {
     }
 
     const header = this.headerHelper.getHeaderText();
+    const tooltipId = `tooltip-for-chat-header-${current.get('id')}`;
 
     return (
       <span className="wrapper">
-        {header}
+        <span data-for={tooltipId} data-tip={header} className="chat-header dont-break-out">{header}</span>
+        <ReactTooltip delayShow={1000} id={tooltipId} effect="solid" place="top" className="im-tooltip" />
         <CloseChat onClick={() => { this.closeContainer(); }} />
         <i
           className={classNames('search icon dp-button', { enabled: this.state.searching })}
