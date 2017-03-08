@@ -9,19 +9,36 @@ define [
     @CTRL_ID   = 'Reports_Overview_Ctrl_Overview'
     @CTRL_AS   = 'Overview'
 
+    init: ->
+      @$scope.agent_team  = 0
+      @$scope.agent_teams = []
+
     ###
     # Just doing all the necessary AJAX calls here
     ###
     initialLoad: ->
-      data_promise = @Api.sendDataGet({
-        tickets_status:            "/reports/overview/data/tickets_status"
-        tickets_awaiting_agent:    "/reports/overview/data/tickets_awaiting_agent"
-        tickets_user_waiting_time: "/reports/overview/data/tickets_user_waiting_time"
-        tickets_resolved:          "/reports/overview/data/tickets_resolved"
-        tickets_response_time:     "/reports/overview/data/tickets_response_time"
-        tickets_sla_status:        "/reports/overview/data/tickets_sla_status"
-        tickets_opened_hour:       "/reports/overview/data/tickets_opened_hour"
-        chats_created:             "/reports/overview/data/chats_created"
+      agentTeamsPromise = @Api2.sendGet('/agent_teams').then( (res) =>
+        teams = res.data.data
+        if teams.length
+          teams.unshift({ id: 0, name: 'All' })
+
+        @$scope.agent_teams = teams
+      )
+
+      @$q.all([@loadData(), agentTeamsPromise])
+
+    loadData: ->
+      queryParams = '?'+encodeURIComponent('agent_team')+'='+encodeURIComponent(@$scope.agent_team)
+
+      @Api.sendDataGet({
+        tickets_status:            "/reports/overview/data/tickets_status"+queryParams
+        tickets_awaiting_agent:    "/reports/overview/data/tickets_awaiting_agent"+queryParams
+        tickets_user_waiting_time: "/reports/overview/data/tickets_user_waiting_time"+queryParams
+        tickets_resolved:          "/reports/overview/data/tickets_resolved"+queryParams
+        tickets_response_time:     "/reports/overview/data/tickets_response_time"+queryParams
+        tickets_sla_status:        "/reports/overview/data/tickets_sla_status"+queryParams
+        tickets_opened_hour:       "/reports/overview/data/tickets_opened_hour"+queryParams
+        chats_created:             "/reports/overview/data/chats_created"+queryParams
       }).then( (res) =>
         @$scope.tickets_status            = res.data.tickets_status
         @$scope.tickets_awaiting_agent    = res.data.tickets_awaiting_agent
@@ -43,8 +60,6 @@ define [
         @setDataForTableWithBarGraphs('tickets_user_waiting_time')
         @setDataForTableWithBarGraphs('tickets_response_time')
       )
-
-      @$q.all([data_promise])
 
 
     ###

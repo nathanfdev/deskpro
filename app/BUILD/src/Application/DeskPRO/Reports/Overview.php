@@ -84,14 +84,15 @@ class Overview
 
     /**
      * @param string $type
+     * @param array  $options
      *
      * @return array
      */
-    public function getOverviewData($type)
+    public function getOverviewData($type, array $options = [])
     {
         $this->person->loadPrefGroup('reports.ui.overview.options');
 
-        return $this->getValues($type);
+        return $this->getValues($type, $options);
     }
 
     /**
@@ -271,11 +272,14 @@ class Overview
             }
         }
 
+        $agentTeam = $options->get('agent_team');
+
         switch ($type) {
 
             case 'tickets_status':
                 $stat = new TicketsStatus();
                 $stat->setLogger($this->logger);
+                $stat->setAgentTeam($agentTeam);
                 $sum = array_sum($stat->getValues());
 
                 return [
@@ -328,6 +332,7 @@ class Overview
                 $stat = new TicketsOpenedHour($date_group, $date, $date2);
                 $stat->setPersonContext($this->person);
                 $stat->setLogger($this->logger);
+                $stat->setAgentTeam($agentTeam);
                 $sum = array_sum($stat->getValues());
 
                 return [
@@ -377,6 +382,7 @@ class Overview
 
                 $stat = new TicketsResolved($gf, $date, $date2);
                 $stat->setLogger($this->logger);
+                $stat->setAgentTeam($agentTeam);
                 $sum = array_sum($stat->getValues());
 
                 return [
@@ -428,6 +434,7 @@ class Overview
 
                 $stat = new TicketsResponseTime($gf, $date, $date2);
                 $stat->setLogger($this->logger);
+                $stat->setAgentTeam($agentTeam);
 
                 return [
                     'grouping_field' => $options->get('grouping_field'),
@@ -449,6 +456,7 @@ class Overview
                 }
                 $stat = new TicketsUserWaitingTime($gf);
                 $stat->setLogger($this->logger);
+                $stat->setAgentTeam($agentTeam);
 
                 if ($this->no_data_mode) {
                     return [
@@ -481,6 +489,7 @@ class Overview
 
                 $stat = new TicketsAwaitingAgent($gf);
                 $stat->setLogger($this->logger);
+                $stat->setAgentTeam($agentTeam);
                 $sum = array_sum($stat->getValues());
 
                 return [
@@ -537,6 +546,7 @@ class Overview
 
                 $stat = new TicketSlaStatus($sla_id, $date, $date2);
                 $stat->setLogger($this->logger);
+                $stat->setAgentTeam($agentTeam);
                 $sum = array_sum($stat->getValues());
 
                 return [
@@ -590,6 +600,7 @@ class Overview
 
                 $stat = new ChatsCreated($gf, $date, $date2);
                 $stat->setLogger($this->logger);
+                $stat->setAgentTeam($agentTeam);
                 $sum = array_sum($stat->getValues());
 
                 return [
@@ -635,6 +646,7 @@ class Overview
 
                 $stat = new KbViewsHour($date, $date2);
                 $stat->setLogger($this->logger);
+                $stat->setAgentTeam($agentTeam);
                 $sum = array_sum($stat->getValues());
 
                 return [

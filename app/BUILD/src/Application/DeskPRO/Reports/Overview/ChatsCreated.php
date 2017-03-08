@@ -91,17 +91,23 @@ class ChatsCreated extends AbstractTableOverviewStat
         $d1 = $this->date_start->format('Y-m-d H:i:s');
         $d2 = $this->date_end->format('Y-m-d H:i:s');
 
+        $params = [];
+        if ($this->agentTeam) {
+            $params['team_id'] = $this->agentTeam;
+        }
+
         $sql = "
             SELECT {$group_field['select']}, COUNT(*)
             FROM chat_conversations
             {$group_field['join']}
             WHERE chat_conversations.is_agent = 0 AND chat_conversations.date_created BETWEEN '$d1' AND '$d2' {$group_field['where']}
+            ".($this->agentTeam ? ' AND agent_team_id = :team_id ' : '')."
             GROUP BY {$group_field['group_by']}
         ";
 
         $this->logger->logDebug("[ChatsCreated] $sql");
         $this->logger->startTimer('ChatsCreated');
-        $this->values = App::getDb()->fetchAllKeyValue($sql);
+        $this->values = App::getDb()->fetchAllKeyValue($sql, $params);
         $this->logger->logTotalTime('ChatsCreated');
 
         return $this->values;
