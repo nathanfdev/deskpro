@@ -371,6 +371,113 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     });
 
     //------------------------------
+    // Insert snippet by %-% combo
+    //------------------------------
+
+    if (textarea.data('redactor')) {
+      var ed = textarea.getEditor();
+      var api = textarea.data('redactor');
+
+      var te = new DeskPRO.TextExpander({
+        textarea: ed,
+        onCombo: function(combo, ev) {
+          combo = combo.replace(/%/g, '');
+          if (!window.DESKPRO_TICKET_SNIPPET_SHORTCODES || !window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo]) {
+            return;
+          }
+
+          ev.preventDefault();
+
+          for (var i = 0; i < window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo].length; i++) {
+            var snippetId = window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo][i];
+
+            var focus = api.getFocus(),
+              focusNode = $(focus[0]),
+              testText;
+
+            if (focus[0].nodeType == 3) {
+              testText = focusNode.text().substring(0, focus[1]);
+            } else {
+              focus[0] = focusNode.contents().get(focus[1] - 1);
+              focusNode = $(focus[0]);
+              testText = focusNode.text();
+              focus[1] = testText.length;
+            }
+
+            var lastAt = testText.lastIndexOf('%'), matches = [];
+
+            if (lastAt != -1) {
+              api.setSelection(focus[0], lastAt, focus[0], focus[1]);
+            }
+
+            // web kit handles content editable without an issue. this prevents the span
+            // from being extended unnecessarily
+            var editable = $.browser.webkit ? ' contenteditable="false"' : '';
+            api.insertHtml('<span class="editor-inserting-var snippet-' + snippetId + '" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet</span>');
+
+            $.ajax({
+              url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
+              dataType: 'json',
+              success: function (data) {
+                var snippet = data.snippet;
+                var ticketLangId = self.page ? self.page.getEl('value_form').find('.language_id').val() : 0;
+                var snippetId = snippet.id;
+                var snippetCode = snippet.snippet;
+
+                recordSnippetUse(snippetId);
+
+                var agentText;
+                var defaultText;
+                var wantText;
+                var useText;
+
+                Array.each(snippetCode, function (info) {
+                  if (info.language_id == ticketLangId) {
+                    wantText = info.value;
+                  }
+                  if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+                    agentText = info.value;
+                  }
+                  if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+                    defaultText = info.value;
+                  }
+                  useText = info.value;
+                });
+
+                if (wantText) {
+                  useText = wantText;
+                } else if (agentText) {
+                  useText = agentText;
+                } else if (defaultText) {
+                  useText = defaultText;
+                }
+
+                useText = useText.replace(/<\/p>\s*<p>/g, '<br/>');
+                useText = useText.replace(/^<p>/, '');
+                useText = useText.replace(/<\/p>$/, '');
+                var result = $('<div>' + useText + '</div>');
+
+                var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+                var cursor = $('<span class="_cursor"></span>');
+                var cursorPos = result.find('> p');
+                if (!cursorPos[0]) {
+                  cursorPos = result;
+                }
+
+                el.after(result);
+                cursorPos.append(cursor);
+                el.remove();
+
+                api.setSelection(cursor[0], 0, cursor[0], 0);
+                api.syncCode();
+              }
+            });
+          }
+        }
+      });
+    }
+
+    //------------------------------
     // Upload handling
     //------------------------------
 
