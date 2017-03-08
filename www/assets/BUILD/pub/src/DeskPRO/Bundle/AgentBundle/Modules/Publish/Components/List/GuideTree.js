@@ -84,10 +84,13 @@ export class GuideTree extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
+    const expanded = true;
     this.setState({
-      treeData: nextProps.tree
+      treeData: toggleExpandedForAll({
+        treeData: nextProps.tree,
+        expanded,
+      }),
     });
-    this.expand(true);
   }
 
   onClick = (node) => {
@@ -101,15 +104,6 @@ export class GuideTree extends React.Component {
       });
     }
     this.props.onClick(node);
-  };
-
-  expand = (expanded) => {
-    this.setState({
-      treeData: toggleExpandedForAll({
-        treeData: this.state.treeData,
-        expanded,
-      }),
-    });
   };
 
   handleChange = (treeData) => {

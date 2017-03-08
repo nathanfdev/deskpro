@@ -166,6 +166,54 @@ class GuidesDataService extends AbstractDataService
     }
 
     /**
+     * @param string $slug
+     *
+     * @return Topic|null
+     */
+    public function getTopicBySlug($slug)
+    {
+        $that = $this;
+
+        return $this->generateAndCache(
+            [
+                'getTopicBySlug',
+                $slug,
+            ],
+            function () use ($that, $slug) {
+                if (!$slug) { // we need some input
+                    return;
+                }
+
+                return $that->getTopicsRepo()->findOneBy(['slug' => $slug]);
+            }
+        );
+    }
+
+    /**
+     * @param string $slug
+     *
+     * @return Guide|null
+     */
+    public function getGuideBySlug($slug)
+    {
+        $that = $this;
+
+        return $this->generateAndCache(
+            [
+                'getGuideBySlug',
+                $slug,
+            ],
+            function () use ($that, $slug) {
+                if (!$slug) { // we need some input
+                    return;
+                }
+
+                return $that->getGuideRepo()->findOneBy(['slug' => $slug]);
+            }
+        );
+    }
+
+    /**
      * Get a guide based on arbirtary input.
      *
      * TODO: optimize the heck out of any possible inputs here (if it helps: cache in an array at least, cache long term if desired, should normalize cache key on lowest common denominator "id")

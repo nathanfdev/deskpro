@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
-import { Router, Route } from 'react-router';
+import { Router, Route, browserHistory } from 'react-router';
 import * as Guides from '../../Guides/Components';
-import { history } from '../../../Services/history';
 
 class AppContainer extends React.Component {
 
@@ -11,8 +10,10 @@ class AppContainer extends React.Component {
 
   render() {
     return (
-      <Router history={history}>
-        <Route path="guides/" component={Guides.ViewTopic} />
+      <Router history={browserHistory}>
+        <Route path="/" component={Guides.ViewTopic}>
+          <Route path="/:locale/guides/:guideSlug/:slug" component={Guides.ViewTopic} />
+        </Route>
       </Router>
     );
   }

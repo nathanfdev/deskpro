@@ -103,8 +103,7 @@ class GuidesController extends AbstractController
     }
 
     /**
-     * @Route("/guides/topic/{slug}", name="portal_guides_topic_view")
-     * @Route("/guides/{guide_slug}/{slug}")
+     * @Route("/guides/{guide_slug}/{slug}", name="portal_guides_topic_view")
      * @ParamConverter(name="topic", converter="deskpro_slug")
      * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_TOPIC', topic)")
      * @PageHttpCache(content="topic")

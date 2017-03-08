@@ -1,13 +1,13 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    <div class="guides topic-view">
+    <div class="guides topic-view"  id="react_portal_bundle">
         <div class="topic-list">
             <div class="guide">{{ guide.title }}</div>
             <hr>
             {% show topic_list with {guide: guide, topic: topic} %}
         </div>
-        <div class="topic" id="react_portal_bundle">
+        <div class="topic">
             <header class="section-header">
                 <h1>{{ topic.title }}</h1>
                 <span class="publication_date">
