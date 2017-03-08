@@ -573,8 +573,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		if (data.wrapper) {
-			data.wrapper.empty();
 			data.wrapper.remove();
+      data.wrapper = null;
 		}
 
 		if (data.page) {
@@ -635,6 +635,17 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 				this.$scope.tabHistory.shift();
 			}
 		}
+
+		if (data.page.destroyEvents) {
+      data.page.destroyEvents();
+		}
+
+    data.callback_render = null;
+    data.callback_remove_content = null;
+    data.callback_activate = null;
+    data.callback_deactivate = null;
+    data.page = null;
+
 		this.$timeout(function() {
 			self.tabBarOverflow.update();
 		});

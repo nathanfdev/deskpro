@@ -1333,6 +1333,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	},
 
 	destroy: function() {
+		this.page = null;
 		var textarea = this.getElById('replybox_txt');
 		if (textarea.data('redactor')) {
 			try {

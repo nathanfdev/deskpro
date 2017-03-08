@@ -833,19 +833,32 @@ DeskPRO.UI.Menu = new Orb.Class({
 	 * Destroy this overlay and all of its supporting elements.
 	 */
 	destroy: function() {
-
 		this.closeMenu();
 
-		if (this.elements && this.elements.shim) {
-			this.elements.shim.remove();
-		}
+		if (this.elements) {
+      if (this.elements.shim) {
+        this.elements.shim.remove();
+        this.elements.shim = null;
+      }
 
-		if (this.elements && this.elements.wrapperOuter) {
-			this.elements.wrapperOuter.remove();
-		}
+      if (this.elements.wrapper) {
+        this.elements.wrapper.off();
+        this.elements.wrapper = null;
+      }
 
-		if (this.options.menuEl) {
-			this.options.menuEl.remove();
+      if (this.elements.wrapperInner) {
+        this.elements.wrapperInner = null;
+      }
+
+      if (this.elements.wrapperOuter) {
+        this.elements.wrapperOuter.remove();
+        this.elements.wrapperOuter = null;
+      }
+
+      if (this.elements.list) {
+        this.elements.list.remove();
+      	this.elements.list = null;
+			}
 		}
 
 		DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId] = null;
@@ -859,8 +872,9 @@ DeskPRO.UI.Menu = new Orb.Class({
 		this.subMenus = [];
     this.elements = null;
     this.options.subMenuConfig = null;
-    this.options.menuElement = null;
     this.options.triggerElement = null;
+    this.options.menuEl = null;
+    this.options.menuElement = null;
     this.options = null;
     this.destroyEvents();
 	}

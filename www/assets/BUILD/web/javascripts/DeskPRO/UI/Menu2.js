@@ -26,7 +26,7 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 
 		var closeStatusMenu = function() {
 			closeOpenSubmenu();
-			statusBackdrop.hide();
+      statusBackdrop && statusBackdrop.hide();
 			statusMenu.hide();
 
 			self.fireEvent('menuClose', {
@@ -292,16 +292,7 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 	},
 
   destroy: function() {
-
-    this.closeMenu();
-
-    if (this.options.menuEl) {
-      this.options.menuEl.remove();
-    }
-
-    this.options.subMenuConfig = null;
-    this.options.menuElement = null;
-    this.options.triggerElement = null;
+    this.close();
     this.options = null;
     this.destroyEvents();
   }

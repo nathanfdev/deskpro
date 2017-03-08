@@ -190,10 +190,6 @@ Orb.Util.Events = {
 	},
 
 	destroyEvents: function() {
-		var self = this;
-		setTimeout(function(){
-      self.__events && self.removeEvents(Object.keys(self.__events));
-		}, 0);
-
+    this.__events && this.removeEvents(Object.keys(this.__events));
 	}
 };

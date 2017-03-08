@@ -162,8 +162,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 						h.destroy();
 					}
 				});
-				self.wrapper.empty();
 			}
+      if (self.wrapper) {
+        self.wrapper.remove();
+        self.wrapper = null;
+      }
+      self.fragmentElement = null;
 		});
 		this.addEvent('destroy', this.destroy);
 
@@ -172,10 +176,6 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 				this.meta.routeData.routeTriggerEl.removeClass(this.meta.routeData.toggleOpenClass);
 			}, this);
 		}
-
-    this.addEvent('destroy', function(){
-    	self.destroyEvents();
-		});
 	},
 
 	/**

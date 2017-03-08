@@ -873,7 +873,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 
-    window.setTimeout(function() {
+    window.setTimeout(function closeTicketOnFail() {
       if (self.wrapper.find('.with-handler-failed')[0]) {
         DeskPRO_Window.showConfirm("There was a problem loading some elements on this tab. The tab will re-load now.", function() {
           DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
@@ -1283,6 +1283,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 		if (this.messageActionsMenu) {
 			this.messageActionsMenu.destroy();
+      this.messageActionsMenu = null;
 		}
 		if (this.changeManager) {
 			this.changeManager.destroy();
@@ -1299,6 +1300,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (this.labelsInput) {
       this.labelsInput.destroy();
       this.labelsInput = null;
+		}
+		if (this.taskListControl) {
+    	this.taskListControl.destroy();
+    	this.taskListControl = null;
+		}
+		if (this.controls) {
+    	this.controls = null;
 		}
 
 		this.ticketReplyBox = null;
@@ -2215,11 +2223,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
   },
 
 	_initVoice: function() {
-		var self = this;
-		var onEndCall = function() {
-			console.debug('Restoring poller interval: %d', DP_POLLER_INTERVAL);
-			DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL);
-		};
+    var self = this;
+    var onEndCall = function() {
+      console.debug('Restoring poller interval: %d', DP_POLLER_INTERVAL);
+      DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL);
+    };
 
 		var node = document.getElementById(this.meta.baseId + '_controls_react_container');
 		this.controls = window.AgentLegacyBundle.renderVoiceControls(node, parseInt(this.meta.ticket_id, 10), onEndCall);
@@ -3272,16 +3280,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		});
 
-		var control = new DeskPRO.Agent.PageHelper.TaskListControl(this.getEl('task_list'), {
+		this.taskListControl = new DeskPRO.Agent.PageHelper.TaskListControl(this.getEl('task_list'), {
 			menuVis:  menuVis2,
 			completeCountEl: null
 		});
 
-		control.addEvent('updateUi', function() {
+		this.taskListControl.addEvent('updateUi', function() {
 			self.updateUi();
 			updateTaskPane();
 		});
-		control.addEvent('updateCount', function() {
+		this.taskListControl.addEvent('updateCount', function() {
 			updateTaskPane();
 		});
 
