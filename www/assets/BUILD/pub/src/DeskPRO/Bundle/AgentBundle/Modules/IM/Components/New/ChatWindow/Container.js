@@ -85,6 +85,8 @@ class Container extends React.Component {
         return 'download';
       case 'feedback':
         return 'thumbs outline up';
+      case 'userchat':
+        return 'comment outline';
       default:
         return '';
     }
@@ -355,7 +357,7 @@ class Container extends React.Component {
   }
 
   handleLink(item) {
-    const propertyName = `${item.tabType}_id`;
+    const propertyName = item.tabType === 'userchat' ? 'conversation_id' : `${item.tabType}_id`;
     const message      = `{{${item.tabType.charAt(0).toLowerCase()}-${item.page.meta[propertyName]}}}: ${item.title}`;
     const editor       = this.editor;
     editor.events.focus();
