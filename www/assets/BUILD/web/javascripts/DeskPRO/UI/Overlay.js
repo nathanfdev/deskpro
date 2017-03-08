@@ -491,19 +491,24 @@ DeskPRO.UI.Overlay = new Orb.Class({
 				if (fn) {
 					fn();
 				}
+        $(this).data('destroy-handler', null);
 			});
+      this.elements.wrapper = null;
 		}
 
 		if (this.elements.wrapperOuter) {
 			this.elements.wrapperOuter.remove();
+      this.elements.wrapperOuter = null;
 		}
 		if (this.elements.modal) {
 			this.elements.modal.remove();
+      this.elements.modal = null;
 		}
 		this.isThisDestroyed = true;
 
 		this.fireEvent('destroyed', [this]);
 		$(window).unbind('.' + this.OBJ_ID);
+		this.destroyEvents();
 	},
 
 

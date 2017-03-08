@@ -874,7 +874,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
     window.setTimeout(function closeTicketOnFail() {
-      if (self.wrapper.find('.with-handler-failed')[0]) {
+      if (self.wrapper && self.wrapper.find('.with-handler-failed')[0]) {
         DeskPRO_Window.showConfirm("There was a problem loading some elements on this tab. The tab will re-load now.", function() {
           DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
           self.closeSelf();
@@ -1306,7 +1306,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     	this.taskListControl = null;
 		}
 		if (this.controls) {
-    	this.controls = null;
+      this.controls = null;
+      var node = document.getElementById(this.meta.baseId + '_controls_react_container');
+      window.AgentLegacyBundle.unmountVoiceControls(node);
+		}
+		if (this.confirmCloseOverlay) {
+      this.confirmCloseOverlay.destroy();
+      this.confirmCloseOverlay = null;
 		}
 
 		this.ticketReplyBox = null;
@@ -2223,12 +2229,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
   },
 
 	_initVoice: function() {
-    var self = this;
-    var onEndCall = function() {
+    var onEndCall = (function() {
       console.debug('Restoring poller interval: %d', DP_POLLER_INTERVAL);
       DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL);
-    };
-
+    })();
+    var self = this;
 		var node = document.getElementById(this.meta.baseId + '_controls_react_container');
 		this.controls = window.AgentLegacyBundle.renderVoiceControls(node, parseInt(this.meta.ticket_id, 10), onEndCall);
 
@@ -2237,7 +2242,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL_FAST);
 		}
 
-		var confirmCloseOverlay = new DeskPRO.UI.Overlay({
+		var confirmCloseOverlay = this.confirmCloseOverlay = new DeskPRO.UI.Overlay({
 			contentElement: this.getEl('closetab_prompt'),
 			addClassname: 'normal-size',
 			onPosition: function(evData) {
