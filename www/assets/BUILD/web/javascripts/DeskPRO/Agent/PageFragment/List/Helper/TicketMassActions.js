@@ -50,6 +50,9 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
 
     callback();
 
+    $('select.macro', this.wrapper).off();
+    $('.apply-actions', this.wrapper).off();
+
     this._loadInside();
   },
 
