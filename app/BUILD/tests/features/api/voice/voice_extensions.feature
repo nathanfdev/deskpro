@@ -14,8 +14,9 @@ Feature: Twilio extensions
       | #   | Text       | Language |
       | ta1 | text asset | en-GB    |
     And only the following AgentData records exist:
-      | #  | Person  | Extension Number | Voicemail Asset |
-      | a1 | {admin} | 1001             | {ta1}           |
+      | #  | Extension Number | Voicemail Asset |
+      | a1 | 1001             | {ta1}           |
+    And the "{admin}" record "agent_data" prop is equal to "{a1}"
 
     When I send a GET request to "/api/v2/people/{admin}"
     Then the response status code should be 200
