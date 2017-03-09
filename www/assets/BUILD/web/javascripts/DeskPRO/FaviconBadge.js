@@ -5,36 +5,29 @@ DeskPRO.FaviconBadge = new Orb.Class({
 	Implements: [Orb.Util.Options],
 
 	initialize: function(options) {
-		var self = this;
 		this.options = {};
 
 		this.origWindowTitle = document.title;
 
-		this.options.strokeColor = 'rgb(255,0,0)';
-		this.options.color = '#FFFFFF';
-
-		this.options.strokeColorAlt = 'rgb(0,0,0)';
-		this.options.colorAlt = '#FFFFFF';
+		this.options.strokeColor = '#FF0000';
+		this.options.color = '#FF0000';
 
 		this.setOptions(options);
-
-		if (this.isHighDensity()) {
-			this.tinyconOptions = {
-				font: '20px arial',
-				fallback: false
-			};
-		} else {
-      this.tinyconOptions = {
-        font: '10px arial',
-        fallback: false
-      };
-		}
 
 		this.animateTimeout = null;
 		this.animateCount = 0;
 		this.crazyMode = false;
 		this.crazyTitle = null;
 		this.lastNum = 0;
+
+    Tinycon.setOptions({
+			width: 6,
+      height: 6,
+      font: '1px arial',
+      color: '#FF0000',
+      background: '#FF0000',
+      fallback: false
+		});
 	},
 
 	clearAnimate: function() {
@@ -45,19 +38,21 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		}
 
 		$(document).unbind('windowshow.faviconbadge');
-		$(window).unbind('mousemove.faviconbadge');
-		$(window).unbind('keypress.faviconbadge');
+		$(document).unbind('mousemove.faviconbadge');
+		$(document).unbind('keypress.faviconbadge');
+		$(document).unbind('visibilitychange.faviconbadge');
 	},
 
 	enableCrazyMode: function(title) {
 
-		if ($('html').hasClass('window-active')) {
+		if (document.visibilityState && document.visibilityState === 'visible') {
 			return;
 		}
 
-    $(document).one('windowshow', this.disableCrazyMode.bind(this));
-    $(window).one('mousemove', this.disableCrazyMode.bind(this));
-    $(window).one('keypress', this.disableCrazyMode.bind(this));
+    $(document).one('windowshow.faviconbadge', this.disableCrazyMode.bind(this));
+    $(document).one('mousemove.faviconbadge', this.disableCrazyMode.bind(this));
+    $(document).one('keypress.faviconbadge', this.disableCrazyMode.bind(this));
+    $(document).one('visibilitychange.faviconbadge', this.disableCrazyMode.bind(this));
 
 		this.crazyTitle = title || null;
 		this.crazyMode = true;
@@ -65,16 +60,14 @@ DeskPRO.FaviconBadge = new Orb.Class({
 	},
 
 	disableCrazyMode: function() {
-		if (!this.crazyMode) {
-			return;
-		}
+		this.clearAnimate();
 		this.crazyMode = false;
 		this.crazyTitle = null;
 		document.title = this.origWindowTitle;
 		this.updateBadge(this.lastNum, false);
 	},
 
-	updateBadge: function(num, do_animate) {
+	updateBadge: function(num) {
 		var self = this;
 
 		this.clearAnimate();
@@ -89,62 +82,48 @@ DeskPRO.FaviconBadge = new Orb.Class({
 
 		// 0 means no number
 		if (!num && !this.crazyMode) {
-			Tinycon.setBubble('');
+			this.setBubble('');
 			return;
 		}
 
-		if (do_animate) {
+		if (this.crazyMode) {
 			this.animateTimeout = window.setInterval(function() {
 				self.animateCount++;
-				if (self.crazyMode) {
-					self.tinyconOptions.width = 7;
-					self.tinyconOptions.height = 8;
-
-					if (self.animateCount % 2 == 0) {
-						self.tinyconOptions.colour = '#000000';
-						self.tinyconOptions.background = '#FFFFFF';
-						Tinycon.setOptions(self.tinyconOptions);
-						Tinycon.setBubble('◎');
-						if (self.crazyTitle) {
-							document.title = self.origWindowTitle;
-						}
-					} else {
-						self.tinyconOptions.colour = '#FF0000';
-						self.tinyconOptions.background = '#FFFFFF';
-						Tinycon.setOptions(self.tinyconOptions);
-						Tinycon.setBubble('◉');
-						if (self.crazyTitle) {
-							document.title = self.crazyTitle;
-						}
-					}
-				} else {
-					self.tinyconOptions.width = 7;
-					self.tinyconOptions.height = 9;
-
-					if (self.animateCount % 2 == 0) {
-						self.tinyconOptions.colour = self.options.color;
-						self.tinyconOptions.background = self.options.strokeColor;
-						Tinycon.setOptions(self.tinyconOptions);
-						Tinycon.setBubble(num+'');
-					} else {
-						self.tinyconOptions.colour = self.options.colorAlt;
-						self.tinyconOptions.background = self.options.strokeColorAlt;
-						Tinycon.setOptions(self.tinyconOptions);
-						Tinycon.setBubble(num+'');
-					}
-				}
+        if (self.animateCount % 2 == 0) {
+          self.setBubble('');
+        } else {
+          self.setBubble('.');
+          if (self.crazyTitle) {
+            document.title = self.crazyTitle;
+          }
+        }
 			}, 800);
 		} else {
-			self.tinyconOptions.width = 7;
-			self.tinyconOptions.height = 9;
-			self.tinyconOptions.colour = self.options.color;
-			self.tinyconOptions.background = self.options.strokeColor;
-			Tinycon.setOptions(self.tinyconOptions);
-			Tinycon.setBubble(num+'');
+			self.setBubble('.');
 		}
 	},
 
-  isHighDensity: function(){
-  	return ((window.matchMedia && (window.matchMedia('only screen and (min-resolution: 124dpi), only screen and (min-resolution: 1.3dppx), only screen and (min-resolution: 48.8dpcm)').matches || window.matchMedia('only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 2.6/2), only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (min-device-pixel-ratio: 1.3)').matches)) || (window.devicePixelRatio && window.devicePixelRatio > 1.3));
+  setBubble: function(val) {
+		val = val+'';
+		if (this.nextBubbleValue === val) {
+			return;
+		}
+    this.nextBubbleValue = val;
+
+		if (window.requestAnimationFrame && document.visibilityState && document.visibilityState === 'visible') {
+			// for perf use animation frame if tab is visible
+      window.requestAnimationFrame(this.doSetBubble.bind(this));
+		} else {
+			// else request it now so we can update when user is not on our page
+			this.doSetBubble();
+		}
+	},
+
+  doSetBubble: function() {
+		if (!this.nextBubbleValue || this.nextBubbleValue === '') {
+      Tinycon.reset();
+		} else {
+      Tinycon.setBubble(this.nextBubbleValue);
+    }
 	}
 });
