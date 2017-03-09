@@ -780,6 +780,11 @@ the specific language governing permissions and limitations under the Apache Lic
 
                 select2.container.remove();
                 select2.dropdown.remove();
+
+                // DESKPRO EDIT
+                // we never need to return the original and it takes a lot of time
+                // so we commented this bit out
+              /*
                 select2.opts.element
                     .removeClass("select2-offscreen")
                     .removeData("select2")
@@ -787,6 +792,7 @@ the specific language governing permissions and limitations under the Apache Lic
                     .attr({"tabindex": this.elementTabIndex})
                     .prop("autofocus", this.autofocus||false)
                     .show();
+                */
             }
         },
 
