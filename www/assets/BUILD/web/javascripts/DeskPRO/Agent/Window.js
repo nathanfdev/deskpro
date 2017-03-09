@@ -987,6 +987,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 		/***************** /scrolling handle on drag ******************/
+
+		// after page is loaded, lets do render on init
+		// this means loading a page enables lazy loading
+		// of tabs from url bar or local history, but
+		// actually clicking stuff will instant
+    DeskPRO_Window.TabBar.enableInitOnRender();
 	},
 
 	initScope: function() {

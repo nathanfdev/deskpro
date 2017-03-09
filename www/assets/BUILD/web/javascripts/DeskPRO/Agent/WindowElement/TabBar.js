@@ -18,7 +18,13 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			/**
 			 * The element the append body pages to
 			 */
-			bodyPane: null
+			bodyPane: null,
+
+      /**
+			 * when enabled, init is run when the html is entered into the dom
+			 * when disabled, init is run when tab is focused for first time
+       */
+      initOnRender: false
 		};
 
 		this.setOptions(options);
@@ -28,6 +34,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.bodyPane = $(this.options.bodyPane);
 		this.menuBtn = $(this.options.menuBtn);
 		this.active = null;
+		this.initOnRender = this.options.initOnRender || false;
 
 		this.tabCount = 0;
 
@@ -38,6 +45,14 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.tabBarOverflow = new DeskPRO.Agent.WindowElement.TabBarOverflow();
 	},
+
+	enableInitOnRender: function() {
+		this.initOnRender = true;
+	},
+
+  disableInitOnRender: function() {
+    this.initOnRender = true;
+  },
 
 	initScope: function() {
 		var self = this;
@@ -260,6 +275,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		data.page = page;
 		data.classId = page.getMetaData('tabClassId', '');
 		data.title = page.getMetaData('title', 'Untitled');
+		data.initOnRender = this.initOnRender;
 		data.callback_render = function(container) {
 			container = $(container);
 			page.fireEvent('render', [container.first(), id]);
@@ -365,6 +381,16 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		//----------
 		// Just about done
 		//----------
+
+    if (!data.isInited && data.initOnRender && (!otherTab || otherTab.initOnRender)) {
+      data.isInited = true;
+
+      if (data.callback_render !== undefined) {
+        data.callback_render(data.wrapper);
+      }
+
+      this.fireEvent('activateTabRender', [data, $('#' + data.wrapperId), this]);
+    }
 
 		this.fireEvent('addTab', [data, this]);
 
