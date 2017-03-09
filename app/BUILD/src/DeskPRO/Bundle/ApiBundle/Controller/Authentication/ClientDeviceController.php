@@ -45,6 +45,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @ApiModes("all")
  * @Rest\Route("/client_devices/{app_type}", requirements={"app_type"="mobile"})
  * @ApiDoc(target="all", section="Client Devices", output="Application\DeskPRO\Entity\ClientDevice")
+ * @ApiDoc(
+ *     target="registerAction,postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\ClientDeviceType",
+ *      "options"={"method"="PUT", "app_type"="mobile", "person"="Application\DeskPRO\Entity\Person"},
+ *      "name"=""
+ *     }
+ * )
  */
 class ClientDeviceController extends CrudController
 {
@@ -67,7 +75,7 @@ class ClientDeviceController extends CrudController
      *      },
      *      statusCodes={
      *          201="Returned in case of successful resource creation",
-     *          204="Returned in case of successful resource modyf",
+     *          204="Returned in case of successful resource modify",
      *          400="We will return this in case your request was malformed",
      *      }
      * )

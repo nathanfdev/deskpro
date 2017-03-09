@@ -93,7 +93,7 @@ class ClientDeviceType extends AbstractType
             /* @var ClientDevice $data */
             $cd = $event->getData();
 
-            if ($cd->canNotify()) {
+            if ($cd && $cd->canNotify()) {
                 $form->get('notification_token')->setData($cd->getNotifyToken());
             } else {
                 $form->get('notification_token')->setData('');
