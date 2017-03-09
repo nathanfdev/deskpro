@@ -259,7 +259,9 @@ class Container extends React.Component {
   bindFroalaEvents = (e, editor) => {
     this.editor = editor;
     editor.events.on('keydown', this.handleKeydown, true);
-    editor.events.focus();
+    if (document.activeElement.tagName.toLowerCase() === 'body') {
+      editor.events.focus();
+    }
   };
 
   handleKeydown = (e) => {
