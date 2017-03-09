@@ -1,5 +1,6 @@
 $pub-path: "../../../../../../../pub";
 $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
+@import "../../../../../../node_modules/highlight.js/styles/atom-one-light.css";
 
 .guides {
   font-family: Lato;
@@ -58,6 +59,43 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     &.topic:before {
       content: "\F02D";
     }
+  }
+  div.block {
+    padding: 10px;
+    width: 100%;
+    margin: 5px 0;
+    box-sizing: border-box;
+    &::before {
+      font: normal normal normal 24px FontAwesome;
+      float: left;
+      margin-right: 10px;
+    }
+    &.info {
+      background-color: #41a54a;
+      color: #FFF;
+      &::before {
+        content: "\f00c";
+      }
+    }
+    &.warning {
+      background-color: #fffbb5;
+      border: solid 1px #f6982e;
+      &::before {
+        content: "\f06e";
+      }
+    }
+    &.error {
+      background-color: #bd354b;
+      color: #FFF;
+      &::before {
+        content: "\f06a";
+      }
+    }
+  }
+  pre code.hljs {
+    border: solid 1px #e6e7e6;
+    border-radius: 2px;
+    background-color: #f8f8f8;
   }
   .section-header {
     h1 {
@@ -122,6 +160,13 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       display: inline-block;
       border-right: 2px solid #709fd6;
       margin-right: -1px;
+    }
+    li a .fa {
+      margin-right: 24px;
+      line-height: 24px;
+    }
+    ul.hidden {
+      display: none;
     }
   }
   & .topic {

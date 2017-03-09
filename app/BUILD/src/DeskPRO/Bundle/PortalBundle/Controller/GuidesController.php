@@ -31,7 +31,9 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use Orb\Util\Strings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -104,6 +106,7 @@ class GuidesController extends AbstractController
 
     /**
      * @Route("/guides/{guide_slug}/{slug}", name="portal_guides_topic_view")
+     * @Route("/guides/{guide_slug}/{slug}", name="portal_guides_topic_permalink")
      * @ParamConverter(name="topic", converter="deskpro_slug")
      * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_TOPIC', topic)")
      * @PageHttpCache(content="topic")
@@ -116,11 +119,14 @@ class GuidesController extends AbstractController
      */
     public function viewAction(Request $request, Topic $topic, $visitor_id)
     {
+        $serializationContext = new SideloadSerializationContext();
+
         return $this->renderThemeView(
             'Theme:Guides:view.html.twig',
             [
-                'topic' => $topic,
-                'guide' => $topic->getGuide(),
+                'topic'      => $topic,
+                'topic_json' => Strings::escapeForJson($this->get('serializer')->serialize($topic, 'json', $serializationContext)),
+                'guide'      => $topic->getGuide(),
             ]
         );
     }

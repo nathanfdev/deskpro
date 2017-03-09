@@ -5,6 +5,7 @@ import MarkdownIt from 'markdown-it';
 import emoji from 'markdown-it-emoji';
 import MarkdownItContainer from 'markdown-it-container';
 import toMarkdown from 'to-markdown';
+import Highlight from 'react-highlight';
 
 import 'codemirror/mode/xml/xml';
 import 'codemirror/mode/gfm/gfm';
@@ -292,7 +293,11 @@ class MarkdownEditor extends React.Component {
           />
         </div>
         <h3>Preview</h3>
-        <div className="preview guides" dangerouslySetInnerHTML={{ __html: MarkdownEditor.prerenderHtml(this.state.html) }} />
+        <div className="preview guides">
+          <Highlight innerHTML>
+            {MarkdownEditor.prerenderHtml(this.state.html)}
+          </Highlight>
+        </div>
       </div>
     );
   }

@@ -88,6 +88,8 @@ class Topic extends ContentAbstract
     /**
      * Topic without content used for structure.
      *
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $no_content = false;

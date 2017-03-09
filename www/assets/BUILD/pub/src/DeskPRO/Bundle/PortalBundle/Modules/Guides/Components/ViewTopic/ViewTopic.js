@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import Highlight from 'react-highlight';
 import classNames from 'classnames';
 import moment from 'moment';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
@@ -11,15 +12,14 @@ class ViewTopic extends React.Component {
 
   constructor(props) {
     super(props);
+    let topic = null;
+    if (window.topic) {
+      topic = JSON.parse(window.topic);
+    }
     this.state = {
       doSpin: false,
-      topic:  {
-        title:          '',
-        content:        '',
-        date_published: '',
-        date_updated:   ''
-      },
-      guide: {
+      topic,
+      guide:  {
         title: ''
       }
     };
@@ -27,7 +27,6 @@ class ViewTopic extends React.Component {
 
   componentDidMount() {
     if (this.props.params.slug) {
-      this.grabTopicFromApi(this.props.params.slug);
       this.grabGuideFromApi(this.props.params.guideSlug);
     }
   }
@@ -94,10 +93,11 @@ class ViewTopic extends React.Component {
             </span>
             <hr />
           </header>
-          <div
-            className="topic-content"
-            dangerouslySetInnerHTML={{ __html: this.state.topic.content }}
-          />
+          <div className="topic-content">
+            <Highlight innerHTML>
+              {this.state.topic.content}
+            </Highlight>
+          </div>
         </div>
       </div>
     );

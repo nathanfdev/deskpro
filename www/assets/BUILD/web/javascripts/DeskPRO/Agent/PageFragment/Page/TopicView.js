@@ -589,7 +589,7 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
       textArea.hide();
       window.AgentLegacyBundle.renderContentEditor(
         $rElement.get(0),
-        textArea.val(),
+        $('textarea.content_input', this.wrapper).val(),
         $('input.content_input_type', this.wrapper).val(),
         this.saveContent.bind(this)
       );

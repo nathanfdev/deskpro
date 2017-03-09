@@ -30,6 +30,7 @@
         </div>
     </div>
     <script>
+      var topic = '{{ topic_json|raw }}';
       var routePath = window.location.hash.replace(/#\//, '');
       if (routePath[0] != '/')
         routePath = '/' + routePath;

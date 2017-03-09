@@ -97,9 +97,18 @@ export class Editor extends React.Component {
   constructor(props) {
     super(props);
     const inputType = this.props.inputType ? this.props.inputType : 'rte';
+    let html;
+    let markdown;
+    if (inputType === 'rte') {
+      html = this.props.value;
+      markdown = MarkdownEditor.toMarkdown(this.props.value);
+    } else {
+      html = '';
+      markdown = this.props.value;
+    }
     this.state = {
-      html:     this.props.value,
-      markdown: MarkdownEditor.toMarkdown(this.props.value),
+      html,
+      markdown,
       inputType
     };
   }

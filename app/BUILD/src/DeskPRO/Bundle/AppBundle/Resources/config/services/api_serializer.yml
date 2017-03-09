@@ -95,6 +95,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.topic:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\TopicHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.chat:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ChatConversationHandler
     tags:
