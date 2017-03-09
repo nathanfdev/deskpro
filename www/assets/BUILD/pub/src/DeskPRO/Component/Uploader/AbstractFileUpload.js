@@ -18,14 +18,14 @@ export class AbstractFileUpload extends React.Component {
 
   componentWillUnmount() {
     try {
-      $(this.input).fileupload('destroy');
+      $(this.getInput()).fileupload('destroy');
     } catch (e) {
       console.warn('unable to destroy fileupload');
     }
   }
 
   pushFileToQueue(file) {
-    const $input = $(this.input);
+    const $input = $(this.getInput());
     this.initializeFileUpload();
 
     $input.fileupload('send', {

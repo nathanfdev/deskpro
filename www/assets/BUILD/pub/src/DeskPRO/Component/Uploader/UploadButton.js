@@ -16,7 +16,7 @@ export class UploadButton extends AbstractFileUpload {
     const { uploadUrl, uploadParams, acceptFileTypes } = this.props;
     const { onSubmit, onSend, onSuccess, onFail } = this.props;
 
-    const $input = $(this.getInput());
+    const $input = $(this.input);
     $input.fileupload({
       acceptFileTypes,
 
