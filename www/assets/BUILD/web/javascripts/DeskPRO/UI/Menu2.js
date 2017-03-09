@@ -11,6 +11,7 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 		el = $(el);
 
 
+		this.detachedElements = [];
 		this.setOptions(origOptions);
 		var options = this.options;
 
@@ -141,6 +142,7 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 					closeStatusMenuAll();
 				});
 				statusMenu.detach().appendTo('body');
+				self.detachedElements.push(statusMenu);
 
 				// Handle macro filtering
 				statusMacroFilter = statusMenu.find('.macro-filter').first();
@@ -292,7 +294,9 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 	},
 
   destroy: function() {
-    this.close();
+    this.detachedElements.each(function(el) {
+    	el.remove();
+		});
     this.options = null;
     this.destroyEvents();
   }

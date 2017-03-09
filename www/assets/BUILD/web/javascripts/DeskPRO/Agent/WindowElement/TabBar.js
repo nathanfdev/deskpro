@@ -38,6 +38,15 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.tabCount = 0;
 
+		this.showListIfNoTabs = _.debounce((function() {
+      var last_tab_id = Object.keys(this.tabs).getLast();
+      if (!last_tab_id) {
+        this.$timeout((function() {
+          this.$scope.showList();
+        }).bind(this));
+      }
+		}).bind(this), 400);
+
 		this.tabs = {};
 		this._tabs = [];
 		this.currentTabId = null;
@@ -68,22 +77,20 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			self.$scope.contextTab = tab;
 		};
 
-		this.$scope.closeAll = function(){
+		this.$scope.closeAll = function() {
 			var tabs = [];
 			self._tabs.each(function(tab){ tabs.push(tab); });
-			self.$timeout(function(){ tabs.each(function(tab){ self.removeTab(tab); }); }, 10);
+      tabs.each(function(tab){ self.removeTab(tab); });
 		};
 
 		this.$scope.closeOthers = function(){
 			var tabs = [], active = self.getActiveTab();
 			self._tabs.each(function(tab){ tab !== active && tabs.push(tab); });
-			self.$timeout(function(){ tabs.each(function(tab){ self.removeTab(tab); }); }, 10);
+      tabs.each(function(tab){ self.removeTab(tab); });
 		};
 
 		this.$scope.closeCurrent = function(){
-			self.$timeout(function(){
-				self.$scope.contextTab && self.removeTab(self.$scope.contextTab);
-			}, 10);
+      self.$scope.contextTab && self.removeTab(self.$scope.contextTab);
 		};
 
 		this.$scope.reopenTab = function(tab){
@@ -373,6 +380,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 				this.currentTabId = null;
 			}
 
+      if (otherTab.page) {
+				otherTab.page.HAS_REAL_TAB = true;
+      }
 			this.removeTab(otherTab, true);
 		}
 
@@ -595,16 +605,13 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		if (tab === this.$scope.contextTab) {
 			this.$scope.contextTab = null;
 		}
+
+		if (!silent) {
+      if (data.tabBtn)  data.tabBtn.remove();
+      if (data.tabBtn2) data.tabBtn2.remove();
+		}
+
 		this._checkOpenedItems();
-
-		if (typeof data.callback_remove_content !== 'undefined') {
-			data.callback_remove_content(data, $('#' + data.wrapperId), this);
-		}
-
-		if (data.wrapper) {
-			data.wrapper.remove();
-      data.wrapper = null;
-		}
 
 		if (data.page) {
 			if (data.page.meta.routeData && data.page.meta.routeData.xhr) {
@@ -639,18 +646,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 						// make it visiable.
 						// The timeout is in case we have other routines that auto-open
 						// a new tab (e.g., after ticket reply)
-						this.$timeout(function () {
-							var last_tab_id = Object.keys(self.tabs).getLast();
-							if (!last_tab_id) {
-								self.$scope.showList();
-							}
-						}, 100);
+						this.showListIfNoTabs();
 					}
 				}
 			}
-
-			if (data.tabBtn)  data.tabBtn.remove();
-			if (data.tabBtn2) data.tabBtn2.remove();
 		}
 
 		DeskPRO_Window.updateWindowUrlFragment();
@@ -665,19 +664,28 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			}
 		}
 
-		if (data.page.destroyEvents) {
-      data.page.destroyEvents();
-		}
+		this.tabBarOverflow.debouncedUpdate();
 
-    data.callback_render = null;
-    data.callback_remove_content = null;
-    data.callback_activate = null;
-    data.callback_deactivate = null;
-    data.page = null;
+    window.setTimeout(function() {
+      if (typeof data.callback_remove_content !== 'undefined') {
+        data.callback_remove_content(data, $('#' + data.wrapperId), this);
+      }
 
-		this.$timeout(function() {
-			self.tabBarOverflow.update();
-		});
+      if (data.wrapper) {
+        data.wrapper.remove();
+        data.wrapper = null;
+      }
+
+      if (data.page.destroyEvents) {
+        data.page.destroyEvents();
+      }
+
+      data.callback_render = null;
+      data.callback_remove_content = null;
+      data.callback_activate = null;
+      data.callback_deactivate = null;
+      data.page = null;
+    }, 100);
 	},
 
 

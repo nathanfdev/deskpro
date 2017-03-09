@@ -43,6 +43,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.activityTime = new Date();
 		this.isMobile = false;
 
+		this.updateWindowUrlFragment = _.debounce(this.updateWindowUrlFragmentNow.bind(this), 100);
+
 		this.appsSidebar = {
 			visible: false,
 			width: 350
@@ -1296,7 +1298,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		DeskPRO_Window.TabBar.options.activateNew = true;
 	},
 
-	updateWindowUrlFragment: function() {
+	updateWindowUrlFragmentNow: function() {
 
 		if (!this.hashHandling) return;
 		if (this.DEBUG.disableUrlFragments) return;
