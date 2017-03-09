@@ -69,9 +69,9 @@ class TopBarRecentImList extends RecentList {
         });
     }
     let sorted = chats.sort((a, b) => b.get('added') - a.get('added'));
-    if (hiddenChats) {
+    if (hiddenChats || startedByMeChats) {
       sorted = sorted.filter((chat) => {
-        if (!chat.get('date_last_message') && !(startedByMeChats.get(chat.get('id')) || me.get('id') === chat.get('admin'))) {
+        if (!chat.get('date_last_message') && !((startedByMeChats && startedByMeChats.get(chat.get('id'))) || me.get('id') === chat.get('admin'))) {
           return false;
         }
         const date = chat.get('date_last_message') || chat.get('date_created');
