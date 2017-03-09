@@ -21,10 +21,7 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		this.lastNum = 0;
 
     Tinycon.setOptions({
-			width: 6,
-      height: 6,
-      font: '1px arial',
-      color: '#FF0000',
+      color: '#FFFFFF',
       background: '#FF0000',
       fallback: false
 		});
@@ -92,14 +89,14 @@ DeskPRO.FaviconBadge = new Orb.Class({
         if (self.animateCount % 2 == 0) {
           self.setBubble('');
         } else {
-          self.setBubble('.');
+          self.setBubble(num || '·');
           if (self.crazyTitle) {
             document.title = self.crazyTitle;
           }
         }
 			}, 800);
 		} else {
-			self.setBubble('.');
+			self.setBubble(num);
 		}
 	},
 
