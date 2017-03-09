@@ -106,6 +106,7 @@ class GuidesController extends AbstractController
 
     /**
      * @Route("/guides/{guide_slug}/{slug}", name="portal_guides_topic_view")
+     * @Route("/guides/{guide_slug}/{parent_slugs}/{slug}", requirements={"parent_slugs" = ".+"}, name="portal_guides_topic_view_full")
      * @Route("/guides/{guide_slug}/{slug}", name="portal_guides_topic_permalink")
      * @ParamConverter(name="topic", converter="deskpro_slug")
      * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_TOPIC', topic)")

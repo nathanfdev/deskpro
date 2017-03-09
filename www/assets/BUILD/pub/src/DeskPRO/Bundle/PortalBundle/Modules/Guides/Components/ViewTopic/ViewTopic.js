@@ -26,8 +26,9 @@ class ViewTopic extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.params.slug) {
-      this.grabGuideFromApi(this.props.params.guideSlug);
+    if (this.props.params.splat) {
+      const guideSlug = this.props.params.splat.split('/')[0];
+      this.grabGuideFromApi(guideSlug);
     }
   }
 
