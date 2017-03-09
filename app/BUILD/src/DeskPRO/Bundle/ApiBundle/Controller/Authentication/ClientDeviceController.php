@@ -209,16 +209,16 @@ class ClientDeviceController extends CrudController
         $repos   = $this->getManager()->getRepository(self::$entity);
         $entity  = null;
 
-        if (!TypeUtils::isIntLike($id)) {
-            $criteria = [
-                'device_id' => $id,
-                'app_type'  => $appType,
-            ];
+        // try to find by device id
+        $criteria = [
+            'device_id' => $id,
+            'app_type'  => $appType,
+        ];
 
-            /** @var ClientDevice $entity */
-            $entity = $repos->findOneBy($criteria);
-        }
+        /** @var ClientDevice $entity */
+        $entity = $repos->findOneBy($criteria);
 
+        // try to find by id
         if (!$entity && TypeUtils::isIntLike($id)) {
             $entity = $repos->find($id);
 
@@ -246,7 +246,7 @@ class ClientDeviceController extends CrudController
 
         if ($model && $model->getDeviceId()) {
             $options['device_id'] = $model->getDeviceId();
-        } elseif ($request->attributes->get('id') && !TypeUtils::isIntLike($request->attributes->get('id'))) {
+        } elseif ($request->attributes->get('id') && !$request->request->get('device_id')) {
             $options['device_id'] = $request->attributes->get('id');
         }
 
