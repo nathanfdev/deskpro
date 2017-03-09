@@ -54,23 +54,6 @@ class ClientDeviceController extends CrudController
     public static $listPaginate = false;
 
     /**
-     * {@inheritdoc}
-     */
-    protected function handleForm($model, Request $request, array $options = [])
-    {
-        $options['app_type'] = $request->attributes->get('app_type');
-        $options['person']   = $this->get('security.token_storage')->getToken()->getUser();
-
-        if ($model && $model->getDeviceId()) {
-            $options['device_id'] = $model->getDeviceId();
-        } elseif ($request->attributes->get('id') && !TypeUtils::isIntLike($request->attributes->get('id'))) {
-            $options['device_id'] = $request->attributes->get('id');
-        }
-
-        return parent::handleForm($model, $request, $options);
-    }
-
-    /**
      * @ApiDoc(
      *      description="Updates a given device or create it if it does not exist yet.",
      *      tags={"CRUD"="#ffa500"},
@@ -99,9 +82,7 @@ class ClientDeviceController extends CrudController
     public function registerAction($id, Request $request)
     {
         try {
-            $ent = $this->findEntity($id, $request);
-
-            return $this->putAction($ent->getId(), $request);
+            return $this->putAction($this->findEntity($id, $request)->getId(), $request);
         } catch (NotFoundHttpException $e) {
             return $this->postAction($request);
         }
@@ -130,9 +111,7 @@ class ClientDeviceController extends CrudController
      */
     public function getAction(Request $request, $id)
     {
-        $ent = $this->findEntity($id, $request);
-
-        return parent::getAction($request, $ent->getId());
+        return parent::getAction($request, $id);
     }
 
     /**
@@ -158,9 +137,7 @@ class ClientDeviceController extends CrudController
      */
     public function putAction($id, Request $request)
     {
-        $ent = $this->findEntity($id, $request);
-
-        return parent::putAction($ent->getId(), $request);
+        return parent::putAction($id, $request);
     }
 
     /**
@@ -186,9 +163,7 @@ class ClientDeviceController extends CrudController
      */
     public function deleteAction($id, Request $request)
     {
-        $ent = $this->findEntity($id, $request);
-
-        return parent::deleteAction($ent->getId(), $request);
+        return parent::deleteAction($id, $request);
     }
 
     /**
@@ -208,8 +183,7 @@ class ClientDeviceController extends CrudController
      */
     protected function getLocationUrl($entity, Request $request, array $params = [])
     {
-        $route = preg_replace('/_post$/', '_get', $request->get('_route'));
-
+        $route     = preg_replace('/_post$/', '_get', $request->get('_route'));
         $setParams = [
             'id'       => $entity->getId(),
             'app_type' => $request->attributes->get('app_type'),
@@ -252,5 +226,22 @@ class ClientDeviceController extends CrudController
         $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, new PermissionGroupContext($entity));
 
         return $entity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options['app_type'] = $request->attributes->get('app_type');
+        $options['person']   = $this->get('security.token_storage')->getToken()->getUser();
+
+        if ($model && $model->getDeviceId()) {
+            $options['device_id'] = $model->getDeviceId();
+        } elseif ($request->attributes->get('id') && !TypeUtils::isIntLike($request->attributes->get('id'))) {
+            $options['device_id'] = $request->attributes->get('id');
+        }
+
+        return parent::handleForm($model, $request, $options);
     }
 }
