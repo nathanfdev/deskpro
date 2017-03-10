@@ -16,7 +16,6 @@ import {
   from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
-import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 
 export default class IMOverlay extends React.Component {
 
@@ -111,15 +110,14 @@ export default class IMOverlay extends React.Component {
     };
     const content = (
       <Loader loaded={loaded} opacity={0} width={4} color="#4696dc">
-        <Scrollable vertical>
-          <RecentList {...props} />
-        </Scrollable>
+        <RecentList {...props} />
       </Loader>
     );
 
     return  {
-      id:    'recent',
-      title: <span><i className="fa fa-clock-o dp-im-tab-menu-icon" />{this.getHeader('Recent', chats)}</span>,
+      id:        'recent',
+      title:     <span><i className="fa fa-clock-o dp-im-tab-menu-icon" />{this.getHeader('Recent', chats)}</span>,
+      className: 'native-bars',
       content
     };
   }
@@ -131,19 +129,18 @@ export default class IMOverlay extends React.Component {
 
     const content = (
       <Loader loaded={agentsLoaded} opacity={0} width={4} color="#4696dc">
-        <Scrollable vertical>
-          <AgentList
-            agents={filteredAgents}
-            counts={counts}
-            onParticipantClick={onParticipantClick} me={me}
-          />
-        </Scrollable>
+        <AgentList
+          agents={filteredAgents}
+          counts={counts}
+          onParticipantClick={onParticipantClick} me={me}
+        />
       </Loader>
     );
 
     return  {
-      id:    'agents',
-      title: <span><i className="fa fa-user dp-im-tab-menu-icon" />{this.getHeader('Agents', filteredAgents)}</span>,
+      id:        'agents',
+      title:     <span><i className="fa fa-user dp-im-tab-menu-icon" />{this.getHeader('Agents', filteredAgents)}</span>,
+      className: 'native-bars',
       content
     };
   }
@@ -160,53 +157,49 @@ export default class IMOverlay extends React.Component {
 
     const content = (
       <Loader loaded={loaded} opacity={0} width={4} color="#4696dc">
-        <div style={{ height: '355px' }}>
-          <Scrollable vertical>
-            <Header
-              level={4}
-              className="group-list"
-              content={<span>everyone<span className="agents-counter">({agents.size})</span></span>}
-            />
-            <EveryoneSegment agents={agents} onParticipantClick={onParticipantClick} />
-            <div className="ui divider" />
-            <Header level={4} className="group-list" content="im groups" />
-            <Segment className="new-im-group" raised vertical>
-              <span onClick={() => createNewGroup()}>
-                {groups.size < 1 ? '+ create new im group' : '+ new'}
-              </span>
-            </Segment>
-            {filteredGroups.size > 0 ? <GroupList
-              agents={agents}
-              onGroupClick={onRecentClick}
-              deleteGroup={deleteGroup}
-              leaveGroup={leaveGroup}
-              groups={filteredGroups}
-              me={me}
-            /> : null}
+        <Header
+          level={4}
+          className="group-list"
+          content={<span>everyone<span className="agents-counter">({agents.size})</span></span>}
+        />
+        <EveryoneSegment agents={agents} onParticipantClick={onParticipantClick} />
+        <div className="ui divider" />
+        <Header level={4} className="group-list" content="im groups" />
+        <Segment className="new-im-group" raised vertical>
+          <span onClick={() => createNewGroup()}>
+            {groups.size < 1 ? '+ create new im group' : '+ new'}
+          </span>
+        </Segment>
+        {filteredGroups.size > 0 ? <GroupList
+          agents={agents}
+          onGroupClick={onRecentClick}
+          deleteGroup={deleteGroup}
+          leaveGroup={leaveGroup}
+          groups={filteredGroups}
+          me={me}
+        /> : null}
 
-            { filteredDepartments.size > 0 ? [
-              <div className="ui divider" />,
-              <Header level={4} className="group-list" content="department" />,
-              <DepartmentList
-                agents={agents}
-                departments={filteredDepartments}
-                me={me}
-                onParticipantClick={onParticipantClick}
-              />
-            ] : null }
+        { filteredDepartments.size > 0 ? [
+          <div className="ui divider" />,
+          <Header level={4} className="group-list" content="department" />,
+          <DepartmentList
+            agents={agents}
+            departments={filteredDepartments}
+            me={me}
+            onParticipantClick={onParticipantClick}
+          />
+        ] : null }
 
-            { filteredTeams.size > 0 ? [
-              <div className="ui divider" />,
-              <Header level={4} className="group-list" content="teams" />,
-              <AgentTeamList
-                agents={agents}
-                teams={filteredTeams}
-                me={me}
-                onParticipantClick={onParticipantClick}
-              />
-            ] : null}
-          </Scrollable>
-        </div>
+        { filteredTeams.size > 0 ? [
+          <div className="ui divider" />,
+          <Header level={4} className="group-list" content="teams" />,
+          <AgentTeamList
+            agents={agents}
+            teams={filteredTeams}
+            me={me}
+            onParticipantClick={onParticipantClick}
+          />
+        ] : null}
       </Loader>
     );
 
@@ -217,8 +210,9 @@ export default class IMOverlay extends React.Component {
 
     return  {
       content,
-      id:    'groups',
-      title: <span><i className="fa fa-group dp-im-tab-menu-icon" />{header}</span>
+      id:        'groups',
+      title:     <span><i className="fa fa-group dp-im-tab-menu-icon" />{header}</span>,
+      className: 'native-bars'
     };
   }
 
