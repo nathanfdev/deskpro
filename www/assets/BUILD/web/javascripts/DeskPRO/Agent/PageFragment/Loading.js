@@ -16,7 +16,9 @@ DeskPRO.Agent.PageFragment.Page.Loading = new Orb.Class({
 
 		if (this.meta.routeData && this.meta.routeData.routeTriggerEl && this.meta.routeData.toggleOpenClass) {
 			this.addEvent('destroy', function() {
-				this.meta.routeData.routeTriggerEl.removeClass(this.meta.routeData.toggleOpenClass);
+				if (!this.HAS_REAL_TAB) {
+          this.meta.routeData.routeTriggerEl.removeClass(this.meta.routeData.toggleOpenClass);
+        }
 			}, this);
 		}
 	}

@@ -90,7 +90,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			DeskPRO_Window.initInterfaceServices(wrapper);
 
 			if (!this.noDeleteHtmlString) {
-				delete this.html;
+				this.html = null;
 			}
 
 			this.initPage(wrapper);
@@ -141,7 +141,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 					}
 				});
 
-				self.wrapper.data('with-page-fragment', null);
+				self.wrapper.data('page-fragment', null);
 			}
 
 			if (self.destroyObjects) {
@@ -162,8 +162,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 						h.destroy();
 					}
 				});
-				self.wrapper.empty();
 			}
+      if (self.wrapper) {
+        self.wrapper.remove();
+        self.wrapper = null;
+      }
+      self.fragmentElement = null;
 		});
 		this.addEvent('destroy', this.destroy);
 

@@ -58,7 +58,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 		}
 	},
 
-	_deactivateTab: function(tab, containerEl, tabManager) {
+	_deactivateTab: function(tab) {
 		var typename = this.getTabType(tab);
 		var isLast = false;
 		if (this.tabManager.tabCount == 1) {

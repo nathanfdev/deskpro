@@ -499,7 +499,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('filters.filter_data', this.updateFilterData, this);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function (data) {
-			console.info('event: ticket-updated', data, Date.now());
 			var ticketId = data.ticket_id;
 
 			var tab = DeskPRO_Window.getTabWatcher().findTab('ticket', function(tab) {

@@ -11,6 +11,7 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 		el = $(el);
 
 
+		this.detachedElements = [];
 		this.setOptions(origOptions);
 		var options = this.options;
 
@@ -21,14 +22,12 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 		var statusMenuH = null;
 		var statusBackdrop = null;
 		var statusMacroFilter = null;
-		var statusMacroList = statusMenu.find('.macro-list');
-		var statusMacroListMap = null;
 		var statusListItems = null;
 		var currentOpenSubmenu = null;
 
 		var closeStatusMenu = function() {
 			closeOpenSubmenu();
-			statusBackdrop.hide();
+      statusBackdrop && statusBackdrop.hide();
 			statusMenu.hide();
 
 			self.fireEvent('menuClose', {
@@ -143,6 +142,7 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 					closeStatusMenuAll();
 				});
 				statusMenu.detach().appendTo('body');
+				self.detachedElements.push(statusMenu);
 
 				// Handle macro filtering
 				statusMacroFilter = statusMenu.find('.macro-filter').first();
@@ -291,5 +291,13 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 		this.open  = openStatusMenu;
 		this.close = closeStatusMenu;
 		this.closeAll = closeStatusMenuAll;
-	}
+	},
+
+  destroy: function() {
+    this.detachedElements.each(function(el) {
+    	el.remove();
+		});
+    this.options = null;
+    this.destroyEvents();
+  }
 });
