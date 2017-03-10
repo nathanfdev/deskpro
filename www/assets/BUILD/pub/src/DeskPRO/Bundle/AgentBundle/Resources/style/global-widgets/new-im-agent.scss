@@ -898,6 +898,9 @@ img.emojione, svg.emojione {
             color: $dp-sonic-primary;
             font-weight: 600;
             cursor: pointer;
+            &.disabled {
+              cursor: auto;
+            }
           }
 
           .message {

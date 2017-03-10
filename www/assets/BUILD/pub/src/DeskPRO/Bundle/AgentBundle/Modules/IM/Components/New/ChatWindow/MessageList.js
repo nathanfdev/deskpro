@@ -143,6 +143,7 @@ class MessageList extends React.Component {
 
   renderList(msg) {
     let previous = false;
+    let isAgent = true;
     const { agents, people, searchQuery, me, onAgentClick } = this.props;
     return (
       <SegmentsGroup vertical>
@@ -155,16 +156,18 @@ class MessageList extends React.Component {
               return first.timestamp - second.timestamp;
             }).map((message) => {
               const result = [];
-              let agent = agents.get(message.person);
-              if (!agent) {
-                agent = people.get(message.person);
+              let person = agents.get(message.person);
+              if (!person) {
+                person = people.get(message.person);
+                isAgent = false;
               }
               result.push(
                 <Message
                   ref={(x) => { this.messages[message.id] = x; }}
                   id={`chat-${message.chat}-message-${message.id}`}
                   key={message.id}
-                  agent={agent}
+                  person={person}
+                  isAgent={isAgent}
                   searchQuery={searchQuery}
                   onSearchMessageClick={this.onSearchMessageClick}
                   onAgentClick={onAgentClick}

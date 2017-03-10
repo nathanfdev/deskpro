@@ -13,7 +13,8 @@ class Message extends React.Component {
     message:              PropTypes.object.isRequired,
     previous:             PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).isRequired,
     searchQuery:          PropTypes.string,
-    agent:                PropTypes.object,
+    person:               PropTypes.object,
+    isAgent:              PropTypes.bool,
     onAgentClick:         PropTypes.func.isRequired,
     onSearchMessageClick: PropTypes.func.isRequired
   };
@@ -124,7 +125,7 @@ class Message extends React.Component {
   }
 
   render() {
-    const { searchQuery, message, me, agent, onAgentClick, onSearchMessageClick } = this.props;
+    const { searchQuery, message, me, person, isAgent, onAgentClick, onSearchMessageClick } = this.props;
     const my = message.person === me.get('id') && !searchQuery;
     const contentProps = { className: 'content dont-break-out', dangerouslySetInnerHTML: this.getMessage() };
     const messageProps = { className: 'message', ref: (c) => { this.messageNode = c; } };
@@ -144,8 +145,8 @@ class Message extends React.Component {
           searchQuery
           ? (<div className="avatar wrapper">
             {
-              agent
-              ? AvatarHelper.renderAgentAvatar(agent, 20)
+              person
+              ? AvatarHelper.renderAgentAvatar(person, 20)
               : AvatarHelper.renderAvatar(message.person_name.substr(0, 2).toUpperCase(), message.person, 20)
             }
           </div>)
@@ -156,11 +157,11 @@ class Message extends React.Component {
             <div
               style={{ color: darkerColor(message.person, 0.2) }}
               onClick={() => {
-                if (agent) {
-                  onAgentClick(agent.get('id'), 'agent');
+                if (person && isAgent) {
+                  onAgentClick(person.get('id'), 'agent');
                 }
               }}
-              className="agent name"
+              className={classNames('agent name', { disabled: !isAgent })}
             >
               {message.person_name}
             </div>
