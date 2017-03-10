@@ -121,8 +121,8 @@ class MessageList extends React.Component {
   };
 
   renderEmpty() {
-    const { agents, teams, departments, current, me, searchQuery } = this.props;
-    const props = { agents, teams, departments, current, me };
+    const { agents, people, teams, departments, current, me, searchQuery } = this.props;
+    const props = { agents, people, teams, departments, current, me };
 
     if (!this.headerHelper) {
       this.headerHelper = new HeaderHelper(props);
