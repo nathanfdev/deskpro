@@ -837,7 +837,8 @@ img.emojione, svg.emojione {
     }
 
     .box {
-      min-width: 420px;
+      overflow-y: scroll;
+      min-width: 435px;
       height: 425px;
       position: relative;
       background-color: $dp-greyscale-50;

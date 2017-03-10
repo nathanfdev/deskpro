@@ -3,7 +3,6 @@ import Immutable from 'immutable';
 import Loader from 'react-loader';
 import { SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
-import Scrollarea from './Scrollarea';
 import Message from './Message';
 import HeaderHelper from './HeaderHelper';
 
@@ -30,19 +29,60 @@ class MessageList extends React.Component {
     this.messages = {};
   }
 
+
   componentDidMount() {
     this.props.markNewMessages();
+    this.shouldScrollBottom = true;
+    this.firstScroll = true;
+  }
+
+  componentWillUpdate() {
+    const node = this.scrollBox;
+    this.shouldScrollBottom = node && (node.scrollTop + node.offsetHeight === node.scrollHeight);
   }
 
   componentDidUpdate() {
     const { loadingMessages, markNewMessages } = this.props;
     if (loadingMessages) return;
+    if (this.firstScroll) {
+      this.firstScroll = false;
+      // this needs to be so, cause sometimes there are images/video in messages and they need some time to load
+      // after we will update images/video to static height thumb with links like view_fill_size/download it could be
+      // removed since we would now exactly image/video height.
+      setTimeout(this.scroll, 1000);
+    }
+    if (this.shouldScrollBottom) {
+      this.scroll();
+    }
+    if (this.messageToScrollId) {
+      const message = this.messages[this.messageToScrollId];
+      if (message && !message.isSearchResult() && message.getNode()) {
+        const messageNodeRect = message.getNode().getBoundingClientRect();
+        const chatContextRect = this.scrollBox.getBoundingClientRect();
+        const deltaY = chatContextRect.bottom - messageNodeRect.top;
+        this.messageToScrollId = false;
+        this.scrollYTo(deltaY);
+      }
+    }
+
+    if (this.moveScroll) {
+      this.scrollYTo(this.oldHeight); // don't scroll to top when new batch of messages loaded
+      this.moveScroll = false;
+    }
+    this.oldHeight = this.scrollBox.scrollHeight; // update current height
     markNewMessages();
   }
 
   onSearchMessageClick = (message) => {
     this.messageToScrollId = message.getMessageObject().id;
     this.props.onSearchMessageClick(message.getMessageObject());
+  };
+
+  onScroll = () => {
+    this.moveScroll = this.props.onScroll({
+      atTheTop:        this.scrollBox.scrollTop === 0 && !this.firstScroll,
+      containerHeight: this.scrollBox.scrollHeight }
+    );
   };
 
   onScrollToMessage = () => {
@@ -58,6 +98,18 @@ class MessageList extends React.Component {
       path = ['searchMessages', current.get('id')];
     }
     return path;
+  };
+
+  scroll = () => {
+    if (this.scrollBox) {
+      this.scrollBox.scrollTop = this.scrollBox.scrollHeight;
+    }
+  };
+
+  scrollYTo = (deltaY) => {
+    if (this.scrollBox) {
+      this.scrollBox.scrollTop = this.scrollBox.scrollHeight - deltaY;
+    }
   };
 
   renderEmpty() {
@@ -137,28 +189,20 @@ class MessageList extends React.Component {
 
   render() {
     const path     = this.getPath();
-    const { onScroll, messages, loadingMessages } = this.props;
+    const { messages, loadingMessages } = this.props;
     const msg = Immutable.OrderedMap(messages.hasIn(path) ? messages.getIn(path).messages : []);
     const loaded = !loadingMessages || msg.size > 0;
 
     return (
       <div
-        className="dp-scrollable as-js-scrollbar as-vertical"
+        onScroll={this.onScroll}
+        ref={(c) => { this.scrollBox = c; }}
+        className="box"
         id={`chat-container-${this.props.current.get('id')}`}
       >
-        <Scrollarea
-          className="dpscrollarea"
-          contentClassName="dpscrollarea"
-          vertical
-          onScroll={onScroll}
-          onScrollToMessage={this.onScrollToMessage}
-          messageToScroll={!loadingMessages ? this.messages[this.messageToScrollId] : null}
-          ref={(c) => { this.scrollarea = c; }}
-        >
-          <Loader loaded={loaded} parentClassName="box">
-            {msg.size > 0 ? this.renderList(msg) : this.renderEmpty()}
-          </Loader>
-        </Scrollarea>
+        <Loader loaded={loaded} parentClassName="loader">
+          {msg.size > 0 ? this.renderList(msg) : this.renderEmpty()}
+        </Loader>
       </div>
     );
   }

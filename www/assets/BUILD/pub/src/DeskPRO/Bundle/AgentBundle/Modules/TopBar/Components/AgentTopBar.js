@@ -294,12 +294,15 @@ export class AgentTopBarContainer extends SeparateComponent {
 
   onScroll = (object) => {
     const messages = this.props.messages.getIn(this.getPath());
+    let moveScroll = false;
     if (messages) {
       const page = messages.page;
       const maxPage = messages.pages;
-      if (object.topPosition === 0 && !this.props.loadingMessages && page < maxPage) {
+      if (object.atTheTop && !this.props.loadingMessages && page < maxPage) {
         this.loadMessages(page + 1);
+        moveScroll = true;
       }
+
       $('.chatDivider').each((index, element) => { // eslint-disable-line
         const $currentChatContext = $(`#chat-container-${this.props.current.get('id')}`);
         if (
@@ -314,6 +317,8 @@ export class AgentTopBarContainer extends SeparateComponent {
         }
       });
     }
+
+    return moveScroll;
   };
 
   onChatSearch = (searchQuery) => {
