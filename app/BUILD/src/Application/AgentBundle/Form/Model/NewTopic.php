@@ -50,6 +50,10 @@ class NewTopic
     public $status;
     /** @var string */
     public $content = '';
+    /** @var string */
+    public $content_input = '';
+    /** @var string */
+    public $content_input_type = '';
 
     /** @var string */
     public $slug;
@@ -81,6 +85,10 @@ class NewTopic
         $topic->setContent($this->_person_context->hasPerm('agent_publish.can_insert_html')
             ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', ['noclean' => true])
             : App::$container->getInputCleaner()->clean($this->content ?: '', 'html'));
+
+        $topic->setContentInput($this->content_input);
+
+        $topic->setContentInputType($this->content_input_type);
 
         $topic->setStatusCode($this->status);
 
