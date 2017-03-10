@@ -48,7 +48,10 @@ class Build1489058013 extends AbstractBuild
             $this->execDbQuery('default', "ALTER TABLE agent_data DROP FOREIGN KEY {$fk->getName()}");
         }
 
-        $this->execDbQuery('default', 'DROP INDEX UNIQ_684980217BBB47 ON agent_data');
+        $key = $this->getSchemaHelper()->findIndex('agent_data', 'person_id');
+        if ($key) {
+            $this->execDbQuery('default', "DROP INDEX {$key->getName()} ON agent_data");
+        }
         $this->execDbQuery('default', 'ALTER TABLE agent_data DROP person_id');
     }
 }
