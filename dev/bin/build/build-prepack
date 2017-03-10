@@ -46,6 +46,8 @@ cd $DIR_ROOT
 rm -rf dev/
 rm README.md
 
+rm -rf .github/
+
 find . -type d \( \
     -name ".git" \
 \) -exec rm -rf {} \;
