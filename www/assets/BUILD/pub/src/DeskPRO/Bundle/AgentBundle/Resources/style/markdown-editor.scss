@@ -86,3 +86,13 @@ $button-gutter: 4px;
   color: #000000;
   text-transform: uppercase;
 }
+
+#markdown-add-link {
+  width: 300px;
+  .description {
+    padding: 10px;
+    .is-loading {
+      display: block;
+    }
+  }
+}

@@ -129,6 +129,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
             QuickSearchContext::TYPE_DOWNLOAD,
             QuickSearchContext::TYPE_FEEDBACK,
             QuickSearchContext::TYPE_NEWS,
+            QuickSearchContext::TYPE_TOPIC,
         ];
 
         $context = $event->getContext();
@@ -300,6 +301,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
             case QuickSearchContext::TYPE_DOWNLOAD:
             case QuickSearchContext::TYPE_FEEDBACK:
             case QuickSearchContext::TYPE_NEWS:
+            case QuickSearchContext::TYPE_TOPIC:
                 $qb->andWhere($qb->expr()->orX(
                     "t.hidden_status NOT IN('spam', 'deleted')",
                     't.hidden_status is null'

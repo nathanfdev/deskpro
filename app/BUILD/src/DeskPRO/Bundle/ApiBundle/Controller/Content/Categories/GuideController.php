@@ -89,8 +89,9 @@ class GuideController extends AbstractCategoriesController
                 SELECT t.id, t.title, IFNULL(t.parent_id, 0) as parent_id
                 FROM topics t
                 WHERE t.guide_id = ?
+                AND status <> ?
                 ORDER BY display_order ASC
-            ', [$guide->getId()], 'id');
+            ', [$guide->getId(), 'hidden'], 'id');
 
         return new JsonResponse(self::objectToArray(Arrays::intoHierarchy($results)));
     }

@@ -167,7 +167,7 @@ class SearchController extends BaseController
      *         200="Returned if everything is ok"
      *     }
      * )
-     * @Rest\Get("/search/{type}", requirements={"type"="(article|download|feedback|news|ticket|person|agent|organization|chat_conversation)"})
+     * @Rest\Get("/search/{type}", requirements={"type"="(article|download|feedback|news|ticket|person|agent|organization|chat_conversation|topic)"})
      *
      * @param string  $type
      * @param Request $request

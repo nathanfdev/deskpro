@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Topic;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -52,6 +53,7 @@ class QuickSearchContext
     const TYPE_FEEDBACK          = 'feedback';
     const TYPE_NEWS              = 'news';
     const TYPE_TICKET            = 'ticket';
+    const TYPE_TOPIC             = 'topic';
     const TYPE_PERSON            = 'person';
     const TYPE_AGENT             = 'agent';
     const TYPE_ORGANIZATION      = 'organization';
@@ -295,6 +297,7 @@ class QuickSearchContext
             self::TYPE_AGENT             => [Person::class, ['is_agent' => true]],
             self::TYPE_ORGANIZATION      => Organization::class,
             self::TYPE_CHAT_CONVERSATION => ChatConversation::class,
+            self::TYPE_TOPIC             => Topic::class,
         ];
     }
 }
