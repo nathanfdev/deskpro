@@ -1338,5 +1338,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       $('#settingswin').off('dp_macros_updated', this.onMacrosUpdated);
       this.onMacrosUpdated = null;
 		}
+
+    this.destroyEl();
 	}
 });

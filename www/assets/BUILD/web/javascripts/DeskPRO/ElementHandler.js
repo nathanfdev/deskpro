@@ -111,12 +111,12 @@ DeskPRO.ElementHandler = new Orb.Class({
 	 */
 	_registerChildHandler: function(el) {
 		this.childHandlers[el.attr('id')] = el;
-
-		var ret = this.registerChildHandler(el.data('handler'), el.data('handler').getHandlerName(), el) || {};
-		this.fireEvent('childHandler', [el, ret, this]);
-
-		el.data('handler').setParentReturnOptions(ret);
+		el.data('handler').setParentReturnOptions({});
 	},
+
+  _unregisterChildHandler: function(el) {
+    this.childHandlers[el.attr('id')] = null;
+  },
 
 
 	/**
@@ -152,5 +152,24 @@ DeskPRO.ElementHandler = new Orb.Class({
 	 */
 	getHandlerName: function() {
 		return 'element_handler';
+	},
+
+	destroy: function() {
+		this.destroyEl();
+	},
+
+	destroyEl: function() {
+
+    if (this.parentHandlerElement) {
+			this.parentHandlerElement.data('handler')._unregisterChildHandler(this.el);
+			this.parentHandlerElement = null;
+    }
+
+    if (this.el) {
+      this.el.remove();
+      this.el = null;
+    }
+
+    this.destroyEvents();
 	}
 });
