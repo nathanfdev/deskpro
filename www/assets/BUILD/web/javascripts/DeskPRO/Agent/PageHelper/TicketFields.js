@@ -267,14 +267,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		var $ctrls = this.display.find('.hidden-row');
 		$ctrls.removeClass('off').next().removeClass('off');
 
+		var scopeFields = $scope.fields;
 		for (var i = 0; i < fields.length; i++) {
 			var f = fields[i];
-
-			var row = this.display.find('.item.' + f.id);
-			if (undefined === $scope.fields[f.id]) {
-				row.detach().removeClass('off').insertBefore($ctrls);
-			}
-
 			var value = true;
 			if (f.field_type === 'ticket_field') {
 				value = this.ticketReader.getTicketFieldValue(f.field_id);
@@ -292,7 +287,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 			var visibleByCriteria = isVisibleByCriteria(f);
 			var show = visibleByCriteria && (f.isVisibleOnViewAlways || !noValue || $scope.show_hidden);
-			$scope.fields[f.id] = !!show;
+			scopeFields[f.id] = !!show;
 
 			if (visibleByCriteria && !f.isVisibleOnViewAlways && noValue) {
 				this.no_value_fields.push(f.id);
@@ -300,30 +295,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		}
 
 		var newFields = [];
-		Object.keys($scope.fields).forEach(function(fieldId) {
-			if ($scope.fields[fieldId]) {
+		Object.keys(scopeFields).forEach(function(fieldId) {
+			if (scopeFields[fieldId]) {
 				newFields.push(fieldId);
-			}
-		});
-
-		var unsetField = function(name, allowDefaultValue) {
-			$scope.edit_fields.push(name);
-			$scope.setFieldValue(name, '', allowDefaultValue);
-		};
-
-		$scope.hidden = this.no_value_fields.length;
-
-		if (this.oldFields) {
-			this.oldFields.forEach(function(name) {
-				if (newFields.indexOf(name) === -1) {
-					unsetField(name, false);
-				}
-			});
-		}
-
-		newFields.forEach(function(name) {
-			if (self.oldFields && self.oldFields.indexOf(name) === -1) {
-				unsetField(name, true);
 			}
 		});
 
@@ -346,7 +320,39 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		// recursive update fields if they were changed
 		if (changed) {
 			this.updateDisplay();
+			return;
 		}
+
+		$scope.fields = scopeFields;
+
+		for (i = 0; i < fields.length; i++) {
+			f = fields[i];
+			var row = this.display.find('.item.' + f.id);
+			if (undefined === $scope.fields[f.id] || scopeFields[f.id]) {
+				row.removeClass('off');
+			}
+		}
+
+		var unsetField = function(name, allowDefaultValue) {
+			$scope.edit_fields.push(name);
+			$scope.setFieldValue(name, '', allowDefaultValue);
+		};
+
+		$scope.hidden = this.no_value_fields.length;
+
+		if (this.oldFields) {
+			this.oldFields.forEach(function(name) {
+				if (newFields.indexOf(name) === -1) {
+					unsetField(name, false);
+				}
+			});
+		}
+
+		newFields.forEach(function(name) {
+			if (self.oldFields && self.oldFields.indexOf(name) === -1) {
+				unsetField(name, true);
+			}
+		});
 	},
 
 	initFieldWidgets: function($tbody) {
