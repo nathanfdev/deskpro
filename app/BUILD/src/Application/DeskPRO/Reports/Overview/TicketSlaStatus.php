@@ -105,6 +105,12 @@ class TicketSlaStatus extends AbstractTableOverviewStat
             $where[] = "tickets.date_created BETWEEN '$d1' AND '$d2'";
         }
 
+        $params = [];
+        if ($this->agentTeam) {
+            $params['team_id'] = $this->agentTeam;
+            $where[]           = 'agent_team_id = :team_id';
+        }
+
         if ($where) {
             $where = ' WHERE '.implode(' AND ', $where);
         } else {
@@ -122,7 +128,7 @@ class TicketSlaStatus extends AbstractTableOverviewStat
 
         $this->logger->logDebug("[TicketSlaStatus] $sql");
         $this->logger->startTimer('TicketSlaStatus');
-        $this->values = App::getDb()->fetchAllKeyValue($sql);
+        $this->values = App::getDb()->fetchAllKeyValue($sql, $params);
         $this->logger->logTotalTime('TicketSlaStatus');
 
         return $this->values;

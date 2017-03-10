@@ -43,6 +43,11 @@ abstract class AbstractTableOverviewStat implements Loggable
     protected $logger;
 
     /**
+     * @var int
+     */
+    protected $agentTeam;
+
+    /**
      * Gets a id => array(info) array of titles. Titles can have children.
      *
      * @abstract
@@ -66,6 +71,14 @@ abstract class AbstractTableOverviewStat implements Loggable
     public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @param int $agentTeam
+     */
+    public function setAgentTeam($agentTeam)
+    {
+        $this->agentTeam = $agentTeam;
     }
 
     /**

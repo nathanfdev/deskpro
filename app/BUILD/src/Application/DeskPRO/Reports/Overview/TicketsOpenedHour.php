@@ -202,16 +202,22 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
                 throw new \InvalidArgumentException("Unknown date group: {$this->date_group}");
         }
 
+        $params = [];
+        if ($this->agentTeam) {
+            $params['team_id'] = $this->agentTeam;
+        }
+
         $sql = "
             SELECT $date_group AS date_group, COUNT(*)
             FROM tickets
             WHERE tickets.status != 'hidden' AND tickets.date_created BETWEEN '$d1' AND '$d2'
+            ".($this->agentTeam ? ' AND agent_team_id = :team_id ' : '').'
             GROUP BY date_group
-        ";
+        ';
 
         $this->logger->logDebug("[TicketsOpenedHour] $sql");
         $this->logger->startTimer('TicketsOpenedHour');
-        $this->values = App::getDb()->fetchAllKeyValue($sql);
+        $this->values = App::getDb()->fetchAllKeyValue($sql, $params);
         $this->logger->logTotalTime('TicketsOpenedHour');
 
         return $this->values;

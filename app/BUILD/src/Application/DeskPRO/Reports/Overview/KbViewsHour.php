@@ -94,17 +94,23 @@ class KbViewsHour extends AbstractTableOverviewStat
         // Get offset of original date from UTC, we need for mysql
         $offset = $date1->getTimestamp() - $this->date_start->getTimestamp();
 
+        $params = [];
+        if ($this->agentTeam) {
+            $params['team_id'] = $this->agentTeam;
+        }
+
         $type = PageViewLog::TYPE_ARTICLE;
         $sql  = "
             SELECT HOUR(DATE_SUB(page_view_log.date_created, INTERVAL $offset SECOND)) AS hour, COUNT(*)
             FROM page_view_log
             WHERE page_view_log.object_type = $type AND page_view_log.date_created BETWEEN '$d1' AND '$d2'
+            ".($this->agentTeam ? ' AND agent_team_id = :team_id ' : '').'
             GROUP BY hour
-        ";
+        ';
 
         $this->logger->logDebug("[KbViewsHour] $sql");
         $this->logger->startTimer('KbViewsHour');
-        $this->values = App::getDb()->fetchAllKeyValue($sql);
+        $this->values = App::getDb()->fetchAllKeyValue($sql, $params);
         $this->logger->logTotalTime('KbViewsHour');
 
         return $this->values;

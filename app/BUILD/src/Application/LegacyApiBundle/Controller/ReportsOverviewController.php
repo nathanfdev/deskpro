@@ -51,7 +51,14 @@ class ReportsOverviewController extends AbstractController
         $reports_overview = $this->container->getSystemService('reports_overview');
         $reports_overview->setPerson($this->person);
 
-        return $this->createApiResponse($reports_overview->getOverviewData($type));
+        $options = [];
+
+        $agentTeam = $this->in->getCleanValue('agent_team', 'integer');
+        if ($agentTeam) {
+            $options['agent_team'] = $agentTeam;
+        }
+
+        return $this->createApiResponse($reports_overview->getOverviewData($type, $options));
     }
 
     //###################################################################################################################
