@@ -49,8 +49,8 @@ echo "--> Done in $SECONDS seconds"
 #################################################
 
 SECONDS=0
-echo "Running E2E"
-(cd ../../../www/assets/BUILD/pub/ && npm run-script test:e2e -- -e cbt --test=src/tests/E2E/tests/rough-tests.js &> "$LOGS_DIR/e2e.txt") &
+#echo "Running E2E"
+#(cd ../../../www/assets/BUILD/pub/ && npm run-script test:e2e -- -e cbt --test=src/tests/E2E/tests/rough-tests.js &> "$LOGS_DIR/e2e.txt") &
 echo "Running Jest"
 (cd ../../../www/assets/BUILD/pub/ && npm run-script test:unit &> "$LOGS_DIR/jest.txt") &
 wait
@@ -174,12 +174,12 @@ for ((i=1;i<=$PORTAL_THREADS_NUM;i++)); do
     printf "\n\n--- portal thread $i ---\n\n"; tail -n 50 "$LOGS_DIR/behat-portal-$i.txt"; sleep .1
 done
 
-echo ""
-echo "-----------------------------------------------------------------------------------------------------------------"
-echo "E2E"
-echo "-----------------------------------------------------------------------------------------------------------------"
-echo ""
-tail -n 10 "$LOGS_DIR/e2e.txt"; sleep .1
+#echo ""
+#echo "-----------------------------------------------------------------------------------------------------------------"
+#echo "E2E"
+#echo "-----------------------------------------------------------------------------------------------------------------"
+#echo ""
+#tail -n 10 "$LOGS_DIR/#.txt"; sleep .1
 
 #################################################
 # SUMMARIZE RESULTS
@@ -198,7 +198,7 @@ jest=$(tail -n 3 "$LOGS_DIR/jest.txt" | tr '\n' ' ')
 behat_install=$(tail -n 3 "$LOGS_DIR/behat-install.txt" | tr '\n' ' ')
 behat_system_api=$(tail -n 3 "$LOGS_DIR/behat-system-api.txt" | tr '\n' ' ')
 behat_production=$(tail -n 3 "$LOGS_DIR/behat-production.txt" | tr '\n' ' ')
-e2e=$(tail -n 3 "$LOGS_DIR/e2e.txt" | tr '\n' ' ')
+#e2e=$(tail -n 3 "$LOGS_DIR/e2e.txt" | tr '\n' ' ')
 for ((i=1;i<=$API_THREADS_NUM;i++)); do
     behat_api[$i]=$(tail -n 3 "$LOGS_DIR/behat-api-$i.txt" | tr '\n' ' ')
 done
@@ -353,11 +353,11 @@ if [[ "$behat_portal_failed" -ne "0" ]]; then
 fi
 
 e2e_failed=0
-if [[ ! ${e2e} =~ "OK." ]] ; then
-    e2e_failed=1
-    mv "$LOGS_DIR/e2e.txt" "$LOGS_DIR/FAILED-e2e.txt"
-    echo "- E2E failed"
-fi
+#if [[ ! ${e2e} =~ "OK." ]] ; then
+#    e2e_failed=1
+#    mv "$LOGS_DIR/e2e.txt" "$LOGS_DIR/FAILED-e2e.txt"
+#    echo "- E2E failed"
+#fi
 
 #################################################
 # EXIT 0/1
