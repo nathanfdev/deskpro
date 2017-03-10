@@ -59,3 +59,11 @@ services:
 
     twilio_adapter:
         class: DpTestSrc\TestBundle\Mock\TwilioNullAdapter
+
+    test.queries.counter_listener:
+      class: DpTestSrc\TestBundle\EventListener\DoctrineQueriesCounterListener
+      arguments:
+        - "@doctrine.dbal.default_connection"
+      tags:
+        - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+        - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
