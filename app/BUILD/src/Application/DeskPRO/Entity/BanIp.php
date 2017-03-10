@@ -132,7 +132,7 @@ class BanIp extends DomainObject
             [
                 'name'    => 'ban_ips',
                 'indexes' => [
-                    'is_range_idx' => ['columns' => ['is_range']],
+                    'is_range_idx' => ['columns' => ['is_range', 'banned_ip']],
                 ],
             ]
         );
