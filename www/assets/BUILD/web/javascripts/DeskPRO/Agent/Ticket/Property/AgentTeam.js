@@ -36,6 +36,6 @@ DeskPRO.Agent.Ticket.Property.AgentTeam = new Class({
 
 	_formEl: null,
 	getFormEl: function() {
-		$('input.agent_team_id:first', this.ticketPage.valueForm);
+		return $('input.agent_team_id:first', this.ticketPage.valueForm);
 	}
 });
