@@ -16,7 +16,6 @@ export default class RteEditor extends React.Component {
     onPasteImage:    PropTypes.func,
     onFocus:         PropTypes.func,
     onBlur:          PropTypes.func
-    
   };
 
   componentDidMount() {
@@ -51,7 +50,7 @@ export default class RteEditor extends React.Component {
     // Override default paste listener to upload images
     $(node).on('paste', this.onPaste);
     const overrideOptions = {
-      paste: { cleanPastedHTML: true }
+      paste: { cleanPastedHTML: false, forcePlainText: false }
     };
 
     this.medium = new MediumEditor(node, { ...options, ...overrideOptions });
