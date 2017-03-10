@@ -357,8 +357,6 @@ if [[ ! ${e2e} =~ "OK." ]] ; then
     e2e_failed=1
     mv "$LOGS_DIR/e2e.txt" "$LOGS_DIR/FAILED-e2e.txt"
     echo "- E2E failed"
-    cp $LOGS_DIR/../*.log $LOGS_DIR
-    mv $LOGS_DIR/*.{log,txt}
 fi
 
 #################################################
