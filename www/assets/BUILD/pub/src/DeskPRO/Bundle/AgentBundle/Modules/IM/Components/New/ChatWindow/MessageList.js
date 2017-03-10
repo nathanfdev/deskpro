@@ -36,6 +36,14 @@ class MessageList extends React.Component {
     this.firstScroll = true;
   }
 
+  componentWillReceiveProps(props) {
+    if (this.props.current.get('id') !== props.current.get('id')) {
+      this.firstScroll = true;
+    }
+
+    this.props = props;
+  }
+
   componentWillUpdate() {
     const node = this.scrollBox;
     this.shouldScrollBottom = node && (node.scrollTop + node.offsetHeight === node.scrollHeight);
