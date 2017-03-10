@@ -148,8 +148,11 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 	},
 
 	destroy: function() {
+		this.input.off();
     this.input.select2 && this.input.select2('destroy');
 		this.input = null;
+    this.options.input = null;
+    this.options.onChange = null;
 		this.options = null;
 		this.destroyEvents();
 	}

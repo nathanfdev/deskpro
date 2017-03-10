@@ -128,9 +128,6 @@ Orb.Util.Events = {
 			}
 		});
 
-		// console.info('before', this.__events[type]);
-    // console.info('after', newFns);
-
 		if (hasChange) {
 			this.__events[type] = newFns;
 

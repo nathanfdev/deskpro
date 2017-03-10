@@ -1645,10 +1645,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		DeskPRO_Window.initAgentNotifierForRte(
 			this,
 			textarea,
-			false,
-			function(agentId) {
-				return true;
-			}
+			false
 		);
 	},
 

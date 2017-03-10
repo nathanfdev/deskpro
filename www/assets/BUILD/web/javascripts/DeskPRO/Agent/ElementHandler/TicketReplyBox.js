@@ -1202,30 +1202,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	},
 
 	_initAgentNotifier: function(textarea) {
-		var self = this;
-		DeskPRO_Window.initAgentNotifierForRte(
-			this,
-			textarea,
-			false,
-			function(agentId) {
-				agentId = parseInt(agentId);
-
-				//TODO
-				// he permcheck should happen on the AJAX call and for the specific agent,
-				// not here. agents_with_perm was removed because it was too expensive to calculate
-
-				//if (
-				//	!self.page.meta.agents_with_perm[agentId]
-				//	&& parseInt(self.page.getEl('value_form').find('.agent_id').val()) != agentId
-				//	&& !self.page.getEl('followers_list').find('.agent-' + agentId)[0]
-				//) {
-				//	DeskPRO_Window.showAlert("That agent does not have permission to view this ticket. Add them as a follower before trying to mention them.");
-				//	return false;
-				//}
-
-				return true;
-			}
-		);
+		DeskPRO_Window.initAgentNotifierForRte(this, textarea, false);
 	},
 
 	getElById: function(id) {
@@ -1335,6 +1312,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	destroy: function() {
 		this.page = null;
 		var textarea = this.getElById('replybox_txt');
+		this.textarea = null;
+		textarea.getEditor().off();
 		if (textarea.data('redactor')) {
 			try {
 				textarea.destroyEditor();
@@ -1342,6 +1321,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		}
 		if (this.agentNotifyList) {
 			this.agentNotifyList.remove();
+      this.agentNotifyList = null;
 		}
 		if (this.snippetsViewer) {
 			this.snippetsViewer.destroy();
