@@ -8,6 +8,12 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
   h1 {
     font-size: 22px;
     font-weight: bold;
+    &.anchor::before {
+      content:"";
+      display:block;
+      height:50px; /* fixed header height*/
+      margin:-50px 0 0; /* negative fixed header height */
+    }
   }
   h2 {
     font-size: 18px;
@@ -222,7 +228,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       display: none;
     }
   }
-  & .topic {
+  .topic {
     width: 664px;
     float: left;
     border-left: 1px solid #efefef;
@@ -245,6 +251,34 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     }
     .loading.active {
       display: block;
+    }
+  }
+  .content-summary {
+    width: 126px;
+    float: left;
+    .topic-summary {
+      border-left: 1px solid #efefef;
+      padding-left: 24px;
+      top: 20px;
+      &.fixed {
+        position: fixed;
+      }
+      h2 {
+        color: $dp-sonic-primary;
+        text-transform: uppercase;
+        font-size: 14px;
+      }
+      ul {
+        padding: 0;
+        margin: 0;
+        li {
+          list-style: none;
+          a {
+            text-decoration: none;
+            color: #8b8b8b;
+          }
+        }
+      }
     }
   }
 }

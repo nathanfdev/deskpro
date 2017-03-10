@@ -19,7 +19,6 @@ export class EditorContainer extends React.Component {
     dispatch:     PropTypes.func
   };
 
-
   constructor(props) {
     super(props);
     this.state = {

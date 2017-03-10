@@ -3,12 +3,20 @@ import Highlight from 'react-highlight';
 import classNames from 'classnames';
 import moment from 'moment';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
-import TopicList from './TopicList';
+import { TopicList, TopicSummary } from '../index';
 
 class ViewTopic extends React.Component {
   static propTypes = {
     params: PropTypes.object
   };
+
+  // To be removed when backend is fixed
+  static prerenderHtml(html) {
+    return html
+      .replace(/\{\{ img\(([^)]+)\) }}/g, '/file.php/$1')
+      .replace(/\{\{ content\(([^)]+)\) }}/g, '#')
+      .replace(/\{\{\s*content_link\(([^,]+),([^),]+)(,[^)]+)?\)\s*}}/g, '<a href="#">$1:$2</a>');
+  }
 
   constructor(props) {
     super(props);
@@ -16,6 +24,7 @@ class ViewTopic extends React.Component {
     if (window.topic) {
       topic = JSON.parse(window.topic);
     }
+    topic.content = this.addIdToh1(topic.content);
     this.state = {
       doSpin: false,
       topic,
@@ -55,6 +64,23 @@ class ViewTopic extends React.Component {
     });
   }
 
+  addIdToh1 = (html) => {
+    const container = document.createElement('div');
+    container.innerHTML = html;
+
+    Array.from(container.querySelectorAll('h1')).map((h1) => {
+      const newH1 = document.createElement('h1');
+      newH1.innerText = h1.innerText;
+      newH1.id = h1.innerText.toLowerCase().replace(/ /, '-');
+      newH1.className = 'anchor';
+      container.replaceChild(newH1, h1);
+
+      return true;
+    });
+
+    return ViewTopic.prerenderHtml(container.innerHTML);
+  };
+
   grabTopicFromApi(slug) {
     this.setState({
       doSpin: true
@@ -65,9 +91,11 @@ class ViewTopic extends React.Component {
         return;
       }
 
+      const topic = response.data.data;
+      topic.content = this.addIdToh1(topic.content);
       this.setState({
         doSpin: false,
-        topic:  response.data.data,
+        topic,
       });
     });
   }
@@ -102,6 +130,10 @@ class ViewTopic extends React.Component {
               {this.state.topic.content}
             </Highlight>
           </div>
+        </div>
+        <div className="comment-column" />
+        <div className="content-summary">
+          <TopicSummary content={this.state.topic.content} />
         </div>
       </div>
     );
