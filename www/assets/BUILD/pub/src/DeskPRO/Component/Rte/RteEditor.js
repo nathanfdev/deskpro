@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import MediumEditor from 'medium-editor';
 import $ from 'jquery';
-import { getBlobsFromItems, getBlobsFromHtml } from 'DeskPRO/Component/Uploader/PasteCatcher';
+import { clipboardHasImages, getBlobsFromItems, getBlobsFromHtml } from 'DeskPRO/Component/Uploader/PasteCatcher';
 
 export default class RteEditor extends React.Component {
 
@@ -106,7 +106,9 @@ export default class RteEditor extends React.Component {
     const pastedText = clipboardData.getData('text/plain');
     const pastedHtml = clipboardData.getData('text/html');
 
-    this.medium.cleanPaste(pastedText);
+    if (!clipboardHasImages(clipboardData)) {
+      this.medium.cleanPaste(pastedText);
+    }
 
     const { onPasteImage } = this.props;
     if (onPasteImage) {

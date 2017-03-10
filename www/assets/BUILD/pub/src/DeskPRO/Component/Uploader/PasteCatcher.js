@@ -8,6 +8,22 @@ function createFile(blob, contentType) {
   return new File([blob], `clipboard_${moment().format()}.${extension(contentType)}`);
 }
 
+export const clipboardHasImages = (clipboardData) => {
+  if (!clipboardData || !clipboardData.items) {
+    return false;
+  }
+
+  for (let i = 0; i < clipboardData.items.length; i += 1) {
+    const item = clipboardData.items[i];
+
+    if (item.kind === 'file' && item.type.indexOf('image') !== -1) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 export const getBlobsFromItems = (items, onPasteImage) => {
   if (!items) {
     return;
