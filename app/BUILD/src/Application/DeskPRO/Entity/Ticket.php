@@ -1635,7 +1635,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             }
         }
 
-        $this->_onPropertyChanged('messages', null, $this->messages, true);
+        $this->_onPropertyChanged('messages', null, $message, true);
         $this->getStateChangeRecorder()->record('message', null, $message);
 
         if (!$message->is_agent_note) {
