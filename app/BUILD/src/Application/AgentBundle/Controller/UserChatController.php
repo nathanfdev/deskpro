@@ -621,10 +621,16 @@ class UserChatController extends AbstractController
      */
     public function leaveChatAction($conversation_id)
     {
+        /** @var ChatConversation $convo */
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
         if (!$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
+
+        // agent is not participant of the chat, skipping
+        if ($convo->getAgent() !== $this->person && !$convo->hasParticipant($this->person)) {
+            return $this->createJsonCmResponse();
         }
 
         $chatManager = $this->container->getSystemObject('user_chat_manager', ['session' => $this->session->getEntity()]);
