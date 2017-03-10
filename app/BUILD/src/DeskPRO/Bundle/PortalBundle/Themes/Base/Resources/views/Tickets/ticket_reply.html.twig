@@ -45,7 +45,9 @@
                 </div>
             </div>
         {% endif %}
-        {{ form_widget(form.ticket_message) }}
+        <div class="bucket">
+            {{ form_widget(form.ticket_message) }}
+        </div>
         {{ form_widget(form.attachments) }}
         <div class="as-no-dpui">{{ form_widget(form.more_attachments) }}</div>
         {{ form_rest(form) }}
