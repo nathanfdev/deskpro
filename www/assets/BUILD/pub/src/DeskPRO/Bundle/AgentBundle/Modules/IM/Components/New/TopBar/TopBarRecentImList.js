@@ -94,7 +94,7 @@ class TopBarRecentImList extends RecentList {
       stateChats = stateChats.slice(0, 10);
     }
 
-    return stateChats.map(agent => this.getItem(agent));
+    return stateChats.map(chat => this.getItem(chat));
   }
 
   getHeaderHelper(chat) {
