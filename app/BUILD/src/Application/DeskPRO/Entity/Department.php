@@ -35,7 +35,6 @@ use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
-use DeskPRO\Bundle\AppBundle\Entity\PersonList;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -57,7 +56,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property Department[]|ArrayCollection $children
  * @property Brand[]|ArrayCollection      $brands
  */
-class Department extends DomainObject implements HasPhraseName, PersonList, AvatarOwner, Hierarchical
+class Department extends DomainObject implements HasPhraseName, AvatarOwner, Hierarchical
 {
     /**
      * @var int
@@ -483,75 +482,6 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     public function __toString()
     {
         return $this->getFullTitle();
-    }
-
-    /**
-     * @return Person[]|null
-     */
-    public function getPersonList()
-    {
-        // OMG this should be refactored somehow, but right now it works
-        // also we are interested in agents only
-        if (!$this->_people) {
-            $people = [];
-
-            // get agents based on department permissions
-            /** @var \Application\DeskPRO\EntityRepository\Department $repository */
-            $repository  = $this->getRepository();
-            $permissions = $repository->getPermissionsInfo($this);
-            $db          = App::getDb();
-            $ids         = [];
-            foreach ($permissions['agentgroups'] as $usergroup) {
-                if ($usergroup['perm_name'] === 'full') {
-                    $ids[] = $usergroup['usergroup_id'];
-                }
-            }
-
-            if ($ids) {
-                $usergroups = implode(',', $ids);
-                $sql        = "SELECT DISTINCT(person_id) FROM person2usergroups WHERE usergroup_id IN ({$usergroups})";
-                $personIds  = $db->fetchAllCol($sql);
-            } else {
-                $personIds = [];
-            }
-
-            foreach ($permissions['agents'] as $agent) {
-                if ($agent['perm_name'] === 'full') {
-                    $personIds[] = $agent['agent_id'];
-                }
-            }
-
-            $departmentAgents = App::getOrm()->getRepository(Person::class)->findBy(['id' => $personIds]);
-            foreach ($departmentAgents as $agent) {
-                $people[$agent->getId()] = $agent;
-            }
-
-            // get agents having all permissions
-            $qb = App::getOrm()->createQueryBuilder();
-            $qb
-                ->select('a')
-                ->from(Person::class, 'a')
-                ->join('a.usergroups', 'u')
-                ->where('u.sys_name IN (:all_perm_usergroups)')
-                ->setParameter('all_perm_usergroups', [Usergroup::AGENT_ALL_PERM, Usergroup::AGENT_ALL_SAFE_PERM])
-            ;
-
-            /** @var Person[] $allPermAgents */
-            $allPermAgents = $qb->getQuery()->getResult();
-            foreach ($allPermAgents as $agent) {
-                $people[$agent->getId()] = $agent;
-            }
-
-            $this->_people = array_filter(
-                $people,
-                function ($person) {
-                    /* @var Person $person */
-                    return $person->isActiveAgent();
-                }
-            );
-        }
-
-        return $this->_people;
     }
 
     /**

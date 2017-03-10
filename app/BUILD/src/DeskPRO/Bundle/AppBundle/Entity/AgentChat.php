@@ -34,6 +34,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
@@ -355,7 +356,8 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
                     $addPerson($person);
                 }
             }
-            if ($participant->getDepartment() && $persons = $participant->getDepartment()->getPersonList()) {
+            if ($participant->getDepartment()) {
+                $persons = App::$container->get('data.departments')->getDepartmentAgents($participant->getDepartment());
                 foreach ($persons as $person) {
                     $addPerson($person);
                 }

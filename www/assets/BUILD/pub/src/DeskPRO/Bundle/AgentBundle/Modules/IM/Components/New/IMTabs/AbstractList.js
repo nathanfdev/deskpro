@@ -27,7 +27,7 @@ class AbstractList extends React.Component {
   }
 
   getItem(item, type, titleProp) {
-    let size = item.get('agents').size;
+    let size = this.getAgents(item).size;
     if (size > 2) {
       size -= 1;
     } else {

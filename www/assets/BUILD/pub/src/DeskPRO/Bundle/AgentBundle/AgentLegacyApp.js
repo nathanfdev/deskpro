@@ -2,11 +2,6 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose } from 'redux';
-import { combineReducerHierarchy } from 'Ampliflux';
-import * as ampMiddleware from 'Ampliflux/middleware';
-import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { repositoriesConfig } from 'DeskPRO/Bundle/AgentBundle/DAL/config';
 import { AgentTopBarContainer } from './Modules/TopBar/Components/AgentTopBar';
 import { SideBarContainer } from './Modules/SideBar/Components/SideBar';
 import { AgentList } from './Modules/Agent/Components/AgentList';
@@ -16,13 +11,12 @@ import { GuideTreeContainer } from './Modules/Publish/Components/List/GuideTree'
 import { EditorContainer } from './Modules/Publish/Components/Editor/Editor';
 import VoiceControlsContainer from './Modules/Voice/Components/Controls/VoiceControlsContainer';
 import VoiceTicketMessageContainer from './Modules/Voice/Components/TicketMessage/TicketMessageContainer';
-import AgentReducers from './AgentApp_Reducers';
-import AppReducers from '../AppBundle/AppApp_Reducers';
 import { preloadData } from './Modules/Application/Actions/bootstrapActions';
 import { setOnlineAgents, setOnlineUserChatAgents } from './Modules/Agent/Actions/agentActions';
 import { NotificationServiceContainer } from './Modules/Application/Components/Notifications/NotificationServiceContainer';
 import { isVoiceEnabledSelector } from './Modules/Voice/Selectors/client';
 import { voiceBootstrap } from './Modules/Voice/Actions/clientActions';
+import store from './Services/store';
 
 class AgentLegacyApp {
 
@@ -32,7 +26,7 @@ class AgentLegacyApp {
   run() {
     // IE/Edge Hack http://stackoverflow.com/questions/1481251/what-does-document-domain-document-domain-do
     document.domain = document.domain;
-    this.store = AgentLegacyApp.createStore();
+    this.store = store;
     this.store.dispatch(preloadData()).then(() => {
       window.$(document).ready(() => this.start());
     });
@@ -169,38 +163,6 @@ class AgentLegacyApp {
       </Provider>,
       node
     );
-  }
-
-  static createStore(initialState = {}) {
-    // Bootstrap API and DAL
-    setApi(api);
-    loadRepositoriesConfig(repositoriesConfig);
-
-    // This builder calls compile on old-style reducers
-    // created via the Reducer class
-    const legacyReducerBuilder = (reducer) => {
-      if (reducer.isAmplifluxReducer) {
-        const rInst = new reducer();
-        return rInst.compile();
-      }
-
-      return reducer;
-    };
-
-    const reducer = combineReducerHierarchy(Object.assign({}, AgentReducers, AppReducers), legacyReducerBuilder);
-    const middleware = applyMiddleware(
-      ampMiddleware.timerMiddleware('startTime'),
-      ampMiddleware.intervalMiddleware,
-      ampMiddleware.timeoutMiddleware,
-      ampMiddleware.actionThunkMiddleware,
-      ampMiddleware.redispatchDsaPayload,
-      ampMiddleware.guidMiddleware,
-      ampMiddleware.promiseMiddleware,
-      ampMiddleware.loggerMiddleware
-    );
-    const makeStore = compose(middleware)(createStore);
-
-    return makeStore(reducer, initialState, window.devToolsExtension ? window.devToolsExtension() : f => f);
   }
 }
 export default AgentLegacyApp;

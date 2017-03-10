@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\Entity\Department as DepartmentEntity;
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
 use JMS\Serializer\Annotation as JMS;
 
@@ -122,15 +121,6 @@ class Department
     protected $brands;
 
     /**
-     * Agents belong to department.
-     *
-     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
-     *
-     * @var Person[]
-     */
-    protected $agents;
-
-    /**
      * Constructor.
      *
      * @param DepartmentEntity $department
@@ -146,6 +136,5 @@ class Department
         $this->is_tickets_enabled = $department->isTicketsEnabled();
         $this->display_order      = $department->getDisplayOrder();
         $this->brands             = $department->getBrands();
-        $this->agents             = $department->getPersonList();
     }
 }
