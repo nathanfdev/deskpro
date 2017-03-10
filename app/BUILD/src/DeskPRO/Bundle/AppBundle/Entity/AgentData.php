@@ -75,8 +75,7 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Person", inversedBy="agentData")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Person", mappedBy="agentData")
      *
      * @var Person
      */
@@ -187,6 +186,9 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
+        if ($person) {
+            $person->setAgentData($this);
+        }
 
         return $this;
     }

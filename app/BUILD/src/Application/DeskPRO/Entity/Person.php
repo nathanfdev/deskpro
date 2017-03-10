@@ -3818,10 +3818,6 @@ class Person extends DomainObject implements
      */
     public function setAgentData(AgentData $agentData = null)
     {
-        if ($agentData) {
-            $agentData->setPerson($this);
-        }
-
         $this->setModelField('agentData', $agentData);
 
         return $this;
@@ -4549,10 +4545,21 @@ class Person extends DomainObject implements
         );
 
         $metadata->mapOneToOne([
-            'fieldName'    => 'agentData',
-            'targetEntity' => AgentData::class,
-            'mappedBy'     => 'person',
-            'cascade'      => ['persist', 'remove'],
+            'fieldName'     => 'agentData',
+            'targetEntity'  => AgentData::class,
+            'inversedBy'    => 'person',
+            'cascade'       => ['persist', 'remove'],
+            'orphanRemoval' => true,
+            'joinColumns'   => [
+                [
+                    'name'                 => 'agent_data_id',
+                    'referencedColumnName' => 'id',
+                    'unique'               => true,
+                    'nullable'             => true,
+                    'columnDefinition'     => null,
+                    'onDelete'             => 'set null',
+                ],
+            ],
         ]);
 
         $metadata->mapManyToMany([
