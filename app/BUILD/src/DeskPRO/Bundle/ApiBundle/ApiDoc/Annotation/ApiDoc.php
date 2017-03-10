@@ -60,11 +60,17 @@ class ApiDoc extends BaseApiDoc
      */
     protected $classInput;
 
+    /**
+     * Constructor.
+     *
+     * @param array $data
+     */
     public function __construct(array $data)
     {
         if (isset($data['target'])) {
             $this->target = $data['target'];
         }
+
         parent::__construct($data);
     }
 
@@ -136,6 +142,15 @@ class ApiDoc extends BaseApiDoc
     public function setClassInput($classInput)
     {
         $this->classInput = $classInput;
+
+        if (!empty($this->classInput['options'])) {
+            foreach ($this->classInput['options'] as &$option) {
+                if (is_string($option) && class_exists($option)) {
+                    $reflection = new \ReflectionClass($option);
+                    $option     = $reflection->newInstanceWithoutConstructor();
+                }
+            }
+        }
 
         return $this;
     }

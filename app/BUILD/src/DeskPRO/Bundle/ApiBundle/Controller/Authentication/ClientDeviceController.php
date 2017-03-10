@@ -45,6 +45,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @ApiModes("all")
  * @Rest\Route("/client_devices/{app_type}", requirements={"app_type"="mobile"})
  * @ApiDoc(target="all", section="Client Devices", output="Application\DeskPRO\Entity\ClientDevice")
+ * @ApiDoc(
+ *     target="registerAction,postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\ClientDeviceType",
+ *      "options"={"method"="PUT", "app_type"="mobile", "person"="Application\DeskPRO\Entity\Person"},
+ *      "name"=""
+ *     }
+ * )
  */
 class ClientDeviceController extends CrudController
 {
@@ -52,23 +60,6 @@ class ClientDeviceController extends CrudController
     public static $type         = ClientDeviceType::class;
     public static $listOrder    = 'desc';
     public static $listPaginate = false;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function handleForm($model, Request $request, array $options = [])
-    {
-        $options['app_type'] = $request->attributes->get('app_type');
-        $options['person']   = $this->get('security.token_storage')->getToken()->getUser();
-
-        if ($model && $model->getDeviceId()) {
-            $options['device_id'] = $model->getDeviceId();
-        } elseif ($request->attributes->get('id') && !TypeUtils::isIntLike($request->attributes->get('id'))) {
-            $options['device_id'] = $request->attributes->get('id');
-        }
-
-        return parent::handleForm($model, $request, $options);
-    }
 
     /**
      * @ApiDoc(
@@ -84,7 +75,7 @@ class ClientDeviceController extends CrudController
      *      },
      *      statusCodes={
      *          201="Returned in case of successful resource creation",
-     *          204="Returned in case of successful resource modyf",
+     *          204="Returned in case of successful resource modify",
      *          400="We will return this in case your request was malformed",
      *      }
      * )
@@ -93,14 +84,13 @@ class ClientDeviceController extends CrudController
      * because we don't want 'register' to be interpretted as a string device_id itself
      *
      * @Rest\Put("/register/{id}", requirements={"id"="\d+|.*?"})
+     *
      * {@inheritdoc}
      */
     public function registerAction($id, Request $request)
     {
         try {
-            $ent = $this->findEntity($id, $request);
-
-            return $this->putAction($ent->getId(), $request);
+            return $this->putAction($this->findEntity($id, $request)->getId(), $request);
         } catch (NotFoundHttpException $e) {
             return $this->postAction($request);
         }
@@ -124,13 +114,12 @@ class ClientDeviceController extends CrudController
      *      }
      * )
      * @Rest\Get("/{id}", requirements={"id"="\d+|.*?"})
+     *
      * {@inheritdoc}
      */
     public function getAction(Request $request, $id)
     {
-        $ent = $this->findEntity($id, $request);
-
-        return parent::getAction($request, $ent->getId());
+        return parent::getAction($request, $id);
     }
 
     /**
@@ -151,13 +140,12 @@ class ClientDeviceController extends CrudController
      *      }
      * )
      * @Rest\Put("/{id}", requirements={"id"="\d+|.*?"})
+     *
      * {@inheritdoc}
      */
     public function putAction($id, Request $request)
     {
-        $ent = $this->findEntity($id, $request);
-
-        return parent::putAction($ent->getId(), $request);
+        return parent::putAction($id, $request);
     }
 
     /**
@@ -178,13 +166,12 @@ class ClientDeviceController extends CrudController
      *      }
      * )
      * @Rest\Delete("/{id}", requirements={"id"="\d+|.*?"})
+     *
      * {@inheritdoc}
      */
     public function deleteAction($id, Request $request)
     {
-        $ent = $this->findEntity($id, $request);
-
-        return parent::deleteAction($ent->getId(), $request);
+        return parent::deleteAction($id, $request);
     }
 
     /**
@@ -204,8 +191,7 @@ class ClientDeviceController extends CrudController
      */
     protected function getLocationUrl($entity, Request $request, array $params = [])
     {
-        $route = preg_replace('/_post$/', '_get', $request->get('_route'));
-
+        $route     = preg_replace('/_post$/', '_get', $request->get('_route'));
         $setParams = [
             'id'       => $entity->getId(),
             'app_type' => $request->attributes->get('app_type'),
@@ -223,16 +209,16 @@ class ClientDeviceController extends CrudController
         $repos   = $this->getManager()->getRepository(self::$entity);
         $entity  = null;
 
-        if (!TypeUtils::isIntLike($id)) {
-            $criteria = [
-                'device_id' => $id,
-                'app_type'  => $appType,
-            ];
+        // try to find by device id
+        $criteria = [
+            'device_id' => $id,
+            'app_type'  => $appType,
+        ];
 
-            /** @var ClientDevice $entity */
-            $entity = $repos->findOneBy($criteria);
-        }
+        /** @var ClientDevice $entity */
+        $entity = $repos->findOneBy($criteria);
 
+        // try to find by id
         if (!$entity && TypeUtils::isIntLike($id)) {
             $entity = $repos->find($id);
 
@@ -248,5 +234,22 @@ class ClientDeviceController extends CrudController
         $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, new PermissionGroupContext($entity));
 
         return $entity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options['app_type'] = $request->attributes->get('app_type');
+        $options['person']   = $this->get('security.token_storage')->getToken()->getUser();
+
+        if ($model && $model->getDeviceId()) {
+            $options['device_id'] = $model->getDeviceId();
+        } elseif ($request->attributes->get('id') && !$request->request->get('device_id')) {
+            $options['device_id'] = $request->attributes->get('id');
+        }
+
+        return parent::handleForm($model, $request, $options);
     }
 }

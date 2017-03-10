@@ -346,6 +346,7 @@ class ObjectsManager
             'VoiceQueueTarget'         => [Factory\SimpleFactory::class, 'create', VoiceQueueTarget::class],
             'VoiceAgentTarget'         => [Factory\SimpleFactory::class, 'create', VoiceAgentTarget::class],
             'VoiceAutoAttendantTarget' => [Factory\SimpleFactory::class, 'create', VoiceAutoAttendantTarget::class],
+            'ClientDevice'             => [Factory\SimpleFactory::class, 'create', ClientDevice::class],
         ];
     }
 

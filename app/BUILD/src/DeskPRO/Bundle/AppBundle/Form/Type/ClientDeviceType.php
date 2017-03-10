@@ -58,6 +58,7 @@ class ClientDeviceType extends AbstractType
                 ],
             ]);
         }
+
         $builder
             ->add('device_type', ChoiceType::class, [
                 'required'          => true,
@@ -67,6 +68,8 @@ class ClientDeviceType extends AbstractType
                     ClientDevice::TYPE_IOS_GENERIC,
                     ClientDevice::TYPE_IOS_IPAD,
                     ClientDevice::TYPE_IOS_IPHONE,
+                    ClientDevice::TYPE_ANDROID_PHONE,
+                    ClientDevice::TYPE_ANDROID_TABLET,
                 ],
                 'constraints' => [
                     new Assert\NotNull(),
@@ -90,7 +93,7 @@ class ClientDeviceType extends AbstractType
             /* @var ClientDevice $data */
             $cd = $event->getData();
 
-            if ($cd->canNotify()) {
+            if ($cd && $cd->canNotify()) {
                 $form->get('notification_token')->setData($cd->getNotifyToken());
             } else {
                 $form->get('notification_token')->setData('');

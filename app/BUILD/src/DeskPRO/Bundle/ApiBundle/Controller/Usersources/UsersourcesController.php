@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,6 +43,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/user_sources/{context}", requirements={"context": "(agent|user)"})
  * @ApiDoc(target="all", section="Usersources")
+ * @ApiUserContext("open")
  */
 class UsersourcesController extends CrudController
 {
@@ -66,5 +68,13 @@ class UsersourcesController extends CrudController
             $qb->andWhere("$alias.is_enabled = :is_enabled");
             $qb->setParameter('is_enabled', $isEnabled);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function denyAccessUnlessGranted($attributes, $object = null, $message = 'Access Denied.')
+    {
+        // open endpoint, skip security checks
     }
 }
