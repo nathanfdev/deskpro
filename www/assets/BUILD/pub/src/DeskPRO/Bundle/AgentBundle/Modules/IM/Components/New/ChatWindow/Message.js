@@ -41,7 +41,8 @@ class Message extends React.Component {
       a: { title: 'Article', url: 'agent/kb/article/' },
       n: { title: 'News', url: 'agent/news/post/' },
       d: { title: 'Download', url: 'agent/downloads/file/' },
-      f: { title: 'Feedback', url: 'agent/feedback/view/' }
+      f: { title: 'Feedback', url: 'agent/feedback/view/' },
+      u: { title: 'Userchat', url: 'agent/chat/view/' }
     };
     let newMessage = message;
 

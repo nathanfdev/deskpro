@@ -81,17 +81,24 @@ class Tabs extends React.Component {
     const tabsItems = [];
     const self = this;
     let key = 1;
-    items.map((item, index) => {
-      const props = {
-        key,
-        tabId:     item.id,
-        active:    self.state.activeId ? self.state.activeId === item.id : index === 0,
-        content:   item.content,
-        className: classes.item
-      };
-      key += 1;
-      return tabsItems.push(<TabsItem {...props} />);
-    });
+    items
+      .filter((item, index) => {
+        if (self.state.activeId) {
+          return self.state.activeId === item.id;
+        }
+        return index === 0;
+      })
+      .map((item, index) => {
+        const props = {
+          key,
+          tabId:     item.id,
+          active:    self.state.activeId ? self.state.activeId === item.id : index === 0,
+          content:   item.content,
+          className: classes.item
+        };
+        key += 1;
+        return tabsItems.push(<TabsItem {...props} />);
+      });
 
     return tabsItems;
   }

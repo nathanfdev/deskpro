@@ -225,8 +225,6 @@ img.emojione, svg.emojione {
     top: -9px !important;
   }
 
-
-
   .im.header {
     padding-right: 0;
     height: 40px;
@@ -238,11 +236,17 @@ img.emojione, svg.emojione {
       svg {
         width: 30px;
       }
-
     }
 
     .wrapper {
       vertical-align: middle;
+      > span.chat-header {
+        display: inline-block;
+        max-width: 290px;
+        height: 28px;
+        line-height: 15px;
+        overflow: hidden;
+      }
 
       .dp-button {
         &.search, &.close-im {
@@ -1072,6 +1076,10 @@ img.emojione, svg.emojione {
           outline: none;
           border: 1px solid $dp-greyscale-450;
           font-size: 12px;
+
+          img {
+            max-width: 280px;
+          }
 
           ol, ul {
             padding-left: 10px;

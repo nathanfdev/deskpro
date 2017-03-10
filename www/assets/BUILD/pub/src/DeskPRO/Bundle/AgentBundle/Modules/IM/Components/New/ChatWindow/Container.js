@@ -1,5 +1,6 @@
 import 'froala-editor/js/froala_editor.pkgd.min';
 import React, { PropTypes } from 'react';
+import ReactTooltip from 'react-tooltip';
 import Isvg from 'react-inlinesvg';
 import $ from 'jquery';
 import 'mark.js';
@@ -85,6 +86,8 @@ class Container extends React.Component {
         return 'download';
       case 'feedback':
         return 'thumbs outline up';
+      case 'userchat':
+        return 'comment outline';
       default:
         return '';
     }
@@ -168,10 +171,12 @@ class Container extends React.Component {
     }
 
     const header = this.headerHelper.getHeaderText();
+    const tooltipId = `tooltip-for-chat-header-${current.get('id')}`;
 
     return (
       <span className="wrapper">
-        {header}
+        <span data-for={tooltipId} data-tip={header} className="chat-header dont-break-out">{header}</span>
+        <ReactTooltip delayShow={1000} id={tooltipId} effect="solid" place="top" className="im-tooltip" />
         <CloseChat onClick={() => { this.closeContainer(); }} />
         <i
           className={classNames('search icon dp-button', { enabled: this.state.searching })}
@@ -254,7 +259,9 @@ class Container extends React.Component {
   bindFroalaEvents = (e, editor) => {
     this.editor = editor;
     editor.events.on('keydown', this.handleKeydown, true);
-    editor.events.focus();
+    if (document.activeElement.tagName.toLowerCase() === 'body') {
+      editor.events.focus();
+    }
   };
 
   handleKeydown = (e) => {
@@ -355,7 +362,7 @@ class Container extends React.Component {
   }
 
   handleLink(item) {
-    const propertyName = `${item.tabType}_id`;
+    const propertyName = item.tabType === 'userchat' ? 'conversation_id' : `${item.tabType}_id`;
     const message      = `{{${item.tabType.charAt(0).toLowerCase()}-${item.page.meta[propertyName]}}}: ${item.title}`;
     const editor       = this.editor;
     editor.events.focus();
@@ -364,7 +371,6 @@ class Container extends React.Component {
     this.handleChange(editor.html.get());
     this.closeLink();
   }
-
 
   renderAttachList() {
     const { activeTabs } = this.props;
