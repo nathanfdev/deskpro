@@ -27,8 +27,7 @@ class ViewTopic extends React.Component {
 
   componentDidMount() {
     if (this.props.params.splat) {
-      const guideSlug = this.props.params.splat.split('/')[0];
-      this.grabGuideFromApi(guideSlug);
+      this.grabGuideFromApi(this.getGuideSlug(this.props.params.splat));
     }
   }
 
@@ -36,10 +35,13 @@ class ViewTopic extends React.Component {
     if (nextProps.params.slug !== this.props.params.slug) {
       this.grabTopicFromApi(nextProps.params.slug);
     }
-    if (nextProps.params.guideSlug !== this.props.params.guideSlug) {
-      this.grabGuideFromApi(nextProps.params.guideSlug);
+    const nextGuideSlug = this.getGuideSlug(nextProps.params.splat);
+    if (nextGuideSlug !== this.getGuideSlug(this.props.params.splat)) {
+      this.grabGuideFromApi(nextGuideSlug);
     }
   }
+
+  getGuideSlug = splat => splat.split('/')[0];
 
   grabGuideFromApi(slug) {
     portalHttp.sendGet(`DP_URL/portal/api/guides/guide/${slug}`).then((response) => {
@@ -72,7 +74,8 @@ class ViewTopic extends React.Component {
 
   render() {
     const topics = JSON.parse(window.topicList);
-    const { locale, guideSlug } = this.props.params;
+    const { locale, splat } = this.props.params;
+    const guideSlug = this.getGuideSlug(splat);
     return (
       <div>
         <div className="topic-list">

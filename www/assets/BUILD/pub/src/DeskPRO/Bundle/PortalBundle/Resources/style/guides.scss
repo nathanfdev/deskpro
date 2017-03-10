@@ -97,6 +97,59 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     border-radius: 2px;
     background-color: #f8f8f8;
   }
+
+  $table-radius: 2px;
+
+  table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    thead {
+      th {
+        border: solid #e6e7e6;
+        background-color: #f8f8f8;
+        border-width: 1px 0 2px 0;
+        padding: 5px;
+      }
+      tr:first-child th:first-child {
+        border-left-width: 1px;
+        border-top-left-radius: $table-radius;
+      }
+      tr:first-child th:last-child {
+        border-right-width: 1px;
+        border-top-right-radius: $table-radius;
+      }
+    }
+    tr {
+      border: solid 1px #e6e7e6;
+      td {
+        border: solid #e6e7e6;
+        border-width: 0 0 1px;
+        color: #333;
+        padding: 5px;
+      }
+      td:first-child {
+        border-left-width: 1px;
+      }
+      td:last-child {
+        border-right-width: 1px;
+      }
+    }
+    tr:last-child {
+      td {
+        border: solid #e6e7e6;
+        border-width: 0 0 2px;
+      }
+      td:first-child {
+        border-left-width: 1px;
+        border-bottom-left-radius: $table-radius;
+      }
+      td:last-child {
+        border-right-width: 1px;
+        border-bottom-right-radius: $table-radius;
+      }
+    }
+  }
   .section-header {
     h1 {
       font-size: 24px;
