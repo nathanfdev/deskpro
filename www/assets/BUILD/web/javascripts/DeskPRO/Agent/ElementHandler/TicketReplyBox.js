@@ -71,13 +71,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				autosaveContent: 'ticket',
 				minHeight: 120,
 				autosaveContentId: (this.page ? this.page.meta.ticket_id : false),
-				focusCallback: function() {
-					if (!self.page.hasReplyFocused) {
-						self.wrapper.find('div.layout-content').trigger('goscrolltop');
-					}
-
-					self.page.hasReplyFocused = true;
-				},
 				preAutosaveCallback: function(textarea, data) {
 
 					if (self.getElById('reply_is_trans').val() != "") {
@@ -947,19 +940,19 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				var ev = info.event;
 
 				if (isCtrl && (ev.which == 85)) {
-					closeStatusMenu();
+          statusMenuMenu.close();
 					self.page.shortcutReplySetAwaitingUser();
 					info.cancel = true;
 					return;
 				}
 				if (isCtrl && (ev.which == 65)) {
-					closeStatusMenu();
+          statusMenuMenu.close();
 					self.page.shortcutReplySetAwaitingAgent();
 					info.cancel = true;
 					return;
 				}
 				if (isCtrl && (ev.which == 68)) {
-					closeStatusMenu();
+          statusMenuMenu.close();
 					self.page.shortcutReplySetResolved();
 					info.cancel = true;
 					return;
@@ -973,19 +966,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			}
 		});
 
-		var closeStatusMenu = function() {
-			statusMenuMenu.close();
-		};
-
-		var openStatusMenu = function() {
-			statusMenuMenu.open();
-		};
-
-		this.openStatusMenu = openStatusMenu;
-
 		statusMenuTrigger.on('click', function(ev) {
 			ev.preventDefault();
-			openStatusMenu();
+      statusMenuMenu.open();
 		});
 
 		this.onMacrosUpdated = function(ev) {
