@@ -413,7 +413,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.isAdding = false;
 
 		this.$timeout(function() {
-			self.tabBarOverflow.update();
+			if (self.tabBarOverflow) {
+        self.tabBarOverflow.update();
+      }
 		});
 		return id;
 	},
@@ -565,7 +567,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var guess_slack = Math.round(($el.outerWidth() - $el.innerWidth()) / 2);
 		var right = left + $el.innerWidth() + guess_slack;
 
-		var bounds = this.tabBarOverflow.getBounds();
+		var bounds = this.tabBarOverflow ? this.tabBarOverflow.getBounds() : {};
 
 		return !(right < bounds.left || left > bounds.right);
 	},
@@ -753,7 +755,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			this._tabs.unshift(tab);
 		}
 
-		this.tabBarOverflow.resetScroll();
+		if (this.tabBarOverflow) {
+			this.tabBarOverflow.resetScroll();
+		}
 
 		if(!noalert) {
 			$(tab.tabBtnId).effect("pulsate", { times:4 }, 500);
