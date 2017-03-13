@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import AvatarHelper from './AvatarHelper';
 import AbstractList from './AbstractList';
+import { getDepartmentAgents } from '../../../../Application/Actions/departmentActions';
 
 class RecentList extends React.Component {
 
@@ -49,8 +50,13 @@ class RecentList extends React.Component {
     return RecentList.sortList(filtered).map(this.getItem.bind(this));
   }
 
-  getAgents(container) {
-    return container.get('agents').map(
+  getNotificationCount(chat) {
+    const nestedCounts = this.props.counts.nested ? this.props.counts.nested[chat.get('id')] : false;
+    return nestedCounts && nestedCounts.count ? nestedCounts.count : 0;
+  }
+
+  renderAgents(agents) {
+    return agents.map(
       (agentId) => {
         const agent = this.props.agents.get(agentId);
         if (agentId === this.props.me.get('id') || !agent) {
@@ -66,11 +72,6 @@ class RecentList extends React.Component {
         return AvatarHelper.renderAgentAvatar(agent, 20, classNames(className), agent.get('name'));
       }
     );
-  }
-
-  getNotificationCount(chat) {
-    const nestedCounts = this.props.counts.nested ? this.props.counts.nested[chat.get('id')] : false;
-    return nestedCounts && nestedCounts.count ? nestedCounts.count : 0;
   }
 
   renderNotificationsBalloon(chat) {
@@ -129,7 +130,9 @@ class RecentList extends React.Component {
           {this.renderNotificationsBalloon(chat)}
           <div className="description">
             {department.get('title')}
-            <span className="agents-list">{this.getAgents(department)}</span>
+            <span className="agents-list">
+              {this.renderAgents(getDepartmentAgents(department))}
+            </span>
           </div>
         </div>
         <div className="timestamp content right floated">
@@ -151,7 +154,7 @@ class RecentList extends React.Component {
         <div className="content team" onClick={() => this.props.onRecentClick(chat.get('id'))}>
           <div className="header">
             {team.get('name')}
-            <span className="agents-list">{this.getAgents(team)}</span>
+            <span className="agents-list">{this.renderAgents(team.get('agents'))}</span>
           </div>
           {this.renderNotificationsBalloon(chat)}
         </div>
@@ -173,7 +176,7 @@ class RecentList extends React.Component {
         <div className="content team" onClick={() => this.props.onRecentClick(chat.get('id'))}>
           <div className="header">
             {chat.get('name')}
-            <span className="agents-list">{this.getAgents(chat)}</span>
+            <span className="agents-list">{this.renderAgents(chat.get('agents'))}</span>
           </div>
           {this.renderNotificationsBalloon(chat)}
         </div>

@@ -109,7 +109,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\DepartmentHandler
     arguments:
       - "@avatar_resolver"
-      - "@doctrine.orm.default_entity_manager"
+      - "@data.departments"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

@@ -30,13 +30,11 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Usergroup;
-use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
+use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Department as DepartmentModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
-use Doctrine\ORM\EntityManager;
 
 /**
  * Class TaskProjectHandler.
@@ -49,22 +47,20 @@ class DepartmentHandler extends AbstractEntityHandler
     protected $resolver;
 
     /**
-     * @var EntityManager
+     * @var DepartmentDataService
      */
-    protected $em;
-
-    private $mightyUsers = [];
+    protected $departmentsData;
 
     /**
      * Constructor.
      *
-     * @param AvatarResolver $resolver
-     * @param EntityManager  $em
+     * @param AvatarResolver        $resolver
+     * @param DepartmentDataService $departmentsData
      */
-    public function __construct(AvatarResolver $resolver, EntityManager $em)
+    public function __construct(AvatarResolver $resolver, DepartmentDataService $departmentsData)
     {
-        $this->resolver = $resolver;
-        $this->em       = $em;
+        $this->resolver        = $resolver;
+        $this->departmentsData = $departmentsData;
     }
 
     /**
@@ -76,61 +72,15 @@ class DepartmentHandler extends AbstractEntityHandler
     }
 
     /**
+     * @internal
+     *
      * @param Department $department
      *
-     * @return array
+     * @return Person[]
      */
     public function getAgents(Department $department)
     {
-        if (!$this->mightyUsers) {
-            $mightyAgentGroups = $this->em
-                ->getRepository(Usergroup::class)
-                ->findBy(['sys_name' => [Usergroup::AGENT_ALL_PERM, Usergroup::AGENT_ALL_SAFE_PERM]])
-            ;
-
-            foreach ($mightyAgentGroups as $agentGroup) {
-                foreach ($agentGroup->getPeople() as $agent) {
-                    $this->mightyUsers[] = $agent->getId();
-                }
-            }
-        }
-
-        /** @var DepartmentRepository $departmentRepository */
-        $departmentRepository = $this->em->getRepository(Department::class);
-        $data                 = $departmentRepository->getPermissionsInfo($department);
-
-        $ids = [];
-        foreach ($data['agentgroups'] as $usergroup) {
-            if ($usergroup['perm_name'] === 'full') {
-                $ids[] = $usergroup['usergroup_id'];
-            }
-        }
-
-        if ($ids) {
-            $usergroups = implode(',', $ids);
-            $sql        = "SELECT DISTINCT(person_id) FROM person2usergroups WHERE usergroup_id IN ({$usergroups})";
-            $personIds  = $this->em->getConnection()->fetchAll($sql);
-            $personIds  = array_column($personIds, 'person_id');
-        } else {
-            $personIds = [];
-        }
-
-        foreach ($personIds as &$id) {
-            $id = (int) $id;
-        }
-
-        foreach ($data['agents'] as $agent) {
-            if ($agent['perm_name'] === 'full') {
-                $personIds[] = (int) $agent['agent_id'];
-            }
-        }
-
-        $personIds = array_unique(array_merge($this->mightyUsers, $personIds), SORT_NUMERIC);
-        $people    = $this->em->getRepository(Person::class)->findBy([
-            'id' => $personIds,
-        ]);
-
-        return $people;
+        return $this->departmentsData->getDepartmentAgents($department);
     }
 
     /**

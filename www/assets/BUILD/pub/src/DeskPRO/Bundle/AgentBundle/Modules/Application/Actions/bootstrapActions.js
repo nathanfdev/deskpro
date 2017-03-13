@@ -47,8 +47,8 @@ export const preloadData    = createAction(
         me:                    { endpoint: 'me' },
         agent_teams:           { endpoint: 'agent_teams' },
         my_agent_teams:        { endpoint: 'agent_teams', query: 'my=true' },
-        ticket_departments:    { endpoint: 'ticket_departments' },
-        my_ticket_departments: { endpoint: 'ticket_departments', query: 'my=true' },
+        ticket_departments:    { endpoint: 'ticket_departments', query: 'include=agents' },
+        my_ticket_departments: { endpoint: 'ticket_departments', query: 'my=true&include=agents' },
         chat_departments:      { endpoint: 'chat_departments', query: 'include=agents' },
         onboardings:           { endpoint: 'people/onboarding/pending' }
       };
@@ -70,9 +70,9 @@ export const preloadData    = createAction(
         .success(({ responses }) => {
           const data = flattenBatchResponses(responses);
 
+          dispatch(setCollection('Department', 'all_chat', data.chat_departments));
           dispatch(setCollection('Department', 'all_tickets', data.ticket_departments));
           dispatch(setCollection('Department', 'my_tickets', data.my_ticket_departments));
-          dispatch(setCollection('Department', 'all_chat', data.chat_departments));
           dispatch(setCollection('Person', 'agents', data.agents));
           dispatch(setCollection('AgentTeam', 'all', data.agent_teams));
           dispatch(setCollection('AgentTeam', 'my', data.my_agent_teams));
@@ -83,14 +83,14 @@ export const preloadData    = createAction(
             dispatch(setCollection('Onboarding', 'pending', [data.onboardings]));
           }
 
-          const linked = getLinkedData(responses, 'chat_departments', 'agents');
-          for (const dep of data.chat_departments) {
-            if (linked[dep.id]) {
-              dep.agents = linked[dep.id];
-            } else {
-              dep.agents = [];
+          ['chat_departments', 'ticket_departments'].forEach((depType) => {
+            const linked = getLinkedData(responses, depType, 'agents');
+            for (const dep of data[depType]) {
+              if (linked[dep.id]) {
+                dispatch(setCollection('Person', `department_${dep.id}`, linked[dep.id]));
+              }
             }
-          }
+          });
 
           dispatch(setAgentSettings(data.settings));
           dispatch(setCollection('Person', 'me', [data.me.person]));

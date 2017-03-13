@@ -5,6 +5,7 @@ import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { Toggle, Range } from 'DeskPRO/Component/Semantic/Form';
+import { getDepartmentAgents } from '../../Application/Actions/departmentActions';
 
 class Chat extends React.Component {
 
@@ -66,13 +67,11 @@ class Chat extends React.Component {
     let result = [];
     if (departmentMode) {
       chatDepartments.forEach((department, index) => {
-        const departmentAgents = agents.filter(agent =>
-          department.has('agents')
-          && department.get('agents').contains(agent.get('id'))
-          && onlineAgents.contains(agent.get('id'))
+        const departmentAgents = getDepartmentAgents(department).filter(agent =>
+          onlineAgents.contains(agent.get('id'))
         );
 
-        if (departmentAgents.length) {
+        if (departmentAgents.size) {
           result.push(<h4 key={`dep${index}`}>{department.get('title')}</h4>);
           result.push(<hr key={`hr${index}`} />);
           result.push(Chat.getAgentsList(departmentAgents, department.get('id')));

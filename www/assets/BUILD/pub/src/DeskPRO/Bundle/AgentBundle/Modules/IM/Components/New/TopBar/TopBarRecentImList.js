@@ -12,6 +12,7 @@ import { RecentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New
 import AvatarHelper from '../IMTabs/AvatarHelper';
 import HeaderHelper from '../ChatWindow/HeaderHelper';
 import * as chatActions from '../../../Actions/chatsActions';
+import { getDepartmentAgents } from '../../../../Application/Actions/departmentActions';
 
 class TopBarRecentImList extends RecentList {
 
@@ -186,7 +187,7 @@ class TopBarRecentImList extends RecentList {
     const department = this.props.departments.getIn(chat.get('departments', 0));
     const header = this.getHeaderHelper(chat).getHeaderText(true);
     const notificationsCount = this.getNotificationCount(chat);
-    const participantsCount = department.get('agents').size;
+    const participantsCount = getDepartmentAgents(department).size;
     const title = `${header} (${participantsCount} participant${participantsCount === 1 ? '' : 's'}). ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
 
     return (

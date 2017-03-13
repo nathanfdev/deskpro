@@ -76,8 +76,9 @@ abstract class AbstractDepartmentsController extends CrudController
     public function getAgentsAction($id, Request $request)
     {
         $department = $this->findEntity($id, $request);
+        $agents     = $this->get('data.departments')->getDepartmentAgents($department);
 
-        return View::create($this->wrap($department->getPersonList()));
+        return View::create($this->wrap($agents));
     }
 
     /**
