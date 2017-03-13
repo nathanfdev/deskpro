@@ -82,7 +82,7 @@ export const startChat = createAction(
     return new Promise(
       (resolve, reject) => {
         const store = getState().RecordsStore.store.get('AgentChat');
-        const chat = store.get('records').toJS()[chatId];
+        const chat = store.get('records') ? store.get('records').toJS()[chatId] : null;
         if (chatId && chat) {
           processChat(chatId, chat, dispatch);
           return resolve(store.get('records').toJS()[chatId]);
