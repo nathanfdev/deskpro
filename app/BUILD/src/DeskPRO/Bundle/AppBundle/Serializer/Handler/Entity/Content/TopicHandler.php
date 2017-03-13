@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content;
 
 use Application\DeskPRO\Entity\Topic;
+use Application\DeskPRO\Twig\Extension\TemplatingExtension;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Topic as TopicModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -39,13 +40,28 @@ use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 class TopicHandler extends AbstractEntityHandler
 {
     /**
+     * @var TemplatingExtension
+     */
+    protected $templatingExtension;
+
+    /**
+     * Constructor.
+     *
+     * @param TemplatingExtension $templatingExtension
+     */
+    public function __construct(TemplatingExtension $templatingExtension)
+    {
+        $this->templatingExtension = $templatingExtension;
+    }
+
+    /**
      * {@inheritdoc}
      *
      * @param Topic $entity
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
-        return new TopicModel($entity);
+        return new TopicModel($entity, $this->templatingExtension);
     }
 
     /**

@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
 use Application\DeskPRO\Entity\Topic as TopicEntity;
+use Application\DeskPRO\Twig\Extension\TemplatingExtension;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -68,14 +69,17 @@ class Topic extends ContentAbstract
     /**
      * Constructor.
      *
-     * @param TopicEntity $entity
+     * @param TopicEntity         $entity
+     * @param TemplatingExtension $templatingExtension
      */
-    public function __construct(TopicEntity $entity)
+    public function __construct(TopicEntity $entity, $templatingExtension)
     {
         parent::__construct($entity);
         $this->person       = null;
         $this->children     = $entity->getChildren();
         $this->displayOrder = $entity->getDisplayOrder();
         $this->parent       = $entity->getParent();
+
+        $this->content = $templatingExtension->replaceContent($this->content);
     }
 }
