@@ -1911,6 +1911,6 @@ class TemplatingExtension extends \Twig_Extension
             $title = $object->getTitle();
         }
 
-        return '<a href="'.$url.'">'.$title.'</a>';
+        return '<a class="internal_link '.$type.'" href="'.$url.'">'.$title.'</a>';
     }
 }

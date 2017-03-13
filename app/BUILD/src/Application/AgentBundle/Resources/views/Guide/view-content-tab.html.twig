@@ -12,6 +12,7 @@
 				</div>
 			{% endif %}
 			<textarea class="edit-content-field" name="topic[content]" rows="5" cols="50">{{ state.topic.content|default(topic.content) }}</textarea>
+			<textarea class="content_input" name="content_input"  style="display: none;">{{topic.content_input}}</textarea>
 			<input type="hidden" class="content_input_type" name="content_input_type" value="{{ topic.content_input_type }}">
 			<textarea class="edit-content-field-default" style="display: none;">{{topic.content}}</textarea>
 		</div>

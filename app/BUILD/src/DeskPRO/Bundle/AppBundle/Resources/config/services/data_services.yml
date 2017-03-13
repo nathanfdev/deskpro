@@ -76,3 +76,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksCountsDataService
     arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
 
+  data.guides:
+    class: DeskPRO\Bundle\AppBundle\DataService\GuidesDataService
+    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]

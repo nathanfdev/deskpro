@@ -42,6 +42,7 @@ class UseSectionVoter extends AbstractVoter
     const USE_DOWNLOADS     = 'USE_DOWNLOADS';
     const USE_NEWS          = 'USE_NEWS';
     const USE_TICKETS       = 'USE_TICKETS';
+    const USE_GUIDES        = 'USE_GUIDES';
     const VIEW_TICKETS_LINK = 'VIEW_TICKETS_LINK';
 
     /**
@@ -52,6 +53,7 @@ class UseSectionVoter extends AbstractVoter
         return in_array($attribute, [
             self::USE_ARTICLES,
             self::USE_FEEDBACK,
+            self::USE_GUIDES,
             self::USE_CHAT,
             self::USE_DOWNLOADS,
             self::USE_NEWS,
@@ -78,6 +80,8 @@ class UseSectionVoter extends AbstractVoter
                 return $this->getActiveBrandSetting('core.apps_kb') && $permissionBag->get('articles.use');
             case static::USE_FEEDBACK:
                 return $this->getActiveBrandSetting('core.apps_feedback') && $permissionBag->get('feedback.use');
+            case static::USE_GUIDES:
+                return $this->getActiveBrandSetting('core.apps_guides') && $permissionBag->get('guides.use');
             case static::USE_CHAT:
                 return $this->getActiveBrandSetting('core.apps_chat')
                     && $permissionBag->get('chat.use')

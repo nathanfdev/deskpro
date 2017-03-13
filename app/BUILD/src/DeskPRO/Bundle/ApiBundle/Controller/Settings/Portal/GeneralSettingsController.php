@@ -202,6 +202,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
             ->updateSetting(PortalSettingsResolver::APPS_KB, $model->isAppsKb(), $brand)
             ->updateSetting(PortalSettingsResolver::APPS_NEWS, $model->isAppsNews(), $brand)
             ->updateSetting(PortalSettingsResolver::APPS_DOWNLOADS, $model->isAppsDownloads(), $brand)
+            ->updateSetting(PortalSettingsResolver::APPS_GUIDES, $model->isAppsDownloads(), $brand)
             ->updateSetting(PortalSettingsResolver::IFACE_PORTAL, $model->isIfacePortal(), $brand)
             ->updateSetting(PortalSettingsResolver::IFACE_WIDGET, $model->isIfaceWidget(), $brand)
             ->updateSetting(PortalSettingsResolver::SHOW_RATINGS, $model->isShowRatings(), $brand)

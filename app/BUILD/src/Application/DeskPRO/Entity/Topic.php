@@ -29,12 +29,17 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\EntityRepository\Topic as TopicRepository;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @PortalLinkRoute("portal_topic_view", route_param_map={"slug":"slug"})
+ * @PortalLinkRoute("portal_topic_view", route_param_map={"slug": "id"}, type="permalink")
+ */
 class Topic extends ContentAbstract
 {
     const CONTENT_TYPE = 'topic';
@@ -63,7 +68,7 @@ class Topic extends ContentAbstract
     protected $display_order = 0;
 
     /**
-     * Topic`s parent.
+     * Topic's parent.
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Topic>")
      *
@@ -72,7 +77,18 @@ class Topic extends ContentAbstract
     protected $parent;
 
     /**
+     * Topic's children.
+     *
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Topic>>")
+     *
+     * @var Topic[]
+     */
+    protected $children;
+
+    /**
      * Topic without content used for structure.
+     *
+     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -171,6 +187,26 @@ class Topic extends ContentAbstract
     public function setParent($parent)
     {
         $this->setModelField('parent', $parent);
+
+        return $this;
+    }
+
+    /**
+     * @return Topic[]
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @param Topic[] $children
+     *
+     * @return Topic
+     */
+    public function setChildren($children)
+    {
+        $this->setModelField('children', $children);
 
         return $this;
     }
@@ -416,6 +452,14 @@ class Topic extends ContentAbstract
                     ],
                 ],
                 'dpApi' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'children',
+                'targetEntity' => self::class,
+                'mappedBy'     => 'parent',
+                'orderBy'      => ['display_order' => 'ASC'],
             ]
         );
         $metadata->mapManyToOne(

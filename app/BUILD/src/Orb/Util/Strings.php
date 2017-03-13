@@ -2772,4 +2772,12 @@ class Strings
 
         return $filename_safe ?: 'file';
     }
+
+    public static function escapeForJson($string)
+    {
+        $escapers     = ['\\', '/', '"', "\n", "\r", "\t", "\x08", "\x0c", "'"];
+        $replacements = ['\\\\', '\\/', '\\"', '\\n', '\\r', '\\t', '\\f', '\\b', "\\'"];
+
+        return str_replace($escapers, $replacements, $string);
+    }
 }

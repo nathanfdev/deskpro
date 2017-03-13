@@ -382,6 +382,14 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \DeskPRO\Bundle\AppBundle\DataService\GuidesDataService
+     */
+    public function getGuidesDataService()
+    {
+        return $this->get('data.guides');
+    }
+
+    /**
      * @return \DeskPRO\Bundle\AppBundle\DataService\ArticlesDataService
      */
     protected function getArticlesDataService()

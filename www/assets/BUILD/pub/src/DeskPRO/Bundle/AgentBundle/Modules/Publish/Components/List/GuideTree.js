@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import SortableTree from 'react-sortable-tree';
+import SortableTree, { toggleExpandedForAll } from 'react-sortable-tree';
 import classNames from 'classnames';
 import Renderer from 'DeskPRO/Component/Tree/Renderer';
 import * as actions from '../../Actions/guideListActions';
@@ -84,8 +84,12 @@ export class GuideTree extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
+    const expanded = true;
     this.setState({
-      treeData: nextProps.tree
+      treeData: toggleExpandedForAll({
+        treeData: nextProps.tree,
+        expanded,
+      }),
     });
   }
 

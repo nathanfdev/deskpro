@@ -50,6 +50,8 @@ class NewTopic extends AbstractType
         $builder
             ->add('title', TextType::class)
             ->add('content', TextareaType::class, ['filter_clean' => false])
+            ->add('content_input', TextareaType::class, ['filter_clean' => false])
+            ->add('content_input_type', TextType ::class)
             ->add('guide_id', TextType::class)
             ->add('parent_id', TextType ::class)
             ->add('status', TextType::class)

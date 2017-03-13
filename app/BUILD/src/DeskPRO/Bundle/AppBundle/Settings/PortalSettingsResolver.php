@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\DownloadsSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\FeedbackSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GeneralSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GuidesSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\NewsSettings;
 
@@ -52,6 +53,7 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
     const APPS_KB        = 'core.apps_kb';
     const APPS_NEWS      = 'core.apps_news';
     const APPS_DOWNLOADS = 'core.apps_downloads';
+    const APPS_GUIDES    = 'core.apps_guides';
 
     const IFACE_PORTAL = 'core.iface_portal';
     const IFACE_WIDGET = 'core.iface_widget';
@@ -64,11 +66,13 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
     const TAB_KB        = 'user.portal_tab_articles';
     const TAB_NEWS      = 'user.portal_tab_news';
     const TAB_DOWNLOADS = 'user.portal_tab_downloads';
+    const TAB_GUIDES    = 'user.portal_tab_guides';
 
     const SUBSCRIPTION_FEEDBACK  = 'user.feedback_subscriptions';
     const SUBSCRIPTION_KB        = 'user.kb_subscriptions';
     const SUBSCRIPTION_NEWS      = 'user.news_subscriptions';
     const SUBSCRIPTION_DOWNLOADS = 'user.downloads_subscriptions';
+    const SUBSCRIPTION_GUIDES    = 'user.downloads_guides';
 
     /**
      * {@inheritdoc}
@@ -142,6 +146,7 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
             ->setAppsKb($this->getSetting(self::APPS_KB, $brand))
             ->setAppsNews($this->getSetting(self::APPS_NEWS, $brand))
             ->setAppsDownloads($this->getSetting(self::APPS_DOWNLOADS, $brand))
+            ->setAppsGuides($this->getSetting(self::APPS_GUIDES, $brand))
             ->setIfacePortal($this->getSetting(self::IFACE_PORTAL, $brand))
             ->setIfaceWidget($this->getSetting(self::IFACE_WIDGET, $brand))
             ->setShowRatings($this->getSetting(self::SHOW_RATINGS, $brand))
@@ -223,6 +228,25 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
             ->setEnabled($this->getSetting(self::APPS_DOWNLOADS, $brand))
             ->setTabEnabled($this->getSetting(self::TAB_DOWNLOADS, $brand))
             ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_DOWNLOADS, $brand))
+            ->setBrand($brand)
+        ;
+
+        return $model;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return GuidesSettings
+     */
+    public function getGuidesSettings(Brand $brand = null)
+    {
+        $brand = $brand ?: $this->settingsResolver->getActiveBrand();
+        $model = new GuidesSettings();
+        $model
+            ->setEnabled($this->getSetting(self::APPS_GUIDES, $brand))
+            ->setTabEnabled($this->getSetting(self::TAB_GUIDES, $brand))
+            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_GUIDES, $brand))
             ->setBrand($brand)
         ;
 

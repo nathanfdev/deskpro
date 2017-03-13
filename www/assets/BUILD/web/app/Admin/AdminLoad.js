@@ -174,6 +174,7 @@ define([
   'Admin/DownloadsSettings/Ctrl/DownloadsSettings',
   'Admin/NewsSettings/Ctrl/NewsSettings',
   'Admin/FeedbackSettings/Ctrl/FeedbackSettings',
+  'Admin/GuidesSettings/Ctrl/GuidesSettings',
   'Admin/RoundRobin/Ctrl/List',
   'Admin/RoundRobin/Ctrl/Edit',
   'Admin/Icons/Ctrl/List',

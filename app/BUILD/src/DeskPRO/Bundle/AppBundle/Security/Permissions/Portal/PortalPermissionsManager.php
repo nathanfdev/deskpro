@@ -217,7 +217,8 @@ class PortalPermissionsManager
                 $this->permissionsLoader->getAllowedFeedbackCategories($userGroups),
                 $this->permissionsLoader->getAllowedNewsCategories($userGroups),
                 $this->permissionsLoader->getAllowedArticleCategories($userGroups),
-                $this->permissionsLoader->getAllowedDownloadCategories($userGroups)
+                $this->permissionsLoader->getAllowedDownloadCategories($userGroups),
+                $this->permissionsLoader->getAllowedGuides($userGroups)
             );
         }
 

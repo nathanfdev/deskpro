@@ -31,7 +31,6 @@ namespace Application\DeskPRO\EntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Util\Arrays;
-use Orb\Util\Strings;
 
 class Topic extends AbstractEntityRepository
 {
@@ -79,11 +78,12 @@ class Topic extends AbstractEntityRepository
     /**
      * Get a plain hierarchy array.
      *
-     * @param bool $reset
+     * @param bool       $reset
+     * @param Guide|null $guide
      *
      * @return array|null
      */
-    public function getInHierarchy($reset = false)
+    public function getInHierarchy($reset = false, $guide = null)
     {
         if (!$reset && $this->topicHierarchy !== null) {
             return $this->topicHierarchy;
@@ -92,13 +92,21 @@ class Topic extends AbstractEntityRepository
         if (is_array($reset)) {
             $topics = $reset;
         } else {
-            $select = 'id, parent_id, title';
+            $select = 'id, parent_id, title, slug';
 
-            $topics = $this->_em->getConnection()->fetchAllKeyed("
-                SELECT $select
-                FROM {$this->tableName}
-                ORDER BY display_order ASC, id ASC
-            ", [], 'id');
+            $qb = $this->_em->getConnection()->createQueryBuilder();
+            $qb->select($select);
+            $qb->from($this->tableName);
+            $qb->orderBy('display_order', 'ASC');
+            $qb->addOrderBy('id', 'ASC');
+
+            $params = [];
+            if ($guide) {
+                $qb->where('guide_id = ?');
+                $params[] = $guide->getId();
+            }
+
+            $topics = $this->_em->getConnection()->fetchAllKeyed($qb->getSQL(), $params, 'id');
         }
 
         $this->topicIds = [];
@@ -108,7 +116,6 @@ class Topic extends AbstractEntityRepository
                     $c[$k] = (int) $c[$k];
                 }
             }
-            $c['url_slug'] = $c['id'].'-'.Strings::slugifyTitle($c['title']);
 
             if (!isset($c['user_title']) || !$c['user_title']) {
                 $c['user_title'] = $c['title'];

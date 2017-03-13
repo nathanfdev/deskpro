@@ -5,12 +5,15 @@ import MarkdownIt from 'markdown-it';
 import emoji from 'markdown-it-emoji';
 import MarkdownItContainer from 'markdown-it-container';
 import toMarkdown from 'to-markdown';
-
+import Highlight from 'react-highlight';
+import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import 'codemirror/mode/xml/xml';
 import 'codemirror/mode/gfm/gfm';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/php/php';
 import 'codemirror/addon/edit/continuelist';
+import LinkMenu from './LinkMenu';
+
 
 import { getCursorState, applyFormat } from './format';
 import * as Icons from './Icons';
@@ -223,6 +226,15 @@ class MarkdownEditor extends React.Component {
     this.setState({ cs: getCursorState(this.codeMirror) });
   };
 
+  openLinkDialog = () => {
+    this.linkMenu.togglePopup();
+  };
+
+  insertLink = (link) => {
+    this.codeMirror.replaceSelection(link);
+    this.linkMenu.closePopup();
+  };
+
   codemirrorValueChanged = (doc) => {
     const newValue = doc.getValue();
     this.currentCodemirrorValue = newValue;
@@ -266,7 +278,18 @@ class MarkdownEditor extends React.Component {
         {this.renderButton('h3', 'h3')}
         {this.renderButton('bold', 'b')}
         {this.renderButton('italic', 'i')}
-        {this.renderButton('link', 'l')}
+        <PopUp
+          positionMy="right top"
+          positionAt="right bottom"
+          id={1}
+          elementId="markdown-add-link"
+          zIndex={99999}
+          content={<LinkMenu insertLink={this.insertLink} />}
+          ref={(c) => { this.linkMenu = c; }}
+          autoOpen={false}
+        >
+          {this.renderButton('link', 'l', this.openLinkDialog)}
+        </PopUp>
         {this.renderButton('oList', 'ol')}
         {this.renderButton('uList', 'ul')}
         {this.renderButton('quote', 'q')}
@@ -292,7 +315,11 @@ class MarkdownEditor extends React.Component {
           />
         </div>
         <h3>Preview</h3>
-        <div className="preview" dangerouslySetInnerHTML={{ __html: MarkdownEditor.prerenderHtml(this.state.html) }} />
+        <div className="preview guides">
+          <Highlight innerHTML>
+            {MarkdownEditor.prerenderHtml(this.state.html)}
+          </Highlight>
+        </div>
       </div>
     );
   }

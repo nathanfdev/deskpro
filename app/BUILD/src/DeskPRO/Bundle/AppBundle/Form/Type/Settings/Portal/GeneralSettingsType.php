@@ -57,6 +57,7 @@ class GeneralSettingsType extends AbstractType
             ->add('apps_kb', ApiBooleanType::class)
             ->add('apps_news', ApiBooleanType::class)
             ->add('apps_downloads', ApiBooleanType::class)
+            ->add('apps_guides', ApiBooleanType::class)
             ->add('iface_portal', ApiBooleanType::class)
             ->add('iface_widget', ApiBooleanType::class)
             ->add('show_ratings', ApiBooleanType::class)

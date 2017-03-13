@@ -1,0 +1,38 @@
+{% macro topic_children(guide, topic, current_topic) %}
+    {% if topic.children|length > 0 %}
+        <ul>
+            {% for child in topic.children %}
+                <li class="topic-item">
+                    <a
+                        class="{% if (current_topic and (child.slug == current_topic.slug)) %}active{% endif %}"
+                        href="{{ path('portal_guides_topic_view', {guide_slug: guide.slug, slug: child.slug}) }}"
+                    >
+                        {{child.title}}
+                    </a>
+                    {{ _self.topic_children(guide, child, current_topic) }}
+                </li>
+            {% endfor %}
+        </ul>
+    {%  endif %}
+{% endmacro %}
+
+{% if topics|length > 0 %}
+    <script>
+        var topicList = '{{ topics|json_encode|raw }}';
+    </script>
+    <ul>
+        {% for topic in topics %}
+            <li class="topic-item">
+                <a
+                    class="{% if (current_topic and (topic.slug == current_topic.slug)) %}active{% endif %}"
+                    href="{{ path('portal_guides_topic_view', {guide_slug: guide.slug, slug: topic.slug}) }}"
+                >
+                    {{topic.title}}
+                </a>
+                {{ _self.topic_children(guide, topic, current_topic) }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <strong>{{ phrase('portal.topics.none') }}</strong>
+{% endif %}

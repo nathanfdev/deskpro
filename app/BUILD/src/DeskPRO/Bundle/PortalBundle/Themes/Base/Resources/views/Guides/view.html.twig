@@ -1,0 +1,45 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block inner_content %}
+    <div class="guides topic-view"  id="react_portal_bundle">
+        <div class="topic-list">
+            <div class="guide">{{ guide.title }}</div>
+            <hr>
+            {% show topic_list with {guide: guide, topic: topic} %}
+        </div>
+        <div class="topic">
+            <header class="section-header">
+                <h1>{{ topic.title }}</h1>
+                <span class="publication_date">
+                    <label>{{  phrase('portal.general.published') }}:</label>
+                    {{ topic.date_published|date('d/m/Y') }}
+                </span>
+                <span class="last_update_date">
+                    <label>{{ phrase('portal.general.updated') }}:</label>
+                    {{ topic.date_updated|date('d/m/Y') }}
+                </span>
+                <hr>
+            </header>
+            <div class="topic-content">
+                {{ topic.content|content|raw }}
+            </div>
+        </div>
+        <div class="comment-column"></div>
+        <div class="content-summary">
+
+        </div>
+    </div>
+    <script>
+      var topic = '{{ topic_json|raw }}';
+      var routePath = window.location.hash.replace(/#\//, '');
+      if (routePath[0] != '/')
+        routePath = '/' + routePath;
+
+      var reactProps = {
+        routePath: routePath
+      };
+
+      window.PortalBundle.render(reactProps, document.getElementById('react_portal_bundle'));
+    </script>
+
+{% endblock inner_content %}

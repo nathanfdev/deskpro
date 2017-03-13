@@ -14,6 +14,18 @@
         </li>
       {% endif %}
 
+    {% elseif 'guides' == tab %}
+
+      {% if app.hasFeature('guides') and can_use_guides() and show_tab_guides() %}
+        <li class="item-guides">
+          <a href="{{ path('portal_guides') }}">
+            <i class="fa fa-book"></i>
+            <span class="title">{{ phrase('portal.general.nav-guides') }}</span>
+            <span class="subtitle">{{ phrase('portal.general.nav-guides-desc') }}</span>
+          </a>
+        </li>
+      {% endif %}
+
     {% elseif 'news' == tab %}
 
       {% if can_use_news() and show_tab_news() %}
