@@ -93,21 +93,33 @@ class GuidesController extends AbstractController
     }
 
     /**
-     * @Route("/guides/{guide_slug}/{slug}", name="portal_guides_topic_view")
-     * @Route("/guides/{guide_slug}/{parent_slugs}/{slug}", requirements={"parent_slugs" = ".+"}, name="portal_guides_topic_view_full")
+     * @Route("/guides/{guide_slug}/{slug}", name="portal_guides_topic_view_short")
+     * @Route("/guides/{guide_slug}{parents_slug}/{slug}", requirements={"parents_slug" = "(/.+)?"}, name="portal_guides_topic_view")
      * @Route("/guides/{guide_slug}/{slug}", name="portal_guides_topic_permalink")
      * @ParamConverter(name="topic", converter="deskpro_slug")
      * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_TOPIC', topic)")
      * @PageHttpCache(content="topic")
      *
      * @param Request $request
-     * @param Topic   $topic
-     * @param int     $visitor_id
-     *
+     * @param Topic $topic
+     * @param string $parents_slug
      * @return Response
+     *
      */
-    public function viewAction(Request $request, Topic $topic, $visitor_id)
+    public function viewAction(Request $request, Topic $topic, $parents_slug = '')
     {
+        $topicParentsSlug = $topic->getParentsSlug();
+        if ($parents_slug !== $topicParentsSlug) {
+            return $this->redirectToRoute(
+                'portal_guides_topic_view',
+                [
+                    'slug' => $topic->getSlug(),
+                    'parents_slug' => $topicParentsSlug,
+                    'guide_slug' => $topic->getGuideSlug()
+                ]
+            );
+        }
+
         $serializationContext = new SideloadSerializationContext();
 
         return $this->renderThemeView(

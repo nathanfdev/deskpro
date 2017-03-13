@@ -37,7 +37,7 @@ use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @PortalLinkRoute("portal_guides_topic_view", route_param_map={"slug":"slug", "guide_slug":"guide_slug"})
+ * @PortalLinkRoute("portal_guides_topic_view", route_param_map={"slug":"slug", "guide_slug":"guide_slug", "parents_slug":"parents_slug"})
  * @PortalLinkRoute("portal_guides_topic_view", route_param_map={"slug": "id", "guide_slug":"guide_slug"}, type="permalink")
  */
 class Topic extends ContentAbstract
@@ -234,6 +234,27 @@ class Topic extends ContentAbstract
     public function getGuideSlug()
     {
         return $this->getGuide()->getSlug();
+    }
+
+    public function getParentsSlug()
+    {
+        if (!$this->getParent()) {
+            return '';
+        }
+        $slug = '';
+        $parent = $this->getParent();
+        $i = 0;
+        while ($parent)
+        {
+            // Protect infinite loop
+            if ($i++ > 100) {
+                break;
+            }
+            $slug = '/' . $parent->getSlug() . $slug;
+            $parent = $parent->getParent();
+        }
+
+        return $slug;
     }
 
     //###########################################################################
