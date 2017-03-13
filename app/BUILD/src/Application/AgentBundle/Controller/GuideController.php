@@ -287,6 +287,8 @@ class GuideController extends PublishController
 
         $topics = $this->em->getRepository(Topic::class)->getInHierarchy();
 
+        array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
+
         return $this->render('AgentBundle:Guide:new-topic.html.twig', [
             'guides' => $guides,
             'state'  => $state,

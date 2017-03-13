@@ -131,21 +131,23 @@ class GuideController extends AbstractCategoriesController
 
         // Might need performance optimisation
         foreach ($guide->getTopics() as $topic) {
-            $treeElement = $tree[$topic->getId()];
-            if (($topic->getParent() && $topic->getParent()->getId() !== $treeElement['parent_id'])
-                || ($treeElement['parent_id'] && !$topic->getParent())
-                || ($topic->getParent() && !$treeElement['parent_id'])
-            ) {
-                $parent = null;
-                if ($treeElement['parent_id']) {
-                    $parent = $repo->find($treeElement['parent_id']);
+            if ($topic->getStatus() !== 'hidden') {
+                $treeElement = $tree[$topic->getId()];
+                if (($topic->getParent() && $topic->getParent()->getId() !== $treeElement['parent_id'])
+                    || ($treeElement['parent_id'] && !$topic->getParent())
+                    || ($topic->getParent() && !$treeElement['parent_id'])
+                ) {
+                    $parent = null;
+                    if ($treeElement['parent_id']) {
+                        $parent = $repo->find($treeElement['parent_id']);
+                    }
+                    $topic->setParent($parent);
+                    $em->persist($topic);
                 }
-                $topic->setParent($parent);
-                $em->persist($topic);
-            }
-            if ($topic->getDisplayOrder() !== $treeElement['display_order']) {
-                $topic->setDisplayOrder($treeElement['display_order']);
-                $em->persist($topic);
+                if ($topic->getDisplayOrder() !== $treeElement['display_order']) {
+                    $topic->setDisplayOrder($treeElement['display_order']);
+                    $em->persist($topic);
+                }
             }
         }
 

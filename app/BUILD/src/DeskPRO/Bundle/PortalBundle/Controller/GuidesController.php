@@ -65,19 +65,7 @@ class GuidesController extends AbstractController
 
         $guides = $this->getGuidesDataService()->getGuides($person);
 
-        if (count($guides) === 1) {
-            return $this->redirectToRoute('portal_guides_browse', ['slug' => $guides[0]->getSlug()]);
-        }
-
-        return $this->renderThemeView(
-            'Theme:Guides:index.html.twig',
-            [
-                'page'               => $page,
-                'count'              => $this->getBrandSetting('portal.per_page_content'),
-                'show_category_link' => true,
-                'page_title'         => $this->createPageTitle()->guides(),
-            ]
-        );
+        return $this->redirectToRoute('portal_guides_browse', ['slug' => $guides[0]->getSlug()]);
     }
 
     /**

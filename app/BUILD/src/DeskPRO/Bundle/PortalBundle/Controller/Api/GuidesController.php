@@ -57,7 +57,7 @@ class GuidesController extends AbstractApiController
             return $this->createNotFoundException();
         }
 
-        return new View(['data' => $topic], Response::HTTP_OK);
+        return new View($this->wrap($topic), Response::HTTP_OK);
     }
 
     /**
@@ -75,6 +75,6 @@ class GuidesController extends AbstractApiController
             return $this->createNotFoundException();
         }
 
-        return new View(['data' => $guide], Response::HTTP_OK);
+        return new View($this->wrap($guide), Response::HTTP_OK);
     }
 }

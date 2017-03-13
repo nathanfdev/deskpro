@@ -644,7 +644,6 @@ SQL
               ('7', NULL, 'downloads.use', 1, 1),
               ('7', NULL, 'news.use', 1, 1),
               ('7', NULL, 'chat.use', 1, 1);
-              ('7', NULL, 'guides.use', 1, 1),
             "
         );
 

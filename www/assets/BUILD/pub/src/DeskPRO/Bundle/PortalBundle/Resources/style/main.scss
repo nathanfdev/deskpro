@@ -7865,6 +7865,7 @@ ul.big-button-collection {
 
   &.big-buttons {
     @include margin-left(-10px); // to offset the margin on the first elemet of the line
+    text-align: center;
   }
 
   &.left {

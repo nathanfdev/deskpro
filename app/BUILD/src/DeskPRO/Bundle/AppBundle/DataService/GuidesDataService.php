@@ -80,14 +80,12 @@ class GuidesDataService extends AbstractDataService
      */
     public function getGuides($person)
     {
-        $that = $this;
-
-        return $this->generateAndCache(['getGuides', $person], function () use ($that, $person) {
-            $allowedIds = $that->permissionsManager->getPortalPermissionsBag(
+        return $this->generateAndCache(['getGuides', $person], function () use ($person) {
+            $allowedIds = $this->permissionsManager->getPortalPermissionsBag(
                 $person
             )->getAllowedGuides();
 
-            return $that->getGuideRepo()->findBy(['id' => $allowedIds]);
+            return $this->getGuideRepo()->findBy(['id' => $allowedIds]);
         });
     }
 
@@ -107,16 +105,14 @@ class GuidesDataService extends AbstractDataService
      */
     public function getGuideChildren($guide, Person $person)
     {
-        $that = $this;
-
         return $this->generateAndCache(
             [
                 'getGuideChildren',
                 $guide,
                 $person,
             ],
-            function () use ($that, $guide, $person) {
-                $allowedIds = $that->permissionsManager->getPortalPermissionsBag(
+            function () use ($guide, $person) {
+                $allowedIds = $this->permissionsManager->getPortalPermissionsBag(
                     $person
                 )->getAllowedGuides();
 
@@ -125,11 +121,11 @@ class GuidesDataService extends AbstractDataService
                 }
 
                 if (!$guide instanceof Guide) { // if not already category, try to make it one
-                    if (!$guide = $that->getGuide($guide)) {
+                    if (!$guide = $this->getGuide($guide)) {
                         throw new \InvalidArgumentException(sprintf('could not convert "%s" into a guide'));
                     }
                 }
-                $result = $that->getTopicsRepo()
+                $result = $this->getTopicsRepo()
                     ->getInHierarchy(false, $guide);
 
                 return $result;
@@ -144,14 +140,12 @@ class GuidesDataService extends AbstractDataService
      */
     public function getTopic($topic)
     {
-        $that = $this;
-
         return $this->generateAndCache(
             [
                 'getTopic',
                 $topic,
             ],
-            function () use ($that, $topic) {
+            function () use ($topic) {
                 if (!$topic) { // we need some input
                     return;
                 }
@@ -160,7 +154,7 @@ class GuidesDataService extends AbstractDataService
                     return $topic;
                 }
 
-                return $that->getTopicsRepo()->find($topic);
+                return $this->getTopicsRepo()->find($topic);
             }
         );
     }
@@ -172,19 +166,17 @@ class GuidesDataService extends AbstractDataService
      */
     public function getTopicBySlug($slug)
     {
-        $that = $this;
-
         return $this->generateAndCache(
             [
                 'getTopicBySlug',
                 $slug,
             ],
-            function () use ($that, $slug) {
+            function () use ($slug) {
                 if (!$slug) { // we need some input
                     return;
                 }
 
-                return $that->getTopicsRepo()->findOneBy(['slug' => $slug]);
+                return $this->getTopicsRepo()->findOneBy(['slug' => $slug]);
             }
         );
     }
@@ -196,19 +188,17 @@ class GuidesDataService extends AbstractDataService
      */
     public function getGuideBySlug($slug)
     {
-        $that = $this;
-
         return $this->generateAndCache(
             [
                 'getGuideBySlug',
                 $slug,
             ],
-            function () use ($that, $slug) {
+            function () use ($slug) {
                 if (!$slug) { // we need some input
                     return;
                 }
 
-                return $that->getGuideRepo()->findOneBy(['slug' => $slug]);
+                return $this->getGuideRepo()->findOneBy(['slug' => $slug]);
             }
         );
     }
@@ -224,14 +214,12 @@ class GuidesDataService extends AbstractDataService
      */
     public function getGuide($guide)
     {
-        $that = $this;
-
         return $this->generateAndCache(
             [
                 'getGuide',
                 $guide,
             ],
-            function () use ($that, $guide) {
+            function () use ($guide) {
                 if (!$guide) { // we need some input
                     return;
                 }
@@ -240,7 +228,7 @@ class GuidesDataService extends AbstractDataService
                     return $guide;
                 }
 
-                return $that->getGuideRepo()->find($guide);
+                return $this->getGuideRepo()->find($guide);
             }
         );
     }

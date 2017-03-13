@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
 use Application\DeskPRO\Entity\Topic as TopicEntity;
 use JMS\Serializer\Annotation as JMS;
-use Orb\Util\Strings;
 
 /**
  * Class Topic.
@@ -46,7 +45,7 @@ class Topic extends ContentAbstract
      *
      * @var int
      */
-    protected $display_order = 0;
+    protected $displayOrder = 0;
 
     /**
      * Topic's parent.
@@ -74,11 +73,9 @@ class Topic extends ContentAbstract
     public function __construct(TopicEntity $entity)
     {
         parent::__construct($entity);
-        $this->person        = null;
-        $this->children      = $entity->getChildren();
-        $this->display_order = $entity->getDisplayOrder();
-        $this->parent        = $entity->getParent();
-
-//        $this->content = Strings::escapeForJson($this->content);
+        $this->person       = null;
+        $this->children     = $entity->getChildren();
+        $this->displayOrder = $entity->getDisplayOrder();
+        $this->parent       = $entity->getParent();
     }
 }
