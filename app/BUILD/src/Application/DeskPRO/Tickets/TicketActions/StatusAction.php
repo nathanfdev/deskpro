@@ -138,10 +138,8 @@ class StatusAction extends AbstractAction implements PermissionableAction
             }
 
             App::getOrm()->persist($ticket);
-            App::getOrm()->flush();
         } else {
             App::getOrm()->persist($ticket);
-            App::getOrm()->flush();
         }
     }
 

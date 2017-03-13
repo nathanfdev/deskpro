@@ -80,7 +80,6 @@ class ZapierWebHook implements TicketSaveActionInterface
                     // Hooks needs to be unsubscribe
                     if ($e->getCode() === 410) {
                         $this->em->remove($zapierHook);
-                        $this->em->flush();
                     }
                 }
             }
@@ -105,7 +104,6 @@ class ZapierWebHook implements TicketSaveActionInterface
                     // Hooks needs to be unsubscribe
                     if ($e->getCode() === 410) {
                         $this->em->remove($zapierHook);
-                        $this->em->flush();
                     }
                 }
             }
