@@ -96,7 +96,7 @@ export const startChat = createAction(
         }
         return method()
           .success((response) => {
-            const records = processChat(chatId, chat, dispatch);
+            const records = processChat(response.data.id, response.data, dispatch);
             if (response.data.chat_type === 'group') {
               dispatch(addToCollection('AgentChat', 'group', records, [parseInt(response.data.id, 10)]));
             }
