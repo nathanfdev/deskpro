@@ -61,6 +61,17 @@ export const revealChat = createAction(
   }
 );
 
+const processChat = (chatId, chat, dispatch) => {
+  const records = {};
+  records[chatId] = chat;
+  dispatch(markChatAsStartedByMe(chatId));
+  dispatch(addToCollection('AgentChat', 'recent', records, [parseInt(chatId, 10)]));
+  dispatch(revealChat(chatId));
+  dispatch(markChatAsManuallyClosed(chatId));
+
+  return records;
+};
+
 export const startChat = createAction(
   'IM_START_CHAT',
   (targetParams, chatId = null, forced = false) => (dispatch, getState) => {
@@ -71,10 +82,12 @@ export const startChat = createAction(
     return new Promise(
       (resolve, reject) => {
         const store = getState().RecordsStore.store.get('AgentChat');
-        if (chatId && store.get('records').toJS()[chatId]) {
-          dispatch(revealChat(chatId));
+        const chat = store.get('records').toJS()[chatId];
+        if (chatId && chat) {
+          processChat(chatId, chat, dispatch);
           return resolve(store.get('records').toJS()[chatId]);
         }
+
         let method;
         if (chatId) {
           method = () => repository('AgentChat').load(chatId);
@@ -83,15 +96,10 @@ export const startChat = createAction(
         }
         return method()
           .success((response) => {
-            const records = {};
-            records[response.data.id] = response.data;
-            dispatch(addToCollection('AgentChat', 'recent', records, [parseInt(response.data.id, 10)]));
-            dispatch(revealChat(response.data.id));
-            dispatch(markChatAsStartedByMe(response.data.id));
+            const records = processChat(chatId, chat, dispatch);
             if (response.data.chat_type === 'group') {
               dispatch(addToCollection('AgentChat', 'group', records, [parseInt(response.data.id, 10)]));
             }
-            dispatch(markChatAsManuallyClosed(response.data.id));
             return resolve(response.data);
           })
           .error(response => reject(response));

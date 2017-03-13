@@ -24,9 +24,13 @@ img.emojione, svg.emojione {
   filter: grayscale(0);
 }
 
-.active #im-button {
-  border: 3px solid $dp-sonic-primary;
-  margin: 0 4px;
+.active #im-button, #im-button:hover {
+  .im-button1 {
+    fill: $dp-sonic-primary;
+  }
+  .im-button0 {
+    fill: $dp-morning-sky;
+  }
 }
 
 .im-tooltip {
@@ -221,10 +225,6 @@ img.emojione, svg.emojione {
     top: -7px !important;
   }
 
-  &.tabs:before {
-    top: -9px !important;
-  }
-
   .im.header {
     padding-right: 0;
     height: 40px;
@@ -243,8 +243,8 @@ img.emojione, svg.emojione {
       > span.chat-header {
         display: inline-block;
         max-width: 290px;
-        height: 28px;
-        line-height: 15px;
+        height: 20px;
+        line-height: 20px;
         overflow: hidden;
       }
 
@@ -410,8 +410,14 @@ img.emojione, svg.emojione {
       margin-right: 0;
       padding: 0;
       width: 100%;
-      height: 355px;
+      height: 359px;
       position: relative;
+
+      &.native-bars {
+        overflow-y: scroll;
+        max-height: 359px;
+
+      }
 
       .everyone-list {
         padding: 5px;
@@ -672,7 +678,7 @@ img.emojione, svg.emojione {
             height: 30px;
             line-height: 28px;
             white-space: nowrap;
-            max-width: 320px;
+            max-width: 290px;
 
             .header {
               font-family: "Open Sans", serif;
@@ -837,7 +843,8 @@ img.emojione, svg.emojione {
     }
 
     .box {
-      min-width: 420px;
+      overflow-y: scroll;
+      min-width: 435px;
       height: 425px;
       position: relative;
       background-color: $dp-greyscale-50;
@@ -891,6 +898,9 @@ img.emojione, svg.emojione {
             color: $dp-sonic-primary;
             font-weight: 600;
             cursor: pointer;
+            &.disabled {
+              cursor: auto;
+            }
           }
 
           .message {

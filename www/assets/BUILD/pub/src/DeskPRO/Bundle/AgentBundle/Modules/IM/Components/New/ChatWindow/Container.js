@@ -452,23 +452,21 @@ class Container extends React.Component {
           <div className="im header">{header}</div>
           {this.searchHeader()}
           {this.groupHeader()}
-          <div className="box">
-            <MessageList
-              loadingMessages={loadingMessages}
-              current={current}
-              messages={messages}
-              me={me}
-              agents={agents}
-              people={people}
-              teams={teams}
-              departments={departments}
-              searchQuery={searchQuery}
-              markNewMessages={markNewMessages}
-              onScroll={onScroll}
-              onAgentClick={onAgentClick}
-              onSearchMessageClick={this.onSearchMessageClick}
-            />
-          </div>
+          <MessageList
+            loadingMessages={loadingMessages}
+            current={current}
+            messages={messages}
+            me={me}
+            agents={agents}
+            people={people}
+            teams={teams}
+            departments={departments}
+            searchQuery={searchQuery}
+            markNewMessages={markNewMessages}
+            onScroll={onScroll}
+            onAgentClick={onAgentClick}
+            onSearchMessageClick={this.onSearchMessageClick}
+          />
           {enabled ? (<div className="reply">
             <form onSubmit={this.handleSubmit} id="replyForm">
               <FroalaEditor

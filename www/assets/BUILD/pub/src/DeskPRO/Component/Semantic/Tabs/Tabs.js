@@ -9,9 +9,10 @@ class Tabs extends React.Component {
 
   static propTypes = {
     items: PropTypes.arrayOf(PropTypes.shape({
-      id:      PropTypes.string,
-      title:   PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-      content: PropTypes.oneOfType([
+      id:        PropTypes.string,
+      title:     PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+      className: PropTypes.string,
+      content:   PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.node
       ]).isRequired
@@ -22,15 +23,6 @@ class Tabs extends React.Component {
       activeMenuItem:    PropTypes.arrayOf(PropTypes.string),
       item:              PropTypes.arrayOf(PropTypes.string)
     })
-  };
-
-  static defaultProps = {
-    allClasses: {
-      menuItem:          [],
-      notActiveMenuItem: [],
-      activeMenuItem:    [],
-      item:              []
-    }
   };
 
   constructor(props) {
@@ -94,7 +86,7 @@ class Tabs extends React.Component {
           tabId:     item.id,
           active:    self.state.activeId ? self.state.activeId === item.id : index === 0,
           content:   item.content,
-          className: classes.item
+          className: classNames(classes.item, item.className ? item.className : '')
         };
         key += 1;
         return tabsItems.push(<TabsItem {...props} />);
