@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\TicketPriority;
@@ -47,7 +43,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  */
 class TicketPrioritiesController extends CrudController
 {
-    public static $exposeOnly   = ['list'];
+    public static $exposeOnly   = ['get', 'list', 'count'];
     public static $entity       = TicketPriority::class;
     public static $listPaginate = false;
 }

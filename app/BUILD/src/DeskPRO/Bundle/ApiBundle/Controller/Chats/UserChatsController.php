@@ -78,13 +78,11 @@ use Symfony\Component\HttpFoundation\Response;
  * )
  * @ApiDoc(
  *     target="postAction",
- *     parameters = {
- *         { "name" = "subject", "dataType" = "string", "format" = "string", "description" = "Chat subject", "required" = false },
- *         { "name" = "person", "dataType" = "string|integer", "format" = "string|integer", "description" = "Person id or email address", "required" = false },
- *         { "name" = "person_email", "dataType" = "string", "format" = "string", "description" = "Guest email address", "required" = false },
- *         { "name" = "agent", "dataType" = "string|integer", "format" = "string|integer", "description" = "Assigned agent id or email address", "required" = false },
- *         { "name" = "chat_department", "dataType" = "integer", "format" = "integer", "description" = "Chat department id", "required" = true },
- *         { "name" = "fields", "dataType" = "object", "format" = "object", "description" = "Custom fields", "required" = false}
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatConversationType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\ChatConversation"
+ *      }
  *     }
  * )
  */

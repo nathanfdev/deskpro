@@ -44,6 +44,17 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/tickets/{parentId}/messages")
  * @ApiDoc(target="all", section="Tickets", output="Application\DeskPRO\Entity\TicketMessage")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\TicketMessage",
+ *          "ticket"="Application\DeskPRO\Entity\Ticket",
+ *          "person"="Application\DeskPRO\Entity\Person"
+ *      }
+ *     }
+ * )
  */
 class TicketMessagesController extends CrudSubController
 {

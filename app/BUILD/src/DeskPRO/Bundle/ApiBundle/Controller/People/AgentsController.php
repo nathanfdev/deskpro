@@ -67,7 +67,7 @@ class AgentsController extends CrudController
     use TicketSaveTrait;
 
     public static $entity       = Person::class;
-    public static $exposeOnly   = ['list', 'delete'];
+    public static $exposeOnly   = ['get', 'list', 'count', 'delete'];
     public static $listPaginate = false;
 
     /**

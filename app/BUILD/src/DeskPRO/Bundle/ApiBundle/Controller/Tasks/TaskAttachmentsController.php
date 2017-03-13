@@ -40,6 +40,17 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiModes("all")
  * @Rest\Route("/tasks/{parentId}/attachments")
  * @ApiDoc(target="all", section="Tasks", output="DeskPRO\Bundle\AppBundle\Entity\TaskAttachment")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskAttachmentType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\TaskAttachment",
+ *          "person"="Application\DeskPRO\Entity\Person",
+ *          "task"="DeskPRO\Bundle\AppBundle\Entity\Task"
+ *      }
+ *     }
+ * )
  */
 class TaskAttachmentsController extends AbstractTaskSubController
 {

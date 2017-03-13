@@ -41,6 +41,15 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiModes("all")
  * @Rest\Route("/apps/zapier/hooks")
  * @ApiDoc(target="all", section="Apps")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\ZapierHookType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\ZapierHook"
+ *      }
+ *     }
+ * )
  */
 class ZapierHooksController extends CrudController
 {

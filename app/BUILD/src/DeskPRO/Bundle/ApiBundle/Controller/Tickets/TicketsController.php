@@ -52,6 +52,16 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @ApiModes("all")
  * @Rest\Route("/tickets")
  * @ApiDoc(target="all", section="Tickets", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Ticket",
+ *          "person"="Application\DeskPRO\Entity\Person"
+ *      }
+ *     }
+ * )
  */
 class TicketsController extends AbstractTicketsController
 {

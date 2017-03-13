@@ -49,8 +49,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *     target="registerAction,postAction,putAction",
  *     input={
  *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\ClientDeviceType",
- *      "options"={"method"="PUT", "app_type"="mobile", "person"="Application\DeskPRO\Entity\Person"},
- *      "name"=""
+ *      "options"={
+ *          "app_type"="mobile",
+ *          "person"="Application\DeskPRO\Entity\Person"
+ *      }
  *     }
  * )
  */

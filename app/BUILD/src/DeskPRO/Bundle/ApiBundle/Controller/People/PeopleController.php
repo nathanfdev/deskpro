@@ -75,6 +75,15 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *          }
  *     }
  * )
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Person"
+ *      }
+ *     }
+ * )
  */
 class PeopleController extends CrudController
 {

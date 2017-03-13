@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Glossary;
 
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
@@ -45,6 +41,15 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiModes("all")
  * @Rest\Route("/glossary")
  * @ApiDoc(target="all", section="Glossary", output="Application\DeskPRO\Entity\GlossaryWordDefinition")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Glossary\GlossaryWordDefinitionType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\GlossaryWordDefinition"
+ *      }
+ *     }
+ * )
  */
 class GlossaryController extends CrudController
 {

@@ -79,7 +79,10 @@ class ApiTokensController extends BaseController
      *          201="Created token",
      *          401="Invalid credentials",
      *          400="Bad request"
-     *      }
+     *      },
+     *     input= {
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationRequestType"
+     *     }
      * )
      *
      * @Rest\Post("")

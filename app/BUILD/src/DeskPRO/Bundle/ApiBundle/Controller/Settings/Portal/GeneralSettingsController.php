@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\GeneralSettingsType;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
@@ -112,9 +113,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      *         400="In case your request was malformed",
      *     },
      *     input= {
-     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\Portal\GeneralSettingsType",
-     *         "name"="",
-     *         "options"={"method"="POST"},
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\GeneralSettingsType"
      *     }
      *)
      * @Rest\Post("/{brand}/portal/general")

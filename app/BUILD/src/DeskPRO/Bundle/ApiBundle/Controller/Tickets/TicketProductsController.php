@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Product;
@@ -48,7 +44,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  */
 class TicketProductsController extends CrudController
 {
-    public static $exposeOnly   = ['list'];
+    public static $exposeOnly   = ['get', 'list', 'count'];
     public static $entity       = Product::class;
     public static $listPaginate = false;
 }

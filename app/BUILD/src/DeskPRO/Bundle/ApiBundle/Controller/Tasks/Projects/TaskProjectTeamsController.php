@@ -37,7 +37,18 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *
  * @ApiModes("all")
  * @Rest\Route("/task_projects/{parentId}/members/teams")
- * @ApiDoc(target="all", section="TaskProjects", output="DeskPRO\Bundle\AppBundle\Serializer\Model\AgentTeam")
+ * @ApiDoc(target="all", section="Task Projects", output="DeskPRO\Bundle\AppBundle\Serializer\Model\AgentTeam")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskProjectMemberType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\ProjectMember",
+ *          "project"="DeskPRO\Bundle\AppBundle\Entity\TaskProject",
+ *          "type"="team"
+ *      }
+ *     }
+ * )
  */
 class TaskProjectTeamsController extends AbstractTaskProjectMembersController
 {

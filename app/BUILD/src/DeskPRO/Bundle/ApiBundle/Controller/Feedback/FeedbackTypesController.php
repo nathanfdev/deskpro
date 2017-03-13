@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\FeedbackCategory;
@@ -49,7 +45,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  */
 class FeedbackTypesController extends CrudController
 {
-    public static $exposeOnly = ['get', 'list'];
+    public static $exposeOnly = ['get', 'list', 'count'];
     public static $entity     = FeedbackCategory::class;
     public static $listSort   = 'title';
     public static $listOrder  = 'asc';

@@ -28,19 +28,15 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\Limits\Annotation\ApiDisableLimits;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Pusher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -89,10 +85,7 @@ class NotificationController extends BaseController
 
         $alerts = $service->getLastActionAlerts($last, $this->getUser());
 
-        return View::create(
-            $this->wrap($alerts),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($alerts));
     }
 
     /**
@@ -112,12 +105,7 @@ class NotificationController extends BaseController
      */
     public function setupActionAlertsAction()
     {
-        $service = $this->get('deskpro.notification.service');
-
-        return View::create(
-            $this->wrap($service->getClientsSetup()),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($this->get('deskpro.notification.service')->getClientsSetup()));
     }
 
     /**
@@ -143,10 +131,7 @@ class NotificationController extends BaseController
     {
         $this->doHeartbeat($request);
 
-        return View::create(
-            null,
-            Response::HTTP_ACCEPTED
-        );
+        return View::create(null, Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -155,9 +140,10 @@ class NotificationController extends BaseController
     protected function doHeartbeat(Request $request)
     {
         $session_code = $request->cookies->get('dpsid-agent');
-        /** @var \Application\DeskPRO\EntityRepository\Session $session_repository */
-        $session_repository = $this->getDoctrine()->getRepository('DeskPRO:Session');
-        $session            = $session_repository->getSessionFromCode($session_code);
+        /** @var \Application\DeskPRO\EntityRepository\Session $repository */
+        $repository = $this->getDoctrine()->getRepository(Session::class);
+        $session    = $repository->getSessionFromCode($session_code);
+
         if ($session) {
             $session->updateLastTime();
             $em = $this->get('doctrine.orm.default_entity_manager');
@@ -186,7 +172,7 @@ class NotificationController extends BaseController
     public function pusherAuthAction(Request $request)
     {
         $submitted = $request->request->all();
-        /** @var Pusher $pusher */
+        /** @var \Pusher $pusher */
         $pusher = $this->get('deskpro.notification.pusher');
         $user   = $this->getUser();
         if ($user->getId() === (int) $submitted['user_id']) {
@@ -197,8 +183,6 @@ class NotificationController extends BaseController
             $status = Response::HTTP_FORBIDDEN;
         }
 
-        return View::create(
-            $data, $status
-        );
+        return View::create($data, $status);
     }
 }

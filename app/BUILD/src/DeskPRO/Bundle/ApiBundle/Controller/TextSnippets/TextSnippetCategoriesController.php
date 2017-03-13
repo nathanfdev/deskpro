@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippetCategory;
@@ -53,6 +49,17 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *     target="all",
  *     section="Text snippets",
  *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets\TextSnippetCategory"
+ * )
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetCategoryType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\TextSnippetCategory",
+ *          "person"="Application\DeskPRO\Entity\Person",
+ *          "type"="tickets"
+ *      }
+ *     }
  * )
  */
 class TextSnippetCategoriesController extends CrudController

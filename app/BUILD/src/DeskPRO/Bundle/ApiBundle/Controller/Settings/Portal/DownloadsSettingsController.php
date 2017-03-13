@@ -85,9 +85,7 @@ class DownloadsSettingsController extends AbstractBrandAwareSettingsController
      *         400="In case your request was malformed",
      *     },
      *     input= {
-     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\Portal\DownloadsSettingsType",
-     *         "name"="",
-     *         "options"={"method"="POST"},
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\DownloadsSettingsType"
      *     }
      *)
      * @Rest\Post("")

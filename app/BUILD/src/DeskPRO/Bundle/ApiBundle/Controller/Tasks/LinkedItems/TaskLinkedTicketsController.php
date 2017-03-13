@@ -40,6 +40,16 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiModes("all")
  * @Rest\Route("/tasks/{parentId}/linked_items/tickets")
  * @ApiDoc(target="all", section="Tasks", output="Application\DeskPRO\Entity\ChatConversation")
+ * @ApiDoc(
+ *     target="postAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedItem\TaskLinkedTicketType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket",
+ *          "task"="DeskPRO\Bundle\AppBundle\Entity\Task"
+ *      }
+ *     }
+ * )
  */
 class TaskLinkedTicketsController extends AbstractTaskLinkedItemController
 {

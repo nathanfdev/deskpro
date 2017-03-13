@@ -50,6 +50,15 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  * @ApiModes("all")
  * @Rest\Route("/brands")
  * @ApiDoc(target="all", section="Brands", output="Application\DeskPRO\Entity\Brand")
+ * @ApiDoc(
+ *     target="postAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\BrandType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Brand"
+ *      }
+ *     }
+ * )
  */
 class BrandsController extends CrudController
 {

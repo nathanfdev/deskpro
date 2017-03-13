@@ -44,7 +44,6 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/task_projects/{parentId}/members/{type}")
- * @ApiDoc(target="all", section="TaskProjects", output="DeskPRO\Bundle\AppBundle\Entity\ProjectMember")
  */
 abstract class AbstractTaskProjectMembersController extends CrudSubController
 {
@@ -57,7 +56,7 @@ abstract class AbstractTaskProjectMembersController extends CrudSubController
      * Fetch tasks list for project member.
      *
      * @ApiDoc(
-     *      section="TaskProjects",
+     *      section="Task Projects",
      *      resourceDescription="Operations about project members",
      *      description="get tasks for a member",
      *      requirements={

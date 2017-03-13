@@ -41,6 +41,15 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiModes("all")
  * @Rest\Route("/task_lists")
  * @ApiDoc(target="all", section="Tasks", output="DeskPRO\Bundle\AppBundle\Entity\TaskList")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskListType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\TaskList"
+ *      }
+ *     }
+ * )
  */
 class TaskListController extends CrudController
 {

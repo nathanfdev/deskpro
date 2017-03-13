@@ -143,9 +143,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      *         400="In case your request was malformed",
      *     },
      *     input= {
-     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetSetupType",
-     *         "name"="",
-     *         "options"={"method"="POST"},
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetSettingsType"
      *     }
      *)
      * @Rest\Post("/setup")
