@@ -97,17 +97,18 @@ class Topic extends AbstractEntityRepository
         }
         unset($c);
 
-        $topics                   = Arrays::intoHierarchy($topics, null);
+        $topics = Arrays::intoHierarchy($topics, null);
         static::addParentSlug($topics);
-        $this->topicHierarchy     = $topics;
+        $this->topicHierarchy = $topics;
 
         return $this->topicHierarchy;
     }
 
-    protected static function addParentSlug(&$topics, $parentSlug = '') {
+    protected static function addParentSlug(&$topics, $parentSlug = '')
+    {
         foreach ($topics as &$topic) {
             $topic['parents_slug'] = $parentSlug;
-            static::addParentSlug($topic['children'], $parentSlug . '/' . $topic['slug']);
+            static::addParentSlug($topic['children'], $parentSlug.'/'.$topic['slug']);
         }
     }
 }

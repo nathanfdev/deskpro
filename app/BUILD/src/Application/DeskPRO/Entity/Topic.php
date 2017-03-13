@@ -241,20 +241,29 @@ class Topic extends ContentAbstract
         if (!$this->getParent()) {
             return '';
         }
-        $slug = '';
+        $slug   = '';
         $parent = $this->getParent();
-        $i = 0;
-        while ($parent)
-        {
+        $i      = 0;
+        while ($parent) {
             // Protect infinite loop
             if ($i++ > 100) {
                 break;
             }
-            $slug = '/' . $parent->getSlug() . $slug;
+            $slug   = '/'.$parent->getSlug().$slug;
             $parent = $parent->getParent();
         }
 
         return $slug;
+    }
+
+    /**
+     * Not yet implemented.
+     *
+     * @return array
+     */
+    public function getLabels()
+    {
+        return [];
     }
 
     //###########################################################################

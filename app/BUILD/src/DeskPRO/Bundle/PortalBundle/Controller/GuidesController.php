@@ -101,10 +101,10 @@ class GuidesController extends AbstractController
      * @PageHttpCache(content="topic")
      *
      * @param Request $request
-     * @param Topic $topic
-     * @param string $parents_slug
-     * @return Response
+     * @param Topic   $topic
+     * @param string  $parents_slug
      *
+     * @return Response
      */
     public function viewAction(Request $request, Topic $topic, $parents_slug = '')
     {
@@ -113,9 +113,9 @@ class GuidesController extends AbstractController
             return $this->redirectToRoute(
                 'portal_guides_topic_view',
                 [
-                    'slug' => $topic->getSlug(),
+                    'slug'         => $topic->getSlug(),
                     'parents_slug' => $topicParentsSlug,
-                    'guide_slug' => $topic->getGuideSlug()
+                    'guide_slug'   => $topic->getGuideSlug(),
                 ]
             );
         }

@@ -268,7 +268,7 @@ class SearchController extends AbstractController
             );
         }
 
-        $allowedTypes = ['article', 'news', 'download', 'feedback'];
+        $allowedTypes = ['article', 'news', 'download', 'feedback', 'topic'];
 
         if (null === $contentType) {
             $contentType = $allowedTypes;
@@ -410,6 +410,8 @@ class SearchController extends AbstractController
             $type = 'download';
         } elseif ($r instanceof Entity\Feedback) {
             $type = 'feedback';
+        } elseif ($r instanceof Entity\Topic) {
+            $type = 'topic';
         } elseif ($r instanceof Entity\Ticket) {
             $type = 'ticket';
         } elseif ($r instanceof Entity\Person) {
@@ -437,7 +439,7 @@ class SearchController extends AbstractController
     {
         ////////////////////////////////////////////////////////////////////////
         // search types
-        $allowedSearchTypes = ['article', 'news', 'download', 'feedback', 'ticket', 'chat_conversation'];
+        $allowedSearchTypes = ['article', 'news', 'download', 'feedback', 'topic', 'ticket', 'chat_conversation'];
         if (!$limitTypesArray = $types) {
             $limitTypesArray = $allowedSearchTypes;
         }
@@ -456,7 +458,7 @@ class SearchController extends AbstractController
             'news'     => PortalSettingsResolver::APPS_NEWS,
             'download' => PortalSettingsResolver::APPS_DOWNLOADS,
             'feedback' => PortalSettingsResolver::APPS_FEEDBACK,
-            'guide'    => PortalSettingsResolver::APPS_GUIDES,
+            'topic'    => PortalSettingsResolver::APPS_GUIDES,
         ];
 
         $limitTypesArray = array_filter($limitTypesArray,

@@ -114,6 +114,7 @@ class MysqlResultsTransformer
             case 'download':          return 'DeskPRO:Download';
             case 'news':              return 'DeskPRO:News';
             case 'feedback':          return 'DeskPRO:Feedback';
+            case 'topic':             return 'DeskPRO:Topic';
             case 'chat_conversation': return 'DeskPRO:ChatConversation';
             case 'person':            return 'DeskPRO:Person';
             case 'ticket':            return 'DeskPRO:Ticket';

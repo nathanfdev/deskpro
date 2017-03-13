@@ -90,6 +90,7 @@ class LanguageController extends AbstractApiController
             'portal.general.nav-downloads',
             'portal.general.nav-news',
             'portal.general.nav-feedback',
+            'portal.general.nav-guides',
             'portal.general.nav-chat',
             'portal.general.submit-feedback',
             'portal.general.start-chat',

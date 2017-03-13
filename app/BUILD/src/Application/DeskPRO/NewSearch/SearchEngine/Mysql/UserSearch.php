@@ -382,6 +382,14 @@ class UserSearch implements UserSearchInterface
             $joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'download' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";
             $wheres[] = "($jn.object_type = 'download' AND $jn.object_id IS NOT NULL)";
         }
+        if ($context->getGuideIds() && ($limit_types === null || in_array('topic', $limit_types))) {
+            $jn      = '_cs'.$x++;
+            $cat_ids = implode(',', $context->getGuideIds());
+
+            $types[]  = 'topic';
+            $joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'topic' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'guide_id' AND $jn.content IN ($cat_ids))";
+            $wheres[] = "($jn.object_type = 'topic' AND $jn.object_id IS NOT NULL)";
+        }
 
         return [
             'types' => $types,
