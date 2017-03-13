@@ -126,13 +126,26 @@ export const loadActiveTabs = createAction(
   () => DeskPRO_Window.TabBar.getTabs() // eslint-disable-line no-undef
 );
 
+export const countSlice = () => {
+  const slices = Math.floor((window.innerWidth - 890) / 30);
+  if (slices < 1) {
+    return 1;
+  } else if (slices > 15) {
+    return 15;
+  }
+  return slices;
+};
+
 export const loadRecentChats = createAction(
   'IM_LOAD_RECENT_CHATS',
   () => (dispatch) => {
-    api.sendGet('DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=10&include=person').success((response) => {
-      dispatch(addToCollection('Person', 'people', response.linked.person));
-      dispatch(addToCollection('AgentChat', 'recent', response.data));
-    });
+    const slice = countSlice();
+    api
+      .sendGet(`DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=${slice}&include=person`)
+      .success((response) => {
+        dispatch(addToCollection('Person', 'people', response.linked.person));
+        dispatch(addToCollection('AgentChat', 'recent', response.data));
+      });
     return {};
   }
 );
