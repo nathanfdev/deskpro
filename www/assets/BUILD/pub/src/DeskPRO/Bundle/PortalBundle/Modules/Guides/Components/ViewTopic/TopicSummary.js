@@ -36,14 +36,20 @@ class TopicSummary extends React.Component {
   componentDidMount() {
     if (this.state.h1s.length) {
       window.addEventListener('scroll', this.handleScroll);
-      this.offsetTop = this.summary.offsetTop;
     }
+    this.offsetTop = this.summary.offsetTop;
   }
 
   componentWillReceiveProps(nextProps) {
+    const h1s = getH1(nextProps.content);
     this.setState({
-      h1s: getH1(nextProps.content)
+      h1s
     });
+    if (h1s.length) {
+      window.addEventListener('scroll', this.handleScroll);
+    } else {
+      window.removeEventListener('scroll', this.handleScroll);
+    }
   }
 
   componentWillUnmount() {
@@ -66,19 +72,20 @@ class TopicSummary extends React.Component {
   };
 
   render() {
-    if (!this.state.h1s.length) {
-      return null;
-    }
     const { fixed } = this.state;
     const style = {
       top: this.agentBarHeight + 20
     };
     return (
       <div className={classNames('topic-summary', { fixed })} ref={(c) => { this.summary = c; }} style={style}>
-        <h2><i className="fa fa-list" /> Contents</h2>
-        <ul>
-          {this.state.h1s}
-        </ul>
+        {this.state.h1s.length ?
+          (<div>
+            <h2><i className="fa fa-list" /> Contents</h2>
+            <ul>
+              {this.state.h1s}
+            </ul>
+          </div>
+          ) : null}
       </div>
     );
   }
