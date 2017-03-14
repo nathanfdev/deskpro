@@ -4,7 +4,7 @@ if (window.jQuery && ('ontouchstart' in window || 'msmaxtouchpoints' in window.n
 		originalOffMethod = jQuery.fn.off;
 
 	var replaceEventName = function (event) {
-		if (event.slice(0, 5) == 'click') {
+		if (event && event.slice(0, 5) == 'click') {
 			// We need to attach events to both click and touch
 			// Because the user might have both a touch *and* mouse
 			return event.replace('click', 'click touchend');
