@@ -19,9 +19,6 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 		this.page = page;
 
 		this.wrapper = this.page.wrapper;
-
-		this.page.addEvent('destroy', this.destroy, this);
-
 		this.phone_numbers = new DeskPRO.UI.PhoneNumberInputs();
 
 		this.initEditorOverlay();
@@ -215,5 +212,11 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			this.contactOverlay.destroy();
 			this.contactOverlay = null;
 		}
+		this.page = null;
+    this.wrapper = null;
+    this.options = null;
+    this.phone_numbers = null;
+
+		this.destroyEvents();
 	}
 });

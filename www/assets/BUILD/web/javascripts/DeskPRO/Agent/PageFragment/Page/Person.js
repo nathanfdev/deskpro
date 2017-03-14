@@ -76,39 +76,29 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	initPage: function(el) {
 		var self = this;
 		this.wrapper = el;
-		this.contentWrapper = $('div.layout-content:first', el);
 		this.initScope();
 
+    this.clip = null;
 		try {
 			var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
 			if (flashEnabled) {
 				// Set timeout to have it exec in global scope,
 				// so errors (eg flash has crashed) can be ignored and dont break the rest of this init
 				window.setTimeout(function() {
+          self.clip = new ZeroClipboard(self.wrapper.find('.copy-btn'));
 					self.wrapper.find('.copy-btn').each(function() {
-						var btnEl = this;
-						var btn = $(this);
 
 						try {
-							var clip = new ZeroClipboard(this, {
-								btnEl: this,
-								savePuffEl: self.getEl('idref_switch')
-							});
-							clip.on('mouseover', function(client, args) {
+							self.clip.on('mouseover', function(client, args) {
 								$(client.options.btnEl).addClass('over');
 							});
-							clip.on('mouseout', function(client, args) {
+							self.clip.on('mouseout', function(client, args) {
 								$(client.options.btnEl).removeClass('over');
 							});
-							clip.on('complete', function(client, args) {
+							self.clip.on('complete', function(client, args) {
 								DeskPRO_Window.util.showSavePuff($(this).closest('.id-number'));
 							});
 
-							self.addEvent('destroy', function() {
-								try {
-									clip.unglue(btnEl);
-								} catch (e) {}
-							});
 							self.addEvent('activate', function() {
 								try {
 									clip.reposition();
@@ -126,8 +116,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		this.zIndex = 30001;
 
-		var cw = this.contentWrapper;
-
 		if (this.tabBtn) {
 			if (this.getMetaData('personPicIcon')) {
 				this.tabBtn.find('a').find('i').attr('class', '').addClass('image-icon').css('background-image', 'url("' + this.getMetaData('personPicIcon') + '")').css('background-position', '50% 50%');
@@ -141,11 +129,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				a.css('background-image', 'url("' + url + '")').css('background-position', '2px 50%');
 			}
 		}
-
-		// TextExt doesnt play well with fluid columns
-		// so this listens for resizes, and then updates the input width,
-		// then forces textext to invalidatebounds
-		var propBox = self.getEl('properties_box');
 
 		if (this.meta.perms.edit) {
 			this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
@@ -161,17 +144,14 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					}
 				}
 			});
-			this.ownObject(this.contactEditor);
 
-			var tzMenu = new DeskPRO.UI.Menu({
+			this.tzMenu = new DeskPRO.UI.Menu({
 				menuElement: this.getEl('timezone')
 			});
-			this.ownObject(tzMenu);
 
-			var autoResMenu = new DeskPRO.UI.Menu({
+			this.autoResMenu = new DeskPRO.UI.Menu({
 				menuElement: this.getEl('disable_autoresponses')
 			});
-			this.ownObject(autoResMenu);
 
 			this.getEl('timezone').on('change', function(){
 				var val = $(this).val();
@@ -347,7 +327,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				$('.contact-list-wrapper .email.is-primary', self.wrapper).removeClass('is-primary');
 				$('.contact-list-wrapper .email-' + email_id, self.wrapper).addClass('is-primary');
 
-				var val = $(this).val();
 				$.ajax({
 					url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
 					type: 'POST',
@@ -1210,5 +1189,53 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				}
 			});
 		});
+	},
+
+  destroyPage: function() {
+    this.$scope && this.$scope.$destroy();
+    this.$scope = null;
+    this.$q = null;
+    this.$timeout = null;
+
+    if (this.tabBtn) {
+    	this.tabBtn = null;
+		}
+
+    var btns = this.wrapper.find('.copy-btn');
+    if (btns.length && this.clip) {
+      this.clip.unglue(btns);
+    }
+    this.clip = null;
+
+    if (this.sortTicketsMenu) {
+      this.sortTicketsMenu.destroy();
+      this.sortTicketsMenu = null;
+		}
+		if (this.tzMenu) {
+      this.tzMenu.destroy();
+      this.tzMenu = null;
+		}
+		if (this.autoResMenu) {
+      this.autoResMenu.destroy();
+      this.autoResMenu = null;
+		}
+		if (this.sortChatsMenu) {
+      this.sortChatsMenu.destroy();
+      this.sortChatsMenu = null;
+		}
+		if (this.sortTicketsMenu) {
+      this.sortTicketsMenu.destroy();
+      this.sortTicketsMenu = null;
+		}
+		if (this.moreactionsMenu) {
+      this.moreactionsMenu.destroy();
+      this.moreactionsMenu = null;
+		}
+		if (this.contactEditor) {
+      this.contactEditor.destroy();
+      this.contactEditor = null;
+		}
+
+    this.destroyEvents();
 	}
 });
