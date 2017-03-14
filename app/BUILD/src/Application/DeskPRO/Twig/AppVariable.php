@@ -367,4 +367,14 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     {
         return $this->container->get('deskpro.feature_flags')->hasFeature($id);
     }
+
+    /**
+     * @param string $id
+     *
+     * @return bool
+     */
+    public function hasBeta($id)
+    {
+        return $this->container->get('deskpro.feature_flags')->hasBeta($id);
+    }
 }

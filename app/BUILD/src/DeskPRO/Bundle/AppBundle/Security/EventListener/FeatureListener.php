@@ -106,6 +106,6 @@ class FeatureListener implements EventSubscriberInterface
     {
         $feature = $annotation->getName();
 
-        return $this->features->hasFeature($feature);
+        return !$annotation->isBeta() ? $this->features->hasFeature($feature) : $this->features->hasBeta($feature);
     }
 }

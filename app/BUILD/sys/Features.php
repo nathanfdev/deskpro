@@ -28,12 +28,19 @@
 
 namespace DpSys;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
+use DpSys\LowError\SystemErrorHandler;
+use Symfony\Component\DependencyInjection\Exception\LogicException;
+
 /**
  * This class handles feature flags for both licensed features as well as experimental features.
  */
 final class Features
 {
     const VOICE = 'voice';
+
+    /** @var SettingsResolver */
+    private $settingsResolver;
 
     /**
      * @var Features
@@ -54,6 +61,16 @@ final class Features
         }
 
         return self::$inst;
+    }
+
+    /**
+     * @internal
+     *
+     * @param SettingsResolver $settingsResolver
+     */
+    public function _setSettingsResolver(SettingsResolver $settingsResolver)
+    {
+        $this->settingsResolver = $settingsResolver;
     }
 
     /**
@@ -85,6 +102,18 @@ final class Features
                 // assume it's an arbitrary experimental flag
                 return $this->hasExperimental($id);
         }
+    }
+
+    public function hasBeta($id)
+    {
+        if (!$this->settingsResolver) {
+            $e = new LogicException('There is no settings resolver set in DpSys\Features. Check the code!');
+            SystemErrorHandler::handleException($e);
+
+            return false;
+        }
+
+        return $this->settingsResolver->getGlobalSettings()->getBool('beta_features.'.$id, false);
     }
 
     /**
