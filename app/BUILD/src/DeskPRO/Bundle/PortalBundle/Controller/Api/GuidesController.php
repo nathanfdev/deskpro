@@ -77,4 +77,29 @@ class GuidesController extends AbstractApiController
 
         return new View($this->wrap($guide), Response::HTTP_OK);
     }
+
+    /**
+     * @Route("/portal/api/guides/topics/{slug}", name="portal_api_guides_topics")
+     * @Method({"GET"})
+     *
+     * @param $slug
+     *
+     * @return View|NotFoundHttpException
+     */
+    public function getGuideTopicsAction($slug)
+    {
+        $guideDataService = $this->get('data.guides');
+        $guide            = $guideDataService->getGuideBySlug($slug);
+        if (!$guide) {
+            return $this->createNotFoundException();
+        }
+        $person = $this->getUser();
+
+        $topics = $guideDataService->getGuideChildren(
+            $guide,
+            $person
+        );
+
+        return new View($this->wrap($topics), Response::HTTP_OK);
+    }
 }

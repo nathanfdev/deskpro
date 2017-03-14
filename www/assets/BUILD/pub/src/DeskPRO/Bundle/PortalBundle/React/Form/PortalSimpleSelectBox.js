@@ -85,6 +85,10 @@ export default class PortalSimpleSelectBox extends React.Component {
         expanded:       nextProps.expanded || false,
         level:          nextProps.level || 1
       });
+    } else if (nextProps.value && this.state.value !== nextProps.value) {
+      this.setState({
+        value: nextProps.multiple ? (nextProps.value || []) : nextProps.value,
+      });
     }
   }
 

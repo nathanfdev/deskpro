@@ -66,6 +66,12 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       content: "\F02D";
     }
   }
+  p {
+    margin-bottom: 15px;
+  }
+  p:last-child {
+    margin-bottom: 0;
+  }
   div.block {
     padding: 10px;
     width: 100%;
@@ -185,7 +191,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     & .dp-react-widget > ul {
       margin: 0;
       padding: 0;
-      & > li {
+      & > li.topic-item {
         list-style: none;
         & > a {
           font-size: 12px;
@@ -197,7 +203,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
         & > ul {
           margin: 0;
           padding: 0;
-          li {
+          li.topic-item {
             list-style: none;
             a {
               font-size: 12px;
@@ -211,7 +217,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
         }
       }
     }
-    li > a.active {
+    li.topic-item > a.active {
       background-color: #eff8fd;
       color: #709FD6;
       height: 23px;
@@ -220,7 +226,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       border-right: 2px solid #709fd6;
       margin-right: -1px;
     }
-    li a .fa {
+    li.topic-item a .fa {
       margin-right: 24px;
       line-height: 24px;
     }
