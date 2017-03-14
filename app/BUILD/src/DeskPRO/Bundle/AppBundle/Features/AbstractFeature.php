@@ -28,49 +28,35 @@
 
 namespace DeskPRO\Bundle\AppBundle\Features;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 
-interface BetaFeatureInterface
+/**
+ * Class AbstractFeature.
+ */
+abstract class AbstractFeature implements BetaFeatureInterface
 {
-    const BETA_FEATURES_KEY = 'beta_features';
+    /**
+     * @var SettingsResolver
+     */
+    private $settingsResolver;
 
     /**
-     * @return string
+     * AbstractFeature constructor.
+     *
+     * @param SettingsResolver $settingsResolver
      */
-    public function getId();
-
-    /**
-     * @return string
-     */
-    public function getTitle();
-
-    /**
-     * @return string
-     */
-    public function getShortDescription();
-
-    /**
-     * @return string
-     */
-    public function getEnableDescription();
-
-    /**
-     * @return string
-     */
-    public function getDisableDescription();
-
-    /**
-     * @param ContainerInterface $container
-     */
-    public function enable(ContainerInterface $container);
-
-    /**
-     * @param ContainerInterface $container
-     */
-    public function disable(ContainerInterface $container);
+    public function __construct(SettingsResolver $settingsResolver)
+    {
+        $this->settingsResolver = $settingsResolver;
+    }
 
     /**
      * @return bool
      */
-    public function isEnabled();
+    public function isEnabled()
+    {
+        $key = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $this->getId());
+
+        return $this->settingsResolver->getGlobalSettings()->getBool($key, false);
+    }
 }

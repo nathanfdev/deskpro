@@ -52,4 +52,28 @@ class FeaturesCollection extends AbstractCollection
                 : (string) $feature,
             $this->collection);
     }
+
+    /**
+     * @param $feature
+     *
+     * @return BetaFeatureInterface|null
+     */
+    public function getFeature($feature)
+    {
+        return $this->hasFeature($feature) ? $this->collection[(string) $feature] : null;
+    }
+
+    /**
+     * @param string $feature
+     *
+     * @return bool
+     */
+    public function isFeatureEnabled($feature)
+    {
+        if (!$this->hasFeature($feature)) {
+            return false;
+        }
+
+        return $this->getFeature($feature)->isEnabled();
+    }
 }

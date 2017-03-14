@@ -7,5 +7,7 @@ services:
 
   deskpro.features.agent_chat:
     class: DeskPRO\Bundle\AppBundle\Features\AgentChatFeature
+    arguments:
+      - "@settings_resolver"
     tags:
       - { name: deskpro.feature }

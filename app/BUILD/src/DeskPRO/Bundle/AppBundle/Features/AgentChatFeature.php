@@ -33,7 +33,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Class AgentChatFeature.
  */
-class AgentChatFeature implements BetaFeatureInterface
+class AgentChatFeature extends AbstractFeature
 {
     /**
      * {@inheritdoc}

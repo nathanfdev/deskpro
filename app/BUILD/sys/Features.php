@@ -29,6 +29,7 @@
 namespace DpSys;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
 
@@ -113,7 +114,9 @@ final class Features
             return false;
         }
 
-        return $this->settingsResolver->getGlobalSettings()->getBool('beta_features.'.$id, false);
+        $key = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $id);
+
+        return $this->settingsResolver->getGlobalSettings()->getBool($key, false);
     }
 
     /**
