@@ -124,9 +124,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				var url = this.getMetaData('personGravatarIcon');
 				url = Orb.appendQueryData(url, 'd', defaultIcon);
 
-				var a = this.tabBtn.find('a').find('i');
-				a.attr('class', '').addClass('image-icon');
-				a.css('background-image', 'url("' + url + '")').css('background-position', '2px 50%');
+				this.tabBtn.find('a i')
+					.attr('class', '')
+					.addClass('image-icon')
+					.css('background-image', 'url("' + url + '")')
+					.css('background-position', '2px 50%');
 			}
 		}
 
@@ -370,10 +372,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
                                 person_id: this.meta.person_id
 			});
 
-			this.ownObject(this.changePic);
-			this.ownObject(this.uploadVcard);
-			this.ownObject(this.uploadFile);
-
 		} // can edit
 
 		$('.create-ticket', this.getEl('action_buttons')).on('click', function() {
@@ -407,7 +405,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				});
 			}
 		});
-		this.ownObject(this.sortTicketsMenu);
 
 		this.sortChatsMenu = new DeskPRO.UI.Menu({
 			triggerElement: this.getEl('sort_chats_menu_trigger'),
@@ -426,7 +423,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				});
 			}
 		});
-		this.ownObject(this.sortChatsMenu);
 
 		this.moreactionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.more', this.getEl('action_buttons')),
@@ -569,7 +565,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
                                 }
 			}
 		});
-		this.ownObject(this.moreactionsMenu);
 
 		if (this.meta.perms.merge) {
 			this.merge = new DeskPRO.Agent.Widget.Merge({
@@ -594,18 +589,17 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					});
 				}
 			});
-			this.ownObject(this.merge);
 		}
 
 		this._initLabels();
 
+		this.simpleTabs = [];
 		$('.profile-box-container.tabbed', this.wrapper).each(function() {
 			var simpleTabs = new DeskPRO.UI.SimpleTabs({
 				triggerElements: '> header li',
 				context: this
 			});
 
-			self.ownObject(simpleTabs);
 			simpleTabs.addEvent('beforeTabSwitch', function(eventData) {
 				if(eventData.tabEl) {
 					var classShow = eventData.tabEl.data('classShow');
@@ -613,6 +607,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					self.wrapper.find('.' + classShow).show();
 				}
 			});
+			self.simpleTabs.push(simpleTabs);
 		});
 
 		this._initOrgEdit();
@@ -1011,7 +1006,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				input: this.getEl('labels_input'),
 				onChange: this.saveLabels.bind(this)
 			});
-			this.ownObject(this.labelsInput);
 		}
 	},
 
@@ -1197,6 +1191,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
     this.$q = null;
     this.$timeout = null;
 
+    this.getEl('timezone').off();
+    this.getEl('disable_autoresponses').off();
+
     if (this.tabBtn) {
     	this.tabBtn = null;
 		}
@@ -1235,6 +1232,30 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
       this.contactEditor.destroy();
       this.contactEditor = null;
 		}
+		if (this.changePic) {
+    	this.changePic.destroy();
+      this.changePic = null;
+    }
+    if (this.uploadVcard) {
+      this.uploadVcard.destroy();
+      this.uploadVcard = null;
+		}
+		if (this.uploadFile) {
+      this.uploadFile.destroy();
+      this.uploadFile = null;
+		}
+    if (this.merge) {
+      this.merge.destroy();
+      this.merge = null;
+    }
+    if (this.labelsInput) {
+      this.labelsInput.destroy();
+      this.labelsInput = null;
+    }
+    this.simpleTabs.forEach(function(tabs){
+    	tabs.destroy();
+		});
+    this.simpleTabs.length = 0;
 
     this.destroyEvents();
 	}

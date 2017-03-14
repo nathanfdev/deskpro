@@ -172,5 +172,16 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile = new Orb.Class({
 		var meta_id = '#' + this.page.meta.baseId + '_' + id;
 
 		return $(meta_id);
-	}
+	},
+
+  destroy: function() {
+    if (this.overlay) {
+      this.overlay.destroy();
+      this.overlay = null;
+    }
+    this.options = null;
+    this.el = null;
+    this.page = null;
+    this.destroyEvents();
+  }
 });

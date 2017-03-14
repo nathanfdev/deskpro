@@ -4,8 +4,6 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard = new Orb.Class({
 	Implements: [Orb.Util.Events, Orb.Util.Options],
 
 	initialize: function(page, options) {
-		var self = this;
-
 		this.options = {
 			loadUrl: '',
 			saveUrl: '',
@@ -162,6 +160,9 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard = new Orb.Class({
 	destroy: function() {
 		if (this.overlay) {
 			this.overlay.destroy();
+			this.overlay = null;
 		}
+    this.page = null;
+    this.destroyEvents();
 	}
 });

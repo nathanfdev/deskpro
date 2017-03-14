@@ -17,6 +17,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 
 		this.setOptions(options);
 		this.page = page;
+    this.page.addEvent('destroy', this.destroy, this);
 
 		this.wrapper = this.page.wrapper;
 		this.phone_numbers = new DeskPRO.UI.PhoneNumberInputs();
