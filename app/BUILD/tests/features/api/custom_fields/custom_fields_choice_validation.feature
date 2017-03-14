@@ -20,7 +20,7 @@ Feature: Custom fields
     """
 {
   "fields": {
-    "~t~": 0
+    "~t~": ~t~
   }
 }
     """
@@ -47,7 +47,7 @@ Feature: Custom fields
     """
 {
   "fields": {
-    "~t~": [0]
+    "~t~": [~t~]
   }
 }
     """

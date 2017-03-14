@@ -31,28 +31,12 @@ namespace DeskPRO\Bundle\ApiBundle\EventListener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Routing\RouterInterface;
 
 /**
- * Class JsonBodyListener.
+ * Class ContentTypeListener.
  */
-class JsonBodyListener implements EventSubscriberInterface
+class ContentTypeListener implements EventSubscriberInterface
 {
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * Constructor.
-     *
-     * @param RouterInterface $router
-     */
-    public function __construct(RouterInterface $router)
-    {
-        $this->router = $router;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -69,21 +53,17 @@ class JsonBodyListener implements EventSubscriberInterface
     public function onRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
+        $content = $request->getContent();
 
-        // can accept different requests
-        if (preg_match('#^/api/v2/api_tokens/user_sources/\d+/callback#', $request->getPathInfo())) {
-            return;
+        // 'Content-Type' header could be `text/plain` so force `application/json` format
+        // if we get valid json body content
+        // otherwise we will get unsupported format exception
+        // because fos rest bundle will try to decode the request body from `text/plain`
+        if ($content && is_string($content)) {
+            $request->setFormat('json', 'application/json');
+            $request->attributes->set('_format', 'json');
+            $request->attributes->set('media_type', 'json');
+            $request->headers->set('Content-Type', 'application/json');
         }
-        if (preg_match('#^/api/v2/twilio_callbacks/#', $request->getPathInfo())) {
-            return;
-        }
-        if (preg_match('#^/api/v2/blobs#', $request->getPathInfo())) {
-            return;
-        }
-
-        $request->setFormat('json', 'application/json');
-        $request->attributes->set('_format', 'json');
-        $request->attributes->set('media_type', 'json');
-        $request->headers->set('Content-Type', 'application/json');
     }
 }

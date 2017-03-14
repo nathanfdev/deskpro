@@ -106,7 +106,7 @@ class AgentChatsController extends CrudController
         $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
 
         $form = $this->createForm(static::$type, $this->instantiateEntity($request), ['person' => $this->getUser()]);
-        $form->submit($this->getRequestContent($request));
+        $form->submit($request->request->all());
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }

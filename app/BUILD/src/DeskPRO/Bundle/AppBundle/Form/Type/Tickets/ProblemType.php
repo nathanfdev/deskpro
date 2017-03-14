@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
@@ -63,7 +59,7 @@ class ProblemType extends AbstractType
     public function onSetOpenByDefault(FormEvent $event)
     {
         $data = $event->getData();
-        if (!isset($data['is_open'])) {
+        if (is_array($data) && !array_key_exists('is_open', $data)) {
             $data['is_open'] = 1;
         }
 

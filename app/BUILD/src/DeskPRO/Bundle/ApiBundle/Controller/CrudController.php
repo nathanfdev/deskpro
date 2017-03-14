@@ -543,9 +543,6 @@ abstract class CrudController extends BaseController
             $partialUpdate = true;
         }
 
-        $form    = $this->createForm(static::$type, $model, $options);
-        $decoded = $this->getRequestContent($request);
-
         // we use POST request for creating and updating entities (including partial updates)
         // so $clearMissing should depends on $model id (switch for POST and PATCH request)
 
@@ -555,7 +552,8 @@ abstract class CrudController extends BaseController
 
         // in this case form ViolationMapper should apply entity validation errors on the submitted form
 
-        $form->submit($decoded, !$partialUpdate);
+        $form = $this->createForm(static::$type, $model, $options);
+        $form->submit($request->request->all(), !$partialUpdate);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
@@ -568,21 +566,6 @@ abstract class CrudController extends BaseController
         }
 
         return $view;
-    }
-
-    /**
-     * It's useful for replacing content.
-     *
-     * @param Request $request
-     *
-     * @return mixed
-     */
-    protected function getRequestContent(Request $request)
-    {
-        return json_decode(
-            $request->getContent(),
-            true // convert to assoc arrays instead of stdClass instances
-        );
     }
 
     /**
