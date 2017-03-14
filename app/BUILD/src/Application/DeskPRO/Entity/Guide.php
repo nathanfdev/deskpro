@@ -201,7 +201,10 @@ class Guide extends DomainObject
      */
     public function getTopics()
     {
-        return $this->topics;
+        return $this->topics->filter(function ($topic) {
+            /* @var Topic $topic */
+            return $topic->getStatus() !== Topic::STATUS_HIDDEN;
+        });
     }
 
     /**

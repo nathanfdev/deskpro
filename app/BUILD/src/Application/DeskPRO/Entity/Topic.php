@@ -82,7 +82,7 @@ class Topic extends ContentAbstract implements HighlightableModelInterface
      *
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Topic>>")
      *
-     * @var Topic[]
+     * @var Topic[]|ArrayCollection
      */
     protected $children;
 
@@ -200,15 +200,18 @@ class Topic extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @return Topic[]
+     * @return Topic[]|ArrayCollection
      */
     public function getChildren()
     {
-        return $this->children;
+        return $this->children->filter(function ($topic) {
+            /* @var Topic $topic */
+            return $topic->getStatus() !== Topic::STATUS_HIDDEN;
+        });
     }
 
     /**
-     * @param Topic[] $children
+     * @param Topic[]|ArrayCollection $children
      *
      * @return Topic
      */

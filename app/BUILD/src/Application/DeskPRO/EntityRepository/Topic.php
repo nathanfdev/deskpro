@@ -28,6 +28,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\Entity\Topic as TopicEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Util\Arrays;
@@ -69,15 +70,18 @@ class Topic extends AbstractEntityRepository
         } else {
             $select = 'id, parent_id, title, slug';
 
+            $params = [];
+
             $qb = $this->_em->getConnection()->createQueryBuilder();
             $qb->select($select);
             $qb->from($this->tableName);
+            $qb->where('status <> ?');
+            $params[] = TopicEntity::STATUS_HIDDEN;
             $qb->orderBy('display_order', 'ASC');
             $qb->addOrderBy('id', 'ASC');
 
-            $params = [];
             if ($guide) {
-                $qb->where('guide_id = ?');
+                $qb->andWhere('guide_id = ?');
                 $params[] = $guide->getId();
             }
 

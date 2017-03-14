@@ -222,9 +222,10 @@ class GuideController extends PublishController
                 break;
 
             case 'guide':
-                $guide = $this->em->find(Guide::class, $this->in->getUInt('category_id'));
+                $guide = $this->em->find(Guide::class, $this->in->getUInt('guide_id'));
                 $topic->setGuide($guide);
-                $data['guide_id'] = $guide->getId();
+                $data['guide_id']  = $guide->getId();
+                $data['parent_id'] = 0;
                 break;
 
             case 'delete':
