@@ -2532,4 +2532,11 @@ $collection->create('go_to_chat_id', [
     'requirements' => ['id' => '\\d+'],
 ]);
 
+$collection->create('go_to_topic_id', [
+    'path'         => '/go/topic/{id}',
+    'controller'   => 'AgentBundle:GoTo:topicId',
+    'methods'      => ['GET'],
+    'requirements' => ['id' => '\\d+'],
+]);
+
 return $collection;

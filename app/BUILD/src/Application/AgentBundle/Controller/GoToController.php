@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Topic;
 
 class GoToController extends AbstractController
 {
@@ -166,5 +167,15 @@ class GoToController extends AbstractController
     public function chatIdAction(ChatConversation $conversation)
     {
         return $this->redirect('/agent/#app.userchat,new:-1,c:'.$conversation->getId());
+    }
+
+    /**
+     * @param Topic $topic
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function topicIdAction(Topic $topic)
+    {
+        return $this->redirect('/agent/#app.publish,m:'.$topic->getId());
     }
 }
