@@ -88,7 +88,6 @@ class ViewTopic extends React.Component {
         topics,
       });
       const topic = Object.values(topics).pop();
-      this.grabTopicFromApi(topic.slug);
       browserHistory.push(`/${this.props.params.locale}/guides/${guide.slug}/${topic.slug}`);
     });
   };

@@ -68,7 +68,7 @@ class Topic extends AbstractEntityRepository
         if (is_array($reset)) {
             $topics = $reset;
         } else {
-            $select = 'id, parent_id, title, slug';
+            $select = 'id, parent_id, title, slug, display_order';
 
             $params = [];
 
@@ -78,7 +78,6 @@ class Topic extends AbstractEntityRepository
             $qb->where('status <> ?');
             $params[] = TopicEntity::STATUS_HIDDEN;
             $qb->orderBy('display_order', 'ASC');
-            $qb->addOrderBy('id', 'ASC');
 
             if ($guide) {
                 $qb->andWhere('guide_id = ?');
