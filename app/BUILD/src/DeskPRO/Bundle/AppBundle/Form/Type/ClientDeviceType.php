@@ -68,6 +68,7 @@ class ClientDeviceType extends AbstractType
                     ClientDevice::TYPE_IOS_GENERIC,
                     ClientDevice::TYPE_IOS_IPAD,
                     ClientDevice::TYPE_IOS_IPHONE,
+                    ClientDevice::TYPE_ANDROID,
                     ClientDevice::TYPE_ANDROID_PHONE,
                     ClientDevice::TYPE_ANDROID_TABLET,
                 ],
