@@ -1,0 +1,11 @@
+services:
+
+  # Note: SecurityHeadersResponseListener's service is defined in config.shared.php as it is used globally
+
+  deskpro.features_collection:
+    class: DeskPRO\Bundle\AppBundle\Features\FeaturesCollection
+
+  deskpro.features.agent_chat:
+    class: DeskPRO\Bundle\AppBundle\Features\AgentChatFeature
+    tags:
+      - { name: deskpro.feature }

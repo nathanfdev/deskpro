@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DbalConnectionPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DoctrineCacheClassPass;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\FeaturesCompilerPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\FormOrderExtensionsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\LazyWarmersPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\MongoConnectionPass;
@@ -80,6 +81,7 @@ class AppBundle extends Bundle
         $container->addCompilerPass(new DbalConnectionPass());
         $container->addCompilerPass(new MongoConnectionPass());
         $container->addCompilerPass(new PermissionGroupsCompilerPass());
+        $container->addCompilerPass(new FeaturesCompilerPass());
 
         /** @var \Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension $security */
         $security = $container->getExtension('security');
