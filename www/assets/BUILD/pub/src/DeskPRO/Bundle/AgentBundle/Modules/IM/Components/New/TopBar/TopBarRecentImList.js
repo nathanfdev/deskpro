@@ -51,9 +51,28 @@ class TopBarRecentImList extends RecentList {
   constructor(props) {
     super(props);
     this.state = {
-      chats: Immutable.OrderedMap({})
+      chats: Immutable.OrderedMap({}),
+      slice: chatActions.countSlice()
     };
+    this.resizeTimeout = null;
   }
+
+  componentWillMount() {
+    this.setState({ slice: chatActions.countSlice() });
+    window.addEventListener('resize', this.resizeHandler);
+  }
+
+  resizeHandler = () => {
+    if (!this.resizeTimeout) {
+      this.resizeTimeout = setTimeout(
+        () => {
+          this.setState({ slice: chatActions.countSlice() });
+          this.resizeTimeout = null;
+        },
+        10
+      );
+    }
+  };
 
   componentWillReceiveProps(props) {
     let { chats } = this.state;
@@ -87,13 +106,13 @@ class TopBarRecentImList extends RecentList {
 
   getItems() {
     const { current, chats } = this.props;
-    let stateChats = this.state.chats.slice(0, 10);
+    let stateChats = this.state.chats.slice(0, this.state.slice);
     if (current.get('id') && !stateChats.has(current.get('id'))) {
       const chat = chats.get(current.get('id'));
       if (chat) { // I'm not sure why current chat could absent, but seems that Lauren somehow reached that
         stateChats = stateChats.set(current.get('id'), chat.set('added', Date.now()));
         stateChats = stateChats.sort((a, b) => b.get('added') - a.get('added'));
-        stateChats = stateChats.slice(0, 10);
+        stateChats = stateChats.slice(0, this.state.slice);
       }
     }
 
