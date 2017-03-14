@@ -120,6 +120,11 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     border-radius: 2px;
     background-color: #f8f8f8;
   }
+  blockquote {
+    padding: 0 1em;
+    color: #6a737d;
+    border-left: 0.25em solid #dfe2e5;
+  }
 
   $table-radius: 2px;
 
