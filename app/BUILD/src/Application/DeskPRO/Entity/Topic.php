@@ -33,14 +33,15 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @PortalLinkRoute("portal_topic_view", route_param_map={"slug":"slug"})
- * @PortalLinkRoute("portal_topic_view", route_param_map={"slug": "id"}, type="permalink")
+ * @PortalLinkRoute("portal_guides_topic_view", route_param_map={"slug":"slug", "guide_slug":"guide_slug", "parents_slug":"parents_slug"})
+ * @PortalLinkRoute("portal_guides_topic_view", route_param_map={"slug": "id", "guide_slug":"guide_slug"}, type="permalink")
  */
-class Topic extends ContentAbstract
+class Topic extends ContentAbstract implements HighlightableModelInterface
 {
     const CONTENT_TYPE = 'topic';
 
@@ -102,6 +103,13 @@ class Topic extends ContentAbstract
      * @Assert\NotBlank()
      */
     protected $content_input_type = self::CONTENT_TYPE_MARKDOWN;
+
+    /**
+     * The search result highlights.
+     *
+     * @var array
+     */
+    protected $_search_highlights;
 
     protected function addSlugHistory($oldSlug)
     {
@@ -229,6 +237,73 @@ class Topic extends ContentAbstract
         $this->setModelField('no_content', $no_content);
 
         return $this;
+    }
+
+    public function getGuideSlug()
+    {
+        return $this->getGuide()->getSlug();
+    }
+
+    public function getParentsSlug()
+    {
+        if (!$this->getParent()) {
+            return '';
+        }
+        $slug   = '';
+        $parent = $this->getParent();
+        $i      = 0;
+        while ($parent) {
+            // Protect infinite loop
+            if ($i++ > 100) {
+                break;
+            }
+            $slug   = '/'.$parent->getSlug().$slug;
+            $parent = $parent->getParent();
+        }
+
+        return $slug;
+    }
+
+    /**
+     * Not yet implemented.
+     *
+     * @return array
+     */
+    public function getLabels()
+    {
+        return [];
+    }
+
+    /**
+     * Set ElasticSearch highlight data.
+     *
+     * @param array $highlights array of highlight strings
+     */
+    public function setElasticHighlights(array $highlights)
+    {
+        if (!empty($highlights)) {
+            $this->_search_highlights = $highlights;
+        }
+    }
+
+    /**
+     * Get Elasticsearch highlight data.
+     *
+     * @param null $field
+     *
+     * @return array|null
+     */
+    public function getElasticHighlights($field = null)
+    {
+        if (is_null($field)) {
+            return $this->_search_highlights;
+        } else {
+            if (isset($this->_search_highlights[$field])) {
+                return $this->_search_highlights[$field];
+            } else {
+                return;
+            }
+        }
     }
 
     //###########################################################################

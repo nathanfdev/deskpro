@@ -44,31 +44,6 @@ class Topic extends AbstractEntityRepository
      */
     protected $tableName;
 
-    /**
-     * @var array
-     */
-    protected $topicIds;
-
-    /**
-     * @var array
-     */
-    protected $topics;
-
-    /**
-     * @var array
-     */
-    protected $topicParentMap;
-
-    /**
-     * @var array
-     */
-    protected $topicNames;
-
-    /**
-     * @var array
-     */
-    protected $topicHierarchyFlat;
-
     public function __construct(EntityManager $em, ClassMetadata $class)
     {
         parent::__construct($em, $class);
@@ -109,7 +84,6 @@ class Topic extends AbstractEntityRepository
             $topics = $this->_em->getConnection()->fetchAllKeyed($qb->getSQL(), $params, 'id');
         }
 
-        $this->topicIds = [];
         foreach ($topics as &$c) {
             foreach (['id', 'parent_id', 'brand_id'] as $k) {
                 if (!empty($c[$k])) {
@@ -120,22 +94,21 @@ class Topic extends AbstractEntityRepository
             if (!isset($c['user_title']) || !$c['user_title']) {
                 $c['user_title'] = $c['title'];
             }
-
-            $this->topicIds[]       = $c['id'];
-            $this->topics[$c['id']] = $c;
         }
         unset($c);
 
-        foreach ($topics as $c) {
-            $this->topicParentMap[$c['id']] = $c['parent_id'] ? $c['parent_id'] : 0;
-        }
-
-        $this->topicNames = Arrays::flattenToIndex($topics, 'title');
-
-        $topics                   = Arrays::intoHierarchy($topics, null);
-        $this->topicHierarchy     = $topics;
-        $this->topicHierarchyFlat = Arrays::flattenHierarchy($topics);
+        $topics = Arrays::intoHierarchy($topics, null);
+        static::addParentSlug($topics);
+        $this->topicHierarchy = $topics;
 
         return $this->topicHierarchy;
+    }
+
+    protected static function addParentSlug(&$topics, $parentSlug = '')
+    {
+        foreach ($topics as &$topic) {
+            $topic['parents_slug'] = $parentSlug;
+            static::addParentSlug($topic['children'], $parentSlug.'/'.$topic['slug']);
+        }
     }
 }

@@ -101,6 +101,7 @@ class SimplePortalEntitySerializer
             || $object instanceof Entity\News
             || $object instanceof Entity\Download
             || $object instanceof Entity\Feedback
+            || $object instanceof Entity\Topic
         ) {
             $result['id']        = $object->getId();
             $result['name']      = $object->getTranslatedTitle();

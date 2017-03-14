@@ -115,6 +115,14 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Query\Terms('category_id', $context->getFeedbackCategoryIds()));
             $filter->addShould($f);
         }
+        if ($context->getGuideIds() && ($limitTypes === null || in_array('topic', $limitTypes))) {
+            $search->addType('topic');
+            $f = new Query\BoolQuery();
+            $f->addMust(new Query\Term(['_type' => 'topic']));
+            $f->addMustNot(new Query\Term(['status' => 'hidden']));
+            $f->addMust(new Query\Terms('guide_id', $context->getGuideIds()));
+            $filter->addShould($f);
+        }
         if ($context->getPerson() && ($limitTypes === null || in_array('ticket', $limitTypes))) {
             $search->addType('ticket');
             $f = new Query\BoolQuery();
@@ -252,6 +260,14 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Query\Term(['_type' => 'feedback']));
             $f->addMustNot(new Query\Term(['status' => 'hidden']));
             $f->addMust(new Query\Terms('category_id', $context->getFeedbackCategoryIds()));
+            $boolQuery->addShould($f);
+        }
+        if ($context->getGuideIds() && ($limit_types === null || in_array('topic', $limit_types))) {
+            $search->addType('topic');
+            $f = new Query\BoolQuery();
+            $f->addMust(new Query\Term(['_type' => 'topic']));
+            $f->addMustNot(new Query\Term(['status' => 'hidden']));
+            $f->addMust(new Query\Terms('guide_id', $context->getGuideIds()));
             $boolQuery->addShould($f);
         }
 

@@ -26,42 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\NewSearch\SearchEngine;
+namespace Application\DeskPRO\NewSearch\Repository;
 
-interface SearchContextInterface
+/**
+ * Topic Repository.
+ */
+class TopicRepository extends AbstractRepository
 {
-    /**
-     * @return int[]
-     */
-    public function getArticleCategoryIds();
-
-    /**
-     * @return int[]
-     */
-    public function getDownloadCategoryIds();
-
-    /**
-     * @return int[]
-     */
-    public function getNewsCategoryIds();
-
-    /**
-     * @return int[]
-     */
-    public function getFeedbackCategoryIds();
-
-    /**
-     * @return int[]
-     */
-    public function getGuideIds();
-
-    /**
-     * @return \Application\DeskPRO\Entity\Person|null
-     */
-    public function getPerson();
-
-    /**
-     * @return \Application\DeskPRO\Entity\Brand
-     */
-    public function getBrand();
+    protected $highlightFields = [
+        'title' => ['fragment_size' => 100],
+    ];
 }

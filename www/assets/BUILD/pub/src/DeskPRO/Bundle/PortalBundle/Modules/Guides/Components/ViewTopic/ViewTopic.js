@@ -10,14 +10,6 @@ class ViewTopic extends React.Component {
     params: PropTypes.object
   };
 
-  // To be removed when backend is fixed
-  static prerenderHtml(html) {
-    return html
-      .replace(/\{\{ img\(([^)]+)\) }}/g, '/file.php/$1')
-      .replace(/\{\{ content\(([^)]+)\) }}/g, '#')
-      .replace(/\{\{\s*content_link\(([^,]+),([^),]+)(,[^)]+)?\)\s*}}/g, '<a href="#">$1:$2</a>');
-  }
-
   constructor(props) {
     super(props);
     let topic = null;
@@ -78,7 +70,7 @@ class ViewTopic extends React.Component {
       return true;
     });
 
-    return ViewTopic.prerenderHtml(container.innerHTML);
+    return container.innerHTML;
   };
 
   grabTopicFromApi(slug) {

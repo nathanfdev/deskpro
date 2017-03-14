@@ -62,6 +62,7 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
         'download'          => 'DeskPRO:Download',
         'feedback'          => 'DeskPRO:Feedback',
         'news'              => 'DeskPRO:News',
+        'topic'             => 'DeskPRO:Topic',
         'ticket'            => 'DeskPRO:Ticket',
         'person'            => 'DeskPRO:Person',
         'organization'      => 'DeskPRO:Organization',

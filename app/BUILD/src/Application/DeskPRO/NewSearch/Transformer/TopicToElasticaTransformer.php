@@ -26,49 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content;
+namespace Application\DeskPRO\NewSearch\Transformer;
 
 use Application\DeskPRO\Entity\Topic;
-use Application\DeskPRO\Twig\Extension\TemplatingExtension;
-use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Topic as TopicModel;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Elastica\Document;
+use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 
 /**
- * Class TopicHandler.
+ * Class TopicToElasticaTransformer.
  */
-class TopicHandler extends AbstractEntityHandler
+class TopicToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * @var TemplatingExtension
-     */
-    protected $templatingExtension;
-
-    /**
-     * Constructor.
-     *
-     * @param TemplatingExtension $templatingExtension
-     */
-    public function __construct(TemplatingExtension $templatingExtension)
-    {
-        $this->templatingExtension = $templatingExtension;
-    }
-
-    /**
      * {@inheritdoc}
      *
-     * @param Topic $entity
+     * @param Topic $object
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function transform($object, array $fields)
     {
-        return new TopicModel($entity, $this->templatingExtension);
-    }
+        $document = new Document();
+        $document->setId($object->getId());
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getClassNames()
-    {
-        return Topic::class;
+        $document->set('title', $object->getRealTitle());
+        $document->set('content', $object->getContentPlain());
+        $document->set('status', $object->getStatus());
+
+        if ($object->getGuide()) {
+            $document->set('guide_id', $object->getGuide()->getId());
+        }
+
+        $document->set('date_created', $object->getDateCreated()->format('Y-m-d H:i:s'));
+        $document->set('date_active', date('Y-m-d H:i:s'));
+
+        return $document;
     }
 }

@@ -5,7 +5,7 @@
                 <li class="topic-item">
                     <a
                         class="{% if (current_topic and (child.slug == current_topic.slug)) %}active{% endif %}"
-                        href="{{ path('portal_guides_topic_view', {guide_slug: guide.slug, slug: child.slug}) }}"
+                        href="{{ path('portal_guides_topic_view', {guide_slug: guide.slug, slug: child.slug, parents_slug: child.parents_slug}) }}"
                     >
                         {{child.title}}
                     </a>
@@ -25,7 +25,7 @@
             <li class="topic-item">
                 <a
                     class="{% if (current_topic and (topic.slug == current_topic.slug)) %}active{% endif %}"
-                    href="{{ path('portal_guides_topic_view', {guide_slug: guide.slug, slug: topic.slug}) }}"
+                    href="{{ path('portal_guides_topic_view', {guide_slug: guide.slug, slug: topic.slug, parents_slug: topic.parents_slug}) }}"
                 >
                     {{topic.title}}
                 </a>

@@ -16,8 +16,12 @@ class Topic extends React.Component {
 
   constructor(props) {
     super(props);
+    let expanded = !this.props.expandable;
+    if (this.props.expandable && window.location.href.match(props.topic.slug)) {
+      expanded = true;
+    }
     this.state = {
-      expanded: !this.props.expandable
+      expanded
     };
   }
 
@@ -54,7 +58,7 @@ class Topic extends React.Component {
     }
     return (
       <li className="topic-item" key={topic.slug}>
-        <Link to={`/${locale}/guides/${guideSlug}/${topic.slug}`} activeClassName="active" onClick={this.toggleChildren}>
+        <Link to={`/${locale}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`} activeClassName="active" onClick={this.toggleChildren}>
           {topic.title}
           {expandable ? <i
             className={classNames(

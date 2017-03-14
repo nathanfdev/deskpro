@@ -89,6 +89,8 @@ class ResultSet
                 $type = 'download';
             } elseif ($r instanceof Entity\Feedback) {
                 $type = 'feedback';
+            } elseif ($r instanceof Entity\Topic) {
+                $type = 'topic';
             } elseif ($r instanceof Entity\Ticket) {
                 $type = 'ticket';
             } elseif ($r instanceof Entity\Person) {

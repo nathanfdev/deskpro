@@ -97,6 +97,8 @@ services:
 
   api_serializer.handler.topic:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\TopicHandler
+    arguments:
+      - "@twig.helpers.deskpro_templating"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

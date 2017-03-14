@@ -503,6 +503,11 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\FeedbackToElasticaTransformer');
 $container->setDefinition('deskpro.search.feedback_to_elastica_transformer', $definition);
 
+// deskpro.search.topic_to_elastica_transformer
+$definition = new Definition();
+$definition->setClass(\Application\DeskPRO\NewSearch\Transformer\TopicToElasticaTransformer::class);
+$container->setDefinition('deskpro.search.topic_to_elastica_transformer', $definition);
+
 // fos_elastica.provider.prototype.orm
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Provider\\Doctrine');
@@ -704,6 +709,27 @@ $container->loadFromExtension(
                             'elastica_to_model_transformer' => ['ignore_missing' => true],
                             'model_to_elastica_transformer' => ['service' => 'deskpro.search.feedback_to_elastica_transformer'],
                             'repository'                    => 'Application\DeskPRO\NewSearch\Repository\FeedbackRepository',
+                        ],
+                    ],
+                    'topic' => [
+                        'mappings' => [
+                            'title'        => ['analyzer' => 'title_content_analyzer'],
+                            'labels'       => ['analyzer' => 'title_content_analyzer'],
+                            'sticky_words' => [],
+                            'content'      => ['analyzer' => 'text_content_analyzer'],
+                            'status'       => [],
+                            'guide_id'     => ['type' => 'integer'],
+                            'date_created' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                            'date_active'  => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                        ],
+                        'persistence' => [
+                            'driver'                        => 'orm',
+                            'model'                         => \Application\DeskPRO\Entity\Topic::class,
+                            'provider'                      => [],
+                            'finder'                        => [],
+                            'elastica_to_model_transformer' => ['ignore_missing' => true],
+                            'model_to_elastica_transformer' => ['service' => 'deskpro.search.topic_to_elastica_transformer'],
+                            'repository'                    => \Application\DeskPRO\NewSearch\Repository\TopicRepository::class,
                         ],
                     ],
                     'organization' => [
