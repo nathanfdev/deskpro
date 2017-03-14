@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { addToCollection, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { addToCollection, removeFromCollection, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const toggleOverlay = createAction('IM_TOGGLE_OVERLAY');
 
@@ -81,11 +81,11 @@ export const startChat = createAction(
     }
     return new Promise(
       (resolve, reject) => {
-        const store = getState().RecordsStore.store.get('AgentChat');
-        const chat = store.get('records').toJS()[chatId];
+        const store = allSelectorFactory('AgentChat')(getState());
+        const chat = store.get(chatId);
         if (chatId && chat) {
           processChat(chatId, chat, dispatch);
-          return resolve(store.get('records').toJS()[chatId]);
+          return resolve(chat);
         }
 
         let method;

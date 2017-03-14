@@ -1,7 +1,7 @@
 import { newActionAlerts } from '../Modules/Application/Actions/notificationActions';
 import { startChat } from '../Modules/IM/Actions/chatsActions';
 import { markMessages } from '../Modules/IM/Actions/messagesActions';
-import { addToCollection } from '../../AppBundle/Modules/RecordsStore/Actions/store';
+import { addToCollection, updateCollection } from '../../AppBundle/Modules/RecordsStore/Actions/store';
 
 class ActionAlertsHandler {
   constructor(props) {
@@ -11,6 +11,7 @@ class ActionAlertsHandler {
 
   handle(payload) {
     const { data, linked } = payload.data;
+    const records = [];
     switch (payload.type) {
       case 'notification.agent_chat.new_message':
         if (linked.agent_chat[data.chat].chat_type === 'department') {
@@ -27,6 +28,15 @@ class ActionAlertsHandler {
         if (!(data.metadata.mention && data.person === this.options.me)) {
           this.options.dispatch(startChat(null, data.chat, true));
         }
+        break;
+      case 'notification.agents.update_online':
+        payload.data.online.forEach((item) => {
+          records.push({ id: item, online: true });
+        });
+        payload.data.offline.forEach((item) => {
+          records.push({ id: item, online: false });
+        });
+        this.options.dispatch(updateCollection('Person', records, 'merge'));
         break;
       default:
         break;

@@ -19,6 +19,15 @@ function gc(state, recordName) {
   return state.setIn([recordName, 'records'], validRecords);
 }
 
+function pushToAllCollection(recordName, map, newIds) {
+  if (!map.getIn([recordName, 'statuses', 'all'])) {
+    map.mergeIn([recordName, 'statuses', 'all'], { success: true, loading: false });
+  }
+
+  const oldIds = map.getIn([recordName, 'collections', 'all']) || Immutable.fromJS([]);
+  map.setIn([recordName, 'collections', 'all'], newIds.union(oldIds));
+}
+
 function handleSetCollection(state, { recordName, collectionName, records, ids, noUpdates }) {
   if (noUpdates) return state;
   const newRecords = Immutable.Map.isMap(records) ? records : mapKeyedFromArray(records, 'id');
@@ -31,12 +40,7 @@ function handleSetCollection(state, { recordName, collectionName, records, ids, 
     map.mergeIn([recordName, 'statuses', collectionName], { success: true, loading: false });
 
     if (collectionName !== 'all') {
-      if (!map.getIn([recordName, 'statuses', 'all'])) {
-        map.mergeIn([recordName, 'statuses', 'all'], { success: true, loading: false });
-      }
-
-      const oldIds = map.getIn([recordName, 'collections', 'all']) || Immutable.fromJS([]);
-      map.setIn([recordName, 'collections', 'all'], newIds.union(oldIds));
+      pushToAllCollection(recordName, map, newIds);
     }
   });
 }
@@ -58,6 +62,10 @@ function handleAddToCollection(state, { recordName, collectionName, records }) {
     map.mergeIn([recordName, 'records'], newRecords);
     map.setIn([recordName, 'collections', collectionName], newIds);
     map.mergeIn([recordName, 'statuses', collectionName], { success: true, loading: false });
+
+    if (collectionName !== 'all') {
+      pushToAllCollection(recordName, map, newIds);
+    }
   });
 }
 
