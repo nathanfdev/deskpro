@@ -2160,6 +2160,18 @@ $collection->create('agent_publish_guides_newform', [
     'controller' => 'AgentBundle:Guide:addCategoryForm',
 ]);
 
+$collection->create('agent_topic_ajax_get_guides', [
+    'path'         => '/guides/brand/{brand_id}',
+    'controller'   => 'AgentBundle:Guide:ajaxGetGuidesByBrand',
+    'requirements' => ['brand_id' => '\\d+'],
+]);
+
+$collection->create('agent_topic_ajax_get_topics', [
+    'path'         => '/guides/topics/{guide_id}',
+    'controller'   => 'AgentBundle:Guide:ajaxGetTopicsByGuide',
+    'requirements' => ['guide_id' => '\\d+'],
+]);
+
 $collection->create('agent_agentchat_getonlineagents', [
     'path'       => '/agent-chat/get-online-agents.json',
     'controller' => 'AgentBundle:AgentChat:getOnlineAgents',

@@ -54,8 +54,8 @@ class Topic extends AbstractEntityRepository
     /**
      * Get a plain hierarchy array.
      *
-     * @param bool       $reset
-     * @param Guide|null $guide
+     * @param bool           $reset
+     * @param Guide|int|null $guide
      *
      * @return array|null
      */
@@ -80,8 +80,14 @@ class Topic extends AbstractEntityRepository
             $qb->orderBy('display_order', 'ASC');
 
             if ($guide) {
+                if (is_object($guide)) {
+                    $guideId = $guide->getId();
+                } else {
+                    $guideId = $guide;
+                }
+
                 $qb->andWhere('guide_id = ?');
-                $params[] = $guide->getId();
+                $params[] = $guideId;
             }
 
             $topics = $this->_em->getConnection()->fetchAllKeyed($qb->getSQL(), $params, 'id');

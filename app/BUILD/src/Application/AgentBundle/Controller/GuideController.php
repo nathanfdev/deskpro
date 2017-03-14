@@ -278,15 +278,46 @@ class GuideController extends PublishController
         return $this->createJsonResponse($data);
     }
 
+    public function ajaxGetGuidesByBrandAction($brand_id)
+    {
+        $guides = $this->em->getRepository(Guide::class)->findBy(['brand' => $brand_id]);
+
+        return $this->render('AgentBundle:Common:select-standard.html.twig', [
+            'name'             => 'newtopic[guide_id]',
+            'id'               => 'new_topic_guide_id',
+            'add_classname'    => 'guide_id',
+            'add_attr'         => '',
+            'categories'       => $guides,
+            'allow_parent_sel' => true,
+        ]);
+    }
+
+    public function ajaxGetTopicsByGuideAction($guide_id)
+    {
+        $topics = $this->em->getRepository(Topic::class)->getInHierarchy(false, $guide_id);
+
+        array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
+
+        return $this->render('AgentBundle:Common:select-standard.html.twig', [
+            'name'             => 'newtopic[parent_id]',
+            'id'               => '_parent',
+            'add_classname'    => 'parent_id',
+            'add_attr'         => '',
+            'categories'       => $topics,
+            'allow_parent_sel' => true,
+            'selected'         => 0,
+        ]);
+    }
+
     public function newTopicAction()
     {
-        $guides = $this->em->getRepository(Guide::class)->findAll();
-
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.new_topic', $this->person->id);
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
-        $topics = $this->em->getRepository(Topic::class)->getInHierarchy();
+        $guides = $this->em->getRepository(Guide::class)->findBy(['brand' => $brands[0]->getId()]);
+
+        $topics = $this->em->getRepository(Topic::class)->getInHierarchy(false, $guides[0]);
 
         array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
 
