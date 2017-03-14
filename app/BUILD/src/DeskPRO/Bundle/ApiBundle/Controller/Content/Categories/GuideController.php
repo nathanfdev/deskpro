@@ -126,35 +126,19 @@ class GuideController extends AbstractCategoriesController
 
         $tree = Arrays::flattenHierarchy($tree);
 
-        $em   = $this->getManager();
-        $repo = $em->getRepository(Topic::class);
+        $em = $this->getManager();
 
-        // Might need performance optimisation
-        foreach ($guide->getTopics() as $topic) {
-            if ($topic->getStatus() !== 'hidden') {
-                if (!isset($tree[$topic->getId()])) {
-                    continue;
-                }
-                $treeElement = $tree[$topic->getId()];
-                if (($topic->getParent() && $topic->getParent()->getId() !== $treeElement['parent_id'])
-                    || ($treeElement['parent_id'] && !$topic->getParent())
-                    || ($topic->getParent() && !$treeElement['parent_id'])
-                ) {
-                    $parent = null;
-                    if ($treeElement['parent_id']) {
-                        $parent = $repo->find($treeElement['parent_id']);
-                    }
-                    $topic->setParent($parent);
-                    $em->persist($topic);
-                }
-                if ($topic->getDisplayOrder() !== $treeElement['display_order']) {
-                    $topic->setDisplayOrder($treeElement['display_order']);
-                    $em->persist($topic);
-                }
-            }
+        foreach ($tree as $topic) {
+            $q = $em->createQuery('
+              UPDATE '.Topic::class.' t 
+              SET 
+                t.display_order = :display_order, t.parent = :parent_id WHERE t.id = :id');
+            $q->execute([
+                'display_order' => $topic['display_order'],
+                'parent_id'     => $topic['parent_id'] ? $topic['parent_id'] : null,
+                'id'            => $topic['id'],
+            ]);
         }
-
-        $em->flush();
 
         return new Response('', 204);
     }
