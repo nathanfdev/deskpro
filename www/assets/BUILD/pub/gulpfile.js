@@ -169,7 +169,7 @@ function getWebpackConfig(mode, isProd) {
         'jquery.ui':            'jquery-ui',
         'jquery.ui.widget':     'jquery.ui.widget/jquery.ui.widget',
         'jquery.serializejson': 'jquery-serializejson/jquery.serializejson',
-        'mark.js':              'mark.js/dist/jquery.mark.es6'
+        'mark.js':              'mark.js/dist/jquery.mark.min'
       }
     },
 
@@ -234,7 +234,7 @@ function getWebpackConfig(mode, isProd) {
           loader: 'json-loader'
         }
       ],
-      noParse: [/(^froala)\.min\.js/]
+      noParse: [/(^(froala|jquery\.mark))\.min\.js/]
     },
 
     plugins: [
