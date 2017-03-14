@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import ReactTooltip from 'react-tooltip';
 import Isvg from 'react-inlinesvg';
 import $ from 'jquery';
-import 'mark.js';
+// import 'mark.js';
 import FroalaEditor from 'react-froala-wysiwyg';
 import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
