@@ -48,7 +48,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @Rest\Route("/agent_chats/messages")
  * @ApiUnstable()
  * @ApiDoc(target="all", section="Chats", output="DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage")
- * @Feature("agent_chat")
+ * @Feature(id="agent_chat", beta=true)
  */
 class AgentChatAllMessagesController extends CrudController
 {

@@ -587,7 +587,7 @@ class NewTicket
                 $ticket->getSubject()
             );
             $agent_chat->sendAgentMessage($notifyText, $agentIds);
-            if (App::$container->get('deskpro.feature_flags')->hasFeature('agent_chat')) {
+            if (App::$container->get('deskpro.feature_flags')->hasBeta('agent_chat')) {
                 $newIMtext = sprintf(
                     '[{{t-%d}}] %s',
                     $ticket->getId(),
