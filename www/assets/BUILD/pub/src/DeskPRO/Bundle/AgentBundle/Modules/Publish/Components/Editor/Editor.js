@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, ButtonGroup } from 'DeskPRO/Component/Semantic/Button';
+import { Button } from 'DeskPRO/Component/Semantic/Button';
 import 'froala-editor/js/froala_editor.pkgd.min';
 import classNames from 'classnames';
 import $ from 'jquery';
@@ -149,19 +149,7 @@ export class Editor extends React.Component {
 
   getEditor = () => {
     switch (this.state.inputType) {
-      case 'markdown': {
-        return (
-          <MarkdownEditor
-            ref={(c) => { this.markdownEditor = c; }}
-            value={this.state.markdown}
-            onChange={this.onChange}
-            onAddFile={this.props.onAddFile}
-            loadRemoteImages={this.props.loadRemoteImages}
-          />
-        );
-      }
-      case 'rte':
-      default: {
+      case 'rte': {
         const froalaConfig = {
           imageUploadMethod: 'POST',
           imageUploadURL:    '/api/v2/blobs/froala',
@@ -172,8 +160,12 @@ export class Editor extends React.Component {
 
         if (window.DeskPRO_Window) {
           froalaConfig.events = {
-            'froalaEditor.focus': () => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; },
-            'froalaEditor.blur':  () => { window.DeskPRO_Window.keyboardShortcuts.isPaused = false; },
+            'froalaEditor.focus': () => {
+              window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
+            },
+            'froalaEditor.blur': () => {
+              window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
+            },
           };
         }
         return (<FroalaEditor
@@ -181,6 +173,20 @@ export class Editor extends React.Component {
           model={this.state.html}
           onModelChange={this.onContentChange}
         />);
+      }
+      case 'markdown':
+      default: {
+        return (
+          <MarkdownEditor
+            ref={(c) => {
+              this.markdownEditor = c;
+            }}
+            value={this.state.markdown}
+            onChange={this.onChange}
+            onAddFile={this.props.onAddFile}
+            loadRemoteImages={this.props.loadRemoteImages}
+          />
+        );
       }
     }
   };
@@ -197,24 +203,21 @@ export class Editor extends React.Component {
   };
 
   render() {
-    return (<div className="publish-editor">
-      <div className="header">
-        <ButtonGroup onChange={this.changeMode} activeKey={this.state.inputType}>
-          <Button key="markdown">Markdown</Button>
-          <Button key="rte">Classic</Button>
-        </ButtonGroup>
-        {this.props.hideEditor ? <Button className="pull-right" confirm onClick={this.onCancel}>Cancel</Button> : ''}
-        {this.props.onSave ?
-          <Button
-            className={classNames('pull-right', { loading: this.props.saving })}
-            onClick={this.onSave}
-          >
-            {this.props.saved ? 'Saved' : 'Save'}
-          </Button> : '' }
-      </div>
-      <div className="editor">
-        {this.getEditor()}
-      </div>
-    </div>);
+    return (
+      <div className="publish-editor">
+        <div className="header">
+          {this.props.hideEditor ? <Button className="pull-right" confirm onClick={this.onCancel}>Cancel</Button> : ''}
+          {this.props.onSave ?
+            <Button
+              className={classNames('pull-right', { loading: this.props.saving })}
+              onClick={this.onSave}
+            >
+              {this.props.saved ? 'Saved' : 'Save'}
+            </Button> : '' }
+        </div>
+        <div className="editor">
+          {this.getEditor()}
+        </div>
+      </div>);
   }
 }
