@@ -132,6 +132,9 @@ class GuideController extends AbstractCategoriesController
         // Might need performance optimisation
         foreach ($guide->getTopics() as $topic) {
             if ($topic->getStatus() !== 'hidden') {
+                if (!isset($tree[$topic->getId()])) {
+                    continue;
+                }
                 $treeElement = $tree[$topic->getId()];
                 if (($topic->getParent() && $topic->getParent()->getId() !== $treeElement['parent_id'])
                     || ($treeElement['parent_id'] && !$topic->getParent())
