@@ -67,9 +67,6 @@ class Message extends React.Component {
 
   componentDidUpdate() {
     if (this.props.searchQuery) {
-      // disabled buggy mark.js
-      return;
-
       const $context = $('.content', this.messageNode);
       $context.unmark();
       $context.mark(this.props.searchQuery, { element: 'span', className: 'search-result' });
