@@ -8,7 +8,7 @@ define [
   class Admin_Main_Ctrl_Home extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_Main_Ctrl_Home'
     @CTRL_AS   = 'Home'
-    @DEPS      = ['$http', 'DpLicense']
+    @DEPS      = ['$http', 'DpLicense', '$sce']
 
     init: ->
       @online_agents = []
@@ -23,6 +23,7 @@ define [
       @offline_agents = []
       @unactive_agents = []
       @agentsMap = {}
+      @features = []
       @service =
         agents: @DataService.get 'Agents'
 
@@ -56,10 +57,10 @@ define [
       )
 
       @Api.sendDataGet({
-        cronStatus:  '/server/cron-status',
-        errorStatus: '/server/error-status',
-        apcStatus:   '/server/apc-status',
-        quickStats:  '/tickets/quick-stats'
+        cronStatus:   '/server/cron-status',
+        errorStatus:  '/server/error-status',
+        apcStatus:    '/server/apc-status',
+        quickStats:   '/tickets/quick-stats',
       }).then( (result) =>
         @cron_status    = result.data.cronStatus
         @error_status   = result.data.errorStatus
@@ -93,6 +94,10 @@ define [
         else
           @news_status = "okay"
           @news = result.data.news.news
+      )
+
+      @Api2.sendGet('features').then( (res) =>
+        @features = res.data.data
       )
 
       return promise

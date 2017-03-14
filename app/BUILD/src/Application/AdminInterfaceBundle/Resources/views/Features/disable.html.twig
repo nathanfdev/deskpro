@@ -1,0 +1,13 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+    <form role="form">
+        <section class="dp-paneblock dp-editpane">
+            <h4>
+                Disable Beta feature {{ ng_var('Features.feature.title') }}
+            </h4>
+            <div ng-bind-html="Features.disable_description">
+            </div>
+            <a class="btn btn-danger">Disable Beta Feature</a>
+        </section>
+    </form>
+{% endblock %}

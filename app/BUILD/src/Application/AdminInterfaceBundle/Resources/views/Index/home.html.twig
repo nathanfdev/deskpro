@@ -404,6 +404,23 @@
 					</td>
 				{% endif %}
 			</tr>
+			<tr ng-show="Home.features.length > 0">
+				<td class="dp-item">
+					<header>
+						<h3>Beta features</h3>
+					</header>
+					<article>
+						<div class="dp-mpadded">
+							<div class="beta-feature" ng-repeat="feature in Home.features">
+								<strong>{{ ng_var('feature.title') }}: </strong> {{ ng_var('feature.short_description') }}
+								<a ng-show="!feature.enabled" class="btn btn-success" href="{{ ng_href('features.enable', '{id: feature.id}') }}">Enable</a>
+								<a ng-show="feature.enabled"  class="btn btn-danger" href="{{ ng_href('features.disable', '{id: feature.id}') }}">Disable</a>
+							</div>
+						</div>
+					</article>
+				</td>
+				<td></td>
+			</tr>
 		</table>
 	</div>
 {% endblock %}

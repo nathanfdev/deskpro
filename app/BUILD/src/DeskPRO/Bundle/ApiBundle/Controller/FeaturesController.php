@@ -72,4 +72,40 @@ class FeaturesController extends BaseController
             Response::HTTP_OK
         );
     }
+
+    /**
+     * Get specific feature.
+     *
+     * @ApiDoc(
+     *     section="Features",
+     *     resourceDescription="Operations about features",
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="[a-zA-Z0-9\\.\\-_]+",
+     *              "description"="id of the feature",
+     *              "dataType"="string"
+     *          }
+     *      },
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="DeskPRO\Bundle\ApiBundle\Model\Feature"
+     * )
+     *
+     * @param string $id
+     *
+     * @return View
+     * @Rest\Get("/features/{id}")
+     */
+    public function getFeatureAction($id)
+    {
+        $collection = $this->get('deskpro.features_collection');
+        $feature    = $collection->getFeature($id);
+
+        return View::create(
+            $this->wrap($feature ? new Feature($feature) : []),
+            Response::HTTP_OK
+        );
+    }
 }

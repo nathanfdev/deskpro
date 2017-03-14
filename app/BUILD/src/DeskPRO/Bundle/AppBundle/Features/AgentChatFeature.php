@@ -65,7 +65,7 @@ class AgentChatFeature extends AbstractFeature
     public function getEnableDescription()
     {
         return <<<'HTML'
-Agent IM v2 replcae the current agent instant messaging feature with a new and improved version that is more powerful
+Agent IM v2 replaces the current agent instant messaging feature with a new and improved version that is more powerful
  and easier to use.<br/><br/>
 Installing Agent IM v2 beta will copy your old conversations over to the new system and then disable the old 
 messaging system. If you later decide you wish to go back to the old system, you can disable IM v2.
