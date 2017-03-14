@@ -330,7 +330,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			f = fields[i];
 			var row = this.display.find('.item.' + f.id);
 			if (undefined === $scope.fields[f.id] || scopeFields[f.id]) {
-				row.removeClass('off');
+				row.detach().removeClass('off').insertBefore($ctrls);
+			} else {
+				row.addClass('off');
 			}
 		}
 
