@@ -5,7 +5,7 @@ import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import $ from 'jquery';
 import Immutable from 'immutable';
-import 'mark.js';
+// import 'mark.js';
 import debounce from 'lodash/function/debounce';
 import classNames from 'classnames';
 import NumberSelect from '../NumberSelect';
@@ -220,6 +220,9 @@ class SearchResults extends React.Component {
   }
 
   hightlightQuery() {
+    // disabled buggy mark.js
+    return;
+
     const { query } = this.props;
     const $context = $('.dialpad-search-results');
 
