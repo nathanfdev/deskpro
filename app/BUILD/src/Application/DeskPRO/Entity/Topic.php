@@ -204,10 +204,14 @@ class Topic extends ContentAbstract implements HighlightableModelInterface
      */
     public function getChildren()
     {
-        return $this->children->filter(function ($topic) {
-            /* @var Topic $topic */
-            return $topic->getStatus() !== Topic::STATUS_HIDDEN;
-        });
+        if ($this->children) {
+            return $this->children->filter(function ($topic) {
+                /* @var Topic $topic */
+                return $topic->getStatus() !== Topic::STATUS_HIDDEN;
+            });
+        }
+
+        return [];
     }
 
     /**
