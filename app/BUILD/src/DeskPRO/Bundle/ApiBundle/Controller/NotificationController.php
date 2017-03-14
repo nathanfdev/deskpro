@@ -28,8 +28,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
-namespace DeskPRO\Bundle\ApiBundle\Controller;
-
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
