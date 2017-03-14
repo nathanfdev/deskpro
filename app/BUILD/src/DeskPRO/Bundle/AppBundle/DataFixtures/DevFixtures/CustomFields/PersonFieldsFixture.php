@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -94,16 +95,29 @@ class PersonFieldsFixture extends AbstractCustomDefFixture
             'Music',
             [
                 'choices' => [
-                        'Classic',
-                        ['Rock', ['Nazareth', 'Deep Purple', ['Queen', ['We will rock you', 'Bohemian Rhapsody']]]],
-                        'Jazz',
-                    ],
+                    'Classic',
+                    ['Rock', ['Nazareth', 'Deep Purple', ['Queen', ['We will rock you', 'Bohemian Rhapsody']]]],
+                    'Jazz',
+                ],
             ]
         );
 
         $fields[] = $this->createField('datetime', 'Date of Creation');
 
         self::$fields['hotdogs'] = $fields;
+        foreach ($this->getPersons() as $person) {
+            foreach ($this->customPersonChoiceFields as $ref) {
+                /** @var CustomDefAbstract $customPersonChoiceField */
+                $customPersonChoiceField = $this->getReference($ref);
+                $customData              = $this->createCustomDataPerson($person);
+                $this->setUpCustomChoiceData(
+                    $customPersonChoiceField->getParent(),
+                    $customData,
+                    $customPersonChoiceField
+                );
+            }
+        }
+        $this->manager->flush();
     }
 
     /**

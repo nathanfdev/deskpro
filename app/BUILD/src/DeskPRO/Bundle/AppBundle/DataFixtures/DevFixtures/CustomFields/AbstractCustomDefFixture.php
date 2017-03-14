@@ -32,7 +32,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields;
 
+use Application\DeskPRO\Entity\CustomDataAbstract;
+use Application\DeskPRO\Entity\CustomDataOrganization;
+use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 
@@ -42,6 +46,10 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 abstract class AbstractCustomDefFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
     protected $cnt = 1;
+
+    protected $customPersonChoiceFields = [];
+
+    protected $customOrgChoiceFields = [];
 
     /**
      * @return CustomDefAbstract
@@ -112,6 +120,16 @@ abstract class AbstractCustomDefFixture extends DeskProAbstractFixture implement
             foreach ($options['choices'] as $c) {
                 $this->createSubOptions($f, null, $c);
             }
+        } else {
+            if ($this instanceof PersonFieldsFixture) {
+                foreach ($this->getPersons() as $person) {
+                    $customData = $this->createCustomDataPerson($person);
+                    $this->setUpCustomInputData($type, $customData, $f);
+                }
+            } elseif ($this instanceof OrganizationFieldsFixture) {
+                $customData = $this->createCustomDataOrganization();
+                $this->setUpCustomInputData($type, $customData, $f);
+            }
         }
         $this->manager->flush();
 
@@ -175,9 +193,95 @@ abstract class AbstractCustomDefFixture extends DeskProAbstractFixture implement
             }
         } else {
             $this->manager->flush();
-            $parent->setDefaultValue($optionField->getId());
+            $id = $optionField->getId();
+            $parent->setDefaultValue($id);
+            if ($this instanceof PersonFieldsFixture) {
+                $refName                          = 'person.custom_field_'.$id;
+                $this->customPersonChoiceFields[] = $refName;
+                $this->setReference($refName, $optionField);
+            } elseif ($this instanceof OrganizationFieldsFixture) {
+                $refName                       = 'org.custom_field_'.$id;
+                $this->customOrgChoiceFields[] = $refName;
+                $this->setReference($refName, $optionField);
+            }
         }
 
         return $optionField;
+    }
+
+    protected function getPersons()
+    {
+        return [
+            $this->getReference('person.publisher'),
+            $this->getReference('person.joe'),
+            $this->getReference('person.joes_manager'),
+        ];
+    }
+
+    /**
+     * @param $person
+     *
+     * @return CustomDataPerson
+     */
+    protected function createCustomDataPerson($person)
+    {
+        $customData = new CustomDataPerson();
+        $customData->setPerson($person);
+
+        return $customData;
+    }
+
+    /**
+     * @return CustomDataOrganization
+     */
+    protected function createCustomDataOrganization()
+    {
+        /** @var Organization $organization */
+        $organization = $this->getReference('org.mana');
+        $customData   = new CustomDataOrganization();
+        $customData->setOrganization($organization);
+
+        return $customData;
+    }
+
+    /**
+     * @param string             $type
+     * @param CustomDataAbstract $customData
+     * @param CustomDefAbstract  $f
+     */
+    private function setUpCustomInputData($type, CustomDataAbstract $customData, CustomDefAbstract $f)
+    {
+        $customData
+            ->setRootField($f)
+            ->setField($f)
+            ->setValue(0);
+        if ($type === CustomDefAbstract::TYPE_TEXT) {
+            $customData
+                ->setInput($this->faker->words(3, true));
+        } elseif ($type === CustomDefAbstract::TYPE_TEXTAREA) {
+            $customData
+                ->setInput($this->faker->paragraph());
+        } elseif (array_search($type, [CustomDefAbstract::TYPE_DATE, CustomDefAbstract::TYPE_DATETIME])) {
+            $customData
+                ->setValue($this->faker->dateTimeBetween()->getTimestamp());
+        }
+        $this->manager->persist($customData);
+    }
+
+    /**
+     * @param CustomDefAbstract  $parent
+     * @param CustomDataAbstract $customData
+     * @param CustomDefAbstract  $optionField
+     */
+    protected function setUpCustomChoiceData(
+        CustomDefAbstract $parent,
+        CustomDataAbstract $customData,
+        CustomDefAbstract $optionField
+    ) {
+        $customData
+            ->setRootField($parent)
+            ->setField($optionField)
+            ->setValue(1);
+        $this->manager->persist($customData);
     }
 }

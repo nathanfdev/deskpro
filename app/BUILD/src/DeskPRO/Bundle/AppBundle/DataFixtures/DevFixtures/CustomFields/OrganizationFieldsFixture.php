@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -105,6 +106,18 @@ class OrganizationFieldsFixture extends AbstractCustomDefFixture
         $fields[] = $this->createField('textarea', 'Comment', ['default_value' => $this->faker->paragraph]);
 
         self::$fields['hotdogs'] = $fields;
+
+        $customData = $this->createCustomDataOrganization();
+        foreach ($this->customOrgChoiceFields as $ref) {
+            /** @var CustomDefAbstract $customOrgChoiceField */
+            $customOrgChoiceField = $this->getReference($ref);
+            $this->setUpCustomChoiceData(
+                $customOrgChoiceField->getParent(),
+                $customData,
+                $customOrgChoiceField
+            );
+        }
+        $this->manager->flush();
     }
 
     /**
