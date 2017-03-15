@@ -280,8 +280,11 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 	},
 
 	destroy: function() {
-		this.triggerEls.off('click');
-		this.triggerEls = null;
+    this.triggerEls.remove();
+    this.options.context.remove();
+		this.options.context = null;
+    this.options.triggerEls = null;
+		this.options = null;
 		this.destroyEvents();
 	}
 });

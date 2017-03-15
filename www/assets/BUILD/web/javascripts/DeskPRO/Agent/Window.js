@@ -3295,7 +3295,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					eval('options = {' + $(this).data('tipped-options') + '}');
 				}
 
-				qtipOptions = {};
+				var qtipOptions = {};
 
 				if (options.ajax) {
 					qtipOptions.content = {

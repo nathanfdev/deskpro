@@ -164,6 +164,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 				});
 			}
       if (self.wrapper) {
+				$('.tipped', self.wrapper).qtip('destroy');
+
         self.wrapper.empty();
         self.wrapper.removeData();
         self.wrapper.off();

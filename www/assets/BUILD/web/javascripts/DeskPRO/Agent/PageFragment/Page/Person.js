@@ -168,7 +168,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					},
 					context: this,
 					success: function(data) {
-						$('.timezone-info', this.wrapper).empty().html(data.bit_html);
+						$('.timezone-info', self.wrapper).empty().html(data.bit_html);
 					}
 				});
 			});
@@ -1191,7 +1191,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
     this.$q = null;
     this.$timeout = null;
 
-    this.getEl('timezone').off();
+    this.getEl('timezone').remove();
     this.getEl('disable_autoresponses').off();
 
     if (this.tabBtn) {
@@ -1203,6 +1203,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
       this.clip.unglue(btns);
     }
     this.clip = null;
+
+    var sb = this.getEl('org_searchbox').data('org-search-box');
+    if (sb) {
+    	sb.destroy();
+		}
 
     if (this.sortTicketsMenu) {
       this.sortTicketsMenu.destroy();
