@@ -4,6 +4,7 @@ Feature: /agent_chats endpoint
 
   Background:
     Given I'm authenticated as "agent"
+    And the setting "beta_features.agent_chat" is set to 1
 
   Scenario: I create chat with group
     Given an agent with "han@falcon.spaceship" email exists

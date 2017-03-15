@@ -4,6 +4,7 @@ Feature: Notifications Api feature
 
   Background:
     Given I'm authenticated as "admin"
+    And the setting "beta_features.agent_chat" is set to 1
 
   Scenario: I get basic settings for action-alerts
     When I send a GET request to "/api/v2/notify/setup/action-alerts"
