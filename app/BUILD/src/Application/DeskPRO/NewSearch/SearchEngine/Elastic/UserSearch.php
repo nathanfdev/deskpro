@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
+use Elastica\Index;
 use Elastica\Query;
 use Elastica\Util as ElasticaUtil;
 use Orb\Util\Arrays;
@@ -43,7 +44,7 @@ class UserSearch implements UserSearchInterface
     const LIMIT           = 20;
 
     /**
-     * @var \Elastica\Index
+     * @var Index
      */
     private $index;
 
@@ -53,10 +54,10 @@ class UserSearch implements UserSearchInterface
     private $transformer;
 
     /**
-     * @param \Elastica\Index            $index
+     * @param Index                      $index
      * @param ElasticaResultsTransformer $transformer
      */
-    public function __construct(\Elastica\Index $index, ElasticaResultsTransformer $transformer)
+    public function __construct(Index $index, ElasticaResultsTransformer $transformer)
     {
         $this->index       = $index;
         $this->transformer = $transformer;
