@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Application\DeskPRO\JobQueue\Processor\FeatureProcessor;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Model\Feature;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -35,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserCont
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class FeaturesController.
@@ -106,6 +108,90 @@ class FeaturesController extends BaseController
         return View::create(
             $this->wrap($feature ? new Feature($feature) : []),
             Response::HTTP_OK
+        );
+    }
+
+    /**
+     * Queue feature enabling.
+     *
+     * @ApiDoc(
+     *     section="Features",
+     *     resourceDescription="Operations about features",
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="[a-zA-Z0-9\\.\\-_]+",
+     *              "description"="id of the feature",
+     *              "dataType"="string"
+     *          }
+     *      },
+     *     statusCodes={
+     *         204="Returned if everything is ok",
+     *         400="Returned if feature already enabled"
+     *     }
+     * )
+     *
+     * @param string $id
+     *
+     * @return View
+     * @Rest\Put("/features/{id}/enable")
+     */
+    public function enableFeatureAction($id)
+    {
+        $collection = $this->get('deskpro.features_collection');
+        $feature    = $collection->getFeature($id);
+
+        if ($feature->isEnabled()) {
+            throw new BadRequestHttpException(sprintf('Feature %s already enabled!', $feature->getTitle()));
+        }
+
+        $this->get('job.queue')->add(FeatureProcessor::JOB_TYPE, ['feature_id' => $id, 'action' => 'enable']);
+
+        return View::create(
+            null,
+            Response::HTTP_CREATED
+        );
+    }
+
+    /**
+     * Queue feature disabling.
+     *
+     * @ApiDoc(
+     *     section="Features",
+     *     resourceDescription="Operations about features",
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="[a-zA-Z0-9\\.\\-_]+",
+     *              "description"="id of the feature",
+     *              "dataType"="string"
+     *          }
+     *      },
+     *     statusCodes={
+     *         200="Returned if everything is ok",
+     *         400="Returned if feature already disabled"
+     *     }
+     * )
+     *
+     * @param string $id
+     *
+     * @return View
+     * @Rest\Put("/features/{id}/disable")
+     */
+    public function disableFeatureAction($id)
+    {
+        $collection = $this->get('deskpro.features_collection');
+        $feature    = $collection->getFeature($id);
+
+        if (!$feature->isEnabled()) {
+            throw new BadRequestHttpException(sprintf('Feature %s already disabled!', $feature->getTitle()));
+        }
+
+        $this->get('job.queue')->add(FeatureProcessor::JOB_TYPE, ['feature_id' => $id, 'action' => 'disable']);
+
+        return View::create(
+            null,
+            Response::HTTP_CREATED
         );
     }
 }

@@ -23,4 +23,14 @@ define [
         @disable_description = @$sce.trustAsHtml(res.data.data.disable_description)
       )
 
+    disableFeature: ->
+      @Api2.sendPutJson('/features/' + @$stateParams.id + '/disable').then( =>
+        Growl.success('Feature is under disabling process');
+      );
+
+    enableFeature: ->
+      @Api2.sendPutJson('/features/' + @$stateParams.id + '/enable').then( =>
+        Growl.success('Feature is under enabling process');
+      );
+
   Admin_Main_Ctrl_Features.EXPORT_CTRL()
