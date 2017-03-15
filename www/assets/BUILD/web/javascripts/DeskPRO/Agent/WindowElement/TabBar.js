@@ -398,8 +398,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
       if (data.callback_render !== undefined) {
         data.callback_render(data.wrapper);
       }
-
-      this.fireEvent('activateTabRender', [data, $('#' + data.wrapperId), this]);
     }
 
 		this.fireEvent('addTab', [data, this]);
@@ -502,8 +500,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			if (data.callback_render !== undefined) {
 				data.callback_render(wrapper);
 			}
-
-			this.fireEvent('activateTabRender', [data, $('#' + data.wrapperId), this]);
 		}
 
 		if (data.callback_activate !== undefined) {
