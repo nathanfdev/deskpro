@@ -192,11 +192,15 @@ export class NewTicketSuggestions extends React.Component {
   }
 
   render() {
-    const data = this.state.data || [];
-    const results = data.results || [];
+    const { data, search_query } = this.state;
+    const results = data && data.results ? data.results : [];
+
+    if (search_query.content.length < 3 || !results.length) {
+      return null;
+    }
 
     return (
-      <div style={{ display: (this.state.search_query.content.length >= 3 && results.length > 0 ? ' block' : 'none') }}>
+      <div>
         <div className="ticket-related-articles">
           <header>
             <h1>{portalPhrases.get('portal.tickets.related_articles_title')}</h1>
