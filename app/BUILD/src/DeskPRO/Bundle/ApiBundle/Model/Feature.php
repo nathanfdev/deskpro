@@ -87,7 +87,16 @@ class Feature
      */
     private $enabled;
 
-    public function __construct(BetaFeatureInterface $betaFeature)
+    /**
+     * Is this feature processing now?
+     *
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $processing;
+
+    public function __construct(BetaFeatureInterface $betaFeature, $processing = false)
     {
         $this->id                 = $betaFeature->getId();
         $this->title              = $betaFeature->getTitle();
@@ -95,5 +104,6 @@ class Feature
         $this->enableDescription  = $betaFeature->getEnableDescription();
         $this->disableDescription = $betaFeature->getDisableDescription();
         $this->enabled            = $betaFeature->isEnabled();
+        $this->processing         = $processing;
     }
 }

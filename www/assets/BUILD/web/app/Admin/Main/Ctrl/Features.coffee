@@ -6,7 +6,7 @@ define [
   class Admin_Main_Ctrl_Features extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Main_Ctrl_Features'
     @CTRL_AS = 'Features'
-    @DEPS    = ['Api2', 'Growl', '$stateParams', '$sce']
+    @DEPS    = ['Api2', 'Growl', '$stateParams', '$sce', '$state']
 
     init: ->
 
@@ -26,11 +26,13 @@ define [
     disableFeature: ->
       @Api2.sendPutJson('/features/' + @$stateParams.id + '/disable').then( =>
         @Growl.success('Feature is under disabling process');
+        @$state.go('home');
       );
 
     enableFeature: ->
       @Api2.sendPutJson('/features/' + @$stateParams.id + '/enable').then( =>
         @Growl.success('Feature is under enabling process');
+        @$state.go('home');
       );
 
   Admin_Main_Ctrl_Features.EXPORT_CTRL()

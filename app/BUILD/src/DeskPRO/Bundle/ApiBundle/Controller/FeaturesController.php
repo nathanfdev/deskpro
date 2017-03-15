@@ -28,11 +28,13 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\JobQueue\Processor\FeatureProcessor;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Model\Feature;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -65,8 +67,19 @@ class FeaturesController extends BaseController
     {
         $collection = $this->get('deskpro.features_collection');
         $features   = [];
+
+        $em   = $this->get('doctrine.orm.default_entity_manager');
+        $repo = $em->getRepository(TmpData::class);
+
         foreach ($collection as $feature) {
-            $features[] = new Feature($feature);
+            /** @var BetaFeatureInterface $feature */
+            $tmpData = $repo
+                ->findOneBy(
+                    ['name' => sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $feature->getId())],
+                    ['date_expire' => 'DESC']
+                );
+            $processing = $tmpData && $tmpData->date_expire->getTimestamp() > time();
+            $features[] = new Feature($feature, $processing);
         }
 
         return View::create(
@@ -105,8 +118,17 @@ class FeaturesController extends BaseController
         $collection = $this->get('deskpro.features_collection');
         $feature    = $collection->getFeature($id);
 
+        $em      = $this->get('doctrine.orm.default_entity_manager');
+        $repo    = $em->getRepository(TmpData::class);
+        $tmpData = $repo
+            ->findOneBy(
+                ['name' => sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $id)],
+                ['date_expire' => 'DESC']
+            );
+        $processing = $tmpData && $tmpData->date_expire->getTimestamp() > time();
+
         return View::create(
-            $this->wrap($feature ? new Feature($feature) : []),
+            $this->wrap($feature ? new Feature($feature, $processing) : []),
             Response::HTTP_OK
         );
     }
@@ -146,6 +168,12 @@ class FeaturesController extends BaseController
         }
 
         $this->get('job.queue')->add(FeatureProcessor::JOB_TYPE, ['feature_id' => $id, 'action' => 'enable']);
+
+        $em      = $this->get('doctrine.orm.default_entity_manager');
+        $key     = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $id);
+        $tmpData = TmpData::create('feature_enable', ['feature_id' => $id], '+20min', $key);
+        $em->persist($tmpData);
+        $em->flush();
 
         return View::create(
             null,
@@ -188,6 +216,12 @@ class FeaturesController extends BaseController
         }
 
         $this->get('job.queue')->add(FeatureProcessor::JOB_TYPE, ['feature_id' => $id, 'action' => 'disable']);
+
+        $em      = $this->get('doctrine.orm.default_entity_manager');
+        $key     = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $id);
+        $tmpData = TmpData::create('feature_disable', ['feature_id' => $id], '+20min', $key);
+        $em->persist($tmpData);
+        $em->flush();
 
         return View::create(
             null,

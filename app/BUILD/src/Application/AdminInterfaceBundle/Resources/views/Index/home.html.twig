@@ -413,8 +413,12 @@
 						<div class="dp-mpadded">
 							<div class="beta-feature" ng-repeat="feature in Home.features">
 								<strong>{{ ng_var('feature.title') }}: </strong> {{ ng_var('feature.short_description') }}
-								<a ng-show="!feature.enabled" class="btn btn-success" href="{{ ng_href('features.enable', '{id: feature.id}') }}">Enable</a>
-								<a ng-show="feature.enabled"  class="btn btn-danger" href="{{ ng_href('features.disable', '{id: feature.id}') }}">Disable</a>
+								<a ng-show="!feature.enabled && !feature.processing" class="btn btn-success" href="{{ ng_href('features.enable', '{id: feature.id}') }}">Enable</a>
+								<a ng-show="feature.enabled && !feature.processing"  class="btn btn-danger" href="{{ ng_href('features.disable', '{id: feature.id}') }}">Disable</a>
+
+								<span style='color: red' ng-show="feature.enabled && feature.processing">Disabling</span>
+								<span style='color: green' ng-show="!feature.enabled && feature.processing">Enabling</span>
+								<i ng-show="feature.processing" class="spinner-flat"></i>
 							</div>
 						</div>
 					</article>

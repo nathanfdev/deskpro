@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Features;
 
 use Application\DeskPRO\Entity\Setting;
+use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\Setting as SettingRepository;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
@@ -103,6 +104,14 @@ HTML;
         $this->copyIM($container->get('doctrine.orm.default_entity_manager'));
         $key = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $this->getId());
         $settingsRepository->updateSetting($key, true);
+
+        $tmpData = $em->getRepository(TmpData::class)->findBy(['name' => $key]);
+        foreach ($tmpData as $tmpDatum) {
+            if ($tmpDatum->getType() === 'feature_enable') {
+                $em->remove($tmpDatum);
+            }
+        }
+        $em->flush();
     }
 
     /**
@@ -123,7 +132,7 @@ HTML;
         $em->beginTransaction();
         try {
             $em->getRepository(AgentChat::class)->createQueryBuilder('ac')->delete()->getQuery()->execute();
-            $em->commit();
+
             foreach ($classes as $class) {
                 $meta    = $em->getClassMetadata($class);
                 $parts[] = "ALTER TABLE {$meta->getTableName()} AUTO_INCREMENT = 1";
@@ -131,6 +140,14 @@ HTML;
             $connection->query(implode(';', $parts));
             $key = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $this->getId());
             $settingsRepository->updateSetting($key, false);
+            $tmpData = $em->getRepository(TmpData::class)->findBy(['name' => $key]);
+            foreach ($tmpData as $tmpDatum) {
+                if ($tmpDatum->getType() === 'feature_disable') {
+                    $em->remove($tmpDatum);
+                }
+            }
+            $em->flush();
+            $em->commit();
         } catch (\Exception $e) {
             $em->rollback();
         }
