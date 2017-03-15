@@ -3,7 +3,8 @@ import Highlight from 'react-highlight';
 import classNames from 'classnames';
 import moment from 'moment';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
-import { TopicList, TopicSummary } from '../index';
+import browserHistory from 'react-router/lib/browserHistory';
+import { TopicList, TopicSummary, GuideSelector } from '../index';
 
 class ViewTopic extends React.Component {
   static propTypes = {
@@ -17,19 +18,13 @@ class ViewTopic extends React.Component {
       topic = JSON.parse(window.topic);
     }
     topic.content = this.addIdToh1(topic.content);
+    const topics = JSON.parse(window.topicList);
     this.state = {
-      doSpin: false,
+      doSpin:    false,
       topic,
-      guide:  {
-        title: ''
-      }
+      guideSlug: this.getGuideSlug(this.props.params.splat),
+      topics
     };
-  }
-
-  componentDidMount() {
-    if (this.props.params.splat) {
-      this.grabGuideFromApi(this.getGuideSlug(this.props.params.splat));
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -38,23 +33,13 @@ class ViewTopic extends React.Component {
     }
     const nextGuideSlug = this.getGuideSlug(nextProps.params.splat);
     if (nextGuideSlug !== this.getGuideSlug(this.props.params.splat)) {
-      this.grabGuideFromApi(nextGuideSlug);
+      this.setState({
+        guideSlug: nextGuideSlug
+      });
     }
   }
 
   getGuideSlug = splat => splat.split('/')[0];
-
-  grabGuideFromApi(slug) {
-    portalHttp.sendGet(`DP_URL/portal/api/guides/guide/${slug}`).then((response) => {
-      if (response.isError()) {
-        return;
-      }
-
-      this.setState({
-        guide: response.data.data,
-      });
-    });
-  }
 
   addIdToh1 = (html) => {
     const container = document.createElement('div');
@@ -92,14 +77,29 @@ class ViewTopic extends React.Component {
     });
   }
 
+  selectGuide = (guide) => {
+    portalHttp.sendGet(`DP_URL/portal/api/guides/topics/${guide.slug}`).then((response) => {
+      if (response.isError()) {
+        return;
+      }
+
+      const topics = response.data.data;
+      this.setState({
+        topics,
+      });
+      const topic = Object.values(topics).pop();
+      browserHistory.push(`/${this.props.params.locale}/guides/${guide.slug}/${topic.slug}`);
+    });
+  };
+
   render() {
-    const topics = JSON.parse(window.topicList);
+    const { topics } = this.state;
     const { locale, splat } = this.props.params;
     const guideSlug = this.getGuideSlug(splat);
     return (
       <div>
         <div className="topic-list">
-          <div className="guide">{this.state.guide.title}</div>
+          <GuideSelector guideSlug={this.state.guideSlug} selectGuide={this.selectGuide} />
           <hr />
           <TopicList topics={topics} locale={locale} guideSlug={guideSlug} />
         </div>

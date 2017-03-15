@@ -60,12 +60,13 @@ class GuidesController extends AbstractController
      */
     public function indexAction(Request $request, $_format)
     {
-        $page   = $request->get('page', 1);
         $person = $this->getCurrentPerson();
 
         $guides = $this->getGuidesDataService()->getGuides($person);
 
-        return $this->redirectToRoute('portal_guides_browse', ['slug' => $guides[0]->getSlug()]);
+        $guide = array_shift($guides);
+
+        return $this->redirectToRoute('portal_guides_topic_permalink', ['slug' => $guide->getTopics()[0]->getId(), 'guide_slug' => $guide->getSlug()]);
     }
 
     /**
@@ -83,13 +84,7 @@ class GuidesController extends AbstractController
      */
     public function browseAction(Request $request, Guide $guide, $_format)
     {
-        return $this->renderThemeView(
-            'Theme:Guides:browse.html.twig',
-            [
-                'guide'      => $guide,
-                'page_title' => $this->createPageTitle()->guides($guide),
-            ]
-        );
+        return $this->redirectToRoute('portal_guides_topic_permalink', ['slug' => $guide->getTopics()[0]->getId(), 'guide_slug' => $guide->getSlug()]);
     }
 
     /**
@@ -102,14 +97,15 @@ class GuidesController extends AbstractController
      *
      * @param Request $request
      * @param Topic   $topic
+     * @param string  $guide_slug
      * @param string  $parents_slug
      *
      * @return Response
      */
-    public function viewAction(Request $request, Topic $topic, $parents_slug = '')
+    public function viewAction(Request $request, Topic $topic, $guide_slug, $parents_slug = '')
     {
         $topicParentsSlug = $topic->getParentsSlug();
-        if ($parents_slug !== $topicParentsSlug) {
+        if ($parents_slug !== $topicParentsSlug || $guide_slug !== $topic->getGuideSlug()) {
             return $this->redirectToRoute(
                 'portal_guides_topic_view',
                 [
@@ -120,14 +116,19 @@ class GuidesController extends AbstractController
             );
         }
 
-        $serializationContext = new SideloadSerializationContext();
+        $serializer = $this->get('serializer');
+
+        $person = $this->getCurrentPerson();
+
+        $guides = $this->getGuidesDataService()->getGuides($person);
 
         return $this->renderThemeView(
             'Theme:Guides:view.html.twig',
             [
-                'topic'      => $topic,
-                'topic_json' => Strings::escapeForJson($this->get('serializer')->serialize($topic, 'json', $serializationContext)),
-                'guide'      => $topic->getGuide(),
+                'topic'       => $topic,
+                'topic_json'  => Strings::escapeForJson($serializer->serialize($topic, 'json', new SideloadSerializationContext())),
+                'guide'       => $topic->getGuide(),
+                'guides_json' => Strings::escapeForJson($serializer->serialize($guides, 'json', new SideloadSerializationContext())),
             ]
         );
     }

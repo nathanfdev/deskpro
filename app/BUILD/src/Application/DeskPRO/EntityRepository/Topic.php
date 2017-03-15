@@ -28,6 +28,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\Entity\Topic as TopicEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Util\Arrays;
@@ -53,8 +54,8 @@ class Topic extends AbstractEntityRepository
     /**
      * Get a plain hierarchy array.
      *
-     * @param bool       $reset
-     * @param Guide|null $guide
+     * @param bool           $reset
+     * @param Guide|int|null $guide
      *
      * @return array|null
      */
@@ -67,18 +68,26 @@ class Topic extends AbstractEntityRepository
         if (is_array($reset)) {
             $topics = $reset;
         } else {
-            $select = 'id, parent_id, title, slug';
+            $select = 'id, parent_id, title, slug, display_order';
+
+            $params = [];
 
             $qb = $this->_em->getConnection()->createQueryBuilder();
             $qb->select($select);
             $qb->from($this->tableName);
+            $qb->where('status <> ?');
+            $params[] = TopicEntity::STATUS_HIDDEN;
             $qb->orderBy('display_order', 'ASC');
-            $qb->addOrderBy('id', 'ASC');
 
-            $params = [];
             if ($guide) {
-                $qb->where('guide_id = ?');
-                $params[] = $guide->getId();
+                if (is_object($guide)) {
+                    $guideId = $guide->getId();
+                } else {
+                    $guideId = $guide;
+                }
+
+                $qb->andWhere('guide_id = ?');
+                $params[] = $guideId;
             }
 
             $topics = $this->_em->getConnection()->fetchAllKeyed($qb->getSQL(), $params, 'id');

@@ -86,8 +86,8 @@ class GuidesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Guides:TopicList/list.html.twig',
             [
-                'topics'        => $topics,
                 'guide'         => $guide,
+                'topics'        => $topics,
                 'current_topic' => $topic,
             ]
         );

@@ -128,6 +128,8 @@ export class GuideTree extends React.Component {
     return (
       <div style={{ height: this.props.height }}>
         <SortableTree
+          rowHeight={40}
+          scaffoldBlockPxWidth={30}
           treeData={this.state.treeData}
           onChange={this.handleChange}
           nodeContentRenderer={Renderer}

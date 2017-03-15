@@ -105,11 +105,21 @@ class MarkdownEditor extends React.Component {
     this.codeMirror.on('paste', this.onPaste);
     this.codeMirror.on('drop', this.onDrop);
     this.currentCodemirrorValue = this.props.value;
+
+    const that = this;
+    setTimeout(() => {
+      that.codeMirror.refresh();
+    }, 1);
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.codeMirror && this.currentCodemirrorValue !== nextProps.value) {
       this.codeMirror.setValue(nextProps.value);
+
+      const that = this;
+      setTimeout(() => {
+        that.codeMirror.refresh();
+      }, 1);
     }
   }
 

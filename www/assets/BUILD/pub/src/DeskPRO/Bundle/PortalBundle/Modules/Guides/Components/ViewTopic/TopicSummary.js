@@ -5,11 +5,7 @@ const getH1 = (html) => {
   const container = document.createElement('div');
   container.innerHTML = html;
 
-  return Array.from(container.querySelectorAll('h1')).map((h1, index) => <li key={index}>
-    <a href={`#${h1.id}`}>
-      {h1.innerText}
-    </a>
-  </li>);
+  return Array.from(container.querySelectorAll('h1')).map(h1 => h1);
 };
 
 class TopicSummary extends React.Component {
@@ -25,22 +21,35 @@ class TopicSummary extends React.Component {
     if (agentBar) {
       this.agentBarHeight = agentBar.offsetHeight;
     }
+    const h1s = getH1(this.props.content);
     this.state = {
       fixed:    false,
-      agentBar: !!agentBar
+      agentBar: !!agentBar,
+      h1s
     };
-    this.h1s = getH1(this.props.content);
   }
 
   componentDidMount() {
-    if (this.h1s.length) {
+    if (this.state.h1s.length) {
       window.addEventListener('scroll', this.handleScroll);
-      this.offsetTop = this.summary.offsetTop;
+    }
+    this.offsetTop = this.summary.offsetTop;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const h1s = getH1(nextProps.content);
+    this.setState({
+      h1s
+    });
+    if (h1s.length) {
+      window.addEventListener('scroll', this.handleScroll);
+    } else {
+      window.removeEventListener('scroll', this.handleScroll);
     }
   }
 
   componentWillUnmount() {
-    if (this.h1s.length) {
+    if (this.state.h1s.length) {
       window.removeEventListener('scroll', this.handleScroll);
     }
   }
@@ -59,19 +68,24 @@ class TopicSummary extends React.Component {
   };
 
   render() {
-    if (!this.h1s.length) {
-      return null;
-    }
     const { fixed } = this.state;
     const style = {
       top: this.agentBarHeight + 20
     };
     return (
       <div className={classNames('topic-summary', { fixed })} ref={(c) => { this.summary = c; }} style={style}>
-        <h2><i className="fa fa-list" /> Contents</h2>
-        <ul>
-          {this.h1s}
-        </ul>
+        {this.state.h1s.length ?
+          (<div>
+            <h2><i className="fa fa-list" /> Contents</h2>
+            <ul>
+              {this.state.h1s.map((h1, index) => <li key={index}>
+                <a href={`#${h1.id}`}>
+                  {h1.innerText}
+                </a>
+              </li>)}
+            </ul>
+          </div>
+          ) : null}
       </div>
     );
   }

@@ -15,7 +15,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		this.wrapper = el;
 		this.parent(el);
 
-		if (!this.getEl('guide').find('option')[0]) {
+		if (!$('#new_topic_guide_id').find('option')[0]) {
 			this.wrapper.find('.form-header-error').show();
 			this.wrapper.find('.form-outer').hide();
 			this.markForReload();
@@ -38,8 +38,12 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		});
 		this.ownObject(this.stateSaver);
 
-		$('#new_news_brand_id').on('change', function() {
-			self.updateCategories();
+		$('#new_topic_brand_id').on('change', function() {
+			self.updateGuides();
+		});
+
+		$('#new_topic_guide_id').on('change', function() {
+			self.updateTopics();
 		});
 
 		window.setTimeout(function() {
@@ -171,12 +175,28 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		});
 	},
 
-	updateCategories: function() {
+	updateGuides: function() {
 		var brand_select = $('#new_news_brand_id');
 		var brand_id = brand_select.val();
-		var categories_select = $(brand_select.parents('.cat-section')[0]).find('select.category_id');
+		var categories_select = $(brand_select.parents('.cat-section')[0]).find('select.guide_id');
 		$.ajax({
-			url: BASE_URL + 'agent/news/categories/brand/'+brand_id,
+			url: BASE_URL + 'agent/guides/brand/'+brand_id,
+			type: 'GET',
+			context: this,
+			success: function(result) {
+				categories_select.children().remove();
+				categories_select.append($(result).find('option'));
+				categories_select.select2("val", '');
+			}
+		});
+	},
+
+  updateTopics: function() {
+		var guide_select = $('#new_topic_guide_id');
+		var guide_id = guide_select.val();
+		var categories_select = $(guide_select.parents('.cat-section')[0]).find('select.parent_id');
+		$.ajax({
+			url: BASE_URL + 'agent/guides/topics/'+guide_id,
 			type: 'GET',
 			context: this,
 			success: function(result) {

@@ -26,7 +26,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content dp-control-group">
 		<div class="col">
 			<h4>{{ phrase('agent.general.brand') }}</h4>
-			<select name="newtopic[brand]" id="new_news_brand_id">
+			<select name="newtopic[brand]" id="new_topic_brand_id">
 				{% for brand in brands %}
 					<option value="{{ brand.id }}" {% if selected_brand_id == brand.id %}selected="selected"{% endif %}>
 						{{ brand.name }}
@@ -38,7 +38,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<h4>{{ phrase('agent.general.guide') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
 				'name': 'newtopic[guide_id]',
-				'id': baseId ~ '_guide',
+				'id': 'new_topic_guide_id',
 				'add_classname': 'guide_id',
 				'add_attr': '',
 				'categories': guides,

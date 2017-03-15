@@ -37,9 +37,12 @@ class Topic extends React.Component {
           expandable
         })}
       >
-        {Object.values(topic.children).map(child => (
-          <Topic key={child.slug} topic={child} locale={locale} guideSlug={guideSlug} />
-        ))}
+        {Object.values(topic.children)
+          .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
+          .map(child => (
+            <Topic key={child.slug} topic={child} locale={locale} guideSlug={guideSlug} />
+          )
+        )}
       </ul>
     );
   };

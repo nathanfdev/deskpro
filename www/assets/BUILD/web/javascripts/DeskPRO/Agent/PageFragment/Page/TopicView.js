@@ -214,10 +214,11 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
 			$.ajax({
 				url: BASE_URL + 'agent/guides/topic/' + self.meta.topic_id + '/ajax-save',
 				type: 'POST',
-				data: { action: 'category', category_id: $(this).val() },
+				data: { action: 'guide', guide_id: $(this).val() },
 				dataType: 'json',
 				success: function() {
 					DeskPRO_Window.sections.publish_section.reload();
+          window.document.dispatchEvent(new CustomEvent('dpGuideReloadTree'));
 				}
 			});
 		});

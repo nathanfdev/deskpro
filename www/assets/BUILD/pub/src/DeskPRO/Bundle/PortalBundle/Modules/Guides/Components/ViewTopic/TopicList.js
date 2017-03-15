@@ -11,9 +11,12 @@ class TopicList extends React.Component {
   render() {
     const { locale, topics, guideSlug } = this.props;
     return (<ul>
-      {Object.values(topics).map(topic => (
-        <Topic key={topic.slug} topic={topic} locale={locale} guideSlug={guideSlug} expandable={false} />
-      ))}
+      {Object.values(topics)
+        .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
+        .map(topic => (
+          <Topic key={topic.slug} topic={topic} locale={locale} guideSlug={guideSlug} expandable={false} />
+        )
+      )}
     </ul>);
   }
 }

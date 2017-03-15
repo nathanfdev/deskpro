@@ -27,6 +27,17 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     font-size: 16px;
     font-weight: normal;
   }
+  ul {
+    list-style-type: disc;
+  }
+  ol {
+    list-style-type: decimal;
+  }
+  ul, ol {
+    display: block;
+    margin: 1em 0;
+    padding-left: 40px;
+  }
   a.internal_link {
     text-decoration: none;
     display: inline-block;
@@ -66,6 +77,12 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       content: "\F02D";
     }
   }
+  p {
+    margin-bottom: 15px;
+  }
+  p:last-child {
+    margin-bottom: 0;
+  }
   div.block {
     padding: 10px;
     width: 100%;
@@ -102,6 +119,11 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     border: solid 1px #e6e7e6;
     border-radius: 2px;
     background-color: #f8f8f8;
+  }
+  blockquote {
+    padding: 0 1em;
+    color: #6a737d;
+    border-left: 0.25em solid #dfe2e5;
   }
 
   $table-radius: 2px;
@@ -185,7 +207,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     & .dp-react-widget > ul {
       margin: 0;
       padding: 0;
-      & > li {
+      & > li.topic-item {
         list-style: none;
         & > a {
           font-size: 12px;
@@ -197,8 +219,9 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
         & > ul {
           margin: 0;
           padding: 0;
-          li {
+          li.topic-item {
             list-style: none;
+            clear: both;
             a {
               font-size: 12px;
               text-decoration: none;
@@ -211,7 +234,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
         }
       }
     }
-    li > a.active {
+    li.topic-item > a.active {
       background-color: #eff8fd;
       color: #709FD6;
       height: 23px;
@@ -220,7 +243,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       border-right: 2px solid #709fd6;
       margin-right: -1px;
     }
-    li a .fa {
+    li.topic-item a .fa {
       margin-right: 24px;
       line-height: 24px;
     }
