@@ -10,6 +10,8 @@ import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Sh
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { setVoiceTokens, setVoiceActivities } from '../../Voice/Actions/clientActions';
 
+import { loadAppConfig } from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproAppStore/Actions/Actions';
+
 export const loadAgentPhraseTranslations = createAction(
   'AGENT_LOAD_PHRASE_TRANSLATIONS',
   () => () => new Promise((resolve) => {
@@ -65,6 +67,8 @@ export const preloadData    = createAction(
       }
 
       dispatch(loadAgentPhraseTranslations());
+
+      dispatch(loadAppConfig());
 
       api.sendGet(api.prepareParams(batchComponents))
         .success(({ responses }) => {

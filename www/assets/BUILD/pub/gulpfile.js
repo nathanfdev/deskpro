@@ -160,10 +160,13 @@ function getWebpackConfig(mode, isProd) {
         path.join(__dirname, 'src/DeskPRO/Component'),
         path.join(__dirname, 'src/DeskPRO/Dev'),
         path.join(__dirname, 'built-tools'),
-        path.join(__dirname, 'vendor')
+        path.join(__dirname, 'vendor'),
+        path.join(__dirname, 'node_modules')
       ],
 
       alias: {
+        'xcomponent/src': path.resolve(__dirname, 'node_modules', 'xcomponent', 'dist', 'xcomponent.js'),
+        'post-robot/src': path.resolve(__dirname, 'node_modules', 'post-robot', 'dist', 'post-robot.js'),
         invariant:              'fbjs/lib/invariant',
         warning:                'fbjs/lib/warning',
         'jquery.ui':            'jquery-ui',
@@ -232,9 +235,11 @@ function getWebpackConfig(mode, isProd) {
         {
           test:   /\.json/,
           loader: 'json-loader'
-        }
+        },
+        { test: require.resolve("react"), loader: "expose-loader?React" },
+        { test: require.resolve("react-dom"), loader: "expose-loader?ReactDOM" },
       ],
-      noParse: [/(^(froala|jquery\.mark))\.min\.js/]
+      noParse: [/(^(froala|jquery\.mark))\.min\.js/, /xcomponent/]
     },
 
     plugins: [
@@ -246,7 +251,9 @@ function getWebpackConfig(mode, isProd) {
       }),
       new webpack.ProvidePlugin({
         $:      'jquery',
-        jQuery: 'jquery'
+        jQuery: 'jquery',
+        React: 'react',
+        ReactDOM: 'react-dom'
       }),
       new CopyWebpackPlugin([
         { from: path.resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle'), to: 'DeskPRO/Bundle/PortalBundle' }
@@ -315,27 +322,27 @@ function getWebpackConfig(mode, isProd) {
     //---
     config.debug           = true;
     config.output.pathinfo = true;
-    config.plugins.push(new webpack.HotModuleReplacementPlugin());
-    config.plugins.push(new webpack.NoErrorsPlugin());
-
-    // .js loader
-    config.module.loaders[0].loaders = ['react-hot-loader', 'babel-loader?stage=0'];
-
-    if (config.entry.DeskPRO_AdminBundle) {
-      config.entry.DeskPRO_AdminBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
-    }
-    if (config.entry.DeskPRO_AgentBundle) {
-      config.entry.DeskPRO_AgentBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
-    }
-    if (config.entry.DeskPRO_AgentLegacyBundle) {
-      config.entry.DeskPRO_AgentLegacyBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
-    }
-    if (config.entry.DeskPRO_DemoBundle) {
-      config.entry.DeskPRO_DemoBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
-    }
-    if (config.entry.DeskPRO_WidgetBundle) {
-      config.entry.DeskPRO_WidgetBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
-    }
+    // config.plugins.push(new webpack.HotModuleReplacementPlugin());
+    // config.plugins.push(new webpack.NoErrorsPlugin());
+    //
+    // // .js loader
+    // config.module.loaders[0].loaders = ['react-hot-loader', 'babel-loader?stage=0'];
+    //
+    // if (config.entry.DeskPRO_AdminBundle) {
+    //   config.entry.DeskPRO_AdminBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
+    // }
+    // if (config.entry.DeskPRO_AgentBundle) {
+    //   config.entry.DeskPRO_AgentBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
+    // }
+    // if (config.entry.DeskPRO_AgentLegacyBundle) {
+    //   config.entry.DeskPRO_AgentLegacyBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
+    // }
+    // if (config.entry.DeskPRO_DemoBundle) {
+    //   config.entry.DeskPRO_DemoBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
+    // }
+    // if (config.entry.DeskPRO_WidgetBundle) {
+    //   config.entry.DeskPRO_WidgetBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
+    // }
   }
 
   return config;
