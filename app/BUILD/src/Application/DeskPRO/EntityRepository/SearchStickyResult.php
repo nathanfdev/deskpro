@@ -34,31 +34,27 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Entity\Topic;
+use Application\DeskPRO\Entity;
 
 class SearchStickyResult extends AbstractEntityRepository
 {
     public function getWordsForObject($object)
     {
-        if ($object instanceof Article) {
+        if ($object instanceof Entity\Article) {
             $objectType = 'DeskPRO:Article';
-        } elseif ($object instanceof Download) {
+        } elseif ($object instanceof Entity\Download) {
             $objectType = 'DeskPRO:Download';
-        } elseif ($object instanceof News) {
+        } elseif ($object instanceof Entity\News) {
             $objectType = 'DeskPRO:News';
-        } elseif ($object instanceof Feedback) {
+        } elseif ($object instanceof Entity\Feedback) {
             $objectType = 'DeskPRO:Feedback';
-        } elseif ($object instanceof Topic) {
+        } elseif ($object instanceof Entity\Topic) {
             $objectType = 'DeskPRO:Topic';
         } else {
             throw new \InvalidArgumentException('Unknown type');
         }
 
-        return $this->getWordsFor($objectType, $object->id);
+        return $this->getWordsFor($objectType, $object->getId());
     }
 
     public function getWordsFor($object_type, $object_id)
