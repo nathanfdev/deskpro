@@ -1,22 +1,25 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/Actions';
 import Immutable from 'immutable';
+import DeskproApp from '../Services/DeskproApp';
 
 const initialState = Immutable.fromJS({
-  'appconfig': null,
+  'apps': null, //all loaded apps
+  'instances': null, //configuration for all instances
   'contexts': {}
 });
 
 /**
  * @param {Object} state
- * @param {Object} payload
+ * @param {Array} payload
  * @param {Object} action
  * @returns {Object}
  */
-function loadAppConfigHandler(state, payload, action) {
+function loadAppsHandler(state, payload, action) {
   switch(action.meta.sequence) {
     case 'done' :
-      return state.set('appconfig', Immutable.fromJS(payload));
+    const newState = Immutable.fromJS({ apps: payload, instances:  DeskproApp.instancesFromApplicationJSList(payload) });
+    return state.merge(newState);
     default:
       return state;
   }
@@ -57,8 +60,8 @@ function appContextCreatedHandler(state, payload, action) {
 export default createReducer(
   initialState,
   {
-    [actions.loadAppConfig]: loadAppConfigHandler,
     [actions.appMounted]: appMountedHandler,
     [actions.appContextCreated]: appContextCreatedHandler,
+    [actions.loadApps]: loadAppsHandler
   }
 );

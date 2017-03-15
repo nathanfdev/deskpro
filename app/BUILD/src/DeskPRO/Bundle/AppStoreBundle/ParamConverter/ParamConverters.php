@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Apps;
+namespace DeskPRO\Bundle\AppStoreBundle\ParamConverter;
 
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
@@ -18,7 +18,7 @@ class ParamConverters
     public static function createAppInstanceConverter(ORM\EntityManager $entityManager)
     {
         $finder = new Infrastructure\ApplicationInstanceDoctrineFinder($entityManager);
-        return new AppInstanceParamConverter($finder, new IdentifierParser());
+        return new AppInstanceParamConverter($finder, new Infrastructure\IdentifierParser());
     }
 
     /**
@@ -28,7 +28,7 @@ class ParamConverters
     public static function createAppConverter(ORM\EntityManager $entityManager)
     {
         $finder = new Infrastructure\ApplicationDoctrineFinder($entityManager);
-        return new AppParamConverter($finder, new IdentifierParser());
+        return new AppParamConverter($finder, new Infrastructure\IdentifierParser());
     }
 
     /**
@@ -38,7 +38,7 @@ class ParamConverters
     public static function createAppStateConverter(ORM\EntityManager $entityManager)
     {
         $finder = new Infrastructure\ApplicationStateDoctrineFinder($entityManager);
-        return new AppStateParamConverter($finder, new IdentifierParser());
+        return new AppStateParamConverter($finder, new Infrastructure\IdentifierParser());
     }
 
     /**

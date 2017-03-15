@@ -1,7 +1,10 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Apps;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
+/**
+ * Parser / recognizer for various identifiers
+ */
 class IdentifierParser
 {
     /**

@@ -1,7 +1,6 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
-import { config as appConfig } from './apps-config';
 
-export const DESKPRO_APPSTORE_LOAD_APP_CONFIG = 'DESKPRO_APPSTORE_LOAD_APP_CONFIG';
+export const DESKPRO_APPSTORE_LOAD_APPS = 'DESKPRO_APPSTORE_LOAD_APPS';
 export const DESKPRO_APPSTORE_APP_MOUNTED = 'DESKPRO_APPSTORE_APP_MOUNTED';
 export const DESKPRO_APPSTORE_APPCONTEXT_CREATED = 'DESKPRO_APPSTORE_APPCONTEXT_CREATED';
 
@@ -19,13 +18,14 @@ export const appContextCreated = createAction(
 );
 
 /**
- * creates an action that will load the app configuration for an agent
+ * creates an action that will load the app configuration for the current security principal
  */
-export const loadAppConfig = createAction(
-  DESKPRO_APPSTORE_LOAD_APP_CONFIG,
-  () => new Promise((resolve, reject) => setTimeout(() => {resolve(appConfig)}, 2000))
+export const loadApps = createAction(
+  DESKPRO_APPSTORE_LOAD_APPS,
+  api =>  api.sendGet('DP_API/apps')
+    .then(httpResponse => httpResponse.data)
 );
-// TODO use the api to load the app config
+
 
 /**
  * creates an action dispatched when an app has been mounted

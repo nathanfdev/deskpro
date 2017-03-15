@@ -24,5 +24,51 @@ services:
     factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationStateFinder]
     arguments: ["@doctrine.orm.default_entity_manager"]
 
+  DeskPRO\Bundle\AppStoreBundle\ParamConverter\StateFilterParamConverter:
+    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\StateFilterParamConverter
+    factory: [DeskPRO\Bundle\AppStoreBundle\ParamConverter\ParamConverters, createStateFilterConverter]
+    tags:
+        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\StateFilterParamConverter }
+
+  DeskPRO\Bundle\AppStoreBundle\ParamConverter\AssetFilterParamConverter:
+    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AssetFilterParamConverter
+    factory: [DeskPRO\Bundle\AppStoreBundle\ParamConverter\ParamConverters, createAssetFilterConverter]
+    tags:
+        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AssetFilterParamConverter }
+
+  DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter:
+    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter
+    factory: [DeskPRO\Bundle\AppStoreBundle\ParamConverter\ParamConverters, createAppInstanceConverter]
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter }
+
+  DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter:
+    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter
+    factory: [DeskPRO\Bundle\AppStoreBundle\ParamConverter\ParamConverters, createAppConverter]
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter }
+
+  DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter:
+    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter
+    factory: [DeskPRO\Bundle\AppStoreBundle\ParamConverter\ParamConverters, createAppStateConverter]
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter }
+
+  DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter:
+    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter
+    factory: [DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter, createFromGlobals]
+    tags:
+        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter }
+
+  DeskPRO\Bundle\AppStoreBundle\ParamConverter\SerializedParamConverter:
+    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\SerializedParamConverter
+    arguments: ["@jms_serializer"]
+    tags:
+        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\SerializedParamConverter }
+
+
 
 

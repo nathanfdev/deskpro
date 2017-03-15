@@ -63,6 +63,7 @@ class ApiKernel extends BaseKernel
             new \Application\EmailBundle\EmailBundle(),
             new \DeskPRO\Bundle\ApiBundle\ApiBundle(),
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
+            new \DeskPRO\Bundle\AppStoreBundle\AppStoreBundle(),
             new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
             new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
             new \Application\ImportBundle\ImportBundle(),

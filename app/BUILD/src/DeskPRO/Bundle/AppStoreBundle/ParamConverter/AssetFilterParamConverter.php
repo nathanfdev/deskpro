@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Apps;
+namespace DeskPRO\Bundle\AppStoreBundle\ParamConverter;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;

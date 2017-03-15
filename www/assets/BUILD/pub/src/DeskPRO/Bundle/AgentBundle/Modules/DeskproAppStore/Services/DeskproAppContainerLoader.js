@@ -11,21 +11,22 @@ class DeskproAppContainerLoader
   /**
    * @param {ContainerDOMNodeSelector} domSelector
    * @param {Object} appConfig
+   * @param {Array<String>} validTargets
    */
-  constructor(domSelector, appConfig) {
+  constructor(domSelector, appConfig, validTargets) {
     this.domSelector = domSelector;
-    this.appConfig = appConfig;
-    this.validTargets = ['top-bar', 'ticket-sidebar'];
+    this.instanceConfig = appConfig;
+    this.validTargets = validTargets;
   }
 
   /**
    * @param {string} targetType
    * @returns {Object}
    */
-  getAppConfigForTarget = (targetType) =>
+  getInstanceConfigForTarget = (targetType) =>
   {
-    if (this.appConfig.hasOwnProperty(targetType)) {
-      return this.appConfig[targetType];
+    if (this.instanceConfig.hasOwnProperty(targetType)) {
+      return this.instanceConfig[targetType];
     }
 
     return null;
@@ -48,10 +49,11 @@ class DeskproAppContainerLoader
     const reactElementList = domNodeList.map((dom) => {
       const target = this.domSelector.type(dom);
       const reactElement = this.createReactContainer(target, context);
+
       return <Provider store={ store }>{ reactElement }</Provider>;
     });
 
-    for (let i = 0; i < domNodeList.size; i++) {
+    for (let i = 0; i < domNodeList.length; i++) {
       ReactDOM.render(reactElementList[i], domNodeList[i]);
     }
 
@@ -65,9 +67,11 @@ class DeskproAppContainerLoader
    */
   createReactContainer = (targetType, context) =>
   {
-    const config = this.getAppConfigForTarget(targetType);
+    const config = this.getInstanceConfigForTarget(targetType);
     if (config) {
       return React.createElement(DeskproAppContainer, {target: targetType, appConfig: config, context: context});
+    } else {
+      throw new Error('asdadsad sa ' + targetType);
     }
 
     return null;

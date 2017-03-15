@@ -1,8 +1,7 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Apps;
+namespace DeskPRO\Bundle\AppStoreBundle\ParamConverter;
 
-use DeskPRO\Bundle\ApiBundle\ParamConverter\RequestBodyToTemporaryFileConverter;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipArchiveBundle;
 use DpRun\DpEnv;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;

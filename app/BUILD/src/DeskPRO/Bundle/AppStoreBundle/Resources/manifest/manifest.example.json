@@ -17,11 +17,10 @@
 
   "scope": "agent",
 
-  "targets": {
-    "my_sidebar":    { "target": "ticket", "url": "./ticket.html" },
-    "other_sidebar": { "target": "person", "url": "./person.html" },
-    "other":         { "target": null,     "url": "./other.html" }
-  },
+  "targets": [
+    { "target": "ticket-sidebar", "url": "/html/ticket-sidebar.html" },
+    { "target": "person", "url": "/html/person.html" }
+  ],
 
   "settings": {
     "name": "my_setting",

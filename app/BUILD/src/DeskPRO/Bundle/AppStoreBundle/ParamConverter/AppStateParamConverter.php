@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Apps;
+namespace DeskPRO\Bundle\AppStoreBundle\ParamConverter;
 
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationStateId;
@@ -18,10 +18,10 @@ class AppStateParamConverter implements ParamConverterInterface
     /** @var Infrastructure\ApplicationStateDoctrineFinder */
     private $finder;
 
-    /** @var IdentifierParser */
+    /** @var Infrastructure\IdentifierParser */
     private $identifierParser;
 
-    public function __construct(Infrastructure\ApplicationStateDoctrineFinder $finder, IdentifierParser $identifierParser)
+    public function __construct(Infrastructure\ApplicationStateDoctrineFinder $finder, Infrastructure\IdentifierParser $identifierParser)
     {
         $this->finder = $finder;
         $this->identifierParser = $identifierParser;

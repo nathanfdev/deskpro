@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Apps;
+namespace DeskPRO\Bundle\AppStoreBundle\API;
 
 use DeskPRO\Bundle\AppBundle\Entity;
 use JMS\Serializer\Annotation as JMS;

@@ -2,23 +2,27 @@ import { createSelector } from 'reselect';
 import Immutable from 'immutable';
 
 const selectorsMap = new Map();
-function resolveTargetConfig (appConfig, target) {
-  if (appConfig instanceof Immutable.Map) {
-    return appConfig.get(target).toJS();
+function resolveTargetConfig (instanceConfig, target) {
+  if (instanceConfig.hasOwnProperty(target)) {
+    return instanceConfig[target];
   }
 
-  // TODO better error message
-  throw new Error('unexpected type');
+  return [];
 }
 
-export const filterAppConfig =  ({DeskproAppStore: {Main:state}}) => state.get('appconfig');
-export const selectDeskproAppsConfigByTarget = (target) => {
+export const filterInstanceConfig =  ({DeskproAppStore: {Main:state}}) => state.get('instances').toJS();
+
+/**
+ * @param {String} target
+ * @return {Array<Object>}
+ */
+export const selectInstanceConfigByTarget = (target) => {
 
   if (selectorsMap.has(target)) {
     return selectorsMap.get(target);
   }
 
-  const selector = createSelector(filterAppConfig, appConfig => resolveTargetConfig(appConfig, target));
+  const selector = createSelector(filterInstanceConfig, instanceConfig => resolveTargetConfig(instanceConfig, target));
   selectorsMap.set(target, selector);
 
   return selector;

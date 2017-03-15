@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Apps;
+namespace DeskPRO\Bundle\AppStoreBundle\ParamConverter;
 
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
@@ -9,15 +9,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInte
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class AppParamConverter implements ParamConverterInterface
+class AppInstanceParamConverter implements ParamConverterInterface
 {
-    /** @var Infrastructure\ApplicationDoctrineFinder  */
+    /** @var Infrastructure\ApplicationInstanceDoctrineFinder  */
     private $finder;
 
-    /** @var IdentifierParser */
+    /** @var Infrastructure\IdentifierParser */
     private $identifierParser;
 
-    public function __construct(Infrastructure\ApplicationDoctrineFinder $finder, IdentifierParser $identifierParser)
+    public function __construct(Infrastructure\ApplicationInstanceDoctrineFinder $finder, Infrastructure\IdentifierParser $identifierParser)
     {
         $this->finder = $finder;
         $this->identifierParser = $identifierParser;
@@ -49,11 +49,11 @@ class AppParamConverter implements ParamConverterInterface
     private function convert($from)
     {
         if ($this->identifierParser->recognizeApplicationName($from)) {
-            return $this->finder->findByName($from);
+            return $this->finder->findSoleApplicationInstance($from);
         }
 
         if ($this->identifierParser->recognizeApplicationInstanceId($from)) {
-            return $this->finder->findByInstanceId($from);
+            return $this->finder->findById($from);
         }
 
         return null;

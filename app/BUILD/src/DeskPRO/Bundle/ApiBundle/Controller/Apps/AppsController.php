@@ -60,13 +60,26 @@ class AppsController extends FOSRestController
             $searchFilter = new AppStoreBundle\Domain\SearchApplicationFilter($request->attributes->get('scope'));
         }
 
+        /** @var AppStoreBundle\Domain\Application[] $found */
+        $found = null;
+
         /** @var AppStoreBundle\Domain\ApplicationFinder $applicationFinder */
         $applicationFinder = $this->container->get(AppStoreBundle\Domain\ApplicationFinder::class);
         if (is_null($searchFilter)) {
-            return $applicationFinder->findAll();
+            $found = $applicationFinder->findAll();
+        } else {
+            $found = $applicationFinder->findByFilter($searchFilter);
         }
 
-        return $applicationFinder->findByFilter($searchFilter);
+        // TODO use the proper serialization to obtain this representation
+        $converter = function(AppStoreBundle\Domain\Application $application) {
+            return [
+                'id' => $application->getId(),
+                'name' => $application->getName(),
+                'manifest' => json_decode($application->getManifest(), $assoc = true)
+            ];
+        };
+        return array_map($converter, $found);
     }
 
 
@@ -74,7 +87,7 @@ class AppsController extends FOSRestController
      * @Rest\GET("/{application}")
      *
      * @param Entity\AppStore\AppInstance $application
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      * @return string
      */
     public function getApplicationAction(Entity\AppStore\AppInstance $application)
@@ -84,7 +97,7 @@ class AppsController extends FOSRestController
 
     /**
      * @Rest\POST("", condition="request.headers.get('Content-Type') matches '#application/zip#i'")
-     * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\ApiBundle\Apps\AppZipArchiveBundleParamConverter")
+     * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter")
      * @param AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle
      * @return string
      */
@@ -107,8 +120,8 @@ class AppsController extends FOSRestController
 
     /**
      * @Rest\POST("/{application}", condition="request.headers.get('Content-Type') matches '#application/zip#i'")
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
-     * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\ApiBundle\Apps\AppZipArchiveBundleParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
+     * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter")
      * @param Entity\AppStore\AppInstance $application
      * @param AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle
      * @return string
@@ -130,7 +143,7 @@ class AppsController extends FOSRestController
 
     /**
      * @Rest\POST("/{application}", condition="request.headers.get('Content-Type') matches '#application/json#i'")
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\ApiBundle\Apps\AppParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
      * @param Entity\AppStore\App $application
      */
     public function updateAppFromUrlAction(Entity\AppStore\App $application)
@@ -142,7 +155,7 @@ class AppsController extends FOSRestController
      * @Rest\DELETE("/{application}")
      *
      * @param Entity\AppStore\AppInstance $instance
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      */
     public function deleteApplicationAction(Entity\AppStore\AppInstance $instance)
     {
@@ -152,7 +165,7 @@ class AppsController extends FOSRestController
     /**
      * @Rest\GET("/{application}/manifest")
      *
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\ApiBundle\Apps\AppParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
      * @param Entity\AppStore\App $application
      *
      * @return array
@@ -169,7 +182,7 @@ class AppsController extends FOSRestController
     /**
      * @Rest\GET("/{application}/settings")
      *
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\ApiBundle\Apps\AppInstanceParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      * @param Entity\AppStore\AppInstance $application
      *
      * @return array
@@ -186,8 +199,8 @@ class AppsController extends FOSRestController
     /**
      * @Rest\GET("/{application}/assets")
      *
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\ApiBundle\Apps\AppParamConverter")
-     * @ParamConverter("searchFilter", class="AppStoreBundle:Domain\AssetFilter", converter="DeskPRO\Bundle\ApiBundle\Apps\AssetFilterParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
+     * @ParamConverter("searchFilter", class="AppStoreBundle:Domain\AssetFilter", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AssetFilterParamConverter")
      *
      * @param Entity\AppStore\App $application
      * @param AppStoreBundle\Domain\SearchAssetFilter $searchFilter
