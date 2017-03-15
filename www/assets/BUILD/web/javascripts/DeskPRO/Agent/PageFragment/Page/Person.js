@@ -188,22 +188,14 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				self.getEl('disable_autoresponses_reason').remove();
 			});
 
-			var namef       = this.getEl('showname');
-			var editName    = this.getEl('editname');
-			var editTitle   = this.getEl('edittitle');
-			var orgpos      = this.getEl('showorgpos');
-			var editOrgpos  = this.getEl('editorgpos');
-			var startBtn    = this.getEl('editname_start');
-			var stopBtn     = this.getEl('editname_end');
-
-			var editTitleChoicesRaw = editTitle.data('choices').split(',');
+			var editTitleChoicesRaw = self.getEl('edittitle').data('choices').split(',');
 			var editTitleChoices = [];
 			for (var i = 0; i < editTitleChoicesRaw.length; i++) {
 				editTitleChoices.push($.trim(editTitleChoicesRaw[i]));
 			}
-			editTitle.select2({
+      self.getEl('edittitle').select2({
 				initSelection: function(el, callback) {
-					var existingTitle = editTitle.val();
+					var existingTitle = self.getEl('edittitle').val();
 					if (existingTitle.length) {
 						callback({id: existingTitle, text: existingTitle});
 					} else {
@@ -227,7 +219,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 						results.push({id: query.term, text: query.term});
 					}
 
-					var val = editTitle.val();
+					var val = self.getEl('edittitle').val();
 					if (val.length && !inList(val) && val != query.term) {
 						results.push({id: val, text: val});
 					}
@@ -244,18 +236,18 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 
 			var startEditable = function() {
-				namef.hide();
-				orgpos.hide();
-				editName.show();
-				editOrgpos.show();
-				startBtn.hide();
-				stopBtn.show();
+        self.getEl('showname').hide();
+        self.getEl('showorgpos').hide();
+        self.getEl('editname').show();
+        self.getEl('editorgpos').show();
+        self.getEl('editname_start').hide();
+        self.getEl('editname_end').show();
 			};
 
 			var stopEditable = function() {
-				var nametxt = editName.find('input[name=name]').first();
-				var titletxt = editName.find('input[name=title_prefix]').first();
-				var postxt  = editOrgpos.find('input').first();
+				var nametxt = self.getEl('editname').find('input[name=name]').first();
+				var titletxt = self.getEl('editname').find('input[name=title_prefix]').first();
+				var postxt  = self.getEl('editorgpos').find('input').first();
 
 				var setName = nametxt.val().trim();
 				var setTitle = titletxt.val().trim();
@@ -270,18 +262,18 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				}
 
 				if (setPos) {
-					orgpos.show().find('.org-pos-display').text(setPos);
+          self.getEl('showorgpos').show().find('.org-pos-display').text(setPos);
 				} else {
-					orgpos.hide();
+          self.getEl('showorgpos').hide();
 				}
 
-				editName.hide();
-				editOrgpos.hide();
-				startBtn.show();
-				namef.show();
-				orgpos.hide();
-				stopBtn.hide();
-				namef.text((setTitle ? setTitle + ' ' : '') + setName);
+        self.getEl('editname').hide();
+        self.getEl('editorgpos').hide();
+        self.getEl('editname_start').show();
+        self.getEl('showname').show();
+        self.getEl('showorgpos').hide();
+        self.getEl('editname_end').hide();
+        self.getEl('showname').text((setTitle ? setTitle + ' ' : '') + setName);
 
 				var postData = [];
 				postData.push({
@@ -308,13 +300,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				});
 			};
 
-			namef.on('dblclick', startEditable).on('keypress', function(ev) {
+      self.getEl('showname').on('dblclick', startEditable).on('keypress', function(ev) {
 				if (ev.keyCode == 13 /* enter key */) {
 					ev.preventDefault();
 					stopEditable();
 				}
 			});
-			editOrgpos.find('input').first().on('keypress', function(ev) {
+      self.getEl('editorgpos').find('input').first().on('keypress', function(ev) {
 				if (ev.keyCode == 13 /* enter key */) {
 					ev.preventDefault();
 					stopEditable();
@@ -613,55 +605,49 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		this._initOrgEdit();
 
 		this.getEl('tickets_viewall').on('click', function(ev){
-			var row = $(this).closest('tr').remove();
+			$(this).closest('tr').remove();
 			self.getEl('tickets_rest').slideDown('fast', function() { self.updateUi(); });
 		});
 
 		$('.new-note textarea', this.getEl('notes_tab')).TextAreaExpander(40, 225);
 
-    var $notes = this.getEl('notes_tab'),
-        notesClickHandler = function(e){
-          var $el = $(e.target).closest('li.note');
-          if (!$el.length) return;
-          $notes.off('click', notesClickHandler);
+    this.notesClickHandler = function(e){
+			var $el = $(e.target).closest('li.note');
+			if (!$el.length) return;
+			self.getEl('notes_tab').off('click', self.notesClickHandler);
 
-          $.ajax({
-            url: BASE_URL + 'agent/people/notes/' + $el.data('note-id'),
-            type: 'DELETE',
-            dataType: 'json',
-            success: function(data) {
-              $el.remove();
-              $notes.on('click', '.delete', notesClickHandler);
-            },
-            error: function() {
-              $notes.on('click', '.delete', notesClickHandler);
-            }
-          });
-        };
-    $notes.on('click', '.delete', notesClickHandler);
-
-		var summaryTxt = this.getEl('summary').TextAreaExpander(40, 225);
+			$.ajax({
+				url: BASE_URL + 'agent/people/notes/' + $el.data('note-id'),
+				type: 'DELETE',
+				dataType: 'json',
+				success: function(data) {
+					$el.remove();
+					self.getEl('notes_tab').on('click', '.delete', self.notesClickHandler);
+				},
+				error: function() {
+					self.getEl('notes_tab').on('click', '.delete', self.notesClickHandler);
+				}
+			});
+		};
+    this.getEl('notes_tab').on('click', '.delete', this.notesClickHandler);
+		this.getEl('summary').TextAreaExpander(40, 225);
 
 		this.refreshPropBox();
 
-
-		var fieldsRendered = this.getEl('custom_fields_rendered');
-		var fieldsForm = this.getEl('custom_fields_editable');
-		var box = $('.profile-box-container.properties ', el);
-
 		var propToggle = function(what) {
+      var box = $('.profile-box-container.properties ', self.wrapper);
 			if (what == 'display') {
 				$('.prop-edit-trigger', box).show();
 				$('.is-loading', box).hide();
 				$('.save', box).hide();
 				$('.cancel', box).hide();
-				fieldsForm.hide();
-				fieldsRendered.show();
+        self.getEl('custom_fields_editable').hide();
+        self.getEl('custom_fields_rendered').show();
 				self.updateUi();
 			} else {
-				if (!fieldsForm.hasClass('dp-has-init')) {
-					fieldsForm.addClass('dp-has-init');
-					fieldsForm.find('.Date.customfield input').each(function() {
+				if (!self.getEl('custom_fields_editable').hasClass('dp-has-init')) {
+          self.getEl('custom_fields_editable').addClass('dp-has-init');
+          self.getEl('custom_fields_editable').find('.Date.customfield input').each(function() {
 						$(this).datetimepicker({
 							format: 'YYYY-MM-DD',
 							widgetParent: $(this).parent().css('position', 'relative'),
@@ -677,7 +663,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 						});
 					});
 
-					$('.DateTime.customfield input', fieldsForm).each(function(){
+					$('.DateTime.customfield input', self.getEl('custom_fields_editable')).each(function(){
 						$(this).datetimepicker({
 							format: 'YYYY-MM-DD HH:mm',
 							widgetParent: $(this).parent().css('position', 'relative'),
@@ -700,18 +686,19 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				$('.is-loading', box).hide();
 				$('.save', box).show();
 				$('.cancel', box).show();
-				fieldsRendered.hide();
-				fieldsForm.show();
+        self.getEl('custom_fields_rendered').hide();
+        self.getEl('custom_fields_editable').show();
 				self.updateUi();
 			}
 		};
 
-		$('.prop-edit-trigger', box).on('click', function() {
+		$('.profile-box-container.properties .prop-edit-trigger', self.wrapper).on('click', function() {
 			propToggle('form');
 		});
-		$('.save', box).on('click', function() {
-			var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
-			$('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm).each(function(){
+		$('.profile-box-container.properties .save', self.wrapper).on('click', function() {
+      var box = $('.profile-box-container.properties ', self.wrapper);
+      var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
+			$('input[type="text"], input[type="password"], input:checked, select, textarea', self.getEl('custom_fields_editable')).each(function(){
 			  var n = $(this).attr('name');
 			  if (!n) return;
 			  if (!!n && n.indexOf('[]') !== -1 && formData[n]) n = n.replace(/\[\]/, '[' + Orb.uuid() + ']')
@@ -722,8 +709,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			$('.save', box).hide();
 			$('.cancel', box).hide();
 
-			fieldsForm.find('.error-row').hide();
-			fieldsForm.find('.error-reason').hide();
+      self.getEl('custom_fields_editable').find('.error-row').hide();
+      self.getEl('custom_fields_editable').find('.error-reason').hide();
 			$.ajax({
 				url: BASE_URL + 'agent/person/' + self.meta.person_id + '/ajax-save-custom-fields',
 				type: 'POST',
@@ -731,7 +718,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				dataType: 'json',
 				success: function(data) {
 					if (data.success) {
-						fieldsRendered.empty().html(data.tpl);
+            self.getEl('custom_fields_rendered').empty().html(data.tpl);
 						propToggle('display');
 					} else if (data.invalid_custom_fields) {
 						$('.is-loading', box).hide();
@@ -740,21 +727,20 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 						for (var i in data.invalid_custom_fields) {
 							if (!data.invalid_custom_fields.hasOwnProperty(i)) continue;
-							fieldsForm.find('.' + i + '.error-row').show().find('.' + data.invalid_custom_fields[i]).show();
+              self.getEl('custom_fields_editable').find('.' + i + '.error-row').show().find('.' + data.invalid_custom_fields[i]).show();
 						}
 					}
 				}
 			});
 		});
-		$('.cancel', box).on('click', function() {
+		$('.profile-box-container.properties .cancel', self.wrapper).on('click', function() {
 			propToggle('display');
 		});
 
-		var tabWarn = $('.full-tab-warn', this.el);
-		if (tabWarn.length) {
-			$('.dismiss-trigger', tabWarn).on('click', function() {
-				tabWarn.fadeOut('fast', function() {
-					tabWarn.remove();
+		if ($('.full-tab-warn', self.wrapper).length) {
+			$('.full-tab-warn .dismiss-trigger', self.wrapper).on('click', function() {
+        $('.full-tab-warn', self.wrapper).fadeOut('fast', function() {
+          $('.full-tab-warn', self.wrapper).remove();
 				});
 			});
 		}
@@ -818,7 +804,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 	refreshPropBox: function() {
 
-		var contactBox = $('.profile-box-container.contact', this.el);
+		var contactBox = $('.profile-box-container.contact', this.wrapper);
 
 		var has = false;
 		if ($('.contact-data-list > li', contactBox).length) {
@@ -888,13 +874,12 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		});
 
 		var refreshBox = function() {
-			var box = self.getEl('org_box');
-			box.removeClass('no-section');
+      self.getEl('org_box').removeClass('no-section');
 			if (orgEdit.is(':visible')) {
 
 			} else {
 				if (!$('> *', orgDisplay).length) {
-					box.addClass('no-section');
+          self.getEl('org_box').addClass('no-section');
 				}
 			}
 		};
@@ -1191,8 +1176,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
     this.$q = null;
     this.$timeout = null;
 
+    this.getEl('tickets_viewall').remove();
     this.getEl('timezone').remove();
-    this.getEl('disable_autoresponses').off();
+    this.getEl('disable_autoresponses').remove();
 
     if (this.tabBtn) {
     	this.tabBtn = null;
@@ -1257,6 +1243,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
       this.labelsInput.destroy();
       this.labelsInput = null;
     }
+    if (this.notesClickHandler) {
+      this.getEl('notes_tab').off();
+      this.notesClickHandler = null;
+		}
     this.simpleTabs.forEach(function(tabs){
     	tabs.destroy();
 		});

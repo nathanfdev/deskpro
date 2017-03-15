@@ -85,7 +85,6 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			self.wrapper = wrapper;
 			wrapper.data('page-fragment', self);
 			wrapper.addClass('with-page-fragment');
-			this.fragmentElement = wrapper;
 
 			DeskPRO_Window.initInterfaceServices(wrapper);
 
@@ -106,6 +105,11 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		// Standard hook methods
 		this.addEvent('activate', this.activate);
 		this.addEvent('deactivate', this.deactivate);
+		this.addEvent('destroy', function(){
+			if (self.wrapper) {
+        $('.tipped', self.wrapper).remove();
+			}
+		});
 		this.addEvent('destroy', this.destroyPage);
 
 		this.init();
@@ -164,8 +168,6 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 				});
 			}
       if (self.wrapper) {
-				$('.tipped', self.wrapper).qtip('destroy');
-
         self.wrapper.empty();
         self.wrapper.removeData();
         self.wrapper.off();
@@ -462,15 +464,15 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		var el = this.getEl('layout_sidebar_icons');
 		if (!el[0] || el.find('li.is-enabled').length == 0) {
 			this.anyAppsSidebar = false;
-			this.fragmentElement.removeClass('with-apps-sidebar with-docked-apps-sidebar');
-			this.fragmentElement.triggerHandler('onNoAppsSidebar');
+			this.wrapper.removeClass('with-apps-sidebar with-docked-apps-sidebar');
+			this.wrapper.triggerHandler('onNoAppsSidebar');
 			if (this.updateAppSidebarUi) {
 				this.updateAppSidebarUi();
 			}
 		} else {
 			this.anyAppsSidebar = true;
-			this.fragmentElement.addClass('with-apps-sidebar');
-			this.fragmentElement.triggerHandler('onAppsSidebar');
+			this.wrapper.addClass('with-apps-sidebar');
+			this.wrapper.triggerHandler('onAppsSidebar');
 			this._initAppsSidebar();
 		}
 	},
@@ -494,14 +496,14 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		var initialUpdateDone = false;
 
 		var sizerCalcLeft = function() {
-			var l = parseInt(self.fragmentElement.width()) - parseInt(DeskPRO_Window.appsSidebar.width);
+			var l = parseInt(self.wrapper.width()) - parseInt(DeskPRO_Window.appsSidebar.width);
 			return l;
 		};
 
 		var open = function(openNow) {
 			if (DeskPRO_Window.appsSidebar.visible || !self.anyAppsSidebar) return;
 
-			self.fragmentElement.addClass('with-apps-sidebar-overlay');
+			self.wrapper.addClass('with-apps-sidebar-overlay');
 
 			if (openNow) {
 				sidebarEl.stop().css('right', 0).show();
@@ -534,9 +536,9 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 					isClosing = false;
 					sidebarEl.hide();
 					sizer.hide();
-					self.fragmentElement.removeClass('with-apps-sidebar-overlay');
+					self.wrapper.removeClass('with-apps-sidebar-overlay');
 				}
-			})
+			});
 		};
 
 		var startCloseTimeout = function() {
@@ -583,8 +585,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			DeskPRO_Window.appsSidebar.visible = true;
 			sizer.css('left', sizerCalcLeft()).show();
 			layoutEl.css('right', DeskPRO_Window.appsSidebar.width);
-			self.fragmentElement.removeClass('with-apps-sidebar-overlay');
-			self.fragmentElement.addClass('with-docked-apps-sidebar');
+			self.wrapper.removeClass('with-apps-sidebar-overlay');
+			self.wrapper.addClass('with-docked-apps-sidebar');
 
 			if (Modernizr.localstorage) {
 				localStorage['apps_sidebar_state'] = 'open';
@@ -603,8 +605,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			sidebarEl.stop().hide();
 			DeskPRO_Window.appsSidebar.visible = false;
 			layoutEl.css('right', 0);
-			self.fragmentElement.removeClass('with-apps-sidebar-overlay');
-			self.fragmentElement.removeClass('with-docked-apps-sidebar');
+			self.wrapper.removeClass('with-apps-sidebar-overlay');
+			self.wrapper.removeClass('with-docked-apps-sidebar');
 
 			if (Modernizr.localstorage) {
 				localStorage['apps_sidebar_state'] = 'closed';
@@ -616,13 +618,13 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 				sidebarEl.stop().css('right', 0).css('width', DeskPRO_Window.appsSidebar.width).show();
 				sizer.css('left', sizerCalcLeft()).show();
 				layoutEl.css('right', DeskPRO_Window.appsSidebar.width);
-				self.fragmentElement.removeClass('with-apps-sidebar-overlay');
-				self.fragmentElement.addClass('with-docked-apps-sidebar');
+				self.wrapper.removeClass('with-apps-sidebar-overlay');
+				self.wrapper.addClass('with-docked-apps-sidebar');
 			} else {
 				sidebarEl.stop().hide();
 				layoutEl.css('right', 0);
-				self.fragmentElement.removeClass('with-apps-sidebar-overlay');
-				self.fragmentElement.removeClass('with-docked-apps-sidebar');
+				self.wrapper.removeClass('with-apps-sidebar-overlay');
+				self.wrapper.removeClass('with-docked-apps-sidebar');
 			}
 		};
 
@@ -682,7 +684,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		}).on('dragstop', function() {
 			sizer.removeClass('dragging');
 			isSizing = false;
-			var w = self.fragmentElement.width() - sizer.position().left
+			var w = self.wrapper.width() - sizer.position().left;
 			DeskPRO_Window.appsSidebar.width = w;
 			sidebarEl.css('width', w);
 			if (DeskPRO_Window.appsSidebar.visible) {
