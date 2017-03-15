@@ -57,7 +57,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			times: []
 		};
 
-		this.resizerInterval = window.setInterval(function() {
+		this.resizerInterval = window.setInterval(function doUpdateUI() {
 			self.updateUi();
 		}, 1100);
 
@@ -72,6 +72,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.activated', { page: this });
 			this.updateUi();
 		}, this);
+
 		this.addEvent('deactivate', function() {
 			this.IS_ACTIVE = false;
 			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.deactivated', { page: this });
@@ -100,8 +101,6 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tabinit.' + this.TYPENAME, this);
 		}, this);
 
-		var self = this;
-
 		// Standard hook methods
 		this.addEvent('activate', this.activate);
 		this.addEvent('deactivate', this.deactivate);
@@ -121,6 +120,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		this.addEvent('destroy', function() {
 			self.cleanupApps();
 		});
+
 		this.addEvent('destroy', function() {
 			this.scrollHandlers = [];
 			if (self.resizerInterval) {

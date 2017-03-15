@@ -147,30 +147,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				}
 			});
 
-			this.tzMenu = new DeskPRO.UI.Menu({
-				menuElement: this.getEl('timezone')
-			});
-
 			this.autoResMenu = new DeskPRO.UI.Menu({
 				menuElement: this.getEl('disable_autoresponses')
-			});
-
-			this.getEl('timezone').on('change', function(){
-				var val = $(this).val();
-				$('.timezone-info', this.wrapper).empty();
-				$.ajax({
-					url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
-					type: 'POST',
-					dataType: 'json',
-					data: {
-						action: 'timezone',
-						timezone: val
-					},
-					context: this,
-					success: function(data) {
-						$('.timezone-info', self.wrapper).empty().html(data.bit_html);
-					}
-				});
 			});
 
 			this.getEl('disable_autoresponses').on('change', function(){
@@ -193,49 +171,54 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			for (var i = 0; i < editTitleChoicesRaw.length; i++) {
 				editTitleChoices.push($.trim(editTitleChoicesRaw[i]));
 			}
+
+			function initSelect2Selection(el, callback) {
+        var existingTitle = self.getEl('edittitle').val();
+        if (existingTitle.length) {
+          callback({id: existingTitle, text: existingTitle});
+        } else {
+          callback({id: '', text: '\u00A0'});
+        }
+      }
+
+			function select2query(query) {
+        var inList = function(term) {
+          for (var i = 0; i < editTitleChoices.length; i++) {
+            if (editTitleChoices[i] == term) {
+              return true;
+            }
+          }
+
+          return false;
+        };
+
+        var results = [];
+
+        if (query.term.length) {
+          results.push({id: query.term, text: query.term});
+        }
+
+        var val = self.getEl('edittitle').val();
+        if (val.length && !inList(val) && val != query.term) {
+          results.push({id: val, text: val});
+        }
+
+        for (var i = 0; i < editTitleChoices.length; i++) {
+          var choice = editTitleChoices[i];
+          results.push({id: choice, text: choice});
+        }
+
+        results.push({id: '', text: '\u00A0'});
+
+        query.callback({results: results});
+      }
+
       self.getEl('edittitle').select2({
-				initSelection: function(el, callback) {
-					var existingTitle = self.getEl('edittitle').val();
-					if (existingTitle.length) {
-						callback({id: existingTitle, text: existingTitle});
-					} else {
-						callback({id: '', text: '\u00A0'});
-					}
-				},
-				query: function(query) {
-					var inList = function(term) {
-						for (var i = 0; i < editTitleChoices.length; i++) {
-							if (editTitleChoices[i] == term) {
-								return true;
-							}
-						}
-
-						return false;
-					};
-
-					var results = [];
-
-					if (query.term.length) {
-						results.push({id: query.term, text: query.term});
-					}
-
-					var val = self.getEl('edittitle').val();
-					if (val.length && !inList(val) && val != query.term) {
-						results.push({id: val, text: val});
-					}
-
-					for (var i = 0; i < editTitleChoices.length; i++) {
-						var choice = editTitleChoices[i];
-						results.push({id: choice, text: choice});
-					}
-
-					results.push({id: '', text: '\u00A0'});
-
-					query.callback({results: results});
-				}
+				initSelection: initSelect2Selection,
+				query: select2query
 			});
 
-			var startEditable = function() {
+			function startEditable() {
         self.getEl('showname').hide();
         self.getEl('showorgpos').hide();
         self.getEl('editname').show();
@@ -244,7 +227,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
         self.getEl('editname_end').show();
 			};
 
-			var stopEditable = function() {
+			function stopEditable() {
 				var nametxt = self.getEl('editname').find('input[name=name]').first();
 				var titletxt = self.getEl('editname').find('input[name=title_prefix]').first();
 				var postxt  = self.getEl('editorgpos').find('input').first();
@@ -309,7 +292,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
       self.getEl('editorgpos').find('input').first().on('keypress', function(ev) {
 				if (ev.keyCode == 13 /* enter key */) {
 					ev.preventDefault();
-					stopEditable();
+          stopEditable();
 				}
 			});
 			this.getEl('editname_start').on('click', startEditable);
@@ -634,7 +617,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		this.refreshPropBox();
 
-		var propToggle = function(what) {
+		function propToggle(what) {
       var box = $('.profile-box-container.properties ', self.wrapper);
 			if (what == 'display') {
 				$('.prop-edit-trigger', box).show();
@@ -693,7 +676,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		};
 
 		$('.profile-box-container.properties .prop-edit-trigger', self.wrapper).on('click', function() {
-			propToggle('form');
+      propToggle('form');
 		});
 		$('.profile-box-container.properties .save', self.wrapper).on('click', function() {
       var box = $('.profile-box-container.properties ', self.wrapper);
@@ -701,7 +684,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			$('input[type="text"], input[type="password"], input:checked, select, textarea', self.getEl('custom_fields_editable')).each(function(){
 			  var n = $(this).attr('name');
 			  if (!n) return;
-			  if (!!n && n.indexOf('[]') !== -1 && formData[n]) n = n.replace(/\[\]/, '[' + Orb.uuid() + ']')
+			  if (!!n && n.indexOf('[]') !== -1 && formData[n]) n = n.replace(/\[\]/, '[' + Orb.uuid() + ']');
 			  formData[n] = $(this).val();
 			});
 
@@ -734,7 +717,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 		});
 		$('.profile-box-container.properties .cancel', self.wrapper).on('click', function() {
-			propToggle('display');
+      propToggle('display');
 		});
 
 		if ($('.full-tab-warn', self.wrapper).length) {
@@ -1048,7 +1031,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					ev.preventDefault();
 					var me = $(this), tr = me.closest('tr');
 					if (confirm(me.data('confirm'))) {
-						var formData = []
+						var formData = [];
 						formData.push({ name: 'action', value: 'remove-usersource'} );
 						formData.push({ name: 'usersource_id', value: tr.data('us-id') });
 
@@ -1177,8 +1160,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
     this.$timeout = null;
 
     this.getEl('tickets_viewall').remove();
-    this.getEl('timezone').remove();
-    this.getEl('disable_autoresponses').remove();
 
     if (this.tabBtn) {
     	this.tabBtn = null;
@@ -1199,15 +1180,12 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
       this.sortTicketsMenu.destroy();
       this.sortTicketsMenu = null;
 		}
-		if (this.tzMenu) {
-      this.tzMenu.destroy();
-      this.tzMenu = null;
-		}
 		if (this.autoResMenu) {
       this.autoResMenu.destroy();
       this.autoResMenu = null;
-		}
-		if (this.sortChatsMenu) {
+      this.getEl('disable_autoresponses').remove();
+    }
+    if (this.sortChatsMenu) {
       this.sortChatsMenu.destroy();
       this.sortChatsMenu = null;
 		}

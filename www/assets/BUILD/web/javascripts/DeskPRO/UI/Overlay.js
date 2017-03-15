@@ -300,11 +300,11 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		switch (this.options.contentMethod) {
 			case 'element':
 
-				var el = $(this.options.contentElement);
-				if (el.data('overlay-apply-class')) {
-					this.elements.wrapperOuter.addClass(el.data('overlay-apply-class'));
+				var data = $(this.options.contentElement).data('overlay-apply-class');
+				if (data) {
+					this.elements.wrapperOuter.addClass(data);
 				}
-				this._setContent(el);
+				this._setContent($(this.options.contentElement));
 
 				this.hasInit = true;
 
