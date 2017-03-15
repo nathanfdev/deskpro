@@ -63,7 +63,7 @@ class Date extends HandlerAbstract
                             $datetime = new \DateTime($value);
                         }
 
-                        return date('F j, Y', $datetime->getTimestamp());
+                        return date('F j, Y H:i:s', $datetime->getTimestamp());
                     } else {
                         return '';
                     }
