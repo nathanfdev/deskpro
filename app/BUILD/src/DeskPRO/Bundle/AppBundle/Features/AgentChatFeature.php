@@ -64,7 +64,7 @@ class AgentChatFeature extends AbstractFeature
      */
     public function getShortDescription()
     {
-        return 'Improved agent instant messaging';
+        return 'Improved agent instant messaging.';
     }
 
     /**
