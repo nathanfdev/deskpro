@@ -1,13 +1,18 @@
-{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
-{% block editpane_content %}
-    <form role="form">
-        <section class="dp-paneblock dp-editpane">
-            <h4>
-                Enable Beta feature {{ ng_var('Features.feature.title') }}
-            </h4>
-            <div ng-bind-html="Features.enable_description">
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+
+{% block listpane_content %}
+    <section class="dp-paneblock dp-listpane">
+        <header>
+            <h3>Enable Beta feature {{ ng_var('Features.feature.title') }}</h3>
+        </header>
+        <article class="padd">
+            <p ng-bind-html="Features.feature.enable_description"></p>
+            <div class="padd">
+                <button ng-show="!Features.feature.enabled" class="btn btn-success" ng-click="Features.enableFeature()">Enable Beta Feature</button>
+                <div class="alert alert-warning" ng-show="Features.feature.enabled">
+                    This feature is already enabled
+                </div>
             </div>
-            <button class="btn btn-success" ng-click="Features.enableFeature()">Enable Beta Feature</button>
-        </section>
-    </form>
+        </article>
+    </section>
 {% endblock %}
