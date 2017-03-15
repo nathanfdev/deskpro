@@ -5,11 +5,7 @@ const getH1 = (html) => {
   const container = document.createElement('div');
   container.innerHTML = html;
 
-  return Array.from(container.querySelectorAll('h1')).map((h1, index) => <li key={index}>
-    <a href={`#${h1.id}`}>
-      {h1.innerText}
-    </a>
-  </li>);
+  return Array.from(container.querySelectorAll('h1')).map(h1 => h1);
 };
 
 class TopicSummary extends React.Component {
@@ -82,7 +78,11 @@ class TopicSummary extends React.Component {
           (<div>
             <h2><i className="fa fa-list" /> Contents</h2>
             <ul>
-              {this.state.h1s}
+              {this.state.h1s.map((h1, index) => <li key={index}>
+                <a href={`#${h1.id}`}>
+                  {h1.innerText}
+                </a>
+              </li>)}
             </ul>
           </div>
           ) : null}
