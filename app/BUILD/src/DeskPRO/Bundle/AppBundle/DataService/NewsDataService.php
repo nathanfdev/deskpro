@@ -101,7 +101,7 @@ class NewsDataService extends AbstractDataService
                 $qb->select('n')
                     ->from(News::class, 'n')
                     ->where('n.status = :status')->setParameter('status', News::STATUS_PUBLISHED)
-                    ->orderBy('n.id', 'DESC');
+                    ->orderBy('n.date_published', 'DESC');
 
                 $allowed_ids = $permissionsManager->getPortalPermissionsBag($person)->getAllowedNewsCategories();
                 if ($category) {
