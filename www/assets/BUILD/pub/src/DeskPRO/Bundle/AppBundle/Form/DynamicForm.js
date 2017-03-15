@@ -178,10 +178,8 @@ export class DynamicForm {
         const $field = $(field);
         const defaultValue = this.defaultValues.get($field.attr('id'));
 
-        if ($field.is(':checkbox')) {
+        if ($field.is(':checkbox') || $field.is(':radio')) {
           $field.prop('checked', defaultValue).trigger('change');
-        } else if ($field.is(':radio') && defaultValue) {
-          $field.prop('checked', true);
         } else {
           $field.val(defaultValue).trigger('change');
         }
