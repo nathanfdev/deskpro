@@ -1267,8 +1267,5 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
     }
 
     this.destroyEvents();
-
-    this.wrapper.remove();
-    this.wrapper = null;
 	}
 });
