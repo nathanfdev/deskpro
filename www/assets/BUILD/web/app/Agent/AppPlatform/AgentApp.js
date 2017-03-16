@@ -1130,8 +1130,7 @@ define([
 				$el.on('click', onClick);
 
 				scope.$on('$destroy', function(){
-					$el.off('click', onClick);
-					$backdrop.off('click', onBackdropClick);
+          $backdrop.off('click', onBackdropClick);
 				});
 			}
 		};

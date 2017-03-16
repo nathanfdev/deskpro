@@ -47,7 +47,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
 			self.wrapper.data('$ngControllerController', self);
-			$compile(self.wrapper.contents())(self.$scope);
+			$compile(self.wrapper.find('.page-header:first').contents())(self.$scope);
 		}]);
 	},
 
@@ -78,7 +78,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		this.wrapper = el;
 		this.initScope();
 
-    this.clip = null;
 		try {
 			var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
 			if (flashEnabled) {
@@ -299,7 +298,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 			this.getEl('editname_end').on('click', stopEditable);
 
-			$('.contact-list-wrapper', this.wrapper).first().on('click', '.set-primary', function() {
+			$('.contact-list-wrapper:first', this.wrapper).on('click', '.set-primary', function() {
 				var email_id = $(this).data('email-id');
 				$('.contact-list-wrapper .email.is-primary', self.wrapper).removeClass('is-primary');
 				$('.contact-list-wrapper .email-' + email_id, self.wrapper).addClass('is-primary');
@@ -318,7 +317,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				});
 			});
 
-			$('.contact-list-wrapper', this.wrapper).first().on('click', '.banned', function() {
+			$('.contact-list-wrapper:first', this.wrapper).on('click', '.banned', function() {
 				var el = $(this);
 				var url = $(this).data('unban-url');
 				//msg, callback_yes, callback_no, phrase_yes, phrase_no
@@ -338,13 +337,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			this.uploadVcard = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadVcard(this, {
 				loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/upload-vcard-overlay",
 				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save',
-                                person_id: this.meta.person_id
+				person_id: this.meta.person_id
 			});
 
 			this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{
 				el: self.getEl('files_box'),
 				deleteUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save',
-                                person_id: this.meta.person_id
+				person_id: this.meta.person_id
 			});
 
 		} // can edit
@@ -360,429 +359,452 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 		});
 
-		var person_id = this.meta.person_id;
-
-		this.sortTicketsMenu = new DeskPRO.UI.Menu({
-			triggerElement: this.getEl('sort_tickets_menu_trigger'),
-			menuElement: this.getEl('sort_tickets_menu'),
-			onItemClicked: function(info) {
-				var itemEl = $(info.itemEl), sort_by = itemEl.data('sort-by');
-
-				$.ajax({
-					url: BASE_URL + 'agent/person/' + person_id + '/tickets',
-					data: {sort_by: sort_by},
-					type: 'get',
-					dataType: 'html',
-					success: function(html) {
-						self.getEl('tickets_rest').remove();
-						self.getEl('tickets_initial').html(html);
-					}
-				});
-			}
-		});
-
-		this.sortChatsMenu = new DeskPRO.UI.Menu({
-			triggerElement: this.getEl('sort_chats_menu_trigger'),
-			menuElement: this.getEl('sort_chats_menu'),
-			onItemClicked: function(info) {
-				var itemEl = $(info.itemEl), orderBy = itemEl.data('order-by'), orderDir = itemEl.data('order-dir');
-
-				$.ajax({
-					url: BASE_URL + 'agent/person/' + person_id + '/chats',
-					data: {order_by: orderBy, order_dir: orderDir},
-					type: 'get',
-					dataType: 'html',
-					success: function(html) {
-						self.getEl('chats_initial').html(html);
-					}
-				});
-			}
-		});
-
-		this.moreactionsMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.more', this.getEl('action_buttons')),
-			menuElement: this.getEl('more_actions_menu'),
-			onItemClicked: function(info) {
-				var itemEl = $(info.itemEl), action = itemEl.data('action');
-
-				if (action == 'set-password') {
-					DeskPRO_Window.showPrompt(
-						'<div>Enter a new password. The user will be notified.</div>',
-						function(val, wrap) {
-							var postData = [];
-							postData.push({
-								name: 'password',
-								value: val
-							});
-
-							postData.push({
-								name: 'send_email',
-								value: $('.send_email', wrap).is(':checked')
-							});
-
-							postData.push({
-								name: 'action',
-								value: 'password'
-							});
-
-							$.ajax({
-								url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
-								type: 'POST',
-								dataType: 'json',
-								data: postData
-							});
-						}
-					);
-				} else if (action == 'reset-password') {
-
-					DeskPRO_Window.showConfirm(
-							self.getEl('reset_password_confirm'),
-							function() {
-								$.ajax({
-									url: BASE_URL + 'agent/login/send-lost.json',
-									type: 'POST',
-									data: { email: self.meta.person.email },
-									dataType: 'json'
-								});
-								self.closeSelf();
-							},
-							null,
-							null, null,
-							400, 260
-					);
-
-				} else if (action == 'delete') {
-					var el = self.getEl('delete_confirm');//.clone();
-					DeskPRO_Window.showConfirm(
-						el,
-						function() {
-							$.ajax({
-								url: $(info.itemEl).data('delete-url'),
-                                                                data: {reason: $('.delete-reason', el.selector).val()},
-								type: 'POST',
-								success: function() {
-									DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: person_id });
-									DeskPRO_Window.showAlert('The user was deleted');
-
-									var tabs = DeskPRO_Window.getTabWatcher().findTabs('ticket', function(tab) {
-										return (tab && tab.page && tab.page && tab.page.meta.person_id == person_id);
-									});
-									$.each(tabs, function(k, tab) {
-										DeskPRO_Window.removePage(tab.page);
-									});
-								}
-							});
-                                                        $('.delete-reason', el.selector).val("");
-							self.closeSelf();
-						},
-						null,
-						null, null,
-						400, 260
-					);
-				} else if (action == 'ban') {
-					var el = self.getEl('ban_confirm');//.clone();
-					DeskPRO_Window.showConfirm(
-						el,
-						function() {
-                                                    console.log($(info.itemEl).data('delete-url'));
-                                                    console.log($('.delete-reason', el.selector).val());
-                                                    //return true;
-							$.ajax({
-								url: $(info.itemEl).data('delete-url'),
-								type: 'POST',
-                                                                data: {reason: $('.delete-reason', el.selector).val()},
-								success: function() {
-									DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: person_id });
-									DeskPRO_Window.showAlert('The user was deleted and banned');
-								}
-							});
-                                                        $('.delete-reason', el.selector).val("");
-							self.closeSelf();
-						},
-						null,
-						null, null,
-						400, 260
-					);
-				} else if (action == 'enable-user') {
-					$.ajax({
-						url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
-						type: 'POST',
-						dataType: 'json',
-						data: {
-							action: 'set-is-disabled',
-							is_disabled: 0
-						}
-					});
-
-					var text = itemEl.text();
-					itemEl.text(itemEl.data('flip'));
-					itemEl.data('flip', text);
-					itemEl.data('action', 'disable-user');
-					self.getEl('change_user_picture').find('.person-disabled').remove();
-				} else if (action == 'disable-user') {
-					$.ajax({
-						url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
-						type: 'POST',
-						dataType: 'json',
-						data: {
-							action: 'set-is-disabled',
-							is_disabled: 1
-						}
-					});
-
-					var text = itemEl.text();
-					itemEl.text(itemEl.data('flip'));
-					itemEl.data('flip', text);
-					itemEl.data('action', 'enable-user');
-					self.getEl('change_user_picture').append($('<span class="person-disabled" />'));
-				} else if (action == 'upload-vcard') {
-                                    self.uploadVcard.open();
-                                }
-			}
-		});
-
-		if (this.meta.perms.merge) {
-			this.merge = new DeskPRO.Agent.Widget.Merge({
-				tabType: 'person',
-				metaId: self.meta.person_id,
-				metaIdName: 'person_id',
-				overlayUrl: BASE_URL + 'agent/people/{id}/merge-overlay/{other}',
-				mergeUrl: BASE_URL + 'agent/people/{id}/merge/{other}',
-				loadRoute: 'person:' + BASE_URL + 'agent/people/{id}',
-				overlayLoaded: function(overlay, merge) {
-					overlay.getWrapper().find('.person-finder').bind('personsearchboxclick', function(ev, personId, name, email, sb) {
-						sb.close();
-
-						$.ajax({
-							url: merge._getOverlayUrl(merge.options.metaId, personId),
-							type: 'get',
-							dataType: 'html',
-							success: function(html) {
-								merge.resetOverlay(html);
-							}
-						});
-					});
-				}
-			});
-		}
-
+		this.initSortTicketsMenu();
+		this.initSortChatsMenu();
+		this.initMoreActionsMenu();
+		this.initMerge();
 		this._initLabels();
-
-		this.simpleTabs = [];
-		$('.profile-box-container.tabbed', this.wrapper).each(function() {
-			var simpleTabs = new DeskPRO.UI.SimpleTabs({
-				triggerElements: '> header li',
-				context: this
-			});
-
-			simpleTabs.addEvent('beforeTabSwitch', function(eventData) {
-				if(eventData.tabEl) {
-					var classShow = eventData.tabEl.data('classShow');
-					self.wrapper.find('.tabs-control').hide();
-					self.wrapper.find('.' + classShow).show();
-				}
-			});
-			self.simpleTabs.push(simpleTabs);
-		});
-
+		this.initTabs();
 		this._initOrgEdit();
-
-		this.getEl('tickets_viewall').on('click', function(ev){
-			$(this).closest('tr').remove();
-			self.getEl('tickets_rest').slideDown('fast', function() { self.updateUi(); });
-		});
-
-		$('.new-note textarea', this.getEl('notes_tab')).TextAreaExpander(40, 225);
-
-    this.notesClickHandler = function(e){
-			var $el = $(e.target).closest('li.note');
-			if (!$el.length) return;
-			self.getEl('notes_tab').off('click', self.notesClickHandler);
-
-			$.ajax({
-				url: BASE_URL + 'agent/people/notes/' + $el.data('note-id'),
-				type: 'DELETE',
-				dataType: 'json',
-				success: function(data) {
-					$el.remove();
-					self.getEl('notes_tab').on('click', '.delete', self.notesClickHandler);
-				},
-				error: function() {
-					self.getEl('notes_tab').on('click', '.delete', self.notesClickHandler);
-				}
-			});
-		};
-    this.getEl('notes_tab').on('click', '.delete', this.notesClickHandler);
-		this.getEl('summary').TextAreaExpander(40, 225);
-
+		this.initFormSaver();
+    this.initNotes();
 		this.refreshPropBox();
-
-		function propToggle(what) {
-      var box = $('.profile-box-container.properties ', self.wrapper);
-			if (what == 'display') {
-				$('.prop-edit-trigger', box).show();
-				$('.is-loading', box).hide();
-				$('.save', box).hide();
-				$('.cancel', box).hide();
-        self.getEl('custom_fields_editable').hide();
-        self.getEl('custom_fields_rendered').show();
-				self.updateUi();
-			} else {
-				if (!self.getEl('custom_fields_editable').hasClass('dp-has-init')) {
-          self.getEl('custom_fields_editable').addClass('dp-has-init');
-          self.getEl('custom_fields_editable').find('.Date.customfield input').each(function() {
-						$(this).datetimepicker({
-							format: 'YYYY-MM-DD',
-							widgetParent: $(this).parent().css('position', 'relative'),
-							icons: {
-								up: 'fa fa-chevron-up',
-								down: 'fa fa-chevron-down',
-								previous: 'fa fa-chevron-left',
-								next: 'fa fa-chevron-right'
-							}
-						});
-						$(this).on('dp.change', function(){
-							$(this).trigger('change');
-						});
-					});
-
-					$('.DateTime.customfield input', self.getEl('custom_fields_editable')).each(function(){
-						$(this).datetimepicker({
-							format: 'YYYY-MM-DD HH:mm',
-							widgetParent: $(this).parent().css('position', 'relative'),
-							icons: {
-								time: 'fa fa-clock-o',
-								date: 'fa fa-calendar-o',
-								up: 'fa fa-chevron-up',
-								down: 'fa fa-chevron-down',
-								previous: 'fa fa-chevron-left',
-								next: 'fa fa-chevron-right'
-							}
-						});
-						$(this).on('dp.change', function(){
-							$(this).trigger('change');
-						});
-					});
-				}
-
-				$('.prop-edit-trigger', box).hide();
-				$('.is-loading', box).hide();
-				$('.save', box).show();
-				$('.cancel', box).show();
-        self.getEl('custom_fields_rendered').hide();
-        self.getEl('custom_fields_editable').show();
-				self.updateUi();
-			}
-		};
-
-		$('.profile-box-container.properties .prop-edit-trigger', self.wrapper).on('click', function() {
-      propToggle('form');
-		});
-		$('.profile-box-container.properties .save', self.wrapper).on('click', function() {
-      var box = $('.profile-box-container.properties ', self.wrapper);
-      var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
-			$('input[type="text"], input[type="password"], input:checked, select, textarea', self.getEl('custom_fields_editable')).each(function(){
-			  var n = $(this).attr('name');
-			  if (!n) return;
-			  if (!!n && n.indexOf('[]') !== -1 && formData[n]) n = n.replace(/\[\]/, '[' + Orb.uuid() + ']');
-			  formData[n] = $(this).val();
-			});
-
-			$('.is-loading', box).show();
-			$('.save', box).hide();
-			$('.cancel', box).hide();
-
-      self.getEl('custom_fields_editable').find('.error-row').hide();
-      self.getEl('custom_fields_editable').find('.error-reason').hide();
-			$.ajax({
-				url: BASE_URL + 'agent/person/' + self.meta.person_id + '/ajax-save-custom-fields',
-				type: 'POST',
-				data: formData,
-				dataType: 'json',
-				success: function(data) {
-					if (data.success) {
-            self.getEl('custom_fields_rendered').empty().html(data.tpl);
-						propToggle('display');
-					} else if (data.invalid_custom_fields) {
-						$('.is-loading', box).hide();
-						$('.save', box).show();
-						$('.cancel', box).show();
-
-						for (var i in data.invalid_custom_fields) {
-							if (!data.invalid_custom_fields.hasOwnProperty(i)) continue;
-              self.getEl('custom_fields_editable').find('.' + i + '.error-row').show().find('.' + data.invalid_custom_fields[i]).show();
-						}
-					}
-				}
-			});
-		});
-		$('.profile-box-container.properties .cancel', self.wrapper).on('click', function() {
-      propToggle('display');
-		});
-
-		if ($('.full-tab-warn', self.wrapper).length) {
-			$('.full-tab-warn .dismiss-trigger', self.wrapper).on('click', function() {
-        $('.full-tab-warn', self.wrapper).fadeOut('fast', function() {
-          $('.full-tab-warn', self.wrapper).remove();
-				});
-			});
-		}
-
-		if(this.getEl('editname_start').is('.auto-click')) {
-			this.getEl('editname_start').click();
-		}
-
+		this.initProfileBox();
 		this.initUsEditor();
 		this.initUgEditor();
+		this.initApprove();
 
-		if (this.getEl('approve_user')[0]) {
+    this.getEl('tickets_viewall').on('click', function(ev){
+      $(this).closest('tr').remove();
+      self.getEl('tickets_rest').slideDown('fast', function() {
+      	self.updateUi();
+      });
+    });
 
-			DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.removed', function(info) {
-				DeskPRO_Window.removePage(self);
-			}, this);
-			DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.confirmed', function(info) {
-				if (info.person_id == self.meta.person_id) {
-					this.wrapper.find('.validating-bar').remove();
-				}
-			}, this);
+    if ($('.full-tab-warn', self.wrapper).length) {
+      $('.full-tab-warn .dismiss-trigger', self.wrapper).on('click', function() {
+        $('.full-tab-warn', self.wrapper).fadeOut('fast', function() {
+          $('.full-tab-warn', self.wrapper).remove();
+        });
+      });
+    }
 
-			this.getEl('approve_user').on('click', function(ev) {
-				ev.preventDefault();
-				DeskPRO_Window.util.ajaxWithClientMessages({
-					url: BASE_URL + 'agent/people/validate/approve',
-					data: { 'people_ids[]': self.meta.person_id },
-					success: function() {
-						DeskPRO_Window.removePage(self);
-						DeskPRO_Window.runPageRoute('page:'+ BASE_URL + 'agent/people/' + self.meta.person_id);
-
-						DeskPRO_Window.getMessageBroker().sendMessage('agent.person.confirmed', { person_id: self.meta.person_id });
-					}
-				});
-			});
-			this.getEl('delete_user').on('click', function(ev) {
-				ev.preventDefault();
-				DeskPRO_Window.util.ajaxWithClientMessages({
-					url: BASE_URL + 'agent/people/validate/delete',
-					data: { 'people_ids[]': self.meta.person_id },
-					success: function() {
-						DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: self.meta.person_id });
-						DeskPRO_Window.showAlert('The user was deleted');
-
-						var tabs = DeskPRO_Window.getTabWatcher().findTabs('ticket', function(tab) {
-							return (tab && tab.page && tab.page && tab.page.meta.person_id == person_id);
-						});
-						$.each(tabs, function(k, tab) {
-							DeskPRO_Window.removePage(tab.page);
-						});
-					}
-				});
-			});
-		}
+    if(this.getEl('editname_start').is('.auto-click')) {
+      this.getEl('editname_start').click();
+    }
 
 		this.addEvent('openOrgProfile', function(ev) {
 			ev.preventDefault();
 			self.getEl('org_box').find('.org_link').trigger('click');
 		});
+	},
+
+	initSortTicketsMenu: function() {
+		var self = this;
+    this.sortTicketsMenu = new DeskPRO.UI.Menu({
+      triggerElement: this.getEl('sort_tickets_menu_trigger'),
+      menuElement: this.getEl('sort_tickets_menu'),
+      onItemClicked: function(info) {
+        var itemEl = $(info.itemEl), sort_by = itemEl.data('sort-by');
+
+        $.ajax({
+          url: BASE_URL + 'agent/person/' + self.meta.person_id + '/tickets',
+          data: {sort_by: sort_by},
+          type: 'get',
+          dataType: 'html',
+          success: function(html) {
+            self.getEl('tickets_rest').remove();
+            self.getEl('tickets_initial').html(html);
+          }
+        });
+      }
+    });
+	},
+
+	initSortChatsMenu: function() {
+		var self = this;
+    this.sortChatsMenu = new DeskPRO.UI.Menu({
+      triggerElement: this.getEl('sort_chats_menu_trigger'),
+      menuElement: this.getEl('sort_chats_menu'),
+      onItemClicked: function(info) {
+        var itemEl = $(info.itemEl), orderBy = itemEl.data('order-by'), orderDir = itemEl.data('order-dir');
+
+        $.ajax({
+          url: BASE_URL + 'agent/person/' + self.meta.person_id + '/chats',
+          data: {order_by: orderBy, order_dir: orderDir},
+          type: 'get',
+          dataType: 'html',
+          success: function(html) {
+            self.getEl('chats_initial').html(html);
+          }
+        });
+      }
+    });
+	},
+
+	initMoreActionsMenu: function() {
+		var self = this;
+    this.moreactionsMenu = new DeskPRO.UI.Menu({
+      triggerElement: $('.more', this.getEl('action_buttons')),
+      menuElement: this.getEl('more_actions_menu'),
+      onItemClicked: function(info) {
+        var itemEl = $(info.itemEl), action = itemEl.data('action');
+
+        if (action == 'set-password') {
+          DeskPRO_Window.showPrompt(
+            '<div>Enter a new password. The user will be notified.</div>',
+            function(val, wrap) {
+              var postData = [];
+              postData.push({
+                name: 'password',
+                value: val
+              });
+
+              postData.push({
+                name: 'send_email',
+                value: $('.send_email', wrap).is(':checked')
+              });
+
+              postData.push({
+                name: 'action',
+                value: 'password'
+              });
+
+              $.ajax({
+                url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+                type: 'POST',
+                dataType: 'json',
+                data: postData
+              });
+            }
+          );
+        } else if (action == 'reset-password') {
+
+          DeskPRO_Window.showConfirm(
+            self.getEl('reset_password_confirm'),
+            function() {
+              $.ajax({
+                url: BASE_URL + 'agent/login/send-lost.json',
+                type: 'POST',
+                data: { email: self.meta.person.email },
+                dataType: 'json'
+              });
+              self.closeSelf();
+            },
+            null,
+            null, null,
+            400, 260
+          );
+
+        } else if (action == 'delete') {
+          var el = self.getEl('delete_confirm');//.clone();
+          DeskPRO_Window.showConfirm(
+            el,
+            function() {
+              $.ajax({
+                url: $(info.itemEl).data('delete-url'),
+                data: {reason: $('.delete-reason', el.selector).val()},
+                type: 'POST',
+                success: function() {
+                  DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: self.meta.person_id });
+                  DeskPRO_Window.showAlert('The user was deleted');
+
+                  var tabs = DeskPRO_Window.getTabWatcher().findTabs('ticket', function(tab) {
+                    return (tab && tab.page && tab.page && tab.page.meta.person_id == self.meta.person_id);
+                  });
+                  $.each(tabs, function(k, tab) {
+                    DeskPRO_Window.removePage(tab.page);
+                  });
+                }
+              });
+              $('.delete-reason', el.selector).val("");
+              self.closeSelf();
+            },
+            null,
+            null, null,
+            400, 260
+          );
+        } else if (action == 'ban') {
+          var el = self.getEl('ban_confirm');//.clone();
+          DeskPRO_Window.showConfirm(
+            el,
+            function() {
+              console.log($(info.itemEl).data('delete-url'));
+              console.log($('.delete-reason', el.selector).val());
+              //return true;
+              $.ajax({
+                url: $(info.itemEl).data('delete-url'),
+                type: 'POST',
+                data: {reason: $('.delete-reason', el.selector).val()},
+                success: function() {
+                  DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: self.meta.person_id });
+                  DeskPRO_Window.showAlert('The user was deleted and banned');
+                }
+              });
+              $('.delete-reason', el.selector).val("");
+              self.closeSelf();
+            },
+            null,
+            null, null,
+            400, 260
+          );
+        } else if (action == 'enable-user') {
+          $.ajax({
+            url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+              action: 'set-is-disabled',
+              is_disabled: 0
+            }
+          });
+
+          var text = itemEl.text();
+          itemEl.text(itemEl.data('flip'));
+          itemEl.data('flip', text);
+          itemEl.data('action', 'disable-user');
+          self.getEl('change_user_picture').find('.person-disabled').remove();
+        } else if (action == 'disable-user') {
+          $.ajax({
+            url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+              action: 'set-is-disabled',
+              is_disabled: 1
+            }
+          });
+
+          var text = itemEl.text();
+          itemEl.text(itemEl.data('flip'));
+          itemEl.data('flip', text);
+          itemEl.data('action', 'enable-user');
+          self.getEl('change_user_picture').append($('<span class="person-disabled" />'));
+        } else if (action == 'upload-vcard') {
+          self.uploadVcard.open();
+        }
+      }
+    });
+	},
+
+	initMerge: function() {
+    if (!this.meta.perms.merge) return;
+		this.merge = new DeskPRO.Agent.Widget.Merge({
+			tabType: 'person',
+			metaId: this.meta.person_id,
+			metaIdName: 'person_id',
+			overlayUrl: BASE_URL + 'agent/people/{id}/merge-overlay/{other}',
+			mergeUrl: BASE_URL + 'agent/people/{id}/merge/{other}',
+			loadRoute: 'person:' + BASE_URL + 'agent/people/{id}',
+			overlayLoaded: function(overlay, merge) {
+				overlay.getWrapper().find('.person-finder').bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+					sb.close();
+
+					$.ajax({
+						url: merge._getOverlayUrl(merge.options.metaId, personId),
+						type: 'get',
+						dataType: 'html',
+						success: function(html) {
+							merge.resetOverlay(html);
+						}
+					});
+				});
+			}
+		});
+	},
+
+	initNotes: function() {
+    this.notesClickHandler = function(e){
+      var $el = $(e.target).closest('li.note');
+      if (!$el.length) return;
+      self.getEl('notes_tab').off('click', self.notesClickHandler);
+
+      $.ajax({
+        url: BASE_URL + 'agent/people/notes/' + $el.data('note-id'),
+        type: 'DELETE',
+        dataType: 'json',
+        success: function(data) {
+          $el.remove();
+          self.getEl('notes_tab').on('click', '.delete', self.notesClickHandler);
+        },
+        error: function() {
+          self.getEl('notes_tab').on('click', '.delete', self.notesClickHandler);
+        }
+      });
+    };
+    this.getEl('notes_tab').on('click', '.delete', this.notesClickHandler);
+    this.getEl('summary').TextAreaExpander(40, 225);
+    this.getEl('notes_tab').find('.new-note textarea').TextAreaExpander(40, 225);
+	},
+
+	initApprove: function() {
+    if (!this.getEl('approve_user')[0]) return;
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.removed', function(info) {
+			DeskPRO_Window.removePage(self);
+		}, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.confirmed', function(info) {
+			if (info.person_id == self.meta.person_id) {
+				this.wrapper.find('.validating-bar').remove();
+			}
+		}, this);
+
+		this.getEl('approve_user').on('click', function(ev) {
+			ev.preventDefault();
+			DeskPRO_Window.util.ajaxWithClientMessages({
+				url: BASE_URL + 'agent/people/validate/approve',
+				data: { 'people_ids[]': self.meta.person_id },
+				success: function() {
+					DeskPRO_Window.removePage(self);
+					DeskPRO_Window.runPageRoute('page:'+ BASE_URL + 'agent/people/' + self.meta.person_id);
+
+					DeskPRO_Window.getMessageBroker().sendMessage('agent.person.confirmed', { person_id: self.meta.person_id });
+				}
+			});
+		});
+		this.getEl('delete_user').on('click', function(ev) {
+			ev.preventDefault();
+			DeskPRO_Window.util.ajaxWithClientMessages({
+				url: BASE_URL + 'agent/people/validate/delete',
+				data: { 'people_ids[]': self.meta.person_id },
+				success: function() {
+					DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: self.meta.person_id });
+					DeskPRO_Window.showAlert('The user was deleted');
+
+					var tabs = DeskPRO_Window.getTabWatcher().findTabs('ticket', function(tab) {
+						return (tab && tab.page && tab.page && tab.page.meta.person_id == self.meta.person_id);
+					});
+					$.each(tabs, function(k, tab) {
+						DeskPRO_Window.removePage(tab.page);
+					});
+				}
+			});
+		});
+	},
+
+	initTabs: function() {
+    var self = this;
+    this.simpleTabs = [];
+    $('.profile-box-container.tabbed', this.wrapper).each(function() {
+      var simpleTabs = new DeskPRO.UI.SimpleTabs({
+        triggerElements: '> header li',
+        context: this
+      });
+
+      simpleTabs.addEvent('beforeTabSwitch', function(eventData) {
+        if(eventData.tabEl) {
+          var classShow = eventData.tabEl.data('classShow');
+          self.wrapper.find('.tabs-control').hide();
+          self.wrapper.find('.' + classShow).show();
+        }
+      });
+      self.simpleTabs.push(simpleTabs);
+    });
+	},
+
+	initProfileBox: function() {
+		var self = this;
+
+    function propToggleDisplay() {
+      var box = $('.profile-box-container.properties ', self.wrapper);
+      $('.prop-edit-trigger', box).show();
+      $('.is-loading', box).hide();
+      $('.save', box).hide();
+      $('.cancel', box).hide();
+      self.getEl('custom_fields_editable').hide();
+      self.getEl('custom_fields_rendered').show();
+      self.updateUi();
+    }
+
+    function propToggleForm() {
+      if (!self.getEl('custom_fields_editable').hasClass('dp-has-init')) {
+        self.getEl('custom_fields_editable').addClass('dp-has-init');
+        self.getEl('custom_fields_editable').find('.Date.customfield input').each(function() {
+          $(this).datetimepicker({
+            format: 'YYYY-MM-DD',
+            widgetParent: $(this).parent().css('position', 'relative'),
+            icons: {
+              up: 'fa fa-chevron-up',
+              down: 'fa fa-chevron-down',
+              previous: 'fa fa-chevron-left',
+              next: 'fa fa-chevron-right'
+            }
+          });
+          $(this).on('dp.change', function(){
+            $(this).trigger('change');
+          });
+        });
+
+        $('.DateTime.customfield input', self.getEl('custom_fields_editable')).each(function(){
+          $(this).datetimepicker({
+            format: 'YYYY-MM-DD HH:mm',
+            widgetParent: $(this).parent().css('position', 'relative'),
+            icons: {
+              time: 'fa fa-clock-o',
+              date: 'fa fa-calendar-o',
+              up: 'fa fa-chevron-up',
+              down: 'fa fa-chevron-down',
+              previous: 'fa fa-chevron-left',
+              next: 'fa fa-chevron-right'
+            }
+          });
+          $(this).on('dp.change', function(){
+            $(this).trigger('change');
+          });
+        });
+      }
+
+      $('.prop-edit-trigger', box).hide();
+      $('.is-loading', box).hide();
+      $('.save', box).show();
+      $('.cancel', box).show();
+      self.getEl('custom_fields_rendered').hide();
+      self.getEl('custom_fields_editable').show();
+      self.updateUi();
+    }
+
+    $('.profile-box-container.properties .prop-edit-trigger', this.wrapper).on('click', propToggleForm);
+
+    $('.profile-box-container.properties .cancel', this.wrapper).on('click', propToggleDisplay);
+
+    $('.profile-box-container.properties .save', this.wrapper).on('click', function() {
+      var box = $('.profile-box-container.properties ', self.wrapper);
+      var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
+      $('input[type="text"], input[type="password"], input:checked, select, textarea', self.getEl('custom_fields_editable')).each(function(){
+        var n = $(this).attr('name');
+        if (!n) return;
+        if (!!n && n.indexOf('[]') !== -1 && formData[n]) n = n.replace(/\[\]/, '[' + Orb.uuid() + ']');
+        formData[n] = $(this).val();
+      });
+
+      $('.is-loading', box).show();
+      $('.save', box).hide();
+      $('.cancel', box).hide();
+
+      self.getEl('custom_fields_editable').find('.error-row').hide();
+      self.getEl('custom_fields_editable').find('.error-reason').hide();
+      $.ajax({
+        url: BASE_URL + 'agent/person/' + self.meta.person_id + '/ajax-save-custom-fields',
+        type: 'POST',
+        data: formData,
+        dataType: 'json',
+        success: function(data) {
+          if (data.success) {
+            self.getEl('custom_fields_rendered').empty().html(data.tpl);
+            propToggleDisplay();
+          } else if (data.invalid_custom_fields) {
+            $('.is-loading', box).hide();
+            $('.save', box).show();
+            $('.cancel', box).show();
+
+            for (var i in data.invalid_custom_fields) {
+              if (!data.invalid_custom_fields.hasOwnProperty(i)) continue;
+              self.getEl('custom_fields_editable').find('.' + i + '.error-row').show().find('.' + data.invalid_custom_fields[i]).show();
+            }
+          }
+        }
+      });
+    });
 	},
 
 	refreshPropBox: function() {
@@ -928,17 +950,27 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		refreshBox();
 	},
 
+	initFormSaver: function() {
+		if (this.getEl('summary_saver').length) {
+      this.saver1 = new DeskPRO.Agent.ElementHandler.FormSaver(this.getEl('summary_saver'));
+    }
+    if (this.getEl('new_note').length) {
+      this.saver2 = new DeskPRO.Agent.ElementHandler.FormSaver(this.getEl('new_note'));
+    }
+	},
+
 	orgEnableBtn: function(name) {
 		var names = ['org-edit-trigger', 'saved', 'save', 'cancel', 'is-loading', 'remove-org'];
-		var els = $('.' + names.join(', .'), this.getEl('org_display_header')).hide();
-		els.filter('.' + name).show();
+		if (names.indexOf(name) === -1) return;
+		this.getEl('org_display_header').hide();
+		this.wrapper.find('.' + name).show();
 
 		if (name == 'save') {
-			els.filter('.cancel').show();
+			this.wrapper.find('.cancel').show();
 		} else if (name == 'cancel') {
 			var orgid = $('.org-id', this.getEl('org_edit_wrap')).val();
 			if (orgid && orgid != '0') {
-				els.filter('.remove-org').show();
+				this.wrapper.find('.remove-org').show();
 			}
 		}
 
@@ -1159,7 +1191,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
     this.$q = null;
     this.$timeout = null;
 
-    this.getEl('tickets_viewall').remove();
+    var $sc = this.wrapper.find('select[name="timezone"]').data('$selectController');
+    if ($sc) {
+    	console.info($sc);
+		}
 
     if (this.tabBtn) {
     	this.tabBtn = null;
@@ -1229,6 +1264,14 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
     	tabs.destroy();
 		});
     this.simpleTabs.length = 0;
+    if (this.saver1) {
+      this.saver1.destroy();
+      this.saver1 = null;
+    }
+    if (this.saver2) {
+      this.saver2.destroy();
+      this.saver2 = null;
+    }
 
     this.destroyEvents();
 	}

@@ -6,7 +6,7 @@ DeskPRO.Agent.ElementHandler.FormSaver = new Orb.Class({
 	init: function() {
 		var self = this;
 		this.textarea = $('textarea', this.el);
-                this.inout = $('input:text', this.el); // Added by Abdullah Kiser inorder to catch the touch event.
+		this.inout = $('input:text', this.el); // Added by Abdullah Kiser inorder to catch the touch event.
 		this.list = null;
 		this.resultHtmlKey = this.el.data('form-result-html-key') || 'html';
 
@@ -29,8 +29,8 @@ DeskPRO.Agent.ElementHandler.FormSaver = new Orb.Class({
 		this.textarea.on('change', this.touch.bind(this));
 		this.textarea.on('keypress', this.touch.bind(this));
 
-                // Added by Abdullah Kiser inorder to catch the touch event.
-                this.inout.on('change', this.touch.bind(this));
+		// Added by Abdullah Kiser inorder to catch the touch event.
+		this.inout.on('change', this.touch.bind(this));
 		this.inout.on('keypress', this.touch.bind(this));
 
 
@@ -55,7 +55,7 @@ DeskPRO.Agent.ElementHandler.FormSaver = new Orb.Class({
 		var postData = formEls.serializeArray();
 
 		var doSend = true;
-		var checkBlankEls = formEls.filter('[data-not-blank]').each(function(){
+		formEls.filter('[data-not-blank]').each(function(){
 			if ($(this).val().trim() === '') {
 				doSend = false;
 				return false;
@@ -108,5 +108,16 @@ DeskPRO.Agent.ElementHandler.FormSaver = new Orb.Class({
 				}
 			}
 		});
+	},
+
+	destroy: function() {
+    this.inout = null;
+    this.textarea = null;
+    this.list = null;
+    this.statusSave = null;
+    this.statusSaved = null;
+    this.statusSaving = null;
+    this.countEl = null;
+		this.destroyEl();
 	}
 });

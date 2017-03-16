@@ -247,7 +247,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 				self.fireEvent('tabLoaded', [eventData]);
 			}
-		})
+		});
 	},
 
 	getActiveTab: function() {
@@ -280,10 +280,9 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 	},
 
 	destroy: function() {
-    this.triggerEls.remove();
-    this.options.context.remove();
+    this.triggerEls = null;
 		this.options.context = null;
-    this.options.triggerEls = null;
+    this.options.triggerElements = null;
 		this.options = null;
 		this.destroyEvents();
 	}

@@ -17,7 +17,7 @@
 {{ dp_app_loc(baseId, 'summary.before') }}
 {% if person.summary|length or perms.edit %}
 	<div class="profile-box-container dp-simpletab-container dp-simpletab-container summary"
-		data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+		 id="{{ baseId }}_summary_saver"
 		data-form-save-url="{{ path('agent_people_ajaxsave', {'person_id': person.id}) }}"
 	>
 		<header>
@@ -28,7 +28,7 @@
 					<div class="save" style="display: none">{{ phrase('agent.general.save') }}</div>
 				</div>
 			{% endif %}
-			<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<nav>
 				<ul>
 					<li data-tab-for="#{{ baseId }}_summary_body">{{ phrase('agent.general.summary') }}</li>
 				</ul>
@@ -58,7 +58,7 @@
 				<button class="save" style="display: none">{{ phrase('agent.general.save') }}</button>
 			</div>
 		{% endif %}
-		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+		<nav>
 			<ul>
 				<li data-tab-for="#{{ baseId }}_properties_body">{{ phrase('agent.general.properties') }}</li>
 			</ul>
@@ -142,7 +142,10 @@
 							<td>
 								<div class="fade-container">
 									<div class="line">
-										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text"><span class="id-number">#{{ ticket.id }}</span> {{ticket.subject}}</a>
+										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text">
+											<span class="id-number">#{{ ticket.id }}</span>
+											{{ticket.subject}}
+										</a>
 									</div>
 									<div class="bound-fade"></div>
 								</div>
@@ -191,7 +194,10 @@
 								<td>
 									<div class="fade-container">
 										<div class="line">
-											<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text"><span class="id-number">#{{ ticket.id }}</span> {{ticket.subject}}</a>
+											<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text">
+												<span class="id-number">#{{ ticket.id }}</span>
+												{{ticket.subject}}
+											</a>
 										</div>
 										<div class="bound-fade"></div>
 									</div>
@@ -341,7 +347,7 @@
 {{ dp_app_loc(baseId, 'details.before') }}
 <div class="profile-box-container dp-simpletab-container tabbed">
 	<header>
-		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+		<nav>
 			<ul>
 				{% if notes|length or perms.notes %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">{{ phrase('agent.general.notes') }} <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
                 {% if changelog|length %}<li data-tab-for="#{{baseId}}_changelog_tab">{{ phrase('agent.general.changelog') }}</li>{% endif %}
@@ -361,7 +367,7 @@
 						{% endfor %}
 						{% if perms.notes %}
 							<li class="new-note"
-								data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+								id="{{ baseId }}_new_note"
 								data-form-list-selector="ul"
 								data-form-result-html-key="note_li_html"
 								data-form-save-url="{{ path('agent_people_ajaxsave_note', {'person_id': person.id}) }}"
