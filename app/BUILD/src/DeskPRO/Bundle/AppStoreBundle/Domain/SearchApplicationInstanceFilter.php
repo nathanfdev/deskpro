@@ -28,15 +28,42 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-class SearchApplicationFilter
+class SearchApplicationInstanceFilter
 {
     /** @var string */
     private $scope;
 
+    /** @var array */
+    private $applicationIdList;
+
     /**
      * @param string|null $scope
+     * @param string|null $applicationId
      */
-    public function __construct($scope = null)
+    public function __construct($scope = null, $applicationId = null)
+    {
+        $this->scope = $scope;
+        $this->applicationIdList = [];
+
+        if (!is_null($applicationId)) {
+            $this->applicationIdList[] = $applicationId;
+        }
+    }
+
+    public function addApplicationId($applicationId)
+    {
+        $this->applicationIdList[] = $applicationId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasScope()
+    {
+        return !is_null($this->scope);
+    }
+
+    public function setScope($scope)
     {
         $this->scope = $scope;
     }
@@ -47,5 +74,29 @@ class SearchApplicationFilter
     public function getScope()
     {
         return $this->scope;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApplicationIdList()
+    {
+        return $this->applicationIdList;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasApplicationIdList()
+    {
+        return !empty($this->applicationIdList);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return ! ($this->hasScope() || $this->hasApplicationIdList());
     }
 }

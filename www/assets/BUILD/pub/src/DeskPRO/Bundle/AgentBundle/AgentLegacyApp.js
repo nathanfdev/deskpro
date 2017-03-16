@@ -70,7 +70,7 @@ class AgentLegacyApp {
       }
 
       //register a listener for any loaded content so we can instantiate any apps
-      DeskproAppStore.bootstrap(messageBroker, this.store);
+      DeskproAppStore.bootstrap(api, messageBroker, this.store);
     }
   }
 

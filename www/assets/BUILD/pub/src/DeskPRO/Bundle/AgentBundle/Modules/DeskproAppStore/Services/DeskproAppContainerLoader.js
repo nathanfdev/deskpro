@@ -10,27 +10,14 @@ class DeskproAppContainerLoader
 {
   /**
    * @param {ContainerDOMNodeSelector} domSelector
-   * @param {Object} appConfig
    * @param {Array<String>} validTargets
+   * @param containerPropsFactory
    */
-  constructor(domSelector, appConfig, validTargets) {
+  constructor(domSelector, validTargets, containerPropsFactory) {
     this.domSelector = domSelector;
-    this.instanceConfig = appConfig;
     this.validTargets = validTargets;
+    this.containerPropsFactory = containerPropsFactory;
   }
-
-  /**
-   * @param {string} targetType
-   * @returns {Object}
-   */
-  getInstanceConfigForTarget = (targetType) =>
-  {
-    if (this.instanceConfig.hasOwnProperty(targetType)) {
-      return this.instanceConfig[targetType];
-    }
-
-    return null;
-  };
 
   findContainerDOMNodeList = (list) =>
   {
@@ -67,14 +54,8 @@ class DeskproAppContainerLoader
    */
   createReactContainer = (targetType, context) =>
   {
-    const config = this.getInstanceConfigForTarget(targetType);
-    if (config) {
-      return React.createElement(DeskproAppContainer, {target: targetType, appConfig: config, context: context});
-    } else {
-      throw new Error('asdadsad sa ' + targetType);
-    }
-
-    return null;
+    const props = this.containerPropsFactory(targetType, context);
+    return React.createElement(DeskproAppContainer, props);
   };
 
 }

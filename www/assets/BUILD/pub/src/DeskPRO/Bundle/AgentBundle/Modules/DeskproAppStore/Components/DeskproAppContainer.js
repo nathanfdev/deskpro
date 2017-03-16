@@ -1,34 +1,26 @@
 import React, { PropTypes } from 'react';
 import * as xcomponent from 'xcomponent/src';
-import { connect } from 'react-redux';
 import uuid from 'node-uuid';
-import DeskproEventDispatcher from '../Services/DeskproEventDispatcher'
-import {appMounted} from '../Actions/Actions'
-
-function mapDispatchToProps(dispatch)
-{
-  return { dispatch }
-}
+import AppEventDispatcher from '../Services/AppEventDispatcher'
 
 /**
  * This container represents the integration point between an external app and deskpro.
  * It handles a list of apps within the same app context, managing their lifecycle and communication, behaving in this
  * respect as a router (routing and transforming deskpro events / messages to app components)
  */
-@connect(null, mapDispatchToProps)
 class DeskproAppContainer extends React.Component {
 
   static propTypes = {
-    appConfig: PropTypes.array.isRequired
+    widgets: PropTypes.array.isRequired
     , context: PropTypes.object.isRequired
-    , dispatch: PropTypes.func.isRequired
-    , target: PropTypes.string.isRequired
+    , dispatcher: PropTypes.object.isRequired
+    , targetType: PropTypes.string.isRequired
   };
 
   constructor(props) {
     super(props);
-    this.components = [];
-    this.deskproEventDispatcher = new DeskproEventDispatcher();
+    this.components = new Map();
+    this.deskproEventDispatcher = new AppEventDispatcher();
   }
 
   /**
@@ -37,8 +29,8 @@ class DeskproAppContainer extends React.Component {
    * @returns {XML}
    */
   render() {
-    const {appConfig} = this.props;
-    if (appConfig) {
+    const { widgets } = this.props;
+    if (widgets) {
       return this.renderApp();
     }
 
@@ -60,57 +52,67 @@ class DeskproAppContainer extends React.Component {
    * @returns {XML}
    */
   renderApp() {
-    const {appConfig} = this.props;
-    const components = appConfig.map((config) => this.createReactElement(config));
+    const { widgets } = this.props;
+    const components = widgets.map( widget => this.createReactElement(widget));
 
     return (<div> {components} </div> );
   }
 
   /**
-   * @param {Object} config
+   * @param {WidgetConfiguration} widgetConfig
    * @return {ReactElement}
    */
-  createReactElement = (config) =>
+  createReactElement = (widgetConfig) =>
   {
-    //TODO: convert config to xconfig, for now assume isomporphism
-    const reactClass = xcomponent.create(config).react;
-    const reactProps = this.createReactElementProps();
+    const reactClass = xcomponent.create(widgetConfig.xcomponentConfig).react;
+    const reactProps = {
+      key: uuid(),
+      onEnter: DeskproAppContainer.createOnXComponentEnterListener(this),
+      app: widgetConfig.appConfig.id,
+      onDpMessage: (eventName, message) => this.onXComponentMessage(eventName, message)
+    };
 
     return React.createElement(reactClass, reactProps);
   };
 
-  /**
-   * @returns {{key, onEnter: Function}}
-   */
-  createReactElementProps = () =>
+  dispatchGetAllState = (app, state) =>
   {
-    return {
-      key: uuid(),
-      onEnter: DeskproAppContainer.createOnXComponentEnterListener(this),
-      onDpMessage: (eventName, message) => this.onXComponentMessage(eventName, message)
-    };
+    const parentComponent = this.components.get(app);
+    this.deskproEventDispatcher.dispatchOnGetAllState(state, parentComponent);
+  };
+
+  dispatchSaveState = (app, state) =>
+  {
+    const parentComponent = this.components.get(app);
+    this.deskproEventDispatcher.dispatchOnSaveState(state, parentComponent);
   };
 
   /**
-   * @param {object} message
+   * @param {String} eventName
+   * @param {Object} message
    */
-  onContextInit(message)
-  {
-    const iter = (parentComponent) => {
-      this.deskproEventDispatcher.dispatchOnContextInit(message, parentComponent);
-    };
-    this.components.each(iter);
-  }
-
   onXComponentMessage = (eventName, message) =>
   {
+    const {app, args} = message;
+    const parentComponent = this.components.get(app);
+    const { dispatcher } = this.props;
+    let callback;
+
     switch (eventName)
     {
       case 'context-init':
         const { context } = this.props;
-        console.log ('sending context', context);
-        this.onContextInit(context);
+        this.deskproEventDispatcher.dispatchOnContextInit(context, parentComponent);
         break;
+      case 'get-all-state':
+        callback = state => this.dispatchGetAllState(app, state);
+        dispatcher.dispatchLoadAllAppState(app, callback);
+        break;
+      case 'save-state':
+        const [ state ] = args;
+        callback = state => this.dispatchSaveState(app, state);
+        dispatcher.dispatchSaveState(app, state, callback);
+      break;
     }
   };
 
@@ -121,10 +123,12 @@ class DeskproAppContainer extends React.Component {
    */
   onXComponentEnter = (parentComponent) =>
   {
-    this.components.push(parentComponent);
+    const { app } = parentComponent.props;
+    this.components.set(app, parentComponent);
 
-    const { target, dispatch, context } = this.props;
-    dispatch(appMounted(target, parentComponent));
+    // we should send which app has mounted
+    const { targetType, dispatcher, context } = this.props;
+    dispatcher.dispatchAppMounted(targetType);
   };
 
   /**

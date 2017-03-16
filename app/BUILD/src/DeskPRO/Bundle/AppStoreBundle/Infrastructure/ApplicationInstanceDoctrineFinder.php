@@ -29,10 +29,10 @@
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DeskPRO\Bundle\AppBundle\Entity;
-use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceFinder;
+use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Doctrine\ORM;
 
-class ApplicationInstanceDoctrineFinder implements ApplicationInstanceFinder
+class ApplicationInstanceDoctrineFinder implements Domain\ApplicationInstanceFinder
 {
     /** @var ORM\EntityManager */
     private $entityManager;
@@ -69,6 +69,44 @@ class ApplicationInstanceDoctrineFinder implements ApplicationInstanceFinder
         /** @var Entity\AppStore\AppInstance $instance */
         $instance = array_pop($result);
         return $instance;
+    }
+
+    function findAll()
+    {
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb
+            ->from(Entity\AppStore\AppInstance::class, 'i')
+            ->select('i')
+            ->innerJoin('i.app', 'a')
+        ;
+
+        $result = $qb->getQuery()->getResult();
+        return $result;
+    }
+
+    function findByFilter(Domain\SearchApplicationInstanceFilter $filter)
+    {
+        if ($filter->isEmpty()) {
+            return [];
+        }
+
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb
+            ->from(Entity\AppStore\AppInstance::class, 'i')
+            ->select('i')
+            ->where('1')
+        ;
+
+        if ($filter->hasScope()) {
+            $qb->andWhere('i.scope = :scope')->setParameter('scope', $filter->getScope());
+        }
+
+        if ($filter->hasApplicationIdList()) {
+            $qb->andWhere('i.app IN (:appIds)')->setParameter('appIds', $filter->getApplicationIdList());
+        }
+
+        $result = $qb->getQuery()->getResult();
+        return $result;
     }
 
     /**

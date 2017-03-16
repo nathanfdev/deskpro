@@ -29,8 +29,9 @@
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DeskPRO\Bundle\AppBundle\Entity;
+use DeskPRO\Bundle\AppStoreBundle\Domain\Application;
 use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationFinder;
-use DeskPRO\Bundle\AppStoreBundle\Domain\SearchApplicationFilter;
+use DeskPRO\Bundle\AppStoreBundle\Domain\SearchApplicationInstanceFilter;
 use Doctrine\ORM;
 
 class ApplicationDoctrineFinder implements ApplicationFinder
@@ -55,14 +56,23 @@ class ApplicationDoctrineFinder implements ApplicationFinder
         return $result;
     }
 
-    function findByFilter(SearchApplicationFilter $filter)
+    function findAllById($idList)
     {
-        return $this->findAll();
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb
+            ->from(Entity\AppStore\App::class, 'a')
+            ->select('a')
+            ->where('a.id IN (:idList)')->setParameter('idList', $idList)
+        ;
+
+        $result = $qb->getQuery()->getResult();
+        return $result;
+
     }
 
     /**
-     * @param $name
-     * @return mixed
+     * @param string $name
+     * @return Entity\AppStore\App|null
      */
     function findByName($name)
     {
@@ -85,8 +95,8 @@ class ApplicationDoctrineFinder implements ApplicationFinder
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param string $id
+     * @return Entity\AppStore\App|null
      */
     function findByInstanceId($id)
     {

@@ -9,7 +9,7 @@ function dispatchMessage (eventName, message, parentComponent)
 /**
  * Dispatches an event triggered in the deskpro window to the deskpro app iframe
  */
-class DeskproEventDispatcher
+class AppEventDispatcher
 {
   /**
    * @param {Object} message
@@ -20,6 +20,24 @@ class DeskproEventDispatcher
     dispatchMessage('context-init', message, parentComponent);
   };
 
+  /**
+   * @param {Object} message
+   * @param parentComponent
+   */
+  dispatchOnGetAllState = (message, parentComponent) =>
+  {
+    dispatchMessage('get-all-state', message, parentComponent);
+  };
+
+  /**
+   * @param {Object} message
+   * @param parentComponent
+   */
+  dispatchOnSaveState = (message, parentComponent) =>
+  {
+    dispatchMessage('save-state', message, parentComponent);
+  };
+
 }
 
-export default DeskproEventDispatcher
+export default AppEventDispatcher

@@ -36,10 +36,10 @@ interface ApplicationFinder
     function findAll();
 
     /**
-     * @param SearchApplicationFilter $filter
+     * @param array $idList
      * @return Application[]
      */
-    function findByFilter(SearchApplicationFilter $filter);
+    function findAllById($idList);
 
     /**
      * Finds one application by name

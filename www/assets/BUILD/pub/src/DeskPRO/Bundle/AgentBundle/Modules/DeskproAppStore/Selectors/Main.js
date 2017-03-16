@@ -10,13 +10,13 @@ function resolveTargetConfig (instanceConfig, target) {
   return [];
 }
 
-export const filterInstanceConfig =  ({DeskproAppStore: {Main:state}}) => state.get('instances').toJS();
+export const filterAppConfig =  ({DeskproAppStore: {Main:state}}) => state.get('apps').toJS();
 
 /**
  * @param {String} target
  * @return {Array<Object>}
  */
-export const selectInstanceConfigByTarget = (target) => {
+export const selectAppConfigByTarget = (target) => {
 
   if (selectorsMap.has(target)) {
     return selectorsMap.get(target);

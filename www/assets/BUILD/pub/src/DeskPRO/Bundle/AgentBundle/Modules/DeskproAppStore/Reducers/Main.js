@@ -1,11 +1,10 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/Actions';
 import Immutable from 'immutable';
-import DeskproApp from '../Services/DeskproApp';
 
 const initialState = Immutable.fromJS({
-  'apps': null, //all loaded apps
-  'instances': null, //configuration for all instances
+  'apps': null, //all loaded apps (instances)
+  'widgets': null, //configuration for all instances
   'contexts': {}
 });
 
@@ -18,7 +17,7 @@ const initialState = Immutable.fromJS({
 function loadAppsHandler(state, payload, action) {
   switch(action.meta.sequence) {
     case 'done' :
-    const newState = Immutable.fromJS({ apps: payload, instances:  DeskproApp.instancesFromApplicationJSList(payload) });
+    const newState = Immutable.fromJS({ apps: payload });
     return state.merge(newState);
     default:
       return state;
@@ -34,7 +33,6 @@ function loadAppsHandler(state, payload, action) {
 function appMountedHandler(state, payload, action) {
   switch(action.meta.sequence) {
     case 'done' :
-      //console.log('intercepted app mounted action', payload);
       return state;
     default:
       return state;

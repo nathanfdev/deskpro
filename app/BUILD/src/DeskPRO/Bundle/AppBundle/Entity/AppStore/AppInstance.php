@@ -46,11 +46,16 @@ class AppInstance implements Domain\ApplicationInstance
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\App")
-     * @ORM\JoinColumn(name="app_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="app_id", referencedColumnName="id", nullable=false)
      *
      * @var App
      */
     private $app;
+
+    /**
+     * @ORM\Column(name="app_id", type="integer", nullable=false)
+     */
+    private $appId;
 
     /**
      * @ORM\Column(type="string", nullable=false, length=100)
@@ -61,6 +66,11 @@ class AppInstance implements Domain\ApplicationInstance
      * @ORM\Column(type="text", nullable=true)
      */
     private $settings;
+
+    /**
+     * @ORM\Column(name="secret_key", type="text", nullable=true)
+     */
+    private $secretKey;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -82,17 +92,31 @@ class AppInstance implements Domain\ApplicationInstance
     public function setApp(App $app)
     {
         $this->app = $app;
+        $this->appId = null;
     }
 
-
     /**
-     * @return mixed
+     * Returns the system identifier for the application
+     *
+     * @return string
      */
+    function getApplicationId()
+    {
+        if (empty($this->appId) && !empty($this->app)) {
+            return $this->app->getId();
+        }
+
+        return $this->appId;
+    }
+
     public function getSettings()
     {
         return $this->settings;
     }
 
+    /**
+     * @param string $settings
+     */
     public function setSettings($settings)
     {
         $this->settings = $settings;

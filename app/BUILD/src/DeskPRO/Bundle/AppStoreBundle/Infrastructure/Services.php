@@ -44,6 +44,15 @@ class Services
     }
 
     /**
+     * @param ORM\EntityManager $entityManager
+     * @return ApplicationInstanceDoctrineFinder
+     */
+    public static function createApplicationInstanceFinder(ORM\EntityManager $entityManager)
+    {
+        return new ApplicationInstanceDoctrineFinder($entityManager);
+    }
+
+    /**
      * @param FileLocator $schemaLocator
      * @return AppBundleValidator
      */

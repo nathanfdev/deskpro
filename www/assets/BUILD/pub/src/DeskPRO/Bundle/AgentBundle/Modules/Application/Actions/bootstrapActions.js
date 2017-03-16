@@ -68,7 +68,8 @@ export const preloadData    = createAction(
 
       dispatch(loadAgentPhraseTranslations());
 
-      DeskproAppStore.dispatchLoadApps(dispatch, api)
+      //bootstrap deskpro app store
+      DeskproAppStore.dispatchLoadApps(dispatch, api);
 
       api.sendGet(api.prepareParams(batchComponents))
         .success(({ responses }) => {

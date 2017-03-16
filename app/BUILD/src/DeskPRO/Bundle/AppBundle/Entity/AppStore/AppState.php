@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
 
+use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,7 +39,7 @@ use Doctrine\ORM\Mapping as ORM;
  *  }
     )
  */
-class AppState
+class AppState implements Domain\ApplicationState
 {
     /**
      * @ORM\Id()
@@ -54,6 +55,12 @@ class AppState
      * @var AppInstance
      */
     private $appInstance;
+
+    /**
+     * @ORM\Column(name="app_instance_id", type="integer", nullable=false)
+     * @var int
+     */
+    private $appInstanceId;
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -99,6 +106,16 @@ class AppState
     public function setAppInstance(AppInstance $appInstance)
     {
         $this->appInstance = $appInstance;
+        $this->appInstanceId = null;
+    }
+
+    public function getInstanceId()
+    {
+        if (empty($this->appInstanceId) && !empty($this->appInstance)) {
+            return $this->appInstance->getId();
+        }
+
+        return $this->appInstanceId;
     }
 
     /**false
@@ -180,4 +197,5 @@ class AppState
     {
         $this->targetId = $targetId;
     }
+
 }
