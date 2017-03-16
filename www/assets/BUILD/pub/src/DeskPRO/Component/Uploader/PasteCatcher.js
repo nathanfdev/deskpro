@@ -8,12 +8,28 @@ function createFile(blob, contentType) {
   return new File([blob], `clipboard_${moment().format()}.${extension(contentType)}`);
 }
 
+export const clipboardHasImages = (clipboardData) => {
+  if (!clipboardData || !clipboardData.items) {
+    return false;
+  }
+
+  for (let i = 0; i < clipboardData.items.length; i += 1) {
+    const item = clipboardData.items[i];
+
+    if (item.kind === 'file' && item.type.indexOf('image') !== -1) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 export const getBlobsFromItems = (items, onPasteImage) => {
   if (!items) {
     return;
   }
 
-  for (let i = 0; i < items.length; i++) {
+  for (let i = 0; i < items.length; i += 1) {
     const item = items[i];
 
     if (item.kind === 'file' && item.type.indexOf('image') !== -1) {
@@ -28,7 +44,7 @@ export const getBlobsFromItems = (items, onPasteImage) => {
 
 export const getBlobsFromHtml = (html, onPasteImage) => {
   const regex = /<img.*?src=['"](.*?)['"].*?>/;
-  const callback = dataUrl => {
+  const callback = (dataUrl) => {
     const blob = dataUrlToBlob(dataUrl);
     onPasteImage(createFile(blob, 'image/png'), dataUrl, 'image/png');
   };
@@ -56,7 +72,7 @@ export class PasteCatcher extends React.Component {
     $(context).off('paste', this.onPaste);
   }
 
-  onPaste = event => {
+  onPaste = (event) => {
     const { onPasteImage } = this.props;
     const clipboardData = event.originalEvent.clipboardData;
     if (!clipboardData) {
