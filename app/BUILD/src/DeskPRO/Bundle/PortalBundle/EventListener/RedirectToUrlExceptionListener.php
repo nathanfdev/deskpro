@@ -101,15 +101,16 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
         }
 
         if (!$this->urlCorrectorFactory || !$this->brandStack) {
-            return;
+            // fallback if it's unable to get brand for some reason, redirect to the same host
+            $url = trim($event->getRequest()->getSchemeAndHttpHost(), '/').'/'.ltrim($exception->getUrl(), '/');
+        } else {
+            $url      = $exception->getUrl();
+            $brand    = $this->brandStack->getActive()->getBrand();
+            $request  = $event->getRequest();
+            $brandUrl = $this->urlCorrectorFactory->createUrlCorrector($brand)->getCorrectedHelpdeskUrl($request);
+
+            $url = rtrim($brandUrl, '/').'/'.ltrim($url, '/');
         }
-
-        $url      = $exception->getUrl();
-        $brand    = $this->brandStack->getActive()->getBrand();
-        $request  = $event->getRequest();
-        $brandUrl = $this->urlCorrectorFactory->createUrlCorrector($brand)->getCorrectedHelpdeskUrl($request);
-
-        $url = rtrim($brandUrl, '/').'/'.ltrim($url, '/');
 
         $this->logger->info('RedirectToUrlException caught: '.$exception->getMessage().' -- 302 redirecting to "'.$url.'"');
 
