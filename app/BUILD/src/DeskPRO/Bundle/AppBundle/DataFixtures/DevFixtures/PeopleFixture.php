@@ -392,7 +392,7 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         $mana->organization_manager = true;
         $mana->setOrganizationPosition('MANAGER');
 
-        $this->setReference('person.joes_manager', $person);
+        $this->setReference('person.joes_manager', $mana);
 
         $this->manager->persist($mana);
         $this->manager->persist($organization);

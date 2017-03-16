@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -61,24 +62,10 @@ class PersonFieldsFixture extends AbstractCustomDefFixture
         // Default
         //------------------------------
         $fields   = [];
-        $fields[] = $this->createField(
-            'radio',
-            'Owner',
-            ['Mine', 'Not mine', "I don't know"]
-        );
+        $fields[] = $this->createField('radio', 'Owner', ['choices' => ['Mine', 'Not mine', "I don't know"]]);
 
         self::$fields['default'] = $fields;
-
-        //------------------------------
-        // Widgets
-        //------------------------------
-        $fields   = [];
-        $fields[] = $this->createField('text', 'Widget Type');
-        $fields[] = $this->createField('textarea', 'Widget Description');
-        $fields[] = $this->createField('checkbox', 'Desired Sizes', ['Small', 'Medium', 'Large']);
-        $fields[] = $this->createField('date', 'Manufacture Date');
-
-        self::$fields['widgets'] = $fields;
+        self::$fields['widgets'] = $this->getWidgetsFields();
 
         //------------------------------
         // Regulation and Control of Magical Creatures [both]
@@ -87,13 +74,13 @@ class PersonFieldsFixture extends AbstractCustomDefFixture
         $fields[] = $this->createField(
             'select',
             'Mood today',
-            ['Fun', 'Serious', 'Lyric', 'Furious', 'Impassive', 'Other']
+            ['choices' => ['Fun', 'Serious', 'Lyric', 'Furious', 'Impassive', 'Other']]
         );
 
         $fields[] = $this->createField(
             'multiselect',
             'Dishes',
-            ['Steak', 'Burger', 'Porridge', 'Tom Yam soup']
+            ['choices' => ['Steak', 'Burger', 'Porridge', 'Tom Yam soup']]
         );
 
         self::$fields['regulation'] = $fields;
@@ -107,15 +94,30 @@ class PersonFieldsFixture extends AbstractCustomDefFixture
             'select',
             'Music',
             [
-                'Classic',
-                ['Rock', ['Nazareth', 'Deep Purple', ['Queen', ['We will rock you', 'Bohemian Rhapsody']]]],
-                'Jazz',
+                'choices' => [
+                    'Classic',
+                    ['Rock', ['Nazareth', 'Deep Purple', ['Queen', ['We will rock you', 'Bohemian Rhapsody']]]],
+                    'Jazz',
+                ],
             ]
         );
 
         $fields[] = $this->createField('datetime', 'Date of Creation');
 
         self::$fields['hotdogs'] = $fields;
+        foreach ($this->getPersons() as $person) {
+            foreach ($this->customPersonChoiceFields as $ref) {
+                /** @var CustomDefAbstract $customPersonChoiceField */
+                $customPersonChoiceField = $this->getReference($ref);
+                $customData              = $this->createCustomDataPerson($person);
+                $this->setUpCustomChoiceData(
+                    $customPersonChoiceField->getParent(),
+                    $customData,
+                    $customPersonChoiceField
+                );
+            }
+        }
+        $this->manager->flush();
     }
 
     /**
