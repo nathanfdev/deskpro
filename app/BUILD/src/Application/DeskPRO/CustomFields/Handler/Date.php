@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
@@ -51,9 +47,17 @@ class Date extends HandlerAbstract
     {
         switch ($calendarType) {
             case 'hijri':
-                $calendar = new ArabicCalendar();
+                if ($value) {
+                    try {
+                        $calendar = new ArabicCalendar();
 
-                return implode('/', $calendar->jdToYmd(unixtojd($value)));
+                        return implode('/', $calendar->jdToYmd(unixtojd($value)));
+                    } catch (\Exception $e) {
+                        return '';
+                    }
+                } else {
+                    return '';
+                }
             default:
                 try {
                     if ($value) {

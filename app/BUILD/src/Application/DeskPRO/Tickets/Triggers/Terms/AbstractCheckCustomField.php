@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
-use Application\DeskPRO\CustomFields\Handler\DateTime;
+use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
@@ -63,7 +63,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
      * @param Ticket                   $ticket
      * @param ExecutorContextInterface $context
      *
-     * @return array
+     * @return CustomDataAbstract[]
      */
     abstract public function getCustomDataArray(Ticket $ticket, ExecutorContextInterface $context);
 
@@ -79,28 +79,28 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         // Get the field value
         //------------------------------
 
-        $custom_data_array = $this->getCustomDataArray($ticket, $context);
+        $customDataArray = $this->getCustomDataArray($ticket, $context);
 
-        $field_id   = $options->get('field_id');
-        $field      = null;
-        $field_data = null;
+        $fieldId   = $options->get('field_id');
+        $field     = null;
+        $fieldData = null;
 
-        foreach ($custom_data_array as $custom_data) {
-            if ($custom_data->field->id == $field_id) {
-                $field_data = $custom_data->getData();
-                $field      = $custom_data->field;
+        foreach ($customDataArray as $customData) {
+            if ($customData->getField()->getId() == $fieldId) {
+                $fieldData = $customData->getData();
+                $field     = $customData->getField();
                 break;
-            } elseif ($custom_data->field->parent && $custom_data->field->parent->id == $field_id) {
-                $field      = $custom_data->field->parent;
-                $field_data = [];
+            } elseif ($customData->getField()->getParent() && $customData->getField()->getParent()->getId() == $fieldId) {
+                $field     = $customData->getField()->getParent();
+                $fieldData = [];
                 break;
             }
         }
 
-        if ($field && $field->getTypeName() == 'choice') {
-            foreach ($custom_data_array as $custom_data) {
-                if ($custom_data->field->parent and $custom_data->field->parent->id == $field_id) {
-                    $field_data[] = $custom_data->field->id;
+        if ($field && $field->isChoiceType()) {
+            foreach ($customDataArray as $customData) {
+                if ($customData->getField()->getParent() && $customData->getField()->getParent()->getId() == $fieldId) {
+                    $fieldData[] = $customData->getField()->getId();
                 }
             }
         }
@@ -110,24 +110,24 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         //------------------------------
 
         if ($op == 'isset') {
-            return (bool) $field_data;
+            return (bool) $fieldData;
         } elseif ($op == 'not_isset') {
-            return !((bool) $field_data);
+            return !((bool) $fieldData);
         } elseif ('touched' === $op || 'nottouched' === $op) {
-            return $this->isStringMatch($ticket, $context, 'custom_data.'.$field_id, $options->get('value'));
+            return $this->isStringMatch($ticket, $context, 'custom_data.'.$fieldId, $options->get('value'));
         }
 
-        if (!$field_data) {
-            $test_value = $options->get('value');
+        if (!$fieldData) {
+            $testValue = $options->get('value');
 
-            if (ctype_digit($test_value)) {
-                $field_data = 0;
+            if (ctype_digit($testValue)) {
+                $fieldData = 0;
 
-                return $this->isIntMatch($ticket, $context, TermValue::createWithValue($field_data), $options->get('value'));
+                return $this->isIntMatch($ticket, $context, TermValue::createWithValue($fieldData), $options->get('value'));
             } else {
-                $field_data = '';
+                $fieldData = '';
 
-                return $this->isStringMatch($ticket, $context, TermValue::createWithValue($field_data), $options->get('value'));
+                return $this->isStringMatch($ticket, $context, TermValue::createWithValue($fieldData), $options->get('value'));
             }
         }
 
@@ -135,16 +135,21 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         // Handle choice check
         //------------------------------
 
-        if ($field->getTypeName() == 'choice') {
-            $check_value = $options->get('value');
-            $check_ids   = array_fill_keys($field_data, true);
-            if (!is_array($check_value)) {
-                $check_value = [$check_value];
+        if ($field->isChoiceType()) {
+            // prevent db collisions
+            if (is_scalar($fieldData)) {
+                return false;
+            }
+
+            $checkValue = $options->get('value');
+            $checkIds   = array_fill_keys($fieldData, true);
+            if (!is_array($checkValue)) {
+                $checkValue = [$checkValue];
             }
 
             $has = false;
-            foreach ($check_value as $v) {
-                if (isset($check_ids[$v])) {
+            foreach ($checkValue as $v) {
+                if (isset($checkIds[$v])) {
                     $has = true;
                     break;
                 }
@@ -171,7 +176,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         // Handle toggle
         //------------------------------
         } elseif ($field->getTypeName() == 'toggle') {
-            return $this->isIntMatch($ticket, $context, TermValue::createWithValue($field_data), (int) $options->get('value'));
+            return $this->isIntMatch($ticket, $context, TermValue::createWithValue($fieldData), (int) $options->get('value'));
 
         //------------------------------
         // Handle dates
@@ -211,7 +216,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
             }
 
             try {
-                $value = new \DateTime('@'.$field_data);
+                $value = new \DateTime('@'.$fieldData);
             } catch (\Exception $e) {
                 $value = null;
             }
@@ -244,7 +249,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         // Handle text check
         //------------------------------
         } else {
-            return $this->isStringMatch($ticket, $context, TermValue::createWithValue($field_data), $options->get('value'));
+            return $this->isStringMatch($ticket, $context, TermValue::createWithValue($fieldData), $options->get('value'));
         }
     }
 
