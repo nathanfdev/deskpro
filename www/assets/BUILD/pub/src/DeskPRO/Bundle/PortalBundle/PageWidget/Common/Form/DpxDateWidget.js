@@ -5,13 +5,13 @@ import moment from 'moment';
 import momentHijri from 'moment-hijri';
 import 'DeskPRO/Bundle/AppBundle/moment-locales';
 import 'jquery-datetimepicker-iframe/jquery.datetimepicker';
-import 'kbw-calendars/dist/js/jquery.calendars';
-import 'kbw-calendars/dist/js/jquery.calendars.plus';
-import 'kbw-calendars/dist/js/jquery.plugin';
-import 'kbw-calendars/dist/js/jquery.calendars.picker';
-import 'kbw-calendars/dist/js/jquery.calendars.picker-ar';
-import 'kbw-calendars/dist/js/jquery.calendars.islamic';
-import 'kbw-calendars/dist/js/jquery.calendars.islamic-ar';
+import 'kbw-calendars-iframe/dist/js/jquery.calendars';
+import 'kbw-calendars-iframe/dist/js/jquery.calendars.plus';
+import 'kbw-calendars-iframe/dist/js/jquery.plugin';
+import 'kbw-calendars-iframe/dist/js/jquery.calendars.picker';
+import 'kbw-calendars-iframe/dist/js/jquery.calendars.picker-ar';
+import 'kbw-calendars-iframe/dist/js/jquery.calendars.islamic';
+import 'kbw-calendars-iframe/dist/js/jquery.calendars.islamic-ar';
 
 export class DpxDateWidget extends PageWidget {
 
@@ -199,7 +199,10 @@ export class DpxDateWidget extends PageWidget {
         $textBox.val(m.format('iYYYY/iM/iD'));
       }
       $textBox.calendarsPicker({
-        calendar: $.calendars.instance('islamic', 'ar'),
+        calendar:      $.calendars.instance('islamic', 'ar'),
+        ownerDocument: this.options.ownerDocument || document,
+        contentWindow: this.options.contentWindow || window,
+
         onSelect(dates) {
           const date = dates[0];
           const m = momentHijri(`${date.year()}/${date.month()}/${date.day()}`, 'iYYYY/iM/iD');
