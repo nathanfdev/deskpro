@@ -14,6 +14,8 @@ define [
       @online_agents = []
       @offline_agents = []
       @$scope.new_agent = {}
+      @features = {}
+      @$scope.keys = Object.keys;
       return
 
     initialLoad: ->
@@ -41,7 +43,38 @@ define [
             @offline_agents.push(agent)
       )
 
+      @Api2.sendGet('features').then( (res) =>
+        res.data.data?.forEach( (feature) =>
+          if feature.processing
+            @pollFeatures()
+          @features[feature.id] = feature;
+        )
+      )
+
       return promise
+
+    pollFeatures: =>
+      if not @pollTimer
+        @pollTimer = setTimeout @actualPoll, 60000
+
+    actualPoll: =>
+      shouldTriggerRefresh = false;
+      @Api2.sendGet('features').then( (res) =>
+        @pollTimer = null
+        res.data.data.forEach((feature) =>
+          if @features[feature.id].processing == true && feature.processing == false
+            @Growl.success 'Feature ' + feature.title + ' successfully ' + feature.enabled ? 'enabled' : 'disabled' + '!'
+            shouldTriggerRefresh = true
+          if feature.processing then @pollFeatures()
+          @features[feature.id] = feature
+        )
+        if shouldTriggerRefresh then @triggerRefresh()
+      )
+
+    triggerRefresh: ->
+      if window.parent then window.parent.DP_NEED_RELOAD = true
+      event = new CustomEvent 'dpCloseOverlayFrame', { 'detail': { id: 'admin' } }
+      window.document.dispatchEvent event
 
     ###
     # Saves new agent form
