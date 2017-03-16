@@ -223,7 +223,7 @@ pageMeta.baseId = '{{ baseId }}';
 						{% if user_view_count %}
 							<dt></dt>
 							<dd>
-								{{ phrase('agent.general.registered_views') }}: <a href="{{ path('agent_publish_whoviewed', {object_type: 1, object_id: article.id}) }}" class="open-who-viewed">{{ user_view_count }}</a>
+								{{ phrase('agent.general.registered_views') }}: <a href="{{ path('agent_publish_whoviewed', {objectType: 1, objectId: article.id}) }}" class="open-who-viewed">{{ user_view_count }}</a>
 							</dd>
 						{% endif %}
 
