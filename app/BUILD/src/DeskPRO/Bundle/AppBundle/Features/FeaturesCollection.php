@@ -37,6 +37,8 @@ class FeaturesCollection extends AbstractCollection
         if (!$this->hasFeature($feature)) {
             $this->collection[$feature->getId()] = $feature;
         }
+
+        return $this;
     }
 
     /**

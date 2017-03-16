@@ -73,15 +73,19 @@ class FeatureProcessor extends AbstractJobProcessor
         $collection = $this->container->get('deskpro.features_collection');
         $feature    = $collection->getFeature($featureId);
 
+        if (!$feature) {
+            throw new \LogicException(sprintf('Feature with id %s not found in collection!'), $featureId);
+        }
+
         try {
             if ($action === 'enable') {
                 if ($feature->isEnabled()) {
-                    throw new \LogicException(sprintf('Feature %s already enabled', $feature->getTitle()));
+                    throw new \LogicException(sprintf('Feature %s already enabled', $feature->getTitle()), 400);
                 }
                 $feature->enable($this->container);
             } elseif ($action === 'disable') {
                 if (!$feature->isEnabled()) {
-                    throw new \LogicException(sprintf('Feature %s already disabled', $feature->getTitle()));
+                    throw new \LogicException(sprintf('Feature %s already disabled', $feature->getTitle()), 400);
                 }
                 $feature->disable($this->container);
             }
