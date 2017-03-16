@@ -188,15 +188,15 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 	 * Reset the box back to empty
 	 */
 	reset: function() {
-		if (this.runningAjax.length) {
+		if (this.runningAjax && this.runningAjax.length) {
 			this.runningAjax.forEach(function(x) {
 				try {x.abort();} catch (e) {};
 			});
 			this.runningAjax.length = 0;
 		}
-		this.resultsBox.removeClass('loading');
-		this.termInput.val('');
-		this.resultsList.empty();
+    this.resultsBox && this.resultsBox.removeClass('loading');
+    this.termInput && this.termInput.val('');
+    this.resultsList && this.resultsList.empty();
 	},
 
 
@@ -374,11 +374,11 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 	destroy: function() {
 		if (this._hasInitResultsBox) {
 			this.reset();
-			this.resultsBox.remove();
+      this.resultsBox && this.resultsBox.remove();
 		}
 
 		this.resultsBox = null;
 		this.idInput = null;
-		this.resultsBox = null;
+		this.destroyEl();
 	}
 });
