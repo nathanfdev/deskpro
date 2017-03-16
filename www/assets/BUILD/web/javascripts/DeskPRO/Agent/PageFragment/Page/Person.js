@@ -614,6 +614,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	},
 
 	initNotes: function() {
+		var self = this;
     this.notesClickHandler = function(e){
       var $el = $(e.target).closest('li.note');
       if (!$el.length) return;
@@ -638,6 +639,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	},
 
 	initApprove: function() {
+		var self = this;
     if (!this.getEl('approve_user')[0]) return;
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.removed', function(info) {
@@ -1199,11 +1201,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
     }
     this.clip = null;
 
-    var sb = this.getEl('org_searchbox').data('org-search-box');
-    if (sb) {
-    	sb.destroy();
-		}
-
     if (this.sortTicketsMenu) {
       this.sortTicketsMenu.destroy();
       this.sortTicketsMenu = null;
@@ -1250,7 +1247,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
       this.labelsInput = null;
     }
     if (this.notesClickHandler) {
-      this.getEl('notes_tab').off();
       this.notesClickHandler = null;
 		}
     this.simpleTabs.forEach(function(tabs){
@@ -1265,7 +1261,5 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
       this.saver2.destroy();
       this.saver2 = null;
     }
-
-    this.destroyEvents();
 	}
 });

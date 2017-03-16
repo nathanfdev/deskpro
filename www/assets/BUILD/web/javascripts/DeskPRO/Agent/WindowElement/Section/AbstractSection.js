@@ -256,6 +256,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 		if (this.listPage) {
 			this.listPage.fireEvent('destroy');
+			this.listPage.destroyEvents();
 			this.listPage = null;
 		}
 

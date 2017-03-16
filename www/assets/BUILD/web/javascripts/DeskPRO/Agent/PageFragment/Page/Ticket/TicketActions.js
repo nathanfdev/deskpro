@@ -412,6 +412,5 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		}
 		this.page = null;
 		this.changeManager = null;
-		this.destroyEvents();
 	}
 });

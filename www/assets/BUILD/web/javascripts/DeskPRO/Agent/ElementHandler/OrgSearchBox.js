@@ -312,7 +312,8 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
     this.boundEl 		 = null;
     this.updateCaller && this.updateCaller.destroy();
     this.updateCaller = null;
+    this.optios = null;
 
     this.destroyEl();
-	}
+  }
 });

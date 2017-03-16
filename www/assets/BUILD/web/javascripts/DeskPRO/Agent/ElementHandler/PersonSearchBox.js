@@ -15,7 +15,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		this.resultsBox  = $('.person-search-box', this.el);
 		this.resultsList = $('.results-list', this.resultsBox);
 		this.lastUpdate  = (new Date()).getTime();
-		this.runningAjax = []
+		this.runningAjax = [];
 		this.loadingEl   = $('<div class="loading-el"><i class="spinner-flat"></i></div>')
 
 		this.loadingEl.appendTo(this.resultsBox);

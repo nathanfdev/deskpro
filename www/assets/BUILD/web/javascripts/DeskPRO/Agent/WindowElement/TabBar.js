@@ -290,6 +290,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		data.callback_remove_content = function(data, container) {
 			if (data.isInited) {
 				page.fireEvent('destroy');
+        page.destroyEvents();
 			}
 		};
 		data.callback_activate = function() {
