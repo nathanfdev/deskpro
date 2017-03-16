@@ -706,11 +706,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		var self = this;
 
     function propToggleDisplay() {
-      var box = $('.profile-box-container.properties ', self.wrapper);
-      $('.prop-edit-trigger', box).show();
-      $('.is-loading', box).hide();
-      $('.save', box).hide();
-      $('.cancel', box).hide();
+      self.wrapper.find('.profile-box-container.properties .prop-edit-trigger').show();
+      self.wrapper.find('.profile-box-container.properties .is-loading').hide();
+      self.wrapper.find('.profile-box-container.properties .save').hide();
+      self.wrapper.find('.profile-box-container.properties .cancel').hide();
       self.getEl('custom_fields_editable').hide();
       self.getEl('custom_fields_rendered').show();
       self.updateUi();
@@ -754,10 +753,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
         });
       }
 
-      $('.prop-edit-trigger', box).hide();
-      $('.is-loading', box).hide();
-      $('.save', box).show();
-      $('.cancel', box).show();
+      self.wrapper.find('.profile-box-container.properties .prop-edit-trigger').hide();
+      self.wrapper.find('.profile-box-container.properties .is-loading').hide();
+      self.wrapper.find('.profile-box-container.properties .save').show();
+      self.wrapper.find('.cancel').show();
       self.getEl('custom_fields_rendered').hide();
       self.getEl('custom_fields_editable').show();
       self.updateUi();
@@ -768,7 +767,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
     $('.profile-box-container.properties .cancel', this.wrapper).on('click', propToggleDisplay);
 
     $('.profile-box-container.properties .save', this.wrapper).on('click', function() {
-      var box = $('.profile-box-container.properties ', self.wrapper);
       var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
       $('input[type="text"], input[type="password"], input:checked, select, textarea', self.getEl('custom_fields_editable')).each(function(){
         var n = $(this).attr('name');
@@ -777,9 +775,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
         formData[n] = $(this).val();
       });
 
-      $('.is-loading', box).show();
-      $('.save', box).hide();
-      $('.cancel', box).hide();
+      self.wrapper.find('.profile-box-container.properties .is-loading').show();
+      self.wrapper.find('.profile-box-container.properties .save').hide();
+      self.wrapper.find('.profile-box-container.properties .cancel').hide();
 
       self.getEl('custom_fields_editable').find('.error-row').hide();
       self.getEl('custom_fields_editable').find('.error-reason').hide();
@@ -793,9 +791,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
             self.getEl('custom_fields_rendered').empty().html(data.tpl);
             propToggleDisplay();
           } else if (data.invalid_custom_fields) {
-            $('.is-loading', box).hide();
-            $('.save', box).show();
-            $('.cancel', box).show();
+            self.wrapper.find('.profile-box-container.properties .is-loading').hide();
+            self.wrapper.find('.profile-box-container.properties .save').show();
+            self.wrapper.find('.profile-box-container.properties .cancel').show();
 
             for (var i in data.invalid_custom_fields) {
               if (!data.invalid_custom_fields.hasOwnProperty(i)) continue;
@@ -1269,5 +1267,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
     }
 
     this.destroyEvents();
+
+    this.wrapper.remove();
+    this.wrapper = null;
 	}
 });
