@@ -121,7 +121,7 @@ class AgentChatMessagesController extends CrudSubController
         $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupContext($request));
 
         $form = $this->createForm(AgentMarkMessageType::class, null, ['chat' => $this->findParentOr404()]);
-        $form->submit($this->getRequestContent($request));
+        $form->submit($request->request->all());
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }

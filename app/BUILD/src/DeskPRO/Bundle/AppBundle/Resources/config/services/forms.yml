@@ -16,6 +16,11 @@ services:
     tags:
       - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\ChoiceType' }
 
+  form.force_null_extension:
+    class: DeskPRO\Bundle\AppBundle\Form\Extension\ForceNullExtension
+    tags:
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
+
   # helpers
   form_hierarchy_generator:
     class: DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator

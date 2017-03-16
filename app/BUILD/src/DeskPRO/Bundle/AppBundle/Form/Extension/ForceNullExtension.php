@@ -30,31 +30,27 @@ namespace DeskPRO\Bundle\AppBundle\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 /**
- * Class DeskproFormExtension.
+ * Class ForceNullExtension.
+ *
+ * Make compound forms compliant with application/x-www-form-encoded style.
+ *
+ * @see FOS\RestBundle\Decoder\JsonToFormDecoder
  */
-class DeskproFormExtension extends AbstractTypeExtension
+class ForceNullExtension extends AbstractTypeExtension
 {
     /**
      * {@inheritdoc}
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $view->vars['help'] = $options['help'];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'help' => '',
-        ]);
+        if ($options['compound']) {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 1000);
+        }
     }
 
     /**
@@ -63,5 +59,17 @@ class DeskproFormExtension extends AbstractTypeExtension
     public function getExtendedType()
     {
         return FormType::class;
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPreSubmit(FormEvent $event)
+    {
+        if (!$event->getData()) {
+            $event->setData(null);
+        }
     }
 }

@@ -160,10 +160,8 @@ class AgentsController extends CrudController
      */
     public function editProfileAction(Request $request)
     {
-        $form    = $this->createForm(AgentProfileType::class, $this->getUser());
-        $decoded = $this->getRequestContent($request);
-
-        $form->submit($decoded, false);
+        $form = $this->createForm(AgentProfileType::class, $this->getUser());
+        $form->submit($request->request->all(), false);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }

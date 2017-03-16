@@ -177,10 +177,11 @@ class PeopleController extends CrudController
     public function updatePermissionsAction($id, Request $request)
     {
         $person      = $this->findEntity($id, $request);
-        $permissions = $this->getRequestContent($request);
-        if (array_key_exists('agent', $permissions) && $permissions['agent'] === true) {
+        $permissions = $request->request->all();
+        if (array_key_exists('agent', $permissions) && $permissions['agent']) {
             $person->setIsAgent(true);
         }
+
         $this->getManager()->persist($person);
         $this->getManager()->flush();
     }
