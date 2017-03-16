@@ -88,34 +88,6 @@ class DbVerify implements DbVerifyInterface, LoggerAwareInterface
 
         $this->logger->debug('Verify: File size OK');
 
-        $fp = @fopen($filename, 'r');
-        if (!$fp) {
-            $this->logger->critical(sprintf('Could not open dump file for reading, path %s', $filename));
-            throw new DbBackupException('Could not open dump file for reading', DbBackupException::DUMP_ERROR_OPEN_FAILED);
-        }
-
-        $this->logger->debug('Verify: File open OK');
-
-        fseek($fp, -250000, SEEK_END);
-        $chunk = fread($fp, 250000);
-        @fclose($fp);
-
-        if (!$chunk) {
-            $this->logger->critical(sprintf('Could not read dump file for reading, path %s', $filename));
-            throw new DbBackupException('Could not read dump file', DbBackupException::DUMP_ERROR_READ_FAILED);
-        }
-
-        $this->logger->debug('Verify: File read OK');
-
-        $chunk = str_replace('`', '', $chunk);
-
-        if (strpos($chunk, 'CREATE TABLE worker_jobs') === false) {
-            $this->logger->critical('Database dump seems invalid');
-            throw new DbBackupException('Database dump seems invalid', DbBackupException::DUMP_ERROR_MISSING_TABLE);
-        }
-
-        $this->logger->debug('Verify: File table check OK');
-
         $this->logger->debug('Verify: Done in '.$t->getTotalTime());
 
         return true;
