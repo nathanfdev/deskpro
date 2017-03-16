@@ -297,7 +297,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 		$.get(form.data('refresh-url'), function (data) {
 			form.replaceWith(data);
 
-			setTimeout((function() {
+			self.timeout = setTimeout((function() {
 				this.initForm();
 
 				if (this.getBillingType() === 'time' && this.options.auto_start_bill) {
@@ -439,5 +439,13 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 			form.find('#billing_minutes_edit_' + charge.id).val(minutes);
 			form.find('#billing_seconds_edit_' + charge.id).val(seconds);
 		}
+	},
+
+	destroy: function() {
+    clearInterval(this.billingTimer);
+    clearTimeout(this.timeout);
+    this.doInitForm = null;
+    this.options = null;
+    this.destroyEvents();
 	}
 });

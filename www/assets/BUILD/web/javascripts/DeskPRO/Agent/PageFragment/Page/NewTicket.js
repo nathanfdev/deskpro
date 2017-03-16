@@ -45,7 +45,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initDraft();
 
     this.addEvent('destroy', function() {
-      this.draft.reset();
+      this.draft && this.draft.reset();
+      this.textarea = null;
     }, this);
 
 		this.meta.person_api_data = {};
@@ -291,7 +292,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				});
 			});
 
-			var depId = depSel.val();
 			var unsetField = function(name, allowDefaultValue) {
 				$(self.wrapper).find('.ticket-field.'+name).not('.item-on').each(function(i, el) {
 					var $el = $(el);
@@ -755,7 +755,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	submit: function() {
 
 		if (this.pauseSend) {
-			window.setTimeout(this.submit.bind(this), 250);
+			this.submitBindTimeout = window.setTimeout(this.submit.bind(this), 250);
 			return;
 		}
 
@@ -1971,6 +1971,24 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         this.set(item);
       }
     };
-  }
+  },
+
+	destroyPage: function() {
+		clearTimeout(this.submitBindTimeout);
+		this.contentWrapper = null;
+		this.el = null;
+    this.labelsInput = null;
+    this.form = null;
+    this.billing && this.billing.destroy();
+
+    if (this.textarea) {
+      if (this.textarea.data('redactor')) {
+        this.textarea.getEditor().off();
+        try {
+          this.textarea.destroyEditor();
+        } catch (e) {}
+      }
+		}
+	}
 
 });
