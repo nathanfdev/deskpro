@@ -1820,51 +1820,53 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	_initTicketMessageClipped: function(article, isImgUpdate) {
-		var self = this;
-		var h = article.find('div.body-text-container').height();
-		var doClipping = false;
-		var allArticles = null, idx;
-		var isFirst = false;
-		if (h >= 600) {
-			allArticles = this.getEl('message_page_wrap').find('article');
-			idx = allArticles.index(article.get(0));
+		setTimeout(function() {
+			var self = this;
+			var h = article.find('div.body-text-container').height();
+			var doClipping = false;
+			var allArticles = null, idx;
+			var isFirst = false;
+			if (h >= 600) {
+				allArticles = this.getEl('message_page_wrap').find('article');
+				idx = allArticles.index(article.get(0));
 
-			// Clipping on the first message starts at 1200px
-			if ((this.meta.ticket_reverse_order && idx === 0) || (!this.meta.ticket_reverse_order && idx === allArticles.length-1)) {
-				isFirst = true;
-				if (h >= 1200) {
+				// Clipping on the first message starts at 1200px
+				if ((this.meta.ticket_reverse_order && idx === 0) || (!this.meta.ticket_reverse_order && idx === allArticles.length-1)) {
+					isFirst = true;
+					if (h >= 1200) {
+						doClipping = true;
+					}
+				} else {
 					doClipping = true;
 				}
-			} else {
-				doClipping = true;
 			}
-		}
 
-		if (isFirst) {
-			article.addClass('as-first');
-		} else {
-			article.removeClass('as-first');
-		}
+			if (isFirst) {
+				article.addClass('as-first');
+			} else {
+				article.removeClass('as-first');
+			}
 
-		if (doClipping) {
-			if (!article.hasClass('with-clipped-body')) {
-				article.find('.fade-bar-longmsg').on('click', function(ev) {
-					ev.stopPropagation();
-					article.addClass('clipped-show');
+			if (doClipping) {
+				if (!article.hasClass('with-clipped-body')) {
+					article.find('.fade-bar-longmsg').on('click', function(ev) {
+						ev.stopPropagation();
+						article.addClass('clipped-show');
+					});
+				}
+				article.addClass('with-clipped-body');
+			} else {
+				article.removeClass('with-clipped-body');
+			}
+
+			// Images might change the visible height once loaded
+			if (!isImgUpdate) {
+				var throttled = _.throttle(function () { self._initTicketMessageClipped(article, true); }, 1000);
+				article.find('div.body-text-container').find('img').on('load', function () {
+					throttled();
 				});
 			}
-			article.addClass('with-clipped-body');
-		} else {
-			article.removeClass('with-clipped-body');
-		}
-
-		// Images might change the visible height once loaded
-		if (!isImgUpdate) {
-			var throttled = _.throttle(function () { self._initTicketMessageClipped(article, true); }, 1000);
-			article.find('div.body-text-container').find('img').on('load', function () {
-				throttled();
-			});
-		}
+		}.bind(this), 1);
 	},
 
 	incCount: function(id) {
