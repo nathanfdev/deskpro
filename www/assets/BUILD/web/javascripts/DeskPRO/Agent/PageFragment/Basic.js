@@ -165,6 +165,10 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 					if (h) {
 						h.destroy();
 					}
+					h = $(this).data('scroll_handler');
+          if (h) {
+            h.destroy();
+          }
 				});
 			}
       if (self.wrapper) {

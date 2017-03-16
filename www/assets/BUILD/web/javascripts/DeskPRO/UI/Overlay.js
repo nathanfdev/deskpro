@@ -54,7 +54,8 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		}
 
 		if (this.options.escapeClose) {
-			$(document).on('keydown', (function (ev) {
+			this.eventId = 'overlay_' + Orb.uuid();
+			$(document).on('keydown.'+this.eventId, (function (ev) {
 				if (ev.which == 27) {
 					this.closeOverlay();
 				}
@@ -512,6 +513,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 
 		this.fireEvent('destroyed', [this]);
 		$(window).unbind('.' + this.OBJ_ID);
+    this.eventId && $(document).off('keydown.'+this.eventId);
 		this.destroyEvents();
 	},
 

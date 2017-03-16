@@ -23,6 +23,9 @@ DeskPRO.ElementHandler_Exec = function(context) {
 		try {
 			var obj = new classObj(el);
 			el.addClass('with-handler');
+			if (context && context.addEvent && obj.destroy) {
+        context.addEvent('destroy', obj.destroy.bind(obj));
+      }
 		} catch (e) {
 			console.error("Failed created element-handler (%o) : %o", className, e);
       el.addClass('with-handler-failed');
@@ -166,7 +169,8 @@ DeskPRO.ElementHandler = new Orb.Class({
     }
 
     if (this.el) {
-      this.el.remove();
+      this.el.removeData();
+      this.el.off();
       this.el = null;
     }
 

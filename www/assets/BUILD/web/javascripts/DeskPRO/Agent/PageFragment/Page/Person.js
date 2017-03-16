@@ -46,8 +46,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		});
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
-			self.wrapper.data('$ngControllerController', self);
 			$compile(self.wrapper.find('.page-header:first').contents())(self.$scope);
+			self.$scope.$digest();
 		}]);
 	},
 
@@ -1190,11 +1190,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
     this.$scope = null;
     this.$q = null;
     this.$timeout = null;
-
-    var $sc = this.wrapper.find('select[name="timezone"]').data('$selectController');
-    if ($sc) {
-    	console.info($sc);
-		}
 
     if (this.tabBtn) {
     	this.tabBtn = null;
