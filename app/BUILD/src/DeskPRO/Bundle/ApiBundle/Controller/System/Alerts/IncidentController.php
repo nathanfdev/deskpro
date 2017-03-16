@@ -26,22 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\System\Alerts;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
 use DeskPRO\Bundle\SystemBundle\Form\Type\SystemAlerts\IncidentType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class IncidentController.
@@ -49,6 +45,12 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiModes("all")
  * @Rest\Route("/system/incidents")
  * @ApiDoc(target="all", section="System")
+ * @ApiDoc(
+ *     target="putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\SystemBundle\Form\Type\SystemAlerts\IncidentType"
+ *     }
+ * )
  */
 class IncidentController extends CrudController
 {
@@ -74,14 +76,17 @@ class IncidentController extends CrudController
      */
     public function getAction(Request $request, $id)
     {
+        /** @var Incident $incident */
         if (!$incident = $this->findEntity($id, $request)) {
             throw $this->createNotFoundException();
         }
+
         $instructionsHtml = $this->get('dp_sys.alerts.instructions_generator')->generate($incident);
 
-        return View::create($this->wrap(
-            ['incident' => $incident, 'instructions_html' => $instructionsHtml]
-        ), Response::HTTP_OK);
+        return View::create($this->wrap([
+            'incident'          => $incident,
+            'instructions_html' => $instructionsHtml,
+        ]));
     }
 
     /**

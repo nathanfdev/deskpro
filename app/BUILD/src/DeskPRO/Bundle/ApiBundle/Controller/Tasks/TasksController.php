@@ -81,6 +81,16 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *         200="Returned if success"
  *     }
  * )
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\Task",
+ *          "person"="Application\DeskPRO\Entity\Person"
+ *      }
+ *     }
+ * )
  */
 class TasksController extends CrudController
 {

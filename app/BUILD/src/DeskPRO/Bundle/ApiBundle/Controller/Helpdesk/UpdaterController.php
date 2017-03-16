@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Helpdesk;
 
 use Application\DeskPRO\Entity\Setting;
@@ -50,12 +46,12 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @ApiModes("all")
  * @ApiUserContext("admin")
+ * @ApiDoc(target="all", section="Helpdesk")
  */
 class UpdaterController extends BaseController
 {
     /**
      * @ApiDoc(
-     *     section="Helpdesk",
      *     description="Get the updater settings",
      *     statusCodes={
      *         200="Success"
@@ -66,10 +62,7 @@ class UpdaterController extends BaseController
      */
     public function updaterSettingsAction()
     {
-        return View::create(
-            ['data' => $this->get('updater_settings_resolver')->getUpdaterSettings()],
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($this->get('updater_settings_resolver')->getUpdaterSettings()));
     }
 
     /**
@@ -78,7 +71,10 @@ class UpdaterController extends BaseController
      *      statusCodes={
      *          204="Returned in case of successful resource modify",
      *          400="We will return this in case your request was malformed",
-     *      }
+     *      },
+     *     input= {
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\UpdaterSettingsType"
+     *     }
      * )
      * @Rest\Put("/helpdesk/updater/settings")
      * @ApiUnstable()
@@ -94,13 +90,12 @@ class UpdaterController extends BaseController
         }
 
         $model         = $this->get('updater_settings_resolver')->getUpdaterSettings();
-        $type          = UpdaterSettingsType::class;
         $isModify      = true;
         $status        = Response::HTTP_NO_CONTENT;
         $partialUpdate = true;
         $options       = [];
 
-        $form    = $this->createForm($type, $model, $options);
+        $form    = $this->createForm(UpdaterSettingsType::class, $model, $options);
         $decoded = json_decode($request->getContent(), true);
 
         $form->submit($decoded, !$partialUpdate);
@@ -168,7 +163,6 @@ class UpdaterController extends BaseController
 
     /**
      * @ApiDoc(
-     *     section="Helpdesk",
      *     description="Get the updater status",
      *     statusCodes={
      *         200="Success"
@@ -179,9 +173,6 @@ class UpdaterController extends BaseController
      */
     public function updaterStatusAction()
     {
-        return View::create(
-            ['data' => $this->get('updater_settings_resolver')->getUpdaterStatus()],
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($this->get('updater_settings_resolver')->getUpdaterStatus()));
     }
 }

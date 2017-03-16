@@ -147,7 +147,7 @@ class ApiDoc extends BaseApiDoc
             foreach ($this->classInput['options'] as &$option) {
                 if (is_string($option) && class_exists($option)) {
                     $reflection = new \ReflectionClass($option);
-                    $option     = $reflection->newInstanceWithoutConstructor();
+                    $option     = $reflection->newInstance();
                 }
             }
         }

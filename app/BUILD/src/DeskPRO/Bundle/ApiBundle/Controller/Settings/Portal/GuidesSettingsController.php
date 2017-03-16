@@ -85,9 +85,7 @@ class GuidesSettingsController extends AbstractBrandAwareSettingsController
      *         400="In case your request was malformed",
      *     },
      *     input= {
-     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\Portal\GuidesSettingsType",
-     *         "name"="",
-     *         "options"={"method"="POST"},
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\GuidesSettingsType"
      *     }
      *)
      * @Rest\Post("")

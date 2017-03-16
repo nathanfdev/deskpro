@@ -45,8 +45,17 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("all")
  * @Rest\Route("/voice_assets")
- * @ApiDoc(target="all", section="Voice Channel")
  * @Feature("voice")
+ * @ApiDoc(target="all", section="Voice Channel")
+ * @ApiDoc(
+ *     target="createAssetAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceUploadAsset"
+ *      },
+ *     }
+ * )
  */
 class VoiceAssetsController extends BaseController
 {

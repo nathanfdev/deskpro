@@ -60,6 +60,17 @@ use Symfony\Component\HttpFoundation\Request;
  *         { "name" = "person_name", "dataType" = "string", "format" = "string", "description" = "Author name", "required" = false },
  *     }
  * )
+ * @ApiDoc(
+ *     target="postAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatMessageType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\ChatMessage",
+ *          "person"="Application\DeskPRO\Entity\Person",
+ *          "conversation"="Application\DeskPRO\Entity\ChatConversation"
+ *      }
+ *     }
+ * )
  */
 class UserChatMessagesController extends CrudSubController
 {

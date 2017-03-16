@@ -60,6 +60,17 @@ use Symfony\Component\HttpFoundation\Response;
  *          {"name"="order", "dataType"="string", "pattern"="date_created"}
  *      }
  * )
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatMessageType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage",
+ *          "person"="Application\DeskPRO\Entity\Person",
+ *          "chat"="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
+ *      }
+ *     }
+ * )
  * @ApiUnstable()
  * @Feature("agent_chat")
  */

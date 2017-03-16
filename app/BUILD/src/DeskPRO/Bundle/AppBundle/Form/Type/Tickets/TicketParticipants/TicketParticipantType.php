@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants;
 
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketParticipant;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDisableAutoProcessListener;
@@ -153,7 +152,6 @@ class TicketParticipantType extends AbstractTicketParticipantType
 
         if ($data instanceof TicketParticipant) {
             if (!$data->getId() && $options['set_owner']) {
-                /* @var Ticket $options['owner'] */
                 $options['owner']->addParticipant($data);
             }
             if ($data->getPerson()) {

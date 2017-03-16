@@ -50,9 +50,19 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("all")
  * @Rest\Route("/agent_chats")
- * @ApiDoc(target="all", section="Chats", output="DeskPRO\Bundle\AppBundle\Entity\AgentChat")
  * @ApiUnstable()
  * @Feature("agent_chat")
+ * @ApiDoc(target="all", section="Chats", output="DeskPRO\Bundle\AppBundle\Entity\AgentChat")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\AgentChat",
+ *          "person"="Application\DeskPRO\Entity\Person"
+ *      }
+ *     }
+ * )
  */
 class AgentChatsController extends CrudController
 {

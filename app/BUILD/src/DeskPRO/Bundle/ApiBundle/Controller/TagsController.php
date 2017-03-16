@@ -74,10 +74,7 @@ class TagsController extends BaseController
         $tagsCollector->collectTags(true);
         $gatheredTags = $this->get('api_tags.tags_manipulator')->gatherTagsForKey($id);
 
-        return View::create(
-            $this->wrap($tagsCollector->getTagsHierarchyForApi($gatheredTags)),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($tagsCollector->getTagsHierarchyForApi($gatheredTags)));
     }
 
     /**
@@ -110,10 +107,7 @@ class TagsController extends BaseController
     {
         $gatheredTags = $this->get('api_tags.tags_manipulator')->gatherTagsForKey($id);
 
-        return View::create(
-            $this->wrap($gatheredTags),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($gatheredTags));
     }
 
     /**

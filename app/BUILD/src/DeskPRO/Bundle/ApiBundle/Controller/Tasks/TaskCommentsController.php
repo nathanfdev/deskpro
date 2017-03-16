@@ -40,6 +40,17 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiModes("all")
  * @Rest\Route("/tasks/{parentId}/comments")
  * @ApiDoc(target="all", section="Tasks", output="DeskPRO\Bundle\AppBundle\Entity\TaskComment")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskCommentType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\TaskComment",
+ *          "person"="Application\DeskPRO\Entity\Person",
+ *          "task"="DeskPRO\Bundle\AppBundle\Entity\Task"
+ *      }
+ *     }
+ * )
  */
 class TaskCommentsController extends AbstractTaskSubController
 {

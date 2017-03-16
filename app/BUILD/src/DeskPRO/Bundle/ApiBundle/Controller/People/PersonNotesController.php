@@ -42,6 +42,17 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/people/{parentId}/notes")
  * @ApiDoc(target="all", section="People", output="Application\DeskPRO\Entity\PersonNote")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\People\PersonNoteType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\PersonNote",
+ *          "person"="Application\DeskPRO\Entity\Person",
+ *          "agent"="Application\DeskPRO\Entity\Person"
+ *      }
+ *     }
+ * )
  */
 class PersonNotesController extends CrudSubController
 {

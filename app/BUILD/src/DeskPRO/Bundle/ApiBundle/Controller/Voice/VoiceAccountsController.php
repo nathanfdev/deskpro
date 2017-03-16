@@ -49,9 +49,18 @@ use Twilio\Exceptions\TwilioException;
  *
  * @ApiModes("all")
  * @Rest\Route("/voice_accounts")
- * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceAccount")
  * @Feature("voice")
  * @ApiUserContext("admin")
+ * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceAccount")
+ * @ApiDoc(
+ *     target="postAction,putAction,testCredentialsAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAccountType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\VoiceAccount"
+ *      }
+ *     }
+ * )
  */
 class VoiceAccountsController extends AbstractVoiceCrudController
 {

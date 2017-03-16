@@ -48,11 +48,10 @@ use Symfony\Component\HttpFoundation\Response;
  * @Rest\Route("/guides")
  * @ApiDoc(target="all", section="Content", output="Application\DeskPRO\Entity\Guide")
  * @ApiDoc(
- *     target="postAction",
+ *     target="postAction,putAction",
  *     input={
  *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Content\GuideType",
- *      "options"={"method"="POST"},
- *      "name"=""
+ *      "options"={"data"="Application\DeskPRO\Entity\Guide"}
  *     }
  * )
  */
@@ -71,12 +70,11 @@ class GuideController extends AbstractCategoriesController
      * )
      * @Rest\Get("/tree/{guideId}")
      *
-     * @param Request $request
      * @param $guideId
      *
      * @return JsonResponse
      */
-    public function getTreeAction(Request $request, $guideId)
+    public function getTreeAction($guideId)
     {
         /** @var Guide $guide */
         $guide = $this->getRepository(Guide::class)->find($guideId);

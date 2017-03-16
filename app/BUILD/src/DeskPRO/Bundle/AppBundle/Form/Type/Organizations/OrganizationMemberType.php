@@ -92,9 +92,7 @@ class OrganizationMemberType extends AbstractType
             ->setDefaults([
                 'data_class' => Person::class,
             ])
-            ->setRequired([
-                'organization',
-            ])
+            ->setRequired('organization')
             ->addAllowedTypes([
                 'organization' => Organization::class,
             ])

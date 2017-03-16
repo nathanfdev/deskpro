@@ -26,13 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Glossary;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
@@ -41,23 +39,14 @@ use Symfony\Component\Form\FormBuilderInterface;
 class GlossaryWordDefinitionType extends AbstractType
 {
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return;
-    }
-
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('definition', 'text')
-            ->add('words', 'collection', [
-                'type'         => new GlossaryWordType(),
+            ->add('definition', TextType::class)
+            ->add('words', CollectionType::class, [
+                'entry_type'   => GlossaryWordType::class,
                 'allow_add'    => true,
                 'allow_delete' => true,
                 'by_reference' => false,

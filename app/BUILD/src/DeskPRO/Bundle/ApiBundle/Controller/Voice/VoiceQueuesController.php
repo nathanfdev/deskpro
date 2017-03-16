@@ -47,6 +47,15 @@ use Symfony\Component\HttpFoundation\Response;
  * @Feature("voice")
  * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
  * @ApiUserContext("admin", agent={"list", "get", "count", "toggleAgent"})
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceQueueType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue"
+ *      }
+ *     }
+ * )
  */
 class VoiceQueuesController extends AbstractVoiceCrudController
 {

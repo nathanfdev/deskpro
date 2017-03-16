@@ -70,6 +70,15 @@ use Symfony\Component\HttpFoundation\Request;
  *          }
  *     }
  * )
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Organization"
+ *      }
+ *     }
+ * )
  */
 class OrganizationsController extends CrudController
 {

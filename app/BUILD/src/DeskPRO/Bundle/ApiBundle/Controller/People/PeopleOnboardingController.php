@@ -42,6 +42,15 @@ use FOS\RestBundle\View\View;
  * @ApiModes("all")
  * @Rest\Route("/people/onboarding")
  * @ApiDoc(target="all", section="People", output="DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\People\PersonOnboardingType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding"
+ *      }
+ *     }
+ * )
  */
 class PeopleOnboardingController extends CrudController
 {
@@ -65,8 +74,10 @@ class PeopleOnboardingController extends CrudController
      */
     public function getNewAction()
     {
-        $onboardings = $this->getRepository(PersonOnboarding::class)
-            ->findOneBy(['person' => $this->getUser(), 'status' => PersonOnboarding::STATUS_NEW]);
+        $onboardings = $this->getRepository(PersonOnboarding::class)->findOneBy([
+            'person' => $this->getUser(),
+            'status' => PersonOnboarding::STATUS_NEW,
+        ]);
 
         return new View($this->wrap($onboardings));
     }
@@ -87,14 +98,13 @@ class PeopleOnboardingController extends CrudController
      */
     public function getPendingAction()
     {
-        $onboardings = $this->getRepository(PersonOnboarding::class)
-            ->findOneBy([
-                'person' => $this->getUser(),
-                'status' => [
-                    PersonOnboarding::STATUS_NEW,
-                    PersonOnboarding::STATUS_IN_PROGRESS,
-                ],
-            ]);
+        $onboardings = $this->getRepository(PersonOnboarding::class)->findOneBy([
+            'person' => $this->getUser(),
+            'status' => [
+                PersonOnboarding::STATUS_NEW,
+                PersonOnboarding::STATUS_IN_PROGRESS,
+            ],
+        ]);
 
         return new View($this->wrap($onboardings));
     }

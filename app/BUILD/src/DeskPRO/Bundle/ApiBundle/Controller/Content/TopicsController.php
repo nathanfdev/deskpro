@@ -77,8 +77,10 @@ use Symfony\Component\HttpFoundation\Request;
  *     target="postAction",
  *     input={
  *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Content\TopicType",
- *      "options"={"method"="POST"},
- *      "name"=""
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Topic",
+ *          "person"="Application\DeskPRO\Entity\Person"
+ *      }
  *     }
  * )
  */
