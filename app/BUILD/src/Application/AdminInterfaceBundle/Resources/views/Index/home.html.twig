@@ -404,14 +404,14 @@
 					</td>
 				{% endif %}
 			</tr>
-			<tr ng-show="Home.features.length > 0">
+			<tr ng-show="keys(Home.features).length > 0">
 				<td class="dp-item">
 					<header>
 						<h3>Beta features</h3>
 					</header>
 					<article>
 						<div class="dp-mpadded">
-							<div style="padding-bottom: 20px;" ng-repeat="feature in Home.features">
+							<div style="padding-bottom: 20px;" ng-repeat="(featureId, feature) in Home.features">
 								<strong>{{ ng_var('feature.title') }}: </strong> <span ng-bind-html="feature.short_description"></span>
 								<a ng-show="!feature.enabled && !feature.processing" class="btn btn-success" href="{{ ng_href('features.enable', '{id: feature.id}') }}">Enable</a>
 								<a ng-show="feature.enabled && !feature.processing"  class="btn btn-danger" href="{{ ng_href('features.disable', '{id: feature.id}') }}">Disable</a>

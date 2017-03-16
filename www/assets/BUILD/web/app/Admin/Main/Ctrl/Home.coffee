@@ -8,7 +8,7 @@ define [
   class Admin_Main_Ctrl_Home extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_Main_Ctrl_Home'
     @CTRL_AS   = 'Home'
-    @DEPS      = ['$http', 'DpLicense', '$sce']
+    @DEPS      = ['$http', 'DpLicense', 'Growl']
 
     init: ->
       @online_agents = []
@@ -23,9 +23,10 @@ define [
       @offline_agents = []
       @unactive_agents = []
       @agentsMap = {}
-      @features = []
+      @features = {}
       @service =
         agents: @DataService.get 'Agents'
+      @$scope.keys = Object.keys
 
       @loadConfigPhpTest();
       @loadMethodTests()
@@ -97,10 +98,39 @@ define [
       )
 
       @Api2.sendGet('features').then( (res) =>
-        @features = res.data.data
+        res.data.data?.forEach( (feature) =>
+          if feature.processing
+            @pollFeatures()
+          @features[feature.id] = feature;
+        )
       )
 
       return promise
+
+
+    pollFeatures: =>
+      if not @pollTimer
+        @pollTimer = setTimeout @actualPoll, 60000
+
+    actualPoll: =>
+      shouldTriggerRefresh = false;
+      @Api2.sendGet('features').then( (res) =>
+        @pollTimer = null
+        res.data.data.forEach((feature) =>
+          if @features[feature.id].processing == true && feature.processing == false
+            @Growl.success 'Feature ' + feature.title + ' successfully ' + feature.enabled ? 'enabled' : 'disabled' + '!'
+            shouldTriggerRefresh = true
+          if feature.processing then @pollFeatures()
+          @features[feature.id] = feature
+        )
+        if shouldTriggerRefresh then @triggerRefresh()
+      )
+
+    triggerRefresh: ->
+      if window.parent then window.parent.DP_NEED_RELOAD = true
+      event = new CustomEvent 'dpCloseOverlayFrame', { 'detail': { id: 'admin' } }
+      window.document.dispatchEvent event
+
 
     # todo just move agent object from one array to another when BaseListEdit will be able to handle model objects updates after reload
     refreshAgents: ->
