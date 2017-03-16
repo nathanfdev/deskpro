@@ -136,6 +136,11 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         //------------------------------
 
         if ($field->isChoiceType()) {
+            // prevent db collisions
+            if (is_scalar($fieldData)) {
+                return false;
+            }
+
             $checkValue = $options->get('value');
             $checkIds   = array_fill_keys($fieldData, true);
             if (!is_array($checkValue)) {
