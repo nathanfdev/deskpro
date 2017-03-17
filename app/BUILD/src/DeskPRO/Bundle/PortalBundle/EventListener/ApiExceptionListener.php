@@ -32,6 +32,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -58,15 +59,25 @@ class ApiExceptionListener implements EventSubscriberInterface
         $request   = $event->getRequest();
         $exception = $event->getException();
 
-        if (strpos($request->getPathInfo(), '/portal/api') === false) {
-            return;
-        }
-
-        if ($exception instanceof AccessDeniedException) {
-            $event->setResponse(new JsonResponse([
-                'code'    => Response::HTTP_FORBIDDEN,
-                'message' => $exception->getMessage(),
-            ], Response::HTTP_FORBIDDEN));
+        // api and ajax requests
+        if (strpos($request->getPathInfo(), '/portal/api') !== false || $request->isXmlHttpRequest()) {
+            if ($exception instanceof AccessDeniedException) {
+                $event->setResponse(new JsonResponse(
+                    [
+                        'code'    => Response::HTTP_FORBIDDEN,
+                        'message' => $exception->getMessage(),
+                    ],
+                    Response::HTTP_FORBIDDEN
+                ));
+            } elseif ($exception instanceof HttpException) {
+                $event->setResponse(new JsonResponse(
+                    [
+                        'code'    => $exception->getStatusCode(),
+                        'message' => $exception->getMessage(),
+                    ],
+                    $exception->getStatusCode()
+                ));
+            }
         }
     }
 }

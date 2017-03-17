@@ -11,6 +11,7 @@ parameters:
   twig.class: DeskPRO\Bundle\PortalBundle\Twig\Environment
   templating.name_parser.class: DeskPRO\Bundle\AppBundle\Templating\TemplateNameParser
   jms_serializer.json_serialization_visitor.class: DeskPRO\Bundle\AppBundle\Serializer\Visitor\JsonSerializationVisitor
+  twig.exception_listener.class: DeskPRO\Bundle\PortalBundle\EventListener\ExceptionListener
 
 services:
   # legacy ext is required by some ticket functions (e.g. rendering notifications)

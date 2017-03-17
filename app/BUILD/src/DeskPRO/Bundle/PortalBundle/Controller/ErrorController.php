@@ -94,7 +94,11 @@ class ErrorController extends AbstractController
         }
 
         // if the message is "Something has intentionally gone wrong." its the dev route /_error/{code} being vistited for a test
-        if ($this->container->getParameter('kernel.debug') && $exception->getMessage() !== 'Something has intentionally gone wrong.') {
+        if (
+            $this->container->getParameter('kernel.debug')
+            && $exception->getMessage() !== 'Something has intentionally gone wrong.'
+            && $exception->getStatusCode() >= 500
+        ) {
             return $this->render('TwigBundle:Exception:exception_full.html.twig', [
                 'status_code'    => $code,
                 'status_text'    => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
