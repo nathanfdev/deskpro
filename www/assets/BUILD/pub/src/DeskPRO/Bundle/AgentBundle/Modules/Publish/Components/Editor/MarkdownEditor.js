@@ -65,6 +65,7 @@ class MarkdownEditor extends React.Component {
       html:    false,
       linkify: true
     });
+    this.md.linkify.set({ fuzzyLink: false });
     this.md
       .use(emoji)
       .use(MarkdownItContainer, 'warning', {
