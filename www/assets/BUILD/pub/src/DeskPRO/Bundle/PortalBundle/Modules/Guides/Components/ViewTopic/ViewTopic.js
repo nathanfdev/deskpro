@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import Highlight from 'react-highlight';
 import classNames from 'classnames';
 import moment from 'moment';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
@@ -118,9 +117,7 @@ class ViewTopic extends React.Component {
             <hr />
           </header>
           <div className="topic-content">
-            <Highlight innerHTML>
-              {this.state.topic.content}
-            </Highlight>
+            <div dangerouslySetInnerHTML={{ __html: this.state.topic.content }} />
           </div>
         </div>
         <div className="comment-column" />
