@@ -66,8 +66,11 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 	},
 
 	destroy: function() {
+		this.options = null;
 		this.pop.destroy();
+		this.pop = null;
 		DeskPRO.Agent.Widget.SnippetViewer.HasOpen = false;
+		this.destroyEvents();
 	}
 });
 DeskPRO.Agent.Widget.SnippetViewer.HasOpen = false;

@@ -84,7 +84,7 @@ DeskPRO.Agent.RteEditor = {
 
 		var editor = textarea.getEditor();
 		if (!editor) {
-			return false
+			return false;
 		}
 
 		// Need to capture clicks on the contenteditable

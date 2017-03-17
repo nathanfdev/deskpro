@@ -46,6 +46,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     this.addEvent('destroy', function() {
       this.draft && this.draft.reset();
+      this.draft = null;
       this.textarea = null;
     }, this);
 
@@ -264,12 +265,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		this.recordSnippetUse = recordSnippetUse;
 
-		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
+		this.fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
 		this.oldFields = null;
 
 		self._updateFields = function() {
 			$('.ticket-field', self.getEl('fields_container')).removeClass('item-on').hide();
-			var fieldDisplay = fieldDisplayFetch.getFields(depSel.val());
+			var fieldDisplay = self.fieldDisplayFetch.getFields(depSel.val());
 			var newFields = [];
 
 			Object.each(fieldDisplay, function(fields, section) {
@@ -448,11 +449,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			statusMenuMenu.open();
 		};
 
-		this.openStatusMenu = openStatusMenu;
-
 		statusMenuTrigger.on('click', function(ev) {
 			ev.preventDefault();
-			openStatusMenu();
+			self.openStatusMenu();
 		});
 
 		this.onMacrosUpdated = function(ev) {
@@ -1549,7 +1548,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	_initAgentNotifier: function(textarea) {
-		var self = this;
 		DeskPRO_Window.initAgentNotifierForRte(
 			this,
 			textarea,
@@ -1699,7 +1697,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				self.updateUi();
 			}).bind(this)
 		});
-		this.ownObject(this.otherTabs);
 
 		// Add CC's
 		$('.add-cc-trigger', this.wrapper).on('click', function() {
@@ -1785,12 +1782,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 	shortcutReplyOpenProperties: function() {
 		this.openStatusMenu();
-	},
-
-	destroy: function() {
-		if (this.agentNotifyList) {
-			this.agentNotifyList.remove();
-		}
 	},
 
   _initDraft: function() {
@@ -1921,7 +1912,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       reset: function (reloadForm) {
         var item = this.get(),
 					$form = self.getEl('newticket'),
-					$discard = $('#discard-draft-btn', $form),
 					$attachRow = self.getEl('attach_row'),
 					redactor = self.textarea.data('redactor');
 
@@ -1981,6 +1971,15 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     this.form = null;
     this.billing && this.billing.destroy();
 
+    this._updateFields = null;
+    this.fieldDisplayFetch && this.fieldDisplayFetch.destroy();
+    this.fieldDisplayFetch = null;
+
+    this.openStatusMenu = null;
+
+    $('#settingswin').off('dp_macros_updated', this.onDpMacrosUpdated);
+    this.onDpMacrosUpdated = null;
+
     if (this.textarea) {
       if (this.textarea.data('redactor')) {
         this.textarea.getEditor().off();
@@ -1989,6 +1988,15 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         } catch (e) {}
       }
 		}
+
+    this.agentNotifyList && this.agentNotifyList.remove();
+    this.agentNotifyList = null;
+
+    this.snippetsViewer && this.snippetsViewer.destroy();
+    this.snippetsViewer = null;
+
+    this.otherTabs && this.otherTabs.destroy();
+    this.otherTabs = null;
 	}
 
 });

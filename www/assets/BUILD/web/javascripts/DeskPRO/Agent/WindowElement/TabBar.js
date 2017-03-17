@@ -411,14 +411,18 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.isAdding = false;
 
-		function updateTabBarOverflow() {
+		this.updateTabBarOverflow();
+
+		return id;
+	},
+
+	updateTabBarOverflow: function() {
+		var self = this;
+    this.$timeout(function updateTabBarOverflow() {
       if (self.tabBarOverflow) {
         self.tabBarOverflow.update();
       }
-    }
-		this.$timeout(updateTabBarOverflow);
-
-		return id;
+    });
 	},
 
 	/**
