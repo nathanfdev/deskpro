@@ -74,7 +74,7 @@ class TopicSummary extends React.Component {
     };
     return (
       <div className={classNames('topic-summary', { fixed })} ref={(c) => { this.summary = c; }} style={style}>
-        {this.state.h1s.length ?
+        {this.state.h1s.length > 1 ?
           (<div>
             <h2><i className="fa fa-list" /> Contents</h2>
             <ul>

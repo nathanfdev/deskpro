@@ -8,6 +8,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
   h1 {
     font-size: 22px;
     font-weight: bold;
+    margin-bottom: 15px;
     &.anchor::before {
       content:"";
       display:block;
@@ -18,14 +19,17 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
   h2 {
     font-size: 18px;
     font-weight: bold;
+    margin-bottom: 12px;
   }
   h3 {
     font-size: 16px;
     font-weight: bold;
+    margin-bottom: 12px;
   }
   h4 {
     font-size: 16px;
     font-weight: normal;
+    margin-bottom: 12px;
   }
   ul {
     list-style-type: disc;
@@ -131,12 +135,13 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
   table {
     border-collapse: separate;
     border-spacing: 0;
-    width: 100%;
+    width: 98%;
+    margin-bottom: 12px;
     thead {
       th {
         border: solid #e6e7e6;
         background-color: #f8f8f8;
-        border-width: 1px 0 2px 0;
+        border-width: 1px 0 2px 1px;
         padding: 5px;
       }
       tr:first-child th:first-child {
@@ -152,7 +157,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       border: solid 1px #e6e7e6;
       td {
         border: solid #e6e7e6;
-        border-width: 0 0 1px;
+        border-width: 0 0 1px 1px;
         color: #333;
         padding: 5px;
       }
@@ -162,11 +167,14 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       td:last-child {
         border-right-width: 1px;
       }
+      &:nth-child(2n) td {
+        background-color: #f8f8f8;
+      }
     }
     tr:last-child {
       td {
         border: solid #e6e7e6;
-        border-width: 0 0 2px;
+        border-width: 0 0 2px 1px;
       }
       td:first-child {
         border-left-width: 1px;
