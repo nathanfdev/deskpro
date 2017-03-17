@@ -339,6 +339,8 @@ class DpEnv
         }
 
         $this->dat_manager = $dat_manager;
+
+        $this->isCloud = defined('DPC_IS_CLOUD');
     }
 
     /**
@@ -669,5 +671,10 @@ class DpEnv
         }
 
         return $this->runtime_vars[$name];
+    }
+
+    public function isCloud()
+    {
+        return $this->isCloud;
     }
 }

@@ -47,14 +47,21 @@ class FeaturesCollection extends AbstractCollection
     private $requestStack;
 
     /**
+     * @var bool
+     */
+    private $isCloud;
+
+    /**
      * FeaturesCollection constructor.
      *
-     * @param              $debug
+     * @param bool         $debug
      * @param RequestStack $requestStack
+     * @param bool         $isCloud
      */
-    public function __construct($debug, RequestStack $requestStack)
+    public function __construct($debug, RequestStack $requestStack = null, $isCloud = false)
     {
         $this->debug        = $debug;
+        $this->isCloud      = $isCloud;
         $this->requestStack = $requestStack;
     }
 
@@ -154,7 +161,7 @@ class FeaturesCollection extends AbstractCollection
      */
     private function availableAtCloud($avatailableAt)
     {
-        return $avatailableAt === BetaFeatureInterface::AVAILABLE_AT_CLOUD && defined('DPC_IS_CLOUD');
+        return $avatailableAt === BetaFeatureInterface::AVAILABLE_AT_CLOUD && $this->isCloud;
     }
 
     /**
@@ -164,7 +171,7 @@ class FeaturesCollection extends AbstractCollection
      */
     private function availableAtOnprem($avatailableAt)
     {
-        return $avatailableAt === BetaFeatureInterface::AVAILABLE_AT_ONPREM && !defined('DPC_IS_CLOUD');
+        return $avatailableAt === BetaFeatureInterface::AVAILABLE_AT_ONPREM && !$this->isCloud;
     }
 
     /**
@@ -177,7 +184,7 @@ class FeaturesCollection extends AbstractCollection
         return
             $availableAt === BetaFeatureInterface::AVAILABLE_AT_QA
             && ($this->debug
-                 || ($this->requestStack->getMasterRequest()
+                 || ($this->requestStack && $this->requestStack->getMasterRequest()
                       && strpos($this->requestStack->getMasterRequest()->getHost(), 'deskprodemo.com') !== false
                     )
                 );

@@ -7,6 +7,7 @@ services:
     arguments:
       - "%kernel.debug%"
       - "@request_stack"
+      - "@=service('deskpro.low_dp_env').isCloud()"
 
   deskpro.features.agent_chat:
     class: DeskPRO\Bundle\AppBundle\Features\AgentChatFeature
