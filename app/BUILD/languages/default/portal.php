@@ -775,6 +775,7 @@ return [
     'portal.widget.new-ticket-title'                        => 'Ask us a Question',
     'portal.widget.label_email'                             => 'Your Email',
     'portal.widget.label_name'                              => 'Your Name',
+    'portal.widget.label_subject'                           => 'Subject',
     'portal.widget.label_message'                           => 'Your Question',
     'portal.widget.label_add_attachment'                    => 'Add Attachment',
     'portal.widget.online_agents'                           => 'Agents Online',
