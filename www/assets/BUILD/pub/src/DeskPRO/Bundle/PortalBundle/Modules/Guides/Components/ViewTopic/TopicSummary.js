@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { Link } from 'react-scroll';
 
 const getH1 = (html) => {
   const container = document.createElement('div');
@@ -25,7 +26,8 @@ class TopicSummary extends React.Component {
     this.state = {
       fixed:    false,
       agentBar: !!agentBar,
-      h1s
+      h1s,
+      activeId: false
     };
   }
 
@@ -67,6 +69,13 @@ class TopicSummary extends React.Component {
     }
   };
 
+  handleSetActive = (to) => {
+    window.history.pushState(null, null, `#${to}`);
+    this.setState({
+      activeId: to
+    });
+  };
+
   render() {
     const { fixed } = this.state;
     const style = {
@@ -79,9 +88,14 @@ class TopicSummary extends React.Component {
             <h2><i className="fa fa-list" /> Contents</h2>
             <ul>
               {this.state.h1s.map((h1, index) => <li key={index}>
-                <a href={`#${h1.id}`}>
-                  {h1.innerText}
-                </a>
+                <Link
+                  href={`#${h1.id}`}
+                  className={classNames({ active: this.state.activeId === h1.id })}
+                  to={h1.id}
+                  spy
+                  smooth
+                  onSetActive={this.handleSetActive}
+                >{h1.innerText}</Link>
               </li>)}
             </ul>
           </div>

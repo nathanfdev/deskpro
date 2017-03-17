@@ -48,7 +48,7 @@ class ViewTopic extends React.Component {
     Array.from(container.querySelectorAll('h1')).map((h1) => {
       const newH1 = document.createElement('h1');
       newH1.innerText = h1.innerText;
-      newH1.id = h1.innerText.toLowerCase().replace(/ /, '-');
+      newH1.id = h1.innerText.toLowerCase().replace(/[():]/g, '').replace(/ /g, '-');
       newH1.className = 'anchor';
       container.replaceChild(newH1, h1);
 

@@ -319,6 +319,11 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
           a {
             text-decoration: none;
             color: #8b8b8b;
+            &.active {
+              border-left: 2px solid #709fd6;
+              margin-left: -25px;
+              padding-left: 23px;
+            }
           }
         }
       }
