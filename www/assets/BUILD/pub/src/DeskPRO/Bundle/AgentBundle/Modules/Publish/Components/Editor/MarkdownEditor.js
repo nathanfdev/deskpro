@@ -65,7 +65,20 @@ class MarkdownEditor extends React.Component {
       html:    false,
       linkify: true
     });
-    this.md.linkify.set({ fuzzyLink: false });
+    this.md.linkify
+      .set({ fuzzyLink: false })
+      .add('www.', {
+        validate(text, pos, self) {
+          if (self.re.link_fuzzy.test(text)) {
+            const sub = pos > 4 ? 5 : 4;
+            return text.match(self.re.link_fuzzy)[0].length - sub;
+          }
+          return 0;
+        },
+        normalize(match) {
+          match.url = `http://${match.url}`;
+        }
+      });
     this.md
       .use(emoji)
       .use(MarkdownItContainer, 'warning', {
