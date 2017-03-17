@@ -29,9 +29,40 @@
 namespace DeskPRO\Bundle\AppBundle\Features;
 
 use DeskPRO\Component\Util\AbstractCollection;
+use Symfony\Component\HttpFoundation\RequestStack;
 
+/**
+ * Class FeaturesCollection.
+ */
 class FeaturesCollection extends AbstractCollection
 {
+    /**
+     * @var bool
+     */
+    private $debug;
+
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    /**
+     * FeaturesCollection constructor.
+     *
+     * @param              $debug
+     * @param RequestStack $requestStack
+     */
+    public function __construct($debug, RequestStack $requestStack)
+    {
+        $this->debug        = $debug;
+        $this->requestStack = $requestStack;
+    }
+
+    /**
+     * @param BetaFeatureInterface $feature
+     *
+     * @return $this
+     */
     public function addFeature(BetaFeatureInterface $feature)
     {
         if (!$this->hasFeature($feature)) {
@@ -56,6 +87,14 @@ class FeaturesCollection extends AbstractCollection
     }
 
     /**
+     * @return mixed
+     */
+    public function getAvailableFeatures()
+    {
+        return array_filter($this->collection, [$this, 'filterAvailable']);
+    }
+
+    /**
      * @param $feature
      *
      * @return BetaFeatureInterface|null
@@ -77,5 +116,70 @@ class FeaturesCollection extends AbstractCollection
         }
 
         return $this->getFeature($feature)->isEnabled();
+    }
+
+    /**
+     * @param BetaFeatureInterface $feature
+     *
+     * @return bool
+     */
+    private function filterAvailable(BetaFeatureInterface $feature)
+    {
+        foreach ($feature->getAvailability() as $availableAt) {
+            if ($this->availableEverywhere($availableAt)
+                || $this->availableAtCloud($availableAt)
+                || $this->availableAtOnprem($availableAt)
+                || $this->availableAtQa($availableAt)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $avatailableAt
+     *
+     * @return bool
+     */
+    private function availableEverywhere($avatailableAt)
+    {
+        return $avatailableAt === BetaFeatureInterface::AVAILABLE_EVERYWHERE;
+    }
+
+    /**
+     * @param $avatailableAt
+     *
+     * @return bool
+     */
+    private function availableAtCloud($avatailableAt)
+    {
+        return $avatailableAt === BetaFeatureInterface::AVAILABLE_AT_CLOUD && defined('DPC_IS_CLOUD');
+    }
+
+    /**
+     * @param $avatailableAt
+     *
+     * @return bool
+     */
+    private function availableAtOnprem($avatailableAt)
+    {
+        return $avatailableAt === BetaFeatureInterface::AVAILABLE_AT_ONPREM && !defined('DPC_IS_CLOUD');
+    }
+
+    /**
+     * @param $availableAt
+     *
+     * @return bool
+     */
+    private function availableAtQa($availableAt)
+    {
+        return
+            $availableAt === BetaFeatureInterface::AVAILABLE_AT_QA
+            && ($this->debug
+                 || ($this->requestStack->getMasterRequest()
+                      && strpos($this->requestStack->getMasterRequest()->getHost(), 'deskprodemo.com') !== false
+                    )
+                );
     }
 }

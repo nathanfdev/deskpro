@@ -31,45 +31,80 @@ namespace DpTestSrc\TestBundle\Mock\Features;
 use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Class DisabledFeature.
+ */
 class DisabledFeature implements BetaFeatureInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getId()
     {
         return 'disabled_feature';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTitle()
     {
         return 'This feature is disabled forever';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getShortDescription()
     {
         return 'This feature is disabled forever';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getEnableDescription()
     {
         return 'This feature is disabled forever';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDisableDescription()
     {
         return 'This feature is disabled forever';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function enable(ContainerInterface $container)
     {
         return;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function disable(ContainerInterface $container)
     {
         return;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isEnabled()
     {
         return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAvailability()
+    {
+        return [BetaFeatureInterface::AVAILABLE_EVERYWHERE];
     }
 }

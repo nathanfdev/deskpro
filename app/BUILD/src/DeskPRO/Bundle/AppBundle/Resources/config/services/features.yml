@@ -4,6 +4,9 @@ services:
 
   deskpro.features_collection:
     class: DeskPRO\Bundle\AppBundle\Features\FeaturesCollection
+    arguments:
+      - "%kernel.debug%"
+      - "@request_stack"
 
   deskpro.features.agent_chat:
     class: DeskPRO\Bundle\AppBundle\Features\AgentChatFeature

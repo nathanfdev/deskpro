@@ -97,6 +97,14 @@ HTML;
     /**
      * {@inheritdoc}
      */
+    public function getAvailability()
+    {
+        return [BetaFeatureInterface::AVAILABLE_EVERYWHERE];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function enable(ContainerInterface $container)
     {
         $em = $container->get('doctrine.orm.default_entity_manager');

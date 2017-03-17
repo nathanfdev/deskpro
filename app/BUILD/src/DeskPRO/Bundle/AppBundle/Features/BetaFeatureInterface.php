@@ -34,6 +34,11 @@ interface BetaFeatureInterface
 {
     const BETA_FEATURES_KEY = 'beta_features';
 
+    const AVAILABLE_AT_CLOUD   = 'cloud';
+    const AVAILABLE_AT_ONPREM  = 'onpremise';
+    const AVAILABLE_AT_QA      = 'qa';
+    const AVAILABLE_EVERYWHERE = 'all';
+
     /**
      * @return string
      */
@@ -73,4 +78,9 @@ interface BetaFeatureInterface
      * @return bool
      */
     public function isEnabled();
+
+    /**
+     * @return array
+     */
+    public function getAvailability();
 }

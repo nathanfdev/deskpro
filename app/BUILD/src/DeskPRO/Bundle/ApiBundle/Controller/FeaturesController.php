@@ -71,7 +71,7 @@ class FeaturesController extends BaseController
         $em   = $this->get('doctrine.orm.default_entity_manager');
         $repo = $em->getRepository(TmpData::class);
 
-        foreach ($collection as $feature) {
+        foreach ($collection->getAvailableFeatures() as $feature) {
             /** @var BetaFeatureInterface $feature */
             $tmpData = $repo
                 ->findOneBy(
