@@ -256,14 +256,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			}
 		};
 
-		var recordSnippetUse = function(snippetId) {
+    this.recordSnippetUse = function(snippetId) {
 			var el = $("#" + self.meta.baseId + "_snippet_ids");
 			var current = el.val() || '';
 			var newval = current.length ? current + ',' + snippetId : snippetId+'';
 			el.val(newval);
 		};
-
-		this.recordSnippetUse = recordSnippetUse;
 
 		this.fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
 		this.oldFields = null;
@@ -1969,6 +1967,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.el = null;
     this.labelsInput = null;
     this.form = null;
+    this.recordSnippetUse = null;
     this.billing && this.billing.destroy();
 
     this._updateFields = null;
