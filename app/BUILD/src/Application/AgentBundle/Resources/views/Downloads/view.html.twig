@@ -28,12 +28,21 @@ pageMeta.baseId = '{{ baseId }}';
 <header class="page-header">
 	<h4 class="id-number">#{{ download.id }}</h4>
 	<div style="float:left; padding-left: 8px;">
+		{% set statusCode = download.getStatusCode %}
 		<select id="{{ baseId }}_status">
-			<option {% if download.status == 'published' %}selected="selected"{% endif %} value="published">{{ phrase('agent.publish.status_published') }}</option>
-			<option {% if download.getStatusCode == 'hidden.unpublished' %}selected="selected"{% endif %} value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
-			<option {% if download.status == 'archived' %}selected="selected"{% endif %} value="archived">{{ phrase('agent.publish.status_archived') }}</option>
-			{% if download.person.id == app.user.id %}
-				<option value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
+			<option {% if statusCode == 'published' %}selected="selected"{% endif %} value="published">
+				{{ phrase('agent.publish.status_published') }}
+			</option>
+			<option {% if statusCode == 'hidden.unpublished' %}selected="selected"{% endif %} value="hidden.unpublished">
+				{{ phrase('agent.publish.status_hidden_unpublished') }}
+			</option>
+			<option {% if statusCode == 'archived' %}selected="selected"{% endif %} value="archived">
+				{{ phrase('agent.publish.status_archived') }}
+			</option>
+			{% if download.person.id == app.user.id or statusCode == 'hidden.draft' %}
+				<option {% if statusCode == 'hidden.draft' %}selected="selected"{% endif %} value="hidden.draft">
+					{{ phrase('agent.publish.status_hidden_draft') }}
+				</option>
 			{% endif %}
 		</select>
 	</div>
