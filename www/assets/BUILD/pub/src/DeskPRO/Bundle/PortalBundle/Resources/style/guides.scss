@@ -216,6 +216,15 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
           text-decoration: none;
           color: #709FD6;
         }
+        & a {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: inline-block;
+          padding-right: 24px;
+          width: 100%;
+          position: relative;
+        }
         & > ul {
           margin: 0;
           padding: 0;
@@ -224,11 +233,14 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
             clear: both;
             a {
               font-size: 12px;
+              height: 23px;
               text-decoration: none;
               color: #8b8b8b;
             }
             ul {
-              padding-left: 15px;
+              margin: 0;
+              padding: 0 0 0 15px;
+
             }
           }
         }
@@ -238,14 +250,14 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       background-color: #eff8fd;
       color: #709FD6;
       height: 23px;
-      width: 100%;
-      display: inline-block;
       border-right: 2px solid #709fd6;
       margin-right: -1px;
     }
     li.topic-item a .fa {
-      margin-right: 24px;
+      margin-right: -12px;
       line-height: 24px;
+      position: absolute;
+      right: 20px;
     }
     ul.hidden {
       display: none;
