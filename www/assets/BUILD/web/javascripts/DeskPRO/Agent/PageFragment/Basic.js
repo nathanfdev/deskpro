@@ -137,6 +137,11 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 				});
 				self.wrapper.find('.with-select2').each(function() {
 					$(this).select2('destroy');
+					var select2 = $(this).data('select2');
+					if (select2 && select2.opts.element) {
+            select2.opts.element.removeData().off();
+            select2.opts = null;
+          }
 				});
 				self.wrapper.find('textarea.with-redactor').each(function() {
 					var obj = $(this).getObject();
