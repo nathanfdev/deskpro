@@ -284,6 +284,8 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 		this.options.context = null;
     this.options.triggerElements = null;
 		this.options = null;
+    this.lastActiveTab = null;
+    this.lastActiveTabContent = null;
 		this.destroyEvents();
 	}
 });

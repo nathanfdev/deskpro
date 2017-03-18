@@ -1381,7 +1381,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}
 			});
 
-			var te = new DeskPRO.TextExpander({
+			this.te = new DeskPRO.TextExpander({
 				textarea: ed,
 				onCombo: function(combo, ev) {
 					combo = combo.replace(/%/g, '');
@@ -1996,6 +1996,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     this.otherTabs && this.otherTabs.destroy();
     this.otherTabs = null;
+
+    this.te && this.te.destroy();
+    this.te = null;
 	}
 
 });
