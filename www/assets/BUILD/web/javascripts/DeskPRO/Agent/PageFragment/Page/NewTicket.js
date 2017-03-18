@@ -64,19 +64,17 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 
 		if (this.getEl('headerbox_box_billing').length) {
-			var billing = new DeskPRO.Agent.PageHelper.TicketBilling(this.getEl('headerbox_box_billing'), this.meta.baseId, {
+			this.billing = new DeskPRO.Agent.PageHelper.TicketBilling(this.getEl('headerbox_box_billing'), this.meta.baseId, {
 				auto_start_bill: this.meta.auto_start_bill
 			});
 			this.addEvent('activate', function() {
 				if (this.meta.auto_start_bill) {
-					billing.startBillingTimer(true);
+					self.billing.startBillingTimer(true);
 				}
 			});
 			this.addEvent('deactivate', function() {
-				billing.stopBillingTimer(true);
+				self.billing.stopBillingTimer(true);
 			});
-
-      this.billing = billing;
 		}
 
 		$('.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
@@ -158,14 +156,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			self._resetForX();
 		});
 
-		var messageEl = this.getEl('message');
-		var subjectEl = this.getEl('subject');
-
-		messageEl.on('keydown', function() {
-			messageEl.addClass('editted');
+    this.getEl('message').on('keydown', function() {
+      self.getEl('message').addClass('editted');
 		});
-		subjectEl.on('keydown', function() {
-			subjectEl.addClass('editted');
+    this.getEl('subject').on('keydown', function() {
+      self.getEl('subject').addClass('editted');
 		});
 
 		window.setTimeout(function() {
@@ -366,8 +361,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			self.getCustomFields();
 		});
 
-		var $cont = self.getEl('fields_container');
-		$cont.on('change dp.change', function(e){
+    this.getEl('fields_container').on('change dp.change', function(e){
 			var name = $(e.target).attr('name');
 			if (!name) return;
 			if (name.indexOf('custom_fields[field_') !== -1 || name.indexOf('custom_person_fields[field_') !== -1 || name.indexOf('custom_org_fields[field_') !== -1) {
@@ -447,7 +441,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			statusMenuMenu.open();
 		};
 
-		statusMenuTrigger.on('click', function(ev) {
+    this.wrapper.find('.status-menu-trigger').on('click', function(ev) {
 			ev.preventDefault();
 			self.openStatusMenu();
 		});
@@ -1222,9 +1216,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 	_initCcSelection: function() {
 		var self = this;
-		var ccbox = this.getEl('user_ccbox');
 
-		ccbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+    this.getEl('user_ccbox').bind('personsearchboxclick', function(ev, personId, name, email, sb) {
 			$.ajax({
 				type: 'GET',
 				url: BASE_URL + 'agent/people/' + personId + '/basic.json',
@@ -1246,7 +1239,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			sb.close();
 			sb.reset();
 		});
-		ccbox.bind('personsearchboxclicknew personsearchenter', function(ev, term, sb) {
+    this.getEl('user_ccbox').bind('personsearchboxclicknew personsearchenter', function(ev, term, sb) {
 
 			var rowid = Orb.uuid();
 
@@ -1975,6 +1968,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     this.fieldDisplayFetch = null;
 
     this.openStatusMenu = null;
+    this.statusMenu && this.statusMenu.remove(); // detached
+    this.statusMenu = null;
+    this.statusBackdrop && this.statusBackdrop.remove(); // detached
+    this.statusBackdrop = null;
 
     $('#settingswin').off('dp_macros_updated', this.onDpMacrosUpdated);
     this.onDpMacrosUpdated = null;
