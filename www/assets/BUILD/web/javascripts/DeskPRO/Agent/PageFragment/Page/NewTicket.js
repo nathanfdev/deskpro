@@ -499,8 +499,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         self.isNote = true;
         emailCheckboxState = $input.prop('checked');
 				replyAsState = self.getEl('reply_as_type').data('type');
-				storedReplyText = self.textarea.getCode();
-				self.textarea.setCode(storedNoteText || '');
+				self.storedReplyText = self.textarea.getCode();
+				self.textarea.setCode(self.storedNoteText || '');
         $input.prop('checked', false).parent().hide();
 
       } else {
@@ -509,8 +509,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         self.isNote = false;
         $input.prop('checked', emailCheckboxState).parent().show();
         self.setReplyAsOptionName(replyAsState, true);
-				storedNoteText = self.textarea.getCode();
-				self.textarea.setCode(storedReplyText || '');
+				self.storedNoteText = self.textarea.getCode();
+				self.textarea.setCode(self.storedReplyText || '');
       }
     });
 
