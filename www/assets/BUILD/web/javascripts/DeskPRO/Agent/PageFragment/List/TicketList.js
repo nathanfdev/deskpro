@@ -900,6 +900,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
       idx = null,
       newTicket;
 
+    if (!$scope) {
+      return;
+    }
+
     $scope.tickets.forEach(function(ticket, i) {
       if (ticket.id !== ticketId) {
         return;
