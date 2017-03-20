@@ -26,7 +26,7 @@
                             </li>
                         {%- endif -%}
                         <li class="the-cudos as-vote-widget">
-                            <a href="{{ portal_path(dl, 'vote_up') }}" class="post-link as-vote-btn">
+                            <a {% if can_rate_download(dl) %} href="{{ portal_path(dl, 'vote_up') }}" class="post-link as-vote-btn" {% else %} class="disabled" {% endif %}>
                                 <i class="fa fa-thumbs-up as-vote-animate"></i> <span class="as-vote-count" data-votes="{{ dl.total_rating }}">{{ dl.total_rating }}</span>
                             </a>
                         </li>

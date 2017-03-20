@@ -5989,7 +5989,7 @@ h1.fancy-header {
         padding: 8px 10px;
         background: darken(darken($page-bg, 2%), 5%);
         color: lighten($text-color-lighter, 20%);
-        &:hover {
+        &:hover:not(.disabled) {
           background: darken(darken($page-bg, 2%), 20%);
           color: text-color-inverted();
         }
