@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -37,6 +38,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 
+/**
+ * Class ErrorController.
+ */
 class ErrorController extends AbstractController
 {
     /**
@@ -142,11 +146,16 @@ class ErrorController extends AbstractController
                     ]
                 );
             } catch (\Exception $e) {
+                SystemErrorHandler::logException($e, false, null, true);
+
                 return new Response($exception->getMessage(), $exception->getStatusCode());
             }
         }
     }
 
+    /**
+     * @param string $path
+     */
     public function notFoundAction($path)
     {
         // this is a portal catch all route. Anything that ends up here was not matched by the router.
@@ -174,7 +183,8 @@ class ErrorController extends AbstractController
     }
 
     /**
-     * @param $code
+     * @param int  $code
+     * @param bool $force_use_default
      *
      * @return string
      */
@@ -187,6 +197,11 @@ class ErrorController extends AbstractController
         return sprintf('%s:%s%s.html.twig', $tpl_prefix, $tpl_start, ($code && !$force_use_default) ? $code : '');
     }
 
+    /**
+     * @param FlattenException $exception
+     *
+     * @return bool
+     */
     protected function delegateApi(FlattenException $exception)
     {
         // Let's try to figure out if this Controller was from API
