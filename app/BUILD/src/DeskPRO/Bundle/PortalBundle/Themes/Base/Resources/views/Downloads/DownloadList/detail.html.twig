@@ -11,8 +11,10 @@
                                data-filesize="{{ dl.readableFileSize }}"
                             {% if not dl.fileurl %}data-date-uploaded="{{ dl.date_created | date('Y-m-d') }}"{% endif %}
                                data-vote-count="{{ dl.total_rating }}"
-                               data-vote-url="{{ portal_path(dl, 'vote_up') }}">
-
+                               data-vote-up-url="{{ portal_path(dl, 'vote_up') }}"
+                               data-vote-down-url="{{ portal_path(dl, 'vote_down') }}"
+                               data-vote-agreed="{% if user_up_voted(dl) %}true{% else %}false{% endif %}"
+                            >
                                 {{ phrase('portal.downloads.download') }}
                                 <i class="fa fa-download"></i>
                             </a>
@@ -26,7 +28,16 @@
                             </li>
                         {%- endif -%}
                         <li class="the-cudos as-vote-widget">
-                            <a {% if can_rate_download(dl) %} href="{{ portal_path(dl, 'vote_up') }}" class="post-link as-vote-btn" {% else %} class="disabled" {% endif %}>
+                            <a
+                                {% if can_rate_download(dl) %}
+                                href="{{ portal_path(dl, user_up_voted(dl) ? 'vote_down' : 'vote_up') }}"
+                                data-vote-up-url="{{ portal_path(dl, 'vote_up') }}"
+                                data-vote-down-url="{{ portal_path(dl, 'vote_down') }}"
+                                class="post-link as-vote-btn {% if user_up_voted(dl) %} agreed {% endif %}"
+                                {% else %}
+                                class="disabled"
+                                {% endif %}
+                            >
                                 <i class="fa fa-thumbs-up as-vote-animate"></i> <span class="as-vote-count" data-votes="{{ dl.total_rating }}">{{ dl.total_rating }}</span>
                             </a>
                         </li>

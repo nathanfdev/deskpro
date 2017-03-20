@@ -1,8 +1,8 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
+import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { DownloadPopup } from '../React/DownloadPopup';
-import $ from 'jquery';
 
 export class DownloadPopupWidget extends PageWidget {
 
@@ -17,7 +17,9 @@ export class DownloadPopupWidget extends PageWidget {
       filesize:      $el.data('filesize'),
       dateUploaded:  $el.data('date-uploaded'),
       downloadUrl:   $el.attr('href'),
-      voteUrl:       $el.data('vote-url'),
+      voteUpUrl:     $el.data('vote-up-url'),
+      voteDownUrl:   $el.data('vote-down-url'),
+      voted:         $el.data('vote-agreed'),
       voteCount:     $el.data('vote-count'),
       $voteWidget:   $parent.find('.as-vote-widget'),
       $button:       this.$element,

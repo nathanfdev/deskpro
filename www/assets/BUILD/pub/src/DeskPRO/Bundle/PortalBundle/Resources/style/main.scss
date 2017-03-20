@@ -6017,6 +6017,13 @@ h1.fancy-header {
           @include wobble-to-top-right-apply();
           vertical-align: baseline;
         }
+
+        .agreed {
+          i {
+            color: #337ab7;
+            opacity: 1;
+          }
+        }
       }
 
       .the-cudos.has-cudos {
