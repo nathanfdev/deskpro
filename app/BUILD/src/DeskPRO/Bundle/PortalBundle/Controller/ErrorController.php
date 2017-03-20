@@ -39,6 +39,12 @@ use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 
 class ErrorController extends AbstractController
 {
+    /**
+     * @param FlattenException $exception
+     * @param null             $logger
+     *
+     * @return bool|Response
+     */
     public function showExceptionAction(FlattenException $exception, $logger = null)
     {
         $requestStack = $this->get('request_stack');
@@ -108,32 +114,36 @@ class ErrorController extends AbstractController
             ]);
         }
 
-        $request  = Request::createFromGlobals();
-        $base_url = $request->getBaseUrl();
+        $request = Request::createFromGlobals();
+        $baseUrl = $request->getBaseUrl();
 
         try {
             return $this->renderThemeView(
                 $template,
                 [
-                    'base_url'    => $base_url,
+                    'base_url'    => $baseUrl,
                     'status_code' => $code,
                     'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
                     'exception'   => $exception,
                 ]
             );
         } catch (\Exception $e) {
-            // if that is not found, use the default for this status code (error.html.twig or exception.html.twig)
-            $template = $this->makeTemplateName($code, true);
+            try {
+                // if that is not found, use the default for this status code (error.html.twig or exception.html.twig)
+                $template = $this->makeTemplateName($code, true);
 
-            return $this->renderThemeView(
-                $template,
-                [
-                    'base_url'    => $base_url,
-                    'status_code' => $code,
-                    'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
-                    'exception'   => $exception,
-                ]
-            );
+                return $this->renderThemeView(
+                    $template,
+                    [
+                        'base_url'    => $baseUrl,
+                        'status_code' => $code,
+                        'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
+                        'exception'   => $exception,
+                    ]
+                );
+            } catch (\Exception $e) {
+                return new Response($exception->getMessage(), $exception->getStatusCode());
+            }
         }
     }
 
