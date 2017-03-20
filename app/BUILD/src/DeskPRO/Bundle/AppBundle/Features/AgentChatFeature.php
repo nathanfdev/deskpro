@@ -355,7 +355,7 @@ INSERT;
         // note here we are explicitly using that $message var contains last from $messages
         $update = <<<UPDATE
 UPDATE `agent_chat` 
-   SET `date_last_message` = GREATEST(`date_last_message`, '{$message['date_created']}')
+   SET `date_last_message` = IF(`date_last_message` > '{$message['date_created']}', `date_last_message`, '{$message['date_created']}')
  WHERE `id` = {$newChatId}
 UPDATE;
 
