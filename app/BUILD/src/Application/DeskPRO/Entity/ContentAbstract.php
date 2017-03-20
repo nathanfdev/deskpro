@@ -747,13 +747,13 @@ abstract class ContentAbstract extends DomainObject
     public function markRatingChangedPositivly()
     {
         // 2 to override the -1 when the neg rating was added
-        $this['total_rating'] = $this->total_rating + 2;
+        $this['total_rating'] = $this->total_rating + 1;
     }
 
     public function markRatingChangedNegatively()
     {
         // 2 to override the -1 when the positive rating was added
-        $this['total_rating'] = $this->total_rating - 2;
+        $this['total_rating'] = $this->total_rating - 1;
     }
 
     public function getRatingPercent()
