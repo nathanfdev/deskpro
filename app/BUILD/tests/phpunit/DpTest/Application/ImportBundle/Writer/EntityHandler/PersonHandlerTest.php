@@ -119,8 +119,8 @@ class PersonHandlerTest extends AbstractEntityHandlerTest
 
         $this->assertNotNull($entity);
         $this->assertEquals('f_name l_name', $entity->getName());
-        $this->assertEquals('f_name', $entity->first_name);
-        $this->assertEquals('l_name', $entity->last_name);
+        $this->assertEquals('f_name', $entity->getFirstName());
+        $this->assertEquals('l_name', $entity->getLastName());
         $this->assertEquals('email@deskpro.dev', $entity->getPrimaryEmailAddress());
         $this->assertTrue($entity->isAgent());
         $this->assertTrue($entity->isAdmin());
@@ -129,11 +129,11 @@ class PersonHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('Europe/London', $entity->getTimezone());
         $this->assertNotNull($entity->getPassword());
         $this->assertEquals('Organization2', $entity->getOrganization()->getName());
-        $this->assertEquals('manager', $entity->organization_position);
+        $this->assertEquals('manager', $entity->getOrganizationPosition());
         $this->assertEquals(['email@deskpro.dev', 'email2@deskpro.dev'], $entity->getEmailAddresses());
         $this->assertCount(2, $entity->getUsergroups());
-        $this->assertEquals('group_1', $entity->getUsergroups()[0]->getSysName());
-        $this->assertEquals('group_2', $entity->getUsergroups()[1]->getSysName());
+        $this->assertEmpty($entity->getUsergroups()[0]->getSysName());
+        $this->assertEmpty($entity->getUsergroups()[1]->getSysName());
         $this->assertCount(2, $entity->getLabels());
         $this->assertCount(1, $entity->getCustomData());
         $this->assertCount(1, $entity->getContactData());
