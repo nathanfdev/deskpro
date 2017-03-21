@@ -138,9 +138,9 @@ class ArticleCategoryHandlerTest extends AbstractEntityHandlerTest
 
         $this->assertCount(2, $entity->getUserGroups());
         $this->assertEquals('Group 1', $entity->getUserGroups()[0]->getTitle());
-        $this->assertEquals('group_1', $entity->getUserGroups()[0]->getSysName());
+        $this->assertEmpty($entity->getUserGroups()[0]->getSysName());
         $this->assertEquals('Group 2', $entity->getUserGroups()[1]->getTitle());
-        $this->assertEquals('group_2', $entity->getUserGroups()[1]->getSysName());
+        $this->assertEmpty($entity->getUserGroups()[1]->getSysName());
     }
 
     public function test_update_user_groups()
@@ -178,9 +178,9 @@ class ArticleCategoryHandlerTest extends AbstractEntityHandlerTest
         $this->assertCount(2, $entity->getUserGroups());
 
         $this->assertEquals('Group 1', $entity->getUserGroups()[0]->getTitle());
-        $this->assertEquals('group_1', $entity->getUserGroups()[0]->getSysName());
+        $this->assertEmpty($entity->getUserGroups()[0]->getSysName());
         $this->assertEquals('Group 3', $entity->getUserGroups()[1]->getTitle());
-        $this->assertEquals('group_3', $entity->getUserGroups()[1]->getSysName());
+        $this->assertEmpty($entity->getUserGroups()[1]->getSysName());
 
         $this->assertEquals($ug1->getId(), $entity->getUserGroups()[0]->getId());
         $this->assertNotEquals($ug2->getId(), $entity->getUserGroups()[1]->getId());
