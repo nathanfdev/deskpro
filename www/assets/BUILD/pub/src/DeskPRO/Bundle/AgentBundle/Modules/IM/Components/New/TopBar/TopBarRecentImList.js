@@ -18,8 +18,10 @@ class TopBarRecentImList extends RecentList {
 
   static propTypes = {
     chats:             PropTypes.object.isRequired,
+    imSettings:        PropTypes.object.isRequired,
     children:          PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     onRecentClick:     PropTypes.func.isRequired,
+    updateChatsOrder:  PropTypes.func.isRequired,
     me:                PropTypes.object.isRequired,
     current:           PropTypes.object.isRequired,
     agents:            PropTypes.object.isRequired,
@@ -48,6 +50,15 @@ class TopBarRecentImList extends RecentList {
     }
   };
 
+  static isLoaded(props) {
+    return props.agentsLoaded && props.teamsLoaded && props.departmentsLoaded && props.recentLoaded;
+  }
+
+  static getNextOrder(chats) {
+    const order = chats.size > 0 ? chats.sort((a, b) => b.get('order') - a.get('order')).first().get('order') : 0;
+    return order + 1;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -55,6 +66,7 @@ class TopBarRecentImList extends RecentList {
       slice: chatActions.countSlice()
     };
     this.resizeTimeout = null;
+    this.firstLoad = true;
   }
 
   componentWillMount() {
@@ -69,8 +81,15 @@ class TopBarRecentImList extends RecentList {
           this.setState({ slice: chatActions.countSlice() });
           this.resizeTimeout = null;
         },
-        10
+        33
       );
+    }
+  };
+
+  updateChatsOrder = (props) => {
+    if (this.firstLoad && TopBarRecentImList.isLoaded(props)) {
+      this.firstLoad = false;
+      props.updateChatsOrder(this.state.chats);
     }
   };
 
@@ -80,15 +99,12 @@ class TopBarRecentImList extends RecentList {
     const { hiddenChats, me, startedByMeChats } = props;
 
     if (props.chats) {
-      RecentList
-        .sortList(props.chats)
-        .forEach((chat) => {
-          const chatId = chat.get('id');
-          const path   = [chatId, 'added'];
-          chats = chats.set(chatId, chat.set('added', chats.hasIn(path) ? chats.getIn(path) : Date.now()));
-        });
+      props.chats.forEach((chat) => {
+        const order = chats.getIn([chat.get('id'), 'order']) || props.imSettings.getIn(['chats_order', `${chat.get('id')}`]) || TopBarRecentImList.getNextOrder(chats);
+        chats = chats.set(chat.get('id'), chat.set('order', order));
+      });
     }
-    let sorted = chats.sort((a, b) => b.get('added') - a.get('added'));
+    let sorted = chats.sort((a, b) => a.get('order') - b.get('order'));
     if (hiddenChats || startedByMeChats) {
       sorted = sorted.filter((chat) => {
         if (!chat.get('date_last_message') && !((startedByMeChats && startedByMeChats.get(chat.get('id'))) || me.get('id') === chat.get('admin'))) {
@@ -101,17 +117,18 @@ class TopBarRecentImList extends RecentList {
     }
     sorted = sorted.filter(chat => props.chats.has(chat.get('id')));
 
-    this.setState({ chats: sorted });
+    this.setState({ chats: sorted }, () => this.updateChatsOrder(props));
   }
 
   getItems() {
-    const { current, chats } = this.props;
+    const { current, chats, imSettings } = this.props;
     let stateChats = this.state.chats.slice(0, this.state.slice);
     if (current.get('id') && !stateChats.has(current.get('id'))) {
       const chat = chats.get(current.get('id'));
       if (chat) { // I'm not sure why current chat could absent, but seems that Lauren somehow reached that
-        stateChats = stateChats.set(current.get('id'), chat.set('added', Date.now()));
-        stateChats = stateChats.sort((a, b) => b.get('added') - a.get('added'));
+        const order = imSettings.getIn(['chats_order', `${chat.get('id')}`]);
+        stateChats = stateChats.set(current.get('id'), chat.set('order', order || TopBarRecentImList.getNextOrder(stateChats)));
+        stateChats = stateChats.sort((a, b) => a.get('order') - b.get('order'));
         stateChats = stateChats.slice(0, this.state.slice);
       }
     }
@@ -196,6 +213,8 @@ class TopBarRecentImList extends RecentList {
           className={classNames(className)}
         />
         {(active && agent.get('online')) ? <span className="agent-online" /> : null}
+
+
         {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
       </span>
@@ -281,10 +300,8 @@ class TopBarRecentImList extends RecentList {
   }
 
   render() {
-    const { agentsLoaded, teamsLoaded, departmentsLoaded, recentLoaded } = this.props;
-    const loaded = agentsLoaded && teamsLoaded && departmentsLoaded && recentLoaded;
     return (
-      <Loader loaded={loaded} opacity={0} width={3} scale={0.5} color="#4696dc">
+      <Loader loaded={TopBarRecentImList.isLoaded(this.props)} opacity={0} width={3} scale={0.5} color="#4696dc">
         <div className={classNames(['im', 'recent', { empty: this.state.chats.size < 1 }])}>
           {this.getItems()}
           {this.props.children}

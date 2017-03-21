@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
 
+use Application\DeskPRO\Entity\PersonPref;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
@@ -307,5 +308,39 @@ class AgentChatsController extends CrudController
         $this->get('doctrine.orm.default_entity_manager')->flush();
 
         return View::create(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Rest\Post("/chats_order")
+     *
+     * @param Request $request
+     *
+     * @throws InvalidFormException
+     *
+     * @return View
+     */
+    public function saveChatsOrderAction(Request $request)
+    {
+        $chatsOrder = $request->request->get('chats_order');
+
+        $pref = $this
+            ->get('doctrine.orm.default_entity_manager')
+            ->getRepository(PersonPref::class)
+            ->findOneBy(['name' => 'agent.ui.im.chats_order', 'person' => $this->getUser()]);
+
+        if (!$pref) {
+            $pref = new PersonPref();
+            $pref
+                ->setPerson($this->getUser())
+                ->setName('agent.ui.im.chats_order');
+        }
+        $newPrefs = array_replace($pref->getValue() ?: [], $chatsOrder);
+        foreach ($newPrefs as &$preference) {
+            $preference = (int) $preference;
+        }
+        $pref->setValueArray($newPrefs);
+        $em = $this->get('doctrine.orm.default_entity_manager');
+        $em->persist($pref);
+        $em->flush();
     }
 }

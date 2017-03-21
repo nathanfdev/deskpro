@@ -126,6 +126,11 @@ class AgentPrefs implements \Orb\Helper\ShortCallableInterface
         return false;
     }
 
+    /**
+     * @param $name
+     *
+     * @return mixed|null
+     */
     public function getPref($name)
     {
         $this->preload();
