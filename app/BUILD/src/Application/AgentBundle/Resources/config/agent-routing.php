@@ -1574,9 +1574,9 @@ $collection->create('agent_publish_ratingwhovoted', [
 ]);
 
 $collection->create('agent_publish_whoviewed', [
-    'path'       => '/publish/who-viewed/{object_type}/{object_id}/{view_action}',
+    'path'       => '/publish/who-viewed/{objectType}/{objectId}/{viewAction}',
     'controller' => 'AgentBundle:Publish:whoViewed',
-    'defaults'   => ['view_action' => 1],
+    'defaults'   => ['viewAction' => 1],
 ]);
 
 $collection->create('agent_publish_save_stickysearchwords', [

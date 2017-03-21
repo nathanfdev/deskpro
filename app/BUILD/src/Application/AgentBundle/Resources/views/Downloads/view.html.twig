@@ -172,14 +172,14 @@ pageMeta.baseId = '{{ baseId }}';
 				{% if user_view_count %}
 					<dt></dt>
 					<dd>
-						{{ phrase('agent.general.registered_views') }}: <a href="{{ path('agent_publish_whoviewed', {object_type: 2, object_id: download.id}) }}" class="open-who-viewed">{{ user_view_count }}</a>
+						{{ phrase('agent.general.registered_views') }}: <a href="{{ path('agent_publish_whoviewed', {objectType: 2, objectId: download.id}) }}" class="open-who-viewed">{{ user_view_count }}</a>
 					</dd>
 				{% endif %}
 
 				{% if user_download_count %}
 					<dt></dt>
 					<dd>
-						{{ phrase('agent.general.registered_downloads') }}: <a href="{{ path('agent_publish_whoviewed', {object_type: 2, object_id: download.id, view_action: 2}) }}" class="open-who-downloaded">{{ user_download_count }}</a>
+						{{ phrase('agent.general.registered_downloads') }}: <a href="{{ path('agent_publish_whoviewed', {objectType: 2, objectId: download.id, viewAction: 2}) }}" class="open-who-downloaded">{{ user_download_count }}</a>
 					</dd>
 				{% endif %}
 			</dl>

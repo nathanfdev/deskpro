@@ -24,3 +24,8 @@ services:
       - "@anti_abuse"
       - "@router"
       - "@brand_stack"
+
+  content.page_view:
+    class: DeskPRO\Bundle\PortalBundle\PageViewLog\PageViewLogService
+    arguments:
+      - '@doctrine.orm.default_entity_manager'

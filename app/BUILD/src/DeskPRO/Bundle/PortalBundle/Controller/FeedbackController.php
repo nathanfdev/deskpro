@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
@@ -466,6 +467,11 @@ class FeedbackController extends AbstractController
         $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
         $check->markAsCheckOnly();
         $this->get('anti_abuse')->check($check);
+
+        // REGISTERED PAGE VIEW LOG
+        if ($person = $this->getUser()) {
+            $this->container->get('content.page_view')->pageView($person, PageViewLog::TYPE_FEEDBACK, $item->getId());
+        }
 
         // RENDER THEME
 
