@@ -178,11 +178,12 @@ class SystemErrorHandler
     }
 
     /**
-     * @param \Exception $exception The exception to log
-     * @param bool       $send      True to send a report to deskpro
-     * @param string     $unique_id An error ID. if this error has been reported before, it will not be reported again
+     * @param \Exception $exception    The exception to log
+     * @param bool       $send         True to send a report to deskpro
+     * @param string     $unique_id    An error ID. if this error has been reported before, it will not be reported again
+     * @param bool       $noShowErrors Don't show errors override
      */
-    public static function logException(\Exception $exception, $send = false, $unique_id = null)
+    public static function logException(\Exception $exception, $send = false, $unique_id = null, $noShowErrors = false)
     {
         if (!self::shouldLog($exception)) {
             return;
@@ -224,7 +225,12 @@ class SystemErrorHandler
         if (!$send) {
             $einfo['no_send_error'] = true;
         }
+
+        $curNoShowErrors = self::$noShowErrors;
+
+        self::$noShowErrors = $noShowErrors;
         self::logErrorInfo($einfo);
+        self::$noShowErrors = $curNoShowErrors;
     }
 
     private static function shouldLog(/* Throwable */
