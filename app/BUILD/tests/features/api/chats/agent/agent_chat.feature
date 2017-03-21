@@ -4,6 +4,7 @@ Feature: /agent_chats endpoint
 
   Background:
     Given I'm authenticated as admin
+    And the setting "beta_features.agent_chat" is set to 1
 
   Scenario: I create chat with agent
     Given an agent with "darthvader@deathstar.battle-stations" email exists

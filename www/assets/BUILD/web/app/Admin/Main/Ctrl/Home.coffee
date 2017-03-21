@@ -8,7 +8,7 @@ define [
   class Admin_Main_Ctrl_Home extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_Main_Ctrl_Home'
     @CTRL_AS   = 'Home'
-    @DEPS      = ['$http', 'DpLicense']
+    @DEPS      = ['$http', 'DpLicense', 'Growl']
 
     init: ->
       @online_agents = []
@@ -23,8 +23,10 @@ define [
       @offline_agents = []
       @unactive_agents = []
       @agentsMap = {}
+      @features = {}
       @service =
         agents: @DataService.get 'Agents'
+      @$scope.keys = Object.keys
 
       @loadConfigPhpTest();
       @loadMethodTests()
@@ -56,10 +58,10 @@ define [
       )
 
       @Api.sendDataGet({
-        cronStatus:  '/server/cron-status',
-        errorStatus: '/server/error-status',
-        apcStatus:   '/server/apc-status',
-        quickStats:  '/tickets/quick-stats'
+        cronStatus:   '/server/cron-status',
+        errorStatus:  '/server/error-status',
+        apcStatus:    '/server/apc-status',
+        quickStats:   '/tickets/quick-stats',
       }).then( (result) =>
         @cron_status    = result.data.cronStatus
         @error_status   = result.data.errorStatus
@@ -95,7 +97,31 @@ define [
           @news = result.data.news.news
       )
 
+      @Api2.sendGet('features').then( (res) =>
+        res.data.data?.forEach( (feature) =>
+          if feature.processing
+            @pollFeatures()
+          @features[feature.id] = feature;
+        )
+      )
+
       return promise
+
+
+    pollFeatures: =>
+      if not @pollTimer
+        @pollTimer = setTimeout @actualPoll, 60000
+
+    actualPoll: =>
+      @Api2.sendGet('features').then( (res) =>
+        @pollTimer = null
+        res.data.data.forEach((feature) =>
+          if @features[feature.id].processing == true && feature.processing == false
+            @Growl.success 'Feature ' + feature.title + ' successfully ' + if feature.enabled then 'enabled' else 'disabled' + '!'
+          if feature.processing then @pollFeatures()
+          @features[feature.id] = feature
+        )
+      )
 
     # todo just move agent object from one array to another when BaseListEdit will be able to handle model objects updates after reload
     refreshAgents: ->

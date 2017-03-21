@@ -36,6 +36,7 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\JobQueue\JobRouter;
+use Application\DeskPRO\JobQueue\Processor\FeatureProcessor;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\MassActions\PublishProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
@@ -131,6 +132,14 @@ class JobRouterService
                 $container->getEm(),
                 $container->getBlobStorage(),
                 $container->get('serializer')
+            )
+        );
+
+        // features processor
+        $router->addProcessor(
+            new FeatureProcessor(
+                $conn,
+                $container
             )
         );
 

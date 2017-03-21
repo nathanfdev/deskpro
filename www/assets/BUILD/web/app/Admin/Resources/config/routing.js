@@ -108,6 +108,13 @@ define(function() {
     controller:   'Admin_Main_Ctrl_Nav'
   });
 
+  routes.push({
+    id:           'features',
+    url:          '/features',
+    templateName: 'Layout/app.html',
+    controller:   'Admin_Main_Ctrl_Nav'
+  });
+
   //##################################################################################################################
   // Interface Nav
   //##################################################################################################################
@@ -2373,6 +2380,24 @@ define(function() {
     url: '/settings',
     templateName: 'Tasks/settings.html',
     controller: 'Admin_Tasks_Ctrl_Edit'
+  });
+
+  //##################################################################################################################
+  // Features
+  //##################################################################################################################
+
+  routes.push({
+    id: 'features.enable',
+    url: '/enable/{id:[a-zA-Z0-9\\._\\-]+}',
+    templateName: 'Features/enable.html',
+    controller: 'Admin_Main_Ctrl_Features'
+  });
+
+  routes.push({
+    id: 'features.disable',
+    url: '/disable/{id:[a-zA-Z0-9\\._\\-]+}',
+    templateName: 'Features/disable.html',
+    controller: 'Admin_Main_Ctrl_Features'
   });
 
   //##################################################################################################################

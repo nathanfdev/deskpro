@@ -28,12 +28,20 @@
 
 namespace DpSys;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
+use DpSys\LowError\SystemErrorHandler;
+use Symfony\Component\DependencyInjection\Exception\LogicException;
+
 /**
  * This class handles feature flags for both licensed features as well as experimental features.
  */
 final class Features
 {
     const VOICE = 'voice';
+
+    /** @var SettingsResolver */
+    private $settingsResolver;
 
     /**
      * @var Features
@@ -54,6 +62,16 @@ final class Features
         }
 
         return self::$inst;
+    }
+
+    /**
+     * @internal
+     *
+     * @param SettingsResolver $settingsResolver
+     */
+    public function _setSettingsResolver(SettingsResolver $settingsResolver)
+    {
+        $this->settingsResolver = $settingsResolver;
     }
 
     /**
@@ -78,6 +96,13 @@ final class Features
      */
     public function hasFeature($id)
     {
+        /*
+         * @TODO aftery long discussion with SY and tries to pass here featuresCollection I postponed it.
+         * The main purpose to use featuresCollection here - avoid need to change hasBeta to hasFeature in templates
+         * see FeaturesListener.
+         * Generally it is a good idea, but internal settings of featuresCollection won't work (hasFeature called
+         * before it) also we cant pass featuresCollection here via DI cause circular dependency occurs.
+         */
         switch ($id) {
             case self::VOICE:
                 return $this->hasVoice();
@@ -85,6 +110,20 @@ final class Features
                 // assume it's an arbitrary experimental flag
                 return $this->hasExperimental($id);
         }
+    }
+
+    public function hasBeta($id)
+    {
+        if (!$this->settingsResolver) {
+            $e = new LogicException('There is no settings resolver set in DpSys\Features. Check the code!');
+            SystemErrorHandler::handleException($e);
+
+            return false;
+        }
+
+        $key = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $id);
+
+        return $this->settingsResolver->getGlobalSettings()->getBool($key, false);
     }
 
     /**

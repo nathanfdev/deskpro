@@ -5,7 +5,7 @@ services:
 
   security.feature_listener:
     class: DeskPRO\Bundle\AppBundle\Security\EventListener\FeatureListener
-    arguments: ["@deskpro.feature_flags", "@annotation_reader"]
+    arguments: ["@deskpro.feature_flags", "@deskpro.features_collection", "@annotation_reader"]
     tags:
       - { name: kernel.event_subscriber }
 

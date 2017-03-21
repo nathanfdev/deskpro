@@ -200,6 +200,31 @@
 					</article>
 				</td>
 			</tr>
+			<tr ng-show="keys(Home.features).length > 0">
+				<td class="dp-item">
+					<header>
+						<h3>Beta features</h3>
+					</header>
+					<article>
+						<div class="dp-mpadded">
+							<div style="padding-bottom: 20px;" ng-repeat="(featureId, feature) in Home.features">
+								<strong>{{ ng_var('feature.title') }}: </strong> <span ng-bind-html="feature.short_description"></span>
+								<a ng-show="!feature.enabled && !feature.processing" class="btn btn-success" href="{{ ng_href('features.enable', '{id: feature.id}') }}">Enable</a>
+								<a ng-show="feature.enabled && !feature.processing"  class="btn btn-danger" href="{{ ng_href('features.disable', '{id: feature.id}') }}">Disable</a>
+								<span ng-show="feature.enabled && feature.processing">
+									<br/>
+									Please wait while the feature is <span style='color: red'>disabled</span>. This may take a few minutes
+								</span>
+								<span ng-show="!feature.enabled && feature.processing">
+									Please wait while the feature is <span style='color: green'>enabled</span>. This may take a few minutes
+								</span>
+								<i ng-show="feature.processing" class="spinner-flat"></i>
+							</div>
+						</div>
+					</article>
+				</td>
+				<td></td>
+			</tr>
 		</table>
 	</div>
 {% endblock %}

@@ -26,28 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Features;
 
-namespace Application\DeskPRO\WorkerProcess\Job;
-
-use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 
 /**
- * Updates agents online through dispatching event for action alerts.
+ * Class AbstractFeature.
  */
-class UpdateAgentsOnline extends AbstractJob
+abstract class AbstractFeature implements BetaFeatureInterface
 {
-    const DEFAULT_INTERVAL = 120; // 2 minutes
+    /**
+     * @var SettingsResolver
+     */
+    private $settingsResolver;
 
-    public function run()
+    /**
+     * AbstractFeature constructor.
+     *
+     * @param SettingsResolver $settingsResolver
+     */
+    public function __construct(SettingsResolver $settingsResolver)
     {
-        if ($this->getContainer()->get('deskpro.feature_flags')->hasBeta('agent_chat')) {
-            $data_service     = $this->getContainer()->get('data.agent');
-            $agent_ids        = $data_service->getAgentsOnlineStatus();
-            $event_dispatcher = $this->getContainer()->get('event_dispatcher');
-            $event_dispatcher->dispatch(UpdateOnlineEvent::EVENT_NAME, new UpdateOnlineEvent($agent_ids));
-        }
+        $this->settingsResolver = $settingsResolver;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        $key = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $this->getId());
+
+        return $this->settingsResolver->getGlobalSettings()->getBool($key, false);
     }
 }

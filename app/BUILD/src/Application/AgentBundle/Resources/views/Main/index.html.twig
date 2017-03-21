@@ -226,7 +226,7 @@
 {% include 'AgentBundle:Main:window-header.html.twig' %}
 {% include 'AgentBundle:Main:window-nav.html.twig' %}
 {% include 'AgentBundle:Main:window-col-layout.html.twig' %}
-{% if not app.hasFeature('agent_chat') %}
+{% if not app.hasBeta('agent_chat') %}
 	{% include 'AgentBundle:Main:window-chat.html.twig' %}
 {% endif %}
 

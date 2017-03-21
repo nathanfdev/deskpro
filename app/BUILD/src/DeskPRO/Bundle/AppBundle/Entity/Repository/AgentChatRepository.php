@@ -163,10 +163,9 @@ class AgentChatRepository extends EntityRepository
         return $results;
     }
 
-    public function findGroupChat(Person $person, $participants)
+    public function findGroupChat($participants)
     {
-        $allParticipants = array_merge([$person->getId()], $participants);
-        $qb              = $this->createQueryBuilder('ac');
+        $qb = $this->createQueryBuilder('ac');
         $qb
             ->innerJoin(AgentChatParticipant::class, 'acp', 'WITH', 'ac.id = acp.chat')
             ->andWhere('ac.type = :type')
@@ -174,9 +173,9 @@ class AgentChatRepository extends EntityRepository
             ->groupBy('ac.id')
             ->having('COUNT(acp.person) = :count')
             ->andHaving('SUM(CASE WHEN acp.person IN (:participants) THEN 1 ELSE 0 END) = :count2')
-            ->setParameter('participants', $allParticipants)
-            ->setParameter('count', count($allParticipants))
-            ->setParameter('count2', count($allParticipants))
+            ->setParameter('participants', $participants)
+            ->setParameter('count', count($participants))
+            ->setParameter('count2', count($participants))
             ->orderBy('ac.id', 'DESC')
             ->setMaxResults(1)
         ;

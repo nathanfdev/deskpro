@@ -26,28 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Features;
 
-namespace Application\DeskPRO\WorkerProcess\Job;
-
-use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
+use DeskPRO\Component\Util\AbstractCollection;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Updates agents online through dispatching event for action alerts.
+ * Class FeaturesCollectionFactory.
  */
-class UpdateAgentsOnline extends AbstractJob
+class FeaturesCollectionFactory extends AbstractCollection
 {
-    const DEFAULT_INTERVAL = 120; // 2 minutes
+    /**
+     * @var bool
+     */
+    private $debug;
 
-    public function run()
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    /**
+     * FeaturesCollection constructor.
+     *
+     * @param bool         $debug
+     * @param RequestStack $requestStack
+     */
+    public function __construct($debug, RequestStack $requestStack = null)
     {
-        if ($this->getContainer()->get('deskpro.feature_flags')->hasBeta('agent_chat')) {
-            $data_service     = $this->getContainer()->get('data.agent');
-            $agent_ids        = $data_service->getAgentsOnlineStatus();
-            $event_dispatcher = $this->getContainer()->get('event_dispatcher');
-            $event_dispatcher->dispatch(UpdateOnlineEvent::EVENT_NAME, new UpdateOnlineEvent($agent_ids));
-        }
+        $this->debug        = $debug;
+        $this->requestStack = $requestStack;
+    }
+
+    /**
+     * @return $this
+     */
+    public function create()
+    {
+        return new FeaturesCollection($this->debug, $this->requestStack, defined('DPC_IS_CLOUD'));
     }
 }

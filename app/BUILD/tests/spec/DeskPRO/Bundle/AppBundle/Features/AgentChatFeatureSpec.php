@@ -30,24 +30,23 @@
  * DeskPRO.
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace spec\DeskPRO\Bundle\AppBundle\Features;
 
-use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
+use Application\DeskPRO\NewSettings\SettingsResolver;
+use PhpSpec\ObjectBehavior;
 
 /**
- * Updates agents online through dispatching event for action alerts.
+ * @mixin \DeskPRO\Bundle\AppBundle\Features\AgentChatFeature
  */
-class UpdateAgentsOnline extends AbstractJob
+class AgentChatFeatureSpec extends ObjectBehavior
 {
-    const DEFAULT_INTERVAL = 120; // 2 minutes
-
-    public function run()
+    public function let(SettingsResolver $settingsResolver)
     {
-        if ($this->getContainer()->get('deskpro.feature_flags')->hasBeta('agent_chat')) {
-            $data_service     = $this->getContainer()->get('data.agent');
-            $agent_ids        = $data_service->getAgentsOnlineStatus();
-            $event_dispatcher = $this->getContainer()->get('event_dispatcher');
-            $event_dispatcher->dispatch(UpdateOnlineEvent::EVENT_NAME, new UpdateOnlineEvent($agent_ids));
-        }
+        $this->beConstructedWith($settingsResolver);
+    }
+
+    public function it_returns_it_id()
+    {
+        $this->getId()->shouldBeEqualTo('agent_chat');
     }
 }

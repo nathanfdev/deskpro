@@ -3,6 +3,7 @@ Feature: Api should log any request
   Background:
     Given I install the api data set
     And the setting "api_log.enabled" is set to 1
+    And the setting "beta_features.agent_chat" is set to 1
     And my request is authenticated
 
   Scenario: I send some request to API

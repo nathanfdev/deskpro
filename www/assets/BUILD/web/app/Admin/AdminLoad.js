@@ -183,6 +183,7 @@ define([
   'Admin/AntiAbuse/Ctrl/EmailRateLimiting',
   'Admin/AntiAbuse/Ctrl/PortalRateLimiting',
   'Admin/VoiceChannel/Ctrl/ReactComponent',
+  'Admin/Main/Ctrl/Features',
 
   'CloudAdminLoad',
   window.DP_ADMIN_BUNDLE_PATH

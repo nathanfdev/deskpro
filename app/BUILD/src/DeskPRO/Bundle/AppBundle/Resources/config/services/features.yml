@@ -1,0 +1,18 @@
+services:
+
+  deskpro.features_collection:
+    class: DeskPRO\Bundle\AppBundle\Features\FeaturesCollection
+    factory: "deskpro.features_collection_factory:create"
+
+  deskpro.features_collection_factory:
+    class: DeskPRO\Bundle\AppBundle\Features\FeaturesCollectionFactory
+    arguments:
+      - "%kernel.debug%"
+      - "@request_stack"
+
+  deskpro.features.agent_chat:
+    class: DeskPRO\Bundle\AppBundle\Features\AgentChatFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }

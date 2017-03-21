@@ -865,7 +865,7 @@ class TicketController extends AbstractController implements ProtectedController
                     $ticket->getSubject()
                 );
                 $agent_chat->sendAgentMessage($notifyText, $agentIds);
-                if ($this->container->get('deskpro.feature_flags')->hasFeature('agent_chat')) {
+                if ($this->container->get('deskpro.feature_flags')->hasBeta('agent_chat')) {
                     $newIMtext = sprintf(
                         '[{{t-%d}}] @ %s',
                         $ticket->getId(),
