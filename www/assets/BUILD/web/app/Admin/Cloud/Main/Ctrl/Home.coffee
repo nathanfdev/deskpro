@@ -58,23 +58,15 @@ define [
         @pollTimer = setTimeout @actualPoll, 60000
 
     actualPoll: =>
-      shouldTriggerRefresh = false;
       @Api2.sendGet('features').then( (res) =>
         @pollTimer = null
         res.data.data.forEach((feature) =>
           if @features[feature.id].processing == true && feature.processing == false
             @Growl.success 'Feature ' + feature.title + ' successfully ' + if feature.enabled then 'enabled' else 'disabled' + '!'
-            shouldTriggerRefresh = true
           if feature.processing then @pollFeatures()
           @features[feature.id] = feature
         )
-        if shouldTriggerRefresh then @triggerRefresh()
       )
-
-    triggerRefresh: ->
-      if window.parent then window.parent.DP_NEED_RELOAD = true
-      event = new CustomEvent 'dpCloseOverlayFrame', { 'detail': { id: 'admin' } }
-      window.document.dispatchEvent event
 
     ###
     # Saves new agent form

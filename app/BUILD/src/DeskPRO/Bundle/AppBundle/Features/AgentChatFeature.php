@@ -121,6 +121,8 @@ HTML;
             }
         }
         $em->flush();
+
+        $this->broadcastReload($em);
     }
 
     /**
@@ -157,6 +159,7 @@ HTML;
             }
             $em->flush();
             $em->commit();
+            $this->broadcastReload($em);
         } catch (\Exception $e) {
             $em->rollback();
         }
@@ -360,5 +363,22 @@ UPDATE `agent_chat`
 UPDATE;
 
         $connection->executeQuery($update);
+    }
+
+    private function broadcastReload(EntityManager $em)
+    {
+        // Broadcast a refresh event to all agents
+        $cm = new \Application\DeskPRO\Entity\ClientMessage();
+        $cm->fromArray([
+            'channel' => 'agent.ui.reload',
+            'data'    => [
+                'type'        => 'admin',
+                'person_id'   => 0,
+                'person_name' => 'System',
+            ],
+        ]);
+
+        $em->persist($cm);
+        $em->flush();
     }
 }
