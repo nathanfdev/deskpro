@@ -63,7 +63,8 @@ class AppState implements Domain\ApplicationState
     private $appInstanceId;
 
     /**
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(type="appstore_state_scope", nullable=false)
+     * @var Domain\StateScope
      */
     private $scope;
 
@@ -118,18 +119,15 @@ class AppState implements Domain\ApplicationState
         return $this->appInstanceId;
     }
 
-    /**false
-     * @return mixed
-     */
     public function getScope()
     {
         return $this->scope;
     }
 
     /**
-     * @param mixed $scope
+     * @param Domain\StateScope $scope
      */
-    public function setScope($scope)
+    public function setScope(Domain\StateScope $scope)
     {
         $this->scope = $scope;
     }

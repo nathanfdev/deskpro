@@ -26,40 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle;
+namespace DeskPRO\Bundle\AppStoreBundle\DependencyInjection;
 
-use DeskPRO\Bundle\AppStoreBundle\DependencyInjection\AppStoreExtension;
-use DeskPRO\Bundle\AppStoreBundle\DependencyInjection\DoctrineConfigCompilerPass;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\InstallAppCommand;
+use DeskPRO\Bundle\AppStoreBundle\TypeMapping;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\Console;
 
-class AppStoreBundle extends Bundle
+class DoctrineConfigCompilerPass implements CompilerPassInterface
 {
-    public function build(ContainerBuilder $container)
+    public function process(ContainerBuilder $container)
     {
-        parent::build($container);
-        $container->addCompilerPass( new DoctrineConfigCompilerPass());
-    }
+        // unfortunately we have to add our custom types by directly overriding the doctrine parameter
+        $additions = [
+            TypeMapping\StateScopeDoctrineType::TYPE => [
+                'class' => TypeMapping\StateScopeDoctrineType::class,
+                'commented' => true
+            ]
+        ];
+        $existingTypes = $container->getParameter('doctrine.dbal.connection_factory.types');
+        $newTypes = array_merge($additions, $existingTypes);
 
-    public function getContainerExtension()
-    {
-        return new AppStoreExtension();
-    }
-
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
-    }
-
-    public function registerCommands(Console\Application $application)
-    {
-        $application->add(new InstallAppCommand());
+        $container->setParameter('doctrine.dbal.connection_factory.types', $newTypes);
     }
 }

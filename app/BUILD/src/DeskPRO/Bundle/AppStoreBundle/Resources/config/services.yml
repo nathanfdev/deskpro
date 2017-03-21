@@ -74,6 +74,7 @@ services:
     tags:
         - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\SerializedParamConverter }
 
-
-
-
+  DeskPRO\Bundle\AppStoreBundle\TypeMapping\StateScopeJmsHandler:
+    class: DeskPRO\Bundle\AppStoreBundle\TypeMapping\StateScopeJmsHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }

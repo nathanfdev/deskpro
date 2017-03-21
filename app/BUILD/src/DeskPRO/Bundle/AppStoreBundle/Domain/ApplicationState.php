@@ -38,7 +38,7 @@ interface ApplicationState
     public function getName();
 
     /**
-     * @return string
+     * @return StateScope
      */
     public function getScope();
 

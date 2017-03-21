@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppStoreBundle\DependencyInjection;
 
 use DeskPRO\Bundle\AppBundle\DependencyInjection\YamlDirectoryLoader;

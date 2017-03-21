@@ -32,10 +32,13 @@ use DeskPRO\Bundle\AppStoreBundle\API\AppStateRepresentation;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle;
+use DeskPRO\Bundle\AppStoreBundle\Domain\StateScope;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 /**
@@ -78,13 +81,28 @@ class AppStateController extends BaseController
     /**
      * @Rest\Get("/{name}/{scope}")
      *
-     * @ParamConverter("stateId", class="AppStoreBundle:Domain\ApplicationStateId", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\StateFilterParamConverter")
+     * @ParamConverter("state", class="AppStoreBundle:Domain\ApplicationState", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter")
      *
-     * @param AppStoreBundle\Domain\ApplicationStateId $stateId
-     * @param $scope
+     * @param Entity\AppStore\AppState $state
+     * @param string $scope
+     * @return AppStateRepresentation
      */
-    public function getStateAction(AppStoreBundle\Domain\ApplicationStateId $stateId, $scope)
+    public function getStateAction(Entity\AppStore\AppState $state, $scope)
     {
+        $scopeObject = StateScope::parseString($scope);
+        if (is_null($scopeObject) || !StateScope::isValid($scopeObject)) {
+            throw new BadRequestHttpException('invalid scope');
+        }
+
+
+        if (!$state->getScope()->equals($scopeObject)) {
+            throw new NotFoundHttpException('could not find state');
+        }
+
+        $representation = new AppStateRepresentation();
+        $representation->mapFromState($state);
+
+        return $representation;
 
     }
 

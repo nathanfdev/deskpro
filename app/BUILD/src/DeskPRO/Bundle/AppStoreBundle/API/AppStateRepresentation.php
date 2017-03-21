@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppStoreBundle\API;
 
 use DeskPRO\Bundle\AppBundle\Entity;
+use DeskPRO\Bundle\AppStoreBundle\Domain;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -12,9 +13,9 @@ class AppStateRepresentation
 {
     /**
      * @JMS\Expose()
-     * @JMS\Type("string")
+     * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\StateScope")
      *
-     * @var string
+     * @var Domain\StateScope
      */
     private $scope;
 
@@ -34,11 +35,16 @@ class AppStateRepresentation
      */
     private $value;
 
-    public function mapFromAppStateEntity(Entity\AppStore\AppState $appState)
+    public function mapFromState(Domain\ApplicationState $appState)
     {
         $this->scope = $appState->getScope();
         $this->name = $appState->getName();
         $this->value = $appState->getName();
+    }
+
+    public function mapFromAppStateEntity(Entity\AppStore\AppState $appState)
+    {
+        $this->mapFromState($appState);
     }
 
     public function mapToAppStateEntity(Entity\AppStore\AppState $appState)

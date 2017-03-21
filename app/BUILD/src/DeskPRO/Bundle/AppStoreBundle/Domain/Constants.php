@@ -32,4 +32,14 @@ class Constants
 {
     /** path to the manifest file inside a bundle package */
     const BUNDLE_MANIFEST_PATH = 'manifest.json';
+
+    const STATE_TARGET_APPLICATION = 'app';
+
+    const STATE_PERMISSION_SHARED = 'shared';
+
+    const STATE_PERMISSION_PRIVATE = 'private';
+
+    const APPLICATION_SCOPE_AGENT = 'agent';
+
+    const APPLICATION_SCOPE_USER = 'user';
 }

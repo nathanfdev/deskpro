@@ -40,12 +40,73 @@ class StateScope
     private $targetObjectId;
 
     /**
+     * @param StateScope $scope
+     * @return bool
+     */
+    public static function isValid(StateScope $scope)
+    {
+        $validPermissions = [
+            Constants::STATE_PERMISSION_PRIVATE,
+            Constants::STATE_PERMISSION_SHARED
+        ];
+
+        if (
+            $scope->getTargetObjectName() == Constants::STATE_TARGET_APPLICATION
+            && null === $scope->getTargetObjectId()
+            && in_array($scope->getPermission(), $validPermissions)
+        ) {
+            return true;
+        }
+
+        if (
+            $scope->getTargetObjectName() != Constants::STATE_TARGET_APPLICATION
+            && null !== $scope->getTargetObjectId()
+            && in_array($scope->getPermission(), $validPermissions)
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @param $string
      * @return null|StateScope
      */
     public static function parseString($string)
     {
-        //TODO implement this
+        if (is_null($string)) {
+            return null;
+        }
+
+        //let's use regex instead of a top-down parser
+        $regexList = [
+            'appPermission' => '^([a-z]+)\.([a-z]+)$',
+            'objectPermission' => '^([a-z]+)\.([a-z]+):([1-9][0-9]*)$'
+        ];
+
+        /** @var string[] $matches */
+        $matches = [];
+        $representationType = null;
+        foreach ($regexList as $representationType => $regex) {
+            if (1 === preg_match(sprintf('#%s#i', $regex), $string, $matches)) {
+                break;
+            }
+        }
+
+        if (empty($matches)) {
+            return null;
+        }
+
+        switch ($representationType) {
+            case 'appPermission':
+                return new StateScope($matches[1], $matches[2]);
+                break;
+            case 'objectPermission':
+                return new StateScope($matches[1], $matches[2], $matches[3]);
+                break;
+        }
+
         return null;
     }
 
@@ -73,7 +134,7 @@ class StateScope
      * @param $targetObjectName
      * @param $targetObjectId
      */
-    public function __construct($permission, $targetObjectName, $targetObjectId)
+    public function __construct($permission, $targetObjectName, $targetObjectId = null)
     {
         $this->permission = $permission;
         $this->targetObjectName = $targetObjectName;
@@ -102,5 +163,14 @@ class StateScope
     public function getTargetObjectId()
     {
         return $this->targetObjectId;
+    }
+
+    public function equals($mixed)
+    {
+        return $mixed instanceof StateScope
+            && $this->permission === $mixed->getPermission()
+            && $this->targetObjectName === $mixed->getTargetObjectName()
+            && $this->targetObjectId === $mixed->getTargetObjectId()
+        ;
     }
 }
