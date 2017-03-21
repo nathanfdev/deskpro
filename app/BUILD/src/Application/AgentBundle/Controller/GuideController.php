@@ -223,8 +223,9 @@ class GuideController extends PublishController
 
             case 'guide':
                 $guide = $this->em->find(Guide::class, $this->in->getUInt('guide_id'));
-                $topic->setGuide($guide);
-                $data['guide_id']  = $guide->getId();
+                $this->moveTopic($topic, $guide);
+                $data['guide_id'] = $guide->getId();
+                $topic->setParent(null);
                 $data['parent_id'] = 0;
                 break;
 
@@ -276,6 +277,22 @@ class GuideController extends PublishController
         }
 
         return $this->createJsonResponse($data);
+    }
+
+    /**
+     * @param Topic $topic
+     * @param Guide $guide
+     */
+    protected function moveTopic($topic, $guide)
+    {
+        $topic->setGuide($guide);
+        $children = $topic->getChildren();
+        if (count($children)) {
+            foreach ($children as $child) {
+                $this->moveTopic($child, $guide);
+                $this->em->persist($child);
+            }
+        }
     }
 
     public function ajaxGetGuidesByBrandAction($brand_id)

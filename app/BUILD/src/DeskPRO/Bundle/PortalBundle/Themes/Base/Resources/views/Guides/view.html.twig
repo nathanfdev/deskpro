@@ -40,7 +40,17 @@
         routePath: routePath
       };
 
-      window.PortalBundle.render(reactProps, document.getElementById('react_portal_bundle'));
+      function start() {
+        if (typeof window.PortalBundle === 'undefined') {
+          setTimeout(start.bind(this), 100);
+        } else {
+          window.PortalBundle.render(reactProps, document.getElementById('react_portal_bundle'));
+        }
+      }
+
+      start();
+
+
     </script>
 
 {% endblock inner_content %}

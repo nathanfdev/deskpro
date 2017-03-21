@@ -36,30 +36,45 @@ namespace Application\DeskPRO\Search\EntityWatcher;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\LabelArticle;
+use Application\DeskPRO\Entity\LabelDownload;
+use Application\DeskPRO\Entity\LabelFeedback;
+use Application\DeskPRO\Entity\LabelNews;
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\ObjectLang;
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Entity\Topic;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 
 class EntityWatcher implements \Doctrine\Common\EventSubscriber
 {
     /** @var array */
     public static $watched_entities = [
-        'Application\\DeskPRO\\Entity\\Article'          => 1,
-        'Application\\DeskPRO\\Entity\\LabelArticle'     => 1,
-        'Application\\DeskPRO\\Entity\\Download'         => 1,
-        'Application\\DeskPRO\\Entity\\LabelDownload'    => 1,
-        'Application\\DeskPRO\\Entity\\Feedback'         => 1,
-        'Application\\DeskPRO\\Entity\\LabelFeedback'    => 1,
-        'Application\\DeskPRO\\Entity\\News'             => 1,
-        'Application\\DeskPRO\\Entity\\LabelNews'        => 1,
-        'Application\\DeskPRO\\Entity\\Ticket'           => 1,
-        'Application\\DeskPRO\\Entity\\TicketMessage'    => 1,
-        'Application\\DeskPRO\\Entity\\Person'           => 1,
-        'Application\\DeskPRO\\Entity\\PersonEmail'      => 1,
-        'Application\\DeskPRO\\Entity\\Organization'     => 1,
-        'Application\\DeskPRO\\Entity\\ChatConversation' => 1,
-        'Application\\DeskPRO\\Entity\\ChatMessage'      => 1,
-        'Application\\DeskPRO\\Entity\\ObjectLang'       => 1,
+        Article::class          => 1,
+        LabelArticle::class     => 1,
+        Download::class         => 1,
+        LabelDownload::class    => 1,
+        Feedback::class         => 1,
+        LabelFeedback::class    => 1,
+        News::class             => 1,
+        LabelNews::class        => 1,
+        Ticket::class           => 1,
+        TicketMessage::class    => 1,
+        Topic::class            => 1,
+        Person::class           => 1,
+        PersonEmail::class      => 1,
+        Organization::class     => 1,
+        ChatConversation::class => 1,
+        ChatMessage::class      => 1,
+        ObjectLang::class       => 1,
     ];
 
     /**
@@ -151,7 +166,6 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
                 if ($ent) {
                     $update[] = $ent;
                 }
-
             }
         }
         foreach ($uow->getScheduledEntityUpdates() as $ent) {
@@ -210,19 +224,19 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
      */
     private function replaceEntity($ent)
     {
-        if ($ent instanceof \Application\DeskPRO\Entity\LabelArticle) {
+        if ($ent instanceof LabelArticle) {
             return $ent->article;
-        } elseif ($ent instanceof \Application\DeskPRO\Entity\LabelNews) {
+        } elseif ($ent instanceof LabelNews) {
             return $ent->news;
-        } elseif ($ent instanceof \Application\DeskPRO\Entity\LabelDownload) {
+        } elseif ($ent instanceof LabelDownload) {
             return $ent->download;
-        } elseif ($ent instanceof \Application\DeskPRO\Entity\LabelFeedback) {
+        } elseif ($ent instanceof LabelFeedback) {
             return $ent->feedback;
-        } elseif ($ent instanceof \Application\DeskPRO\Entity\TicketMessage) {
+        } elseif ($ent instanceof TicketMessage) {
             return $ent->ticket;
-        } elseif ($ent instanceof \Application\DeskPRO\Entity\PersonEmail) {
+        } elseif ($ent instanceof PersonEmail) {
             return $ent->person;
-        } elseif ($ent instanceof \Application\DeskPRO\Entity\ChatMessage) {
+        } elseif ($ent instanceof ChatMessage) {
             return $ent->conversation;
         } elseif ($ent instanceof ObjectLang) {
             $em      = $this->container->getEm();

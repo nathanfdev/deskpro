@@ -5,7 +5,7 @@ import MarkdownIt from 'markdown-it';
 import emoji from 'markdown-it-emoji';
 import MarkdownItContainer from 'markdown-it-container';
 import toMarkdown from 'to-markdown';
-import Highlight from 'react-highlight';
+import hljs from 'highlight.js';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import 'codemirror/mode/xml/xml';
 import 'codemirror/mode/gfm/gfm';
@@ -65,6 +65,20 @@ class MarkdownEditor extends React.Component {
       html:    false,
       linkify: true
     });
+    this.md.linkify
+      .set({ fuzzyLink: false })
+      .add('www.', {
+        validate(text, pos, self) {
+          if (self.re.link_fuzzy.test(text)) {
+            const sub = pos > 4 ? 5 : 4;
+            return text.match(self.re.link_fuzzy)[0].length - sub;
+          }
+          return 0;
+        },
+        normalize(match) {
+          match.url = `http://${match.url}`;
+        }
+      });
     this.md
       .use(emoji)
       .use(MarkdownItContainer, 'warning', {
@@ -258,9 +272,22 @@ class MarkdownEditor extends React.Component {
     applyFormat(this.codeMirror, formatKey);
   }
 
-  renderHtml = markdown => this.md.render(markdown)
+  renderHtml = (markdown) => {
+    let html = this.md.render(markdown)
       .replace(/!\[([^\]]+)]\((\{\{.+}})\)/g, (m, alt, src) => (`<img src="${src}" alt="${alt}" />`))
       .replace(/\[([^\]]+)]\((\{\{.+}})\)/g, (m, content, href) => (`<a href="${href}">${content}</a>`));
+    const container = document.createElement('div');
+    container.innerHTML = html;
+
+    const nodes = container.querySelectorAll('code');
+    if (nodes.length > 0) {
+      for (let i = 0; i < nodes.length; i += 1) {
+        hljs.highlightBlock(nodes[i]);
+      }
+      html = container.innerHTML;
+    }
+    return html;
+  };
 
   renderButton(formatKey, label, action) {
     const onClickAction = (!action) ? this.toggleFormat.bind(this, formatKey) : action;
@@ -326,9 +353,7 @@ class MarkdownEditor extends React.Component {
         </div>
         <h3>Preview</h3>
         <div className="preview guides">
-          <Highlight innerHTML>
-            {MarkdownEditor.prerenderHtml(this.state.html)}
-          </Highlight>
+          <div className="preview guides" dangerouslySetInnerHTML={{ __html: MarkdownEditor.prerenderHtml(this.state.html) }} />
         </div>
       </div>
     );

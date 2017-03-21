@@ -34,6 +34,9 @@
 
 namespace Application\DeskPRO\DependencyInjection;
 
+use Application\DeskPRO\Elastica\Client;
+use Application\DeskPRO\Elastica\IndexFactory;
+use Elastica\Index;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -51,14 +54,14 @@ class ElasticaClientPass implements CompilerPassInterface
         }
 
         $definition = $container->getDefinition('fos_elastica.client.default');
-        $definition->setClass('Application\\DeskPRO\\Elastica\\Client');
+        $definition->setClass(Client::class);
         $definition->setFactory([new Reference('deskpro.elastica.client_factory'), 'createSystemClientByConfig']);
 
-        $indexFactoryDef = new Definition('Application\\DeskPRO\\Elastica\\IndexFactory');
+        $indexFactoryDef = new Definition(IndexFactory::class);
         $indexFactoryDef->setArguments([new Reference('fos_elastica.client.default')]);
         $container->setDefinition('deskpro.elastica.default_index_factory', $indexFactoryDef);
 
-        $indexDef = new Definition('Elastica\\Index');
+        $indexDef = new Definition(Index::class);
         $indexDef->setFactory([new Reference('deskpro.elastica.default_index_factory'), 'getIndex']);
         $indexDef->setArguments(['deskpro']);
         $container->setDefinition('fos_elastica.index.deskpro', $indexDef);
