@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
+import { withFormValue, Input } from 'react-forms';
 import { AbstractCustomField } from './AbstractCustomField';
-import { WithFormValue, Input } from 'react-forms';
 import { noFocusBorder } from './noFocusBorderDecorator';
 
 export class CustomFieldRadio extends AbstractCustomField {
@@ -61,4 +61,4 @@ class RadioButton extends React.Component {
   }
 }
 
-const RadioButtonWithFormValue = WithFormValue(RadioButton);
+const RadioButtonWithFormValue = withFormValue(RadioButton);

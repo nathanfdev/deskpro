@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import { AbstractCustomField } from './AbstractCustomField';
-import { WithFormValue } from 'react-forms';
+import { withFormValue } from 'react-forms';
 import classNames from 'classnames';
+import { AbstractCustomField } from './AbstractCustomField';
 import { noFocusBorder } from './noFocusBorderDecorator';
 
 export class CustomFieldCheckbox extends AbstractCustomField {
@@ -91,4 +91,4 @@ class MultipleCheckbox extends React.Component {
   }
 }
 
-const MultipleCheckboxWithFormValue = WithFormValue(MultipleCheckbox);
+const MultipleCheckboxWithFormValue = withFormValue(MultipleCheckbox);
