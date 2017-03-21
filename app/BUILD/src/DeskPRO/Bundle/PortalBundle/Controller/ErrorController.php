@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -37,8 +38,17 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 
+/**
+ * Class ErrorController.
+ */
 class ErrorController extends AbstractController
 {
+    /**
+     * @param FlattenException $exception
+     * @param null             $logger
+     *
+     * @return bool|Response
+     */
     public function showExceptionAction(FlattenException $exception, $logger = null)
     {
         $requestStack = $this->get('request_stack');
@@ -94,7 +104,11 @@ class ErrorController extends AbstractController
         }
 
         // if the message is "Something has intentionally gone wrong." its the dev route /_error/{code} being vistited for a test
-        if ($this->container->getParameter('kernel.debug') && $exception->getMessage() !== 'Something has intentionally gone wrong.') {
+        if (
+            $this->container->getParameter('kernel.debug')
+            && $exception->getMessage() !== 'Something has intentionally gone wrong.'
+            && $exception->getStatusCode() >= 500
+        ) {
             return $this->render('TwigBundle:Exception:exception_full.html.twig', [
                 'status_code'    => $code,
                 'status_text'    => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
@@ -104,35 +118,44 @@ class ErrorController extends AbstractController
             ]);
         }
 
-        $request  = Request::createFromGlobals();
-        $base_url = $request->getBaseUrl();
+        $request = Request::createFromGlobals();
+        $baseUrl = $request->getBaseUrl();
 
         try {
             return $this->renderThemeView(
                 $template,
                 [
-                    'base_url'    => $base_url,
+                    'base_url'    => $baseUrl,
                     'status_code' => $code,
                     'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
                     'exception'   => $exception,
                 ]
             );
         } catch (\Exception $e) {
-            // if that is not found, use the default for this status code (error.html.twig or exception.html.twig)
-            $template = $this->makeTemplateName($code, true);
+            try {
+                // if that is not found, use the default for this status code (error.html.twig or exception.html.twig)
+                $template = $this->makeTemplateName($code, true);
 
-            return $this->renderThemeView(
-                $template,
-                [
-                    'base_url'    => $base_url,
-                    'status_code' => $code,
-                    'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
-                    'exception'   => $exception,
-                ]
-            );
+                return $this->renderThemeView(
+                    $template,
+                    [
+                        'base_url'    => $baseUrl,
+                        'status_code' => $code,
+                        'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
+                        'exception'   => $exception,
+                    ]
+                );
+            } catch (\Exception $e) {
+                SystemErrorHandler::logException($e, false, null, true);
+
+                return new Response($exception->getMessage(), $exception->getStatusCode());
+            }
         }
     }
 
+    /**
+     * @param string $path
+     */
     public function notFoundAction($path)
     {
         // this is a portal catch all route. Anything that ends up here was not matched by the router.
@@ -160,7 +183,8 @@ class ErrorController extends AbstractController
     }
 
     /**
-     * @param $code
+     * @param int  $code
+     * @param bool $force_use_default
      *
      * @return string
      */
@@ -173,6 +197,11 @@ class ErrorController extends AbstractController
         return sprintf('%s:%s%s.html.twig', $tpl_prefix, $tpl_start, ($code && !$force_use_default) ? $code : '');
     }
 
+    /**
+     * @param FlattenException $exception
+     *
+     * @return bool
+     */
     protected function delegateApi(FlattenException $exception)
     {
         // Let's try to figure out if this Controller was from API

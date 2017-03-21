@@ -26,18 +26,28 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\PortalBundle\EventListener;
+
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+
 /**
- * DeskPRO.
+ * Class ExceptionListener.
  */
-
-namespace Application\DeskPRO\HttpKernel\Exception;
-
-use Symfony\Component\HttpKernel\Exception\HttpException;
-
-class NoPermissionException extends HttpException
+class ExceptionListener extends \Symfony\Component\HttpKernel\EventListener\ExceptionListener
 {
-    public function __construct($message = null, \Exception $previous = null, $code = 0)
+    /**
+     * {@inheritdoc}
+     */
+    protected function logException(\Exception $exception, $message)
     {
-        parent::__construct(403, $message, $previous, [], $code);
+        if ($exception instanceof HttpExceptionInterface && $exception->getStatusCode() < 500) {
+            return;
+        }
+        if ($exception instanceof AccessDeniedException) {
+            return;
+        }
+
+        parent::logException($exception, $message);
     }
 }

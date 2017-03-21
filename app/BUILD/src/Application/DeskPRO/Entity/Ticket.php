@@ -682,8 +682,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         // prevent auto ticket process of parent ticket while saving as well
         // e.g. it's called in snippet formatter of reply action
-        if ($this->getParentTicket()) {
-            $this->getParentTicket()->disableAutoTicketProcess();
+
+        $parentTicket = $this->getParentTicket();
+        if ($parentTicket && $parentTicket->__dp_auto_ticket_process) {
+            $parentTicket->disableAutoTicketProcess();
         }
 
         return $this;
