@@ -692,7 +692,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		dateInput.on('dp.change', function(e){
 			pubDate.data('val', e.date.unix());
 			pubDate.text(e.date.format('D MMM, YY'));
-			self.updateAutoUnPubOptions();
+      self.updateAutoPubOptions();
 		});
 	},
 
