@@ -145,33 +145,33 @@ class FeaturesCollection extends AbstractCollection
     }
 
     /**
-     * @param $avatailableAt
+     * @param $availableAt
      *
      * @return bool
      */
-    private function availableEverywhere($avatailableAt)
+    private function availableEverywhere($availableAt)
     {
-        return $avatailableAt === BetaFeatureInterface::AVAILABLE_EVERYWHERE;
+        return $availableAt === BetaFeatureInterface::AVAILABLE_EVERYWHERE;
     }
 
     /**
-     * @param $avatailableAt
+     * @param $availableAt
      *
      * @return bool
      */
-    private function availableAtCloud($avatailableAt)
+    private function availableAtCloud($availableAt)
     {
-        return $avatailableAt === BetaFeatureInterface::AVAILABLE_AT_CLOUD && $this->isCloud;
+        return $availableAt === BetaFeatureInterface::AVAILABLE_AT_CLOUD && $this->isCloud;
     }
 
     /**
-     * @param $avatailableAt
+     * @param $availableAt
      *
      * @return bool
      */
-    private function availableAtOnprem($avatailableAt)
+    private function availableAtOnprem($availableAt)
     {
-        return $avatailableAt === BetaFeatureInterface::AVAILABLE_AT_ONPREM && !$this->isCloud;
+        return $availableAt === BetaFeatureInterface::AVAILABLE_AT_ONPREM && !$this->isCloud;
     }
 
     /**
