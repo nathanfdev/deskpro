@@ -96,6 +96,13 @@ final class Features
      */
     public function hasFeature($id)
     {
+        /*
+         * @TODO aftery long discussion with SY and tries to pass here featuresCollection I postponed it.
+         * The main purpose to use featuresCollection here - avoid need to change hasBeta to hasFeature in templates
+         * see FeaturesListener.
+         * Generally it is a good idea, but internal settings of featuresCollection won't work (hasFeature called
+         * before it) also we cant pass featuresCollection here via DI cause circular dependency occurs.
+         */
         switch ($id) {
             case self::VOICE:
                 return $this->hasVoice();

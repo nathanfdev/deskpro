@@ -40,8 +40,6 @@ class Feature
      */
     private $name;
 
-    private $beta = false;
-
     /**
      * Constructor.
      *
@@ -49,12 +47,7 @@ class Feature
      */
     public function __construct($name)
     {
-        if (isset($name['value'])) {
-            $this->name = $name['value'];
-        } elseif (isset($name['id'])) {
-            $this->name = $name['id'];
-            $this->beta = isset($name['beta']) ? (bool) $name['beta'] : false;
-        }
+        $this->name = isset($name['value']) ? $name['value'] : null;
     }
 
     /**
@@ -63,10 +56,5 @@ class Feature
     public function getName()
     {
         return $this->name;
-    }
-
-    public function isBeta()
-    {
-        return $this->beta;
     }
 }

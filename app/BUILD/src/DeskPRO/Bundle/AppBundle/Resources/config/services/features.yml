@@ -1,7 +1,5 @@
 services:
 
-  # Note: SecurityHeadersResponseListener's service is defined in config.shared.php as it is used globally
-
   deskpro.features_collection:
     class: DeskPRO\Bundle\AppBundle\Features\FeaturesCollection
     factory: "deskpro.features_collection_factory:create"
@@ -11,7 +9,6 @@ services:
     arguments:
       - "%kernel.debug%"
       - "@request_stack"
-
 
   deskpro.features.agent_chat:
     class: DeskPRO\Bundle\AppBundle\Features\AgentChatFeature

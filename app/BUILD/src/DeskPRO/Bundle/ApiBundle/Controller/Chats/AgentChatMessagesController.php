@@ -72,7 +72,7 @@ use Symfony\Component\HttpFoundation\Response;
  *     }
  * )
  * @ApiUnstable()
- * @Feature(id="agent_chat", beta=true)
+ * @Feature("agent_chat")
  */
 class AgentChatMessagesController extends CrudSubController
 {

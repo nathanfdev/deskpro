@@ -51,7 +51,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiModes("all")
  * @Rest\Route("/agent_chats")
  * @ApiUnstable()
- * @Feature(id="agent_chat", beta=true)
+ * @Feature("agent_chat")
  * @ApiDoc(target="all", section="Chats", output="DeskPRO\Bundle\AppBundle\Entity\AgentChat")
  * @ApiDoc(
  *     target="postAction,putAction",

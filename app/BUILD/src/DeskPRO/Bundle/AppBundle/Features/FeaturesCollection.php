@@ -84,7 +84,7 @@ class FeaturesCollection extends AbstractCollection
      *
      * @return bool
      */
-    protected function hasFeature($feature)
+    public function hasFeature($feature)
     {
         return array_key_exists(
             $feature instanceof BetaFeatureInterface
