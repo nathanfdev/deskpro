@@ -334,11 +334,13 @@ class AgentChatsController extends CrudController
                 ->setPerson($this->getUser())
                 ->setName('agent.ui.im.chats_order');
         }
-        $newPrefs = array_replace($pref->getValue() ?: [], $chatsOrder);
-        foreach ($newPrefs as &$preference) {
-            $preference = (int) $preference;
+        $i = 1;
+        asort($chatsOrder);
+        foreach ($chatsOrder as &$preference) {
+            $preference = (int) $i;
+            ++$i;
         }
-        $pref->setValueArray($newPrefs);
+        $pref->setValueArray($chatsOrder);
         $em = $this->get('doctrine.orm.default_entity_manager');
         $em->persist($pref);
         $em->flush();

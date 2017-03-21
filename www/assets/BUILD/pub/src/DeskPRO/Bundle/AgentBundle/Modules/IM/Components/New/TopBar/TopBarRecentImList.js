@@ -54,9 +54,15 @@ class TopBarRecentImList extends RecentList {
     return props.agentsLoaded && props.teamsLoaded && props.departmentsLoaded && props.recentLoaded;
   }
 
-  static getNextOrder(chats) {
+  getNextOrder(chats) {
+    this.updateOrder = true;
     const order = chats.size > 0 ? chats.sort((a, b) => b.get('order') - a.get('order')).first().get('order') : 0;
     return order + 1;
+  }
+
+  static filterByHidden(chat, hiddenChats) {
+    const date = chat.get('date_last_message') || chat.get('date_created');
+    return !hiddenChats[chat.get('id')] || hiddenChats[chat.get('id')] < (Date.parse(date));
   }
 
   constructor(props) {
@@ -66,7 +72,7 @@ class TopBarRecentImList extends RecentList {
       slice: chatActions.countSlice()
     };
     this.resizeTimeout = null;
-    this.firstLoad = true;
+    this.updateOrder = true;
   }
 
   componentWillMount() {
@@ -87,49 +93,53 @@ class TopBarRecentImList extends RecentList {
   };
 
   updateChatsOrder = (props) => {
-    if (this.firstLoad && TopBarRecentImList.isLoaded(props)) {
-      this.firstLoad = false;
+    if (this.updateOrder && TopBarRecentImList.isLoaded(props)) {
+      this.updateOrder = false;
       props.updateChatsOrder(this.state.chats);
     }
   };
 
   componentWillReceiveProps(props) {
-    let { chats } = this.state;
-
+    const { chats } = this.state;
     const { hiddenChats, me, startedByMeChats } = props;
+    let filtered = chats;
 
-    if (props.chats) {
-      props.chats.forEach((chat) => {
-        const order = chats.getIn([chat.get('id'), 'order']) || props.imSettings.getIn(['chats_order', `${chat.get('id')}`]) || TopBarRecentImList.getNextOrder(chats);
-        chats = chats.set(chat.get('id'), chat.set('order', order));
-      });
-    }
-    let sorted = chats.sort((a, b) => a.get('order') - b.get('order'));
     if (hiddenChats || startedByMeChats) {
-      sorted = sorted.filter((chat) => {
+      filtered = filtered.filter((chat) => {
         if (!chat.get('date_last_message') && !((startedByMeChats && startedByMeChats.get(chat.get('id'))) || me.get('id') === chat.get('admin'))) {
           return false;
         }
-        const date = chat.get('date_last_message') || chat.get('date_created');
 
-        return !hiddenChats[chat.get('id')] || hiddenChats[chat.get('id')] < (Date.parse(date));
+        return TopBarRecentImList.filterByHidden(chat, hiddenChats);
       });
     }
-    sorted = sorted.filter(chat => props.chats.has(chat.get('id')));
 
-    this.setState({ chats: sorted }, () => this.updateChatsOrder(props));
+    if (props.chats) {
+      props.chats.filter(chat => TopBarRecentImList.filterByHidden(chat, hiddenChats)).forEach((chat) => {
+        const order = filtered.getIn([chat.get('id'), 'order']) || props.imSettings.getIn(['chats_order', `${chat.get('id')}`]) || this.getNextOrder(filtered);
+        filtered = filtered.set(chat.get('id'), chat.set('order', order));
+      });
+    }
+    filtered = filtered.filter(chat => props.chats.has(chat.get('id')));
+
+    const sorted = filtered.sort((a, b) => a.get('order') - b.get('order'));
+
+    this.setState({ chats: sorted }, () => {
+      this.updateOrder = this.updateOrder || this.state.chats.size !== sorted.size;
+      this.updateChatsOrder(props);
+    });
   }
 
   getItems() {
     const { current, chats, imSettings } = this.props;
-    let stateChats = this.state.chats.slice(0, this.state.slice);
+    let stateChats = this.state.chats.reverse().slice(0, this.state.slice).reverse();
     if (current.get('id') && !stateChats.has(current.get('id'))) {
       const chat = chats.get(current.get('id'));
       if (chat) { // I'm not sure why current chat could absent, but seems that Lauren somehow reached that
         const order = imSettings.getIn(['chats_order', `${chat.get('id')}`]);
-        stateChats = stateChats.set(current.get('id'), chat.set('order', order || TopBarRecentImList.getNextOrder(stateChats)));
+        stateChats = stateChats.set(current.get('id'), chat.set('order', order || this.getNextOrder(stateChats)));
         stateChats = stateChats.sort((a, b) => a.get('order') - b.get('order'));
-        stateChats = stateChats.slice(0, this.state.slice);
+        stateChats = stateChats.reverse().slice(0, this.state.slice).reverse();
       }
     }
 
