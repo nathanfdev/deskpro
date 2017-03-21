@@ -5419,7 +5419,24 @@ CSS;
             }
         }
 
-        $ticket->setParentTicket($this->in->getBool('isParent') ? $linkedTicket : $ticket);
+        if ($ticket === $linkedTicket) {
+            return $this->createJsonResponse([
+                'success' => false,
+                'error'   => 'Unable to link ticket to itself.',
+            ]);
+        }
+        if ($ticket->getChildrenTickets()->contains($linkedTicket) || $ticket->getParentTicket() === $linkedTicket) {
+            return $this->createJsonResponse([
+                'success' => false,
+                'error'   => 'Tickets are already linked.',
+            ]);
+        }
+
+        if ($this->in->getBool('isParent')) {
+            $ticket->setParentTicket($linkedTicket);
+        } else {
+            $linkedTicket->setParentTicket($ticket);
+        }
 
         $this->em->persist($ticket);
         $this->em->persist($linkedTicket);
