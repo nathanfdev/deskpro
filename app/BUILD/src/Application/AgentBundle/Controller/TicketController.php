@@ -69,7 +69,6 @@ use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketMessageTranslated;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
-use Application\DeskPRO\HttpKernel\Exception\NoPermissionException;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
@@ -5383,11 +5382,11 @@ CSS;
         }
 
         if (!$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
-            throw new NoPermissionException('You are not allowed to view this ticket');
+            throw new AccessDeniedHttpException('You are not allowed to view this ticket');
         }
 
         if ($check_perm && !$this->checkPerm($ticket, $check_perm)) {
-            throw new NoPermissionException("There is no ticket with ID $ticket_id");
+            throw new AccessDeniedHttpException("There is no ticket with ID $ticket_id");
         }
 
         return $ticket;
