@@ -3,6 +3,7 @@ Feature: /voice_queues endpoint
 
   Background:
     Given I'm authenticated as admin
+    And the setting "beta_features.voice" is set to 1
     And only the following VoiceAccount records exist:
       | #  | AccountName | AccountSid | AuthToken |
       | a1 | Account 1   | Sid1       | Token1    |

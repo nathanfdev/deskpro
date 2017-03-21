@@ -112,6 +112,11 @@ final class Features
         }
     }
 
+    /**
+     * @param string $id
+     *
+     * @return bool
+     */
     public function hasBeta($id)
     {
         if (!$this->settingsResolver) {
@@ -134,7 +139,7 @@ final class Features
     public function hasVoice()
     {
         return ($this->getLicense()->hasFlag('has_voice') || $this->getLicense()->hasFlag('is_dev'))
-            && $this->hasExperimental('voice');
+            && $this->hasBeta('voice');
     }
 
     /**

@@ -3,6 +3,7 @@ Feature: /voice_accounts endpoint
 
   Background:
     Given I'm authenticated as admin
+    And the setting "beta_features.voice" is set to 1
 
   Scenario: I retrieve a list of twilio accounts
     Given only the following VoiceAccount records exist:

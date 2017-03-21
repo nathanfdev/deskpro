@@ -29,9 +29,6 @@
 namespace DeskPRO\Bundle\AppBundle\Features;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Setting;
-use Application\DeskPRO\Entity\TmpData;
-use Application\DeskPRO\EntityRepository\Setting as SettingRepository;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
@@ -105,40 +102,32 @@ HTML;
     /**
      * {@inheritdoc}
      */
-    public function enable(ContainerInterface $container)
+    public function needAgentReload()
     {
-        $em = $container->get('doctrine.orm.default_entity_manager');
-        /** @var SettingRepository $settingsRepository */
-        $settingsRepository = $em->getRepository(Setting::class);
-        $this->copyIM($container->get('doctrine.orm.default_entity_manager'));
-        $key = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $this->getId());
-        $settingsRepository->updateSetting($key, true);
-
-        $tmpData = $em->getRepository(TmpData::class)->findBy(['name' => $key]);
-        foreach ($tmpData as $tmpDatum) {
-            if ($tmpDatum->getType() === 'feature_enable') {
-                $em->remove($tmpDatum);
-            }
-        }
-        $em->flush();
-
-        $this->broadcastReload($em);
+        return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function disable(ContainerInterface $container)
+    public function beforeEnable(ContainerInterface $container)
     {
-        $em = $container->get('doctrine.orm.default_entity_manager');
-        /** @var SettingRepository $settingsRepository */
-        $settingsRepository = $em->getRepository(Setting::class);
-        $connection         = $em->getConnection();
-        $classes            = [
+        $this->copyIM($container->get('doctrine.orm.default_entity_manager'));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeDisable(ContainerInterface $container)
+    {
+        $em         = $container->get('doctrine.orm.default_entity_manager');
+        $connection = $em->getConnection();
+        $classes    = [
             AgentChat::class,
             AgentChatMessage::class,
             AgentChatParticipant::class,
         ];
+
         $parts = [];
         $em->beginTransaction();
         try {
@@ -148,18 +137,9 @@ HTML;
                 $meta    = $em->getClassMetadata($class);
                 $parts[] = "ALTER TABLE {$meta->getTableName()} AUTO_INCREMENT = 1";
             }
+
             $connection->query(implode(';', $parts));
-            $key = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $this->getId());
-            $settingsRepository->updateSetting($key, false);
-            $tmpData = $em->getRepository(TmpData::class)->findBy(['name' => $key]);
-            foreach ($tmpData as $tmpDatum) {
-                if ($tmpDatum->getType() === 'feature_disable') {
-                    $em->remove($tmpDatum);
-                }
-            }
-            $em->flush();
             $em->commit();
-            $this->broadcastReload($em);
         } catch (\Exception $e) {
             $em->rollback();
         }
@@ -363,22 +343,5 @@ UPDATE `agent_chat`
 UPDATE;
 
         $connection->executeQuery($update);
-    }
-
-    private function broadcastReload(EntityManager $em)
-    {
-        // Broadcast a refresh event to all agents
-        $cm = new \Application\DeskPRO\Entity\ClientMessage();
-        $cm->fromArray([
-            'channel' => 'agent.ui.reload',
-            'data'    => [
-                'type'        => 'admin',
-                'person_id'   => 0,
-                'person_name' => 'System',
-            ],
-        ]);
-
-        $em->persist($cm);
-        $em->flush();
     }
 }

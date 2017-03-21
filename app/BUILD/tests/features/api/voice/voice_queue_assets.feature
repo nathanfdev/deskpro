@@ -3,6 +3,7 @@ Feature: Voice queue assets
 
   Background:
     Given I'm authenticated as admin
+    And the setting "beta_features.voice" is set to 1
     And only the following VoiceQueue records exist:
       | #  | Name    | Routing Model |
       | q1 | Queue 1 | round_robin   |

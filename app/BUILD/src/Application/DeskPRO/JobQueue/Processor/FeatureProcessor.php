@@ -28,6 +28,11 @@
 
 namespace Application\DeskPRO\JobQueue\Processor;
 
+use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\Setting;
+use Application\DeskPRO\Entity\TmpData;
+use Application\DeskPRO\EntityRepository\Setting as SettingRepository;
+use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -58,6 +63,9 @@ class FeatureProcessor extends AbstractJobProcessor
         $this->container = $container;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired('feature_id');
@@ -65,6 +73,9 @@ class FeatureProcessor extends AbstractJobProcessor
         $resolver->setAllowedValues('action', ['enable', 'disable']);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function process(array $data, array $job)
     {
         $featureId = $data['feature_id'];
@@ -82,13 +93,48 @@ class FeatureProcessor extends AbstractJobProcessor
                 if ($feature->isEnabled()) {
                     throw new \LogicException(sprintf('Feature %s already enabled', $feature->getTitle()), 400);
                 }
-                $feature->enable($this->container);
+                $feature->beforeEnable($this->container);
             } elseif ($action === 'disable') {
                 if (!$feature->isEnabled()) {
                     throw new \LogicException(sprintf('Feature %s already disabled', $feature->getTitle()), 400);
                 }
-                $feature->disable($this->container);
+                $feature->beforeDisable($this->container);
             }
+
+            $em  = $this->container->get('doctrine.orm.default_entity_manager');
+            $key = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $feature->getId());
+
+            // enable or disable feature in global settings
+            /** @var SettingRepository $settingsRepository */
+            $settingsRepository = $em->getRepository(Setting::class);
+            $settingsRepository->updateSetting($key, $action === 'enable');
+
+            // remove status indicators
+            $tmpData = $em->getRepository(TmpData::class)->findBy(['name' => $key]);
+            foreach ($tmpData as $tmpDatum) {
+                if ($tmpDatum->getType() === 'feature_'.$action) {
+                    $em->remove($tmpDatum);
+                }
+            }
+
+            $em->flush();
+
+            // broadcast a refresh event to all agents
+            if ($feature->needAgentReload()) {
+                $cm = new ClientMessage();
+                $cm->fromArray([
+                    'channel' => 'agent.ui.reload',
+                    'data'    => [
+                        'type'        => 'admin',
+                        'person_id'   => 0,
+                        'person_name' => 'System',
+                    ],
+                ]);
+
+                $em->persist($cm);
+                $em->flush();
+            }
+
             $this->runSuccessHandler($job);
         } catch (\Exception $e) {
             $this->runExceptionHandler($job, $e);

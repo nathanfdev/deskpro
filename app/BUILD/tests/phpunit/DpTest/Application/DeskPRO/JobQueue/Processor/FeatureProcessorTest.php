@@ -29,8 +29,10 @@
 namespace DpTest\DeskPRO\Application\JobQueue;
 
 use Application\DeskPRO\Entity\Job;
-use Application\DeskPRO\JobQueue\JobQueue;
+use Application\DeskPRO\Entity\Setting;
+use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\JobQueue\Processor\FeatureProcessor;
+use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
 use DpTest\ApiTestCase;
 use DpTestSrc\TestBundle\Mock\Features\DisabledFeature;
 use DpTestSrc\TestBundle\Mock\Features\EnabledFeature;
@@ -63,7 +65,6 @@ class FeatureProcessorTest extends ApiTestCase
 
     public function test_resolver_options()
     {
-        /** @var JobQueue $jobQueue */
         $jobQueue = $this->get('job.queue');
         $job      = $jobQueue->add(FeatureProcessor::JOB_TYPE, []);
 
@@ -77,7 +78,6 @@ class FeatureProcessorTest extends ApiTestCase
 
     public function test_process_disabling_feature()
     {
-        /** @var JobQueue $jobQueue */
         $jobQueue = $this->get('job.queue');
         $job      = $jobQueue->add(FeatureProcessor::JOB_TYPE, [
                 'feature_id' => 'enabled_feature',
@@ -94,7 +94,6 @@ class FeatureProcessorTest extends ApiTestCase
 
     public function test_process_disabling_disabled_feature()
     {
-        /** @var JobQueue $jobQueue */
         $jobQueue = $this->get('job.queue');
         $job      = $jobQueue->add(FeatureProcessor::JOB_TYPE, [
                 'feature_id' => 'disabled_feature',
@@ -110,7 +109,6 @@ class FeatureProcessorTest extends ApiTestCase
 
     public function test_process_enabling_feature()
     {
-        /** @var JobQueue $jobQueue */
         $jobQueue = $this->get('job.queue');
         $job      = $jobQueue->add(FeatureProcessor::JOB_TYPE, [
                 'feature_id' => 'disabled_feature',
@@ -127,7 +125,6 @@ class FeatureProcessorTest extends ApiTestCase
 
     public function test_process_enabling_enabled_feature()
     {
-        /** @var JobQueue $jobQueue */
         $jobQueue = $this->get('job.queue');
         $job      = $jobQueue->add(FeatureProcessor::JOB_TYPE, [
                 'feature_id' => 'enabled_feature',
@@ -141,6 +138,53 @@ class FeatureProcessorTest extends ApiTestCase
         $this->assertTrue(strpos($job->log, 'Code: 400') !== false);
     }
 
+    public function test_enable()
+    {
+        $jobQueue = $this->get('job.queue');
+        $job      = $jobQueue->add(FeatureProcessor::JOB_TYPE, [
+            'feature_id' => 'disabled_feature',
+            'action'     => 'enable',
+        ]);
+
+        $this->setUpSetting('disabled_feature', false);
+        $this->setUpTmpData('disabled_feature', false);
+
+        $this->featureProcessor->execute($this->getJobArray($job));
+        $this->getEntityManager()->refresh($job);
+
+        $key     = $this->getKey('disabled_feature');
+        $em      = $this->getEntityManager();
+        $setting = $em->getRepository(Setting::class)->findOneBy(['name' => $key]);
+        $tmpData = $em->getRepository(TmpData::class)->findOneBy(['name' => $key], ['date_expire' => 'DESC']);
+
+        $this->assertTrue((bool) $setting->getValue());
+        $this->assertNull($tmpData); // tmpData is deleted during enable
+    }
+
+    public function test_disable()
+    {
+        $jobQueue = $this->get('job.queue');
+        $job      = $jobQueue->add(FeatureProcessor::JOB_TYPE, [
+            'feature_id' => 'enabled_feature',
+            'action'     => 'disable',
+        ]);
+
+        $this->setUpSetting('enabled_feature', true);
+        $this->setUpTmpData('enabled_feature', true);
+
+        $this->featureProcessor->execute($this->getJobArray($job));
+        $this->getEntityManager()->refresh($job);
+
+        /** @var Setting $setting */
+        $key     = $this->getKey('enabled_feature');
+        $em      = $this->getEntityManager();
+        $setting = $em->getRepository(Setting::class)->findOneBy(['name' => $key]);
+        $tmpData = $em->getRepository(TmpData::class)->findOneBy(['name' => $key], ['date_expire' => 'DESC']);
+
+        $this->assertFalse((bool) $setting->getValue());
+        $this->assertNull($tmpData); // tmpData is deleted during disable
+    }
+
     /**
      * @param Job $job
      *
@@ -152,5 +196,44 @@ class FeatureProcessorTest extends ApiTestCase
         $jobArray['data'] = json_encode($jobArray['data']);
 
         return $jobArray;
+    }
+
+    /**
+     * @param string $id
+     * @param bool   $enabled
+     */
+    private function setUpSetting($id, $enabled)
+    {
+        $key = $this->getKey($id);
+        $em  = $this->getEntityManager();
+
+        $settingsRepo = $em->getRepository(Setting::class);
+        $settingsRepo->updateSetting($key, $enabled);
+    }
+
+    /**
+     * @param string $id
+     * @param bool   $enabled
+     */
+    private function setUpTmpData($id, $enabled)
+    {
+        $key = $this->getKey($id);
+        $em  = $this->getEntityManager();
+
+        $type = sprintf('feature_%s', $enabled ? 'disable' : 'enable');
+
+        $tmpData = TmpData::create($type, [], '+20 min', $key);
+        $em->persist($tmpData);
+        $em->flush();
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return string
+     */
+    private function getKey($id)
+    {
+        return sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $id);
     }
 }
