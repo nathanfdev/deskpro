@@ -10,7 +10,9 @@ export class DownloadPopup extends React.Component {
     filesize:     PropTypes.string,
     dateUploaded: PropTypes.string,
     downloadUrl:  PropTypes.string,
-    voteUrl:      PropTypes.string,
+    voteUpUrl:    PropTypes.string,
+    voteDownUrl:  PropTypes.string,
+    voted:        PropTypes.bool,
     voteCount:    PropTypes.number,
     $button:      PropTypes.object,
     $voteWidget:  PropTypes.object
@@ -20,7 +22,7 @@ export class DownloadPopup extends React.Component {
     super(props);
     this.state = {
       opened:    false,
-      voted:     false,
+      voted:     props.voted || false,
       voteCount: props.voteCount || 0
     };
   }
@@ -32,41 +34,46 @@ export class DownloadPopup extends React.Component {
     $voteWidget.on('vote', this.onVote);
   }
 
-  onOpen = event => {
+  onOpen = (event) => {
     event.preventDefault();
     this.setState({
       opened: true
     });
   };
 
-  onClose = event => {
+  onClose = (event) => {
     event.preventDefault();
     this.setState({
       opened: false
     });
   };
 
-  onVote = event => {
+  onVote = (event) => {
+    event.preventDefault();
+    const { voted, voteCount } = this.state;
+    this.setState({
+      voted:     !voted,
+      voteCount: voteCount + (voted ? -1 : 1)
+    });
+  };
+
+  vote = (event) => {
     event.preventDefault();
 
-    const { voteUrl, $voteWidget } = this.props;
-    if (this.state.voted || $voteWidget.hasClass('with-voted')) {
-      return;
-    }
+    const { voteDownUrl, voteUpUrl, $voteWidget } = this.props;
+    const { voted } = this.state;
 
-    this.setState({
-      voted:     true,
-      voteCount: this.state.voteCount + 1
-    });
-
-    $.post(voteUrl);
-    setTimeout(() => $voteWidget.trigger('vote'), 0);
+    setTimeout(() => {
+      $.post(voted ? voteDownUrl : voteUpUrl);
+      $voteWidget.trigger('vote');
+    }, 100);
   };
 
   render() {
     const { $button, filename, filesize, downloadUrl, dateUploaded } = this.props;
+    const { opened, voted, voteCount } = this.state;
 
-    if (!this.state.opened) {
+    if (!opened) {
       return null;
     }
 
@@ -74,7 +81,7 @@ export class DownloadPopup extends React.Component {
       <div>
         <ClickOut onClickOut={this.onClose} additionalNodes={$button}>
           <div className="popup popup-file-download">
-            <a href="#" className="cancel" onClick={this.onClose}>
+            <a className="cancel" onClick={this.onClose}>
               Cancel download <i className="fa fa-times" />
             </a>
 
@@ -83,8 +90,8 @@ export class DownloadPopup extends React.Component {
               <hr />
 
               <div className="cudos-wrapper">
-                <a className={classNames('cudos', { 'with-voted': this.state.voted })} onClick={this.onVote}>
-                  <i className="fa fa-thumbs-up" /> {this.state.voteCount}
+                <a className={classNames('cudos', { 'with-voted': voted })} onClick={this.vote}>
+                  <i className="fa fa-thumbs-up" /> {voteCount}
                 </a>
               </div>
             </div>
@@ -95,12 +102,12 @@ export class DownloadPopup extends React.Component {
               : <h2>{filesize}</h2>
             }
 
-            <a href={downloadUrl} className="button" target="_blank">
+            <a href={downloadUrl} className="button" target="_blank" rel="noopener noreferrer">
               Download File
             </a>
           </div>
         </ClickOut>
-        <div className="cover"></div>
+        <div className="cover" />
       </div>
     );
   }
