@@ -7,8 +7,8 @@ export class FeedbackVoteWidget extends PageWidget {
   renderWidget() {
     const $iAgreeBox = this.$element;
 
-    $iAgreeBox.click(e => {
-      e.preventDefault();
+    $iAgreeBox.click((event) => {
+      event.preventDefault();
 
       if ($iAgreeBox.hasClass('closed')) {
         return false; // rate closed
@@ -16,29 +16,37 @@ export class FeedbackVoteWidget extends PageWidget {
       if ($iAgreeBox.hasClass('rate_forbidden')) {
         return false; // no permission
       }
-      if ($iAgreeBox.hasClass('agreed')) {
-        return false; // already agreed
-      }
 
-      const action = $iAgreeBox.attr('href');
+      const agreed = $iAgreeBox.hasClass('agreed');
+      const voteUpUrl = $iAgreeBox.data('vote-up-url');
+      const voteDownUrl = $iAgreeBox.data('vote-down-url');
       const $counter = $iAgreeBox.find('span.counter');
-      $counter.text(_.parseInt($counter.text()) + 1);
-      $iAgreeBox.addClass('agreed');
-
-      $.ajax({
-        url:         action,
-        method:      'POST',
-        contentType: 'application/json'
-      }).success(data => {
-        if (!data.success) {
-          $iAgreeBox.find('div').text(data.error);
-          $counter.text(_.parseInt($counter.text()) - 1);
+      const onFail = () => {
+        $counter.text(_.parseInt($counter.text()) - (agreed ? -1 : 1));
+        if (agreed) {
+          $iAgreeBox.addClass('agreed');
+        } else {
           $iAgreeBox.removeClass('agreed');
         }
-      }).fail(() => {
-        $counter.text(_.parseInt($counter.text()) - 1);
+      };
+
+      $counter.text(_.parseInt($counter.text()) + (agreed ? -1 : 1));
+      if (agreed) {
         $iAgreeBox.removeClass('agreed');
-      });
+      } else {
+        $iAgreeBox.addClass('agreed');
+      }
+
+      $.ajax({
+        url:         agreed ? voteDownUrl : voteUpUrl,
+        method:      'POST',
+        contentType: 'application/json'
+      }).success((data) => {
+        if (!data.success) {
+          $iAgreeBox.find('div').text(data.error);
+          onFail();
+        }
+      }).fail(onFail);
 
       return false;
     });
