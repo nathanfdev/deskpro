@@ -49,23 +49,26 @@ class PeopleController extends AbstractApiController
 {
     /**
      * @Rest\Get("/online_agents")
+     * @Dpsid()
      *
      * @return View
      */
     public function getOnlineAgentsAction()
     {
         $agentIds           = $this->getPersonRepository()->getActiveAgentIdsForUserChat();
+        $userDepartmentIds  = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser())->getAllowedChatDepartmentIds();
         $brand              = $this->getBrandContainer()->getBrand();
         $brandDepartmentIds = $brand->getChatDepartments()->map(function (Department $department) {
             return $department->getId();
         })->getValues();
 
         $agents = $this->getPersonRepository()->findBy(['id' => $agentIds]);
-        $agents = array_filter($agents, function (Person $agent) use ($brandDepartmentIds) {
+        $agents = array_filter($agents, function (Person $agent) use ($brandDepartmentIds, $userDepartmentIds) {
             $agent->loadHelper('AgentPermissions');
             $agentDepartmentIds = $agent->getHelper('AgentPermissions')->getAllowedDepartments('chat');
 
-            return $agent->hasPerm('agent_chat.use') && array_intersect($brandDepartmentIds, $agentDepartmentIds);
+            return $agent->hasPerm('agent_chat.use')
+                && array_intersect($brandDepartmentIds, $agentDepartmentIds, $userDepartmentIds);
         });
 
         return new View($this->wrap($agents));

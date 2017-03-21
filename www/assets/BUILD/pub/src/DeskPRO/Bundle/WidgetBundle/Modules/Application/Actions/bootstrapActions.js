@@ -185,7 +185,6 @@ export const bootstrapWidget = createAction(
     } else {
       // bootstrap normal mode
       const promises = [
-        dispatch(loadOnlineAgents()),
         dispatch(getSession()),
         dispatch(loadPortalPhraseTranslations())
       ];
@@ -206,23 +205,24 @@ export const bootstrapWidget = createAction(
           // possibly reload translations with proper user's lang
           // do it again when user's session is loaded
           dispatch(loadPortalPhraseTranslations());
+          dispatch(loadOnlineAgents()).then(() => {
+            // try to resume chat
+            const onFinish = () => {
+              resolve(response);
+            };
 
-          // try to resume chat
-          const onFinish = () => {
-            resolve(response);
-          };
+            const onError = (data) => {
+              // Remove from local storage broken chat id
+              if (data && data.code === 400 && data.message === 'wrong_session_code') {
+                dispatch(unsetChatId());
+              }
 
-          const onError = (data) => {
-            // Remove from local storage broken chat id
-            if (data && data.code === 400 && data.message === 'wrong_session_code') {
-              dispatch(unsetChatId());
-            }
+              onFinish();
+            };
 
-            onFinish();
-          };
-
-          const promise = dispatch(chatResume());
-          promise.then(onFinish, onError);
+            const promise = dispatch(chatResume());
+            promise.then(onFinish, onError);
+          });
         }
       });
     }
