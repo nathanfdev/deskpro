@@ -55,7 +55,8 @@ class UpdaterController extends BaseController
      *     description="Get the updater settings",
      *     statusCodes={
      *         200="Success"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\UpdaterSettings"
      * )
      * @ApiUnstable()
      * @Rest\Get("/helpdesk/updater/settings")
@@ -124,11 +125,15 @@ class UpdaterController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Manually schedule an upgrade to run right now",
-     *      statusCodes={
-     *          204="Returned in case of successful resource modify",
-     *          400="We will return this in case your request was malformed",
-     *      }
+     *     description="Manually schedule an upgrade to run right now",
+     *     statusCodes={
+     *         204="Returned in case of successful resource modify",
+     *         400="We will return this in case your request was malformed",
+     *     },
+     *     parameters={
+     *        {"name"="delay", "description"="delay before start", "dataType"="integer", "required"=false}
+     *     },
+     *     noOutput=true
      * )
      * @Rest\Post("/helpdesk/updater/manual-schedule")
      * @ApiUnstable()
@@ -166,7 +171,8 @@ class UpdaterController extends BaseController
      *     description="Get the updater status",
      *     statusCodes={
      *         200="Success"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\UpdaterStatus"
      * )
      * @ApiUnstable()
      * @Rest\Get("/helpdesk/updater/status")

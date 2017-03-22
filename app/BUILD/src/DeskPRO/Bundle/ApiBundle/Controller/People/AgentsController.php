@@ -145,10 +145,15 @@ class AgentsController extends CrudController
 
     /**
      * @ApiDoc(
-     *     section="Agents",
      *     description="edit agent profile",
      *     statusCodes={
      *         204="No content"
+     *     },
+     *     input={
+     *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\People\AgentProfileType",
+     *      "options"={
+     *          "data"="Application\DeskPRO\Entity\Person"
+     *      }
      *     }
      * )
      *

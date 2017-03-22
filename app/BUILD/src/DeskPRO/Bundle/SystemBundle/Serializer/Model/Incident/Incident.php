@@ -26,26 +26,62 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Categories;
+namespace DeskPRO\Bundle\SystemBundle\Serializer\Model\Incident;
 
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
-use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
-use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\HttpFoundation\Request;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident as IncidentEntity;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class AbstractCategoriesController.
+ * Class Incident.
  */
-abstract class AbstractCategoriesController extends CrudController
+class Incident
 {
-    public static $exposeOnly = ['get', 'list', 'count', 'delete'];
+    /**
+     * @var int
+     *
+     * @JMS\Type("integer")
+     */
+    protected $id;
 
     /**
-     * {@inheritdoc}
+     * @var \DateTime
+     *
+     * @JMS\Type("DateTime")
      */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    protected $dateCreated;
+
+    /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    protected $raised = false;
+
+    /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    protected $dismissed = false;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    protected $title;
+
+    /**
+     * Constructor.
+     *
+     * @param IncidentEntity $incident
+     */
+    public function __construct(IncidentEntity $incident)
     {
-        ListHelper::applyInListFilter(new RequestQueryContext($qb, $alias, $request), 'brand', 'brands');
+        $this->id          = $incident->getId();
+        $this->dateCreated = $incident->getDateCreated();
+        $this->raised      = $incident->isRaised();
+        $this->dismissed   = $incident->isDismissed();
+        $this->title       = $incident->getTitle();
     }
 }

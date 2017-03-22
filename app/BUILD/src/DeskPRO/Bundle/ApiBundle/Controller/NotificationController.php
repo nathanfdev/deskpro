@@ -114,7 +114,8 @@ class NotificationController extends BaseController
      *     resourceDescription="Operations about action alerts",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true
      * )
      *
      * @param Request $request
@@ -158,7 +159,13 @@ class NotificationController extends BaseController
      *     resourceDescription="Operations about action alerts",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     parameters={
+     *         {"name"="user_id", "description"="", "dataType"="integer", "required"=true},
+     *         {"name"="channel_name", "description"="", "dataType"="string", "required"=true},
+     *         {"name"="socket_id", "description"="", "dataType"="string", "required"=true}
+     *     },
+     *     output="array"
      * )
      *
      * @Rest\Post("/pusher/auth", name="pusher_auth")

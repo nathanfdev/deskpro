@@ -100,7 +100,13 @@ class LogsController extends BaseController
      *     },
      *     statusCodes={
      *         204="Returned if everything is OK",
-     *     }
+     *     },
+     *     parameters={
+     *         {"name"="enabled", "description"="", "dataType"="boolean", "required"=true},
+     *         {"name"="modes", "description"="", "dataType"="array", "required"=true},
+     *         {"name"="request_length", "description"="", "dataType"="integer", "required"=true},
+     *         {"name"="response_length", "description"="", "dataType"="integer", "required"=true}
+     *      }
      * )
      *
      * @todo replace with form
@@ -193,7 +199,10 @@ class LogsController extends BaseController
      *         400="Returned if mode not equals 'isolated' or 'subrequest'",
      *         404="We can't find entry with provided id",
      *     },
-     *     output="DeskPRO\Bundle\AppBundle\Entity\ApiLog"
+     *     output="DeskPRO\Bundle\AppBundle\Entity\ApiLog",
+     *     parameters={
+     *         {"name"="mode", "description"="", "dataType"="string", "required"=true}
+     *     }
      * )
      *
      * @Rest\Post("/api_logs/{id}/replay", name="api_logs_replay", requirements={"id": "\d+"})

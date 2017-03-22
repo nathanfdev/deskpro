@@ -78,7 +78,8 @@ class MeController extends BaseController
      *     description="get my profile action",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\ApiBundle\Model\DeviceSetupToken"
      * )
      *
      * @Rest\Get("/device-setup-token")

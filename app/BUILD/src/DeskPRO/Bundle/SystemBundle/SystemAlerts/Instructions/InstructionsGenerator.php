@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts\Instructions;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;

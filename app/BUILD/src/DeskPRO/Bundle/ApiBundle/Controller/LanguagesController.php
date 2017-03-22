@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Language;
@@ -51,16 +47,17 @@ class LanguagesController extends CrudController
 {
     public static $entity     = Language::class;
     public static $listOrder  = 'asc';
-    public static $exposeOnly = ['list', 'get'];
+    public static $exposeOnly = ['list', 'get', 'count'];
 
     /**
      * @ApiDoc(
-     *      section="Languages",
-     *      description="provide agent phrases for frontend",
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      }
+     *     section="Languages",
+     *     description="provide agent phrases for frontend",
+     *     statusCodes={
+     *         201="Created",
+     *         400="Bad Request"
+     *     },
+     *     output="array"
      * )
      * @Rest\Get("/agent_phrases")
      *
@@ -143,12 +140,13 @@ class LanguagesController extends CrudController
 
     /**
      * @ApiDoc(
-     *      section="Languages",
-     *      description="provide admin phrases for frontend",
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      }
+     *     section="Languages",
+     *     description="provide admin phrases for frontend",
+     *     statusCodes={
+     *         201="Created",
+     *         400="Bad Request"
+     *     },
+     *     noOutput="array"
      * )
      * @Rest\Get("/admin_phrases")
      *

@@ -80,7 +80,9 @@ class MassActionsController extends BaseController
      *     statusCodes={
      *         200="Your request was successful",
      *         400="Malformed request, refer to manual",
-     *     }
+     *     },
+     *     noInput=true,
+     *     noOutput=true
      * )
      *
      * @Rest\Post("/{content}", name="mass_action_create", requirements={"content"="\w+"})
@@ -121,7 +123,9 @@ class MassActionsController extends BaseController
      *     statusCodes={
      *         200="Your request was successful",
      *         400="Malformed request, refer to manual",
-     *     }
+     *     },
+     *     noInput=true,
+     *     noOutput=true
      * )
      *
      * @Rest\Post("/{content}/queued", name="queued_mass_action_create")

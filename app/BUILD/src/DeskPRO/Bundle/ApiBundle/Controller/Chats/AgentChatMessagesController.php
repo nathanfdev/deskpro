@@ -71,6 +71,15 @@ use Symfony\Component\HttpFoundation\Response;
  *      }
  *     }
  * )
+ * @ApiDoc(
+ *     target="markMessagesAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentMarkMessageType",
+ *      "options"={
+ *          "chat"="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
+ *      }
+ *     }
+ * )
  * @ApiUnstable()
  * @Feature("agent_chat")
  */
@@ -160,7 +169,8 @@ class AgentChatMessagesController extends CrudSubController
      *              "Returned if given status was wrong",
      *              "Returned if ids list was wrong formed"
      *          }
-     *      }
+     *      },
+     *     noInput=true
      * )
      * @Rest\Put("/mark_all")
      *
@@ -196,14 +206,15 @@ class AgentChatMessagesController extends CrudSubController
 
     /**
      * @ApiDoc(
-     *      description="get page where this message is",
-     *      statusCodes={
-     *          204="Returned if success",
-     *          400={
-     *              "Returned if given status was wrong",
-     *              "Returned if ids list was wrong formed"
-     *          }
-     *      }
+     *     description="get page where this message is",
+     *     statusCodes={
+     *         204="Returned if success",
+     *         400={
+     *             "Returned if given status was wrong",
+     *             "Returned if ids list was wrong formed"
+     *         }
+     *     },
+     *     output="integer"
      * )
      * @Rest\Get("/{id}/page")
      *

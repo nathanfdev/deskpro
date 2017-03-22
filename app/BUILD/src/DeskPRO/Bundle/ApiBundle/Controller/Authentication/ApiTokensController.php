@@ -176,10 +176,11 @@ class ApiTokensController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Get list of api token usersources.",
-     *      statusCodes={
-     *          404="Usersource not found"
-     *      }
+     *     description="Get list of api token usersources.",
+     *     statusCodes={
+     *         404="Usersource not found"
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Usersource>"
      * )
      *
      * @Rest\Get("/user_sources/{context}.{_format}", requirements={"context": "(agent|user)", "_format": "(json|html)"})
@@ -224,10 +225,11 @@ class ApiTokensController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Login via usersource.",
-     *      statusCodes={
-     *          404="Usersource not found"
-     *      }
+     *     description="Login via usersource.",
+     *     statusCodes={
+     *         404="Usersource not found"
+     *     },
+     *     noOutput=true
      * )
      *
      * @Rest\Get("/user_sources/{usersource}/login")
@@ -260,11 +262,13 @@ class ApiTokensController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Returns api token on usersource callback",
-     *      output="token",
-     *      statusCodes={
-     *          200="Created token"
-     *      }
+     *     description="Returns api token on usersource callback",
+     *     output="token",
+     *     statusCodes={
+     *         200="Created token"
+     *     },
+     *     noInput=true,
+     *     output="string"
      * )
      *
      * @Rest\Get("/user_sources/{usersource}/callback/{format}", requirements={"format": "(ios|deskpro_scheme|default)"})

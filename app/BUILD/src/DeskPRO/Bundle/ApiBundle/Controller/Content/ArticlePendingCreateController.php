@@ -41,7 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/article_pending_creates")
- * @ApiDoc(target="all", section="Content")
+ * @ApiDoc(target="all", section="Content", output="ArticlePendingCreate")
  * @ApiDoc(
  *     target="listAction,countAction",
  *     filters={

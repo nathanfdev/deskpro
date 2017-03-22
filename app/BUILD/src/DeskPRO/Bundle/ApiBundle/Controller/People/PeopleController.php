@@ -134,7 +134,8 @@ class PeopleController extends CrudController
      *      description="Get tickets of the given person",
      *      statusCodes={
      *          200="Success"
-     *      }
+     *      },
+     *      output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
      * @Rest\Get("/{id}/tickets")
      *
@@ -174,6 +175,9 @@ class PeopleController extends CrudController
      *     description="adds permissions (for now only accepts {agent: true} to add agent permissions)",
      *     statusCodes={
      *         200="OK"
+     *     },
+     *     parameters={
+     *        {"name"="agent", "description"="set as agent", "dataType"="boolean", "required"=false}
      *     }
      * )
      * @Rest\Put("/{id}/permissions")

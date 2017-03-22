@@ -26,15 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Component\Util\ControllerUtils;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Nelmio\ApiDocBundle\Extractor\ApiDocExtractor as BaseApiDocExtractor;
 use Symfony\Component\Routing\Route;
 
@@ -53,7 +50,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
     ];
 
     /**
-     * @return Route[]
+     * {@inheritdoc}
      */
     public function getRoutes()
     {
@@ -92,6 +89,54 @@ class ApiDocExtractor extends BaseApiDocExtractor
 
             return true;
         });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function all($view = ApiDoc::DEFAULT_VIEW)
+    {
+        $extracted = parent::all($view);
+
+        // validate annotations
+        // we need to make sure all actions have description, input/output info etc
+        $failures = [];
+
+        foreach ($extracted as $action) {
+            /** @var \DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc $annotation */
+            $annotation = $action['annotation'];
+            $path       = $annotation->getRoute()->getPath();
+            $method     = $annotation->getMethod();
+
+            $missing = [];
+            if (!$annotation->getSection()) {
+                $missing[] = 'section';
+            }
+            if (!$annotation->getDescription()) {
+                $missing[] = 'description';
+            }
+            if (in_array($method, ['GET', 'POST'])
+                && !$annotation->getOutput()
+                && !$annotation->isNoOutput()) {
+                $missing[] = 'output';
+            }
+            if (in_array($method, ['POST', 'PUT'])
+                && !$annotation->getInput()
+                && !$annotation->getParameters()
+                && !$annotation->isNoInput()) {
+                $missing[] = 'input';
+            }
+
+            if (count($missing)) {
+                $failures[] = 'No api doc '.implode(', ', $missing)." for $method $path";
+            }
+        }
+
+        if (count($failures)) {
+            throw new \Exception(implode('. ', $failures));
+        }
+
+        return $extracted;
     }
 
     /**

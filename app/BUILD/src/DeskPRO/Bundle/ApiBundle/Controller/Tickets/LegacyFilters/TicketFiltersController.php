@@ -61,39 +61,40 @@ class TicketFiltersController extends CrudController
 
     /**
      * @ApiDoc(
-     *      description="Get filter's tickets. See /tickets endpoint docs for the parameter details.",
+     *     description="Get filter's tickets. See /tickets endpoint docs for the parameter details.",
      *     filters={
-     *          {
-     *              "name"="sort",
-     *              "description"="tickets list sort",
-     *              "pattern"="id|urgency|date_created|date_last_agent_reply|date_last_user_reply|date_last_reply|date_user_waiting|total_user_waiting",
-     *              "dataType"="string",
-     *          },
-     *          {"name"="order", "description"="tickets list sort order", "dataType"="string", "pattern"="asc|desc"},
-     *          {"name"="page", "description"="pagination page parameter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="count", "description"="pagination results per page parameter.", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="department", "description"="department filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="organization", "description"="organization filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="person", "description"="person filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="language", "description"="language filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="urgency", "description"="urgency filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="agent", "description"="agent filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="agent_team", "description"="agent team filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="waiting_time", "description"="user waiting time filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="all_waiting_time", "description"="total user waiting time filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="date_created", "description"="date created filter", "dataType"="integer", "pattern"="\d+"},
-     *          {
-     *              "name"="ticket_field.{id}",
-     *              "description"="
-     *                  Custom ticket field filter. To filter by a custom field with ID=1 you need to add
-     *                  ?ticket_field.1=value to the query string",
-     *              "dataType"="string",
-     *              "pattern"="\d+|\w"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *         {
+     *             "name"="sort",
+     *             "description"="tickets list sort",
+     *             "pattern"="id|urgency|date_created|date_last_agent_reply|date_last_user_reply|date_last_reply|date_user_waiting|total_user_waiting",
+     *             "dataType"="string",
+     *         },
+     *         {"name"="order", "description"="tickets list sort order", "dataType"="string", "pattern"="asc|desc"},
+     *         {"name"="page", "description"="pagination page parameter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="count", "description"="pagination results per page parameter.", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="department", "description"="department filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="organization", "description"="organization filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="person", "description"="person filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="language", "description"="language filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="urgency", "description"="urgency filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="agent", "description"="agent filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="agent_team", "description"="agent team filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="waiting_time", "description"="user waiting time filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="all_waiting_time", "description"="total user waiting time filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="date_created", "description"="date created filter", "dataType"="integer", "pattern"="\d+"},
+     *         {
+     *             "name"="ticket_field.{id}",
+     *             "description"="
+     *                 Custom ticket field filter. To filter by a custom field with ID=1 you need to add
+     *                 ?ticket_field.1=value to the query string",
+     *             "dataType"="string",
+     *             "pattern"="\d+|\w"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Success"
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
      *
      * @Rest\Get("/{filter}/tickets")

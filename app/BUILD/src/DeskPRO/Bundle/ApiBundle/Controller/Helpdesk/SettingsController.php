@@ -26,20 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Helpdesk;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Settings\SettingsManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class SettingsController.
@@ -57,25 +51,14 @@ class SettingsController extends BaseController
      *     description="Get current user personal settings",
      *     statusCodes={
      *         200="Success"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\AgentSettings"
      * )
      * @ApiUnstable()
      * @Rest\Get("/helpdesk/agent-client/settings")
      */
     public function agentClientInfoAction()
     {
-        // serializing w/o serializer because it doesn't support deep objects hierarchies
-        return View::create(
-            ['data' => $this->getSettingsManager()->getAgentSettings()],
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @return SettingsManager
-     */
-    private function getSettingsManager()
-    {
-        return $this->get('dp.app.settings_manager');
+        return View::create($this->wrap($this->get('dp.app.settings_manager')->getAgentSettings()));
     }
 }

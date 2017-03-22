@@ -26,31 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
+namespace DeskPRO\Bundle\SystemBundle\Serializer\Model\Incident;
 
-use Application\DeskPRO\Entity\CustomDefChat;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\AbstractCustomFieldsController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class UserChatCustomFieldsController.
- *
- * @ApiModes("all")
- * @Rest\Route("/user_chat_custom_fields")
- * @ApiDoc(target="all", section="Chats", output="Application\DeskPRO\Entity\CustomDefChat")
- * @ApiDoc(
- *     target="putAction",
- *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldType",
- *      "options"={
- *          "data"="Application\DeskPRO\Entity\CustomDefChat"
- *      }
- *     }
- * )
+ * Class IncidentInstructions.
  */
-class UserChatCustomFieldsController extends AbstractCustomFieldsController
+class IncidentInstructions
 {
-    public static $entity = CustomDefChat::class;
+    /**
+     * @JMS\Type("DeskPRO\Bundle\SystemBundle\Serializer\Model\Incident\Incident")
+     *
+     * @var Incident
+     */
+    private $incident;
+
+    /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $instructionsHtml;
+
+    /**
+     * Constructor.
+     *
+     * @param Incident $incident
+     * @param string   $instructionsHtml
+     */
+    public function __construct(Incident $incident, $instructionsHtml)
+    {
+        $this->incident         = $incident;
+        $this->instructionsHtml = $instructionsHtml;
+    }
 }

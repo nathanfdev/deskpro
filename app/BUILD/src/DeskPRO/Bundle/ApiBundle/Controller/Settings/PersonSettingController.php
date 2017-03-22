@@ -52,7 +52,11 @@ class PersonSettingController extends BaseController
      *          201="Created",
      *          400="Bad Request"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting",
+     *      parameters={
+     *          { "name" = "name", "dataType" = "string", "format" = "string", "required" = true, "description" = "setting name" },
+     *          { "name" = "value", "dataType" = "string", "format" = "string", "required" = true, "description" = "setting value" },
+     *      }
      * )
      * @Rest\Post("/person_setting")
      *
@@ -86,7 +90,11 @@ class PersonSettingController extends BaseController
      *          400="Bad Request",
      *          404="Not Found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting",
+     *      parameters={
+     *          { "name" = "name", "dataType" = "string", "format" = "string", "required" = true, "description" = "setting name" },
+     *          { "name" = "value", "dataType" = "string", "format" = "string", "required" = true, "description" = "setting value" },
+     *      }
      * )
      * @Rest\Put("/person_setting")
      *
@@ -120,7 +128,7 @@ class PersonSettingController extends BaseController
      *      statusCodes={
      *          200="Success"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
+     *      output="array<DeskPRO\Bundle\AppBundle\Entity\PersonSetting>"
      * )
      * @Rest\Get("/person_setting")
      *

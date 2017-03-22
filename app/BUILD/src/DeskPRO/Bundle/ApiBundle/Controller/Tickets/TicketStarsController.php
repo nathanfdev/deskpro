@@ -80,6 +80,9 @@ class TicketStarsController extends BaseController
      *     requirements={
      *         {"name" = "id", "requirement" = "\d+", "dataType" = "integer", "description" = "the id of star to update"},
      *         {"name" = "name", "requirement" = "\w", "dataType" = "string", "description" = "the name of star to set"},
+     *     },
+     *     input={
+     *       "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketStarNameType"
      *     }
      * )
      *

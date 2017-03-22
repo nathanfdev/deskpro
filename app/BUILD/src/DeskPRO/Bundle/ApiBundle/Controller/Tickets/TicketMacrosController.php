@@ -75,7 +75,9 @@ class TicketMacrosController extends CrudController
      *     requirements={
      *         {"name"="id", "requirement"="\d+", "dataType"="integer", "description"="the macro identity"},
      *         {"name"="ticketId", "requirement"="\d+", "dataType"="integer", "description"="the ticket identity"},
-     *     }
+     *     },
+     *     noInput=true,
+     *     noOutput=true
      * )
      *
      * @Rest\Post("/{id}/apply/{ticket}")

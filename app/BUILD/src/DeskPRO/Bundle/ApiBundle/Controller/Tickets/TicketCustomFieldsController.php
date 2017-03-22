@@ -39,7 +39,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *
  * @ApiModes("all")
  * @Rest\Route("/ticket_custom_fields")
- * @ApiDoc(target="all", section="Tickets")
+ * @ApiDoc(target="all", section="Tickets", output="Application\DeskPRO\Entity\CustomDefTicket")
  * @ApiDoc(
  *     target="putAction",
  *     input={

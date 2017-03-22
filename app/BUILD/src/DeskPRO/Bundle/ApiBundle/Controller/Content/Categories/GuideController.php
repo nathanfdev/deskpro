@@ -62,11 +62,12 @@ class GuideController extends AbstractCategoriesController
 
     /**
      * @ApiDoc(
-     *      description="give a topics tree list of a guide",
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      }
+     *     description="give a topics tree list of a guide",
+     *     statusCodes={
+     *         201="Created",
+     *         400="Bad Request"
+     *     },
+     *     output="array"
      * )
      * @Rest\Get("/tree/{guideId}")
      *
@@ -96,11 +97,14 @@ class GuideController extends AbstractCategoriesController
 
     /**
      * @ApiDoc(
-     *      description="save the tree structure",
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      }
+     *     description="save the tree structure",
+     *     statusCodes={
+     *         201="Created",
+     *         400="Bad Request"
+     *     },
+     *     parameters={
+     *         {"name"="tree", "description"="", "dataType"="array", "required"=true}
+     *     }
      * )
      * @Rest\Put("/tree/{guideId}")
      *
@@ -138,7 +142,7 @@ class GuideController extends AbstractCategoriesController
             ]);
         }
 
-        return new Response('', 204);
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     private static function objectToArray($topics)

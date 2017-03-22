@@ -65,7 +65,8 @@ class PeopleOnboardingController extends CrudController
      *     statusCodes={
      *         200="Success",
      *         404="Not Found error will returned in case there is no available onboardings"
-     *     }
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding>"
      * )
      *
      * @Rest\Get("/new")
@@ -89,7 +90,8 @@ class PeopleOnboardingController extends CrudController
      *     statusCodes={
      *         200="Success",
      *         404="Not Found error will returned in case there is no available onboardings"
-     *     }
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding>"
      * )
      *
      * @Rest\Get("/pending")

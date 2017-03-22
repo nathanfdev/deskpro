@@ -75,7 +75,8 @@ class SearchController extends BaseController
      *      },
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchResponse"
      * )
      *
      * @Rest\Get("/search")
@@ -125,7 +126,8 @@ class SearchController extends BaseController
      *      },
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchResponse"
      * )
      *
      * @Rest\Get("/search/people_and_orgs")
@@ -165,7 +167,8 @@ class SearchController extends BaseController
      *      },
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     output="array"
      * )
      * @Rest\Get("/search/{type}", requirements={"type"="(article|download|feedback|news|ticket|person|agent|organization|chat_conversation|topic)"})
      *
@@ -214,16 +217,6 @@ class SearchController extends BaseController
      */
     protected function getSearchResults(QuickSearchRequest $searchRequest)
     {
-        $results  = $this->get('quick_search')->search($searchRequest);
-        $response = ['grouped_results' => []];
-
-        foreach ($results->getContexts() as $context) {
-            $response['grouped_results'][] = [
-                'type'    => $context->getType(),
-                'results' => $context->getEntities(),
-            ];
-        }
-
-        return new View($this->wrap($response));
+        return new View($this->wrap($this->get('quick_search')->search($searchRequest)));
     }
 }

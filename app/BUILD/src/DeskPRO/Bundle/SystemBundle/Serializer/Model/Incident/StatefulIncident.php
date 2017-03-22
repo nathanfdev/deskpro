@@ -26,31 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
+namespace DeskPRO\Bundle\SystemBundle\Serializer\Model\Incident;
 
-use Application\DeskPRO\Entity\CustomDefChat;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\AbstractCustomFieldsController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\StatefulIncident as StatefulIncidentEntity;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class UserChatCustomFieldsController.
- *
- * @ApiModes("all")
- * @Rest\Route("/user_chat_custom_fields")
- * @ApiDoc(target="all", section="Chats", output="Application\DeskPRO\Entity\CustomDefChat")
- * @ApiDoc(
- *     target="putAction",
- *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldType",
- *      "options"={
- *          "data"="Application\DeskPRO\Entity\CustomDefChat"
- *      }
- *     }
- * )
+ * Class AbstractStatefulIncident.
  */
-class UserChatCustomFieldsController extends AbstractCustomFieldsController
+class StatefulIncident extends Incident
 {
-    public static $entity = CustomDefChat::class;
+    /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    protected $resolved = false;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(StatefulIncidentEntity $incident)
+    {
+        parent::__construct($incident);
+        $this->resolved = $incident->isResolved();
+    }
 }

@@ -68,6 +68,9 @@ class VoiceQueuesController extends AbstractVoiceCrudController
      *     description="Toggle agent in voice queue list",
      *     statusCodes={
      *         204="Returned if everything is ok"
+     *     },
+     *     parameters={
+     *       {"name"="enabled", "description"="is enabled", "dataType"="boolean", "required"=false}
      *     }
      * )
      *

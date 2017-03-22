@@ -50,7 +50,8 @@ class TicketFormWidgetController extends BaseController
      *     description="Get ticket form widget JS code",
      *     statusCodes={
      *         200="OK"
-     *     }
+     *     },
+     *     noOutput=true
      * )
      * @Rest\Get("/ticket-form-widget/code")
      *

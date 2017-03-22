@@ -63,7 +63,8 @@ class VoicemailRecordsController extends CrudController
      *     description="Mark voicemail record as listened to",
      *     statusCodes={
      *         204="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true
      * )
      *
      * @Rest\Put("/{record}/mark_listened")
@@ -92,7 +93,8 @@ class VoicemailRecordsController extends CrudController
      *     description="Create voicemail ticket",
      *     statusCodes={
      *         204="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true
      * )
      *
      * @Rest\Put("/{record}/create_ticket")

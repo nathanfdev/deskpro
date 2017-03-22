@@ -57,9 +57,7 @@ class KbSettingsController extends AbstractBrandAwareSettingsController
      *         200="Success",
      *         404="Not Found error will returned in case we can't find the specified brand"
      *     },
-     *     output={
-     *          "class"="DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings"
-     *      }
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings"
      * )
      *
      * @Rest\Get("")
@@ -86,7 +84,8 @@ class KbSettingsController extends AbstractBrandAwareSettingsController
      *     },
      *     input= {
      *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\KbSettingsType"
-     *     }
+     *     },
+     *     noOutput=true
      *)
      * @Rest\Post("")
      *

@@ -57,9 +57,7 @@ class DownloadsSettingsController extends AbstractBrandAwareSettingsController
      *         200="Success",
      *         404="Not Found error will returned in case we can't find the specified brand"
      *     },
-     *     output={
-     *          "class"="DeskPRO\Bundle\AppBundle\Settings\Model\Portal\DownloadsSettings"
-     *      }
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\Portal\DownloadsSettings"
      * )
      *
      * @Rest\Get("")
@@ -86,7 +84,8 @@ class DownloadsSettingsController extends AbstractBrandAwareSettingsController
      *     },
      *     input= {
      *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\DownloadsSettingsType"
-     *     }
+     *     },
+     *     noOutput=true
      *)
      * @Rest\Post("")
      *

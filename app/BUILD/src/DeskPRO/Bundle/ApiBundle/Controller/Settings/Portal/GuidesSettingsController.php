@@ -57,9 +57,7 @@ class GuidesSettingsController extends AbstractBrandAwareSettingsController
      *         200="Success",
      *         404="Not Found error will returned in case we can't find the specified brand"
      *     },
-     *     output={
-     *          "class"="DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GuidesSettings"
-     *      }
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GuidesSettings"
      * )
      *
      * @Rest\Get("")
@@ -86,7 +84,8 @@ class GuidesSettingsController extends AbstractBrandAwareSettingsController
      *     },
      *     input= {
      *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\GuidesSettingsType"
-     *     }
+     *     },
+     *     noOutput=true
      *)
      * @Rest\Post("")
      *

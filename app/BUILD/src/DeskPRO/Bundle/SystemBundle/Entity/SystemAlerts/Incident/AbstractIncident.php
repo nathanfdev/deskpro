@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
@@ -37,7 +33,6 @@ use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class AbstractIncident.
@@ -54,8 +49,6 @@ use JMS\Serializer\Annotation as JMS;
  *     "php_critical_error"     = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\PHP\PhpCriticalErrorIncident",
  *     "php_notice"             = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\PHP\PhpNoticeIncident"
  * })
- *
- * @JMS\ExclusionPolicy("all")
  */
 abstract class AbstractIncident implements Incident
 {
@@ -66,9 +59,6 @@ abstract class AbstractIncident implements Incident
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      */
     protected $id;
 
@@ -82,9 +72,6 @@ abstract class AbstractIncident implements Incident
     /**
      * @var \DateTime
      * @ORM\Column(name="date_created", type="datetime", nullable=false)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
      */
     protected $dateCreated;
 
@@ -142,27 +129,17 @@ abstract class AbstractIncident implements Incident
     /**
      * @var bool
      * @ORM\Column(type="boolean")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
      */
     protected $raised = false;
 
     /**
      * @var bool
      * @ORM\Column(type="boolean")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
      */
     protected $dismissed = false;
 
     /**
      * {@inheritdoc}
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\SerializedName("title")
-     * @JMS\Type("string")
      */
     abstract public function getTitle();
 

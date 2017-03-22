@@ -137,7 +137,8 @@ class TagsController extends BaseController
      *     },
      *     statusCodes={
      *         204="Returned if everything is OK",
-     *     }
+     *     },
+     *     noInput=true
      * )
      * @Rest\Put("/api_tags/{id}", name="api_tags_put", requirements={"id": "\d+"})
      *
@@ -145,6 +146,8 @@ class TagsController extends BaseController
      * @param int     $id
      *
      * @return View
+     *
+     * todo refactor to forms
      */
     public function putAction(Request $request, $id)
     {

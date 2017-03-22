@@ -44,7 +44,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @Rest\Route("/tickets/{parentId}/ticket_slas")
  * @ApiModes("all")
- * @ApiDoc(target="all", section="Tickets", output="TicketSla")
+ * @ApiDoc(target="all", section="Tickets", output="Application\DeskPRO\Entity\TicketSla")
  * @ApiDoc(
  *     target="postAction,putAction,postSingleSlaAction,putSingleSlaAction",
  *     input={
@@ -93,7 +93,8 @@ class TicketSlasController extends CrudSubController
      *              "description"="the id of parent SLA",
      *              "dataType"="integer"
      *        }
-     *     }
+     *     },
+     *     output="Application\DeskPRO\Entity\TicketSla"
      * )
      *
      * @Rest\Get("/by_sla/{slaId}")
@@ -173,7 +174,8 @@ class TicketSlasController extends CrudSubController
      *              "description"="the id of parent SLA",
      *              "dataType"="integer"
      *        }
-     *     }
+     *     },
+     *     output="Application\DeskPRO\Entity\TicketSla"
      * )
      *
      * @Rest\Post("", name="api_ticket_sla_single_create")

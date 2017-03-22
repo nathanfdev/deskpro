@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
 
 use Application\DeskPRO\Entity\BrandSetting;
@@ -68,17 +64,19 @@ class DepartmentSettingsController extends BaseController
      */
     public function listAction()
     {
-        return new View($this->wrap($this->container->get('brand_aware_settings_resolver')
-            ->getDefaultDepartmentSettings()));
+        return new View($this->wrap($this->container->get('brand_aware_settings_resolver')->getDefaultDepartmentSettings()));
     }
 
     /**
      * @ApiDoc(
-     *      section="Settings",
-     *      description="list if default departments grouped by brand",
-     *      statusCodes={
-     *          204="Update successful",
-     *      },
+     *     section="Settings",
+     *     description="list if default departments grouped by brand",
+     *     statusCodes={
+     *         204="Update successful",
+     *     },
+     *     input={
+     *       "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\DefaultDepartmentSettingsType"
+     *     }
      * )
      * @ApiUnstable()
      * @Rest\Put("/settings/departments/default")
