@@ -34,23 +34,23 @@ use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle;
 use DeskPRO\Bundle\AppStoreBundle\Domain\StateScope;
 use FOS\RestBundle\Controller\Annotations as Rest;
-
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation as DeskproAnnotations;
 
 /**
  * Class AppsController
  *
- * @ApiModes("all")
+ * @DeskproAnnotations\ApiModes("standard")
  * @Rest\Route("/apps/{application}/state")
  */
 class AppStateController extends BaseController
 {
     /**
      * @Rest\Get("")
+     * @DeskproAnnotations\ApiUserContext("agent")
      *
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      * @ParamConverter("stateFilter", class="DeskPRO\Bundle\AppStoreBundle\Domain\SearchStateFilter", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\StateFilterParamConverter")
@@ -80,6 +80,7 @@ class AppStateController extends BaseController
 
     /**
      * @Rest\Get("/{name}/{scope}")
+     * @DeskproAnnotations\ApiUserContext("agent")
      *
      * @ParamConverter("state", class="AppStoreBundle:Domain\ApplicationState", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter")
      *
@@ -103,11 +104,11 @@ class AppStateController extends BaseController
         $representation->mapFromState($state);
 
         return $representation;
-
     }
 
     /**
      * @Rest\Post("")
+     * @DeskproAnnotations\ApiUserContext("agent")
      *
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      * @ParamConverter("representation", class="DeskPRO\Bundle\AppStoreBundle\API\AppStateRepresentation", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\SerializedParamConverter")
@@ -121,6 +122,11 @@ class AppStateController extends BaseController
         $representation->mapToAppStateEntity($state);
         $state->setAppInstance($application);
 
+        if ($state->getScope()->getPermission() == AppStoreBundle\Domain\Constants::STATE_PERMISSION_PRIVATE) {
+            $owner = $this->getUser();
+            $state->setOwner($owner);
+        }
+
         $em = $this->getManager();
         $em->persist($state);
         $em->flush();
@@ -130,6 +136,7 @@ class AppStateController extends BaseController
 
     /**
      * @Rest\Put("/{name}")
+     * @DeskproAnnotations\ApiUserContext("agent")
      *
      * @ParamConverter("state", class="AppBundle:Entity\AppStore\AppState", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter")
      * @ParamConverter("representation", class="DeskPRO\Bundle\AppStoreBundle:API\AppStateRepresentation", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\SerializedParamConverter")
@@ -139,6 +146,7 @@ class AppStateController extends BaseController
      */
     public function putStateAction(Entity\AppStore\AppState $state, AppStateRepresentation $representation)
     {
+        //TODO make sure private state is updated by owner
         $representation->mapToAppStateEntity($state);
 
         $em = $this->getManager();
@@ -150,6 +158,7 @@ class AppStateController extends BaseController
 
     /**
      * @Rest\Delete("/{name}")
+     * @DeskproAnnotations\ApiUserContext("agent")
      *
      * @ParamConverter("state", class="AppBundle:Entity\AppStore\AppState", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter")
      * @param Entity\AppStore\AppState $state

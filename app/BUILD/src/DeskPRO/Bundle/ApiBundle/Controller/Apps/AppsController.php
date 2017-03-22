@@ -31,17 +31,19 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 use DeskPRO\Bundle\AppStoreBundle;
 use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+
 use DeskPRO\Bundle\AppBundle\Entity;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation as DeskproAnnotations;
+
 /**
  * Class AppsController
  *
- * @ApiModes("all")
+ * @DeskproAnnotations\ApiModes("standard")
  * @Rest\Route("/apps")
  */
 class AppsController extends FOSRestController

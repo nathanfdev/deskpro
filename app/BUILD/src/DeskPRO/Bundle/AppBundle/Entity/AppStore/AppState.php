@@ -79,6 +79,14 @@ class AppState implements Domain\ApplicationState
     private $value;
 
     /**
+     * @ORM\ManyToOne(targetEntity="\Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", nullable=true)
+     *
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    private $owner;
+
+    /**
      * @ORM\Column(type="integer", nullable=true)
      */
     private $ownerId;
@@ -165,19 +173,32 @@ class AppState implements Domain\ApplicationState
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getOwnerId()
     {
+        if (empty($this->ownerId) && !empty($this->owner)) {
+            return $this->owner->getId();
+        }
+
         return $this->ownerId;
     }
 
     /**
-     * @param mixed $ownerId
+     * @param \Application\DeskPRO\Entity\Person $person
      */
-    public function setOwnerId($ownerId)
+    public function setOwner(\Application\DeskPRO\Entity\Person $person)
     {
-        $this->ownerId = $ownerId;
+        $this->owner = $person;
+        $this->ownerId = null;
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\Person
+     */
+    public function getOwner()
+    {
+        return $this->owner;
     }
 
     /**
