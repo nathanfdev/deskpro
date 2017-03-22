@@ -116,6 +116,20 @@ class GuidesController extends AbstractController
             );
         }
 
+        if (!$topic->getParent()) {
+            /** @var Topic $newTopic */
+            $newTopic = $topic->getChildren()->first();
+
+            return $this->redirectToRoute(
+                'portal_guides_topic_view',
+                [
+                    'slug'         => $newTopic->getSlug(),
+                    'parents_slug' => $newTopic->getParentsSlug(),
+                    'guide_slug'   => $newTopic->getGuideSlug(),
+                ]
+            );
+        }
+
         $serializer = $this->get('serializer');
 
         $person = $this->getCurrentPerson();

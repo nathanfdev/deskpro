@@ -209,7 +209,7 @@ class Guide extends DomainObject
     {
         return $this->topics->filter(function ($topic) {
             /* @var Topic $topic */
-            return $topic->getStatus() !== Topic::STATUS_HIDDEN;
+            return $topic->getStatus() !== Topic::STATUS_HIDDEN && !$topic->getParent();
         });
     }
 
@@ -341,6 +341,7 @@ class Guide extends DomainObject
                 'fieldName'    => 'topics',
                 'targetEntity' => Topic::class,
                 'mappedBy'     => 'guide',
+                'orderBy'      => ['display_order' => 'ASC'],
             ]
         );
         $metadata->mapManyToMany(
