@@ -33,16 +33,16 @@ class ReduxActionDispatcher
     reduxDispatch(action);
   };
 
-  dispatchLoadAllAppState = (appId, callback) =>
+  dispatchFindAllAppState = (appId, callback) =>
   {
     const { reduxDispatch, api, eventBus } = this;
-    reduxDispatch(Actions.loadAllAppState(appId, api, callback, eventBus));
+    reduxDispatch(Actions.findAllAppState(appId, api, callback, eventBus));
   };
 
-  dispatchLoadAOneAppState = (appId, name) =>
+  dispatchGetAppState = (appId, name, scope, callback) =>
   {
     const { reduxDispatch, api, eventBus } = this;
-    reduxDispatch(Actions.loadAOneAppState(appId, name, api));
+    reduxDispatch(Actions.getAppState(appId, name, scope, api, callback));
   };
 
   dispatchSaveState = (appId, state, callback) =>

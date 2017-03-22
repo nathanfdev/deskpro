@@ -75,6 +75,12 @@ class DeskproAppContainer extends React.Component {
     return React.createElement(reactClass, reactProps);
   };
 
+  dispatchGetState = (app, state) =>
+  {
+    const parentComponent = this.components.get(app);
+    this.deskproEventDispatcher.dispatchOnGetState(state, parentComponent);
+  };
+
   dispatchGetAllState = (app, state) =>
   {
     const parentComponent = this.components.get(app);
@@ -96,7 +102,7 @@ class DeskproAppContainer extends React.Component {
     const {app, args} = message;
     const parentComponent = this.components.get(app);
     const { dispatcher } = this.props;
-    let callback;
+    let callback, state;
 
     switch (eventName)
     {
@@ -106,10 +112,16 @@ class DeskproAppContainer extends React.Component {
         break;
       case 'get-all-state':
         callback = state => this.dispatchGetAllState(app, state);
-        dispatcher.dispatchLoadAllAppState(app, callback);
+        dispatcher.dispatchFindAllAppState(app, callback);
+        break;
+      case 'get-state':
+        [ state ] = args;
+        const { name, scope } = state;
+        callback = state => this.dispatchGetState(app, state);
+        dispatcher.dispatchGetAppState(app, name, scope, callback);
         break;
       case 'save-state':
-        const [ state ] = args;
+        [ state ] = args;
         callback = state => this.dispatchSaveState(app, state);
         dispatcher.dispatchSaveState(app, state, callback);
       break;
