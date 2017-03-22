@@ -3531,6 +3531,19 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @param AgentTeam $agentTeam
+     *
+     * @return $this
+     */
+    public function setPrimaryTeam(AgentTeam $agentTeam = null)
+    {
+        $this->setModelField('primary_team', $agentTeam);
+        $this->addTeam($agentTeam);
+
+        return $this;
+    }
+
+    /**
      * @return \Application\DeskPRO\Entity\AgentTeam
      */
     public function getPrimaryTeam()
