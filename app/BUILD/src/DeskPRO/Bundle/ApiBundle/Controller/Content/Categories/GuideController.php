@@ -165,4 +165,31 @@ class GuideController extends AbstractCategoriesController
 
         return $topics;
     }
+
+    /**
+     * @ApiDoc(
+     *      description="export a full json of the guide",
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      }
+     * )
+     * @Rest\Get("/export/{guideId}")
+     * @Rest\View(serializerGroups={"list", "details"})
+     *
+     * @param $guideId
+     *
+     * @return \DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper
+     */
+    public function exportAction($guideId)
+    {
+        /** @var Guide $guide */
+        $guide = $this->getRepository(Guide::class)->find($guideId);
+
+        if (!$guide) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->wrap($this->wrap($guide));
+    }
 }
