@@ -185,5 +185,6 @@ export const updateChatsOrder = createAction(
   'IM_UPDATE_CHATS_ORDER',
   (order) => {
     repository('AgentChat').updateChatsOrder(order);
+    return order;
   }
 );

@@ -8,11 +8,12 @@ export class TextAvatar extends React.Component {
     text:        PropTypes.string,
     color:       PropTypes.string,
     borderColor: PropTypes.string,
-    title:       PropTypes.string
+    title:       PropTypes.string,
+    tooltipId:   PropTypes.string
   };
 
   render() {
-    const { text, color, borderColor, size, children, title } = this.props;
+    const { text, color, borderColor, size, children, title, tooltipId } = this.props;
     const childProps = children.props;
 
     return React.cloneElement(children, {
@@ -20,6 +21,7 @@ export class TextAvatar extends React.Component {
       text,
       color,
       title,
+      tooltipId,
       borderColor,
       width:  size,
       height: size

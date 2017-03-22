@@ -48,7 +48,8 @@ class AvatarHelper {
         url:       AvatarHelper.brandLogoUrl,
         gravatar:  null,
         className: 'ui avatar image im',
-        title
+        title,
+        tooltipId: 'userphoto'
       };
       return <Avatar {...props} />;
     }
@@ -72,8 +73,10 @@ class AvatarHelper {
     if (notificationsCount !== false) {
       const participantsCount = chat.get('agents').size;
       props.title = `${chat.get('name')} (${participantsCount} participant${participantsCount === 1 ? '' : 's'}). ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+      props.tooltipId = 'userphoto';
     } else if (title) {
       props.title = title;
+      props.tooltipId = 'userphoto';
     }
 
     return <Avatar {...props} />;

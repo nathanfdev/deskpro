@@ -15,7 +15,8 @@ export class UserPhoto extends React.Component {
     borderColor: PropTypes.string,
     children:    PropTypes.node,
     className:   PropTypes.string,
-    title:       PropTypes.string
+    title:       PropTypes.string,
+    tooltipId:   PropTypes.string
   };
 
   static defaultProps = {
@@ -64,28 +65,30 @@ export class UserPhoto extends React.Component {
   }
 
   render() {
-    const { type, text, children, className, title } = this.props;
+    const { type, text, children, className, title, tooltipId } = this.props;
 
     const spanProps = {
-      style:     this.getStyle(),
-      className: classNames(className, 'user-photo',
+      style:                  this.getStyle(),
+      'data-tooltip-disable': true,
+      className:              classNames(className, 'user-photo',
         {
           'text-fallback': type === 'text',
           gravatar:        type === 'gravatar'
         })
     };
 
-    const id = new Date().getTime();
+    const id = tooltipId || new Date().getTime();
     if (title) {
       spanProps['data-tip'] = title;
       spanProps['data-for'] = `tooltip-${id}`;
+      spanProps['data-tooltip-disable'] = false;
     }
 
     return (
       <span {...spanProps} >
         {text && <span className={classNames('text', className)} style={this.getTextStyle()}>{text}</span>}
         {children}
-        {title ? <ReactTooltip delayShow={1000} id={`tooltip-${id}`} effect="solid" place="top" className="im-tooltip" /> : null }
+        {title && !tooltipId ? <ReactTooltip delayShow={1000} id={`tooltip-${id}`} effect="solid" place="top" className="im-tooltip" /> : null}
       </span>
     );
   }

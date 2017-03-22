@@ -9,7 +9,8 @@ export class DepartmentAvatar extends React.Component {
     department: PropTypes.object.isRequired,
     size:       PropTypes.number,
     className:  PropTypes.string,
-    title:      PropTypes.string
+    title:      PropTypes.string,
+    tooltipId:  PropTypes.string
   };
 
   static defaultProps = {
@@ -25,12 +26,13 @@ export class DepartmentAvatar extends React.Component {
   }
 
   render() {
-    const { size, className, title } = this.props;
+    const { size, className, title, tooltipId } = this.props;
     const department = this.props.department || Immutable.fromJS({});
     const avatar     = department.get('avatar') || Immutable.fromJS({});
 
     const props = {
       size,
+      tooltipId,
       color:       chooseColor(department.get('id')),
       borderColor: darkerColor(department.get('id')),
       url:         avatar.get('url'),

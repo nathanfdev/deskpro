@@ -189,7 +189,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     chats.forEach((chat) => {
       order[chat.get('id')] = chat.get('order');
     });
-    chatsActions.updateChatsOrder(order);
+    this.props.dispatch(chatsActions.updateChatsOrder(order));
   };
 
   componentWillMount = () => {

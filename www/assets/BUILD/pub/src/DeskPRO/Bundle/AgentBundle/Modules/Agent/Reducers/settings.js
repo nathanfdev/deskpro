@@ -2,7 +2,7 @@ import Immutable from 'immutable';
 import { createReducer } from 'Ampliflux';
 import { setFullPayload } from 'Ampliflux/reducers/handlers';
 import { setAgentSettings, updateFilterGrouping } from '../Actions/settingsActions';
-import { hideChat } from '../../IM/Actions/chatsActions';
+import { hideChat, updateChatsOrder } from '../../IM/Actions/chatsActions';
 
 const initialState = {};
 export default createReducer(initialState, {
@@ -13,9 +13,12 @@ export default createReducer(initialState, {
   [hideChat]: (state, payload) => {
     let newState = state;
     Object.keys(payload).forEach((id) => {
-      newState = newState.deleteIn(['im', 'chats_order', id]);
+      if (newState.hasIn(['im', 'chats_order', id])) {
+        newState = newState.deleteIn(['im', 'chats_order', id]);
+      }
     });
 
     return newState;
-  }
+  },
+  [updateChatsOrder]: (state, payload) => state.setIn(['im', 'chats_order'], payload)
 });
