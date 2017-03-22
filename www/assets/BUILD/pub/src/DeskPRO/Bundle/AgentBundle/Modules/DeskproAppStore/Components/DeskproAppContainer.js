@@ -78,19 +78,22 @@ class DeskproAppContainer extends React.Component {
   dispatchGetState = (app, state) =>
   {
     const parentComponent = this.components.get(app);
-    this.deskproEventDispatcher.dispatchOnGetState(state, parentComponent);
+    const value = state ? JSON.parse(state.value) : null;
+    this.deskproEventDispatcher.dispatchOnGetState(value, parentComponent);
   };
 
   dispatchGetAllState = (app, state) =>
   {
     const parentComponent = this.components.get(app);
-    this.deskproEventDispatcher.dispatchOnGetAllState(state, parentComponent);
+    const value = state ? JSON.parse(state.value) : null;
+    this.deskproEventDispatcher.dispatchOnGetAllState(value, parentComponent);
   };
 
   dispatchSaveState = (app, state) =>
   {
     const parentComponent = this.components.get(app);
-    this.deskproEventDispatcher.dispatchOnSaveState(state, parentComponent);
+    const value = state ? JSON.parse(state.value) : null;
+    this.deskproEventDispatcher.dispatchOnSaveState(value, parentComponent);
   };
 
   /**
@@ -102,7 +105,7 @@ class DeskproAppContainer extends React.Component {
     const {app, args} = message;
     const parentComponent = this.components.get(app);
     const { dispatcher } = this.props;
-    let callback, state;
+    let state;
 
     switch (eventName)
     {
@@ -111,19 +114,16 @@ class DeskproAppContainer extends React.Component {
         this.deskproEventDispatcher.dispatchOnContextInit(context, parentComponent);
         break;
       case 'get-all-state':
-        callback = state => this.dispatchGetAllState(app, state);
-        dispatcher.dispatchFindAllAppState(app, callback);
+        dispatcher.dispatchFindAllAppState(app, this.dispatchGetAllState);
         break;
       case 'get-state':
         [ state ] = args;
         const { name, scope } = state;
-        callback = state => this.dispatchGetState(app, state);
-        dispatcher.dispatchGetAppState(app, name, scope, callback);
+        dispatcher.dispatchGetAppState(app, name, scope, this.dispatchGetState);
         break;
       case 'save-state':
         [ state ] = args;
-        callback = state => this.dispatchSaveState(app, state);
-        dispatcher.dispatchSaveState(app, state, callback);
+        dispatcher.dispatchSaveState(app, state, this.dispatchSaveState);
       break;
     }
   };

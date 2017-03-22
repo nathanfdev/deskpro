@@ -29,7 +29,7 @@ class AppStateRepresentation
 
     /**
      * @JMS\Expose()
-     * @JMS\Type("array")
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -39,7 +39,7 @@ class AppStateRepresentation
     {
         $this->scope = $appState->getScope();
         $this->name = $appState->getName();
-        $this->value = json_decode($appState->getValue(), $assoc = true);
+        $this->value = $appState->getValue(); //json_decode($appState->getValue(), $assoc = true);
     }
 
     public function mapFromAppStateEntity(Entity\AppStore\AppState $appState)
@@ -51,6 +51,6 @@ class AppStateRepresentation
     {
         $appState->setScope($this->scope);
         $appState->setName($this->name);
-        $appState->setValue(json_encode($this->value));
+        $appState->setValue($this->value);
     }
 }

@@ -49,7 +49,7 @@ export const findAllAppState = createAction(
   DESKPRO_APPSTORE_FIND_ALL_STATE,
   (appId, api, callback, eventBus) =>  api.sendGet(`DP_API/apps/${appId}/state`)
     .then(httpResponse => httpResponse.data)
-    .then(state => { callback(state); return state; } )
+    .then(state => { callback(appId, state); return state; } )
     .then(state => eventBus.dispatch(DESKPRO_APPSTORE_FIND_ALL_STATE, appId, state))
 );
 
@@ -60,12 +60,12 @@ export const getAppState = createAction(
   DESKPRO_APPSTORE_GET_STATE,
   (appId, name, scope, api, callback) =>  api.sendGet(`DP_API/apps/${appId}/state/${name}/${scope}`)
     .then(httpResponse => httpResponse.data)
-    .then(state => { callback(state); return state; } )
+    .then(state => { callback(appId, state); return state; } )
     .catch(httpResponse => httpResponse.data )
     .then(data => {
 
       if (404 === data.status) {
-        callback();
+        callback(appId, null);
         return;
       }
        throw new Error('Failed to retrieve app state');
