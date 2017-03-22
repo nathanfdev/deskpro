@@ -930,6 +930,10 @@ img.emojione, svg.emojione {
             img, video {
               max-width: 280px !important;
             }
+
+            .search-result {
+              background: yellow;
+            }
           }
 
           .message:before {

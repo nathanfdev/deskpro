@@ -21,7 +21,7 @@ class NotificationsHandler {
             data.title,
             {
               body:        summary,
-              timeout:     5,
+              timeout:     7,
               icon:        data.icon,
               notifyClick: () => {
                 this.options.dispatch(startChat(null, data.chat));

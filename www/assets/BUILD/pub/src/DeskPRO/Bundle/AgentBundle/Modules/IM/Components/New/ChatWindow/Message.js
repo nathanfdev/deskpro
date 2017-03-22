@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
 import $ from 'jquery';
+import 'mark.js';
 import classNames from 'classnames';
 import emojione from 'emojione';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
