@@ -80,7 +80,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
                 /** @var Feature $annotation */
                 $annotation = $methodAnnotation ?: $classAnnotation;
                 $name = $annotation ? $annotation->getName() : null;
-                if ($annotation && (!$features->hasFeature($name) || !$features->hasBeta($name))) {
+                if ($annotation && !($features->hasFeature($name) || $features->hasBeta($name))) {
                     return false;
                 }
             }
