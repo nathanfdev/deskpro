@@ -7,6 +7,7 @@ class Topic extends React.Component {
     topic:      PropTypes.object,
     locale:     PropTypes.string,
     guideSlug:  PropTypes.string,
+    path:       PropTypes.string,
     expandable: PropTypes.bool
   };
 
@@ -25,6 +26,12 @@ class Topic extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      expanded: (this.props.expandable && nextProps.path.match(this.props.topic.slug))
+    });
+  }
+
   getChildren = () => {
     const { topic, locale, guideSlug, expandable } = this.props;
     if (!Object.values(topic.children).length) {
@@ -40,7 +47,7 @@ class Topic extends React.Component {
         {Object.values(topic.children)
           .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
           .map(child => (
-            <Topic key={child.slug} topic={child} locale={locale} guideSlug={guideSlug} />
+            <Topic key={child.slug} topic={child} locale={locale} guideSlug={guideSlug} path={this.props.path} />
           )
         )}
       </ul>

@@ -190,6 +190,6 @@ class GuideController extends AbstractCategoriesController
             throw $this->createNotFoundException();
         }
 
-        return $this->wrap($this->wrap($guide));
+        return $this->wrap($guide);
     }
 }

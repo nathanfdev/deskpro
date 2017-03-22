@@ -85,7 +85,7 @@ class GuidesDataService extends AbstractDataService
                 $person
             )->getAllowedGuides();
 
-            return $this->getGuideRepo()->findBy(['id' => $allowedIds]);
+            return $this->getGuideRepo()->findBy(['id' => $allowedIds], ['display_order' => 'ASC']);
         });
     }
 

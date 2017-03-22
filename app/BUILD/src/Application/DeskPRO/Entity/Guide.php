@@ -109,6 +109,7 @@ class Guide extends DomainObject
      *
      * @JMS\Groups("guides")
      * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     * @JMS\Groups("list")
      *
      * @var Brand
      */
