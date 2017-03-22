@@ -280,6 +280,9 @@ class MarkdownEditor extends React.Component {
     container.innerHTML = html;
 
     const nodes = container.querySelectorAll('code');
+    hljs.configure({
+      languages: [],
+    });
     if (nodes.length > 0) {
       for (let i = 0; i < nodes.length; i += 1) {
         hljs.highlightBlock(nodes[i]);
