@@ -8,11 +8,13 @@ class Topic extends React.Component {
     locale:     PropTypes.string,
     guideSlug:  PropTypes.string,
     path:       PropTypes.string,
+    clickable:  PropTypes.bool,
     expandable: PropTypes.bool
   };
 
   static defaultProps = {
     expandable: true,
+    clickable:  true,
   };
 
   constructor(props) {
@@ -61,21 +63,24 @@ class Topic extends React.Component {
   };
 
   render() {
-    const { topic, locale, guideSlug } = this.props;
+    const { topic, locale, guideSlug, clickable } = this.props;
     let { expandable } = this.props;
     if (!Object.values(topic.children).length) {
       expandable = false;
     }
     return (
       <li className="topic-item" key={topic.slug}>
-        <Link to={`/${locale}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`} activeClassName="active" onClick={this.toggleChildren}>
-          {topic.title}
-          {expandable ? <i
-            className={classNames(
-            'fa pull-right',
-            { 'fa-caret-right': !this.state.expanded, 'fa-caret-down': this.state.expanded })}
-          /> : null }
-        </Link>
+        {clickable ?
+          <Link to={`/${locale}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`} activeClassName="active" onClick={this.toggleChildren}>
+            {topic.title}
+            {expandable ? <i
+              className={classNames(
+              'fa pull-right',
+              { 'fa-caret-right': !this.state.expanded, 'fa-caret-down': this.state.expanded })}
+            /> : null }
+          </Link> :
+          <a>{topic.title}</a>
+        }
         {this.getChildren()}
       </li>
     );

@@ -44,6 +44,7 @@ class TopicList extends React.Component {
             locale={locale}
             guideSlug={guideSlug}
             expandable={false}
+            clickable={false}
             path={this.state.path}
           />
         )
