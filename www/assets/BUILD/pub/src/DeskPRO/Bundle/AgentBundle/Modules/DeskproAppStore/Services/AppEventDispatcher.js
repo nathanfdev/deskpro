@@ -44,7 +44,6 @@ class AppEventDispatcher
    */
   dispatchOnSaveState = (message, parentComponent) =>
   {
-    console.log('dispatching save state', message);
     dispatchMessage('save-state', message, parentComponent);
   };
 
