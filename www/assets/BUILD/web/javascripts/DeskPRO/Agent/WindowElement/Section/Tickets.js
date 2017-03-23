@@ -9,7 +9,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.buttonEl = $('#tickets_section');
 		this.filterTicketIds = {};
 		this.filterCounts = {};
-		this.archiveTableFilterIds = [11, 12, 13, 14, 15, 16];
 
 		this.urlFragmentName = 'tickets';
 
@@ -19,11 +18,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.collectedFilterUpdates = [];
 		this.collectedFilterUpdateOps = {};
 		this.queueRefreshFilterGrouping = [];
-		this.queueRefreshFilterOps = {};
 		this.changedFilterGrouping = [];
 		this.hasInitialGroupingLoaded = false;
 
-		this.lastArchiveUpdate = new Date();
 		this.loadHighlightNavEl = null;
 
 		this.setSectionElement($('<section id="tickets_outline"></section>'));
@@ -49,7 +46,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		});
 
 		this.limited_refreshFilterGrouping = _.throttle(function() {
-			self.doRefreshFilterGrouping()
+			self.doRefreshFilterGrouping();
 		}, 11000);
 
 		this.limited_getUpdatedSlaCounts = _.throttle(function() {
@@ -366,7 +363,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				$('ul.nav-list.tickets_outline_problems > li.nav-selected').removeClass('nav-selected');
         var val = $(this).val();
         if (!val) return;
-        $(this).data('route', $(this).data('path').replace('0000', $(this).val()))
+        $(this).data('route', $(this).data('path').replace('0000', $(this).val()));
         DeskPRO_Window.runPageRouteFromElement($(this), {event: ev});
         sel.val('').trigger('change');
       });
@@ -485,7 +482,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				return [
 					{name: 'do[]', value: 'get-sys-filters-data'},
 					{name: 'filters_data_counts', value: filters_data_counts}
-				]
+				];
 			},
 			'filters.filter_data',
 			{recurring: true, minDelay: 33000/*33sec*/ }
@@ -623,10 +620,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		var count_str_real = count_str;
 		if (count >= 10000) count_str = '10000+';
-
-		if (this.archiveTableFilterIds.indexOf(filter_id) != -1 && count > 0 && count < 10000) {
-			count_str = '~' + count;
-		}
 
 		var system_name = DeskPRO_Window.getData('systemFilters')[filter_id]
       , $counter = $('#ticket_filter_' + filter_id + '_count')
@@ -1199,7 +1192,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		Object.each(counts, (function (count, flag) {
 			this.updateFlagCountFor(flag, count);
-		}).bind(this))
+		}).bind(this));
 	},
 
 	updateFlagCountFor: function(flag, count) {
