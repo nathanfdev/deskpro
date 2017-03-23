@@ -100,9 +100,10 @@ class CachingApiDocExtractor extends ApiDocExtractor
                 }
             }
 
-            $data = parent::all($view);
+            $data       = parent::all($view);
+            $serialized = serialize($data);
 
-            $cache->write(serialize($data), $resources);
+            $cache->write($serialized, $resources);
 
             return $data;
         }
