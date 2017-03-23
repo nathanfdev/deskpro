@@ -58,6 +58,7 @@ use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\LabelFeedback;
+use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\LabelTask;
 use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Language;
@@ -347,6 +348,7 @@ class ObjectsManager
             'VoiceAgentTarget'         => [Factory\SimpleFactory::class, 'create', VoiceAgentTarget::class],
             'VoiceAutoAttendantTarget' => [Factory\SimpleFactory::class, 'create', VoiceAutoAttendantTarget::class],
             'ClientDevice'             => [Factory\SimpleFactory::class, 'create', ClientDevice::class],
+            'LabelPerson'              => [Factory\SimpleFactory::class, 'create', LabelPerson::class],
         ];
     }
 
@@ -444,6 +446,7 @@ class ObjectsManager
             'VoiceQueueTarget'         => [$this, 'find', VoiceQueueTarget::class],
             'VoiceAgentTarget'         => [$this, 'find', VoiceAgentTarget::class],
             'VoiceAutoAttendantTarget' => [$this, 'find', VoiceAutoAttendantTarget::class],
+            'LabelPerson'              => [$this, 'find', LabelPerson::class],
         ];
     }
 }
