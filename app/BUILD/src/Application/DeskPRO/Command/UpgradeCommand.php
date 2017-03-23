@@ -87,7 +87,8 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             ->addOption('reset', null, InputOption::VALUE_NONE, '(Legacy; ignored)')
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Does not halt the upgrade loop when an error happens')
             ->addOption('preview', null, InputOption::VALUE_NONE, 'Do not run any queries, just show what will happen')
-            ->addOption('via', null, InputOption::VALUE_NONE, '(Internal: How this is being run)')
+            ->addOption('run-online', null, InputOption::VALUE_NONE, 'Run the upgrade in online mode (if possible)')
+            ->addOption('force', null, InputOption::VALUE_NONE, 'Force running even if the system thinks its a bad idea')
             ->setHelp('This command executes the upgrader to bring your database to the same version the filesystem is');
     }
 
@@ -353,12 +354,35 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
     private function runUpgrade()
     {
-        $manager       = $this->manager;
-        $logger        = $this->logger;
-        $ignore_errors = $this->input->getOption('ignore-errors');
+        $manager      = $this->manager;
+        $logger       = $this->logger;
+        $runOnline    = $this->input->getOption('run-online');
+        $ignoreErrors = $this->input->getOption('ignore-errors');
+        $force        = $this->input->getOption('force');
 
         if (!$manager->getNextBuildId()) {
             $logger->info('All up to date');
+        }
+
+        if ($runOnline) {
+            $waitingBuilds = $manager->getWaitingBuildIds();
+            $fail          = false;
+            foreach ($waitingBuilds as $buildId) {
+                $buildInfo = $manager->getBuildInfo($buildId);
+                if (!$buildInfo['canRunOnline']) {
+                    $this->output->writeln("<warn><{$buildInfo['classname']}> Build cannot be run online</warn>");
+                    $fail = true;
+                }
+            }
+            if ($fail) {
+                if ($force) {
+                    $this->output->writeln('<warn>Continuing with online run because of --force</warn>');
+                } else {
+                    $this->output->writeln('<error>Aborting: The --run-online option only works if every build between current and latest can run online</error>');
+
+                    return 1;
+                }
+            }
         }
 
         //------------------------------
@@ -370,7 +394,12 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         while ($next_id = $manager->getNextBuildId()) {
             $logger->debug("Build #$next_id");
 
-            $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand("dp:upgrade --dobuildrun=$next_id");
+            $cmdParts = ['dp:upgrade', "--dobuildrun=$next_id"];
+            if ($runOnline) {
+                $cmdParts[] = '--run-online';
+            }
+
+            $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand(implode(' ', $cmdParts));
             $logger->debug("Command: $cmd");
             $ret = null;
             passthru($cmd, $ret);
@@ -378,7 +407,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             if ($ret) {
                 $logger->notice("--> Error status: $ret");
 
-                if (!$ignore_errors) {
+                if (!$ignoreErrors) {
                     return $ret;
                 } else {
                     $this->getContainer()->getDb()->update('settings', ['value' => $next_id], ['name' => 'core.deskpro_build']);
@@ -386,6 +415,12 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             }
 
             $manager->reset();
+        }
+
+        if ($runOnline) {
+            $logger->info('Online upgrade complete');
+
+            return;
         }
 
         //------------------------------
@@ -406,7 +441,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         if (defined('DP_BUILD_TIME')) {
             $logger->info('Setting deskpro_build = '.DP_BUILD_TIME);
-            $db = App::getDb();
+            $db = $this->getContainer()->get('database_connection');
             if (DP_BUILD_TIME == '1323444089') {
                 // dev mode, the timestamp is the magic time
                 $db->update('settings', ['value' => time()], ['name' => 'core.deskpro_build']);

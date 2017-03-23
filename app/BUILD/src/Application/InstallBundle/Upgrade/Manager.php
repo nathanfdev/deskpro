@@ -75,6 +75,11 @@ class Manager
     protected $logger;
 
     /**
+     * @var array
+     */
+    protected $manifest;
+
+    /**
      * @param DeskproContainer $container
      * @param Logger           $logger
      */
@@ -102,14 +107,27 @@ class Manager
     }
 
     /**
+     * @return array
+     */
+    public function getManifest()
+    {
+        if ($this->manifest === null) {
+            $this->manifest = require DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
+        }
+
+        return $this->manifest;
+    }
+
+    /**
      * Runs the next build script.
      *
-     * @param int $buildId
+     * @param int  $buildId
+     * @param bool $onlineMode
      *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function runBuild($buildId)
+    public function runBuild($buildId, $onlineMode = false)
     {
         $class = $this->getBuildClass($buildId);
         /** @var AbstractBuild $build */
@@ -181,7 +199,7 @@ class Manager
         $class = 'Application\\InstallBundle\\Upgrade\\Build\\Build'.$buildId;
 
         if (!class_exists($class, false)) {
-            $manifest = require DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
+            $manifest = $this->getManifest();
             if (isset($manifest[$buildId])) {
                 $file  = DP_ROOT.$manifest[$buildId]['file'];
                 $class = $manifest[$buildId]['classname'];
@@ -214,6 +232,18 @@ class Manager
     }
 
     /**
+     * @param string $buildId
+     *
+     * @return array
+     */
+    public function getBuildInfo($buildId)
+    {
+        $manifest = $this->getManifest();
+
+        return $manifest[$buildId];
+    }
+
+    /**
      * Get a list of all upgrade build script available.
      *
      * @return array
@@ -224,7 +254,7 @@ class Manager
             return $this->buildList;
         }
 
-        $manifest        = require DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
+        $manifest        = $this->getManifest();
         $this->buildList = array_keys($manifest);
 
         array_unique($this->buildList, \SORT_NUMERIC);

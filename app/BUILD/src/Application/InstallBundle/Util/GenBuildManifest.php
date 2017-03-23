@@ -98,7 +98,9 @@ class GenBuildManifest
             if ($refl->isSubclassOf(AbstractImprovedBuild::class)) {
                 $classInfo['isImproved']    = true;
                 $classInfo['skipPostBuild'] = $classname::$skipPostBuild;
-                $classInfo['canRunOnline']  = $refl->getMethod('run')->class === AbstractImprovedBuild::class
+
+                // Can only run online if there are no bc methods on the upgrade class
+                $classInfo['canRunOnline'] = $refl->getMethod('run')->class === AbstractImprovedBuild::class
                     && $refl->getMethod('runAlters')->class === AbstractImprovedBuild::class;
             }
 
