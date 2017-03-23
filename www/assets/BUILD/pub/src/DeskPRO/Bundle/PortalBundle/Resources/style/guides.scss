@@ -224,10 +224,11 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
   }
   .topic-list {
     width: 216px;
-    float: left;
     border-right: 1px solid #efefef;
     border-collapse: collapse;
     margin-right: -1px;
+    display: inline-block;
+    vertical-align: top;
     & > .guide {
       font-size: 13px;
       color: #333;
@@ -295,10 +296,11 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
   }
   div.topic {
     width: 664px;
-    float: left;
     border-left: 1px solid #efefef;
     padding-left: 24px;
     position: relative;
+    display: inline-block;
+    vertical-align: top;
     img {
       max-width: 640px;
     }
@@ -317,14 +319,19 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     .loading.active {
       display: block;
     }
+    .topic-content {
+      padding-right: 24px;
+    }
   }
   .content-summary {
     width: 126px;
-    float: left;
+    display: inline-block;
+    vertical-align: top;
     .topic-summary {
       border-left: 1px solid #efefef;
       padding-left: 24px;
       top: 20px;
+      width: 126px;
       &.fixed {
         position: fixed;
       }
@@ -341,6 +348,11 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
           a {
             text-decoration: none;
             color: #8b8b8b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            width: 100%;
             &.active {
               border-left: 2px solid #709fd6;
               margin-left: -25px;
@@ -349,6 +361,14 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
           }
         }
       }
+    }
+  }
+  @media (max-width: 1070px) {
+    .content-summary {
+      visibility: hidden;
+    }
+    div.topic {
+      width: calc(100% - 216px);
     }
   }
 }

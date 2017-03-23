@@ -161,7 +161,6 @@ class ViewTopic extends React.Component {
             <div dangerouslySetInnerHTML={{ __html: this.state.topic.content }} />
           </div>
         </div>
-        <div className="comment-column" />
         <div className="content-summary">
           <TopicSummary content={this.state.topic.content} />
         </div>
