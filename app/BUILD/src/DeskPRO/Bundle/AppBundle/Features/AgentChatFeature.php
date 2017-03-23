@@ -99,7 +99,7 @@ HTML;
      */
     public function getAvailability()
     {
-        return [BetaFeatureInterface::AVAILABLE_EVERYWHERE];
+        return [BetaFeatureInterface::AVAILABLE_AT_QA];
     }
 
     /**
