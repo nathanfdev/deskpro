@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { DragDropContext } from 'react-dnd';
+import { DragDropContextProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import Loader from 'react-loader';
 import Immutable from 'immutable';
@@ -18,7 +18,6 @@ import HeaderHelper from '../ChatWindow/HeaderHelper';
 import * as chatActions from '../../../Actions/chatsActions';
 import { getDepartmentAgents } from '../../../../Application/Actions/departmentActions';
 
-@DragDropContext(HTML5Backend)
 export default class TopBarRecentImList extends RecentList {
 
   static propTypes = {
@@ -84,6 +83,7 @@ export default class TopBarRecentImList extends RecentList {
   }
 
   componentWillMount() {
+    this.dropContext = document.getElementById('react_dp_agent_top_bar');
     this.setState({ slice: chatActions.countSlice() });
     window.addEventListener('resize', this.resizeHandler);
   }
@@ -338,10 +338,12 @@ export default class TopBarRecentImList extends RecentList {
   render() {
     return (
       <Loader loaded={this.isLoaded(this.props)} opacity={0} width={3} scale={0.5} color="#4696dc">
-        <div className={classNames(['im', 'recent', { empty: this.state.chats.size < 1 }])}>
-          {this.getItems()}
-          {this.props.children}
-        </div>
+        <DragDropContextProvider backend={HTML5Backend} window={this.dropContext}>
+          <div className={classNames(['im', 'recent', { empty: this.state.chats.size < 1 }])}>
+            {this.getItems()}
+            {this.props.children}
+          </div>
+        </DragDropContextProvider>
         <ReactTooltip delayShow={1000} id="tooltip-userphoto" effect="solid" place="top" className="im-tooltip" />
       </Loader>
     );
