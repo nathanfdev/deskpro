@@ -100,9 +100,10 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     margin-bottom: 0;
   }
   div.block {
-    padding: 10px;
+    padding: 10px 15px;
     width: 100%;
     margin: 5px 0;
+    border-radius: 2px;
     box-sizing: border-box;
     &::before {
       font: normal normal normal 24px FontAwesome;
@@ -110,25 +111,21 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       margin-right: 10px;
     }
     &.info {
-      background-color: #41a54a;
-      color: #FFF;
+      background-color: #e7f2fa;
+      border: 1px solid #6ab0de;
       &::before {
-        content: "\f00c";
+        content: "\f05a";
       }
     }
     &.warning {
       background-color: #fffbb5;
       border: solid 1px #f6982e;
       &::before {
-        content: "\f06e";
+        content: "\f071";
       }
     }
-    &.error {
-      background-color: #bd354b;
-      color: #FFF;
-      &::before {
-        content: "\f06a";
-      }
+    p {
+      padding-left: 35px;
     }
   }
   code.hljs {

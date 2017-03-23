@@ -333,7 +333,6 @@ class MarkdownEditor extends React.Component {
         {this.renderButton('quote', 'q')}
         {this.renderButton('info', 'i')}
         {this.renderButton('warning', '!')}
-        {this.renderButton('error', '!')}
         {this.renderButton('code', '>')}
       </div>
     );

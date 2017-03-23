@@ -9,7 +9,6 @@ const FORMATS = {
   uList:   { type: 'block', before: '* ', re: /^[*-]\s+/, placeholder: 'List' },
   info:    { type: 'multiLineBlock', before: '::: info', after: ':::', placeholder: 'Message' },
   warning: { type: 'multiLineBlock', before: '::: warning', after: ':::', placeholder: 'Message' },
-  error:   { type: 'multiLineBlock', before: '::: error', after: ':::', placeholder: 'Message' },
   code:    { type: 'multiLineBlock', before: '```', after: '```', placeholder: 'Code' },
   link:    { type: 'inline', before: '[Link](', after: ')', placeholder: 'http://url' },
 };
