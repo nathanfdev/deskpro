@@ -70,7 +70,7 @@ class TopicSummary extends React.Component {
   };
 
   handleSetActive = (to) => {
-    window.history.pushState(null, null, `#${to}`);
+    window.history.replaceState(null, null, `#${to}`);
     this.setState({
       activeId: to
     });
