@@ -146,4 +146,17 @@ class GuidesController extends AbstractController
             ]
         );
     }
+
+    /**
+     * @Route("/guide_doc")
+     * @Security("is_granted('USE_GUIDES')")
+     *
+     * @return Response
+     */
+    public function markdownDocAction()
+    {
+        return $this->renderThemeView(
+            'Theme:Guides:doc.html.twig'
+        );
+    }
 }

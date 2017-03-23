@@ -1,0 +1,157 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block inner_content %}
+    <div class="guides topic-view"  id="react_portal_bundle">
+    <div class="topic-list">
+        <div class="guide">Guide manual</div>
+    </div>
+    <div class="topic">
+    <header class="section-header">
+        <h1>Markdown documentation</h1>
+        <hr>
+    </header>
+    <div class="topic-content">
+        <h1>Emphasis</h1>
+        <p>To create bold or italic, wrap with asterisks&nbsp;<code class="hljs">*</code>&nbsp;or underscores&nbsp;<code class="hljs">_</code>.</p>
+        <p>To avoid creating bold or italic, place a backslash in front&nbsp;<code class="hljs">\*</code>&nbsp;or&nbsp;<code class="hljs">\_</code>.</p>
+        <pre><code class="language-md hljs markdown"><span class="hljs-strong">**bold text**</span>
+
+<span class="hljs-emphasis">_italic text_</span></code></pre>
+        <p><strong>bold text</strong></p>
+        <p><em>italic text</em></p>
+        <h1>Paragraphs</h1>
+        <p>A paragraph is consecutive lines of text with one or more blank lines between them.</p>
+        <p>For a line break, add either a backslash&nbsp;<code class="hljs">\</code>or two blank spaces at the end of the line.</p>
+        <pre><code class="language-md hljs markdown">This is the first
+paragraph.
+
+This is the second
+paragraph.
+
+This is a\
+line break.</code></pre>
+        <p>This is the first
+            paragraph.</p>
+        <p>This is the second
+            paragraph.</p>
+        <p>This is a<br>
+            line break.</p>
+        <h1>Headings</h1>
+        <p>Starting a line with a hash&nbsp;<code class="hljs">#</code>&nbsp;and a space makes a header.</p>
+        <p>The more&nbsp;<code class="hljs">#</code>, the smaller the header.</p>
+        <pre><code class="language-md hljs markdown"><span class="hljs-section"># Big Title</span>
+<span class="hljs-section">## Smaller title</span>
+<span class="hljs-section">### Small title</span></code></pre>
+        <h1>Big Title</h1>
+        <h2>Smaller title</h2>
+        <h3>Small title</h3>
+        <h1>Links</h1>
+        <p>Links can be either inline with the text, or placed at the bottom of the text as references.</p>
+        <p>Link text is enclosed by square brackets&nbsp;<code class="hljs">[]</code>, and for inline links, the link URL is enclosed by parens&nbsp;<code class="hljs">()</code>.</p>
+        <pre><code class="language-md hljs markdown">[<span class="hljs-string">link</span>](<span class="hljs-link">http://example.com</span>)
+
+[<span class="hljs-string">link</span>][<span class="hljs-symbol">id</span>]
+
+[<span class="hljs-symbol">id</span>]: <span class="hljs-link">http://example.org/ "title"</span></code></pre>
+        <p><a href="http://example.com">link</a></p>
+        <p><a href="http://example.org/" title="title">link</a></p>
+        <h1>Images</h1>
+        <p>Images are almost identical to links, but an image starts with an exclamation point&nbsp;<code class="hljs">!</code>.</p>
+        <p>You can drag and drop or copy and paste images directly in the editor they will be uploaded to the server.</p>
+        <pre><code class="language-md hljs markdown">![<span class="hljs-string">alt</span>](<span class="hljs-link">image.png</span>)
+
+![<span class="hljs-string">alt</span>][<span class="hljs-symbol">id</span>]
+
+[<span class="hljs-symbol">id</span>]: <span class="hljs-link">image.jpg "title"</span></code></pre>
+        <h1>Code</h1>
+        <p>To create a code block, either indent each line by 4 spaces, or place 3 backticks&nbsp;<code class="hljs">```</code> on a line above and below the code block, you can specify the language to add syntax colourisation.</p>
+        <pre><code class="hljs">```sql
+SELECT * FROM users WHERE `users`.id &gt; 10;
+```</code></pre>
+        <pre><code class="language-sql hljs"><span class="hljs-keyword">SELECT</span> * <span class="hljs-keyword">FROM</span> <span class="hljs-keyword">users</span> <span class="hljs-keyword">WHERE</span> <span class="hljs-string">`users`</span>.id &gt; <span class="hljs-number">10</span>;</code></pre>
+        <h1>Blockquotes</h1>
+        <p>Blockquotes starts with a greater than symbol <code class="hljs">&gt;</code>.</p>
+        <p>Blockquotes can be nested and can include other formatting</p>
+        <pre><code class="language-md hljs markdown"><span class="hljs-quote">&gt; First line \</span>
+<span class="hljs-quote">&gt; Another line</span>
+<span class="hljs-quote">&gt; &gt; Nested line</span>
+<span class="hljs-quote">&gt;
+&gt; Last line</span></code></pre>
+        <blockquote>
+            <p>First line <br>
+                Another line</p>
+            <blockquote>
+                <p>Nested line</p>
+            </blockquote>
+            <p>Last line</p>
+        </blockquote>
+        <h1>Lists</h1>
+        <p>Unordered lists can use either asterisks&nbsp;<code class="hljs">*</code>, plus&nbsp;<code class="hljs">+</code>, or hyphens&nbsp;<code class="hljs">-</code>&nbsp;as list markers.</p>
+        <p>Ordered lists use numbers followed by period&nbsp;<code class="hljs">.</code>&nbsp;or right paren&nbsp;<code class="hljs">)</code>.</p>
+        <pre><code class="language-md hljs markdown"><span class="hljs-bullet">* </span>List
+<span class="hljs-bullet">* </span>List
+<span class="hljs-bullet">* </span>List</code></pre>
+        <ul>
+            <li>List</li>
+            <li>List</li>
+            <li>List</li>
+        </ul>
+        <pre><code class="language-md hljs markdown"><span class="hljs-bullet">1. </span>Numbered list
+<span class="hljs-bullet">1. </span>Numbered list
+<span class="hljs-bullet">1. </span>Numbered list</code></pre>
+        <ol>
+            <li>Numbered list</li>
+            <li>Numbered list</li>
+            <li>Numbered list</li>
+        </ol>
+        <h1>Nested list</h1>
+        <p>To nest one list within another, indent each item in the sublist by four spaces. You can also nest other elements like paragraphs, blockquotes or code blocks.</p>
+        <pre><code class="language-md hljs markdown"><span class="hljs-bullet">* </span>Item
+<span class="hljs-code">    1. First Subitem</span>
+<span class="hljs-code">    1. Second Subitem</span>
+<span class="hljs-bullet">* </span>Item
+<span class="hljs-code">    * Subitem</span>
+<span class="hljs-code">    * Subitem</span>
+<span class="hljs-bullet">* </span>Item</code></pre>
+        <ul>
+            <li>Item
+                <ol>
+                    <li>First Subitem</li>
+                    <li>Second Subitem</li>
+                </ol>
+            </li>
+            <li>Item
+                <ul>
+                    <li>Subitem</li>
+                    <li>Subitem</li>
+                </ul>
+            </li>
+            <li>Item</li>
+        </ul>
+        <h1>Horizontal line</h1>
+        <p>You can add an horizontal line with 3 <code class="hljs">*</code> or 3 <code class="hljs">-</code></p>
+        <pre><code class="language-md hljs markdown">Text
+***
+Text</code></pre>
+        <p>Text</p>
+        <hr>
+        <p>Text</p>
+        <h1>DeskPRO Special Markdown</h1>
+        <h2>Message block</h2>
+        <p>You can create info, warning or error blocks with the following syntax</p>
+        <pre><code class="language-md hljs markdown">::: info
+<span class="hljs-strong">**Info**</span>
+
+My info content
+:::</code></pre>
+        <div class="block info">
+            <p><strong>Info</strong></p>
+            <p>My info content</p>
+        </div>
+    </div>
+    </div>
+    <div class="comment-column"></div>
+    <div class="content-summary">
+
+    </div>
+{% endblock inner_content %}
