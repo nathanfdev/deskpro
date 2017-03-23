@@ -78,7 +78,6 @@ abstract class AbstractBuild
         $this->logger = $logger;
 
         $this->container = $container;
-        $this->init();
     }
 
     /**
@@ -149,10 +148,106 @@ abstract class AbstractBuild
     }
 
     /**
-     * Empty hook into the constructor.
+     * @param $buildId
+     * @param $name
+     * @param $data
      */
-    protected function init()
+    public function setInstallData($buildId, $name, $data)
     {
+        if (is_scalar($data)) {
+            $saveData = ['@DATA' => $data];
+        } else {
+            $saveData = $data;
+        }
+
+        $db = $this->getDbConnection();
+        $db->delete('install_data', ['build' => $buildId, 'name' => $name]);
+
+        if ($data !== null) {
+            $db->insert('install_data', [
+                'build' => $buildId,
+                'name'  => $name,
+                'data'  => json_encode($saveData, \JSON_PRETTY_PRINT),
+            ]);
+        }
+    }
+
+    /**
+     * @param $buildId
+     * @param $name
+     * @param $item
+     */
+    public function addInstallDataCollection($buildId, $name, $item)
+    {
+        if (is_scalar($item)) {
+            $itemData = ['@DATA' => $item];
+        } else {
+            $itemData = $item;
+        }
+
+        $db         = $this->getDbConnection();
+        $recordData = $db->fetchColumn('
+          SELECT data
+          FROM install_data
+          WHERE build = ? AND name = ?
+         ', [$buildId, $name]);
+
+        $recordData = @json_decode($recordData, true);
+        if (!$recordData || empty($recordData['@ITEMS'])) {
+            $recordData = ['@ITEMS' => []];
+        }
+
+        $db->delete('install_data', ['build' => $buildId, 'name' => $name]);
+
+        $saveData           = $recordData;
+        $saveData['@ITEMS'] = $itemData;
+
+        $db->insert('install_data', [
+            'build' => $buildId,
+            'name'  => $name,
+            'data'  => json_encode($saveData, \JSON_PRETTY_PRINT),
+        ]);
+    }
+
+    /**
+     * @param $buildId
+     * @param $name
+     *
+     * @return mixed
+     */
+    public function getInstallData($buildId, $name)
+    {
+        $recordData = $db->fetchColumn('
+          SELECT data
+          FROM install_data
+          WHERE build = ? AND name = ?
+         ', [$buildId, $name]);
+
+        if (!$recordData) {
+            return null;
+        }
+
+        $recordData = @json_decode($recordData, true);
+        if (!$recordData) {
+            return null;
+        }
+
+        if (isset($recordData['@ITEMS'])) {
+            return array_map(function ($v) {
+                return isset($v['@DATA']) ? $v['@DATA'] : $v['@DATA'];
+            }, $recordData['@ITEMS']);
+        }
+
+        return isset($recordData['@DATA']) ? $recordData['@DATA'] : $recordData['@DATA'];
+    }
+
+    /**
+     * @param $buildId
+     * @param $name
+     */
+    public function deleteInstallData($buildId, $name)
+    {
+        $this->setInstallData($buildId, $name);
     }
 
     /**

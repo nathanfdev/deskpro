@@ -60,6 +60,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             ->addOption('setbuild', null, InputOption::VALUE_NONE, 'Sets the build number to now')
             ->addOption('reset', null, InputOption::VALUE_NONE, 'Removes status files that tells the system an upgrade is running. Use this if the systme is "stuck" in upgrade mode.')
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Does not halt the upgrade loop when an error happens')
+            ->addOption('preview', null, InputOption::VALUE_NONE, 'Do not run any queries, just show what will happen')
             ->setHelp('This command executes the upgrader to bring your database to the same version the filesystem is');
     }
 

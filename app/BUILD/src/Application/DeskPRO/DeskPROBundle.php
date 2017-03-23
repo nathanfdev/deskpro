@@ -78,7 +78,6 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\DevGenDpqlDocsCommand',
             'Application\\DeskPRO\\Command\\DevTestApiCommand',
             'Application\\DeskPRO\\Command\\FixBlobPathsCommand',
-            'Application\\DeskPRO\\Command\\GenBuildClassCommand',
             'Application\\DeskPRO\\Command\\GenerateSchemaFileCommand',
             'Application\\DeskPRO\\Command\\GenRandomEmailCommand',
             'Application\\DeskPRO\\Command\\IndexElasticsearchCommand',

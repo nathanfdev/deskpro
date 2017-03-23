@@ -28,6 +28,7 @@
 
 namespace Application\InstallBundle\Util;
 
+use Application\InstallBundle\Upgrade\Build\AbstractImprovedBuild;
 use Orb\Util\Strings;
 use Symfony\Component\Finder\Finder;
 
@@ -38,17 +39,9 @@ class GenBuildManifest
      */
     private $buildsPath;
 
-    /**
-     * @var array
-     */
-    private $add = [];
-
-    public function __construct($buildsPath, array $add = null)
+    public function __construct($buildsPath)
     {
         $this->buildsPath = $buildsPath;
-        if ($add) {
-            $this->add = $add;
-        }
     }
 
     /**
@@ -92,27 +85,24 @@ class GenBuildManifest
             $trimPath  = str_replace(DP_ROOT, '', $file->getRealPath());
             $classname = 'Application\\InstallBundle\\Upgrade\\Build\\'.str_replace('.php', '', $file->getBasename());
 
-            $builds[$buildId] = [
-                'file'      => $trimPath,
-                'classname' => $classname,
+            $classInfo = [
+                'file'          => $trimPath,
+                'classname'     => $classname,
+                'isImproved'    => false,
+                'canRunOnline'  => false,
+                'skipPostBuild' => false,
             ];
-        }
 
-        if ($this->add) {
-            foreach ($this->add as $filepath) {
-                $file = new \SplFileInfo($filepath);
-
-                $buildId   = Strings::extractRegexMatch('/^Build(\\d+)\.php$/', $file->getFilename());
-                $trimPath  = str_replace(DP_ROOT, '', $file->getRealPath());
-                $classname = 'Application\\InstallBundle\\Upgrade\\Build\\'.str_replace('.php', '', $file->getBasename());
-
-                if ($buildId) {
-                    $builds[$buildId] = [
-                        'file'      => $trimPath,
-                        'classname' => $classname,
-                    ];
-                }
+            require_once DP_ROOT.$trimPath;
+            $refl = new \ReflectionClass($classname);
+            if ($refl->isSubclassOf(AbstractImprovedBuild::class)) {
+                $classInfo['isImproved']    = true;
+                $classInfo['skipPostBuild'] = $classname::$skipPostBuild;
+                $classInfo['canRunOnline']  = $refl->getMethod('run')->class === AbstractImprovedBuild::class
+                    && $refl->getMethod('runAlters')->class === AbstractImprovedBuild::class;
             }
+
+            $builds[$buildId] = $classInfo;
         }
 
         ksort($builds, \SORT_NUMERIC);
@@ -166,8 +156,11 @@ CODE;
         $buildsArray = $this->getBuildsArray();
         foreach ($buildsArray as $buildId => $buildInfo) {
             $row = $indent.$buildId.' => ['.PHP_EOL;
-            $row .= $indent.$indent."'file'      => '".$buildInfo['file']."',".PHP_EOL;
-            $row .= $indent.$indent."'classname' => '".$buildInfo['classname']."',".PHP_EOL;
+            $row .= $indent.$indent."'file'          => '".$buildInfo['file']."',".PHP_EOL;
+            $row .= $indent.$indent."'classname'     => '".$buildInfo['classname']."',".PHP_EOL;
+            $row .= $indent.$indent."'isImproved'    => ".($buildInfo['isImproved'] ? 'true' : 'false').','.PHP_EOL;
+            $row .= $indent.$indent."'skipPostBuild' => ".($buildInfo['skipPostBuild'] ? 'true' : 'false').','.PHP_EOL;
+            $row .= $indent.$indent."'canRunOnline'  => ".($buildInfo['canRunOnline'] ? 'true' : 'false').','.PHP_EOL;
             $row .= $indent.']';
             $row .= ',';
 
