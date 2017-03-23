@@ -28,6 +28,7 @@ class ViewTopic extends React.Component {
 
   componentDidMount() {
     this.changeInternalLinks();
+    this.addAnchorLinks();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -44,6 +45,7 @@ class ViewTopic extends React.Component {
 
   componentDidUpdate() {
     this.changeInternalLinks();
+    this.addAnchorLinks();
   }
 
   getGuideSlug = splat => splat.split('/')[0];
@@ -59,13 +61,29 @@ class ViewTopic extends React.Component {
     });
   };
 
+  addAnchorLinks = () => {
+    document.querySelectorAll('h1.anchor').forEach((h1) => {
+      const link = document.createElement('a');
+      link.href = `#${h1.id}`;
+      const anchor = document.createElement('i');
+      anchor.className = 'fa fa-anchor';
+      anchor.onclick = e => this.clickAnchor(e, h1.id);
+      link.append(anchor);
+      h1.append(link);
+    });
+  };
+
+  clickAnchor = (e, anchor) => {
+    console.log(anchor);
+  };
+
   addIdToh1 = (html) => {
     const container = document.createElement('div');
     container.innerHTML = html;
 
     Array.from(container.querySelectorAll('h1')).forEach((h1) => {
       const newH1 = document.createElement('h1');
-      newH1.innerText = h1.innerText;
+      newH1.innerText = `${h1.innerText} `;
       newH1.id = h1.innerText.toLowerCase().replace(/[():]/g, '').replace(/ /g, '-');
       newH1.className = 'anchor';
       container.replaceChild(newH1, h1);

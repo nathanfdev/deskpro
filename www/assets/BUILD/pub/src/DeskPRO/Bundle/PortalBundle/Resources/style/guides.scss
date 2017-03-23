@@ -15,6 +15,18 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       height:50px; /* fixed header height*/
       margin:-50px 0 0; /* negative fixed header height */
     }
+    &.anchor a {
+      text-decoration: none;
+    }
+    &.anchor .fa-anchor {
+      color: #5995d6;
+      font-size: 18px;
+      display: none;
+      cursor: pointer;
+    }
+    &.anchor:hover .fa-anchor {
+      display: inline;
+    }
   }
   h2 {
     font-size: 18px;
