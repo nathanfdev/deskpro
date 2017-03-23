@@ -32,7 +32,7 @@ class MessageList extends React.Component {
 
   componentDidMount() {
     this.props.markNewMessages();
-    this.shouldScrollBottom = true;
+    this.shouldScrollBottom = false;
     this.firstScroll = true;
   }
 
@@ -53,11 +53,8 @@ class MessageList extends React.Component {
     const { loadingMessages, markNewMessages } = this.props;
     if (loadingMessages) return;
     if (this.firstScroll) {
+      this.scroll();
       this.firstScroll = false;
-      // this needs to be so, cause sometimes there are images/video in messages and they need some time to load
-      // after we will update images/video to static height thumb with links like view_fill_size/download it could be
-      // removed since we would now exactly image/video height.
-      setTimeout(this.scroll, 1000);
     }
     if (this.shouldScrollBottom) {
       this.scroll();
@@ -112,6 +109,10 @@ class MessageList extends React.Component {
     if (this.scrollBox) {
       this.scrollBox.scrollTop = this.scrollBox.scrollHeight;
     }
+  };
+
+  scrollStub = () => {
+    this.scroll();
   };
 
   scrollYTo = (deltaY) => {
@@ -174,6 +175,7 @@ class MessageList extends React.Component {
                   message={message}
                   previous={previous}
                   me={me}
+                  scrollStub={this.scrollStub}
                 />
               );
               if (previous && message.page !== previous.page) {
