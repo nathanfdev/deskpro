@@ -128,7 +128,7 @@ class TicketController extends AbstractApiController
             FormValidatorChecker::clearFormErrors($form);
         }
 
-        if ($form->isValid()) {
+        if ($request->isMethod('post') && $form->isValid()) {
             $email     = $person->getPrimaryEmail();
             $person    = $this->get('data.person')->getPersonForEmail($email->getEmail());
             $guestForm = $this->createForm(TicketWithLayoutsWebType::class, $ticket, $formOptions);
