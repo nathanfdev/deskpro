@@ -16,15 +16,21 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       margin:-50px 0 0; /* negative fixed header height */
     }
     &.anchor a {
+      margin-left: 5px;
       text-decoration: none;
-    }
-    &.anchor .fa-anchor {
-      color: #5995d6;
-      font-size: 18px;
       display: none;
-      cursor: pointer;
+      color: inherit;
+      span {
+        font-size: 12px;
+        line-height: 12px;
+      }
+      .fa-anchor {
+        color: #5995d6;
+        font-size: 18px;
+        cursor: pointer;
+      }
     }
-    &.anchor:hover .fa-anchor {
+    &.anchor:hover a {
       display: inline;
     }
   }

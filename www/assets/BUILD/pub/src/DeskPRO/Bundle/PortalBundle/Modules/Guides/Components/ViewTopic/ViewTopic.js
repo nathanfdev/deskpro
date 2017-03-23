@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import moment from 'moment';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import browserHistory from 'react-router/lib/browserHistory';
-import { TopicList, TopicSummary, GuideSelector } from '../index';
+import { TopicList, TopicSummary, GuideSelector, Anchor } from '../index';
 
 class ViewTopic extends React.Component {
   static propTypes = {
@@ -63,18 +64,9 @@ class ViewTopic extends React.Component {
 
   addAnchorLinks = () => {
     document.querySelectorAll('h1.anchor').forEach((h1) => {
-      const link = document.createElement('a');
-      link.href = `#${h1.id}`;
-      const anchor = document.createElement('i');
-      anchor.className = 'fa fa-anchor';
-      anchor.onclick = e => this.clickAnchor(e, h1.id);
-      link.append(anchor);
-      h1.append(link);
+      const anchor = <Anchor anchor={h1.id} text={h1.innerText} />;
+      ReactDOM.render(anchor, h1);
     });
-  };
-
-  clickAnchor = (e, anchor) => {
-    console.log(anchor);
   };
 
   addIdToh1 = (html) => {
