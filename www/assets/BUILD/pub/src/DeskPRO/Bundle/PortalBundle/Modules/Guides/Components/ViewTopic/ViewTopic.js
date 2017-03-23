@@ -26,6 +26,10 @@ class ViewTopic extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.changeInternalLinks();
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.params.slug !== this.props.params.slug) {
       this.grabTopicFromApi(nextProps.params.slug);
@@ -38,23 +42,42 @@ class ViewTopic extends React.Component {
     }
   }
 
+  componentDidUpdate() {
+    this.changeInternalLinks();
+  }
+
   getGuideSlug = splat => splat.split('/')[0];
+
+  changeInternalLinks = () => {
+    document.querySelectorAll('a.internal_link.topic').forEach((internalLink) => {
+      const newLink = document.createElement('a');
+      newLink.className = 'internal_link topic';
+      newLink.onclick = e => this.internalLink(e, internalLink.pathname);
+      newLink.innerText = internalLink.text;
+      newLink.href = '#';
+      internalLink.parentNode.replaceChild(newLink, internalLink);
+    });
+  };
 
   addIdToh1 = (html) => {
     const container = document.createElement('div');
     container.innerHTML = html;
 
-    Array.from(container.querySelectorAll('h1')).map((h1) => {
+    Array.from(container.querySelectorAll('h1')).forEach((h1) => {
       const newH1 = document.createElement('h1');
       newH1.innerText = h1.innerText;
       newH1.id = h1.innerText.toLowerCase().replace(/[():]/g, '').replace(/ /g, '-');
       newH1.className = 'anchor';
       container.replaceChild(newH1, h1);
-
-      return true;
     });
 
     return container.innerHTML;
+  };
+
+  internalLink = (e, path) => {
+    e.preventDefault();
+    browserHistory.push(path);
+    return false;
   };
 
   grabTopicFromApi(slug) {
