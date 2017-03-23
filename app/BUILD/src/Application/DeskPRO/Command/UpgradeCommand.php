@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Command;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Monolog\Logger;
 use Application\InstallBundle\Upgrade\Build\PostBuild;
+use Application\InstallBundle\Upgrade\Build\PostBuildAlways;
 use DeskPRO\Bundle\AppBundle\Util\BinariesPathValidator;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
@@ -46,6 +47,31 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
+    /**
+     * @var InputInterface
+     */
+    private $input;
+
+    /**
+     * @var OutputInterface
+     */
+    private $output;
+
+    /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
+     * @var \Application\InstallBundle\Upgrade\Manager
+     */
+    private $manager;
+
+    /**
+     * @var string
+     */
+    private $via;
+
     /**
      * Special exit code used to indicate bad paths.
      */
@@ -58,59 +84,143 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             ->addOption('dobuildrun', null, InputOption::VALUE_REQUIRED, 'Runs a build script. Usually used internally.')
             ->addOption('runsync', null, InputOption::VALUE_NONE, 'Only runs the post sync scripts')
             ->addOption('setbuild', null, InputOption::VALUE_NONE, 'Sets the build number to now')
-            ->addOption('reset', null, InputOption::VALUE_NONE, 'Removes status files that tells the system an upgrade is running. Use this if the systme is "stuck" in upgrade mode.')
+            ->addOption('reset', null, InputOption::VALUE_NONE, '(Legacy; ignored)')
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Does not halt the upgrade loop when an error happens')
             ->addOption('preview', null, InputOption::VALUE_NONE, 'Do not run any queries, just show what will happen')
+            ->addOption('via', null, InputOption::VALUE_NONE, '(Internal: How this is being run)')
             ->setHelp('This command executes the upgrader to bring your database to the same version the filesystem is');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         set_time_limit(0);
+        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
+
+        $this->input  = $input;
+        $this->output = $output;
+        $this->via    = $input->getOption('via');
 
         global $DP_ENV;
 
         if (!$DP_ENV->getConfig('env.skip_req_check')) {
-            $validator  = new BinariesPathValidator();
-            $wrongPaths = [];
-
-            $root          = $DP_ENV->getDpRoot();
-            $phpPath       = $DP_ENV->getConfig('paths.php_path');
-            $mysqlPath     = $DP_ENV->getConfig('paths.mysql_path');
-            $mysqldumpPath = $DP_ENV->getConfig('paths.mysqldump_path');
-
-            try {
-                $validator->validatePhpPath($phpPath, $root);
-            } catch (\Exception $e) {
-                $wrongPaths[] = ($phpPath ?: 'php').': '.$e->getMessage();
-            }
-
-            try {
-                $validator->validateMysqlPath($mysqlPath);
-            } catch (\Exception $e) {
-                $wrongPaths[] = ($mysqlPath ?: 'mysql').': '.$e->getMessage();
-            }
-
-            try {
-                $validator->validateMysqldumpPath($mysqldumpPath);
-            } catch (\Exception $e) {
-                $wrongPaths[] = ($mysqldumpPath ?: 'mysqldump').': '.$e->getMessage();
-            }
-
-            if ($wrongPaths) {
-                $output->writeln('<error>One or more paths to system binaries are incorrect</error>');
-                $output->writeln('The following paths are incorrect: '.implode(', ', $wrongPaths));
-                $output->writeln('');
-                $output->writeln('You need to edit your config.paths.php file and correct the paths. The full path to the config fileis:');
-                $output->writeln('<info>'.$root.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.paths.php</info>');
-
-                return self::ERR_BAD_PATHS;
+            if ($ret = $this->envReqCheck()) {
+                return $ret;
             }
         }
 
-        $doReset       = $input->getOption('reset');
-        $versionError  = false;
-        $ignore_errors = $input->getOption('ignore-errors');
+        if ($ret = $this->legacyVersionCheck()) {
+            return $ret;
+        }
+
+        if ($input->getOption('dobuildrun')) {
+            $action = 'dobuildrun';
+        } elseif ($input->getOption('runsync')) {
+            $action = 'runsync';
+        } elseif ($input->getOption('setbuild')) {
+            $action = 'setbuild';
+        } elseif ($input->getOption('reset')) {
+            $output->writeln('Please use: bin/console dp:update:reset');
+
+            return 1;
+        } elseif ($input->getOption('info')) {
+            $action = 'info';
+        } else {
+            $action = 'run';
+        }
+
+        $logger          = new Logger('upgrade');
+        $console_handler = new ConsoleHandler($output);
+        $logger->pushHandler($console_handler);
+        $this->logger = $logger;
+
+        $stream_handler = new StreamHandler(dp_get_log_dir().'/upgrade.log');
+        $logger->pushHandler($stream_handler);
+
+        try {
+            $this->getContainer()->getDb()->exec('SET SESSION wait_timeout = 86400');
+            $logger->debug('Set wait_timeout to 86400');
+        } catch (\Exception $e) {
+            $logger->warn('Failed to set wait_timeout: '.$e->getMessage());
+        }
+
+        $this->manager = new \Application\InstallBundle\Upgrade\Manager(
+            $this->getContainer(),
+            $logger
+        );
+
+        switch ($action) {
+            case 'info':
+                return $this->showInfoAction();
+
+            case 'setbuild':
+                return $this->setBuildNowAction();
+
+            case 'runsync':
+                return $this->runSyncAction();
+
+            case 'dobuildrun':
+                return $this->runUpgradeStep();
+
+            default:
+                return $this->runUpgrade();
+        }
+
+        return 0;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    // Utils
+    //------------------------------------------------------------------------------------------------------------------
+
+    private function envReqCheck()
+    {
+        global $DP_ENV;
+
+        $output = $this->output;
+
+        $validator  = new BinariesPathValidator();
+        $wrongPaths = [];
+
+        $root          = $DP_ENV->getDpRoot();
+        $phpPath       = $DP_ENV->getConfig('paths.php_path');
+        $mysqlPath     = $DP_ENV->getConfig('paths.mysql_path');
+        $mysqldumpPath = $DP_ENV->getConfig('paths.mysqldump_path');
+
+        try {
+            $validator->validatePhpPath($phpPath, $root);
+        } catch (\Exception $e) {
+            $wrongPaths[] = ($phpPath ?: 'php').': '.$e->getMessage();
+        }
+
+        try {
+            $validator->validateMysqlPath($mysqlPath);
+        } catch (\Exception $e) {
+            $wrongPaths[] = ($mysqlPath ?: 'mysql').': '.$e->getMessage();
+        }
+
+        try {
+            $validator->validateMysqldumpPath($mysqldumpPath);
+        } catch (\Exception $e) {
+            $wrongPaths[] = ($mysqldumpPath ?: 'mysqldump').': '.$e->getMessage();
+        }
+
+        if ($wrongPaths) {
+            $output->writeln('<error>One or more paths to system binaries are incorrect</error>');
+            $output->writeln('The following paths are incorrect: '.implode(', ', $wrongPaths));
+            $output->writeln('');
+            $output->writeln('You need to edit your config.paths.php file and correct the paths. The full path to the config fileis:');
+            $output->writeln('<info>'.$root.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.paths.php</info>');
+
+            return self::ERR_BAD_PATHS;
+        }
+    }
+
+    private function legacyVersionCheck()
+    {
+        $input  = $this->input;
+        $output = $this->output;
+
+        $versionError = false;
 
         $this->getContainer()->get('audit_log.doctrine_listener')->disableListener();
 
@@ -119,33 +229,16 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         if ($dbVersion && $dbVersion <= 1463676536) {
             if (!$input->getOption('info') && !$input->getOption('dobuildrun') && !$input->getOption('runsync') && !$input->getOption('reset')) {
-                $doReset      = true;
                 $versionError = true;
             }
         }
 
-        if ($doReset) {
-            @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
-            @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
-            $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
-            $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', null);
-            $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
-            $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_set_at', null);
-            $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_files', null);
-            $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
-            $this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', null);
+        if ($versionError) {
+            $output->writeln('<error>You must update to DeskPRO #443 before attempting to upgrade</error>');
+            $output->writeln('The version of DeskPRO you are currently using is too old to be upgraded directly. You need to update to version #443 first.');
+            $output->writeln('Read more: https://manuals.deskpro.com/html/sysadmin/upgrade-new-portal/upgrade-new-portal.html');
 
-            if ($versionError) {
-                $output->writeln('<error>You must update to DeskPRO #443 before attempting to upgrade</error>');
-                $output->writeln('The version of DeskPRO you are currently using is too old to be upgraded directly. You need to update to version #443 first.');
-                $output->writeln('Read more: https://manuals.deskpro.com/html/sysadmin/upgrade-new-portal/upgrade-new-portal.html');
-
-                return 1;
-            } else {
-                $output->writeln('Reset done.');
-            }
-
-            return 0;
+            return 1;
         }
 
         // 443, we need to reset version back in a time a bit before running the
@@ -176,99 +269,96 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                 App::getDb()->update('settings', ['value' => '1459273988'], ['name' => 'core.deskpro_build']);
             }
         }
+    }
 
-        // Clear caches, including doctrine query caches
-        App::getDb()->exec('TRUNCATE TABLE cache');
-        @unlink(dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache');
+    //------------------------------------------------------------------------------------------------------------------
+    // SHOW INFO
+    //------------------------------------------------------------------------------------------------------------------
 
-        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
+    private function showInfoAction()
+    {
+        $output = $this;
 
-        $logger          = new Logger('upgrade');
-        $console_handler = new ConsoleHandler($output);
-        $logger->pushHandler($console_handler);
-
-        $stream_handler = new StreamHandler(dp_get_log_dir().'/upgrade.log');
-        $logger->pushHandler($stream_handler);
-
-        try {
-            $this->getContainer()->getDb()->exec('SET SESSION wait_timeout = 86400');
-            $logger->debug('Set wait_timeout to 86400');
-        } catch (\Exception $e) {
-            $logger->warn('Failed to set wait_timeout: '.$e->getMessage());
+        $next_id = $manager->getNextBuildId();
+        $output->writeln(sprintf("\tInstalled version:   %d (%s)", $manager->getCurrentBuild(), $manager->formatBuildId($manager->getCurrentBuild())));
+        if (!$next_id) {
+            $output->writeln(sprintf("\t     Next version:   none", $manager->getNextBuildId(), $manager->formatBuildId($manager->getNextBuildId())));
+        } else {
+            $output->writeln(sprintf("\t     Next version:   %d (%s)", $manager->getNextBuildId(), $manager->formatBuildId($manager->getNextBuildId())));
         }
 
-        $manager = new \Application\InstallBundle\Upgrade\Manager(
-            $this->getContainer(),
-            $logger
-        );
+        $output->writeln(sprintf("\t   Latest version:   %d (%s)", $manager->getLatestBuildId(), $manager->formatBuildId($manager->getLatestBuildId())));
 
-        //------------------------------
-        // Info
-        //------------------------------
+        echo "\n";
 
-        if ($input->getOption('info')) {
-            $next_id = $manager->getNextBuildId();
-            $output->writeln(sprintf("\tInstalled version:   %d (%s)", $manager->getCurrentBuild(), $manager->formatBuildId($manager->getCurrentBuild())));
-            if (!$next_id) {
-                $output->writeln(sprintf("\t     Next version:   none", $manager->getNextBuildId(), $manager->formatBuildId($manager->getNextBuildId())));
-            } else {
-                $output->writeln(sprintf("\t     Next version:   %d (%s)", $manager->getNextBuildId(), $manager->formatBuildId($manager->getNextBuildId())));
+        if (!$next_id) {
+            $output->writeln('You are all up to date!');
+        } else {
+            $output->writeln('Builds that need to be executed:');
+            foreach ($manager->getWaitingBuildIds() as $build_id) {
+                $output->writeln(sprintf("\t%d (%s)", $build_id, $manager->formatBuildId($build_id)));
             }
-
-            $output->writeln(sprintf("\t   Latest version:   %d (%s)", $manager->getLatestBuildId(), $manager->formatBuildId($manager->getLatestBuildId())));
-
-            echo "\n";
-
-            if (!$next_id) {
-                $output->writeln('You are all up to date!');
-            } else {
-                $output->writeln('Builds that need to be executed:');
-                foreach ($manager->getWaitingBuildIds() as $build_id) {
-                    $output->writeln(sprintf("\t%d (%s)", $build_id, $manager->formatBuildId($build_id)));
-                }
-            }
-
-            return 0;
         }
 
-        //------------------------------
-        // Set build
-        //------------------------------
+        return 0;
+    }
 
-        if ($input->getOption('setbuild')) {
-            $num = time();
-            $logger->info('(Via --setbuild) Setting deskpro_build = '.$num);
-            App::getDb()->replace('settings', ['value' => $num, 'name' => 'core.deskpro_build']);
-            $output->writeln('<info>Done</info>');
+    //------------------------------------------------------------------------------------------------------------------
+    // SET BUILD NOW
+    //------------------------------------------------------------------------------------------------------------------
 
-            return 0;
-        }
+    private function setBuildNowAction()
+    {
+        $num = time();
+        $this->logger->info('(Via --setbuild) Setting deskpro_build = '.$num);
+        App::getDb()->replace('settings', ['value' => $num, 'name' => 'core.deskpro_build']);
+        $this->output->writeln('<info>Done</info>');
 
-        //------------------------------
-        // Want to run post scripts only
-        //------------------------------
+        return 0;
+    }
 
-        if ($input->getOption('runsync')) {
-            $output->writeln('<info>Running post scripts</info>');
-            $build = new PostBuild($manager->getContainer(), $manager->getLogger());
-            $build->run();
-            $output->writeln('<info>Done All</info>');
+    //------------------------------------------------------------------------------------------------------------------
+    // RUN POST SCRIPTS
+    //------------------------------------------------------------------------------------------------------------------
 
-            return 0;
-        }
+    private function runSyncAction()
+    {
+        $this->output->writeln('<info>Running post scripts</info>');
+        $build = new PostBuild($this->manager->getContainer(), $this->manager->getLogger());
+        $build->run();
+        $this->output->writeln('<info>Done</info>');
 
-        //------------------------------
-        // Runs a build script
-        //------------------------------
+        $this->output->writeln('<info>Running post always scripts</info>');
+        $build = new PostBuildAlways($this->manager->getContainer(), $this->manager->getLogger());
+        $build->run();
+        $this->output->writeln('<info>Done</info>');
+
+        return 0;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    // RUN UPGRADE STEP
+    //------------------------------------------------------------------------------------------------------------------
+
+    private function runUpgradeStep()
+    {
+        $this->manager->runBuild($this->input->getOption('dobuildrun'));
+
+        return 0;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    // RUN FULL UPGRADE
+    //------------------------------------------------------------------------------------------------------------------
+
+    private function runUpgrade()
+    {
+        $manager       = $this->manager;
+        $logger        = $this->logger;
+        $ignore_errors = $this->input->getOption('ignore-errors');
 
         if (!$manager->getNextBuildId()) {
             $logger->info('All up to date');
-        }
-
-        if ($input->getOption('dobuildrun')) {
-            $manager->runBuild($input->getOption('dobuildrun'));
-
-            return 0;
         }
 
         //------------------------------
@@ -328,7 +418,5 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         }
 
         $logger->info('Upgrade complete');
-
-        return 0;
     }
 }
