@@ -1,7 +1,5 @@
 import React, { PropTypes } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { DragDropContextProvider } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 import Loader from 'react-loader';
 import Immutable from 'immutable';
 import {
@@ -83,7 +81,6 @@ export default class TopBarRecentImList extends RecentList {
   }
 
   componentWillMount() {
-    this.dropContext = document.getElementById('react_dp_agent_top_bar');
     this.setState({ slice: chatActions.countSlice() });
     window.addEventListener('resize', this.resizeHandler);
   }
@@ -138,16 +135,22 @@ export default class TopBarRecentImList extends RecentList {
     });
   }
 
-  getItems() {
+  getItems(remained = false) {
     const { current, chats, imSettings } = this.props;
-    let stateChats = this.state.chats.reverse().slice(0, this.state.slice).reverse();
+    let beginNum = 0;
+    let endNum = this.state.slice;
+    if (remained === true) {
+      beginNum = this.state.slice;
+      endNum = this.state.chats.size;
+    }
+    let stateChats = this.state.chats.reverse().slice(beginNum, endNum).reverse();
     if (current.get('id') && !stateChats.has(current.get('id'))) {
       const chat = chats.get(current.get('id'));
       if (chat) { // I'm not sure why current chat could absent, but seems that Lauren somehow reached that
         const order = imSettings.getIn(['chats_order', `${chat.get('id')}`]);
         stateChats = stateChats.set(current.get('id'), chat.set('order', order || this.getNextOrder(stateChats)));
         stateChats = stateChats.sort((a, b) => a.get('order') - b.get('order'));
-        stateChats = stateChats.reverse().slice(0, this.state.slice).reverse();
+        stateChats = stateChats.reverse().slice(beginNum, endNum).reverse();
       }
     }
 
@@ -338,12 +341,10 @@ export default class TopBarRecentImList extends RecentList {
   render() {
     return (
       <Loader loaded={this.isLoaded(this.props)} opacity={0} width={3} scale={0.5} color="#4696dc">
-        <DragDropContextProvider backend={HTML5Backend} window={this.dropContext}>
-          <div className={classNames(['im', 'recent', { empty: this.state.chats.size < 1 }])}>
-            {this.getItems()}
-            {this.props.children}
-          </div>
-        </DragDropContextProvider>
+        <div className={classNames(['im', 'recent', { empty: this.state.chats.size < 1 }])}>
+          {this.getItems()}
+          {this.props.children}
+        </div>
         <ReactTooltip delayShow={1000} id="tooltip-userphoto" effect="solid" place="top" className="im-tooltip" />
       </Loader>
     );

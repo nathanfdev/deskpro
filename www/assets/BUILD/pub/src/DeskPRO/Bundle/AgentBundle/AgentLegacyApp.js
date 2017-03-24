@@ -2,6 +2,8 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { DragDropContextProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import { AgentTopBarContainer } from './Modules/TopBar/Components/AgentTopBar';
 import { SideBarContainer } from './Modules/SideBar/Components/SideBar';
 import { AgentList } from './Modules/Agent/Components/AgentList';
@@ -77,7 +79,16 @@ class AgentLegacyApp {
 
     if (node) {
       this.rendered[piecePlace] = true;
-      ReactDOM.render(<Provider store={this.store}>{element}</Provider>, node);
+      if (piecePlace === 'AgentTopBar') {
+        ReactDOM.render(
+          <Provider store={this.store}>
+            <DragDropContextProvider backend={HTML5Backend} window={node}>
+              {element}
+            </DragDropContextProvider>
+          </Provider>, node);
+      } else {
+        ReactDOM.render(<Provider store={this.store}>{element}</Provider>, node);
+      }
       return;
     }
     // this is just a stub. Possibly we just need some event listener or so to handle element rendering when
