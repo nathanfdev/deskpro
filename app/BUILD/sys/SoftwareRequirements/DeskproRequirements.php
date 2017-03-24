@@ -432,12 +432,15 @@ class DeskproRequirements extends RequirementCollection
     {
         $size = strtolower(trim(ini_get('realpath_cache_size')));
         preg_match('/^([0-9]+)([gmk]*)$/', $size, $matches);
+
         if (empty($matches)) { // Invalid 'realpath_cache_size' value in php.ini
             return 0;
         }
         if (!$matches[2]) { // Just digital 'realpath_cache_size' value in php.ini
             return (int) $size;
         }
+
+        $size = (int) $matches[1];
         switch ($matches[2]) {
             case 'g':
                 return $size * 1024 * 1024 * 1024;
