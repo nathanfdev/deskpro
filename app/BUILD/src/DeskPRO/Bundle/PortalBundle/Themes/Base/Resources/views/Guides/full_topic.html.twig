@@ -1,0 +1,7 @@
+<div class="topic">
+    <h{{ depth }} id="{{ topic.slug }}">{{ topic.title }}</h{{ depth }}>
+    {{ topic.get_content_full|content|raw }}
+    {% for child in topic.children %}
+        {%  include 'Theme:Guides:full_topic.html.twig' with {'topic': child, 'depth': 2} %}
+    {%  endfor %}
+</div>

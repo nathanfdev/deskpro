@@ -377,4 +377,56 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       width: calc(100% - 216px);
     }
   }
+  &.pdf {
+    h1 {
+      font-size: 52px;
+      font-weight: bold;
+    }
+    h2 {
+      font-size: 48px;
+      font-weight: bold;
+    }
+    h3 {
+      font-size: 44px;
+      font-weight: bold;
+    }
+    h4 {
+      font-size: 40px;
+      font-weight: bold;
+    }
+    span.h1 {
+      font-size: 36px;
+      font-weight: bold;
+    }
+    span.h2 {
+      font-size: 34px;
+      font-weight: bold;
+    }
+    span.h3 {
+      font-size: 32px;
+      font-weight: bold;
+    }
+    div.topic {
+      width: 100%;
+      border-left: none;
+    }
+    & > div.topic {
+      page-break-before: always;
+      .topic .topic {
+        page-break-inside: avoid;
+      }
+    }
+    div.block {
+      width: 60%;
+      &::before {
+        margin: 10px 10px 0 0;
+      }
+      p {
+        padding-left: 50px;
+      }
+    }
+    pre code.hljs {
+      width: 80%;
+    }
+  }
 }

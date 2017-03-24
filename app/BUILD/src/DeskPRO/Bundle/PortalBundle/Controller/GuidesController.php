@@ -66,10 +66,14 @@ class GuidesController extends AbstractController
 
         $guide = array_shift($guides);
 
+        if (!$guide) {
+            return $this->redirectToRoute('portal_home');
+        }
+
         $topic = $guide->getTopics()->first();
 
         if (!$topic) {
-            $this->redirectToRoute('portal_home');
+            return $this->redirectToRoute('portal_home');
         }
 
         return $this->redirectToRoute('portal_guides_topic_permalink', ['slug' => $topic->getId(), 'guide_slug' => $guide->getSlug()]);
@@ -160,6 +164,26 @@ class GuidesController extends AbstractController
     {
         return $this->renderThemeView(
             'Theme:Guides:doc.html.twig'
+        );
+    }
+
+    /**
+     * @Route("/guide_full/{slug}", name="user_guides")
+     * @ParamConverter(name="guide", converter="deskpro_slug")
+     * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_GUIDE', guide)")
+     * @PageHttpCache()
+     *
+     * @param Guide $guide
+     *
+     * @return Response
+     */
+    public function guideFullAction(Guide $guide)
+    {
+        return $this->renderThemeView(
+            'Theme:Guides:full.html.twig',
+            [
+                'guide' => $guide,
+            ]
         );
     }
 }
