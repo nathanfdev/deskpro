@@ -71,6 +71,11 @@ class ApiDoc extends BaseApiDoc
     protected $noInput = false;
 
     /**
+     * @var string
+     */
+    protected $documentationOverride = '';
+
+    /**
      * Constructor.
      *
      * @param array $data
@@ -85,6 +90,9 @@ class ApiDoc extends BaseApiDoc
         }
         if (isset($data['noInput'])) {
             $this->noInput = $data['noInput'];
+        }
+        if (isset($data['documentation'])) {
+            $this->documentationOverride = $data['documentation'];
         }
 
         parent::__construct($data);
@@ -171,8 +179,12 @@ class ApiDoc extends BaseApiDoc
         $data['apiModes']    = $this->apiModes;
         $data['apiTags']     = $this->apiTags;
         $data['classOutput'] = $this->classOutput;
-        $data['classInput']  = $this->classOutput;
+        $data['classInput']  = $this->classInput;
         $data['target']      = $this->target;
+
+        if ($this->documentationOverride) {
+            $data['documentation'] = $this->documentationOverride;
+        }
 
         return $data;
     }
@@ -239,6 +251,26 @@ class ApiDoc extends BaseApiDoc
     public function setNoInput($noInput)
     {
         $this->noInput = $noInput;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDocumentationOverride()
+    {
+        return $this->documentationOverride;
+    }
+
+    /**
+     * @param string $documentationOverride
+     *
+     * @return $this
+     */
+    public function setDocumentationOverride($documentationOverride)
+    {
+        $this->documentationOverride = $documentationOverride;
 
         return $this;
     }
