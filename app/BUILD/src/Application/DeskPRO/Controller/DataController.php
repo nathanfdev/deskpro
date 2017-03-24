@@ -48,9 +48,4 @@ class DataController extends AbstractController
             'logged' => true,
         ]);
     }
-
-    public function sendErrorReportAction()
-    {
-        return $this->createJsonResponse(['success' => true]);
-    }
 }

@@ -153,11 +153,6 @@ $collection->create('sys_log_js_error', [
     'controller' => 'DeskPRO:Data:logJsError',
 ]);
 
-$collection->create('sys_report_error', [
-    'path'       => '/dp/report-error.json',
-    'controller' => 'DeskPRO:Data:sendErrorReport',
-]);
-
 $collection->create('data_interface_data', [
     'path'         => '/data/interface-data.{_format}',
     'controller'   => 'DeskPRO:Data:interfaceData',
