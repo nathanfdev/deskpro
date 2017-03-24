@@ -28,25 +28,25 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Command;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\ApiDocValidator;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ReplayLogCommand extends ContainerAwareCommand
+/**
+ * Class ApiDocCheckCommand.
+ */
+class ApiDocCheckCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this
-            ->setName('dpdev:replay-log')
-            ->setDescription('Replays log already stored in DB')
-            ->addArgument('request_id', InputArgument::REQUIRED, 'Id of request to replay (string)')
-            ->addOption('use-id', 'i', InputOption::VALUE_NONE, 'Use integer id instead if request_id')
-        ;
+        $this->setName('dpdev:apidoc-check');
+        $this->setDescription('Verifies api doc annotations');
+        $this->addOption('strict', null, InputOption::VALUE_NONE, 'Check in strict mode');
     }
 
     /**
@@ -54,18 +54,22 @@ class ReplayLogCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $replayer = $this->getContainer()->get('api_log.replayer');
+        $apiDocExtractor = $this->getContainer()->get('nelmio_api_doc.extractor.api_doc_extractor');
+        $apiDocValidator = new ApiDocValidator();
 
-        $id = $input->getArgument('request_id');
+        $strict    = $input->getOption('strict');
+        $extracted = $apiDocExtractor->extractAnnotations($apiDocExtractor->getRoutes());
+        $failures  = $apiDocValidator->validate($extracted, $strict);
 
-        if ($input->getOption('use-id')) {
-            $log = $this->getContainer()->get('doctrine.orm.default_entity_manager')->find('\DeskPRO\Bundle\AppBundle\Entity\ApiLog', $id);
-            if (!$log) {
-                throw new \InvalidArgumentException(sprintf('Log with id [ %d ] not found'), $id);
+        if (count($failures)) {
+            foreach ($failures as $failure) {
+                $output->writeln(sprintf(
+                    '%s %s: missing %s',
+                    $failure['path'], $failure['method'], implode(', ', $failure['missing'])
+                ));
             }
-            $id = $log->getRequestId();
+        } else {
+            $output->writeln('All fine.');
         }
-
-        $output->writeln($replayer->replayWithCrawler($id));
     }
 }
