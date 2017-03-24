@@ -34,18 +34,22 @@ namespace Application\DeskPRO\Command;
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Monolog\Logger;
 use Application\InstallBundle\Upgrade\Build\PostBuild;
 use Application\InstallBundle\Upgrade\Build\PostBuildAlways;
+use Application\InstallBundle\Upgrade\BuildFactory;
+use Application\InstallBundle\Upgrade\BuildRunner;
+use Application\InstallBundle\Upgrade\ManifestReader;
 use DeskPRO\Bundle\AppBundle\Util\BinariesPathValidator;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+class UpgradeCommand extends ContainerAwareCommand
 {
     /**
      * @var InputInterface
@@ -63,14 +67,19 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     private $logger;
 
     /**
-     * @var \Application\InstallBundle\Upgrade\Manager
+     * @var ManifestReader
      */
-    private $manager;
+    private $manifestReader;
 
     /**
-     * @var string
+     * @var BuildFactory
      */
-    private $via;
+    private $buildFactory;
+
+    /**
+     * @var \Application\InstallBundle\Upgrade\BuildRunner
+     */
+    private $buildRunner;
 
     /**
      * Special exit code used to indicate bad paths.
@@ -86,10 +95,21 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             ->addOption('setbuild', null, InputOption::VALUE_NONE, 'Sets the build number to now')
             ->addOption('reset', null, InputOption::VALUE_NONE, '(Legacy; ignored)')
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Does not halt the upgrade loop when an error happens')
-            ->addOption('preview', null, InputOption::VALUE_NONE, 'Do not run any queries, just show what will happen')
             ->addOption('run-online', null, InputOption::VALUE_NONE, 'Run the upgrade in online mode (if possible)')
+            ->addOption('fast', null, InputOption::VALUE_NONE, 'Avoid running slow post build scripts if possible')
             ->addOption('force', null, InputOption::VALUE_NONE, 'Force running even if the system thinks its a bad idea')
             ->setHelp('This command executes the upgrader to bring your database to the same version the filesystem is');
+    }
+
+    /**
+     * @return DeskproContainer
+     */
+    public function getContainer()
+    {
+        /** @var DeskproContainer $container */
+        $container = parent::getContainer();
+
+        return $container;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -99,7 +119,6 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         $this->input  = $input;
         $this->output = $output;
-        $this->via    = $input->getOption('via');
 
         global $DP_ENV;
 
@@ -120,7 +139,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         } elseif ($input->getOption('setbuild')) {
             $action = 'setbuild';
         } elseif ($input->getOption('reset')) {
-            $output->writeln('Please use: bin/console dp:update:reset');
+            $this->output->writeln('Please use: bin/console dp:update:reset');
 
             return 1;
         } elseif ($input->getOption('info')) {
@@ -129,25 +148,30 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $action = 'run';
         }
 
-        $logger          = new Logger('upgrade');
-        $console_handler = new ConsoleHandler($output);
-        $logger->pushHandler($console_handler);
-        $this->logger = $logger;
+        $this->logger = new Logger('upgrade');
+        $this->logger->pushHandler(new ConsoleHandler($this->output));
+        $this->logger->pushHandler(new StreamHandler($DP_ENV->getUserLogsDir().DIRECTORY_SEPARATOR.'upgrade.log'));
 
-        $stream_handler = new StreamHandler(dp_get_log_dir().'/upgrade.log');
-        $logger->pushHandler($stream_handler);
-
-        try {
-            $this->getContainer()->getDb()->exec('SET SESSION wait_timeout = 86400');
-            $logger->debug('Set wait_timeout to 86400');
-        } catch (\Exception $e) {
-            $logger->warn('Failed to set wait_timeout: '.$e->getMessage());
-        }
-
-        $this->manager = new \Application\InstallBundle\Upgrade\Manager(
+        $this->manifestReader = new ManifestReader($DP_ENV->getAppDir().'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php');
+        $this->buildFactory   = new BuildFactory(
+            $this->manifestReader,
             $this->getContainer(),
-            $logger
+            $this->logger
         );
+        $this->buildRunner = new BuildRunner(
+            $this->buildFactory,
+            $this->manifestReader,
+            $this->logger
+        );
+
+        if ($action === 'runsync' || $action === 'dobuildrun' || $action === 'run') {
+            try {
+                $this->getContainer()->getDb()->exec('SET SESSION wait_timeout = 86400');
+                $this->logger->debug('Set wait_timeout to 86400');
+            } catch (\Exception $e) {
+                $this->logger->warn('Failed to set wait_timeout: '.$e->getMessage());
+            }
+        }
 
         switch ($action) {
             case 'info':
@@ -165,8 +189,6 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             default:
                 return $this->runUpgrade();
         }
-
-        return 0;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -176,8 +198,6 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     private function envReqCheck()
     {
         global $DP_ENV;
-
-        $output = $this->output;
 
         $validator  = new BinariesPathValidator();
         $wrongPaths = [];
@@ -206,20 +226,21 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         }
 
         if ($wrongPaths) {
-            $output->writeln('<error>One or more paths to system binaries are incorrect</error>');
-            $output->writeln('The following paths are incorrect: '.implode(', ', $wrongPaths));
-            $output->writeln('');
-            $output->writeln('You need to edit your config.paths.php file and correct the paths. The full path to the config fileis:');
-            $output->writeln('<info>'.$root.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.paths.php</info>');
+            $this->output->writeln('<error>One or more paths to system binaries are incorrect</error>');
+            $this->output->writeln('The following paths are incorrect: '.implode(', ', $wrongPaths));
+            $this->output->writeln('');
+            $this->output->writeln('You need to edit your config.paths.php file and correct the paths. The full path to the config fileis:');
+            $this->output->writeln('<info>'.$root.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.paths.php</info>');
 
             return self::ERR_BAD_PATHS;
         }
+
+        return 0;
     }
 
     private function legacyVersionCheck()
     {
-        $input  = $this->input;
-        $output = $this->output;
+        $input = $this->input;
 
         $versionError = false;
 
@@ -235,9 +256,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         }
 
         if ($versionError) {
-            $output->writeln('<error>You must update to DeskPRO #443 before attempting to upgrade</error>');
-            $output->writeln('The version of DeskPRO you are currently using is too old to be upgraded directly. You need to update to version #443 first.');
-            $output->writeln('Read more: https://manuals.deskpro.com/html/sysadmin/upgrade-new-portal/upgrade-new-portal.html');
+            $this->output->writeln('<error>You must update to DeskPRO #443 before attempting to upgrade</error>');
+            $this->output->writeln('The version of DeskPRO you are currently using is too old to be upgraded directly. You need to update to version #443 first.');
+            $this->output->writeln('Read more: https://manuals.deskpro.com/html/sysadmin/upgrade-new-portal/upgrade-new-portal.html');
 
             return 1;
         }
@@ -252,24 +273,69 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                 // tried to restore a dump into an existing database (e.g. from a fresh install).
                 // if the user faield to clean the database, then NEW tables in v5 will still exist,
                 // and cause the upgrade scripts to fail.
-                $tables = App::getDb()->fetchAllCol('SHOW TABLES');
+                $tables = $this->getContainer()->getDb()->fetchAllCol('SHOW TABLES');
                 if (in_array('articles_slug_history', $tables)) {
-                    $output->writeln('<error>Tables from v5 already exist in your database</error>');
-                    $output->writeln('The most common cause of this is if you restored a MySQL dump onto an existing v5 install');
-                    $output->writeln('without first performing the clean command.');
-                    $output->writeln('');
-                    $output->writeln('The process should look something like this:');
-                    $output->writeln('<info>$ php bin/console install:clean --keep-config</info>');
-                    $output->writeln('<info>$ mysql -uyouruser -p your_db_name < your-dump.sql</info>');
-                    $output->writeln('<info>$ php bin/console dp:upgrade</info>');
-                    $output->writeln('');
+                    $this->output->writeln('<error>Tables from v5 already exist in your database</error>');
+                    $this->output->writeln('The most common cause of this is if you restored a MySQL dump onto an existing v5 install');
+                    $this->output->writeln('without first performing the clean command.');
+                    $this->output->writeln('');
+                    $this->output->writeln('The process should look something like this:');
+                    $this->output->writeln('<info>$ php bin/console install:clean --keep-config</info>');
+                    $this->output->writeln('<info>$ mysql -uyouruser -p your_db_name < your-dump.sql</info>');
+                    $this->output->writeln('<info>$ php bin/console dp:upgrade</info>');
+                    $this->output->writeln('');
 
                     return 1;
                 }
 
-                App::getDb()->update('settings', ['value' => '1459273988'], ['name' => 'core.deskpro_build']);
+                $this->getContainer()->getDb()->update('settings', ['value' => '1459273988'], ['name' => 'core.deskpro_build']);
             }
         }
+
+        return 0;
+    }
+
+    /**
+     * @return int
+     */
+    private function getCurrentBuildId()
+    {
+        $dbVersion = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
+
+        return $dbVersion;
+    }
+
+    /**
+     * @param int $buildId
+     *
+     * @return string
+     */
+    private function formatBuildId($buildId)
+    {
+        return date('Y-m-d', $buildId);
+    }
+
+    /**
+     * @param int $buildId
+     *
+     * @return bool
+     */
+    private function hasBuildRun($buildId)
+    {
+        return $this->getContainer()->get('database_connection')->fetchColumn('
+            SELECT COUNT(*)
+            FROM install_data
+            WHERE build = ? AND name = ?
+        ', [$buildId, 'has_run']) >= 1;
+    }
+
+    /**
+     * @param int $buildId
+     */
+    private function markBuildHasRun($buildId)
+    {
+        $this->getContainer()->get('database_connection')->delete('install_data', [$buildId, 'has_run']);
+        $this->getContainer()->get('database_connection')->insert('install_data', [$buildId, 'has_run', 1]);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -278,26 +344,46 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
     private function showInfoAction()
     {
-        $output = $this;
+        $currentBuildId = $this->getCurrentBuildId();
+        $nextBuildId    = $this->manifestReader->getNextBuildId($currentBuildId);
+        $latestBuildId  = $this->manifestReader->getLatestBuildId();
 
-        $next_id = $manager->getNextBuildId();
-        $output->writeln(sprintf("\tInstalled version:   %d (%s)", $manager->getCurrentBuild(), $manager->formatBuildId($manager->getCurrentBuild())));
-        if (!$next_id) {
-            $output->writeln(sprintf("\t     Next version:   none", $manager->getNextBuildId(), $manager->formatBuildId($manager->getNextBuildId())));
-        } else {
-            $output->writeln(sprintf("\t     Next version:   %d (%s)", $manager->getNextBuildId(), $manager->formatBuildId($manager->getNextBuildId())));
-        }
-
-        $output->writeln(sprintf("\t   Latest version:   %d (%s)", $manager->getLatestBuildId(), $manager->formatBuildId($manager->getLatestBuildId())));
+        $this->output->writeln(sprintf('Database schema version:     %d (%s)', $currentBuildId, $this->formatBuildId($currentBuildId)));
+        $this->output->writeln(sprintf('Filesystem schema version:   %d (%s)', $latestBuildId, $this->formatBuildId($latestBuildId)));
 
         echo "\n";
 
-        if (!$next_id) {
-            $output->writeln('You are all up to date!');
+        if (!$nextBuildId) {
+            $this->output->writeln('Your database is all up to date!');
         } else {
-            $output->writeln('Builds that need to be executed:');
-            foreach ($manager->getWaitingBuildIds() as $build_id) {
-                $output->writeln(sprintf("\t%d (%s)", $build_id, $manager->formatBuildId($build_id)));
+            $this->output->writeln('Builds that need to be executed:');
+
+            $canRunOnline     = true;
+            $canSkipPostBuild = true;
+
+            foreach ($this->manifestReader->getWaitingBuildIds($currentBuildId) as $buildId) {
+                $this->output->writeln(sprintf("\t%d (%s)", $buildId, $this->formatBuildId($buildId)));
+                $buildInfo = $this->manifestReader->findBuild($buildId);
+                if (!$buildInfo['isOnlineBuild']) {
+                    $canRunOnline = false;
+                }
+                if (!$buildInfo['skipPostBuild']) {
+                    $canSkipPostBuild = false;
+                }
+            }
+
+            if ($canRunOnline || $canSkipPostBuild) {
+                $this->output->writeln('');
+
+                if ($canRunOnline) {
+                    $this->output->writeln('<info>--> All of these builds can be run ONLINE (can_run_online)</info>');
+                }
+                if ($canSkipPostBuild) {
+                    $this->output->writeln('<info>--> The upgrade can SKIP POST BUILD (skip_post_build)</info>');
+                }
+                if ($canRunOnline && $canSkipPostBuild) {
+                    $this->output->writeln('<info>--> This upgrade can be run entirely online</info>');
+                }
             }
         }
 
@@ -312,7 +398,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     {
         $num = time();
         $this->logger->info('(Via --setbuild) Setting deskpro_build = '.$num);
-        App::getDb()->replace('settings', ['value' => $num, 'name' => 'core.deskpro_build']);
+        $this->getContainer()->getDb()->replace('settings', ['value' => $num, 'name' => 'core.deskpro_build']);
         $this->output->writeln('<info>Done</info>');
 
         return 0;
@@ -324,15 +410,19 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
     private function runSyncAction()
     {
-        $this->output->writeln('<info>Running post scripts</info>');
-        $build = new PostBuild($this->manager->getContainer(), $this->manager->getLogger());
-        $build->run();
-        $this->output->writeln('<info>Done</info>');
+        if (!$this->input->getOption('fast')) {
+            $this->output->writeln('<info>Running PostBuild</info>');
+            $postBuild = $this->buildFactory->makeBuildClass(PostBuild::class);
+            $postBuild->run();
+            $this->output->writeln('<info>.. done</info>');
+        } else {
+            $this->output->writeln('<info>Skipping PostBuild because of --fast flag</info>');
+        }
 
-        $this->output->writeln('<info>Running post always scripts</info>');
-        $build = new PostBuildAlways($this->manager->getContainer(), $this->manager->getLogger());
-        $build->run();
-        $this->output->writeln('<info>Done</info>');
+        $this->output->writeln('<info>Running PostBuildAlways</info>');
+        $postBuildALways = $this->buildFactory->makeBuildClass(PostBuildAlways::class);
+        $postBuildALways->run();
+        $this->output->writeln('<info>.. done</info>');
 
         return 0;
     }
@@ -343,7 +433,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
     private function runUpgradeStep()
     {
-        $this->manager->runBuild($this->input->getOption('dobuildrun'));
+        $this->buildRunner->runBuild($this->input->getOption('dobuildrun'));
 
         return 0;
     }
@@ -354,21 +444,21 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
     private function runUpgrade()
     {
-        $manager      = $this->manager;
-        $logger       = $this->logger;
-        $runOnline    = $this->input->getOption('run-online');
-        $ignoreErrors = $this->input->getOption('ignore-errors');
-        $force        = $this->input->getOption('force');
+        $currentBuildId = $this->getCurrentBuildId();
+        $db             = $this->getContainer()->get('database_connection');
+        $runOnline      = $this->input->getOption('run-online');
+        $ignoreErrors   = $this->input->getOption('ignore-errors');
+        $force          = $this->input->getOption('force');
 
-        if (!$manager->getNextBuildId()) {
-            $logger->info('All up to date');
+        if (!$this->manifestReader->getNextBuildId($currentBuildId)) {
+            $this->logger->info('All up to date');
         }
 
         if ($runOnline) {
-            $waitingBuilds = $manager->getWaitingBuildIds();
+            $waitingBuilds = $this->manifestReader->getWaitingBuildIds($currentBuildId);
             $fail          = false;
             foreach ($waitingBuilds as $buildId) {
-                $buildInfo = $manager->getBuildInfo($buildId);
+                $buildInfo = $this->manifestReader->findBuild($buildId);
                 if (!$buildInfo['canRunOnline']) {
                     $this->output->writeln("<warn><{$buildInfo['classname']}> Build cannot be run online</warn>");
                     $fail = true;
@@ -389,59 +479,81 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         // The main executor loop
         //------------------------------
 
-        chdir(DP_APP_DIR);
+        $canSkipPost = true;
 
-        while ($next_id = $manager->getNextBuildId()) {
-            $logger->debug("Build #$next_id");
+        while ($nextBuildId = $this->manifestReader->getNextBuildId($currentBuildId)) {
+            $this->logger->debug("Build #$nextBuildId");
+            $buildInfo = $this->manifestReader->findBuild($nextBuildId);
 
-            $cmdParts = ['dp:upgrade', "--dobuildrun=$next_id"];
-            if ($runOnline) {
-                $cmdParts[] = '--run-online';
+            // e.g. online builds can be run separately, so we need to check
+            if ($this->hasBuildRun($nextBuildId)) {
+                $this->logger->notice('--> Skipped: Build has already run');
+                $currentBuildId = $nextBuildId;
+                continue;
             }
 
-            $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand(implode(' ', $cmdParts));
-            $logger->debug("Command: $cmd");
+            if ($runOnline && !$buildInfo['isOnlineBuild']) {
+                $this->logger->notice('--> Skipped: Running only online builds, this build is not an online build');
+                $currentBuildId = $nextBuildId;
+                continue;
+            }
+
+            if (!$buildInfo['skipPostBuild']) {
+                $canSkipPost = false;
+            }
+
+            $cmdParts = ['dp:upgrade', "--dobuildrun=$nextBuildId"];
+            $cmd      = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand(implode(' ', $cmdParts));
+            $this->logger->debug("Command: $cmd");
             $ret = null;
             passthru($cmd, $ret);
 
             if ($ret) {
-                $logger->notice("--> Error status: $ret");
+                $this->logger->notice("--> Error status: $ret");
 
                 if (!$ignoreErrors) {
                     return $ret;
-                } else {
-                    $this->getContainer()->getDb()->update('settings', ['value' => $next_id], ['name' => 'core.deskpro_build']);
                 }
             }
 
-            $manager->reset();
+            $this->markBuildHasRun($nextBuildId);
+
+            // We only increase database version when running real upgrades
+            if (!$runOnline) {
+                $this->getContainer()->getDb()->update('settings', ['value' => $nextBuildId], ['name' => 'core.deskpro_build']);
+            }
+
+            $currentBuildId = $nextBuildId;
         }
 
         if ($runOnline) {
-            $logger->info('Online upgrade complete');
+            $this->logger->info('Online upgrade complete');
 
-            return;
+            return 0;
         }
 
         //------------------------------
         // Post Run
         //------------------------------
 
-        $logger->info('Running post scripts');
-        $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:upgrade --runsync');
-        $logger->debug("Command: $cmd");
+        $this->logger->info('Running post scripts');
+        $cmdParts = ['dp:upgrade', '--runsync'];
+        if ($canSkipPost && $this->input->getOption('fast')) {
+            $cmdParts[] = '--fast';
+        }
+        $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand(implode(' ', $cmdParts));
+        $this->logger->debug("Command: $cmd");
         $ret = null;
         passthru($cmd, $ret);
 
         if ($ret) {
-            $logger->notice("--> Error status: $ret");
+            $this->logger->notice("--> Error status: $ret");
 
             return $ret;
         }
 
         if (defined('DP_BUILD_TIME')) {
-            $logger->info('Setting deskpro_build = '.DP_BUILD_TIME);
-            $db = $this->getContainer()->get('database_connection');
+            $this->logger->info('Setting deskpro_build = '.DP_BUILD_TIME);
             if (DP_BUILD_TIME == '1323444089') {
                 // dev mode, the timestamp is the magic time
                 $db->update('settings', ['value' => time()], ['name' => 'core.deskpro_build']);
@@ -452,6 +564,8 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $db->update('settings', ['value' => DP_BUILD_NUM], ['name' => 'core.deskpro_build_num']);
         }
 
-        $logger->info('Upgrade complete');
+        $this->logger->info('Upgrade complete');
+
+        return 0;
     }
 }

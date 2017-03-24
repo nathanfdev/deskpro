@@ -28,7 +28,8 @@
 
 namespace Application\InstallBundle\Util;
 
-use Application\InstallBundle\Upgrade\Build\AbstractImprovedBuild;
+use Application\InstallBundle\Upgrade\Build\OnlineBuildInterface;
+use Application\InstallBundle\Upgrade\Build\SkipPostBuildInterface;
 use Orb\Util\Strings;
 use Symfony\Component\Finder\Finder;
 
@@ -88,21 +89,14 @@ class GenBuildManifest
             $classInfo = [
                 'file'          => $trimPath,
                 'classname'     => $classname,
-                'isImproved'    => false,
-                'canRunOnline'  => false,
+                'isOnlineBuild' => false,
                 'skipPostBuild' => false,
             ];
 
             require_once DP_ROOT.$trimPath;
-            $refl = new \ReflectionClass($classname);
-            if ($refl->isSubclassOf(AbstractImprovedBuild::class)) {
-                $classInfo['isImproved']    = true;
-                $classInfo['skipPostBuild'] = $classname::$skipPostBuild;
-
-                // Can only run online if there are no bc methods on the upgrade class
-                $classInfo['canRunOnline'] = $refl->getMethod('run')->class === AbstractImprovedBuild::class
-                    && $refl->getMethod('runAlters')->class === AbstractImprovedBuild::class;
-            }
+            $refl                       = new \ReflectionClass($classname);
+            $classInfo['isOnlineBuild'] = $refl->implementsInterface(OnlineBuildInterface::class);
+            $classInfo['skipPostBuild'] = $refl->implementsInterface(SkipPostBuildInterface::class);
 
             $builds[$buildId] = $classInfo;
         }
@@ -160,9 +154,8 @@ CODE;
             $row = $indent.$buildId.' => ['.PHP_EOL;
             $row .= $indent.$indent."'file'          => '".$buildInfo['file']."',".PHP_EOL;
             $row .= $indent.$indent."'classname'     => '".$buildInfo['classname']."',".PHP_EOL;
-            $row .= $indent.$indent."'isImproved'    => ".($buildInfo['isImproved'] ? 'true' : 'false').','.PHP_EOL;
             $row .= $indent.$indent."'skipPostBuild' => ".($buildInfo['skipPostBuild'] ? 'true' : 'false').','.PHP_EOL;
-            $row .= $indent.$indent."'canRunOnline'  => ".($buildInfo['canRunOnline'] ? 'true' : 'false').','.PHP_EOL;
+            $row .= $indent.$indent."'isOnlineBuild' => ".($buildInfo['isOnlineBuild'] ? 'true' : 'false').','.PHP_EOL;
             $row .= $indent.']';
             $row .= ',';
 

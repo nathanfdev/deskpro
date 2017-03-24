@@ -182,7 +182,9 @@ abstract class AbstractBuild
     /**
      * Run through the upgrade.
      */
-    abstract public function run();
+    public function run()
+    {
+    }
 
     /**
      * Write to output.

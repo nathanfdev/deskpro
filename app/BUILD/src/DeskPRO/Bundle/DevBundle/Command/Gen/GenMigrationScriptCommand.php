@@ -66,6 +66,7 @@ class GenMigrationScriptCommand extends ContainerAwareCommand
     {
         $this->setName('dpdev:gen:migration-script');
         $this->addOption('out', null, InputOption::VALUE_NONE, 'Output to stdout instead of writing it');
+        $this->addOption('blocking', null, InputOption::VALUE_NONE, 'Force use of BlockingBuildInterface');
         $this->addOption('skip-manifest', null, InputOption::VALUE_NONE, 'Do not update manifest (always skipped if --out is being used)');
     }
 
@@ -82,7 +83,12 @@ class GenMigrationScriptCommand extends ContainerAwareCommand
         $this->toStdout  = $input->getOption('out');
 
         $this->appendBuffer($this->getFileHeader());
-        $this->appendBuffer($this->getClassStart());
+        $skipPostBuild = false;
+        $isOnline      = true;
+
+        if ($input->getOption('blocking')) {
+            $isOnline = false;
+        }
 
         // Use list-changed-files to determine if we've modified any PostBuild type files
         if (!EnvUtils::isWindows()) {
@@ -118,14 +124,13 @@ class GenMigrationScriptCommand extends ContainerAwareCommand
                     });
 
                     if (empty($files)) {
-                        $this->appendBuffer("\n");
-                        $this->appendBuffer("    // By comparing the modified files in this branch, I have guessed\n");
-                        $this->appendBuffer("    // that the PostBuild routines dont need to run. You should check though (remove this comment when you have).\n");
-                        $this->appendBuffer("    public static \$skipPostBuild = true;\n");
+                        $skipPostBuild = true;
                     }
                 }
             }
         }
+
+        $this->appendBuffer($this->getClassStart($skipPostBuild));
 
         $newTableQueries = [];
         $bcAlterQueries  = [];
@@ -176,23 +181,67 @@ class GenMigrationScriptCommand extends ContainerAwareCommand
             $this->appendBuffer($this->getMethodLines('addNewTables', ListUtils::map($newTableQueries, function ($sql) {
                 return '$this->execDbQuery("'.addslashes($sql).'");';
             })));
-        }
-
-        if ($bcAlterQueries) {
-            $this->appendBuffer("\n");
-            $this->appendBuffer($this->getMethodLines('runBcAlters', ListUtils::map($bcAlterQueries, function ($sql) {
-                return '$this->execDbQuery("'.addslashes($sql).'");';
-            })));
+        } else {
+            $this->appendBuffer($this->getMethodLines('addNewTables', []));
         }
 
         if ($alterQueries) {
-            $this->appendBuffer("\n");
-            $this->appendBuffer($this->getMethodLines('runAlters', ListUtils::map($alterQueries, function ($sql) {
-                return '$this->execDbQuery("'.addslashes($sql).'");';
-            })));
+            // for some reason this always comes up as wrong
+            $alterQueries = array_filter($alterQueries, function ($q) {
+                if ($q === 'ALTER TABLE email_uids CHANGE id id VARCHAR(100) NOT NULL') {
+                    return false;
+                }
+
+                return true;
+            });
         }
 
+        if ($bcAlterQueries || $alterQueries) {
+            $this->appendBuffer("\n");
+            $this->appendBuffer($this->getMethodLines('runAlters', ListUtils::map(array_merge($bcAlterQueries, $alterQueries), function ($sql) {
+                return '$this->execDbQuery("'.addslashes($sql).'");';
+            })));
+
+            if ($alterQueries) {
+                $isOnline = false;
+            }
+        } else {
+            $this->appendBuffer($this->getMethodLines('runAlters', []));
+        }
+
+        $this->appendBuffer($this->getMethodLines('run', []));
+
         $this->appendBuffer($this->getClassEnd());
+
+        $buffer     = implode('', $this->buffer);
+        $interfaces = [];
+        $prelines   = [''];
+        if ($isOnline) {
+            $interfaces[] = 'OnlineBuildInterface';
+            $prelines[]   = '// NOTE: I used the OnlineBuildInterface interface because';
+            $prelines[]   = '//       it looks like your schema changes ARE backwards compatible with the previous version.';
+            $prelines[]   = '//       You should double-check this yourself though. If there are breaking changes, use BlockingBuildInterface instead.';
+            $prelines[]   = '';
+        } else {
+            $interfaces[] = 'BlockingBuildInterface';
+            $prelines[]   = '// NOTE: I used the BlockingBuildInterface interface because';
+            $prelines[]   = '//       it looks like your schema changes are NOT backwards compatible with the previous version.';
+            $prelines[]   = '//       You should double-check this yourself though. If they are backwards compatible, use OnlineBuildInterface instead.';
+            $prelines[]   = '';
+        }
+        if ($skipPostBuild) {
+            $interfaces[] = 'SkipPostBuildInterface';
+            $prelines[]   = '// NOTE: I have added the SkipPostBuildInterface interface because';
+            $prelines[]   = '//       it looks like you do not have any changes that require PostBuild to run.';
+            $prelines[]   = '//       You should double-check this yourself though. Remove the SkipPostBuildInterface interface if necessary.';
+            $prelines[]   = '';
+        }
+
+        $prelines[] = '// Please remove these NOTE comments after you have checked the code.';
+        $prelines[] = '';
+
+        $buffer = str_replace('__INTERFACE_TYPE__', implode(', ', $interfaces), $buffer);
+        $buffer = str_replace('__PRE_CLASS_LINES__', implode("\n", $prelines), $buffer);
 
         if (!$input->getOption('out')) {
             echo "  .. done\n";
@@ -208,13 +257,16 @@ class GenMigrationScriptCommand extends ContainerAwareCommand
             }
 
             echo "Writing $filePath\n";
-            file_put_contents($filePath, $this->buffer);
+            file_put_contents($filePath, $buffer);
             echo " .. done\n";
 
             echo "Generating manifest to $manifestPath\n";
             $gen = new GenBuildManifest($baseBuildDir);
             file_put_contents($manifestPath, $gen->getContents());
             echo " .. done\n";
+        } else {
+            echo $buffer;
+            echo "\n";
         }
 
         return 0;
@@ -226,10 +278,6 @@ class GenMigrationScriptCommand extends ContainerAwareCommand
     private function appendBuffer($content)
     {
         $this->buffer[] = $content;
-
-        if ($this->toStdout) {
-            echo $content;
-        }
     }
 
     /**
@@ -241,7 +289,8 @@ class GenMigrationScriptCommand extends ContainerAwareCommand
     private function getMethodLines($methodName, array $lines)
     {
         $indent = '    ';
-        $result = "{$indent}public function {$methodName}()\n"
+        $result = "\n"
+            ."{$indent}public function {$methodName}()\n"
             ."{$indent}{\n";
 
         foreach ($lines as $l) {
@@ -254,18 +303,19 @@ class GenMigrationScriptCommand extends ContainerAwareCommand
     }
 
     /**
+     * @param bool $skipPostBuild
+     *
      * @return string
      */
-    private function getClassStart()
+    private function getClassStart($skipPostBuild = false)
     {
         $time = $this->buildTime;
 
         $content = <<<CONTENT
 namespace Application\InstallBundle\Upgrade\Build;
-
-class Build$time extends AbstractImprovedBuild
+__PRE_CLASS_LINES__
+class Build$time extends AbstractBuild implements __INTERFACE_TYPE__
 {
-    public static \$title = 'Enter a title/summary here';
 
 CONTENT;
 

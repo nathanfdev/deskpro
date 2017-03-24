@@ -26,61 +26,28 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\InstallBundle\Upgrade\Build;
 
-abstract class AbstractImprovedBuild extends AbstractBuild
+/**
+ * An ONLINE build means all of these upgrade steps can be run while the helpdesk is still online. That means
+ * only backwards compatible changes are allowed.
+ *
+ * If you need to run code that is not backwards compatible, you should implement the BlockingBuildInterface instead.
+ */
+interface OnlineBuildInterface
 {
     /**
-     * @var string
+     * Create new tables.
      */
-    public static $title = '';
+    public function addNewTables();
 
     /**
-     * True to indicate that this build didnt modify any of the assets
-     * usually refreshed by PostBuild.
-     *
-     * @var bool
+     * Run alters that are backwards compatible with the previous version.
      */
-    public static $skipPostBuild = false;
+    public function runAlters();
 
     /**
-     * Run new table queries.
-     * These queries ar erun while the helpdesk is running.
+     * Run arbitrary code (e.g. data mutations) that are backwards compatible with the previous version.
      */
-    public function addNewTables()
-    {
-    }
-
-    /**
-     * Run table alters that are backwards compatible (e.g. adding new fields).
-     * These alters will be run while the helpdesk is running.
-     */
-    public function runBcAlters()
-    {
-    }
-
-    /**
-     * Run table alters that are NOT backwards compatible.
-     */
-    public function runAlters()
-    {
-    }
-
-    /**
-     * Run arbitrary code that is backwards compatible.
-     */
-    public function runBc()
-    {
-    }
-
-    /**
-     * Run arbitrary code (considered not backwards compatible).
-     */
-    public function run()
-    {
-    }
+    public function run();
 }
