@@ -76,7 +76,7 @@ class EnabledFeature implements BetaFeatureInterface
     /**
      * {@inheritdoc}
      */
-    public function enable(ContainerInterface $container)
+    public function beforeEnable(ContainerInterface $container)
     {
         return;
     }
@@ -84,7 +84,7 @@ class EnabledFeature implements BetaFeatureInterface
     /**
      * {@inheritdoc}
      */
-    public function disable(ContainerInterface $container)
+    public function beforeDisable(ContainerInterface $container)
     {
         return;
     }
@@ -103,5 +103,13 @@ class EnabledFeature implements BetaFeatureInterface
     public function getAvailability()
     {
         return [BetaFeatureInterface::AVAILABLE_EVERYWHERE];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function needAgentReload()
+    {
+        return true;
     }
 }

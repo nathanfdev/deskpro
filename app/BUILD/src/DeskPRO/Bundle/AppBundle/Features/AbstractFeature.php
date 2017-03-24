@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Features;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class AbstractFeature.
@@ -48,6 +49,20 @@ abstract class AbstractFeature implements BetaFeatureInterface
     public function __construct(SettingsResolver $settingsResolver)
     {
         $this->settingsResolver = $settingsResolver;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeEnable(ContainerInterface $container)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeDisable(ContainerInterface $container)
+    {
     }
 
     /**

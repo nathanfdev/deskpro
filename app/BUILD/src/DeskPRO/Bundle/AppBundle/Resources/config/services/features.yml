@@ -16,3 +16,10 @@ services:
       - "@settings_resolver"
     tags:
       - { name: deskpro.feature }
+
+  deskpro.features.voice:
+    class: DeskPRO\Bundle\AppBundle\Features\VoiceFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }

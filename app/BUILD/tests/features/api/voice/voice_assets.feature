@@ -7,6 +7,7 @@ Feature: /voice_assets endpoint
     And no VoiceRecordAsset records exist
     And no VoiceUploadAsset records exist
     And no Blob records exist
+    And the setting "beta_features.voice" is set to 1
 
   Scenario: I create text asset
     When I send a POST request to "/api/v2/voice_assets/create" with body:

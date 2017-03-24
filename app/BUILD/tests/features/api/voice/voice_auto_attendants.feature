@@ -4,6 +4,7 @@ Feature: /voice_auto_attendants endpoint
   Background:
     Given no VoiceAutoAttendant records exist
     And I'm authenticated as admin
+    And the setting "beta_features.voice" is set to 1
 
   Scenario: I retrieve a list of voice auto attendants
     Given only the following VoiceAutoAttendant records exist:

@@ -5,6 +5,7 @@ Feature: Twilio extensions
     Given no VoiceAutoAttendant records exist
     And no Person records exist
     And I'm authenticated as admin
+    And the setting "beta_features.voice" is set to 1
     And only the following VoiceTextAsset records exist:
       | #   | Text       | Language | Auth               |
       | ta1 | text asset | en-GB    | AAAAAAAAAAAAAAAAAA |

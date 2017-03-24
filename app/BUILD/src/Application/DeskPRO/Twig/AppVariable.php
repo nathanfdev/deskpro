@@ -31,6 +31,7 @@ namespace Application\DeskPRO\Twig;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Templating\GlobalVariablesInterface;
 use DeskPRO\Bundle\AppBundle\Server\PhpInfo;
+use DpSys\Features;
 use Symfony\Bridge\Twig\AppVariable as BaseAppVariable;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -355,7 +356,7 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
      */
     public function hasVoice()
     {
-        return $this->container->get('deskpro.feature_flags')->hasVoice();
+        return $this->hasFeature(Features::VOICE);
     }
 
     /**

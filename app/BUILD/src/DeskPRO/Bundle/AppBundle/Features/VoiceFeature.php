@@ -28,69 +28,64 @@
 
 namespace DeskPRO\Bundle\AppBundle\Features;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 /**
- * Interface BetaFeatureInterface.
+ * Class VoiceFeature.
  */
-interface BetaFeatureInterface
+class VoiceFeature extends AbstractFeature
 {
-    const BETA_FEATURES_KEY = 'beta_features';
-
-    const AVAILABLE_AT_CLOUD   = 'cloud';
-    const AVAILABLE_AT_ONPREM  = 'onpremise';
-    const AVAILABLE_AT_QA      = 'qa';
-    const AVAILABLE_EVERYWHERE = 'all';
+    /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return 'voice';
+    }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getId();
+    public function getTitle()
+    {
+        return 'Voice';
+    }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getTitle();
+    public function getShortDescription()
+    {
+        return 'Twilio voice integration.';
+    }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getShortDescription();
+    public function getEnableDescription()
+    {
+        return 'Enable Twilio voice feature.';
+    }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getEnableDescription();
+    public function getDisableDescription()
+    {
+        return 'Disable Twilio voice feature.';
+    }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getDisableDescription();
+    public function getAvailability()
+    {
+        return [BetaFeatureInterface::AVAILABLE_AT_QA];
+    }
 
     /**
-     * @param ContainerInterface $container
+     * {@inheritdoc}
      */
-    public function beforeEnable(ContainerInterface $container);
-
-    /**
-     * @param ContainerInterface $container
-     */
-    public function beforeDisable(ContainerInterface $container);
-
-    /**
-     * @return bool
-     */
-    public function isEnabled();
-
-    /**
-     * @return array
-     */
-    public function getAvailability();
-
-    /**
-     * Require broadcast agent reload after enable/disable.
-     *
-     * @return bool
-     */
-    public function needAgentReload();
+    public function needAgentReload()
+    {
+        return true;
+    }
 }

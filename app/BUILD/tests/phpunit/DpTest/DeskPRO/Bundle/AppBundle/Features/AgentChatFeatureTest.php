@@ -64,31 +64,14 @@ class AgentChatFeatureTest extends ApiTestCase
 
     public function test_enable()
     {
-        $this->setUpFeature();
-        $this->feature->enable($this->getContainer());
-
-        $key     = $this->getKey();
-        $em      = $this->getEntityManager();
-        $setting = $em->getRepository(Entity\Setting::class)->findOneBy(['name' => $key]);
-        $tmpData = $em->getRepository(Entity\TmpData::class)->findOneBy(['name' => $key], ['date_expire' => 'DESC']);
-
-        $this->assertTrue((bool) $setting->getValue());
-        $this->assertNull($tmpData); // tmpData is deleted during enable
+        // todo add before enable specific test
+        $this->feature->beforeEnable($this->getContainer());
     }
 
     public function test_disable()
     {
-        $this->setUpFeature(true);
-        $this->feature->disable($this->getContainer());
-
-        /** @var Entity\Setting $setting */
-        $key     = $this->getKey();
-        $em      = $this->getEntityManager();
-        $setting = $em->getRepository(Entity\Setting::class)->findOneBy(['name' => $key]);
-        $tmpData = $em->getRepository(Entity\TmpData::class)->findOneBy(['name' => $key], ['date_expire' => 'DESC']);
-
-        $this->assertFalse((bool) $setting->getValue());
-        $this->assertNull($tmpData); // tmpData is deleted during disable
+        // todo add before disable specific test
+        $this->feature->beforeDisable($this->getContainer());
     }
 
     public function test_is_enabled_or_disabled()
@@ -102,15 +85,6 @@ class AgentChatFeatureTest extends ApiTestCase
         $this->assertFalse($this->feature->isEnabled());
     }
 
-    /**
-     * @param bool $enabled
-     */
-    private function setUpFeature($enabled = false)
-    {
-        $this->setUpSetting($enabled);
-        $this->setUpTmpData($enabled);
-    }
-
     private function setUpSetting($enabled)
     {
         $key = $this->getKey();
@@ -119,18 +93,6 @@ class AgentChatFeatureTest extends ApiTestCase
         /** @var SettingsRepository $settingsRepo */
         $settingsRepo = $em->getRepository(Entity\Setting::class);
         $settingsRepo->updateSetting($key, $enabled);
-    }
-
-    private function setUpTmpData($enabled)
-    {
-        $key = $this->getKey();
-        $em  = $this->getEntityManager();
-
-        $type = sprintf('feature_%s', $enabled ? 'disable' : 'enable');
-
-        $tmpData = Entity\TmpData::create($type, [], '+20 min', $key);
-        $em->persist($tmpData);
-        $em->flush();
     }
 
     /**
