@@ -64,14 +64,6 @@ abstract class AbstractImprovedBuild extends AbstractBuild
     }
 
     /**
-     * Run data mutations that are backwards compatible.
-     * This code will be run while the helpdesk is running.
-     */
-    public function runBcMutations()
-    {
-    }
-
-    /**
      * Run table alters that are NOT backwards compatible.
      */
     public function runAlters()

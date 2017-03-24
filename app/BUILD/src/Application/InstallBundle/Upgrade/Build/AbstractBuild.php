@@ -56,11 +56,6 @@ abstract class AbstractBuild
     protected $schema_helper;
 
     /**
-     * @var bool
-     */
-    protected $rerun = false;
-
-    /**
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
@@ -78,73 +73,6 @@ abstract class AbstractBuild
         $this->logger = $logger;
 
         $this->container = $container;
-    }
-
-    /**
-     * Saves data to the filesystem (into the tmp dir). Will be overwritten if it already exists.
-     *
-     * @param string       $tag
-     * @param string       $name
-     * @param string|array $data Array data will be json_encoded, string data will be written as-is
-     *
-     * @return string|false Filename written when successful, or false if failed to write
-     */
-    public function saveUpgradeData($tag, $name, $data, $throw_exception = true)
-    {
-        if (is_array($data)) {
-            $fname = 'updata-'.$tag.'.'.$name.'.json';
-            $path  = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$fname;
-            $data  = json_encode($data);
-            if (file_put_contents($path, $data) === false) {
-                if ($throw_exception) {
-                    throw new \RuntimeException("Failed to write upgrade data file to: $path");
-                }
-
-                return false;
-            }
-        } else {
-            $fname = 'updata-'.$tag.'.'.$name.'.dat';
-            $path  = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$fname;
-            $data  = (string) $data;
-            if (file_put_contents($path, $data) === false) {
-                if ($throw_exception) {
-                    throw new \RuntimeException("Failed to write upgrade data file to: $path");
-                }
-
-                return false;
-            }
-        }
-
-        @chmod($path, 0777);
-
-        return $path;
-    }
-
-    /**
-     * Read previously saved upgrade data.
-     *
-     * @param string $tag
-     * @param string $name
-     *
-     * @return array|null|string Array for JSON-encoded array data, string for string data or null if file could not be found
-     */
-    public function getUpgradeData($tag, $name)
-    {
-        $name_part = 'updata-'.$tag.'.'.$name.'.';
-        $path_part = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$name_part;
-
-        if (file_exists($path_part.'json')) {
-            $data = file_get_contents($path_part.'json');
-            $data = json_decode($data, true);
-
-            return $data;
-        } elseif (file_exists($path_part.'dat')) {
-            $data = file_get_contents($path_part.'dat');
-
-            return $data;
-        } else {
-            return;
-        }
     }
 
     /**
@@ -217,6 +145,7 @@ abstract class AbstractBuild
      */
     public function getInstallData($buildId, $name)
     {
+        $db         = $this->getDbConnection();
         $recordData = $db->fetchColumn('
           SELECT data
           FROM install_data
@@ -256,28 +185,6 @@ abstract class AbstractBuild
     abstract public function run();
 
     /**
-     * Set this build handler to run again.
-     * This allows "pages" to run. The "runcount" (fetch with getStatus('runcount')) will be
-     * incremented automatically.
-     *
-     * @param bool $rerun
-     *
-     * @return bool
-     */
-    public function setRerun($rerun = true)
-    {
-        return $this->rerun = (bool) $rerun;
-    }
-
-    /**
-     * @return bool
-     */
-    public function shouldRerun()
-    {
-        return $this->rerun;
-    }
-
-    /**
      * Write to output.
      *
      * @param string $string
@@ -290,6 +197,8 @@ abstract class AbstractBuild
     /**
      * @param string $sql
      * @param bool   $ignore_err
+     *
+     * @deprecated Use execDbQuery(), or execDbQueryQuiet if you want to suppress errors
      *
      * @throws \Exception
      */
@@ -506,52 +415,6 @@ abstract class AbstractBuild
             $db = $this->container->get('doctrine')->getConnection('default');
             $db->fetchColumn("SELECT 'val' AS test FROM `$table` LIMIT 1");
         }
-    }
-
-    /**
-     * Save status data (ex. steps completed etc).
-     *
-     * @param $key
-     * @param $val
-     */
-    public function saveStatus($key, $val)
-    {
-        $this->container->getDb()->replace('import_datastore', [
-            'typename' => 'up.'.$this->getBuildId().'.'.$key,
-            'data'     => $val,
-        ]);
-    }
-
-    /**
-     * @param string $key
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getStatus($key, $default = null)
-    {
-        $val = $this->container->getDb()->fetchArray('
-            SELECT data
-            FROM import_datastore
-            WHERE typename = ?
-        ', ['up.'.$this->getBuildId().'.'.$key]);
-
-        if (!$val) {
-            return $default;
-        }
-
-        return $val[0];
-    }
-
-    public function getDefaultCollation()
-    {
-        try {
-            $collation = \Application\DeskPRO\App::getSetting('core.db_collation');
-        } catch (\Exception $e) {
-            $collation = null;
-        }
-
-        return $collation ?: 'utf8_general_ci';
     }
 
     /**

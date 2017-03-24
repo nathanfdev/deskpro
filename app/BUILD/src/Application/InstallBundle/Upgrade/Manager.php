@@ -30,10 +30,12 @@ namespace Application\InstallBundle\Upgrade;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\InstallBundle\Upgrade\Build\AbstractBuild;
+use Application\InstallBundle\Upgrade\Build\AbstractImprovedBuild;
+use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\TypeUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Monolog\Logger;
-use Orb\Util\Arrays;
+use Psr\Log\NullLogger;
 
 /**
  * This manages database upgrade scripts. An upgrade script is just a class with queries to process
@@ -121,56 +123,124 @@ class Manager
     /**
      * Runs the next build script.
      *
-     * @param int  $buildId
-     * @param bool $onlineMode
+     * @param int $buildId
      *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
-    public function runBuild($buildId, $onlineMode = false)
+    public function runBuild($buildId)
     {
-        $class = $this->getBuildClass($buildId);
-        /** @var AbstractBuild $build */
-        $build = new $class($this->container, $this->logger);
         $ts    = microtime(true);
-        if ($this->logger) {
-            $this->logger->info(sprintf('********** #%s :: %s :: Begin **********', $buildId, TypeUtils::getBaseTypeName($build)));
+        $build = $this->createBuildClass($buildId);
+
+        $this->logger->info(sprintf('********** #%s :: %s :: Begin **********', $buildId, TypeUtils::getBaseTypeName($build)));
+
+        $this->runBuildSteps($build);
+
+        $this->logger->debug(sprintf('Set core.deskpro_build = %s', $buildId));
+
+        $this->dbVersion = $buildId;
+        $this->container->getDb()->update('settings', ['value' => $buildId], ['name' => 'core.deskpro_build']);
+
+        $this->logger->info(sprintf('.......... #%s :: %s :: Done in %.3fs', $buildId, TypeUtils::getBaseTypeName($build), microtime(true) - $ts));
+        $this->logger->info('');
+    }
+
+    /**
+     * @param int $buildId
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
+     */
+    public function runOnlineBuild($buildId)
+    {
+        $ts    = microtime(true);
+        $build = $this->createBuildClass($buildId);
+
+        $this->logger->info(sprintf('********** #%s :: %s :: Begin ONLINE **********', $buildId, TypeUtils::getBaseTypeName($build)));
+
+        if (!$build instanceof AbstractImprovedBuild) {
+            $this->logger->warn('SKIPPED: Not an improved build script');
+
+            return;
         }
 
-        try {
-            $build->run();
-        } catch (\Exception $e) {
-            if ($this->logger) {
+        $this->runOnlineSteps($build);
+
+        $this->logger->info(sprintf('.......... #%s :: %s :: Done in %.3fs', $buildId, TypeUtils::getBaseTypeName($build), microtime(true) - $ts));
+        $this->logger->info('');
+    }
+
+    /**
+     * @param AbstractBuild $build
+     *
+     * @throws \Exception
+     */
+    private function runBuildSteps(AbstractBuild $build)
+    {
+        if ($build instanceof AbstractImprovedBuild) {
+            $this->runOnlineSteps();
+            $methods = ['runAlters', 'run'];
+        } else {
+            $methods = ['run'];
+        }
+
+        foreach ($methods as $method) {
+            $stepTs = microtime(true);
+            $this->logger->info(sprintf('-- %s Begin --', $method));
+
+            try {
+                $build->$method();
+            } catch (\Exception $e) {
                 $this->logger->error(sprintf('EXCEPTION: %s [%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
                 $trace = SystemErrorHandler::formatBacktrace($e->getTrace());
                 $this->logger->debug($trace);
+
+                throw $e;
             }
 
-            throw $e;
+            $this->logger->info(sprintf('-- %s Done in %.3fs --', $method, microtime(true) - $stepTs));
+        }
+    }
+
+    /**
+     * @param AbstractImprovedBuild $build
+     *
+     * @throws \Exception
+     */
+    private function runOnlineSteps(AbstractImprovedBuild $build)
+    {
+        foreach (['addNewTables', 'runBcAlters', 'runBc'] as $method) {
+            $stepTs = microtime(true);
+            $this->logger->info(sprintf('-- %s Begin --', $method));
+
+            try {
+                $build->$method();
+            } catch (\Exception $e) {
+                $this->logger->error(sprintf('EXCEPTION: %s [%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
+                $trace = SystemErrorHandler::formatBacktrace($e->getTrace());
+                $this->logger->debug($trace);
+
+                throw $e;
+            }
+
+            $this->logger->info(sprintf('-- %s Done in %.3fs --', $method, microtime(true) - $stepTs));
         }
 
-        if ($build->shouldRerun()) {
-            $currentRun = $build->getStatus('runcount', 0);
-            $nextRun    = $currentRun + 1;
-            if ($this->logger) {
-                $this->logger->debug(sprintf('runBuild(%d.%d)', $buildId, $nextRun));
-            }
-            $build->saveStatus('runcount', $currentRun + 1);
-        } else {
-            if ($this->logger) {
-                $this->logger->debug(sprintf('Set core.deskpro_build = %s', $buildId));
-            }
-            $this->dbVersion = $buildId;
-            $this->container->getDb()->update('settings', ['value' => $buildId], ['name' => 'core.deskpro_build']);
-            $this->container->getDb()->executeUpdate('DELETE FROM import_datastore WHERE typename LIKE ?', [
-                'up.'.$build->getBuildId().'.%',
-            ]);
-        }
+        // TODO need to store state about what was run
+    }
 
-        if ($this->logger) {
-            $this->logger->info(sprintf('.......... #%s :: %s :: Done in %.3fs', $buildId, TypeUtils::getBaseTypeName($build), microtime(true) - $ts));
-            $this->logger->info('');
-        }
+    /**
+     * @param $buildId
+     *
+     * @return AbstractBuild
+     */
+    private function createBuildClass($buildId)
+    {
+        $class = $this->getBuildClass($buildId);
+        $build = new $class($this->container, $this->logger);
+
+        return $build;
     }
 
     /**
@@ -180,9 +250,9 @@ class Manager
      */
     public function hasNext()
     {
-        $next_id = $this->getNextBuildId();
+        $nextId = $this->getNextBuildId();
 
-        return (bool) $next_id;
+        return (bool) $nextId;
     }
 
     /**
@@ -286,7 +356,7 @@ class Manager
      */
     public function getLatestBuildId()
     {
-        return Arrays::getLastItem($this->getAllBuildIds());
+        return ListUtils::last($this->getAllBuildIds());
     }
 
     /**
@@ -314,6 +384,10 @@ class Manager
      */
     public function getLogger()
     {
+        if (!$this->logger) {
+            $this->logger = new NullLogger();
+        }
+
         return $this->logger;
     }
 }
