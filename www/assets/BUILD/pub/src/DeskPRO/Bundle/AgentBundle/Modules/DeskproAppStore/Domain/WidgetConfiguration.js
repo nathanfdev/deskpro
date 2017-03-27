@@ -10,6 +10,10 @@ class WidgetConfiguration
     this.appConfig = appConfig;
     this.xcomponentConfig = xcomponentConfig;
   }
+
+  get applicationId() {
+    return this.appConfig.applicationId;
+  }
 }
 
 export default WidgetConfiguration;
