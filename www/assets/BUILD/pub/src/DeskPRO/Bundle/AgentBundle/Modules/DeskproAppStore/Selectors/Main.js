@@ -1,30 +1,8 @@
 import { createSelector } from 'reselect';
 import Immutable from 'immutable';
 
-const selectorsMap = new Map();
-function resolveTargetConfig (instanceConfig, target) {
-  if (instanceConfig.hasOwnProperty(target)) {
-    return instanceConfig[target];
-  }
-
-  return [];
-}
-
 export const filterAppConfig =  ({DeskproAppStore: {Main:state}}) => state.get('apps').toJS();
 
-/**
- * @param {String} target
- * @return {Array<Object>}
- */
-export const selectAppConfigByTarget = (target) => {
-
-  if (selectorsMap.has(target)) {
-    return selectorsMap.get(target);
-  }
-
-  const selector = createSelector(filterInstanceConfig, instanceConfig => resolveTargetConfig(instanceConfig, target));
-  selectorsMap.set(target, selector);
-
-  return selector;
-};
+const filterContexts =  ({DeskproAppStore: {Main:state}}) => state.get('contexts');
+export const contextsStateSelector = createSelector([ filterContexts ], contexts => contexts.toJS() );
 

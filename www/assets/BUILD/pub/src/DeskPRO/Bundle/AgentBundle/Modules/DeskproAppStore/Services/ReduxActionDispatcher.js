@@ -1,23 +1,40 @@
 import * as Actions from '../Actions/Actions'
 
-
 class ReduxActionDispatcher
 {
   /**
+   * @param reduxStore
    * @param {DpApi} api
-   * @param {EventBus} eventBus
+   * @return {ReduxActionDispatcher}
+   */
+  static fromReduxStore(reduxStore, api)
+  {
+    return new ReduxActionDispatcher(api, action => reduxStore.dispatch(action));
+  }
+
+  /**
+   * @param {DpApi} api
    * @param {Function} reduxDispatch
    */
-  constructor(api, eventBus, reduxDispatch) {
+  constructor(api, reduxDispatch) {
     this.api = api;
-    this.eventBus = eventBus;
     this.reduxDispatch = reduxDispatch;
   }
 
-  dispatchAppContextCreated = (appContext, domNodeList) =>
+  dispatchMountPageFragmentContainers = () =>
   {
-    const { reduxDispatch, eventBus } = this;
-    reduxDispatch(Actions.appContextCreated(appContext, domNodeList, eventBus));
+    const { reduxDispatch } = this;
+    reduxDispatch(Actions.mountPageFragmentContainers());
+  };
+
+  /**
+   * @param {DeskPRO.Agent.PageFragment.Basic} page
+   */
+  dispatchLoadPageFragmentApps = (page) =>
+  {
+    const { reduxDispatch } = this;
+    const action = Actions.loadPageFragmentApps(page);
+    reduxDispatch(action);
   };
 
   dispatchLoadApps = () =>
@@ -28,20 +45,20 @@ class ReduxActionDispatcher
 
   dispatchAppMounted = (target) =>
   {
-    const { reduxDispatch, eventBus } = this;
-    const action = Actions.appMounted(target, eventBus);
+    const { reduxDispatch } = this;
+    const action = Actions.appMounted(target);
     reduxDispatch(action);
   };
 
   dispatchFindAllAppState = (appId, callback) =>
   {
-    const { reduxDispatch, api, eventBus } = this;
-    reduxDispatch(Actions.findAllAppState(appId, api, callback, eventBus));
+    const { reduxDispatch, api } = this;
+    reduxDispatch(Actions.findAllAppState(appId, api, callback));
   };
 
   dispatchGetAppState = (appId, name, scope, callback) =>
   {
-    const { reduxDispatch, api, eventBus } = this;
+    const { reduxDispatch, api} = this;
     reduxDispatch(Actions.getAppState(appId, name, scope, api, callback));
   };
 

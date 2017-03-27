@@ -1,5 +1,3 @@
-import { appContextCreated } from '../Actions/Actions';
-
 class DeskproWindowMessageBrokerAdapter
 {
   /**
@@ -16,40 +14,37 @@ class DeskproWindowMessageBrokerAdapter
    */
   static registerListener (messageBroker)
   {
-      return (store, containerLoader, eventBus) => {
-        const listener = this.createMessageListener(store, containerLoader, eventBus);
+      return (store, domScanner) => {
+        const listener = this.createMessageListener(store, domScanner);
         const pattern  = this.EVENTPATTERN;
         messageBroker.addMessageListener(pattern, listener);
       } ;
   }
 
   /**
-   * @param {Object} store
-   * @param {DeskproAppContainerLoader} containerLoader
-   * @param {EventBus} eventBus
+   * @param {ReduxActionDispatcher} reduxActionDispatcher
+   * @param {Function} domScanner
    * @returns {function(*, ...[*])}
    */
-  static createMessageListener (store, containerLoader, eventBus)
+  static createMessageListener (reduxActionDispatcher, domScanner)
   {
     return (page, ...args) => {
       if (page instanceof window.DeskPRO.Agent.PageFragment.Basic) {
 
         const { TYPENAME, fragmentElement, pageUid } = page;
-        const metadata = page.getMetaData(TYPENAME);
         // TODO we have to select what typenames we can handle
 
-        // console.log('metadata: ', metadata, TYPENAME);
+        const metadata = page.getMetaData(TYPENAME);
         if (!metadata || !metadata.id) {
           return false;
         }
 
-        const domNodeList = containerLoader.findContainerDOMNodeList( fragmentElement.get() );
+        const domNodeList = domScanner( fragmentElement.get() );
         if (domNodeList.length === 0) { //no containers to be found in this page fragment dom
           return false;
         }
 
-        const appContext = { id: pageUid, objectId: metadata.id, objectType: TYPENAME };
-        store.dispatch(appContextCreated(appContext, domNodeList, eventBus));
+        reduxActionDispatcher.dispatchLoadPageFragmentApps(page);
       }
     };
   }

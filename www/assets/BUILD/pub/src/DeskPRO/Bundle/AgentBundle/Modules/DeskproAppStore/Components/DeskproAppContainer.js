@@ -14,7 +14,7 @@ class DeskproAppContainer extends React.Component {
     widgets: PropTypes.array.isRequired
     , context: PropTypes.object.isRequired
     , dispatcher: PropTypes.object.isRequired
-    , targetType: PropTypes.string.isRequired
+    , configuration: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -139,8 +139,8 @@ class DeskproAppContainer extends React.Component {
     this.components.set(app, parentComponent);
 
     // we should send which app has mounted
-    const { targetType, dispatcher, context } = this.props;
-    dispatcher.dispatchAppMounted(targetType);
+    const { configuration, dispatcher, context } = this.props;
+    dispatcher.dispatchAppMounted(configuration.targetType);
   };
 
   /**
@@ -157,6 +157,5 @@ class DeskproAppContainer extends React.Component {
     return function () { container.onXComponentEnter(this); }
   }
 }
-
 
 export default DeskproAppContainer;

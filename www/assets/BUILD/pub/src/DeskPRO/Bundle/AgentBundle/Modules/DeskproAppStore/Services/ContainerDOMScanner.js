@@ -1,5 +1,14 @@
-class ContainerDOMNodeSelector
+class ContainerDOMScanner
 {
+  /**
+   * @param attributeName
+   * @return {ContainerDOMScanner}
+   */
+  static fromAttributeName(attributeName)
+  {
+    return new ContainerDOMScanner(attributeName);
+  }
+
   /**
    * @param {String} attributeName
    */
@@ -23,6 +32,17 @@ class ContainerDOMNodeSelector
     return containers;
   };
 
+  filterByTargetTypeList = (dom, targetTypeList) =>
+  {
+    return this.filterAllByTargetTypeList([ dom ], targetTypeList);
+  };
+
+  filterAllByTargetTypeList = (list, targetTypeList) =>
+  {
+    const acceptorFilter = this.createAcceptorFromTargetType(targetTypeList);
+    return this.filterAll(list, acceptorFilter);
+  };
+
   /**
    * @param {Array} list
    * @param {Function} filter
@@ -35,26 +55,21 @@ class ContainerDOMNodeSelector
   };
 
   /**
-   * Creates a filter that accepts a DOM node if it has a target attribute with a certain value
+   * Creates a filter that accepts a DOM node if it has a target attribute with a certain value from targetTypeList
    *
    * @param targetTypeList
-   * @return {function(*=)}
+   * @return {function}
    */
   createAcceptorFromTargetType = (targetTypeList) =>
   {
+    const { attributeName } = this;
     return dom => {
-      const target = this.type(dom);
+      const target = dom.hasAttribute(attributeName) ? dom.getAttribute(attributeName) : null;
       return targetTypeList.lastIndexOf(target) !== -1;
     };
   };
 
-  type = (domNode) =>
-  {
-    const { attributeName } = this;
-    const target = domNode.getAttribute(attributeName);
-    return target;
-  }
 }
 
-export default ContainerDOMNodeSelector;
+export default ContainerDOMScanner;
 

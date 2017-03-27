@@ -1,6 +1,7 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/Actions';
 import Immutable from 'immutable';
+import DeskproAppStore from '../DeskproAppStore';
 
 const initialState = Immutable.fromJS({
   'apps': null, //all loaded apps (instances)
@@ -39,27 +40,41 @@ function appMountedHandler(state, payload, action) {
   }
 }
 
+function mountPageFragmentContainersHandler(state, payload, action)
+{
+  const allContexts = state.get('contexts');
+
+  for (const context of allContexts.values()) {
+
+      if (context.has('page')) { //page fragment
+          const routeUrl = context.get('page').get('routeUrl');
+          const pageTab = DeskPRO_Window.TabBar.findTabByRouteUrl(routeUrl);
+          DeskproAppStore.asyncLoadPageFragment(context, pageTab.page);
+      }
+  }
+
+  return state;
+}
+
 /**
  * @param {Object} state
- * @param {Object} payload
+ * @param {Object} contextJS
  * @param {Object} action
  * @returns {Object}
  */
-function appContextCreatedHandler(state, payload, action) {
-  switch(action.meta.sequence) {
-    case 'done' :
-      const contexts = state.get('contexts').set(payload.id, payload);
-      return state.set('contexts', contexts);
-    default:
-      return state;
-  }
+function loadPageFragmentAppsHandler(state, contextJS, action) {
+  const newContext = Immutable.fromJS (contextJS);
+  const allContexts = state.get('contexts').set(contextJS.page.pageUid, newContext);
+  return state.set('contexts', allContexts);
 }
+
 
 export default createReducer(
   initialState,
   {
+    [actions.mountPageFragmentContainers] : mountPageFragmentContainersHandler,
+    [actions.loadPageFragmentApps]: loadPageFragmentAppsHandler,
     [actions.appMounted]: appMountedHandler,
-    [actions.appContextCreated]: appContextCreatedHandler,
     [actions.loadApps]: loadAppsHandler
   }
 );

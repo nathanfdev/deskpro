@@ -5,7 +5,7 @@ class DeskproAppRegistry
 {
   /**
    * @param {Array<Object>} jsList
-   * @return {DeskproAppRegistry}
+   * @return { DeskproAppRegistry }
    */
   static fromJS(jsList) {
     // TODO validate with a schema
@@ -33,7 +33,7 @@ class DeskproAppRegistry
    * @return {Array<WidgetConfiguration>}
    */
   getWidgetConfigByTargetType = (targetType) => {
-      return this.getAppsConfigByTargetType(targetType).map( app => DeskproAppRegistry.createWidget(targetType, app));
+      return this.getAppsConfigByTargetType(targetType).map(app => DeskproAppRegistry.createWidget(targetType, app));
   };
 
   /**
