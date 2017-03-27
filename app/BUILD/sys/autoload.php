@@ -82,7 +82,6 @@ $loader->addClassMap([
     'Akismet'                                         => DP_APP_DIR.'/vendor-src/php5-akismet/src/main/php/net/achingbrain/Akismet.class.php',
     'Browser'                                         => DP_APP_DIR.'/vendor-src/Browser/Browser.php',
     'CssMin'                                          => DP_APP_DIR.'/vendor-src/cssmin/cssmin.php',
-    'LightOpenID'                                     => DP_APP_DIR.'/vendor-src/lightopenid/openid.php',
     'MimeMailParser'                                  => DP_APP_DIR.'/vendor-src/php-mime-mail-parser/MimeMailParser.php',
     'MimeMailParser_attachment'                       => DP_APP_DIR.'/vendor-src/php-mime-mail-parser/attachment.class.php',
     'Phirehose'                                       => DP_APP_DIR.'/vendor-src/phirehose/Phirehose.php',
