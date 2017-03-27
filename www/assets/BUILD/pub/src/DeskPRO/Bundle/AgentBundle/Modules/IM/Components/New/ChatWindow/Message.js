@@ -66,7 +66,8 @@ class Message extends React.Component {
   componentDidMount() {
     $('a:not([data-route])', this.messageNode).attr('target', '_blank');
     const parent = $('img', this.messageNode).closest('.box');
-    $('img', parent).last().on('load', this.props.scrollStub);
+    $('.message img:last-child', parent).last().on('load', this.props.scrollStub);
+    $('.message img:last-child', parent).last().on('load', this.props.scrollStub);
   }
 
   componentDidUpdate() {

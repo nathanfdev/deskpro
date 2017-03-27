@@ -455,7 +455,7 @@ class Container extends React.Component {
       <Detached
         zIndex={99999}
         isOpen={isOpen}
-        positionTarget={document.getElementById(`chat-${current.get('id')}`)}
+        positionTarget={document.getElementById(`chat-${current.get('id')}`) || document.getElementById('im-overflow')}
         positionMy="left-43 top-2"
       >
         <div className="ui popup left bottom im chat drawer">

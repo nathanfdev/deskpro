@@ -8,6 +8,9 @@ import {
   AgentTeamAvatar
 } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 import classNames from 'classnames';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
+import ScrollArea from 'react-scrollbar';
 import { chooseColor, darkerColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import { RecentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
 import TopBarRecentImListItem from './TopBarRecentImListItem';
@@ -135,26 +138,36 @@ export default class TopBarRecentImList extends RecentList {
     });
   }
 
+  getItem(chat, draggable) {
+    switch (chat.get('chat_type')) {
+      case 'agent':
+        return this.renderAgent(chat, draggable);
+      case 'department':
+        return this.renderDepartment(chat, draggable);
+      case 'team':
+        return this.renderTeam(chat, draggable);
+      case 'group':
+        return this.renderGroup(chat, draggable);
+      case 'everyone':
+        return this.renderEveryone(chat, draggable);
+      default:
+        return null;
+    }
+  }
+
   getItems(remained = false) {
-    const { current, chats, imSettings } = this.props;
+    return this.calculateChats(remained).map(chat => this.getItem(chat, !remained));
+  }
+
+  calculateChats(remained = false) {
     let beginNum = 0;
     let endNum = this.state.slice;
     if (remained === true) {
       beginNum = this.state.slice;
       endNum = this.state.chats.size;
     }
-    let stateChats = this.state.chats.reverse().slice(beginNum, endNum).reverse();
-    if (current.get('id') && !stateChats.has(current.get('id'))) {
-      const chat = chats.get(current.get('id'));
-      if (chat) { // I'm not sure why current chat could absent, but seems that Lauren somehow reached that
-        const order = imSettings.getIn(['chats_order', `${chat.get('id')}`]);
-        stateChats = stateChats.set(current.get('id'), chat.set('order', order || this.getNextOrder(stateChats)));
-        stateChats = stateChats.sort((a, b) => a.get('order') - b.get('order'));
-        stateChats = stateChats.reverse().slice(beginNum, endNum).reverse();
-      }
-    }
 
-    return stateChats.map(chat => this.getItem(chat));
+    return this.state.chats.reverse().slice(beginNum, endNum).reverse();
   }
 
   getHeaderHelper(chat) {
@@ -204,7 +217,7 @@ export default class TopBarRecentImList extends RecentList {
     };
   }
 
-  renderAgent(chat) {
+  renderAgent(chat, draggable = false) {
     const { me, agents, people } = this.props;
     let agentId;
     for (const id of chat.get('agents')) {
@@ -245,7 +258,7 @@ export default class TopBarRecentImList extends RecentList {
     }
 
     return (
-      <TopBarRecentImListItem {...this.getItemProps(chat)}>
+      <TopBarRecentImListItem {...this.getItemProps(chat)} draggable={draggable}>
         <PersonAvatar {...avatarProps} />
         {(active && agent.get('online')) ? <span className="agent-online" /> : null}
 
@@ -256,7 +269,7 @@ export default class TopBarRecentImList extends RecentList {
     );
   }
 
-  renderDepartment(chat) {
+  renderDepartment(chat, draggable = false) {
     const department = this.props.departments.getIn(chat.get('departments', 0));
 
     const avatarProps = {
@@ -274,7 +287,7 @@ export default class TopBarRecentImList extends RecentList {
     }
 
     return (
-      <TopBarRecentImListItem {...this.getItemProps(chat)}>
+      <TopBarRecentImListItem {...this.getItemProps(chat)} draggable={draggable}>
         <DepartmentAvatar {...avatarProps} />
         {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
@@ -282,7 +295,7 @@ export default class TopBarRecentImList extends RecentList {
     );
   }
 
-  renderTeam(chat) {
+  renderTeam(chat, draggable = false) {
     const team = this.props.teams.get(chat.getIn(['agent_teams', 0]));
 
     const avatarProps = {
@@ -300,7 +313,7 @@ export default class TopBarRecentImList extends RecentList {
     }
 
     return (
-      <TopBarRecentImListItem {...this.getItemProps(chat)}>
+      <TopBarRecentImListItem {...this.getItemProps(chat)} draggable={draggable}>
         <AgentTeamAvatar {...avatarProps} />
         {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
@@ -308,9 +321,65 @@ export default class TopBarRecentImList extends RecentList {
     );
   }
 
-  renderEveryone(chat) {
+  toggleOverflow = () => {
+    this.setState({ overflowShown: !this.state.overflowShown });
+  };
+
+  closeOverflow = () => {
+    this.setState({ overflowShown: false });
+  };
+
+  renderRemainedChats() {
+    let size = this.state.chats.size - this.state.slice;
+    size = size > 0 ? size : 0;
+    size = size > 99 ? 99 : size;
+    size = size > 9 ? size : `+${size}`;
+
+    let containerHeight = (size * 30) + 30;
+    let containerWidth = 44;
+    if (containerHeight > 330) {
+      containerHeight = 330;
+      containerWidth = 52;
+    }
+
+    const chats = this.calculateChats(true);
+    const overallCount = chats.reduce((carry, chat) => carry + this.getNotificationCount(chat), 0);
+
+    return (size > 0 ?
+      <span id="im-overflow" className="im wrapper overflow" onClick={this.toggleOverflow} ref={(c) => { this.overflowButton = c; }}>
+        <span className="ui im avatar image overflow">
+          <span className="text ui avatar image im">{size}</span>
+          <Detached
+            positionMy="center-20 top"
+            zIndex={99999}
+            isOpen={this.state.overflowShown}
+            positionTarget={this.overflowButton}
+            {...this.props}
+          >
+            <ClickOut onClickOut={this.closeOverflow} ignoreNodes={['.im.recent .im.wrapper']}>
+              <div
+                style={{ height: `${containerHeight}px`, width: `${containerWidth}px` }}
+                className={classNames('ui overflow popup im center bottom', { visible: this.state.overflowShown })}
+              >
+                <ScrollArea
+                  className="dpscrollarea overflow-inner"
+                  contentClassName="dpscrollarea overflow-content"
+                  vertical
+                >
+                  {chats.map(chat => this.getItem(chat))}
+                </ScrollArea>
+              </div>
+            </ClickOut>
+          </Detached>
+        </span>
+        {overallCount ? <div className="ui knuckles label message-counter">{overallCount}</div> : null}
+      </span> : null
+    );
+  }
+
+  renderEveryone(chat, draggable = false) {
     return (
-      <TopBarRecentImListItem {...this.getItemProps(chat)}>
+      <TopBarRecentImListItem {...this.getItemProps(chat)} draggable={draggable}>
         {AvatarHelper.renderEveryoneAvatar(this.state.tooltips ? this.getNotificationCount(chat) : null)}
         {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
@@ -318,9 +387,9 @@ export default class TopBarRecentImList extends RecentList {
     );
   }
 
-  renderGroup(chat) {
+  renderGroup(chat, draggable = false) {
     return (
-      <TopBarRecentImListItem {...this.getItemProps(chat)}>
+      <TopBarRecentImListItem {...this.getItemProps(chat)} draggable={draggable}>
         {AvatarHelper.renderGroupAvatar(chat, this.state.tooltips ? this.getNotificationCount(chat) : false, null)}
         {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
@@ -342,6 +411,7 @@ export default class TopBarRecentImList extends RecentList {
     return (
       <Loader loaded={this.isLoaded(this.props)} opacity={0} width={3} scale={0.5} color="#4696dc">
         <div className={classNames(['im', 'recent', { empty: this.state.chats.size < 1 }])}>
+          {this.renderRemainedChats()}
           {this.getItems()}
           {this.props.children}
         </div>

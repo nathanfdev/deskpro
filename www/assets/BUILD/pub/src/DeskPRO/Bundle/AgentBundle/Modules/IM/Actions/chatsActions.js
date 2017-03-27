@@ -139,9 +139,8 @@ export const countSlice = () => {
 export const loadRecentChats = createAction(
   'IM_LOAD_RECENT_CHATS',
   () => (dispatch) => {
-    const slice = countSlice();
     api
-      .sendGet(`DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=${slice}&include=person`)
+      .sendGet('DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=100&include=person')
       .success((response) => {
         dispatch(addToCollection('Person', 'people', response.linked.person));
         dispatch(addToCollection('AgentChat', 'recent', response.data));

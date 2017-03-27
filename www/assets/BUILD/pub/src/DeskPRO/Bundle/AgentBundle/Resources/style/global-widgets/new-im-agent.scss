@@ -101,6 +101,85 @@ img.emojione, svg.emojione {
   }
 }
 
+.im.ui.popup.overflow .im.wrapper, .ui.topbar > .item > .im-list .im.recent > .im.wrapper {
+  position: relative;
+  display: inline-block;
+
+  > .ui.avatar.image.im {
+    margin: 0 7px;
+
+    .text {
+      left: 0;
+      top: 0;
+    }
+
+    .gravatar {
+      border: 0.5px solid transparent;
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .agent-online {
+    background: #74C365;
+    display: block;
+    width: 7px;
+    height: 7px;
+    border-radius: 500rem;
+    border: 1px solid gray;
+    position: absolute;
+    bottom: -5px;
+    right: 4px;
+  }
+
+  .icon.close {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    top: -9px;
+    right: -5px;
+    color: $dp-greyscale-850;
+
+    &:before {
+      position: absolute;
+      top: 0;
+      right: 0;
+      content: "";
+    }
+  }
+
+  > .knuckles.message-counter {
+    position: absolute;
+    top: -8px;
+    left: 25px;
+    font-size: 12px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+
+
+  &:hover {
+    .icon.close:before {
+      content: "\f057";
+    }
+
+    > .knuckles.message-counter {
+      display: none;
+    }
+  }
+  &.overflow:hover {
+    > .knuckles.message-counter {
+      display: initial;
+    }
+  }
+
+}
+
+
 .ui.topbar > .item {
   &.im {
     z-index: 101;
@@ -113,107 +192,81 @@ img.emojione, svg.emojione {
         margin: 0 8px;
       }
 
-      > .im.wrapper {
-        position: relative;
+      .im.avatar.overflow {
         display: inline-block;
+        background: #f7f7f7;
+        position: relative;
 
-        > .ui.avatar.image.im {
-          margin: 0 7px;
+        .text.ui.avatar {
+          width: 24px;
+          height: 24px;
+          line-height: 24px;
+          display: inline-block;
+          text-align: center;
+          color: $dp-greyscale-550;
+        }
+      }
+
+      > .im.wrapper.current {
+        > .ui.avatar.image {
+          border: 3px solid $dp-sonic-primary !important;
+          margin: 0 4px;
 
           .text {
-            left: 0;
-            top: 0;
+            left: -1px;
+            top: -1px;
           }
 
           .gravatar {
-            border: 0.5px solid transparent;
+            top: -1px;
+            right: 1px;
+            border: 1px solid $dp-sonic-primary;
           }
-
-          svg {
-            width: 24px;
-            height: 24px;
-          }
-        }
-
-        .agent-online {
-          background: #74C365;
-          display: block;
-          width: 7px;
-          height: 7px;
-          border-radius: 500rem;
-          border: 1px solid gray;
-          position: absolute;
-          bottom: -5px;
-          right: 4px;
         }
 
         .icon.close {
-          position: absolute;
-          width: 14px;
-          height: 14px;
-          top: -9px;
+          top: -6px;
           right: -5px;
-          color: $dp-greyscale-850;
-
-          &:before {
-            position: absolute;
-            top: 0;
-            right: 0;
-            content: "";
-          }
         }
 
-        > .knuckles.message-counter {
-          position: absolute;
-          top: -8px;
-          left: 25px;
-          font-size: 12px;
-          padding: 2px 4px;
-          border-radius: 4px;
-          font-weight: bold;
-        }
-
-        &.current {
-          > .ui.avatar.image {
-            border: 3px solid $dp-sonic-primary !important;
-            margin: 0 4px;
-
-            .text {
-              left: -1px;
-              top: -1px;
-            }
-
-            .gravatar {
-              top: -1px;
-              right: 1px;
-              border: 1px solid $dp-sonic-primary;
-            }
-          }
-
-          .icon.close {
-            top: -6px;
-            right: -5px;
-          }
-
-          .agent-online {
-            bottom: -2px;
-          }
-        }
-
-        &:hover {
-          .icon.close:before {
-            content: "\f057";
-          }
-
-          > .knuckles.message-counter {
-            display: none;
-          }
+        .agent-online {
+          bottom: -2px;
         }
       }
     }
   }
 }
 
+.im.ui.popup.overflow {
+  position: relative;
+
+  .overflow-inner {
+
+    .scrollbar-container {
+      opacity: .3;
+    }
+
+    .overflow-content {
+      padding: 15px 0 10px 0;
+    }
+
+    .im.wrapper > .ui.avatar.image.im {
+      margin: 3px 9px;
+    }
+  }
+
+  &:after {
+    content: '';
+    height: 7px;
+    width: 42px;
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    background-color: $dp-greyscale-50;
+  }
+}
 
 .ui.popup.im {
   max-width: initial;
@@ -280,9 +333,6 @@ img.emojione, svg.emojione {
           -moz-box-shadow: inset 1px 1px 1px 0 rgba(0,0,0,0.5);
           box-shadow: inset 1px 1px 1px 0 rgba(0,0,0,0.5);
         }
-
-
-
       }
     }
   }

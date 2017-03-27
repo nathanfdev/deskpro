@@ -69,21 +69,30 @@ export default class TopBarRecentImListItem extends React.Component {
     chat:              PropTypes.string.isRequired,
     children:          PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     onClick:           PropTypes.func.isRequired,
+    draggable:         PropTypes.bool.isRequired,
     connectDragSource: PropTypes.func.isRequired,
     connectDropTarget: PropTypes.func.isRequired
   };
 
-  render() {
-    const { children, className, chat, onClick, connectDragSource, connectDropTarget } = this.props;
+  renderItem() {
+    const { className, chat, onClick, children, draggable } = this.props;
 
-    return connectDragSource(connectDropTarget(
-      <span
-        className={className}
-        id={`chat-${chat.get('id')}`}
-        onClick={onClick}
-      >
+    const props = { className, onClick };
+
+    if (draggable) {
+      props.id = `chat-${chat.get('id')}`;
+    }
+
+    return (
+      <span {...props}>
         {children}
       </span>
-    ));
+    );
+  }
+
+  render() {
+    const { draggable, connectDragSource, connectDropTarget } = this.props;
+
+    return !draggable ? this.renderItem() : connectDragSource(connectDropTarget(this.renderItem()));
   }
 }
