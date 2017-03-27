@@ -17,7 +17,6 @@ class Anchor extends React.Component {
   onClick = (e) => {
     e.preventDefault();
     if (copyTextToClipboard(`${window.location.href.replace(/#.*$/, '')}#${this.props.anchor}`)) {
-      console.log('Set copied');
       this.setState({
         copied: true
       });

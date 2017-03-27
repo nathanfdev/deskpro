@@ -235,6 +235,13 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     margin-right: -1px;
     display: inline-block;
     vertical-align: top;
+    overflow-y: scroll;
+    &.fixed {
+      position: fixed;
+    }
+    .multiselect {
+      margin-right: 10px;
+    }
     & > .guide {
       font-size: 13px;
       color: #333;
@@ -328,6 +335,9 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     .topic-content {
       padding-right: 24px;
     }
+  }
+  .topic-list.fixed + div.topic {
+    margin-left: 215px;
   }
   .content-summary {
     width: 126px;

@@ -11,63 +11,24 @@ const getH1 = (html) => {
 
 class TopicSummary extends React.Component {
   static propTypes = {
-    content: PropTypes.string
+    content: PropTypes.string,
+    fixed:   PropTypes.bool
   };
 
   constructor(props) {
     super(props);
-    const agentBar = window.document.getElementById('agent-bar');
-    this.offsetTop = 0;
-    this.agentBarHeight = 0;
-    if (agentBar) {
-      this.agentBarHeight = agentBar.offsetHeight;
-    }
     const h1s = getH1(this.props.content);
     this.state = {
-      fixed:    false,
-      agentBar: !!agentBar,
       h1s,
       activeId: false
     };
   }
 
-  componentDidMount() {
-    if (this.state.h1s.length) {
-      window.addEventListener('scroll', this.handleScroll);
-    }
-    this.offsetTop = this.summary.offsetTop;
-  }
-
   componentWillReceiveProps(nextProps) {
-    const h1s = getH1(nextProps.content);
     this.setState({
-      h1s
+      h1s: getH1(nextProps.content)
     });
-    if (h1s.length) {
-      window.addEventListener('scroll', this.handleScroll);
-    } else {
-      window.removeEventListener('scroll', this.handleScroll);
-    }
   }
-
-  componentWillUnmount() {
-    if (this.state.h1s.length) {
-      window.removeEventListener('scroll', this.handleScroll);
-    }
-  }
-
-  handleScroll = (event) => {
-    const topOffset = this.offsetTop - 20 - this.agentBarHeight;
-    if (event.srcElement.body.scrollTop > topOffset && !this.state.fixed) {
-      this.setState({
-        fixed: true
-      });
-    } else if (event.srcElement.body.scrollTop < topOffset && this.state.fixed) {
-      this.setState({
-        fixed: false
-      });
-    }
-  };
 
   handleSetActive = (to) => {
     window.history.replaceState(null, null, `#${to}`);
@@ -77,12 +38,9 @@ class TopicSummary extends React.Component {
   };
 
   render() {
-    const { fixed } = this.state;
-    const style = {
-      top: this.agentBarHeight + 20
-    };
+    const { fixed } = this.props;
     return (
-      <div className={classNames('topic-summary', { fixed })} ref={(c) => { this.summary = c; }} style={style}>
+      <div className={classNames('topic-summary', { fixed })}>
         {this.state.h1s.length > 1 ?
           (<div>
             <h2><i className="fa fa-list" /> Contents</h2>
