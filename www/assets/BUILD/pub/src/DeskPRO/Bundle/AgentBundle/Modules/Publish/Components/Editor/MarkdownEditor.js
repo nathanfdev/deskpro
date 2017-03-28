@@ -2,7 +2,6 @@ import React from 'react';
 import classNames from 'classnames';
 import CM from 'codemirror';
 import MarkdownIt from 'markdown-it';
-import emoji from 'markdown-it-emoji';
 import MarkdownItContainer from 'markdown-it-container';
 import toMarkdown from 'to-markdown';
 import hljs from 'highlight.js';
@@ -80,7 +79,6 @@ class MarkdownEditor extends React.Component {
         }
       });
     this.md
-      .use(emoji)
       .use(MarkdownItContainer, 'warning', {
         render(tokens, idx) {
           return tokens[idx].nesting === 1
@@ -280,6 +278,9 @@ class MarkdownEditor extends React.Component {
     container.innerHTML = html;
 
     const nodes = container.querySelectorAll('code');
+    hljs.configure({
+      languages: [],
+    });
     if (nodes.length > 0) {
       for (let i = 0; i < nodes.length; i += 1) {
         hljs.highlightBlock(nodes[i]);
@@ -332,7 +333,6 @@ class MarkdownEditor extends React.Component {
         {this.renderButton('quote', 'q')}
         {this.renderButton('info', 'i')}
         {this.renderButton('warning', '!')}
-        {this.renderButton('error', '!')}
         {this.renderButton('code', '>')}
       </div>
     );
@@ -353,7 +353,10 @@ class MarkdownEditor extends React.Component {
         </div>
         <h3>Preview</h3>
         <div className="preview guides">
-          <div className="preview guides" dangerouslySetInnerHTML={{ __html: MarkdownEditor.prerenderHtml(this.state.html) }} />
+          <div
+            className="preview guides"
+            dangerouslySetInnerHTML={{ __html: MarkdownEditor.prerenderHtml(this.state.html) }}
+          />
         </div>
       </div>
     );

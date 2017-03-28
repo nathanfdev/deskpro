@@ -313,6 +313,11 @@ class Topic extends ContentAbstract implements HighlightableModelInterface
         }
     }
 
+    public function getContentFull()
+    {
+        return preg_replace(['|<(h\d)>|', '|</h\d>|'], ['<span class="$1">', '</span>'], $this['content']);
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

@@ -66,23 +66,30 @@ class GuidesController extends AbstractController
 
         $guide = array_shift($guides);
 
-        return $this->redirectToRoute('portal_guides_topic_permalink', ['slug' => $guide->getTopics()[0]->getId(), 'guide_slug' => $guide->getSlug()]);
+        if (!$guide) {
+            return $this->redirectToRoute('portal_home');
+        }
+
+        $topic = $guide->getTopics()->first();
+
+        if (!$topic) {
+            return $this->redirectToRoute('portal_home');
+        }
+
+        return $this->redirectToRoute('portal_guides_topic_permalink', ['slug' => $topic->getId(), 'guide_slug' => $guide->getSlug()]);
     }
 
     /**
-     * @Route("/guides/{slug}.{_format}", name="portal_guides_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @Route("/guides/{slug}", name="user_guides")
      * @ParamConverter(name="guide", converter="deskpro_slug")
      * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_GUIDE', guide)")
      * @PageHttpCache()
      *
-     * @param Request $request
-     * @param Guide   $guide
-     * @param string  $_format
+     * @param Guide $guide
      *
      * @return Response
      */
-    public function browseAction(Request $request, Guide $guide, $_format)
+    public function browseAction(Guide $guide)
     {
         return $this->redirectToRoute('portal_guides_topic_permalink', ['slug' => $guide->getTopics()[0]->getId(), 'guide_slug' => $guide->getSlug()]);
     }
@@ -116,6 +123,20 @@ class GuidesController extends AbstractController
             );
         }
 
+        if (!$topic->getParent()) {
+            /** @var Topic $newTopic */
+            $newTopic = $topic->getChildren()->first();
+
+            return $this->redirectToRoute(
+                'portal_guides_topic_view',
+                [
+                    'slug'         => $newTopic->getSlug(),
+                    'parents_slug' => $newTopic->getParentsSlug(),
+                    'guide_slug'   => $newTopic->getGuideSlug(),
+                ]
+            );
+        }
+
         $serializer = $this->get('serializer');
 
         $person = $this->getCurrentPerson();
@@ -129,6 +150,39 @@ class GuidesController extends AbstractController
                 'topic_json'  => Strings::escapeForJson($serializer->serialize($topic, 'json', new SideloadSerializationContext())),
                 'guide'       => $topic->getGuide(),
                 'guides_json' => Strings::escapeForJson($serializer->serialize($guides, 'json', new SideloadSerializationContext())),
+            ]
+        );
+    }
+
+    /**
+     * @Route("/guide_doc")
+     * @Security("is_granted('USE_GUIDES')")
+     *
+     * @return Response
+     */
+    public function markdownDocAction()
+    {
+        return $this->renderThemeView(
+            'Theme:Guides:doc.html.twig'
+        );
+    }
+
+    /**
+     * @Route("/guide_full/{slug}", name="user_guides")
+     * @ParamConverter(name="guide", converter="deskpro_slug")
+     * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_GUIDE', guide)")
+     * @PageHttpCache()
+     *
+     * @param Guide $guide
+     *
+     * @return Response
+     */
+    public function guideFullAction(Guide $guide)
+    {
+        return $this->renderThemeView(
+            'Theme:Guides:full.html.twig',
+            [
+                'guide' => $guide,
             ]
         );
     }

@@ -63,6 +63,10 @@ class Guide extends DomainObject
     protected $title;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("list")
+     *
      * @var string
      */
     protected $slug;
@@ -72,7 +76,7 @@ class Guide extends DomainObject
      *
      * @JMS\Expose()
      * @JMS\Type("integer")
-     * @JMS\Groups("product")
+     * @JMS\Groups("list")
      *
      * @var int
      */
@@ -81,8 +85,9 @@ class Guide extends DomainObject
     /**
      * Manual topics in this manual.
      *
-     * @JMS\Groups("guides")
+     * @JMS\Expose()
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Topic>>")
+     * @JMS\Groups("details")
      *
      * @var Topic[]|ArrayCollection
      */
@@ -92,7 +97,7 @@ class Guide extends DomainObject
      * Usergroups that has access to this category.
      *
      * @JMS\Expose()
-     * @JMS\Groups("articles_categories")
+     * @JMS\Groups("details")
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
@@ -104,6 +109,7 @@ class Guide extends DomainObject
      *
      * @JMS\Groups("guides")
      * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     * @JMS\Groups("list")
      *
      * @var Brand
      */
@@ -203,7 +209,7 @@ class Guide extends DomainObject
     {
         return $this->topics->filter(function ($topic) {
             /* @var Topic $topic */
-            return $topic->getStatus() !== Topic::STATUS_HIDDEN;
+            return $topic->getStatus() !== Topic::STATUS_HIDDEN && !$topic->getParent();
         });
     }
 
@@ -335,6 +341,7 @@ class Guide extends DomainObject
                 'fieldName'    => 'topics',
                 'targetEntity' => Topic::class,
                 'mappedBy'     => 'guide',
+                'orderBy'      => ['display_order' => 'ASC'],
             ]
         );
         $metadata->mapManyToMany(

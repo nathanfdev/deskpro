@@ -7,11 +7,14 @@ class Topic extends React.Component {
     topic:      PropTypes.object,
     locale:     PropTypes.string,
     guideSlug:  PropTypes.string,
+    path:       PropTypes.string,
+    clickable:  PropTypes.bool,
     expandable: PropTypes.bool
   };
 
   static defaultProps = {
     expandable: true,
+    clickable:  true,
   };
 
   constructor(props) {
@@ -23,6 +26,12 @@ class Topic extends React.Component {
     this.state = {
       expanded
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      expanded: (this.props.expandable && nextProps.path.match(this.props.topic.slug))
+    });
   }
 
   getChildren = () => {
@@ -40,7 +49,7 @@ class Topic extends React.Component {
         {Object.values(topic.children)
           .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
           .map(child => (
-            <Topic key={child.slug} topic={child} locale={locale} guideSlug={guideSlug} />
+            <Topic key={child.slug} topic={child} locale={locale} guideSlug={guideSlug} path={this.props.path} />
           )
         )}
       </ul>
@@ -54,21 +63,24 @@ class Topic extends React.Component {
   };
 
   render() {
-    const { topic, locale, guideSlug } = this.props;
+    const { topic, locale, guideSlug, clickable } = this.props;
     let { expandable } = this.props;
     if (!Object.values(topic.children).length) {
       expandable = false;
     }
     return (
       <li className="topic-item" key={topic.slug}>
-        <Link to={`/${locale}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`} activeClassName="active" onClick={this.toggleChildren}>
-          {topic.title}
-          {expandable ? <i
-            className={classNames(
-            'fa pull-right',
-            { 'fa-caret-right': !this.state.expanded, 'fa-caret-down': this.state.expanded })}
-          /> : null }
-        </Link>
+        {clickable ?
+          <Link to={`/${locale}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`} activeClassName="active" onClick={this.toggleChildren}>
+            {topic.title}
+            {expandable ? <i
+              className={classNames(
+              'fa pull-right',
+              { 'fa-caret-right': !this.state.expanded, 'fa-caret-down': this.state.expanded })}
+            /> : null }
+          </Link> :
+          <a>{topic.title}</a>
+        }
         {this.getChildren()}
       </li>
     );
