@@ -133,7 +133,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
 				self.closeSelf();
 			}
-      if (undefined !== data.labels) {
+      if (self.labelsInput && undefined !== data.labels) {
         self.labelsInput.setLabels(data.labels);
       }
 		});

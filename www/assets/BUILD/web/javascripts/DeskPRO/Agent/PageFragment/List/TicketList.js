@@ -247,6 +247,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
       displayTicketId,
       startIdx;
 
+    if (!$scope) {
+      return;
+    }
+
     $scope.ticketCount = this.listTicketIds.length;
 
     if ($scope.ticketCount) {
