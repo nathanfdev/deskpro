@@ -4182,7 +4182,7 @@ class TicketController extends AbstractController
         }
 
         if (strpos($message_raw, '<body') === false) {
-            $message_raw = '<html><head><style>body { font-size: 13px; color: #404040; font-family: "Helvetica Neue",​Helvetica,​Arial,​sans-serif; }</style></head><body>'.$message_raw.'</body></html>';
+            $message_raw = '<html><head><style>body { font-size: 13px; color: #404040; font-family: "Helvetica Neue",​Helvetica,​Arial,​sans-serif; }</style><script type="text/javascript">document.domain = document.domain;</script></head><body>'.$message_raw.'</body></html>';
         }
 
         $message_raw = $message->procInlineAttach($message_raw);
