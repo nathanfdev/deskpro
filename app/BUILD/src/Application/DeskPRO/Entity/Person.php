@@ -3538,7 +3538,9 @@ class Person extends DomainObject implements
     public function setPrimaryTeam(AgentTeam $agentTeam = null)
     {
         $this->setModelField('primary_team', $agentTeam);
-        $this->addTeam($agentTeam);
+        if ($agentTeam) {
+            $this->addTeam($agentTeam);
+        }
 
         return $this;
     }
