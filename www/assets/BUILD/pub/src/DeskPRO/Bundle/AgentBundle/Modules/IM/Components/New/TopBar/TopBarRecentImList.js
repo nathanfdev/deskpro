@@ -346,8 +346,13 @@ export default class TopBarRecentImList extends RecentList {
     const overallCount = chats.reduce((carry, chat) => carry + this.getNotificationCount(chat), 0);
 
     return (size > 0 ?
-      <span id="im-overflow" className="im wrapper overflow" onClick={this.toggleOverflow} ref={(c) => { this.overflowButton = c; }}>
-        <span className="ui im avatar image overflow">
+      <span
+        id="im-overflow"
+        className="im wrapper overflow"
+        onClick={this.toggleOverflow}
+        ref={(c) => { this.overflowButton = c; }}
+      >
+        <span className={classNames('ui im avatar image overflow', { active: this.state.overflowShown })}>
           <span className="text ui avatar image im">{size}</span>
           <Detached
             positionMy="center-20 top"

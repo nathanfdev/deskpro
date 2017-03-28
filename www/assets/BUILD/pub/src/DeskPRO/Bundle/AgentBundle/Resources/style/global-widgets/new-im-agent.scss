@@ -196,11 +196,17 @@ img.emojione, svg.emojione {
         display: inline-block;
         background: #f7f7f7;
         position: relative;
+        border: 1px solid darken(#f7f7f7, 30%);
+
+        &:hover, &.active {
+          background: $dp-morning-sky;
+          border-color: $dp-sonic-midnight;
+        }
 
         .text.ui.avatar {
-          width: 24px;
-          height: 24px;
-          line-height: 24px;
+          width: 22px;
+          height: 22px;
+          line-height: 22px;
           display: inline-block;
           text-align: center;
           color: $dp-greyscale-550;
