@@ -1,5 +1,6 @@
 import AppConfiguration from './AppConfiguration'
 import WidgetConfiguration from './WidgetConfiguration'
+import uuid from 'node-uuid';
 
 class DeskproAppRegistry
 {
@@ -56,7 +57,7 @@ class DeskproAppRegistry
       // The properties they can (or must) pass down to my component
       props: {
 
-        app: {
+        widgetId: {
           type: 'string',
           required: true
         },

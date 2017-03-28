@@ -8,8 +8,10 @@ class LegacySidebarContainer extends React.Component
   static propTypes = {
     widgets: PropTypes.array.isRequired
     , context: PropTypes.object.isRequired
-    , dispatcher: PropTypes.object.isRequired
+    , appstoreDispatcher: PropTypes.object.isRequired
     , configuration: PropTypes.object.isRequired
+    , widgetMessageRouter: PropTypes.func.isRequired
+    , widgetMessageBroker: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -77,8 +79,14 @@ class LegacySidebarContainer extends React.Component
    * @returns {XML}
    */
   render() {
-    const { widgets, context, dispatcher, configuration } = this.props;
-    return (<DeskproAppContainer widgets={widgets} context={context} dispatcher={dispatcher} configuration={configuration} />);
+    return (<DeskproAppContainer
+      widgets={this.props.widgets}
+      context={this.props.context}
+      appstoreDispatcher={this.props.appstoreDispatcher}
+      configuration={this.props.configuration}
+      widgetMessageRouter={this.props.widgetMessageRouter}
+      widgetMessageBroker={this.props.widgetMessageBroker}
+    />);
   }
 }
 

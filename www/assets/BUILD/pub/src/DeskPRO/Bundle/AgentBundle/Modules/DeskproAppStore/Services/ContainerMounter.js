@@ -6,6 +6,7 @@ import LegacyAppSidebar from '../Components/LegacyAppSidebar';
 
 import ContainerConfiguration from './ContainerConfiguration';
 import { Provider } from 'react-redux';
+import uuid from 'node-uuid';
 
 /**
  * This class mounts the react container components
@@ -14,23 +15,29 @@ class ContainerMounter
 {
   /**
    * @param reduxStore
-   * @param {ReduxActionDispatcher} reduxActionDispatcher
+   * @param {ReduxActionDispatcher} appstoreDispatcher
+   * @param {Function} widgetMessageRouter
+   * @param {Function} widgetMessageBroker
    * @param {DeskproAppRegistry} appRegistry
    */
-  constructor(reduxStore, reduxActionDispatcher, appRegistry)
+  constructor(reduxStore, appstoreDispatcher, widgetMessageRouter, widgetMessageBroker, appRegistry)
   {
     this.reduxStore = reduxStore;
-    this.reduxActionDispatcher = reduxActionDispatcher;
+    this.appstoreDispatcher = appstoreDispatcher;
+    this.widgetMessageRouter = widgetMessageRouter;
+    this.widgetMessageBroker = widgetMessageBroker;
     this.appRegistry = appRegistry;
   }
 
   createProps = (configuration, context) =>
   {
-      const { reduxActionDispatcher, appRegistry } = this;
+      const { appstoreDispatcher, appRegistry, widgetMessageRouter, widgetMessageBroker } = this;
 
       const targetType = configuration.targetType;
-      const widgets = appRegistry.getWidgetConfigByTargetType(targetType);
-      return { context, dispatcher: reduxActionDispatcher, configuration, widgets } ;
+      const widgetConfigurationList = appRegistry.getWidgetConfigByTargetType(targetType);
+
+      const widgets = widgetConfigurationList.map(configuration => { return { id: uuid.v4(), config: configuration }; });
+      return { context, appstoreDispatcher, configuration, widgets, widgetMessageRouter, widgetMessageBroker } ;
   };
 
 
