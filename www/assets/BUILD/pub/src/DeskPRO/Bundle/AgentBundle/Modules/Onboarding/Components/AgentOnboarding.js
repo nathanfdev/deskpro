@@ -115,19 +115,15 @@ export class AgentOnboarding extends React.Component {
       intro:        false,
       status:       0
     };
+    this.interval = null;
+    this.retries = 0;
   }
 
   componentDidMount() {
     const { onboarding, pauseOnboarding } = this.props;
 
-    const object = onboarding.get('onboarding_class');
-    let config = null;
-    if (Tours[object]) {
-      config = Tours[object];
-      config.onboardingId = onboarding.get('id');
-    } else {
-      config = onboarding.get('config');
-    }
+    const config = this.getConfig();
+
     if (config) {
       this.addSteps(config.steps);
       delete config.steps;
@@ -136,9 +132,9 @@ export class AgentOnboarding extends React.Component {
       }
       const status = onboarding.get('status');
       if (!status) {
-        this.startOnboarding(!config.intro);
+        this.startOnboarding(!config.intro, config.waitFor);
       } else {
-        this.setStep(onboarding.get('current_step'));
+        this.setStep(onboarding.get('current_step'), config.waitFor);
         this.setStatus(status);
         this.startOnboarding();
         pauseOnboarding(this.resumeOnboarding);
@@ -151,6 +147,21 @@ export class AgentOnboarding extends React.Component {
     if (!prevState.ready && this.state.ready) {
       this.joyride.start(true);
     }
+  }
+
+  getConfig() {
+    const { onboarding } = this.props;
+    const object = onboarding.get('onboarding_class');
+
+    let config = null;
+    if (Tours[object]) {
+      config = Tours[object];
+      config.onboardingId = onboarding.get('id');
+    } else {
+      config = onboarding.get('config');
+    }
+
+    return config;
   }
 
   setStep = (step) => {
@@ -193,8 +204,6 @@ export class AgentOnboarding extends React.Component {
   };
 
   addSteps = (steps) => {
-    const joyride = this.joyride;
-
     let stepsArray = steps;
     if (!Array.isArray(stepsArray)) {
       stepsArray = [steps];
@@ -213,7 +222,7 @@ export class AgentOnboarding extends React.Component {
 
     this.setState((currentState) => {
       const result = {};
-      result.steps = currentState.steps.concat(joyride.parseSteps(stepsArray));
+      result.steps = currentState.steps.concat(stepsArray);
       return result;
     });
     return true;
@@ -227,8 +236,23 @@ export class AgentOnboarding extends React.Component {
     this.joyride.toggleTooltip(true, this.state.currentStep);
   };
 
-  startOnboarding = (open) => {
-    this.joyride.start(open);
+  waitFor = (waitFor, open) => {
+    this.retries = this.retries + 1;
+    if ($(waitFor).length) {
+      this.joyride.start(open);
+      clearInterval(this.interval);
+    } else if (this.retries > 4) {
+      // stop trying to start onboarding
+      clearInterval(this.interval);
+    }
+  };
+
+  startOnboarding = (open, waitFor = false) => {
+    if (waitFor) {
+      this.interval = setInterval(() => this.waitFor(waitFor, open), (this.retries + 1) * 1000);
+    } else {
+      this.joyride.start(open);
+    }
   };
 
   callback = (data) => {
