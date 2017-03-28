@@ -213,6 +213,34 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       }
     }
   }
+  .tabular.menu {
+    .item {
+      padding: 10px;
+      color: #babbba;
+      display: inline-block;
+      text-transform: uppercase;
+      cursor: pointer;
+      &.active {
+        color: inherit;
+        border-bottom: solid 2px #709fd6;
+      }
+    }
+  }
+  .tab {
+    margin-bottom: 1rem;
+    background-color: #f8f8f8;
+    border: 1px solid #e7e7e7;
+    border-radius: 2px;
+    display: none;
+    padding: 24px;
+    &.active {
+      display: block;
+    }
+    pre code {
+      background-color: #FFF;
+      margin-top: 0;
+    }
+  }
   .section-header {
     h1 {
       font-size: 24px;

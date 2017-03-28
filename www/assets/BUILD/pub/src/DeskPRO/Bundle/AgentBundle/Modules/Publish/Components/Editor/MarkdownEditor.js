@@ -12,8 +12,7 @@ import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/php/php';
 import 'codemirror/addon/edit/continuelist';
 import LinkMenu from './LinkMenu';
-
-
+import MarkdownItTabs from './tabs';
 import { getCursorState, applyFormat } from './format';
 import * as Icons from './Icons';
 
@@ -100,6 +99,7 @@ class MarkdownEditor extends React.Component {
             : '</div>\n';
         }
       })
+      .use(MarkdownItTabs, {})
     ;
     this.state = {
       isFocused: false,
@@ -352,12 +352,10 @@ class MarkdownEditor extends React.Component {
           />
         </div>
         <h3>Preview</h3>
-        <div className="preview guides">
-          <div
-            className="preview guides"
-            dangerouslySetInnerHTML={{ __html: MarkdownEditor.prerenderHtml(this.state.html) }}
-          />
-        </div>
+        <div
+          className="preview guides"
+          dangerouslySetInnerHTML={{ __html: MarkdownEditor.prerenderHtml(this.state.html) }}
+        />
       </div>
     );
   }
