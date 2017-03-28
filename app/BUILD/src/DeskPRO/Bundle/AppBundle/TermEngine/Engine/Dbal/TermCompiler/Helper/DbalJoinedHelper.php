@@ -67,7 +67,12 @@ class DbalJoinedHelper extends AbstractDbalHelper
                 $sql_op = (TermInterface::OP_NOT_HAS === $op) ? 'NOT IN' : 'IN';
             }
 
-            $where[]                           = sprintf('%s %s :input%d', $field, $sql_op, $iter);
+            if (is_array($value)) {
+                $where[] = sprintf('%s %s (:input%d)', $field, $sql_op, $iter);
+            } else {
+                $where[] = sprintf('%s %s :input%d', $field, $sql_op, $iter);
+            }
+
             $values[sprintf('input%d', $iter)] = $value;
             ++$iter;
         }

@@ -112,6 +112,8 @@ class TicketsController extends AbstractTicketsController
      *          {"name"="organization", "description"="organization filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="problem", "description"="problem filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="department", "description"="department filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="sla", "description"="sla id filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="sla_status", "description"="sla status filter", "dataType"="integer", "pattern"="ok|warning|fail"},
      *          {
      *              "name"="ticket_field.{id}",
      *              "description"="
@@ -175,6 +177,8 @@ class TicketsController extends AbstractTicketsController
                     'total_user_waiting',
                     'subject',
                     'status',
+                    'sla',
+                    'sla_status',
                 ];
                 $orderBy = $params['order_by'];
                 if (!in_array($orderBy, $allowed)) {

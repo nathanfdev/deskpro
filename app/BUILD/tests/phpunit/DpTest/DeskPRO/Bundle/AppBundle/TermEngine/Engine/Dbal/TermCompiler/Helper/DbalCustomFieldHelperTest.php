@@ -69,6 +69,6 @@ class DbalCustomFieldHelperTest extends AbstractDbalTicketFilterTermCompilerTest
             ]
         );
 
-        $this->assertWhere($query_part, 'custom_data_ticket.value IN :input0');
+        $this->assertWhere($query_part, 'custom_data_ticket.value IN (:input0)');
     }
 }
