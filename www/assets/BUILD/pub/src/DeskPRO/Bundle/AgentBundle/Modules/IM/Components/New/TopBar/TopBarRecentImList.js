@@ -167,7 +167,9 @@ export default class TopBarRecentImList extends RecentList {
       endNum = this.state.chats.size;
     }
 
-    return this.state.chats.reverse().slice(beginNum, endNum).reverse();
+    const slice = this.state.chats.reverse().slice(beginNum, endNum);
+
+    return remained ? slice : slice.reverse();
   }
 
   getHeaderHelper(chat) {
