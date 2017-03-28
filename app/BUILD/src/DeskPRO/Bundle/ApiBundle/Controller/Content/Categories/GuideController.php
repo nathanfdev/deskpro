@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Type\Content\GuideType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Orb\Util\Arrays;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,21 +69,15 @@ class GuideController extends AbstractCategoriesController
      *          400="Bad Request"
      *      }
      * )
-     * @Rest\Get("/tree/{guideId}")
+     * @Rest\Get("/{guideId}/tree")
+     * @ParamConverter("guide", class="DeskPRO:Guide", options={"id" = "guideId"})
      *
-     * @param $guideId
+     * @param Guide $guide
      *
      * @return JsonResponse
      */
-    public function getTreeAction($guideId)
+    public function getTreeAction(Guide $guide)
     {
-        /** @var Guide $guide */
-        $guide = $this->getRepository(Guide::class)->find($guideId);
-
-        if (!$guide) {
-            throw $this->createNotFoundException();
-        }
-
         $results = $this->getManager()->getConnection()->fetchAllKeyed('
                 SELECT t.id, t.title, IFNULL(t.parent_id, 0) as parent_id
                 FROM topics t
@@ -102,22 +97,16 @@ class GuideController extends AbstractCategoriesController
      *          400="Bad Request"
      *      }
      * )
-     * @Rest\Put("/tree/{guideId}")
+     * @Rest\Put("/{guideId}/tree")
+     * @ParamConverter("guide", class="DeskPRO:Guide", options={"id" = "guideId"})
      *
      * @param Request $request
-     * @param $guideId
+     * @param Guide   $guide
      *
      * @return Response
      */
-    public function putTreeAction(Request $request, $guideId)
+    public function putTreeAction(Request $request, Guide $guide)
     {
-        /** @var Guide $guide */
-        $guide = $this->getRepository(Guide::class)->find($guideId);
-
-        if (!$guide) {
-            throw $this->createNotFoundException();
-        }
-
         $tree = $request->request->get('tree');
 
         $tree = self::fixParentId($tree);
@@ -174,22 +163,16 @@ class GuideController extends AbstractCategoriesController
      *          400="Bad Request"
      *      }
      * )
-     * @Rest\Get("/export/{guideId}")
+     * @Rest\Get("/{guideId}/export")
      * @Rest\View(serializerGroups={"list", "details"})
+     * @ParamConverter("guide", class="DeskPRO:Guide", options={"id" = "guideId"})
      *
-     * @param $guideId
+     * @param Guide $guide
      *
      * @return \DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper
      */
-    public function exportAction($guideId)
+    public function exportAction(Guide $guide)
     {
-        /** @var Guide $guide */
-        $guide = $this->getRepository(Guide::class)->find($guideId);
-
-        if (!$guide) {
-            throw $this->createNotFoundException();
-        }
-
         return $this->wrap($guide);
     }
 }

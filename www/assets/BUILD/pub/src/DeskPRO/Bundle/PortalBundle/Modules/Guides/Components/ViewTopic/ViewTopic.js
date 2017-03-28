@@ -67,6 +67,41 @@ class ViewTopic extends React.Component {
     window.addEventListener('resize', this.defineSizes);
   }
 
+  getGuideSlug = splat => splat.split('/')[0];
+
+  handleScroll = (event) => {
+    if (this.sizes) {
+      const topOffset = this.offsetTop - 20 - this.sizes.agentBarHeight;
+      let maxHeight;
+      if (event.srcElement.body.scrollTop > topOffset) {
+        if (!this.state.fixed) {
+          this.setState({
+            fixed: true,
+          });
+        }
+        if (this.topic.scrollHeight > this.sizes.topicListHeight) {
+          maxHeight = topOffset + this.sizes.topicListHeight;
+        }
+      } else {
+        if (this.state.fixed) {
+          this.setState({
+            fixed: false,
+          });
+        }
+        if (this.topic.scrollHeight > this.sizes.topicListHeight) {
+          maxHeight = event.srcElement.body.scrollTop + this.sizes.topicListHeight;
+        }
+      }
+      const bottomScroll = event.srcElement.body.scrollHeight - event.srcElement.body.scrollTop - window.innerHeight;
+      if (bottomScroll < this.sizes.pageBottomSection) {
+        maxHeight += bottomScroll;
+      } else {
+        maxHeight += this.sizes.pageBottomSection;
+      }
+      window.document.getElementsByClassName('topic-list')[0].style = `max-height: ${maxHeight}px; top: ${this.sizes.agentBarHeight + 20}px`;
+    }
+  };
+
   defineSizes = () => {
     if (!this.sizes) {
       this.sizes = {
@@ -116,13 +151,13 @@ class ViewTopic extends React.Component {
       }
     }
     this.sizes.topOffset = this.sizes.agentBarHeight
-      + this.sizes.dpPageBodyPadding / 2
-      + this.sizes.worldPadding / 2
+      + (this.sizes.dpPageBodyPadding / 2)
+      + (this.sizes.worldPadding / 2)
       + this.sizes.pageTopSection
       + this.sizes.searchSection
       + this.sizes.welcomeNews;
-    this.sizes.bottomOffset =  this.sizes.dpPageBodyPadding / 2
-      + this.sizes.worldPadding / 2
+    this.sizes.bottomOffset =  (this.sizes.dpPageBodyPadding / 2)
+      + (this.sizes.worldPadding / 2)
       + this.sizes.pageBottomSection;
     this.sizes.topicListHeight = window.innerHeight
       - this.sizes.agentBarHeight
@@ -134,42 +169,8 @@ class ViewTopic extends React.Component {
       - this.sizes.pageBottomSection;
     window.document.getElementsByClassName('topic-list')[0].style = `max-height: ${this.sizes.topicListHeight}px; top: ${this.sizes.agentBarHeight + 20}px`;
     window.document.getElementsByClassName('topic-summary')[0].style = `top: ${this.sizes.agentBarHeight + 20}px`;
+    return true;
   };
-
-  handleScroll = (event) => {
-    if (this.sizes) {
-      const topOffset = this.offsetTop - 20 - this.sizes.agentBarHeight;
-      let maxHeight;
-      if (event.srcElement.body.scrollTop > topOffset) {
-        if (!this.state.fixed) {
-          this.setState({
-            fixed: true,
-          });
-        }
-        if (this.topic.scrollHeight > this.sizes.topicListHeight) {
-          maxHeight = topOffset + this.sizes.topicListHeight;
-        }
-      } else {
-        if (this.state.fixed) {
-          this.setState({
-            fixed: false,
-          });
-        }
-        if (this.topic.scrollHeight > this.sizes.topicListHeight) {
-          maxHeight = event.srcElement.body.scrollTop + this.sizes.topicListHeight;
-        }
-      }
-      const bottomScroll = event.srcElement.body.scrollHeight - event.srcElement.body.scrollTop - window.innerHeight;
-      if (bottomScroll < this.sizes.pageBottomSection) {
-        maxHeight += bottomScroll;
-      } else {
-        maxHeight += this.sizes.pageBottomSection;
-      }
-      window.document.getElementsByClassName('topic-list')[0].style = `max-height: ${maxHeight}px; top: ${this.sizes.agentBarHeight + 20}px`;
-    }
-  };
-
-  getGuideSlug = splat => splat.split('/')[0];
 
   changeInternalLinks = () => {
     document.querySelectorAll('a.internal_link.topic').forEach((internalLink) => {
