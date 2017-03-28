@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\PortalBundle\Annotation\Dpsid;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
@@ -47,6 +48,20 @@ class ChatDepartmentsController extends AbstractApiController
     {
         $permissionBag        = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
         $allowedDepartmentIds = $permissionBag->getAllowedChatDepartmentIds();
+        $agentDepartmentIds   = [];
+
+        // get all available departments ids of all active agents
+        $agentIds = $this->getPersonRepository()->getActiveAgentIdsForUserChat();
+        $agents   = $this->getPersonRepository()->findBy(['id' => $agentIds]);
+
+        /** @var Person $agent */
+        foreach ($agents as $agent) {
+            $agent->loadHelper('AgentPermissions');
+            $agentDepartmentIds = array_merge(
+                $agentDepartmentIds,
+                $agent->getHelper('AgentPermissions')->getAllowedDepartments('chat')
+            );
+        }
 
         $qb = $this->getManager()->createQueryBuilder();
         $qb
@@ -58,7 +73,7 @@ class ChatDepartmentsController extends AbstractApiController
                 'd.id IN (:allowed_department_ids)',
                 'b.id IN(:brand)'
             )
-            ->setParameter('allowed_department_ids', $allowedDepartmentIds)
+            ->setParameter('allowed_department_ids', array_intersect($allowedDepartmentIds, $agentDepartmentIds))
             ->setParameter('brand', $this->get('brand_stack')->getActive()->getBrand())
         ;
 
