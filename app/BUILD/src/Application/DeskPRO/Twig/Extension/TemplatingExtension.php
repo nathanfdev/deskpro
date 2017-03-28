@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Twig\Extension;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
@@ -1845,8 +1844,8 @@ class TemplatingExtension extends \Twig_Extension
     {
         return preg_replace_callback_array(
             [
-                '|{{\s*img\(([^/]+)/[^)]+\)\s*}}|' => function ($match) {
-                    return $this->getBlobImage(trim($match[1]));
+                '|{{\s*img\(([^/]+)/([^)]+)\)\s*}}|' => function ($match) {
+                    return $this->getBlobImage(trim($match[1]), trim($match[2]));
                 },
                 '|<a href="{{\s*content\(([^,]+),([^),]+)\)\s*}}">([^<]*)</a>|' => function ($match) {
                     $type = trim($match[1]);
@@ -1867,15 +1866,9 @@ class TemplatingExtension extends \Twig_Extension
         );
     }
 
-    public function getBlobImage($string)
+    public function getBlobImage($authId, $filename)
     {
-        /** @var Blob $blob */
-        $blob = $this->getContainer()->getEm()->getRepository(Blob::class)->getByAuthCode($string);
-        if ($blob) {
-            return $blob->getDownloadUrl();
-        }
-
-        return '';
+        return App::get('router')->generate('serve_blob', ['blob_auth_id' => $authId, 'filename' => $filename], false);
     }
 
     public function getManualInternalLink($type, $id, $title = '')
