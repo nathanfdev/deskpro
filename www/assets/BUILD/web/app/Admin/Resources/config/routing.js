@@ -115,6 +115,13 @@ define(function() {
     controller:   'Admin_Main_Ctrl_Nav'
   });
 
+  routes.push({
+    id:           'dev',
+    url:          '/dev',
+    templateName: 'Layout/app.html',
+    controller:   'Admin_Main_Ctrl_Nav'
+  });
+
   //##################################################################################################################
   // Interface Nav
   //##################################################################################################################
@@ -2254,6 +2261,17 @@ define(function() {
   routes.push({
     id:           'voice-channel.call_logs_view',
     url:          '/call_logs/{id:\\d+}',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  //##################################################################################################################
+  // Dev
+  //##################################################################################################################
+
+  routes.push({
+    id:           'dev.notifications',
+    url:          '/notifications',
     templateName: 'VoiceChannel/react_component.html',
     controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
   });

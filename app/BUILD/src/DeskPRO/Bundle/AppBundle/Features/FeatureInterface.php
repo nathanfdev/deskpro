@@ -28,59 +28,18 @@
 
 namespace DeskPRO\Bundle\AppBundle\Features;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 /**
- * Interface BetaFeatureInterface.
+ * Interface FeatureInterface.
  */
-interface BetaFeatureInterface extends FeatureInterface
+interface FeatureInterface
 {
-    const BETA_FEATURES_KEY = 'beta_features';
+    const AVAILABLE_AT_CLOUD   = 'cloud';
+    const AVAILABLE_AT_ONPREM  = 'onpremise';
+    const AVAILABLE_AT_QA      = 'qa';
+    const AVAILABLE_EVERYWHERE = 'all';
 
     /**
-     * @return string
+     * @return array
      */
-    public function getId();
-
-    /**
-     * @return string
-     */
-    public function getTitle();
-
-    /**
-     * @return string
-     */
-    public function getShortDescription();
-
-    /**
-     * @return string
-     */
-    public function getEnableDescription();
-
-    /**
-     * @return string
-     */
-    public function getDisableDescription();
-
-    /**
-     * @param ContainerInterface $container
-     */
-    public function beforeEnable(ContainerInterface $container);
-
-    /**
-     * @param ContainerInterface $container
-     */
-    public function beforeDisable(ContainerInterface $container);
-
-    /**
-     * @return bool
-     */
-    public function isEnabled();
-
-    /**
-     * Require broadcast agent reload after enable/disable.
-     *
-     * @return bool
-     */
-    public function needAgentReload();
+    public function getAvailability();
 }

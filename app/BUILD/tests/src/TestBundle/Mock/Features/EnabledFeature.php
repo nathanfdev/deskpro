@@ -102,7 +102,7 @@ class EnabledFeature implements BetaFeatureInterface
      */
     public function getAvailability()
     {
-        return [BetaFeatureInterface::AVAILABLE_EVERYWHERE];
+        return [self::AVAILABLE_EVERYWHERE];
     }
 
     /**

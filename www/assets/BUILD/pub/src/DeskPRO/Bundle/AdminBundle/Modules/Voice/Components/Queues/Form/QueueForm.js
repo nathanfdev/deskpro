@@ -6,7 +6,7 @@ import { Input, Form, Field, Select, MultiSelect, Checkbox, RecordsChoiceWrapper
 import AgentChoiceListWrapper from '../../Common/AgentChoiceListWrapper';
 import AccountChoiceWrapper from '../../Common/AccountChoiceWrapper';
 import AudioWidgetFormContainer from '../../Common/AudioWidgetFormContainer';
-import AgentsSelectContainer from '../../Common/NumberTarget/AgentsSelectContainer';
+import AgentsSelectContainer from '../../../../Common/Components/Select/AgentsSelectContainer';
 
 class QueueForm extends React.Component {
 

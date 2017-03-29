@@ -39,6 +39,7 @@ use Symfony\Component\DependencyInjection\Exception\LogicException;
 final class Features
 {
     const VOICE = 'voice';
+    const DEV   = 'dev';
 
     /** @var SettingsResolver */
     private $settingsResolver;
@@ -106,6 +107,8 @@ final class Features
         switch ($id) {
             case self::VOICE:
                 return $this->hasVoice();
+            case self::DEV:
+                return $this->getDpEnv()->isQa() || $this->getDpEnv()->isDebug();
             default:
                 // assume it's an arbitrary experimental flag
                 return $this->hasExperimental($id);

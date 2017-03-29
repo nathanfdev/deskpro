@@ -8,3 +8,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir
     arguments:
       - "%kernel.root_dir%/../src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars_people"
+
+  dp.fixtures.random_agent_alert_generator:
+    class: DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomAgentAlertGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_manager"
+      - "@service_container"

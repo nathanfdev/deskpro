@@ -7,6 +7,7 @@ import { repositoriesConfig } from 'DeskPRO/Bundle/AdminBundle/DAL/config';
 import store from '../../../Services/store';
 import { history } from '../../../Services/history';
 import * as Voice from '../../Voice/Components/index';
+import * as Dev from '../../Dev/Components/index';
 import { loadAdmintPhraseTranslations } from '../Actions/bootstrapActions';
 
 class AppContainer extends React.Component {
@@ -45,7 +46,7 @@ class AppContainer extends React.Component {
     return (
       <Provider store={store}>
         <Router history={history}>
-          {window.DP_HAS_VOICE &&
+          {window.DP_HAS_VOICE ?
             <Route path="voice_channel">
               <Route path="accounts" component={Voice.Accounts} />
               <Route path="numbers" component={Voice.Numbers} />
@@ -64,7 +65,11 @@ class AppContainer extends React.Component {
               <Route path="agents" component={Voice.AgentsVoiceToggle} />
               <Route path="call_logs" component={Voice.CallLogsList} />
               <Route path="call_logs/:callId" component={Voice.CallLogView} />
-            </Route>}
+            </Route> : null}
+          {window.DP_HAS_DEV ?
+            <Route path="dev">
+              <Route path="notifications" component={Dev.Notifications} />
+            </Route> : null}
         </Router>
       </Provider>
     );
