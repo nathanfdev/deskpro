@@ -258,6 +258,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
   }
   .topic-list {
     width: 216px;
+    min-height: 300px;
     border-right: 1px solid #efefef;
     border-collapse: collapse;
     margin-right: -1px;
@@ -266,9 +267,6 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     overflow-y: scroll;
     &.fixed {
       position: fixed;
-    }
-    .multiselect {
-      margin-right: 10px;
     }
     & > .guide {
       font-size: 13px;
@@ -397,6 +395,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
             text-overflow: ellipsis;
             display: inline-block;
             width: 100%;
+            font-size: 12px;
             &.active {
               border-left: 2px solid #709fd6;
               margin-left: -25px;

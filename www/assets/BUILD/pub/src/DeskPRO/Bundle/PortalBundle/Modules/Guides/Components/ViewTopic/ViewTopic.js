@@ -27,9 +27,7 @@ class ViewTopic extends React.Component {
       topics
     };
     this.contentChanged = false;
-    document.addEventListener('DOMContentLoaded', () => {
-      this.defineSizes();
-    });
+    window.onload = this.defineSizes;
   }
 
   componentDidMount() {
@@ -39,6 +37,7 @@ class ViewTopic extends React.Component {
     window.addEventListener('scroll', this.handleScroll);
     window.addEventListener('resize', this.defineSizes);
     this.offsetTop = this.topicList.offsetTop;
+    this.defineSizes();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -92,6 +91,9 @@ class ViewTopic extends React.Component {
         if (this.topic.scrollHeight > this.sizes.topicListHeight) {
           maxHeight = event.srcElement.body.scrollTop + this.sizes.topicListHeight;
         }
+      }
+      if (!maxHeight) {
+        maxHeight =  this.sizes.topicListHeight;
       }
       const bottomScroll = event.srcElement.body.scrollHeight - event.srcElement.body.scrollTop - window.innerHeight;
       if (bottomScroll < this.sizes.pageBottomSection) {
@@ -151,6 +153,12 @@ class ViewTopic extends React.Component {
         this.sizes.pageBottomSection = pageBottomSection.scrollHeight;
       }
     }
+    if (!this.sizes.pageBottomSection) {
+      const pageBottomSection = window.document.getElementsByClassName('page-bottom-section')[0];
+      if (pageBottomSection) {
+        this.sizes.pageBottomSection = pageBottomSection.scrollHeight;
+      }
+    }
     this.sizes.topOffset = this.sizes.agentBarHeight
       + (this.sizes.dpPageBodyPadding / 2)
       + (this.sizes.worldPadding / 2)
@@ -168,7 +176,32 @@ class ViewTopic extends React.Component {
       - this.sizes.searchSection
       - this.sizes.welcomeNews
       - this.sizes.pageBottomSection;
-    window.document.getElementsByClassName('topic-list')[0].style = `max-height: ${this.sizes.topicListHeight}px; top: ${this.sizes.agentBarHeight + 20}px`;
+    console.log(window.innerHeight);
+    console.log('window.innerHeight ' + window.innerHeight);
+    console.log('this.sizes.agentBarHeight ' + this.sizes.agentBarHeight);
+    console.log('this.sizes.dpPageBodyPadding ' + this.sizes.dpPageBodyPadding);
+    console.log('this.sizes.worldPadding ' + this.sizes.worldPadding);
+    console.log('this.sizes.pageTopSection ' + this.sizes.pageTopSection);
+    console.log('this.sizes.searchSection ' + this.sizes.searchSection);
+    console.log('this.sizes.welcomeNews ' + this.sizes.welcomeNews);
+    console.log('this.sizes.pageBottomSection ' + this.sizes.pageBottomSection);
+    console.log('this.sizes.topicListHeight ' + this.sizes.topicListHeight);
+    const bottomScroll = this.topic.scrollHeight
+      + this.sizes.topOffset
+      + this.sizes.bottomOffset
+      - window.document.body.scrollTop - window.innerHeight;
+    console.log('bottomScroll ' + bottomScroll);
+    let maxHeight = this.sizes.topicListHeight;
+    if (bottomScroll < this.sizes.pageBottomSection) {
+      if (bottomScroll > 0) {
+        maxHeight += bottomScroll;
+      } else {
+        // maxHeight -= this.sizes.bottomOffset;
+      }
+    } else {
+      maxHeight += this.sizes.pageBottomSection;
+    }
+    window.document.getElementsByClassName('topic-list')[0].style = `max-height: ${maxHeight}px; top: ${this.sizes.agentBarHeight + 20}px`;
     window.document.getElementsByClassName('topic-summary')[0].style = `top: ${this.sizes.agentBarHeight + 20}px`;
     return true;
   };
@@ -265,6 +298,8 @@ class ViewTopic extends React.Component {
         topic,
       });
       this.tabs();
+      window.scrollTo( 0, 0 );
+      this.defineSizes();
     });
   }
 
