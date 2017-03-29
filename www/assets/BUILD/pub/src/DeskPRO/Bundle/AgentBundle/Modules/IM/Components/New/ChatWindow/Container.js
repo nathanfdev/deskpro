@@ -408,6 +408,14 @@ class Container extends React.Component {
       }
     }
 
+    const buttons = [
+      'bold', 'italic', 'underline', 'strikeThrough', 'color',
+      '-',
+      'align', 'formatOL', 'formatUL', 'insertImage',
+      '-',
+      'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'
+    ];
+
     const froalaConfig = {
       imageUploadMethod:         'POST',
       imageUploadParams:         { _rt: window.DP_REQUEST_TOKEN, json: true },
@@ -426,7 +434,10 @@ class Container extends React.Component {
       linkAlwaysBlank:           true,
       toolbarInline:             true,
       charCounterCount:          false,
-      toolbarButtons:            ['bold', 'italic', 'underline', 'strikeThrough', 'color', '-', 'align', 'formatOL', 'formatUL', 'insertImage', '-', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
+      toolbarButtons:            buttons,
+      toolbarButtonsMD:          buttons,
+      toolbarButtonsSM:          buttons,
+      toolbarButtonsXS:          buttons,
       shortcutsEnabled:          ['bold', 'italic', 'underline'],
       quickInsertButtons:        ['image', 'file', 'video'],
       enter:                     $.FroalaEditor.ENTER_BR,
@@ -444,7 +455,7 @@ class Container extends React.Component {
       <Detached
         zIndex={99999}
         isOpen={isOpen}
-        positionTarget={document.getElementById(`chat-${current.get('id')}`)}
+        positionTarget={document.getElementById(`chat-${current.get('id')}`) || document.getElementById('im-overflow')}
         positionMy="left-43 top-2"
       >
         <div className="ui popup left bottom im chat drawer">

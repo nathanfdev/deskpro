@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
+use DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding;
 use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -112,7 +113,9 @@ HTML;
      */
     public function beforeEnable(ContainerInterface $container)
     {
-        $this->copyIM($container->get('doctrine.orm.default_entity_manager'));
+        $em = $container->get('doctrine.orm.default_entity_manager');
+        $this->copyIM($em);
+        $this->createOnboardings($em);
     }
 
     /**
@@ -140,6 +143,7 @@ HTML;
 
             $connection->query(implode(';', $parts));
             $em->commit();
+            $this->createOnboardings($em, true);
         } catch (\Exception $e) {
             $em->rollback();
         }
@@ -343,5 +347,31 @@ UPDATE `agent_chat`
 UPDATE;
 
         $connection->executeQuery($update);
+    }
+
+    private function createOnboardings(EntityManager $em, $finished = false)
+    {
+        $agents = $em->getRepository(Person::class)->findBy([
+            'is_agent'    => true,
+            'is_disabled' => false,
+            'is_deleted'  => false,
+        ]);
+
+        foreach ($agents as $agent) {
+            /** @var Person $agent */
+            $onboarding = new PersonOnboarding();
+            $onboarding
+                ->setApplication(PersonOnboarding::APPLICATION_AGENT)
+                ->setOnboardingClass('newIm');
+            if ($finished) {
+                //add finished onboardings for agents were added after feature was enabled, so next time they
+                // wouldn't see this onboarding again
+                $onboarding->setStatus(PersonOnboarding::STATUS_COMPLETED);
+            }
+
+            $agent->addOnboarding($onboarding);
+            $em->persist($agent);
+        }
+        $em->flush();
     }
 }

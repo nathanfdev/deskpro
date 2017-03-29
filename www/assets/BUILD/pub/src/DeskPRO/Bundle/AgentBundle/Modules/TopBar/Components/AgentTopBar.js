@@ -45,6 +45,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   groupCreation:       state.IM.chats.get('groupCreation'),
   checkedAgents:       state.IM.chats.get('checkedAgents'),
   activeTabs:          state.IM.chats.get('activeTabs'),
+  imSettings:          state.Agent.settings.get('im'),
   messages:            state.IM.messages,
   drafts:              state.IM.messages.get('drafts'),
   loadingMessages:     state.IM.messages.get('loadingMessages'),
@@ -80,6 +81,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     editChat:            PropTypes.object,
     checkedAgents:       PropTypes.object,
     activeTabs:          PropTypes.object,
+    imSettings:          PropTypes.object,
     recentLoaded:        PropTypes.bool.isRequired,
     groupLoaded:         PropTypes.bool.isRequired,
     loadingMessages:     PropTypes.bool.isRequired,
@@ -180,6 +182,14 @@ export class AgentTopBarContainer extends SeparateComponent {
       const { dispatch, current, me } = this.props;
       dispatch(messagesActions.addMessage(current.get('id'), message, uuid(), me));
     }
+  };
+
+  updateChatsOrder = (chats) => {
+    const order = {};
+    chats.forEach((chat) => {
+      order[chat.get('id')] = chat.get('order');
+    });
+    this.props.dispatch(chatsActions.updateChatsOrder(order));
   };
 
   componentWillMount = () => {
@@ -373,7 +383,8 @@ export class AgentTopBarContainer extends SeparateComponent {
       onHideChat:           this.onHideChat,
       deleteGroup:          this.deleteGroup,
       leaveGroup:           this.leaveGroup,
-      onSearchMessageClick: this.onSearchMessageClick
+      onSearchMessageClick: this.onSearchMessageClick,
+      updateChatsOrder:     this.updateChatsOrder
     };
     return <AgentTopBar {...props} ref={(c) => { this.agentTopBar = c; }} />;
   }
@@ -415,6 +426,7 @@ export class AgentTopBar extends React.Component {
     loadMessages:         PropTypes.func,
     onChatSearch:         PropTypes.func,
     onSearchMessageClick: PropTypes.func,
+    updateChatsOrder:     PropTypes.func,
     messages:             PropTypes.object,
     drafts:               PropTypes.object,
     counts:               PropTypes.object,
@@ -422,6 +434,7 @@ export class AgentTopBar extends React.Component {
     editChat:             PropTypes.object,
     checkedAgents:        PropTypes.object,
     activeTabs:           PropTypes.object,
+    imSettings:           PropTypes.object,
     searchQuery:          PropTypes.string,
     loadingMessages:      PropTypes.bool.isRequired,
     groupCreation:        PropTypes.bool.isRequired,
@@ -472,7 +485,7 @@ export class AgentTopBar extends React.Component {
     const { searchQuery, counts, groupChats, checkedAgents, me, myDepartments, myTeams, recentChats } = this.props;
     const { agents, people, onSearchFocus, onSearchBlur, editChat, updateGroup, loadMessages, activeTabs } = this.props;
     const { recentLoaded, groupLoaded, overlayShown, hiddenChats, startedByMeChats, drafts, saveDraft }  = this.props;
-    const { leaveGroup, deleteGroup, onHideChat, onSearchMessageClick } = this.props;
+    const { leaveGroup, deleteGroup, onHideChat, onSearchMessageClick, imSettings, updateChatsOrder } = this.props;
 
     const groupDrawerTarget = document.getElementById('im-button');
 
@@ -486,6 +499,7 @@ export class AgentTopBar extends React.Component {
         departments={myDepartments}
         teams={myTeams}
         chats={recentChats}
+        imSettings={imSettings}
         hiddenChats={hiddenChats}
         startedByMeChats={startedByMeChats}
         counts={counts}
@@ -495,6 +509,7 @@ export class AgentTopBar extends React.Component {
         agentsLoaded={agentsLoaded}
         recentLoaded={recentLoaded}
         onHideChat={onHideChat}
+        updateChatsOrder={updateChatsOrder}
       >
         <IMOverlay
           counts={counts}

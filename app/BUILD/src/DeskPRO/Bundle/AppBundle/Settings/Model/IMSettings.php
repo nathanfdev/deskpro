@@ -32,55 +32,32 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
-
 /**
- * Class AgentSettings.
+ * Class IMSettings.
  */
-class AgentSettings implements \JsonSerializable
+class IMSettings implements \JsonSerializable
 {
     /**
-     * @var TicketsSettings
+     * @var array
      */
-    private $tickets;
+    private $chatsOrder;
 
     /**
-     * @var IMSettings
+     * @return array
      */
-    private $im;
-
-    /**
-     * @return TicketsSettings
-     */
-    public function getTickets()
+    public function getChatsOrder()
     {
-        return $this->tickets;
+        return $this->chatsOrder;
     }
 
     /**
-     * @param TicketsSettings $tickets
-     */
-    public function setTickets(TicketsSettings $tickets)
-    {
-        $this->tickets = $tickets;
-    }
-
-    /**
-     * @return IMSettings
-     */
-    public function getIM()
-    {
-        return $this->im;
-    }
-
-    /**
-     * @param IMSettings $im
+     * @param array| $chatsOrder
      *
      * @return $this
      */
-    public function setIM(IMSettings $im)
+    public function setChatsOrder(array $chatsOrder)
     {
-        $this->im = $im;
+        $this->chatsOrder = $chatsOrder;
 
         return $this;
     }
@@ -91,8 +68,7 @@ class AgentSettings implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'tickets' => $this->tickets,
-            'im'      => $this->im,
+            'chats_order' => $this->chatsOrder,
         ];
     }
 }

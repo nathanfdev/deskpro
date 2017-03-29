@@ -9,7 +9,8 @@ export class AgentTeamAvatar extends React.Component {
     agentTeam: PropTypes.object.isRequired,
     size:      PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     className: PropTypes.string,
-    title:     PropTypes.string
+    title:     PropTypes.string,
+    tooltipId: PropTypes.string
   };
 
   static defaultProps = {
@@ -25,12 +26,13 @@ export class AgentTeamAvatar extends React.Component {
   }
 
   render() {
-    const { size, className, title } = this.props;
+    const { size, className, title, tooltipId } = this.props;
     const agentTeam = this.props.agentTeam || Immutable.fromJS({});
     const avatar    = agentTeam.get('avatar') || Immutable.fromJS({});
 
     const props = {
       size,
+      tooltipId,
       color:       chooseColor(agentTeam.get('id')),
       borderColor: darkerColor(agentTeam.get('id')),
       url:         avatar.get('url'),

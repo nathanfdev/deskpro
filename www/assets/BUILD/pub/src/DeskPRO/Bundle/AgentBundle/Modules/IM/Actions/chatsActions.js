@@ -139,9 +139,8 @@ export const countSlice = () => {
 export const loadRecentChats = createAction(
   'IM_LOAD_RECENT_CHATS',
   () => (dispatch) => {
-    const slice = countSlice();
     api
-      .sendGet(`DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=${slice}&include=person`)
+      .sendGet('DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=100&include=person')
       .success((response) => {
         dispatch(addToCollection('Person', 'people', response.linked.person));
         dispatch(addToCollection('AgentChat', 'recent', response.data));
@@ -178,5 +177,13 @@ export const leaveGroup = createAction(
       dispatch(removeFromCollection('AgentChat', 'recent', [chatId]));
       dispatch(removeFromCollection('AgentChat', 'group', [chatId]));
     });
+  }
+);
+
+export const updateChatsOrder = createAction(
+  'IM_UPDATE_CHATS_ORDER',
+  (order) => {
+    repository('AgentChat').updateChatsOrder(order);
+    return order;
   }
 );

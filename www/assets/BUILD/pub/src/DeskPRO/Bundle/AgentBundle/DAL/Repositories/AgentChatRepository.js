@@ -85,6 +85,10 @@ export class AgentChatRepository extends ApiRepository {
   leaveGroup(chatId) {
     return this.api.sendDelete(`DP_API/${this.url}/${chatId}/leave`);
   }
+
+  updateChatsOrder(order) {
+    return this.api.sendPost(`DP_API/${this.url}/chats_order`, { chats_order: order });
+  }
 }
 
 export default AgentChatRepository;

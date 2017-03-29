@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ReactTooltip from 'react-tooltip';
 import Loader from 'react-loader';
 import Immutable from 'immutable';
 import {
@@ -7,19 +8,25 @@ import {
   AgentTeamAvatar
 } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 import classNames from 'classnames';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
+import ScrollArea from 'react-scrollbar';
 import { chooseColor, darkerColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import { RecentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
+import TopBarRecentImListItem from './TopBarRecentImListItem';
 import AvatarHelper from '../IMTabs/AvatarHelper';
 import HeaderHelper from '../ChatWindow/HeaderHelper';
 import * as chatActions from '../../../Actions/chatsActions';
 import { getDepartmentAgents } from '../../../../Application/Actions/departmentActions';
 
-class TopBarRecentImList extends RecentList {
+export default class TopBarRecentImList extends RecentList {
 
   static propTypes = {
     chats:             PropTypes.object.isRequired,
+    imSettings:        PropTypes.object.isRequired,
     children:          PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     onRecentClick:     PropTypes.func.isRequired,
+    updateChatsOrder:  PropTypes.func.isRequired,
     me:                PropTypes.object.isRequired,
     current:           PropTypes.object.isRequired,
     agents:            PropTypes.object.isRequired,
@@ -48,13 +55,32 @@ class TopBarRecentImList extends RecentList {
     }
   };
 
+
+  isLoaded(props) { // eslint-disable-line class-methods-use-this
+    // it conflicts with @decorator when static
+    return props.agentsLoaded && props.teamsLoaded && props.departmentsLoaded && props.recentLoaded;
+  }
+
+  getNextOrder(chats) {
+    this.updateOrder = false;
+    const order = chats.size > 0 ? chats.sort((a, b) => b.get('order') - a.get('order')).first().get('order') : 0;
+    return order + 1;
+  }
+
+  static filterByHidden(chat, hiddenChats) {
+    const date = chat.get('date_last_message') || chat.get('date_created');
+    return !hiddenChats[chat.get('id')] || hiddenChats[chat.get('id')] < (Date.parse(date));
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      chats: Immutable.OrderedMap({}),
-      slice: chatActions.countSlice()
+      chats:    Immutable.OrderedMap({}),
+      slice:    chatActions.countSlice(),
+      tooltips: true
     };
     this.resizeTimeout = null;
+    this.updateOrder = true;
   }
 
   componentWillMount() {
@@ -69,54 +95,81 @@ class TopBarRecentImList extends RecentList {
           this.setState({ slice: chatActions.countSlice() });
           this.resizeTimeout = null;
         },
-        10
+        33
       );
     }
   };
 
-  componentWillReceiveProps(props) {
-    let { chats } = this.state;
-
-    const { hiddenChats, me, startedByMeChats } = props;
-
-    if (props.chats) {
-      RecentList
-        .sortList(props.chats)
-        .forEach((chat) => {
-          const chatId = chat.get('id');
-          const path   = [chatId, 'added'];
-          chats = chats.set(chatId, chat.set('added', chats.hasIn(path) ? chats.getIn(path) : Date.now()));
-        });
+  updateChatsOrder = (props) => {
+    if (this.updateOrder && this.isLoaded(props)) {
+      this.updateOrder = false;
+      props.updateChatsOrder(this.state.chats);
     }
-    let sorted = chats.sort((a, b) => b.get('added') - a.get('added'));
+  };
+
+  componentWillReceiveProps(props) {
+    const { chats } = this.state;
+    const { hiddenChats, me, startedByMeChats } = props;
+    let filtered = chats;
+
     if (hiddenChats || startedByMeChats) {
-      sorted = sorted.filter((chat) => {
+      filtered = filtered.filter((chat) => {
         if (!chat.get('date_last_message') && !((startedByMeChats && startedByMeChats.get(chat.get('id'))) || me.get('id') === chat.get('admin'))) {
           return false;
         }
-        const date = chat.get('date_last_message') || chat.get('date_created');
 
-        return !hiddenChats[chat.get('id')] || hiddenChats[chat.get('id')] < (Date.parse(date));
+        return TopBarRecentImList.filterByHidden(chat, hiddenChats);
       });
     }
-    sorted = sorted.filter(chat => props.chats.has(chat.get('id')));
 
-    this.setState({ chats: sorted });
+    if (props.chats) {
+      props.chats.filter(chat => TopBarRecentImList.filterByHidden(chat, hiddenChats)).forEach((chat) => {
+        const order = filtered.getIn([chat.get('id'), 'order']) || props.imSettings.getIn(['chats_order', `${chat.get('id')}`]) || this.getNextOrder(filtered);
+        filtered = filtered.set(chat.get('id'), chat.set('order', order));
+      });
+    }
+    filtered = filtered.filter(chat => props.chats.has(chat.get('id')));
+
+    const sorted = filtered.sort((a, b) => a.get('order') - b.get('order'));
+
+    this.setState({ chats: sorted }, () => {
+      this.updateOrder = this.updateOrder || (this.state.chats.size !== sorted.size);
+      this.updateChatsOrder(props);
+    });
   }
 
-  getItems() {
-    const { current, chats } = this.props;
-    let stateChats = this.state.chats.slice(0, this.state.slice);
-    if (current.get('id') && !stateChats.has(current.get('id'))) {
-      const chat = chats.get(current.get('id'));
-      if (chat) { // I'm not sure why current chat could absent, but seems that Lauren somehow reached that
-        stateChats = stateChats.set(current.get('id'), chat.set('added', Date.now()));
-        stateChats = stateChats.sort((a, b) => b.get('added') - a.get('added'));
-        stateChats = stateChats.slice(0, this.state.slice);
-      }
+  getItem(chat, draggable) {
+    switch (chat.get('chat_type')) {
+      case 'agent':
+        return this.renderAgent(chat, draggable);
+      case 'department':
+        return this.renderDepartment(chat, draggable);
+      case 'team':
+        return this.renderTeam(chat, draggable);
+      case 'group':
+        return this.renderGroup(chat, draggable);
+      case 'everyone':
+        return this.renderEveryone(chat, draggable);
+      default:
+        return null;
+    }
+  }
+
+  getItems(remained = false) {
+    return this.calculateChats(remained).map(chat => this.getItem(chat, !remained));
+  }
+
+  calculateChats(remained = false) {
+    let beginNum = 0;
+    let endNum = this.state.slice;
+    if (remained === true) {
+      beginNum = this.state.slice;
+      endNum = this.state.chats.size;
     }
 
-    return stateChats.map(chat => this.getItem(chat));
+    const slice = this.state.chats.reverse().slice(beginNum, endNum);
+
+    return remained ? slice : slice.reverse();
   }
 
   getHeaderHelper(chat) {
@@ -152,8 +205,22 @@ class TopBarRecentImList extends RecentList {
     return classNames('im wrapper', { current: chat.get('id') === this.props.current.get('id') && this.props.chating });
   }
 
-  renderAgent(chat) {
-    const { me, agents, people, onRecentClick } = this.props;
+  toggleTooltips = (tooltips = true) => {
+    this.setState({ tooltips });
+  };
+
+  getItemProps(chat) {
+    return {
+      chat,
+      className:      this.getClassNames(chat),
+      onClick:        () => this.props.onRecentClick(chat.get('id')),
+      swapHeads:      this.swapHeads,
+      toggleTooltips: this.toggleTooltips
+    };
+  }
+
+  renderAgent(chat, draggable = false) {
+    const { me, agents, people } = this.props;
     let agentId;
     for (const id of chat.get('agents')) {
       if (id !== me.get('id')) {
@@ -172,126 +239,191 @@ class TopBarRecentImList extends RecentList {
       agent = person;
       active = false;
     }
-
     const className = ['ui avatar image im'];
-
     if (!active || !agent.get('online')) {
       className.push('offline');
     }
 
-    const header = this.getHeaderHelper(chat).getHeaderText(true);
-    const notificationsCount = this.getNotificationCount(chat);
+    const avatarProps = {
+      color:       chooseColor(agent.get('id')),
+      borderColor: darkerColor(agent.get('id')),
+      person:      agent,
+      size:        24,
+      className:   classNames(className)
+    };
+
+    if (this.state.tooltips) {
+      const header = this.getHeaderHelper(chat).getHeaderText(true);
+      const notificationsCount = this.getNotificationCount(chat);
+      avatarProps.title = `${header}. ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+      avatarProps.tooltipId = 'userphoto';
+    }
 
     return (
-      <span
-        className={this.getClassNames(chat)}
-        id={`chat-${chat.get('id')}`}
-        onClick={() => onRecentClick(chat.get('id'))}
-      >
-        <PersonAvatar
-          title={`${header}. ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`}
-          color={chooseColor(agent.get('id'))}
-          borderColor={darkerColor(agent.get('id'))}
-          person={agent} size={24}
-          className={classNames(className)}
-        />
+      <TopBarRecentImListItem {...this.getItemProps(chat)} draggable={draggable}>
+        <PersonAvatar {...avatarProps} />
         {(active && agent.get('online')) ? <span className="agent-online" /> : null}
+
+
         {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
-      </span>
+      </TopBarRecentImListItem>
     );
   }
 
-  renderDepartment(chat) {
+  renderDepartment(chat, draggable = false) {
     const department = this.props.departments.getIn(chat.get('departments', 0));
-    const header = this.getHeaderHelper(chat).getHeaderText(true);
-    const notificationsCount = this.getNotificationCount(chat);
-    const participantsCount = getDepartmentAgents(department).size;
-    const title = `${header} (${participantsCount} participant${participantsCount === 1 ? '' : 's'}). ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+
+    const avatarProps = {
+      department,
+      size:      24,
+      className: 'ui avatar image im'
+    };
+
+    if (this.state.tooltips) {
+      const header = this.getHeaderHelper(chat).getHeaderText(true);
+      const notificationsCount = this.getNotificationCount(chat);
+      const participantsCount = getDepartmentAgents(department).size;
+      avatarProps.title = `${header} (${participantsCount} participant${participantsCount === 1 ? '' : 's'}). ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+      avatarProps.tooltipId = 'userphoto';
+    }
 
     return (
-      <span
-        className={this.getClassNames(chat)}
-        id={`chat-${chat.get('id')}`}
-        onClick={() => this.props.onRecentClick(chat.get('id'))}
-      >
-        <DepartmentAvatar
-          department={department}
-          size={24}
-          className="ui avatar image im"
-          title={title}
-        />
+      <TopBarRecentImListItem {...this.getItemProps(chat)} draggable={draggable}>
+        <DepartmentAvatar {...avatarProps} />
         {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
-      </span>
+      </TopBarRecentImListItem>
     );
   }
 
-  renderTeam(chat) {
+  renderTeam(chat, draggable = false) {
     const team = this.props.teams.get(chat.getIn(['agent_teams', 0]));
 
-    const header = this.getHeaderHelper(chat).getHeaderText(true);
-    const notificationsCount = this.getNotificationCount(chat);
-    const participantsCount = team.get('agents').size;
-    const title = `${header} (${participantsCount} participant${participantsCount === 1 ? '' : 's'}). ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+    const avatarProps = {
+      agentTeam: team,
+      size:      24,
+      className: 'ui avatar image im'
+    };
+
+    if (this.state.tooltips) {
+      const header = this.getHeaderHelper(chat).getHeaderText(true);
+      const notificationsCount = this.getNotificationCount(chat);
+      const participantsCount = team.get('agents').size;
+      avatarProps.title = `${header} (${participantsCount} participant${participantsCount === 1 ? '' : 's'}). ${notificationsCount} unread message${notificationsCount === 1 ? '' : 's'}.`;
+      avatarProps.tooltipId = 'userphoto';
+    }
 
     return (
-      <span
-        className={this.getClassNames(chat)}
-        id={`chat-${chat.get('id')}`}
-        onClick={() => this.props.onRecentClick(chat.get('id'))}
-      >
-        <AgentTeamAvatar agentTeam={team} size={24} className="ui avatar image im" title={title} />
+      <TopBarRecentImListItem {...this.getItemProps(chat)} draggable={draggable}>
+        <AgentTeamAvatar {...avatarProps} />
         {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
-      </span>
+      </TopBarRecentImListItem>
     );
   }
 
-  renderEveryone(chat) {
-    const notificationsCount = this.getNotificationCount(chat);
+  toggleOverflow = () => {
+    this.setState({ overflowShown: !this.state.overflowShown });
+  };
 
-    return (
+  closeOverflow = () => {
+    this.setState({ overflowShown: false });
+  };
+
+  renderRemainedChats() {
+    let size = this.state.chats.size - this.state.slice;
+    size = size > 0 ? size : 0;
+    size = size > 99 ? 99 : size;
+    size = size > 9 ? size : `+${size}`;
+
+    let containerHeight = (size * 30) + 30;
+    let containerWidth = 44;
+    if (containerHeight > 330) {
+      containerHeight = 330;
+      containerWidth = 52;
+    }
+
+    const chats = this.calculateChats(true);
+    const overallCount = chats.reduce((carry, chat) => carry + this.getNotificationCount(chat), 0);
+
+    return (size > 0 ?
       <span
-        className={this.getClassNames(chat)}
-        id={`chat-${chat.get('id')}`}
-        onClick={() => this.props.onRecentClick(chat.get('id'))}
+        id="im-overflow"
+        className="im wrapper overflow"
+        onClick={this.toggleOverflow}
+        ref={(c) => { this.overflowButton = c; }}
       >
-        {AvatarHelper.renderEveryoneAvatar(notificationsCount)}
-        {this.renderRemoveButton(chat)}
-        {this.renderNotificationsBalloon(chat)}
-      </span>
+        <span className={classNames('ui im avatar image overflow', { active: this.state.overflowShown })}>
+          <span className="text ui avatar image im">{size}</span>
+          <Detached
+            positionMy="center-20 top"
+            zIndex={99999}
+            isOpen={this.state.overflowShown}
+            positionTarget={this.overflowButton}
+            {...this.props}
+          >
+            <ClickOut onClickOut={this.closeOverflow} ignoreNodes={['.im.recent .im.wrapper']}>
+              <div
+                style={{ height: `${containerHeight}px`, width: `${containerWidth}px` }}
+                className={classNames('ui overflow popup im center bottom', { visible: this.state.overflowShown })}
+              >
+                <ScrollArea
+                  className="dpscrollarea overflow-inner"
+                  contentClassName="dpscrollarea overflow-content"
+                  vertical
+                >
+                  {chats.map(chat => this.getItem(chat))}
+                </ScrollArea>
+              </div>
+            </ClickOut>
+          </Detached>
+        </span>
+        {overallCount ? <div className="ui knuckles label message-counter">{overallCount}</div> : null}
+      </span> : null
     );
   }
 
-  renderGroup(chat) {
-    const notificationsCount = this.getNotificationCount(chat);
-
+  renderEveryone(chat, draggable = false) {
     return (
-      <span
-        className={this.getClassNames(chat)}
-        id={`chat-${chat.get('id')}`}
-        onClick={() => this.props.onRecentClick(chat.get('id'))}
-      >
-        {AvatarHelper.renderGroupAvatar(chat, notificationsCount)}
+      <TopBarRecentImListItem {...this.getItemProps(chat)} draggable={draggable}>
+        {AvatarHelper.renderEveryoneAvatar(this.state.tooltips ? this.getNotificationCount(chat) : null)}
         {this.renderRemoveButton(chat)}
         {this.renderNotificationsBalloon(chat)}
-      </span>
+      </TopBarRecentImListItem>
     );
   }
+
+  renderGroup(chat, draggable = false) {
+    return (
+      <TopBarRecentImListItem {...this.getItemProps(chat)} draggable={draggable}>
+        {AvatarHelper.renderGroupAvatar(chat, this.state.tooltips ? this.getNotificationCount(chat) : false, null)}
+        {this.renderRemoveButton(chat)}
+        {this.renderNotificationsBalloon(chat)}
+      </TopBarRecentImListItem>
+    );
+  }
+
+  swapHeads = (dragId, hoverId, dragOrder, hoverOrder, updateOrder = false) => {
+    const { chats } = this.state;
+    this.setState({ chats: chats.setIn([dragId, 'order'], hoverOrder).setIn([hoverId, 'order'], dragOrder).sort((a, b) => a.get('order') - b.get('order')) },
+      () => {
+        this.updateOrder = updateOrder;
+        this.updateChatsOrder(this.props);
+      }
+    );
+  };
 
   render() {
-    const { agentsLoaded, teamsLoaded, departmentsLoaded, recentLoaded } = this.props;
-    const loaded = agentsLoaded && teamsLoaded && departmentsLoaded && recentLoaded;
     return (
-      <Loader loaded={loaded} opacity={0} width={3} scale={0.5} color="#4696dc">
+      <Loader loaded={this.isLoaded(this.props)} opacity={0} width={3} scale={0.5} color="#4696dc">
         <div className={classNames(['im', 'recent', { empty: this.state.chats.size < 1 }])}>
+          {this.renderRemainedChats()}
           {this.getItems()}
           {this.props.children}
         </div>
+        <ReactTooltip delayShow={1000} id="tooltip-userphoto" effect="solid" place="top" className="im-tooltip" />
       </Loader>
     );
   }
 }
-
-export default TopBarRecentImList;
