@@ -47,6 +47,13 @@ class AgentAlert
 
     /**
      * Alert type.
+     * Available values are:.
+     *
+     * 'notifications.tickets.new_ticket',
+     * 'notifications.tickets.updated',
+     * 'notifications.tickets.new_message.user_reply',
+     * 'notifications.tickets.new_message.agent_note',
+     * 'notifications.tickets.new_message.agent_reply'
      *
      * @JMS\Type("string")
      *
