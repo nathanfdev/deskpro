@@ -106,7 +106,7 @@ class NewTicketController extends AbstractController
             FormValidatorChecker::clearFormErrors($form);
         }
 
-        if ($form->isValid()) {
+        if ($form->isValid() && $request->isMethod('post')) {
             // dont process if user hit "more attachments"
             if (!$form->getClickedButton() || $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
                 if (!$rerendering && !$rerendering_saved) {
