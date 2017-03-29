@@ -73,7 +73,8 @@ class ViewTopic extends React.Component {
     if (this.sizes) {
       const topOffset = this.offsetTop - 20 - this.sizes.agentBarHeight;
       let maxHeight;
-      if (event.srcElement.body.scrollTop > topOffset) {
+      const top = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
+      if (top > topOffset) {
         if (!this.state.fixed) {
           this.setState({
             fixed: true,
@@ -89,19 +90,19 @@ class ViewTopic extends React.Component {
           });
         }
         if (this.topic.scrollHeight > this.sizes.topicListHeight) {
-          maxHeight = event.srcElement.body.scrollTop + this.sizes.topicListHeight;
+          maxHeight = top + this.sizes.topicListHeight;
         }
       }
       if (!maxHeight) {
         maxHeight =  this.sizes.topicListHeight;
       }
-      const bottomScroll = event.srcElement.body.scrollHeight - event.srcElement.body.scrollTop - window.innerHeight;
+      const bottomScroll = event.srcElement.body.scrollHeight - top - window.innerHeight;
       if (bottomScroll < this.sizes.pageBottomSection) {
         maxHeight += bottomScroll;
       } else {
         maxHeight += this.sizes.pageBottomSection;
       }
-      window.document.getElementsByClassName('topic-list')[0].style = `max-height: ${maxHeight}px; top: ${this.sizes.agentBarHeight + 20}px`;
+      window.document.getElementsByClassName('topic-list')[0].setAttribute('style', `max-height: ${maxHeight}px; top: ${this.sizes.agentBarHeight + 20}px`);
     }
   };
 
@@ -176,33 +177,21 @@ class ViewTopic extends React.Component {
       - this.sizes.searchSection
       - this.sizes.welcomeNews
       - this.sizes.pageBottomSection;
-    console.log(window.innerHeight);
-    console.log('window.innerHeight ' + window.innerHeight);
-    console.log('this.sizes.agentBarHeight ' + this.sizes.agentBarHeight);
-    console.log('this.sizes.dpPageBodyPadding ' + this.sizes.dpPageBodyPadding);
-    console.log('this.sizes.worldPadding ' + this.sizes.worldPadding);
-    console.log('this.sizes.pageTopSection ' + this.sizes.pageTopSection);
-    console.log('this.sizes.searchSection ' + this.sizes.searchSection);
-    console.log('this.sizes.welcomeNews ' + this.sizes.welcomeNews);
-    console.log('this.sizes.pageBottomSection ' + this.sizes.pageBottomSection);
-    console.log('this.sizes.topicListHeight ' + this.sizes.topicListHeight);
     const bottomScroll = this.topic.scrollHeight
       + this.sizes.topOffset
       + this.sizes.bottomOffset
-      - window.document.body.scrollTop - window.innerHeight;
-    console.log('bottomScroll ' + bottomScroll);
+      - window.document.body.scrollTop
+      - window.innerHeight;
     let maxHeight = this.sizes.topicListHeight;
     if (bottomScroll < this.sizes.pageBottomSection) {
       if (bottomScroll > 0) {
         maxHeight += bottomScroll;
-      } else {
-        // maxHeight -= this.sizes.bottomOffset;
       }
     } else {
       maxHeight += this.sizes.pageBottomSection;
     }
-    window.document.getElementsByClassName('topic-list')[0].style = `max-height: ${maxHeight}px; top: ${this.sizes.agentBarHeight + 20}px`;
-    window.document.getElementsByClassName('topic-summary')[0].style = `top: ${this.sizes.agentBarHeight + 20}px`;
+    window.document.getElementsByClassName('topic-list')[0].setAttribute('style', `max-height: ${maxHeight}px; top: ${this.sizes.agentBarHeight + 20}px`);
+    window.document.getElementsByClassName('topic-summary')[0].setAttribute('style', `top: ${this.sizes.agentBarHeight + 20}px`);
     return true;
   };
 
@@ -235,7 +224,8 @@ class ViewTopic extends React.Component {
   };
 
   changeInternalLinks = () => {
-    document.querySelectorAll('a.internal_link.topic').forEach((internalLink) => {
+    const links = document.querySelectorAll('a.internal_link.topic');
+    Array.prototype.forEach.call(links, (internalLink) => {
       const newLink = document.createElement('a');
       newLink.className = 'internal_link topic';
       newLink.onclick = e => this.internalLink(e, internalLink.pathname);
@@ -246,7 +236,8 @@ class ViewTopic extends React.Component {
   };
 
   addAnchorLinks = () => {
-    document.querySelectorAll('h1.anchor').forEach((h1) => {
+    const anchors = document.querySelectorAll('h1.anchor');
+    Array.prototype.forEach.call(anchors, (h1) => {
       this.addAnchorLink(h1);
     });
   };
@@ -298,8 +289,8 @@ class ViewTopic extends React.Component {
         topic,
       });
       this.tabs();
-      window.scrollTo( 0, 0 );
-      this.defineSizes();
+      window.scrollTo(0, 0);
+      setTimeout(this.defineSizes, 100);
     });
   }
 
