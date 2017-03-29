@@ -33,7 +33,7 @@ echo
 
 echo ">> Building new web assets"
 cd $DIR_ROOT/www/assets/BUILD/pub
-npm run gulp-prod --max-old-space-size=4096
+npm run gulp-prod
 npm run test:visual:build
 echo ".. done"
 echo
