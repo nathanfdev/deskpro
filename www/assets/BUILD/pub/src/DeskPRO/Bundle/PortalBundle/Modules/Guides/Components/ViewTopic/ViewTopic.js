@@ -35,6 +35,7 @@ class ViewTopic extends React.Component {
   componentDidMount() {
     this.changeInternalLinks();
     this.addAnchorLinks();
+    this.tabs();
     window.addEventListener('scroll', this.handleScroll);
     window.addEventListener('resize', this.defineSizes);
     this.offsetTop = this.topicList.offsetTop;
@@ -172,6 +173,34 @@ class ViewTopic extends React.Component {
     return true;
   };
 
+  tabs = () => {
+    const topicContent = window.document.getElementsByClassName('topic-content')[0];
+    const menus = topicContent.getElementsByClassName('tabular menu');
+    Array.from(menus).forEach((menu) => {
+      Array.from(menu.getElementsByClassName('item')).forEach((item) => {
+        item.onclick = (e) => {
+          e.preventDefault();
+          const activeTab = e.target.dataset.tab;
+          const currentMenu = activeTab.replace(/_\d+$/, '');
+          Array.from(menu.getElementsByClassName('item')).forEach((element) => {
+            element.classList.remove('active');
+            if (element.dataset.tab === activeTab) {
+              element.classList.add('active');
+            }
+          });
+          Array.from(topicContent.getElementsByClassName('tab')).forEach((element) => {
+            if (element.dataset.tab.startsWith(currentMenu)) {
+              element.classList.remove('active');
+              if (element.dataset.tab === activeTab) {
+                element.classList.add('active');
+              }
+            }
+          });
+        };
+      });
+    });
+  };
+
   changeInternalLinks = () => {
     document.querySelectorAll('a.internal_link.topic').forEach((internalLink) => {
       const newLink = document.createElement('a');
@@ -235,6 +264,7 @@ class ViewTopic extends React.Component {
         doSpin: false,
         topic,
       });
+      this.tabs();
     });
   }
 
