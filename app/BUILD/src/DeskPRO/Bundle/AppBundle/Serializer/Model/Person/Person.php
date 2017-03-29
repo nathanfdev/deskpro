@@ -40,15 +40,8 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * Class Person.
  */
-class Person
+class Person extends BasePerson
 {
-    /**
-     * The unique ID.
-     *
-     * @var int
-     */
-    protected $id;
-
     /**
      * The user`s profile picture.
      *
@@ -91,15 +84,6 @@ class Person
      * @var bool
      */
     protected $isUser;
-
-    /**
-     * Is this person an agent?
-     *
-     * @JMS\Type("boolean")
-     *
-     * @var bool
-     */
-    protected $isAgent;
 
     /**
      * Was this person an agent?
@@ -190,49 +174,6 @@ class Person
      * @var string
      */
     protected $creationSystem;
-
-    /**
-     * The users name (best guess from other sources etc).
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * The users name (best guess from other sources etc).
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $firstName;
-
-    /**
-     * The users name (best guess from other sources etc).
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $lastName;
-
-    /**
-     * The users title prefix (Mr., Mrs., etc).
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $titlePrefix;
-
-    /**
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $displayName;
 
     /**
      * Overrides the display name of an person in the user interface (agents only).
@@ -352,15 +293,6 @@ class Person
     protected $labels;
 
     /**
-     * Main user`s email.
-     *
-     * @JMS\Type("to_string<Application\DeskPRO\Entity\PersonEmail>")
-     *
-     * @var string
-     */
-    protected $primaryEmail;
-
-    /**
      * Emails belong to user.
      *
      * @JMS\Type("collection<to_string<Application\DeskPRO\Entity\PersonEmail>>")
@@ -368,33 +300,6 @@ class Person
      * @var array
      */
     protected $emails;
-
-    /**
-     * Users avatar.
-     *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Content\Avatar")
-     *
-     * @var Avatar
-     */
-    protected $avatar;
-
-    /**
-     * Is user online?
-     *
-     * @JMS\Type("boolean")
-     *
-     * @var bool
-     */
-    protected $online;
-
-    /**
-     * Date when user was last seen online.
-     *
-     * @JMS\Type("deferred<DateTime>")
-     *
-     * @var \DateTime
-     */
-    protected $lastSeen;
 
     /**
      * Phone numbers belong to user.
@@ -469,19 +374,17 @@ class Person
     protected $agentData;
 
     /**
-     * Constructor.
-     *
-     * @param PersonEntity $person
+     * {@inheritdoc}
      */
-    public function __construct(PersonEntity $person)
+    public function __construct(PersonEntity $person, Avatar $avatar)
     {
-        $this->id                      = $person->getId();
+        parent::__construct($person, $avatar);
+
         $this->pictureBlob             = $person->picture_blob;
         $this->disablePicture          = $person->disable_picture;
         $this->gravatarUrl             = $person->getGravatarUrl();
         $this->isContact               = $person->is_contact;
         $this->isUser                  = $person->isUser();
-        $this->isAgent                 = $person->isAgent();
         $this->wasAgent                = $person->wasAgent();
         $this->canAgent                = $person->canAgent();
         $this->canAdmin                = $person->canAdmin();
@@ -492,11 +395,6 @@ class Person
         $this->isDeleted               = $person->isDeleted();
         $this->isDisabled              = $person->isDisabled();
         $this->creationSystem          = $person->getCreationSystem();
-        $this->name                    = $person->getName();
-        $this->firstName               = $person->getFirstName();
-        $this->lastName                = $person->getLastName();
-        $this->titlePrefix             = $person->getTitlePrefix();
-        $this->displayName             = $person->getDisplayName();
         $this->overrideDisplayName     = $person->getOverrideDisplayName();
         $this->summary                 = $person->getSummary();
         $this->language                = $person->getLanguage();
@@ -510,7 +408,6 @@ class Person
         $this->userGroups              = $person->getPublicUsergroups();
         $this->agentGroups             = $person->getPublicAgentgroups();
         $this->labels                  = $person->getLabels();
-        $this->primaryEmail            = $person->getPrimaryEmail();
         $this->ticketsCount            = $person->getTicketsCount();
         $this->chatsCount              = $person->getChatsCount();
         $this->phoneNumbers            = $person->getPhoneNumbers();
@@ -520,41 +417,5 @@ class Person
         $this->teams                   = $person->getTeams();
         $this->primaryTeam             = $person->getPrimaryTeam();
         $this->agentData               = $person->getAgentData();
-    }
-
-    /**
-     * @param Avatar $avatar
-     *
-     * @return $this
-     */
-    public function setAvatar(Avatar $avatar)
-    {
-        $this->avatar = $avatar;
-
-        return $this;
-    }
-
-    /**
-     * @param bool $online
-     *
-     * @return $this
-     */
-    public function setOnline($online)
-    {
-        $this->online = $online;
-
-        return $this;
-    }
-
-    /**
-     * @param $lastSeen
-     *
-     * @return $this
-     */
-    public function setLastSeen($lastSeen = null)
-    {
-        $this->lastSeen = $lastSeen;
-
-        return $this;
     }
 }
