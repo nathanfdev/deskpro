@@ -422,6 +422,12 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     max-width: 1000px;
     h1 {
       font-weight: bold;
+      &.anchor::before {
+        content: '';
+        display: none;
+        height:50px;
+        margin: 0;
+      }
     }
     h2 {
       font-weight: bold;
@@ -447,10 +453,12 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     }
     div.topic {
       position: relative;
+      page-break-before: auto;
+      page-break-after: auto;
+      page-break-inside: avoid;
     }
     div.block {
       position: relative;
-      page-break-inside: avoid;
       width: 60%;
       &::before {
         margin: 10px 10px 0 0;
@@ -461,8 +469,12 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     }
     pre code.hljs {
       position: relative;
-      page-break-inside: avoid;
       width: 80%;
+    }
+    img {
+      page-break-before: auto;
+      page-break-after: auto;
+      page-break-inside: avoid;
     }
   }
 }
