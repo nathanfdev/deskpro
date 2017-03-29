@@ -27,6 +27,7 @@ class ViewTopic extends React.Component {
       topics
     };
     this.contentChanged = false;
+    this.ticking = false;
     window.onload = this.defineSizes;
   }
 
@@ -34,7 +35,15 @@ class ViewTopic extends React.Component {
     this.changeInternalLinks();
     this.addAnchorLinks();
     this.tabs();
-    window.addEventListener('scroll', this.handleScroll);
+    window.addEventListener('scroll', () => {
+      if (!this.ticking) {
+        window.requestAnimationFrame(() => {
+          this.handleScroll();
+          this.ticking = false;
+        });
+      }
+      this.ticking = true;
+    });
     window.addEventListener('resize', this.defineSizes);
     this.offsetTop = this.topicList.offsetTop;
     this.defineSizes();
@@ -69,7 +78,7 @@ class ViewTopic extends React.Component {
 
   getGuideSlug = splat => splat.split('/')[0];
 
-  handleScroll = (event) => {
+  handleScroll = () => {
     if (this.sizes) {
       const topOffset = this.offsetTop - 20 - this.sizes.agentBarHeight;
       let maxHeight;
@@ -96,7 +105,7 @@ class ViewTopic extends React.Component {
       if (!maxHeight) {
         maxHeight =  this.sizes.topicListHeight;
       }
-      const bottomScroll = event.srcElement.body.scrollHeight - top - window.innerHeight;
+      const bottomScroll = window.document.body.scrollHeight - top - window.innerHeight;
       if (bottomScroll < this.sizes.pageBottomSection) {
         maxHeight += bottomScroll;
       } else {
