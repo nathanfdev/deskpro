@@ -855,6 +855,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			return;
 		}
 
+		var api = this.textarea.data('redactor');
+		api.$editor.linkify();
+		api.syncCode();
+
 		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
 		var formData = this.form.serializeArray();
     formData.push({
