@@ -304,8 +304,13 @@ class ViewTopic extends React.Component {
       this.setState({
         topics,
       });
-      const topic = Object.values(topics).pop();
-      browserHistory.push(`/${this.props.params.locale}/guides/${guide.slug}/${topic.slug}`);
+      const topic = Object.values(topics).sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)).shift();
+      if (Object.values(topic.children).length) {
+        const child = Object.values(topic.children).sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)).shift();
+        browserHistory.push(`/${this.props.params.locale}/guides/${guide.slug}/${topic.slug}/${child.slug}`);
+      } else {
+        browserHistory.push(`/${this.props.params.locale}/guides/${guide.slug}/${topic.slug}`);
+      }
     });
   };
 

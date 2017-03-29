@@ -9,6 +9,10 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     font-size: 22px;
     font-weight: bold;
     margin-bottom: 15px;
+    padding-top: 10px;
+    &:first-child {
+      padding-top: 0;
+    }
     &.anchor::before {
       content:"";
       display:block;
@@ -108,7 +112,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
   div.block {
     padding: 10px 15px;
     width: 100%;
-    margin: 5px 0;
+    margin: 10px 0;
     border-radius: 2px;
     box-sizing: border-box;
     &::before {
@@ -341,7 +345,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     display: inline-block;
     vertical-align: top;
     img {
-      max-width: 640px;
+      max-width: 600px;
     }
     .loading {
       display: none;
@@ -371,7 +375,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     vertical-align: top;
     .topic-summary {
       border-left: 1px solid #efefef;
-      padding-left: 24px;
+      padding-left: 18px;
       top: 20px;
       width: 126px;
       &.fixed {
