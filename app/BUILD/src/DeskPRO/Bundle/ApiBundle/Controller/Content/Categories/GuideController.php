@@ -165,7 +165,8 @@ class GuideController extends AbstractCategoriesController
      *      statusCodes={
      *          201="Created",
      *          400="Bad Request"
-     *      }
+     *      },
+     *     output="Application\DeskPRO\Entity\Guide"
      * )
      * @Rest\Get("/{guideId}/export")
      * @Rest\View(serializerGroups={"list", "details"})
