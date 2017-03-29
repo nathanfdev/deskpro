@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
-import { Field, Input } from 'react-forms';
+import { Field } from 'react-forms';
+import { Input } from 'DeskPRO/Component/Semantic/ReactForm';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { CustomField } from 'DeskPRO/Component/CustomField/CustomField';
 import { CustomFieldSingleChoice } from 'DeskPRO/Component/CustomField/CustomFieldSingleChoice';

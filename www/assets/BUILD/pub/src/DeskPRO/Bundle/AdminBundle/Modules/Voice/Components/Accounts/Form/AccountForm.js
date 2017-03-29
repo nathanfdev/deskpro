@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import { Fieldset, Input, createValue } from 'react-forms';
-import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Fieldset, createValue } from 'react-forms';
+import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import classNames from 'classnames';
 
 class AccountForm extends React.Component {
@@ -12,7 +12,9 @@ class AccountForm extends React.Component {
     onDeleteAccount:   PropTypes.func,
     saving:            PropTypes.bool,
     testing:           PropTypes.bool,
-    deleting:          PropTypes.bool
+    deleting:          PropTypes.bool,
+    displaySuccess:    PropTypes.bool,  // eslint-disable-line react/no-unused-prop-types
+    errors:            PropTypes.object // eslint-disable-line react/no-unused-prop-types
   };
 
   constructor(props) {

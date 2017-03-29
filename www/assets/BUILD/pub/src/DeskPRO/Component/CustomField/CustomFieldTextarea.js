@@ -1,15 +1,16 @@
 import React from 'react';
+import { Field } from 'react-forms';
+import { Textarea } from 'DeskPRO/Component/Semantic/ReactForm';
 import { AbstractCustomField } from './AbstractCustomField';
-import { Field, Input } from 'react-forms';
 
 export class CustomFieldTextarea extends AbstractCustomField {
 
   render() {
-    const { name, config } = this.props;
+    const { name } = this.props;
 
     return (
       <Field select={name}>
-        <Input key={config.get('id')} Component="textarea" />
+        <Textarea />
       </Field>
     );
   }

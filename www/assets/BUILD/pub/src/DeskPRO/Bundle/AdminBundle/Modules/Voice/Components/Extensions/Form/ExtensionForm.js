@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import { Fieldset, Input, createValue } from 'react-forms';
-import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Fieldset, createValue } from 'react-forms';
+import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import classNames from 'classnames';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
@@ -14,7 +14,8 @@ class ExtensionForm extends React.Component {
     deleting:     PropTypes.bool,
     onSubmit:     PropTypes.func,
     onDelete:     PropTypes.func,
-    onReturnBack: PropTypes.func.isRequired
+    onReturnBack: PropTypes.func.isRequired,
+    errors:       PropTypes.object // eslint-disable-line react/no-unused-prop-types
   };
 
   constructor(props) {
