@@ -48,6 +48,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreated\TicketDateCreated
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\TicketFlaggedTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel\TicketLabelTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\TicketLanguageTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSla\TicketSlaTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketUrgency\TicketUrgencyTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -90,14 +91,10 @@ class TicketsSelectCriteria
 
         foreach ($parameters as $param => $value) {
             if (TicketGrouping::isCustom($param, '_')) {
-                $composite->addTerm(
-                    new CustomDataTerm(
-                        [
-                            'field_id'          => TicketGrouping::getCustomFieldIdFromName($param, '_'),
-                            'custom_data_value' => $value,
-                        ]
-                    )
-                );
+                $composite->addTerm(new CustomDataTerm([
+                    'field_id'          => TicketGrouping::getCustomFieldIdFromName($param, '_'),
+                    'custom_data_value' => $value,
+                ]));
                 continue;
             }
 
@@ -121,13 +118,10 @@ class TicketsSelectCriteria
                     }
                     break;
                 case 'from':
-                    $composite
-                        ->addTerm(
-                            new TicketDateCreatedTerm(
-                                ['date' => new \DateTime(str_replace(' ', '+', $value))],
-                                TermInterface::OP_GTE
-                            )
-                        );
+                    $composite->addTerm(new TicketDateCreatedTerm(
+                        ['date' => new \DateTime(str_replace(' ', '+', $value))],
+                        TermInterface::OP_GTE
+                    ));
                     break;
                 case 'labels':
                     $composite->addTerm(new TicketLabelTerm(['label' => $value[0], TermInterface::OP_IS]));
@@ -158,6 +152,12 @@ class TicketsSelectCriteria
                     break;
                 case 'urgency':
                     $composite->addTerm(new TicketUrgencyTerm(['num' => [$value]]));
+                    break;
+                case 'sla':
+                    $composite->addTerm(new TicketSlaTerm(['sla' => [$value]], TermInterface::OP_HAS));
+                    break;
+                case 'sla_status':
+                    $composite->addTerm(new TicketSlaTerm(['status' => [$value]], TermInterface::OP_HAS));
                     break;
                 default:
                     throw new \Exception("Unknown ticket filtering option '$param'");
