@@ -57,9 +57,7 @@ class FeedbackSettingsController extends AbstractBrandAwareSettingsController
      *         200="Success",
      *         404="Not Found error will returned in case we can't find the specified brand"
      *     },
-     *     output={
-     *          "class"="DeskPRO\Bundle\AppBundle\Settings\Model\Portal\FeedbackSettings"
-     *      }
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\Portal\FeedbackSettings"
      * )
      *
      * @Rest\Get("")
@@ -86,7 +84,8 @@ class FeedbackSettingsController extends AbstractBrandAwareSettingsController
      *     },
      *     input= {
      *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\FeedbackSettingsType"
-     *     }
+     *     },
+     *     noOutput=true
      *)
      * @Rest\Post("")
      *

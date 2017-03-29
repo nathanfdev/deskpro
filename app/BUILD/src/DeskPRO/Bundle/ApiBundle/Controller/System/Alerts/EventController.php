@@ -39,7 +39,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *
  * @ApiModes("all")
  * @Rest\Route("/system/events")
- * @ApiDoc(target="all", section="System")
+ * @ApiDoc(target="all", section="System", output="DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent")
  */
 class EventController extends CrudController
 {

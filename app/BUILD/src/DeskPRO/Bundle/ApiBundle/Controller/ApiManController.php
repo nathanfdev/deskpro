@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserCont
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
@@ -43,7 +44,11 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 class ApiManController extends BaseController
 {
     /**
-     * @Rest\Get("/", name="api_landing")
+     * @Rest\Get("/")
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse
      */
     public function v2LandingAction(Request $request)
     {
@@ -52,20 +57,26 @@ class ApiManController extends BaseController
     }
 
     /**
-     * @Rest\Get("/man", name="api_man")
+     * @Rest\Get("/man")
+     *
+     * @return RedirectResponse
      */
-    public function manAction(Request $request)
+    public function manAction()
     {
         return new RedirectResponse('http://api.deskpro.com/');
     }
 
     /**
-     * @Rest\Get("/doc", name="api_doc")
+     * @Rest\Get("/doc")
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
-    public function docAction(Request $request, $view = ApiDoc::DEFAULT_VIEW)
+    public function docAction(Request $request)
     {
         $subRequest = $request->duplicate($request->query->all(), null, [
-            '_controller' => 'NelmioApiDocBundle:ApiDoc:index', 'view' => $view,
+            '_controller' => 'NelmioApiDocBundle:ApiDoc:index', 'view' => ApiDoc::DEFAULT_VIEW,
         ]);
 
         return $this->getKernel()->handle($subRequest, HttpKernelInterface::SUB_REQUEST);

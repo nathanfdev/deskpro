@@ -66,7 +66,8 @@ class VoiceClientPhoneCallController extends BaseController
      *     description="Assign agent to the ticket",
      *     statusCodes={
      *         204="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true
      * )
      *
      * @Rest\Put("/assign_agent")
@@ -127,7 +128,8 @@ class VoiceClientPhoneCallController extends BaseController
      *     description="Returns related phone call ticket",
      *     statusCodes={
      *         204="Returned if everything is ok"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket"
      * )
      *
      * @Rest\Get("/ticket")
@@ -155,6 +157,9 @@ class VoiceClientPhoneCallController extends BaseController
      *     description="Toggle agent mute",
      *     statusCodes={
      *         204="Returned if everything is ok"
+     *     },
+     *     parameters={
+     *       {"name"="mute", "description"="is mute enabled", "dataType"="boolean", "required"=false}
      *     }
      * )
      *
@@ -183,6 +188,9 @@ class VoiceClientPhoneCallController extends BaseController
      *     description="Toggle the hold status for the end user caller",
      *     statusCodes={
      *         204="Returned if everything is ok"
+     *     },
+     *     parameters={
+     *       {"name"="hold", "description"="put on hold", "dataType"="boolean", "required"=false}
      *     }
      * )
      *
@@ -205,7 +213,8 @@ class VoiceClientPhoneCallController extends BaseController
      *     description="Sends client notification to join the phone call",
      *     statusCodes={
      *         204="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true
      * )
      *
      * @Rest\Put("/{callType}/{person}/{inviteType}", requirements={"callType"="(add|transfer)", "inviteType"="(cold|warm)"})
@@ -285,7 +294,8 @@ class VoiceClientPhoneCallController extends BaseController
      *     description="Cancel phone call notification",
      *     statusCodes={
      *         204="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true
      * )
      *
      * @Rest\Put("/cancel_invite/{person}")
@@ -335,7 +345,8 @@ class VoiceClientPhoneCallController extends BaseController
      *     description="Ignore phone call notification",
      *     statusCodes={
      *         204="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true
      * )
      *
      * @Rest\Put("/ignore_invite/{person}")
@@ -387,7 +398,8 @@ class VoiceClientPhoneCallController extends BaseController
      *     description="End phone call",
      *     statusCodes={
      *         204="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true
      * )
      *
      * @Rest\Put("/end_call")

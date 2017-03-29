@@ -63,6 +63,9 @@ class TicketLinksController extends BaseController
      *             "Ticket with 'ticketId' wasn't found",
      *             "Ticket with 'link_ticket_id' wasn't found",
      *         }
+     *     },
+     *     input={
+     *       "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketLinks\TicketLinkType"
      *     }
      * )
      *

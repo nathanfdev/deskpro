@@ -63,6 +63,9 @@ class TicketActionsController extends BaseController
      *              "dataType"="integer"
      *          }
      *      },
+     *      parameters={
+     *        {"name"="force", "description"="force apply", "dataType"="boolean", "required"=false}
+     *      },
      *      statusCodes={
      *          204="Returned in case of successful resource update",
      *          400="We will return this in case your request was malformed"
@@ -103,6 +106,9 @@ class TicketActionsController extends BaseController
      *              "description"="The id of the resource",
      *              "dataType"="integer"
      *          }
+     *      },
+     *      parameters={
+     *        {"name"="force", "description"="force apply", "dataType"="boolean", "required"=false}
      *      },
      *      statusCodes={
      *          204="Returned in case of successful resource update",

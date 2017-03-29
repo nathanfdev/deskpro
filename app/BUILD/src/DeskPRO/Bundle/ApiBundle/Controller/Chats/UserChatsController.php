@@ -117,23 +117,24 @@ class UserChatsController extends CrudController
      * Assign a chat conversation to an agent.
      *
      * @ApiDoc(
-     *      description="Assign chat to agent",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "dataType"="integer",
-     *          },
-     *          {
-     *              "name"="agentId",
-     *              "requirement"="\d+",
-     *              "dataType"="integer",
-     *          }
-     *      },
-     *      statusCodes={
-     *         200="Returned if successful request",
-     *         400="Returned if you filter set was malformed"
-     *      }
+     *     description="Assign chat to agent",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "dataType"="integer",
+     *         },
+     *         {
+     *             "name"="agentId",
+     *             "requirement"="\d+",
+     *             "dataType"="integer",
+     *         }
+     *     },
+     *     statusCodes={
+     *        200="Returned if successful request",
+     *        400="Returned if you filter set was malformed"
+     *     },
+     *     noInput=true
      * )
      * @Rest\Put("/{id}/assign/{agentId}", requirements={"id"="\d+", "agentId"="\d+"})
      *
@@ -165,18 +166,19 @@ class UserChatsController extends CrudController
      * End a chat conversation.
      *
      * @ApiDoc(
-     *      description="End a chat conversation",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "dataType"="integer",
-     *          }
-     *      },
-     *      statusCodes={
-     *         200="Returned if successful request",
-     *         400="Returned if you filter set was malformed"
-     *      }
+     *     description="End a chat conversation",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "dataType"="integer",
+     *         }
+     *     },
+     *     statusCodes={
+     *        200="Returned if successful request",
+     *        400="Returned if you filter set was malformed"
+     *     },
+     *     noInput=true
      * )
      * @Rest\Put("/{id}/end", requirements={"id"="\d+"})
      *
@@ -188,10 +190,7 @@ class UserChatsController extends CrudController
     public function endAction(Request $request, $id)
     {
         $conversation = $this->findEntity($id, $request);
-
-        $conversation
-            ->setStatus(ChatConversation::STATUS_ENDED)
-        ;
+        $conversation->setStatus(ChatConversation::STATUS_ENDED);
 
         $em = $this->getManager();
         $em->persist($conversation);
@@ -199,7 +198,7 @@ class UserChatsController extends CrudController
 
         $this->get('event_dispatcher')->dispatch(UserChatEvent::ENDED, new UserChatEvent($conversation, [], ['chat_ended']));
 
-        return View::create();
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 
     /**

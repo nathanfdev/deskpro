@@ -40,7 +40,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *
  * @ApiModes("all")
  * @Rest\Route("/apps/zapier/hooks")
- * @ApiDoc(target="all", section="Apps")
+ * @ApiDoc(target="all", section="Apps", output="DeskPRO\Bundle\AppBundle\Entity\ZapierHook")
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={

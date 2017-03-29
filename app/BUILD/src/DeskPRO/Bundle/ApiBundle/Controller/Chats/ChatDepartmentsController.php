@@ -39,6 +39,16 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiModes("all")
  * @Rest\Route("/chat_departments")
  * @ApiDoc(target="all", section="Departments", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Department")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *       "class"="DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType",
+ *       "options"={
+ *           "data"="Application\DeskPRO\Entity\Department",
+ *           "type"="chat"
+ *       }
+ *     }
+ * )
  */
 class ChatDepartmentsController extends AbstractDepartmentsController
 {

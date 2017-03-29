@@ -150,7 +150,8 @@ class FeaturesController extends BaseController
      *     statusCodes={
      *         204="Returned if everything is ok",
      *         400="Returned if feature already enabled"
-     *     }
+     *     },
+     *     noInput=true
      * )
      *
      * @param string $id
@@ -198,7 +199,8 @@ class FeaturesController extends BaseController
      *     statusCodes={
      *         200="Returned if everything is ok",
      *         400="Returned if feature already disabled"
-     *     }
+     *     },
+     *     noInput=true
      * )
      *
      * @param string $id

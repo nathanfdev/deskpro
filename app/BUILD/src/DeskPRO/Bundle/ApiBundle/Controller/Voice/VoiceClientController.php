@@ -61,7 +61,8 @@ class VoiceClientController extends BaseController
      *     description="Returns client voice auth tokens",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioClientTokens"
      * )
      *
      * @Rest\Get("/tokens")
@@ -87,7 +88,8 @@ class VoiceClientController extends BaseController
      *     description="Returns voice worker activity sids",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioActivities"
      * )
      *
      * @Rest\Get("/activities")
@@ -117,7 +119,8 @@ class VoiceClientController extends BaseController
      *     description="Declines and ignores incoming phone call",
      *     statusCodes={
      *         204="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true
      * )
      *
      * @Rest\Put("/reject_call/{taskSid}")
@@ -141,7 +144,11 @@ class VoiceClientController extends BaseController
      *     description="Prepares outbound phone call",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     input={
+     *       "class"="DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceOutboundCallType"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall"
      * )
      *
      * @Rest\Post("/prepare_outbound_call")

@@ -87,7 +87,9 @@ class TwilioCallbacksController extends BaseController
      *     description="Handle incoming phone call",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true,
+     *     output="string"
      * )
      *
      * @Rest\Get("/phone_number_callback", name="twilio_phone_number_callback")
@@ -124,7 +126,9 @@ class TwilioCallbacksController extends BaseController
      *     description="Handle incoming phone call changed status",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true,
+     *     noOutput=true
      * )
      *
      * @Rest\Post("/phone_number_status_callback", name="twilio_phone_number_status_callback")
@@ -170,7 +174,9 @@ class TwilioCallbacksController extends BaseController
      *     description="Worker assignment callback",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true,
+     *     output="array"
      * )
      *
      * @Rest\Post("/assignment_callback", name="twilio_assignment_callback")
@@ -318,7 +324,9 @@ class TwilioCallbacksController extends BaseController
      *     description="Create conference callback",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true,
+     *     output="string"
      * )
      *
      * @Rest\Post("/conference_callback", name="twilio_conference_callback")
@@ -371,7 +379,9 @@ class TwilioCallbacksController extends BaseController
      *     description="Conference status callback",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true,
+     *     noOutput=true
      * )
      *
      * @Rest\Post("/conference_status_callback", name="twilio_conference_status_callback")
@@ -579,7 +589,9 @@ class TwilioCallbacksController extends BaseController
      *     description="Auto attendant callback",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true,
+     *     output="string"
      * )
      *
      * @Rest\Post("/auto_attendant_callback/{autoAttendant}", name="twilio_auto_attendant_callback")
@@ -644,7 +656,9 @@ class TwilioCallbacksController extends BaseController
      *     description="Agent extension callback",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true,
+     *     output="string"
      * )
      *
      * @Rest\Post("/agent_extension_callback", name="twilio_agent_extension_callback")
@@ -704,7 +718,9 @@ class TwilioCallbacksController extends BaseController
      *     description="Recording status callback",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true,
+     *     noOutput=true
      * )
      *
      * @Rest\Post("/recording_status_callback", name="twilio_recording_status_callback")
@@ -758,7 +774,12 @@ class TwilioCallbacksController extends BaseController
      *     description="Voicemail callback",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     filters={
+     *          {"name"="asset", "pattern"="\d", "description"="voice asset id", "dataType"="integer"}
+     *     },
+     *     noInput=true,
+     *     output="string"
      * )
      *
      * @Rest\Post("/voicemail", name="twilio_voicemail")
@@ -812,7 +833,9 @@ class TwilioCallbacksController extends BaseController
      *     description="Outgoing callback",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true,
+     *     output="string"
      * )
      *
      * @Rest\Post("/outbound_callback", name="twilio_outbound_callback")
@@ -861,7 +884,9 @@ class TwilioCallbacksController extends BaseController
      *     description="Custom hold music",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true,
+     *     output="string"
      * )
      *
      * @Rest\Post("/hold_music", name="twilio_hold_music")

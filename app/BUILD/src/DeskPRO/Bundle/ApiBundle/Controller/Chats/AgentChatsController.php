@@ -54,6 +54,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiUnstable()
  * @Feature("agent_chat")
  * @ApiDoc(target="all", section="Chats", output="DeskPRO\Bundle\AppBundle\Entity\AgentChat")
+ * @ApiDoc(target="getAction", documentation="Retrieves an agent chat with provided id")
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={

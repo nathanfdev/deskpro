@@ -61,6 +61,21 @@ class ApiDoc extends BaseApiDoc
     protected $classInput;
 
     /**
+     * @var bool
+     */
+    protected $noOutput = false;
+
+    /**
+     * @var bool
+     */
+    protected $noInput = false;
+
+    /**
+     * @var string
+     */
+    protected $documentationOverride = '';
+
+    /**
      * Constructor.
      *
      * @param array $data
@@ -69,6 +84,15 @@ class ApiDoc extends BaseApiDoc
     {
         if (isset($data['target'])) {
             $this->target = $data['target'];
+        }
+        if (isset($data['noOutput'])) {
+            $this->noOutput = $data['noOutput'];
+        }
+        if (isset($data['noInput'])) {
+            $this->noInput = $data['noInput'];
+        }
+        if (isset($data['documentation'])) {
+            $this->documentationOverride = $data['documentation'];
         }
 
         parent::__construct($data);
@@ -155,8 +179,12 @@ class ApiDoc extends BaseApiDoc
         $data['apiModes']    = $this->apiModes;
         $data['apiTags']     = $this->apiTags;
         $data['classOutput'] = $this->classOutput;
-        $data['classInput']  = $this->classOutput;
+        $data['classInput']  = $this->classInput;
         $data['target']      = $this->target;
+
+        if ($this->documentationOverride) {
+            $data['documentation'] = $this->documentationOverride;
+        }
 
         return $data;
     }
@@ -185,5 +213,65 @@ class ApiDoc extends BaseApiDoc
         }
 
         return $input;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNoOutput()
+    {
+        return $this->noOutput;
+    }
+
+    /**
+     * @param bool $noOutput
+     *
+     * @return $this
+     */
+    public function setNoOutput($noOutput)
+    {
+        $this->noOutput = $noOutput;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNoInput()
+    {
+        return $this->noInput;
+    }
+
+    /**
+     * @param bool $noInput
+     *
+     * @return $this
+     */
+    public function setNoInput($noInput)
+    {
+        $this->noInput = $noInput;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDocumentationOverride()
+    {
+        return $this->documentationOverride;
+    }
+
+    /**
+     * @param string $documentationOverride
+     *
+     * @return $this
+     */
+    public function setDocumentationOverride($documentationOverride)
+    {
+        $this->documentationOverride = $documentationOverride;
+
+        return $this;
     }
 }

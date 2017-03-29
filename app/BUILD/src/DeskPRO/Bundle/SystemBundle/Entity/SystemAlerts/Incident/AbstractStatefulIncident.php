@@ -26,29 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class AbstractStatefulIncident.
  *
  * @ORM\MappedSuperclass
- * @JMS\ExclusionPolicy("all")
  */
 abstract class AbstractStatefulIncident extends AbstractIncident implements StatefulIncident
 {
     /**
      * @var bool
      * @ORM\Column(type="boolean")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
      */
     protected $resolved = false;
 

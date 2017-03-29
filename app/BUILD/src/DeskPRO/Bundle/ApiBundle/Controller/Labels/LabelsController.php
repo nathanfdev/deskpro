@@ -48,6 +48,7 @@ class LabelsController extends BaseController
      * Fetch labels for given entity types and you can filter labels by some term.
      *
      * @ApiDoc(
+     *     section="Labels",
      *     resourceDescription="Operations about labels",
      *     description="Get all labels by types",
      *     requirements={

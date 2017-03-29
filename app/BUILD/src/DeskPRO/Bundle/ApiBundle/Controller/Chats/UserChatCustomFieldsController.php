@@ -39,7 +39,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *
  * @ApiModes("all")
  * @Rest\Route("/user_chat_custom_fields")
- * @ApiDoc(target="all", section="Chats")
+ * @ApiDoc(target="all", section="Chats", output="Application\DeskPRO\Entity\CustomDefChat")
  * @ApiDoc(
  *     target="putAction",
  *     input={

@@ -32,11 +32,9 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
 use DeskPRO\Bundle\SystemBundle\Form\Type\SystemAlerts\IncidentType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -44,7 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/system/incidents")
- * @ApiDoc(target="all", section="System")
+ * @ApiDoc(target="all", section="System", output="DeskPRO\Bundle\SystemBundle\Serializer\Model\Incident\StatefulIncident")
  * @ApiDoc(
  *     target="putAction",
  *     input={
@@ -56,38 +54,8 @@ class IncidentController extends CrudController
 {
     public static $entity       = AbstractIncident::class;
     public static $type         = IncidentType::class;
-    public static $exposeOnly   = ['get', 'list', 'put', 'delete'];
+    public static $exposeOnly   = ['get', 'list', 'count', 'put', 'delete'];
     public static $listPaginate = false;
-
-    /**
-     * @ApiDoc(
-     *     section="System",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     output="DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident"
-     * )
-     *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return View
-     * @Rest\Get("/{id}", requirements={"id"="\d+"})
-     */
-    public function getAction(Request $request, $id)
-    {
-        /** @var Incident $incident */
-        if (!$incident = $this->findEntity($id, $request)) {
-            throw $this->createNotFoundException();
-        }
-
-        $instructionsHtml = $this->get('dp_sys.alerts.instructions_generator')->generate($incident);
-
-        return View::create($this->wrap([
-            'incident'          => $incident,
-            'instructions_html' => $instructionsHtml,
-        ]));
-    }
 
     /**
      * {@inheritdoc}

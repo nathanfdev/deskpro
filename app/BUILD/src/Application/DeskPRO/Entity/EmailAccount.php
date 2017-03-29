@@ -40,6 +40,7 @@ use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig;
 use DeskPRO\Component\Util\IpUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @property int $id
@@ -53,6 +54,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property \DateTime $date_created
  * @property \DateTime $date_read_start
  * @property \DateTime $date_last_incoming
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class EmailAccount extends DomainObject
 {
@@ -135,11 +138,17 @@ class EmailAccount extends DomainObject
 
     /**
      * @var \Application\DeskPRO\Entity\Blob
+     *
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
      */
     protected $cert_blob = null;
 
     /**
      * @var \Application\DeskPRO\Entity\Blob
+     *
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
      */
     protected $key_blob = null;
 

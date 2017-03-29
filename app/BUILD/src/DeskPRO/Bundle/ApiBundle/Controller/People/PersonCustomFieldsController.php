@@ -39,7 +39,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *
  * @ApiModes("all")
  * @Rest\Route("/person_custom_fields")
- * @ApiDoc(target="all", section="People")
+ * @ApiDoc(target="all", section="People", output="Application\DeskPRO\Entity\CustomDefPerson")
  * @ApiDoc(
  *     target="putAction",
  *     input={

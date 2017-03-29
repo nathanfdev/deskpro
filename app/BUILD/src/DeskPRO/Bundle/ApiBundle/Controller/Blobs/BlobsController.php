@@ -52,14 +52,18 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiModes("all")
  * @Rest\Route("/blobs")
  * @ApiDoc(target="all", section="Blobs", output="Application\DeskPRO\Entity\Blob")
+ * @ApiDoc(
+ *     target="postAction",
+ *     input={
+ *       "class"="DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType"
+ *     }
+ * )
  */
 class BlobsController extends CrudController
 {
     public static $exposeOnly = ['list', 'get', 'post', 'delete'];
-
-    public static $entity = Blob::class;
-
-    public static $type = BlobAuthType::class;
+    public static $entity     = Blob::class;
+    public static $type       = BlobAuthType::class;
 
     /**
      * @Rest\Post("/temp")
@@ -370,7 +374,8 @@ class BlobsController extends CrudController
      *              "description"="The id of the resource",
      *              "dataType"="integer"
      *          }
-     *      }
+     *      },
+     *     output="DeskPRO\Bundle\AppBundle\Archive\Archive"
      * )
      * @Rest\Get("/{authId}/archive", requirements={"authId"="(\d+\-)?[A-Z0-9]+"})
      *
@@ -384,8 +389,7 @@ class BlobsController extends CrudController
     public function getArchiveInfoAction($authId, Request $request)
     {
         /** @var Blob $blob */
-        $blob = $this->findEntity($authId, $request);
-
+        $blob    = $this->findEntity($authId, $request);
         $archive = $this->getArchive($blob);
 
         try {
@@ -395,20 +399,21 @@ class BlobsController extends CrudController
             @unlink($archive);
         }
 
-        return new View(['data' => $zip->getInfo()]);
+        return new View($this->wrap($zip->getInfo()));
     }
 
     /**
      * @ApiDoc(
      *     description="See archive content",
      *     requirements={
-     *          {
-     *              "name"="authId",
-     *              "requirement"="(\d+\-)?[A-Z0-9]+",
-     *              "description"="The id of the resource",
-     *              "dataType"="integer"
-     *          }
-     *      }
+     *         {
+     *             "name"="authId",
+     *             "requirement"="(\d+\-)?[A-Z0-9]+",
+     *             "description"="The id of the resource",
+     *             "dataType"="integer"
+     *         }
+     *     },
+     *     output="array"
      * )
      * @Rest\Get("/{authId}/files", requirements={"authId"="(\d+\-)?[A-Z0-9]+"})
      *
@@ -438,24 +443,25 @@ class BlobsController extends CrudController
             @unlink($archive);
         }
 
-        return new View(['data' => $content]);
+        return new View($this->wrap($content));
     }
 
     /**
      * @ApiDoc(
      *     description="Serve archived content",
      *     requirements={
-     *          {
-     *              "name"="authId",
-     *              "requirement"="(\d+\-)?[A-Z0-9]+",
-     *              "description"="The id of the resource",
-     *              "dataType"="integer"
-     *          },
-     *          {
-     *              "name"="path",
-     *              "description"="The path of the file",
-     *          }
-     *      }
+     *         {
+     *             "name"="authId",
+     *             "requirement"="(\d+\-)?[A-Z0-9]+",
+     *             "description"="The id of the resource",
+     *             "dataType"="integer"
+     *         },
+     *         {
+     *             "name"="path",
+     *             "description"="The path of the file",
+     *         }
+     *     },
+     *     output="string"
      * )
      * @Rest\Get("/{authId}/download/{path}", requirements={"authId"="(\d+\-)?[A-Z0-9]+","path"=".+"})
      *

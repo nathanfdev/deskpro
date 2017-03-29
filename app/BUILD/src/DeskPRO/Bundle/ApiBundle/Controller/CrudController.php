@@ -87,8 +87,6 @@ abstract class CrudController extends BaseController
     public static $forcePartialUpdate = false;
 
     /**
-     * Get resource with provided id.
-     *
      * @ApiDoc(
      *      description="Get a resource",
      *      tags={"CRUD"="#ffa500"},
@@ -121,8 +119,6 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * Entities counts.
-     *
      * @ApiDoc(
      *      description="Count list",
      *      tags={"CRUD"="#ffa500"},
@@ -174,11 +170,6 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * Entities list.
-     *
-     * Selects entities based on the provided "ids" parameter or returns paginated list of no IDs provided.
-     * Look carefully at filters section to have a great filtering, grouping or sorting power
-     *
      * @ApiDoc(
      *      description="Get collection of resources",
      *      tags={"CRUD"="#ffa500"},
@@ -272,8 +263,6 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * Get data for export to CSV.
-     *
      * @Rest\Get("/csv")
      *
      * @param Request $request
@@ -286,11 +275,6 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * You can create new resource. Just provide well formed request.
-     * Look into requirements for details.
-     *
-     * **We will ship resource representation as soon as it will be created.**
-     *
      * @ApiDoc(
      *      description="Create a new resource",
      *      tags={"CRUD"="#ffa500"},
@@ -314,9 +298,6 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * Update the resource with specified ID.
-     * Look carefully in requirements section to form request well.
-     *
      * @ApiDoc(
      *      description="Update an existing resource",
      *      tags={"CRUD"="#ffa500"},
@@ -350,9 +331,6 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * Obviously it's an ability to erase what you've done.
-     * Be careful there is no CTRL+Z shortcut.
-     *
      * @ApiDoc(
      *      description="Delete a resource",
      *      tags={"CRUD"="#ffa500"},

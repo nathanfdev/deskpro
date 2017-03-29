@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
 use Application\DeskPRO\Entity\Article;
@@ -42,9 +38,12 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class QuickSearchContext.
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class QuickSearchContext
 {
@@ -61,6 +60,9 @@ class QuickSearchContext
 
     /**
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     private $type;
 
@@ -76,6 +78,10 @@ class QuickSearchContext
 
     /**
      * @var ArrayCollection
+     *
+     * @JMS\Expose()
+     * @JMS\SerializedName("results")
+     * @JMS\Type("array")
      */
     private $entities;
 

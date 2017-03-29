@@ -60,9 +60,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      *         200="Success",
      *         404="Not Found error will returned in case we can't find the specified brand"
      *     },
-     *     output={
-     *          "class"="Application\DeskPRO\Settings\GeneralPortalSettings"
-     *      }
+     *     output="Application\DeskPRO\Settings\GeneralPortalSettings"
      * )
      *
      * @Rest\Get("/new/portal/general")
@@ -85,9 +83,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      *         200="Success",
      *         404="Not Found error will returned in case we can't find the specified brand"
      *     },
-     *     output={
-     *          "class"="Application\DeskPRO\Settings\GeneralPortalSettings"
-     *      }
+     *     output="Application\DeskPRO\Settings\GeneralPortalSettings"
      * )
      *
      * @Rest\Get("/{brand}/portal/general")
@@ -114,7 +110,8 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      *     },
      *     input= {
      *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\GeneralSettingsType"
-     *     }
+     *     },
+     *     noOutput=true
      *)
      * @Rest\Post("/{brand}/portal/general")
      *

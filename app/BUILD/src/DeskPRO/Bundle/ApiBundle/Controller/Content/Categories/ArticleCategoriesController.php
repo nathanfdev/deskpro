@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Categories;
 
 use Application\DeskPRO\Entity\ArticleCategory;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
@@ -37,6 +38,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *
  * @ApiModes("all")
  * @Rest\Route("/article_categories")
+ * @ApiDoc(target="all", section="Content", output="Application\DeskPRO\Entity\ArticleCategory")
  */
 class ArticleCategoriesController extends AbstractCategoriesController
 {

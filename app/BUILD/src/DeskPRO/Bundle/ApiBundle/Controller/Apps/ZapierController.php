@@ -51,6 +51,7 @@ class ZapierController extends BaseController
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
+     *     noOutput=true
      * )
      * @Rest\Get("/ping")
      */

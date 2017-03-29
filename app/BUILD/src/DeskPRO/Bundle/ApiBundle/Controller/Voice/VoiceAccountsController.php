@@ -42,6 +42,7 @@ use FOS\RestBundle\View\View;
 use libphonenumber\PhoneNumberUtil;
 use Orb\Data\Countries;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Twilio\Exceptions\TwilioException;
 
 /**
@@ -74,7 +75,8 @@ class VoiceAccountsController extends AbstractVoiceCrudController
      *     description="Check if account credentials are correct",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     noOutput=true
      * )
      *
      * @param Request $request
@@ -105,9 +107,7 @@ class VoiceAccountsController extends AbstractVoiceCrudController
             throw new InvalidFormException($form);
         }
 
-        return new View($this->wrap([
-            'successful' => true,
-        ]));
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -115,7 +115,8 @@ class VoiceAccountsController extends AbstractVoiceCrudController
      *     description="Returns a list of available numbers to buy",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioAvailableNumber>"
      * )
      *
      * @Rest\Get("/{account}/available_numbers")
@@ -169,7 +170,11 @@ class VoiceAccountsController extends AbstractVoiceCrudController
      *     description="Returns a list of existing (bought) numbers",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     filters={
+     *          {"name"="page", "pattern"="\d", "description"="Which page to display", "dataType"="integer"}
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioPaginate"
      * )
      *
      * @Rest\Get("/{account}/existing_numbers")
@@ -185,7 +190,7 @@ class VoiceAccountsController extends AbstractVoiceCrudController
         $result = $this->get('twilio_adapter')->getExistingPhoneNumbers($account, $page);
 
         return new View($this->wrap($result->getRecords(), [
-            'pag_num'  => $result->getPageNum(),
+            'page_num' => $result->getPageNum(),
             'has_next' => $result->hasNext(),
         ]));
     }
@@ -195,7 +200,11 @@ class VoiceAccountsController extends AbstractVoiceCrudController
      *     description="Buy number",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     input={
+     *       "class"="DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceBuyNumberType"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Entity\VoiceNumber"
      * )
      *
      * @Rest\Post("/{account}/buy_number")

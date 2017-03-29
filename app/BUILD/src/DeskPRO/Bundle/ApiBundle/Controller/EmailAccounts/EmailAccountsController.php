@@ -50,20 +50,22 @@ class EmailAccountsController extends BaseController
      * Get resource with provided id.
      *
      * @ApiDoc(
-     *      section="Email accounts",
-     *      description="Upload a certificate and a key",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="default|\d+",
-     *              "description"="The id of the email account",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="We will return such status in case we found your entity",
-     *          404="Not Found error will returned in case we can't find entity with specified ID"
-     *      }
+     *     section="Email accounts",
+     *     description="Upload a certificate and a key",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="default|\d+",
+     *             "description"="The id of the email account",
+     *             "dataType"="integer"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="We will return such status in case we found your entity",
+     *         404="Not Found error will returned in case we can't find entity with specified ID"
+     *     },
+     *     noInput=true,
+     *     output="Application\DeskPRO\Entity\EmailAccount"
      * )
      * @Rest\Post("/{id}/encryption", requirements={"id"="default|\d+"})
      *
@@ -80,18 +82,17 @@ class EmailAccountsController extends BaseController
         $certificate = $request->files->get('cert');
         $key         = $request->files->get('key');
         $passPhrase  = $request->get('pass_phrase');
-
-        $certString = file_get_contents($certificate->getPathname());
-        $keyString  = file_get_contents($key->getPathname());
+        $certString  = file_get_contents($certificate->getPathname());
 
         $info = openssl_x509_parse($certString);
         if (!$info) {
             return $this->createNotFoundException('Error: Not a certificate');
         }
 
-        if (!$info['subject']['emailAddress']) {
+        if (!isset($info['subject']['emailAddress'])) {
             return $this->createNotFoundException('Error: Not an email certificate');
         }
+
         /** @var EmailAccount $account */
         $account = $this->getRepository(EmailAccount::class)->find($id);
         if (!$account) {
@@ -107,19 +108,16 @@ class EmailAccountsController extends BaseController
         $certBlob = $accept->accept($certificate);
         $keyBlob  = $accept->accept($key);
 
-        $account->setCertBlob($certBlob)
+        $account
+            ->setCertBlob($certBlob)
             ->setKeyBlob($keyBlob)
-            ->setKeyPassphrase($passPhrase);
+            ->setKeyPassPhrase($passPhrase)
+        ;
 
         $em->persist($account);
         $em->flush();
 
-        $response = [
-            'cert_blob' => $certBlob,
-            'key_blob'  => $keyBlob,
-        ];
-
-        return View::create($this->wrap($response));
+        return View::create($this->wrap($account));
     }
 
     /**

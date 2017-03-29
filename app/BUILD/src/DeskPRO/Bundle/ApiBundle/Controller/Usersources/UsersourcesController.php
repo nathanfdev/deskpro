@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/user_sources/{context}", requirements={"context": "(agent|user)"})
- * @ApiDoc(target="all", section="Usersources")
+ * @ApiDoc(target="all", section="Usersources", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Usersource")
  * @ApiUserContext("open")
  */
 class UsersourcesController extends CrudController

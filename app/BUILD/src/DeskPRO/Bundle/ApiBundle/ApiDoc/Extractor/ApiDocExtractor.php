@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
@@ -53,7 +49,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
     ];
 
     /**
-     * @return Route[]
+     * {@inheritdoc}
      */
     public function getRoutes()
     {
