@@ -122,15 +122,14 @@ export class ChatBeginContainer extends React.Component {
 
   componentWillReceiveProps(newProps) {
     const newState = {};
-    const { children, customFields, customFieldsLoaded } = this.props;
+    const { customFields, customFieldsLoaded } = this.props;
     const { chatDepartments, chatDepartmentsLoaded, chatSelectDepartmentType, chatDefaultDepartment } = this.props;
 
-    if (children !== newProps.children
-        || customFields !== newProps.customFields
+    if ((customFields && !customFields.equals(newProps.customFields))
         || customFieldsLoaded !== newProps.customFieldsLoaded
-        || chatDepartments !== newProps.chatDepartments
+        || (chatDepartments && !chatDepartments.equals(newProps.chatDepartments))
         || chatSelectDepartmentType !== newProps.chatSelectDepartmentType
-        || chatDefaultDepartment !== newProps.chatDefaultDepartment
+        || (!!chatDefaultDepartment && chatDefaultDepartment !== newProps.chatDefaultDepartment)
         || chatDepartmentsLoaded !== newProps.chatDepartmentsLoaded) {
       newState.formData = this.getInitialFormData(newProps);
     }
