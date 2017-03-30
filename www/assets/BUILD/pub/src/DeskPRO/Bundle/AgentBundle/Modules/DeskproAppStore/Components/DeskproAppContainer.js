@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import * as xcomponent from 'xcomponent/src';
 
-import * as AppMessages from '../Services/AppMessages'
+import { Messages } from '../WidgetAPI'
 
 /**
  * This container represents the integration point between an external app and deskpro.
@@ -109,11 +109,11 @@ class DeskproAppContainer extends React.Component {
     appstoreDispatcher.dispatchAppMounted(configuration.targetType, widget.config, widget.id);
 
     const subscribeTo = [
-      { eventName: AppMessages.EVENT_CONTEXTINIT, requestHandler: this.onXComponentDPContextInit },
-      AppMessages.EVENT_STATE_GET,
-      AppMessages.EVENT_STATE_SAVE,
-      AppMessages.EVENT_STATE_FIND,
-      AppMessages.EVENT_STATE_DELETE,
+      { eventName: Messages.EVENT_CONTEXTINIT, requestHandler: this.onXComponentDPContextInit },
+      Messages.EVENT_STATE_GET,
+      Messages.EVENT_STATE_SAVE,
+      Messages.EVENT_STATE_FIND,
+      Messages.EVENT_STATE_DELETE,
     ];
     widgetMessageBroker(widget.config, widgetWindow, widgetId, subscribeTo);
   };

@@ -1,11 +1,11 @@
 import ContainerDOMScanner from './Services/ContainerDOMScanner';
 import ContainerMounter from './Services/ContainerMounter';
-import AppMessageGateway from './Services/AppMessageGateway';
 import DeskproWindowMessageBrokerAdapter from './Services/DeskproWindowMessageBrokerAdapter';
 import ReduxActionDispatcher from './Services/ReduxActionDispatcher';
 import { filterAppConfig, contextsStateSelector } from './Selectors/Main';
 import DeskproAppRegistry from './Domain/DeskproAppRegistry';
 import { loadApps } from './Actions/Actions'
+import * as WidgetAPI from './WidgetAPI'
 
 let containerMounter;
 const loaderQueue = [];
@@ -104,8 +104,8 @@ class DeskproAppStore
   {
     const reduxDispatcher = ReduxActionDispatcher.fromReduxStore(reduxStore, api);
 
-    const widgetMessageRouter = AppMessageGateway.messageRouter(reduxDispatcher);
-    const widgetMessageBroker = AppMessageGateway.messageBroker(reduxDispatcher);
+    const widgetMessageRouter = WidgetAPI.MessageGateway.messageRouter(reduxDispatcher);
+    const widgetMessageBroker = WidgetAPI.MessageGateway.messageBroker(reduxDispatcher);
 
     const appConfig = filterAppConfig(reduxStore.getState());
     const appRegistry = DeskproAppRegistry.fromJS(appConfig);

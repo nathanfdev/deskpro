@@ -1,5 +1,7 @@
 import postRobot from 'post-robot/src';
-import * as AppMessages from './AppMessages';
+import * as Messages from './Messages';
+import MessageBroker from './MessageBroker';
+import MessageChannel from './MessageChannel';
 
 const requestHandlers = {};
 
@@ -43,93 +45,7 @@ function onWidgetMessage (eventName, message)
   }
 }
 
-class MessageChannel
-{
-  /**
-   * @param {String} eventName
-   * @param {WidgetConfiguration} widget
-   * @param {Function} replyHandler
-   * @param {Function} defaultRequestHandler
-   */
-  constructor(eventName, widget, replyHandler, defaultRequestHandler) {
-    this.eventName = eventName;
-    this.widget = widget;
-    this.replyHandler = replyHandler;
-    this.defaultRequestHandler = defaultRequestHandler;
-  }
-
-  bindWithHandler = (widgetWindow, id, requestHandler) => {
-
-    const { widget, replyHandler, eventName } = this;
-    const reply = message => replyHandler(widget, widgetWindow, message);
-    const dispatcher = (widgetId, message) => {
-      requestHandler(widget, message, reply)
-    };
-
-    registerRequestHandler(eventName, id, dispatcher)
-  };
-
-  bind = (widgetWindow, id) => {
-
-    const { defaultRequestHandler } = this;
-    this.bindWithHandler(widgetWindow, id, defaultRequestHandler);
-  }
-}
-
-class MessageBroker
-{
-  /**
-   * @param {AppMessageGateway} gateway
-   */
-  constructor(gateway)
-  {
-    this.gateway = gateway;
-  }
-
-  bindWidget = (widget, widgetWindow, subscriptionId, subscribeToEventsList) => {
-
-    const validSubscriptions = subscribeToEventsList.filter(subscription => this.isValidMessageSubscription(subscription));
-    if (validSubscriptions.length === 0) {
-      return false;
-    }
-
-    //bind to window message channels
-    const { gateway } = this;
-    validSubscriptions.forEach(subscription => {
-      const eventName = typeof subscription == 'string' ? subscription : subscription.eventName;
-
-      if (typeof subscription == 'string') {
-        gateway.messageChannelForEvent(eventName, widget).bind(widgetWindow, subscriptionId);
-      } else {
-        gateway.messageChannelForEvent(eventName, widget).bindWithHandler(
-          widgetWindow
-          , subscriptionId
-          , subscription.requestHandler
-        );
-      }
-    });
-
-  };
-
-  isValidMessageSubscription = (subscription) => {
-
-    let valid = typeof subscription == 'string' && AppMessages.isEventName(subscription);
-    if (valid) {
-      return valid;
-    }
-
-    valid = typeof subscription == 'object'
-      && subscription.hasOwnProperty('eventName')
-      && AppMessages.isEventName(subscription.eventName)
-      && subscription.hasOwnProperty('requestHandler')
-      && typeof subscription.requestHandler == 'function'
-    ;
-
-    return valid;
-  }
-}
-
-class AppMessageGateway
+class MessageGateway
 {
   static MessageChannel = MessageChannel;
 
@@ -148,8 +64,8 @@ class AppMessageGateway
    */
   static messageBroker(reduxDispatcher)
   {
-    const gateway = new AppMessageGateway(reduxDispatcher);
-    const broker = new AppMessageGateway.MessageBroker(gateway);
+    const gateway = new MessageGateway(reduxDispatcher);
+    const broker = new MessageGateway.MessageBroker(gateway);
 
     return broker.bindWidget.bind(broker);
   };
@@ -160,6 +76,7 @@ class AppMessageGateway
   constructor (reduxDispatcher)
   {
     this.appstoreDispatcher = reduxDispatcher;
+    //this.handlerRegistrar = (eventName, widgetId, requestHandler) => registerRequestHandler(eventName, widgetId, requestHandler);
   }
 
   /**
@@ -168,27 +85,27 @@ class AppMessageGateway
    */
   messageChannelForEvent = (eventName, widget) =>
   {
-    if (! AppMessages.isEventName(eventName)) {
+    if (! Messages.isEventName(eventName)) {
       throw new Error(`${eventName} is not a known event name`);
     }
 
-    if (eventName === AppMessages.EVENT_CONTEXTINIT) {
+    if (eventName === Messages.EVENT_CONTEXTINIT) {
       return this.contextInit(widget);
     }
 
-    if (eventName === AppMessages.EVENT_STATE_FIND) {
+    if (eventName === Messages.EVENT_STATE_FIND) {
       return this.findAppState(widget);
     }
 
-    if (eventName === AppMessages.EVENT_STATE_GET) {
+    if (eventName === Messages.EVENT_STATE_GET) {
       return this.getAppState(widget);
     }
 
-    if (eventName === AppMessages.EVENT_STATE_SAVE) {
+    if (eventName === Messages.EVENT_STATE_SAVE) {
       return this.saveAppState(widget);
     }
 
-    if (eventName === AppMessages.EVENT_STATE_DELETE) {
+    if (eventName === Messages.EVENT_STATE_DELETE) {
       return this.deleteAppState(widget);
     }
 
@@ -200,7 +117,7 @@ class AppMessageGateway
    * @return {MessageChannel}
    */
   contextInit = (widget) => {
-    const messageType = AppMessages.EVENT_CONTEXTINIT;
+    const messageType = Messages.EVENT_CONTEXTINIT;
 
     const replyHandler = (widget, widgetWindow, context) => {
       const value = context ? context : null;
@@ -208,7 +125,7 @@ class AppMessageGateway
     };
 
     const defaultHandler = (widget, message, reply) => reply(null);
-    return new AppMessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler);
+    return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
   };
 
   /**
@@ -216,7 +133,7 @@ class AppMessageGateway
    * @return {MessageChannel}
    */
   findAppState = (widget) => {
-    const messageType = AppMessages.EVENT_STATE_FIND;
+    const messageType = Messages.EVENT_STATE_FIND;
 
     const replyHandler = (widget, widgetWindow, stateList) => {
       const value = stateList ? stateList : [];
@@ -229,7 +146,7 @@ class AppMessageGateway
       appstoreDispatcher.dispatchFindAppState(widget.appConfig.id, (app, state) => reply(state))
     };
 
-    return new AppMessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler);
+    return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
   };
 
   /**
@@ -237,7 +154,7 @@ class AppMessageGateway
    * @return {MessageChannel}
    */
   getAppState = (widget) => {
-    const messageType = AppMessages.EVENT_STATE_GET;
+    const messageType = Messages.EVENT_STATE_GET;
 
     const replyHandler = (widget, widgetWindow, state) => {
       const value = state ? JSON.parse(state.value) : null;
@@ -250,7 +167,7 @@ class AppMessageGateway
       appstoreDispatcher.dispatchGetAppState(widget.appConfig.id, name, scope, (app, state) => { reply(state); });
     };
 
-    return new AppMessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler);
+    return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
   };
 
   /**
@@ -258,7 +175,7 @@ class AppMessageGateway
    * @return {MessageChannel}
    */
   saveAppState = (widget) => {
-    const messageType = AppMessages.EVENT_STATE_SAVE;
+    const messageType = Messages.EVENT_STATE_SAVE;
 
     const replyHandler = (widget, widgetWindow, state) => {
       const value = state ? JSON.parse(state.value) : null;
@@ -270,7 +187,7 @@ class AppMessageGateway
       appstoreDispatcher.dispatchSaveState(widget.appConfig.id, state, (app, state) => reply(state))
     };
 
-    return new AppMessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler);
+    return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
   };
 
   /**
@@ -278,7 +195,7 @@ class AppMessageGateway
    * @return {MessageChannel}
    */
   deleteAppState = (widget) => {
-    const messageType = AppMessages.EVENT_STATE_DELETE;
+    const messageType = Messages.EVENT_STATE_DELETE;
 
     const replyHandler = (widget, widgetWindow, state) => {
       const value = state ? JSON.parse(state.value) : null;
@@ -291,9 +208,9 @@ class AppMessageGateway
       appstoreDispatcher.dispatchDeleteState(widget.appConfig.id, name, (app, state) => reply(state))
     };
 
-    return new AppMessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler);
+    return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
   };
 
 }
 
-export default AppMessageGateway;
+export default MessageGateway;

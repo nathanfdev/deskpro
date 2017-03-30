@@ -45,11 +45,15 @@ function mountPageFragmentContainersHandler(state, payload, action)
   const allContexts = state.get('contexts');
 
   for (const context of allContexts.values()) {
-
       if (context.has('page')) { //page fragment
           const routeUrl = context.get('page').get('routeUrl');
           const pageTab = DeskPRO_Window.TabBar.findTabByRouteUrl(routeUrl);
-          DeskproAppStore.asyncLoadPageFragment(context, pageTab.page);
+          if (pageTab) {
+            DeskproAppStore.asyncLoadPageFragment(context, pageTab.page);
+          } else {
+            // TODO handle closing of tabs, unmounting of components
+            console.log('found a context (tab) which was closed without any cleanup actions executed afterwards. please fix this');
+          }
       }
   }
 
