@@ -170,7 +170,7 @@ class GuidesController extends AbstractController
     }
 
     /**
-     * @Route("/guide_full/{slug}", name="user_guides")
+     * @Route("/guide_pdf/{slug}", name="user_guides")
      * @ParamConverter(name="guide", converter="deskpro_slug")
      * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_GUIDE', guide)")
      * @PageHttpCache()

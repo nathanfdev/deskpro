@@ -315,7 +315,20 @@ class Topic extends ContentAbstract implements HighlightableModelInterface
 
     public function getContentFull()
     {
-        return preg_replace(['|<(h\d)>|', '|</h\d>|'], ['<span class="$1">', '</span>'], $this['content']);
+        return preg_replace_callback(['|<(h[1-6])>(.+?)<\/h[1-6]>|'],
+            function ($match) {
+                $id = '';
+                if ($match[1] == 'h1') {
+                    $id = strtolower($match[2]);
+                    $id = str_replace(['[', '(', ')', ':', ']'], '', $id);
+                    $id = str_replace(' ', '-', $id);
+                    $id = $this->getSlug().'_'.$id;
+                }
+
+                return '<span class="'.$match[1].'" id="'.$id.'">'.$match[2].'</span>';
+            },
+            $this['content']
+        );
     }
 
     //###########################################################################

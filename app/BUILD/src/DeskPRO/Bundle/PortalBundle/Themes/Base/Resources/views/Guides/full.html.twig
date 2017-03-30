@@ -18,9 +18,9 @@
     <div class="guides pdf">
         {% for topic in guide.topics %}
             <div class="topic">
-                <h1 id="{{ topic.slug }}">{{ topic.title }}</h1>
+                <h1 id="{{ topic.slug }}"><span class="counter">{{ topic.display_order }}</span> {{ topic.title }}</h1>
                 {% for child in topic.children %}
-                    {%  include 'Theme:Guides:full_topic.html.twig' with {'topic': child, 'depth': 2} %}
+                    {%  include 'Theme:Guides:full_topic.html.twig' with {'topic': child, 'depth': 2, 'counter': topic.display_order} %}
                 {%  endfor %}
             </div>
         {% endfor %}

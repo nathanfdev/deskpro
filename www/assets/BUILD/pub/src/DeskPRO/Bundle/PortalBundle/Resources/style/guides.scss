@@ -422,19 +422,25 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     font-family: Arial;
     max-width: 1000px;
     h1 {
+      border-width: 2px 0;
+      border-style: solid;
+      border-color: black;
+      padding: 10px 0;
+      text-align: right;
       font-weight: bold;
-      &.anchor::before {
-        content: '';
-        display: none;
-        height:50px;
+      &::before {
+        content: 'Chapter';
+        display: block;
+        font-size: smaller;
+        height: 36px;
         margin: 0;
       }
     }
     h2 {
-      font-weight: bold;
+      color: #1d3b52;
     }
     h3 {
-      font-weight: bold;
+      color: #1d3b52;
     }
     h4 {
       font-weight: bold;
@@ -452,10 +458,14 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       width: 100%;
       border-left: none;
       display: block;
+      padding: 0;
+      page-break-before: auto;
+      page-break-after: auto;
+      page-break-inside: avoid;
     }
     & > div.topic {
       position: relative;
-      page-break-before: auto;
+      page-break-before: always;
       page-break-after: auto;
       page-break-inside: avoid;
     }
@@ -481,6 +491,14 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     }
     tr {
       page-break-inside: avoid;
+    }
+    footer {
+      border-top: solid 1px black;
+      padding-top: 10px;
+      margin-top: 15px;
+      .page-number {
+        float: right;
+      }
     }
   }
 }
