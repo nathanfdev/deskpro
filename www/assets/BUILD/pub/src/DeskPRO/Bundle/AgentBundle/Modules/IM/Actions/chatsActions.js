@@ -55,8 +55,9 @@ export const hideChat = createAction(
 export const revealChat = createAction(
   'IM_REVEAL_CHAT',
   chat => (dispatch) => {
-    repository('AgentChat').revealChat(chat.get('id'));
-    dispatch(updateCollection('AgentChat', [chat.set('is_pinned', true).toJS()]));
+    repository('AgentChat').revealChat(chat.id);
+    chat.is_pinned = true;
+    dispatch(updateCollection('AgentChat', [chat]));
   }
 );
 
@@ -83,7 +84,7 @@ export const startChat = createAction(
         const store = allSelectorFactory('AgentChat')(getState());
         const chat = store.get(chatId);
         if (chatId && chat) {
-          processChat(chatId, chat, dispatch);
+          processChat(chatId, chat.toJS(), dispatch);
           return resolve(chat);
         }
 
