@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\AgentProfileType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -50,7 +51,10 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("all")
  * @Rest\Route("/agents")
- * @ApiDoc(target="all", section="Agents", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+ * @ApiDoc(target="all", section="Agents", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson")
+ * @SerializerView(mapping={
+ *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson"
+ * })
  * @ApiDoc(
  *     target="listAction",
  *     description="get list of agents",
@@ -182,6 +186,7 @@ class AgentsController extends CrudController
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         $qb->andWhere("$alias.is_agent = 1");
+        $qb->select("partial $alias.{id,first_name,last_name,name,is_agent}");
 
         $isDeleted = $request->get('is_deleted', 0);
         if ($isDeleted != -1) {

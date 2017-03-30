@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -37,6 +33,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person as SerializedPerson;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\PersonProfile;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\WidgetPerson;
@@ -110,9 +107,27 @@ class PersonHandler extends AbstractEntityHandler
                 return $this->createPersonProfile($entity);
             case WidgetPerson::class:
                 return $this->createWidgetPerson($entity);
+            case BasePerson::class:
+                return $this->createBasePerson($entity);
             default:
                 return $this->createPerson($entity);
         }
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return BasePerson
+     */
+    private function createBasePerson(Person $entity)
+    {
+        $model = new BasePerson($entity, $this->avatarResolver->getAvatarModel($entity));
+        $model->setOnline($this->agentDataService->isAgentOnline($entity));
+
+        $this->personIds[$entity->getId()] = true;
+        $model->setLastSeen(new CallbackDeferredProperty([$this, 'getLastSeen'], [$entity]));
+
+        return $model;
     }
 
     /**
@@ -122,13 +137,10 @@ class PersonHandler extends AbstractEntityHandler
      */
     private function createPerson(Person $entity)
     {
-        $model = new SerializedPerson($entity);
-        $model
-            ->setAvatar($this->avatarResolver->getAvatarModel($entity))
-            ->setOnline($this->agentDataService->isAgentOnline($entity))
-        ;
+        $model = new SerializedPerson($entity, $this->avatarResolver->getAvatarModel($entity));
+        $model->setOnline($this->agentDataService->isAgentOnline($entity));
 
-        $this->personIds[$entity->getId()] = true; // (sic!) It's faster then doing array_unique about 12-13 times
+        $this->personIds[$entity->getId()] = true;
         $model->setLastSeen(new CallbackDeferredProperty([$this, 'getLastSeen'], [$entity]));
 
         return $model;

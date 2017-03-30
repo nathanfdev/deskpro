@@ -239,11 +239,14 @@ class DepartmentDataService extends AbstractDataService
             }
         }
 
-        $personIds = array_unique(array_merge($this->mightyUsers, $personIds), SORT_NUMERIC);
-        $people    = $this->em->getRepository(Person::class)->findBy([
-            'id' => $personIds,
-        ]);
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('partial a.{id,first_name,last_name,name,is_agent}')
+            ->from(Person::class, 'a')
+            ->where('a.id IN (:ids)')
+            ->setParameter('ids', array_unique(array_merge($this->mightyUsers, $personIds), SORT_NUMERIC))
+        ;
 
-        return $people;
+        return $qb->getQuery()->getResult();
     }
 }
