@@ -42,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use DeskPRO\Component\Pagerfanta\LimitedPager;
 use DeskPRO\Component\Util\ControllerUtils;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -224,10 +225,13 @@ abstract class CrudController extends BaseController
             throw $this->createBadRequestException('You must select a limit of at least 1');
         }
 
+        $meta = [];
+
         // return QueryBuilder result or Pagerfanta depending on if pagination is enabled for the controller
         if (static::$listPaginate) {
-            $page  = (int) $request->query->getInt('page', 1);
-            $count = (int) $request->query->getInt('count', static::$listPerPage);
+            $page   = (int) $request->query->getInt('page', 1);
+            $offset = (int) $request->query->getInt('offset');
+            $count  = (int) $request->query->getInt('count', static::$listPerPage);
 
             if ($count > static::$listMaxResults) {
                 throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
@@ -235,31 +239,45 @@ abstract class CrudController extends BaseController
                 throw $this->createBadRequestException('You must select at least 1 entity');
             }
 
-            if ($limit) {
-                // adding limit to the initial qb will
-                // make the initial COUNT have a limit, which
-                // might speed it up a bit
-                $qb->setMaxResults($limit);
+            if ($offset) {
+                $qb->setMaxResults($count);
+                $qb->setFirstResult($offset);
 
-                $pagerAdapter = new DoctrineORMAdapter($qb);
-                $pager        = new LimitedPager($pagerAdapter, $limit);
+                $paginator = new Paginator($qb);
+
+                $result = $qb->getQuery()->getResult();
+                $meta   = [
+                    'per_page' => $qb->getMaxResults(),
+                    'total'    => $paginator->count(),
+                ];
             } else {
-                $pagerAdapter = new DoctrineORMAdapter($qb);
-                $pager        = new Pagerfanta($pagerAdapter);
+                if ($limit) {
+                    // adding limit to the initial qb will
+                    // make the initial COUNT have a limit, which
+                    // might speed it up a bit
+                    $qb->setMaxResults($limit);
+
+                    $pagerAdapter = new DoctrineORMAdapter($qb);
+                    $pager        = new LimitedPager($pagerAdapter, $limit);
+                } else {
+                    $pagerAdapter = new DoctrineORMAdapter($qb);
+                    $pager        = new Pagerfanta($pagerAdapter);
+                }
+
+                $pager->setMaxPerPage($count);
+                $pager->setCurrentPage($page);
+
+                $result = $pager;
             }
-
-            $pager->setMaxPerPage($count);
-            $pager->setCurrentPage($page);
-
-            $result = $pager;
         } else {
             if ($limit) {
                 $qb->setMaxResults($limit);
             }
+
             $result = $qb->getQuery()->getResult();
         }
 
-        return View::create($this->wrap($result), Response::HTTP_OK);
+        return View::create($this->wrap($result, $meta), Response::HTTP_OK);
     }
 
     /**
