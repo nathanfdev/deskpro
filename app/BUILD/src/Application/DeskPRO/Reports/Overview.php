@@ -357,7 +357,7 @@ class Overview
                         break;
                     case 'this_year':
                         $date = $this->person->getDateTime();
-                        $date->setDate($date->format('Y') - 1, 1, 1)->setTime(0, 0, 0);
+                        $date->setDate($date->format('Y'), 1, 1)->setTime(0, 0, 0);
                         break;
                     default:
                         $options->set('date_choice', 'today');
@@ -408,7 +408,7 @@ class Overview
                         break;
                     case 'this_year':
                         $date = $this->person->getDateTime();
-                        $date->setDate($date->format('Y') - 1, 1, 1)->setTime(0, 0, 0);
+                        $date->setDate($date->format('Y'), 1, 1)->setTime(0, 0, 0);
                         break;
                     default:
                         $options->set('date_choice', 'today');
@@ -514,7 +514,7 @@ class Overview
                         break;
                     case 'this_year':
                         $date = $this->person->getDateTime();
-                        $date->setDate($date->format('Y') - 1, 1, 1)->setTime(0, 0, 0);
+                        $date->setDate($date->format('Y'), 1, 1)->setTime(0, 0, 0);
                         break;
                     default:
                         $options->set('date_choice', 'today');
@@ -627,7 +627,7 @@ class Overview
                         break;
                     case 'this_year':
                         $date = $this->person->getDateTime();
-                        $date->setDate($date->format('Y') - 1, 1, 1)->setTime(0, 0, 0);
+                        $date->setDate($date->format('Y'), 1, 1)->setTime(0, 0, 0);
                         break;
                     default:
                         $options->set('date_choice', 'today');
