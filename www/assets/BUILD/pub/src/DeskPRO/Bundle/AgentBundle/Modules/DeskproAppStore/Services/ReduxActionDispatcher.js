@@ -50,23 +50,29 @@ class ReduxActionDispatcher
     reduxDispatch(action);
   };
 
-  dispatchFindAllAppState = (appId, callback) =>
+  dispatchFindAppState = (appId, callback) =>
   {
     const { reduxDispatch, api } = this;
-    reduxDispatch(Actions.findAllAppState(appId, api, callback));
+    reduxDispatch(Actions.findAppState(appId, api, callback));
   };
 
   dispatchGetAppState = (appId, name, scope, callback) =>
   {
     const { reduxDispatch, api} = this;
-    reduxDispatch(Actions.getAppState(appId, name, scope, api, callback));
+    reduxDispatch(Actions.getAppState(appId, name, scope, callback, api));
   };
 
   dispatchSaveState = (appId, state, callback) =>
   {
     const { reduxDispatch, api } = this;
-    reduxDispatch(Actions.saveState(appId, state, callback, api));
-  }
+    reduxDispatch(Actions.saveAppState(appId, state, callback, api));
+  };
+
+  dispatchDeleteState = (appId, name, callback) =>
+  {
+    const { reduxDispatch, api } = this;
+    reduxDispatch(Actions.deleteAppState(appId, name, callback, api));
+  };
 }
 
 export default ReduxActionDispatcher;

@@ -176,16 +176,20 @@ class AppMessageGateway
       return this.contextInit(widget);
     }
 
-    if (eventName === AppMessages.EVENT_FIND_ALL_STATE) {
-      return this.findAllAppState(widget);
+    if (eventName === AppMessages.EVENT_STATE_FIND) {
+      return this.findAppState(widget);
     }
 
-    if (eventName === AppMessages.EVENT_GET_STATE) {
+    if (eventName === AppMessages.EVENT_STATE_GET) {
       return this.getAppState(widget);
     }
 
-    if (eventName === AppMessages.EVENT_SAVE_STATE) {
+    if (eventName === AppMessages.EVENT_STATE_SAVE) {
       return this.saveAppState(widget);
+    }
+
+    if (eventName === AppMessages.EVENT_STATE_DELETE) {
+      return this.deleteAppState(widget);
     }
 
     throw new Error(`Could not find a message channel for event ${eventName}`);
@@ -196,34 +200,36 @@ class AppMessageGateway
    * @return {MessageChannel}
    */
   contextInit = (widget) => {
+    const messageType = AppMessages.EVENT_CONTEXTINIT;
 
     const replyHandler = (widget, widgetWindow, context) => {
       const value = context ? context : null;
-      postRobot.send(widgetWindow, AppMessages.EVENT_CONTEXTINIT, value);
+      postRobot.send(widgetWindow, messageType, value);
     };
 
     const defaultHandler = (widget, message, reply) => reply(null);
-    return new AppMessageGateway.MessageChannel(AppMessages.EVENT_CONTEXTINIT, widget, replyHandler, defaultHandler);
+    return new AppMessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler);
   };
 
   /**
    * @param {WidgetConfiguration} widget
    * @return {MessageChannel}
    */
-  findAllAppState = (widget) => {
+  findAppState = (widget) => {
+    const messageType = AppMessages.EVENT_STATE_FIND;
 
     const replyHandler = (widget, widgetWindow, stateList) => {
       const value = stateList ? stateList : [];
-      postRobot.send(widgetWindow, AppMessages.EVENT_FIND_ALL_STATE, value);
+      postRobot.send(widgetWindow, messageType, value);
     };
 
     //TODO handler postMessages without a payload (second argument)
     const { appstoreDispatcher } = this;
     const defaultHandler = (widget, message, reply) => {
-      appstoreDispatcher.dispatchFindAllAppState(widget.appConfig.id, (app, state) => reply(state))
+      appstoreDispatcher.dispatchFindAppState(widget.appConfig.id, (app, state) => reply(state))
     };
 
-    return new AppMessageGateway.MessageChannel(AppMessages.EVENT_FIND_ALL_STATE, widget, replyHandler, defaultHandler);
+    return new AppMessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler);
   };
 
   /**
@@ -231,10 +237,11 @@ class AppMessageGateway
    * @return {MessageChannel}
    */
   getAppState = (widget) => {
+    const messageType = AppMessages.EVENT_STATE_GET;
 
     const replyHandler = (widget, widgetWindow, state) => {
       const value = state ? JSON.parse(state.value) : null;
-      postRobot.send(widgetWindow, AppMessages.EVENT_GET_STATE, value);
+      postRobot.send(widgetWindow, messageType, value);
     };
 
     const { appstoreDispatcher } = this;
@@ -243,7 +250,7 @@ class AppMessageGateway
       appstoreDispatcher.dispatchGetAppState(widget.appConfig.id, name, scope, (app, state) => { reply(state); });
     };
 
-    return new AppMessageGateway.MessageChannel(AppMessages.EVENT_GET_STATE, widget, replyHandler, defaultHandler);
+    return new AppMessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler);
   };
 
   /**
@@ -251,10 +258,11 @@ class AppMessageGateway
    * @return {MessageChannel}
    */
   saveAppState = (widget) => {
+    const messageType = AppMessages.EVENT_STATE_SAVE;
 
     const replyHandler = (widget, widgetWindow, state) => {
       const value = state ? JSON.parse(state.value) : null;
-      postRobot.send(widgetWindow, AppMessages.EVENT_SAVE_STATE, value);
+      postRobot.send(widgetWindow, messageType, value);
     };
 
     const { appstoreDispatcher } = this;
@@ -262,7 +270,28 @@ class AppMessageGateway
       appstoreDispatcher.dispatchSaveState(widget.appConfig.id, state, (app, state) => reply(state))
     };
 
-    return new AppMessageGateway.MessageChannel(AppMessages.EVENT_SAVE_STATE, widget, replyHandler, defaultHandler);
+    return new AppMessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler);
+  };
+
+  /**
+   * @param {WidgetConfiguration} widget
+   * @return {MessageChannel}
+   */
+  deleteAppState = (widget) => {
+    const messageType = AppMessages.EVENT_STATE_DELETE;
+
+    const replyHandler = (widget, widgetWindow, state) => {
+      const value = state ? JSON.parse(state.value) : null;
+      postRobot.send(widgetWindow, messageType, value);
+    };
+
+    const { appstoreDispatcher } = this;
+    const defaultHandler = (widget, state, reply) => {
+      const { name } = state;
+      appstoreDispatcher.dispatchDeleteState(widget.appConfig.id, name, (app, state) => reply(state))
+    };
+
+    return new AppMessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler);
   };
 
 }

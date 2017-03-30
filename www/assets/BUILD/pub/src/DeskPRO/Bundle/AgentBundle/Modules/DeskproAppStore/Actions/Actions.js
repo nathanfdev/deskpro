@@ -3,9 +3,11 @@ import { createAction } from 'DeskPRO/Component/Ampliflux';
 export const DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS = 'DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS';
 export const DESKPRO_APPSTORE_MOUNT_PAGE_FRAGMENT_CONTAINERS = 'DESKPRO_APPSTORE_MOUNT_PAGE_FRAGMENT_CONTAINERS';
 export const DESKPRO_APPSTORE_LOAD_APPS = 'DESKPRO_APPSTORE_LOAD_APPS';
-export const DESKPRO_APPSTORE_FIND_ALL_STATE = 'DESKPRO_APPSTORE_FIND_ALL_STATE';
-export const DESKPRO_APPSTORE_GET_STATE = 'DESKPRO_APPSTORE_GET_STATE';
 export const DESKPRO_APPSTORE_APP_MOUNTED = 'DESKPRO_APPSTORE_APP_MOUNTED';
+
+export const DESKPRO_APPSTORE_STATE_FIND = 'DESKPRO_APPSTORE__STATE_FIND';
+export const DESKPRO_APPSTORE_STATE_GET = 'DESKPRO_APPSTORE_STATE_GET';
+export const DESKPRO_APPSTORE_STATE_DELETE = 'DESKPRO_APPSTORE_STATE_DELETE';
 
 
 /**
@@ -61,9 +63,9 @@ export const appMounted = createAction(
 /**
  * creates an action that will load the app configuration for the current security principal
  */
-export const findAllAppState = createAction(
-  DESKPRO_APPSTORE_FIND_ALL_STATE,
-  (appId, api, callback) =>  api.sendGet(`DP_API/apps/${appId}/state`)
+export const findAppState = createAction(
+  DESKPRO_APPSTORE_STATE_FIND,
+  (appId, callback, api) =>  api.sendGet(`DP_API/apps/${appId}/state`)
     .then(httpResponse => httpResponse.data)
     .then(state => { callback(appId, state); return state; } )
 );
@@ -72,25 +74,62 @@ export const findAllAppState = createAction(
  * creates an action that will load the app configuration for the current security principal
  */
 export const getAppState = createAction(
-  DESKPRO_APPSTORE_GET_STATE,
-  (appId, name, scope, api, callback) =>  api.sendGet(`DP_API/apps/${appId}/state/${name}/${scope}`)
+  DESKPRO_APPSTORE_STATE_GET,
+  (appId, name, scope, callback, api) =>  api.sendGet(`DP_API/apps/${appId}/state/${name}/${scope}`)
     .then(httpResponse => httpResponse.data)
-    .then(state => { callback(appId, state); return state; } )
-    .catch(httpResponse => httpResponse.data )
-    .then(data => {
-
-      if (404 === data.status) {
-        callback(appId, null);
-        return;
+    .catch(httpResponse => {
+      if (httpResponse instanceof Error) {
+        return httpResponse;
       }
-       throw new Error('Failed to retrieve app state');
+
+      if (404 === httpResponse.data.status) {
+        return null;
+      }
+
+      return new Error('failed to get app state');
+    })
+    .then(data => {
+      if (data instanceof Error) {
+        callback(appId, null);
+        throw data;
+      }
+      callback(appId, data);
+      return data;
+    })
+);
+
+/**
+ * creates an action that will delete a state variable by name
+ */
+export const deleteAppState = createAction(
+  DESKPRO_APPSTORE_STATE_DELETE,
+  (appId, name, callback, api) =>  api.sendDelete(`DP_API/apps/${appId}/state/${name}`)
+    .then(httpResponse => httpResponse.data)
+    .catch(httpResponse => {
+      if (httpResponse instanceof Error) {
+        return httpResponse;
+      }
+
+      if (404 === httpResponse.data.status) {
+        return null;
+      }
+
+      return new Error('failed to delete app state');
+    })
+    .then(data => {
+      if (data instanceof Error) {
+        callback(appId, null);
+        throw data;
+      }
+      callback(appId, data);
+      return data;
     })
 );
 
 /**
  * creates an action that will load the app configuration for the current security principal
  */
-export const saveState = createAction(
+export const saveAppState = createAction(
   DESKPRO_APPSTORE_LOAD_APPS,
   (appId, state, callback, api) =>  api.sendPost(`DP_API/apps/${appId}/state`, state)
     .then(httpResponse => httpResponse.data)

@@ -110,9 +110,10 @@ class DeskproAppContainer extends React.Component {
 
     const subscribeTo = [
       { eventName: AppMessages.EVENT_CONTEXTINIT, requestHandler: this.onXComponentDPContextInit },
-      AppMessages.EVENT_GET_STATE,
-      AppMessages.EVENT_SAVE_STATE,
-      AppMessages.EVENT_FIND_ALL_STATE
+      AppMessages.EVENT_STATE_GET,
+      AppMessages.EVENT_STATE_SAVE,
+      AppMessages.EVENT_STATE_FIND,
+      AppMessages.EVENT_STATE_DELETE,
     ];
     widgetMessageBroker(widget.config, widgetWindow, widgetId, subscribeTo);
   };

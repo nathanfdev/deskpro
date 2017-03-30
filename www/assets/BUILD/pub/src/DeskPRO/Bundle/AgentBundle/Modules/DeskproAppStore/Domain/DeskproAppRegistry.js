@@ -52,8 +52,10 @@ class DeskproAppRegistry
     const xconfig = {
       tag,
       url,
-      dimensions: { width: '100%', height: '100%' },
-      timeout: 1000, // seconds
+      scrolling: false,
+      autoResize: true,
+      dimensions: { width: '100%', height: 500 },
+      timeout: 3000, // millis
       // The properties they can (or must) pass down to my component
       props: {
 
