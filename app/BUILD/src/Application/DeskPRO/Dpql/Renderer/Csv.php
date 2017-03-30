@@ -32,6 +32,8 @@
 
 namespace Application\DeskPRO\Dpql\Renderer;
 
+use Application\DeskPRO\Dpql\ResultHandler;
+
 /**
  * Renders DPQL results to CSV.
  */
@@ -105,7 +107,7 @@ class Csv extends AbstractRenderer
             return '';
         }
 
-        if ($this->_handler->getGroupXColumns()) {
+        if ($this->_handler->getGroupXColumns() && !$this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL)) {
             return $this->_renderMatrixTable($rows);
         }
 
