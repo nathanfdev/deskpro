@@ -84,7 +84,7 @@ export class SideBarContainer extends SeparateComponent {
   }
 
   static canUseChat() {
-    return window.DESKPRO_PERSON_PERMS['agent_chat.use'] && window.DESKPRO_APP_SETTINGS['core.apps_chat'];
+    return window.DESKPRO_PERSON_PERMS['agent_chat.use'];
   }
 
   static canUsePeople() {
@@ -92,18 +92,15 @@ export class SideBarContainer extends SeparateComponent {
   }
 
   static canUseFeedback() {
-    return window.DESKPRO_APP_SETTINGS['core.apps_feedback'];
+    return true;
   }
 
   static canUsePublish() {
-    return window.DESKPRO_APP_SETTINGS['core.apps_kb']
-      || window.DESKPRO_APP_SETTINGS['core.apps_news']
-      || window.DESKPRO_APP_SETTINGS['core.apps_downloads'];
+    return true;
   }
 
   static canUseTasks() {
-    return window.DESKPRO_APP_SETTINGS['core.apps_tasks']
-      && window.DESKPRO_PERSON_PERMS['agent_tasks.use'];
+    return window.DESKPRO_PERSON_PERMS['agent_tasks.use'];
   }
 
   static canUseReports() {
