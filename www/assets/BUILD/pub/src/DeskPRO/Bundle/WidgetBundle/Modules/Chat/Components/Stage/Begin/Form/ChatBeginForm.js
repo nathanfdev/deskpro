@@ -38,7 +38,7 @@ export class ChatBeginForm extends React.Component {
   }
 
   render() {
-    const { customFields, allowDepartmentSelection, chatDepartments, chatRequiredName, chatRequiredEmail } = this.props;
+    const { customFields, allowDepartmentSelection, chatRequiredName, chatRequiredEmail } = this.props;
     const { submit, errors, onSubmit, widgetLanguage, loggedIn } = this.props;
 
     return (
@@ -67,7 +67,7 @@ export class ChatBeginForm extends React.Component {
                   <Input type="email" />
                 </Field>
               </FormItem>}
-            {allowDepartmentSelection && chatDepartments.size > 1 && this.renderDepartmentSelect()}
+            {allowDepartmentSelection && this.renderDepartmentSelect()}
             {customFields.valueSeq().map((customField, index) =>
               <CustomField
                 key={index}
