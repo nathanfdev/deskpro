@@ -66,7 +66,7 @@ export default class TopBarRecentImListItem extends React.Component {
 
   static propTypes = {
     className:         PropTypes.string.isRequired,
-    chat:              PropTypes.string.isRequired,
+    chat:              PropTypes.object.isRequired,
     children:          PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     onClick:           PropTypes.func.isRequired,
     draggable:         PropTypes.bool.isRequired,

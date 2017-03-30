@@ -1,6 +1,11 @@
 import { createAction } from 'Ampliflux';
 import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { addToCollection, removeFromCollection, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import {
+  addToCollection,
+  removeFromCollection,
+  allSelectorFactory,
+  updateCollection
+} from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const toggleOverlay = createAction('IM_TOGGLE_OVERLAY');
 
@@ -40,24 +45,18 @@ export const closeGroupDrawer = createAction('IM_CLOSE_GROUP_ADD_DRAWER');
 
 export const hideChat = createAction(
   'IM_HIDE_CHAT',
-  (chatId, hideTime) => (dispatch) => {
-    dispatch(closeChat(chatId));
-    const hiddenChats = localStorage.getItem('hiddenChats') ? JSON.parse(localStorage.getItem('hiddenChats')) : {};
-    hiddenChats[chatId] = hideTime;
-    localStorage.setItem('hiddenChats', JSON.stringify(hiddenChats));
-    return hiddenChats;
+  chat => (dispatch) => {
+    repository('AgentChat').hideChat(chat.get('id'));
+    dispatch(closeChat(chat.get('id')));
+    dispatch(updateCollection('AgentChat', [chat.set('is_pinned', false).toJS()]));
   }
 );
 
 export const revealChat = createAction(
   'IM_REVEAL_CHAT',
-  (chatId) => {
-    const hiddenChats = localStorage.getItem('hiddenChats') ? JSON.parse(localStorage.getItem('hiddenChats')) : {};
-    if (hiddenChats[chatId]) {
-      delete hiddenChats[chatId];
-      localStorage.setItem('hiddenChats', JSON.stringify(hiddenChats));
-    }
-    return hiddenChats;
+  chat => (dispatch) => {
+    repository('AgentChat').revealChat(chat.get('id'));
+    dispatch(updateCollection('AgentChat', [chat.set('is_pinned', true).toJS()]));
   }
 );
 
@@ -66,7 +65,7 @@ const processChat = (chatId, chat, dispatch) => {
   records[chatId] = chat;
   dispatch(markChatAsStartedByMe(chatId));
   dispatch(addToCollection('AgentChat', 'recent', records, [parseInt(chatId, 10)]));
-  dispatch(revealChat(chatId));
+  dispatch(revealChat(chat));
   dispatch(markChatAsManuallyClosed(chatId));
 
   return records;

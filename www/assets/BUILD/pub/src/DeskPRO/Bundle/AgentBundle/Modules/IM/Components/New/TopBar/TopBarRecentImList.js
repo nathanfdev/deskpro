@@ -39,7 +39,6 @@ export default class TopBarRecentImList extends RecentList {
     agentsLoaded:      PropTypes.bool.isRequired,
     counts:            PropTypes.object,
     onHideChat:        PropTypes.func,
-    hiddenChats:       PropTypes.object,
     startedByMeChats:  PropTypes.object
   };
 
@@ -49,9 +48,6 @@ export default class TopBarRecentImList extends RecentList {
     },
     counts: {
       nested: {}
-    },
-    hiddenChats: {
-
     }
   };
 
@@ -65,11 +61,6 @@ export default class TopBarRecentImList extends RecentList {
     this.updateOrder = false;
     const order = chats.size > 0 ? chats.sort((a, b) => b.get('order') - a.get('order')).first().get('order') : 0;
     return order + 1;
-  }
-
-  static filterByHidden(chat, hiddenChats) {
-    const date = chat.get('date_last_message') || chat.get('date_created');
-    return !hiddenChats[chat.get('id')] || hiddenChats[chat.get('id')] < (Date.parse(date));
   }
 
   constructor(props) {
@@ -109,26 +100,28 @@ export default class TopBarRecentImList extends RecentList {
 
   componentWillReceiveProps(props) {
     const { chats } = this.state;
-    const { hiddenChats, me, startedByMeChats } = props;
+    const { me, startedByMeChats } = props;
     let filtered = chats;
 
-    if (hiddenChats || startedByMeChats) {
-      filtered = filtered.filter((chat) => {
-        if (!chat.get('date_last_message') && !((startedByMeChats && startedByMeChats.get(chat.get('id'))) || me.get('id') === chat.get('admin'))) {
-          return false;
-        }
 
-        return TopBarRecentImList.filterByHidden(chat, hiddenChats);
-      });
-    }
+    filtered = filtered.filter((chat) => {
+      if (!chat.get('date_last_message') && !((startedByMeChats && startedByMeChats.get(chat.get('id'))) || me.get('id') === chat.get('admin'))) {
+        return false;
+      }
 
-    if (props.chats) {
-      props.chats.filter(chat => TopBarRecentImList.filterByHidden(chat, hiddenChats)).forEach((chat) => {
+      return chat.get('is_pinned');
+    });
+
+    let propsChats = props.chats;
+
+    if (propsChats) {
+      propsChats = propsChats.filter(chat => chat.get('is_pinned'));
+      propsChats.forEach((chat) => {
         const order = filtered.getIn([chat.get('id'), 'order']) || props.imSettings.getIn(['chats_order', `${chat.get('id')}`]) || this.getNextOrder(filtered);
         filtered = filtered.set(chat.get('id'), chat.set('order', order));
       });
     }
-    filtered = filtered.filter(chat => props.chats.has(chat.get('id')));
+    filtered = filtered.filter(chat => propsChats.has(chat.get('id')));
 
     const sorted = filtered.sort((a, b) => a.get('order') - b.get('order'));
 
