@@ -419,6 +419,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     }
   }
   &.pdf {
+    font-family: Arial;
     max-width: 1000px;
     h1 {
       font-weight: bold;
@@ -450,14 +451,18 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     div.topic {
       width: 100%;
       border-left: none;
+      display: block;
     }
-    div.topic {
+    & > div.topic {
       position: relative;
       page-break-before: auto;
       page-break-after: auto;
       page-break-inside: avoid;
     }
     div.block {
+      page-break-before: auto;
+      page-break-after: auto;
+      page-break-inside: avoid;
       position: relative;
       width: 60%;
       &::before {
@@ -471,9 +476,10 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       position: relative;
       width: 80%;
     }
-    img {
-      page-break-before: auto;
-      page-break-after: auto;
+    thead {
+      display: table-header-group;
+    }
+    tr {
       page-break-inside: avoid;
     }
   }
