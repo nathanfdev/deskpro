@@ -1857,9 +1857,9 @@ class TemplatingExtension extends \Twig_Extension
                 '|{{\s*content_link\(([^,]+),([^),]+)(,[^)]+)?\)\s*}}|' => function ($match) {
                     $type = trim($match[1]);
                     $id = trim($match[2]);
-                    $title = empty($match[3]) ? '' : trim($match[3]);
+                    $anchor = empty($match[3]) ? '' : trim($match[3], ", \t\n\r\0\x0B");
 
-                    return $this->getManualInternalLink($type, $id, $title);
+                    return $this->getManualInternalLink($type, $id, '', $anchor);
                 },
             ],
             $content
@@ -1871,7 +1871,7 @@ class TemplatingExtension extends \Twig_Extension
         return App::get('router')->generate('serve_blob', ['blob_auth_id' => $authId, 'filename' => $filename], false);
     }
 
-    public function getManualInternalLink($type, $id, $title = '')
+    public function getManualInternalLink($type, $id, $title = '', $anchor = '')
     {
         $em = $this->getContainer()->getEm();
         switch ($type) {
@@ -1900,6 +1900,9 @@ class TemplatingExtension extends \Twig_Extension
             return '-- Broken link - '.$type.':'.$id.' --';
         }
         $url = $this->getContainer()->get('object_router')->getPortalUrl($object);
+        if ($anchor) {
+            $url .= '#'.$anchor;
+        }
         if (!$title) {
             $title = $object->getTitle();
         }

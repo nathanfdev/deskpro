@@ -39,6 +39,8 @@ class TopicSummary extends React.Component {
 
   render() {
     const { fixed } = this.props;
+    const agentBar = window.document.getElementById('agent-bar');
+    const offset = agentBar ? -50 : 0;
     return (
       <div className={classNames('topic-summary', { fixed })}>
         {this.state.h1s.length > 1 ?
@@ -50,6 +52,7 @@ class TopicSummary extends React.Component {
                   href={`#${h1.id}`}
                   className={classNames({ active: this.state.activeId === h1.id })}
                   to={h1.id}
+                  offset={offset}
                   spy
                   smooth
                   onSetActive={this.handleSetActive}

@@ -65,8 +65,6 @@ class ViewTopic extends React.Component {
   componentDidUpdate() {
     if (this.contentChanged) {
       this.contentChanged = false;
-      this.changeInternalLinks();
-      this.addAnchorLinks();
       this.defineSizes();
     }
   }
@@ -237,9 +235,17 @@ class ViewTopic extends React.Component {
     Array.prototype.forEach.call(links, (internalLink) => {
       const newLink = document.createElement('a');
       newLink.className = 'internal_link topic';
-      newLink.onclick = e => this.internalLink(e, internalLink.pathname);
+      let target = internalLink.pathname;
+      if (internalLink.pathname === window.location.pathname) {
+        newLink.href = internalLink.hash;
+      } else {
+        newLink.onclick = e => this.internalLink(e, target);
+        newLink.href = '#';
+        if (internalLink.hash) {
+          target += internalLink.hash;
+        }
+      }
       newLink.innerText = internalLink.text;
-      newLink.href = '#';
       internalLink.parentNode.replaceChild(newLink, internalLink);
     });
   };
@@ -277,6 +283,19 @@ class ViewTopic extends React.Component {
 
   internalLink = (e, path) => {
     e.preventDefault();
+    const guideSlug = path.replace(/^(\/[^/]+)?\/guides\//, '').replace(/\/.*/, '');
+    if (guideSlug !== this.state.guideSlug) {
+      portalHttp.sendGet(`DP_URL/portal/api/guides/topics/${guideSlug}`).then((response) => {
+        if (response.isError()) {
+          return;
+        }
+
+        const topics = response.data.data;
+        this.setState({
+          topics,
+        });
+      });
+    }
     browserHistory.push(path);
     return false;
   };
@@ -297,11 +316,28 @@ class ViewTopic extends React.Component {
         doSpin: false,
         topic,
       });
+      this.changeInternalLinks();
+      this.addAnchorLinks();
       this.tabs();
       window.scrollTo(0, 0);
       setTimeout(this.defineSizes, 100);
+      setTimeout(this.hashLinkScroll, 100);
     });
   }
+
+  hashLinkScroll = () => {
+    const { hash } = window.location;
+    if (hash !== '') {
+      // Push onto callback queue so it runs after the DOM is updated,
+      // this is required when navigating from a different page so that
+      // the element is rendered on the page before trying to getElementById.
+      setTimeout(() => {
+        const id = hash.replace('#', '');
+        const element = document.getElementById(id);
+        if (element) element.scrollIntoView();
+      }, 0);
+    }
+  };
 
   selectGuide = (guide) => {
     portalHttp.sendGet(`DP_URL/portal/api/guides/topics/${guide.slug}`).then((response) => {
