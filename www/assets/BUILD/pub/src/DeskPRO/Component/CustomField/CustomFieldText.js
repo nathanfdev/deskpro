@@ -1,6 +1,7 @@
 import React from 'react';
+import { Field } from 'react-forms';
+import { Input } from 'DeskPRO/Component/Semantic/ReactForm';
 import { AbstractCustomField } from './AbstractCustomField';
-import { Field, Input } from 'react-forms';
 
 export class CustomFieldText extends AbstractCustomField {
 

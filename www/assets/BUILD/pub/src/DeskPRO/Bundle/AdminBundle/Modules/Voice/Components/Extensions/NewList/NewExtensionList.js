@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
 import _ from 'lodash';
-import { Fieldset, Input, createValue } from 'react-forms';
-import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Fieldset, createValue } from 'react-forms';
+import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
 import BackButton from '../../../../Common/Components/BackButton';
 import ExtensionsHeader from '../ExtensionsHeader';

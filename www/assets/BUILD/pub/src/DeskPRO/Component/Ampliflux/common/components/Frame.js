@@ -137,7 +137,7 @@ export class Frame extends React.Component {
         }
       }
 
-      const contents = React.createElement('div', containerDimensions, children);
+      const contents = React.createElement('div', { style: containerDimensions }, children);
       ReactDOM.render(contents, doc.body.firstChild);
     } else {
       setTimeout(() => this.renderFrameContents(), 0);

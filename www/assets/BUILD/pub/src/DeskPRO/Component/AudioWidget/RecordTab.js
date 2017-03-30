@@ -1,8 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import RecordRTC from 'recordrtc';
-import { Input } from 'react-forms';
-import { Field, SemanticError } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Input, Field, SemanticError } from 'DeskPRO/Component/Semantic/ReactForm';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import BaseUploadTab from './BaseUploadTab';
 import { UploadPlayButton } from './PlayButton';
