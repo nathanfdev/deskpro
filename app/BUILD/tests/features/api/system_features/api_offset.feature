@@ -20,20 +20,18 @@ Feature: CRUD offset
   Scenario: I get list w/o offset
     When I send a GET request to "/api/v2/people?&order_dir=asc"
     Then the JSON node "data" should have 10 elements
-    And the JSON node "meta.per_page" should not exist
-    And the JSON node "meta.total" should not exist
 
   Scenario: I get list w/ offset and default count
     When I send a GET request to "/api/v2/people?&order_dir=asc&offset=5"
     Then the JSON node "data" should have 6 elements
     And the JSON node "data[0].id" should be equal to "{u5}"
-    And the JSON node "meta.per_page" should be equal to 10
-    And the JSON node "meta.total" should be equal to 11
+    And the JSON node "meta.pagination.per_page" should be equal to 10
+    And the JSON node "meta.pagination.total" should be equal to 11
 
   Scenario: I get list w/ offset and count
     When I send a GET request to "/api/v2/people?&order_dir=asc&offset=5&count=2"
     Then the JSON node "data" should have 2 elements
     And the JSON node "data[0].id" should be equal to "{u5}"
     And the JSON node "data[1].id" should be equal to "{u6}"
-    And the JSON node "meta.per_page" should be equal to 2
-    And the JSON node "meta.total" should be equal to 11
+    And the JSON node "meta.pagination.per_page" should be equal to 2
+    And the JSON node "meta.pagination.total" should be equal to 11

@@ -247,8 +247,10 @@ abstract class CrudController extends BaseController
 
                 $result = $qb->getQuery()->getResult();
                 $meta   = [
-                    'per_page' => $qb->getMaxResults(),
-                    'total'    => $paginator->count(),
+                    'pagination' => [
+                        'per_page' => $qb->getMaxResults(),
+                        'total'    => $paginator->count(),
+                    ],
                 ];
             } else {
                 if ($limit) {
