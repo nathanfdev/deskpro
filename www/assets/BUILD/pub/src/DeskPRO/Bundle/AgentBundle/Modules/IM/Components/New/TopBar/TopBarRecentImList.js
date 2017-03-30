@@ -326,6 +326,10 @@ export default class TopBarRecentImList extends RecentList {
 
   renderRemainedChats() {
     let size = this.state.chats.size - this.state.slice;
+    const chats = this.calculateChats(true);
+    if (size === 1) {
+      return this.getItem(chats.first(), true);
+    }
     size = size > 0 ? size : 0;
     size = size > 99 ? 99 : size;
     size = size > 9 ? size : `+${size}`;
@@ -337,7 +341,7 @@ export default class TopBarRecentImList extends RecentList {
       containerWidth = 52;
     }
 
-    const chats = this.calculateChats(true);
+
     const overallCount = chats.reduce((carry, chat) => carry + this.getNotificationCount(chat), 0);
 
     return (size > 0 ?
@@ -366,7 +370,7 @@ export default class TopBarRecentImList extends RecentList {
                   contentClassName="dpscrollarea overflow-content"
                   vertical
                 >
-                  {chats.map(chat => this.getItem(chat))}
+                  {chats.map(chat => this.getItem(chat, false))}
                 </ScrollArea>
               </div>
             </ClickOut>
