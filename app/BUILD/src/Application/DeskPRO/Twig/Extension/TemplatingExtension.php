@@ -1874,7 +1874,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function getBlobImage($authId, $filename)
     {
-        return 'http://support.deskpro.com'.App::get('router')->generate('serve_blob', ['blob_auth_id' => $authId, 'filename' => $filename], false);
+        return App::get('router')->generate('serve_blob', ['blob_auth_id' => $authId, 'filename' => $filename], UrlGeneratorInterface::ABSOLUTE_PATH);
     }
 
     public function getManualInternalLink($type, $id, $title = '', $anchor = '', $pdf = false)
