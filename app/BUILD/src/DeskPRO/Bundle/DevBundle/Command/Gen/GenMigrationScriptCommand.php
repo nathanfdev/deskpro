@@ -64,7 +64,7 @@ class GenMigrationScriptCommand extends ContainerAwareCommand
      */
     protected function configure()
     {
-        $this->setName('dpdev:gen:migration-script');
+        $this->setName('dpdev:gen:migration-script')->setAliases(['dpdev:gen-build-class']);
         $this->addOption('out', null, InputOption::VALUE_NONE, 'Output to stdout instead of writing it');
         $this->addOption('blocking', null, InputOption::VALUE_NONE, 'Force use of BlockingBuildInterface');
         $this->addOption('skip-manifest', null, InputOption::VALUE_NONE, 'Do not update manifest (always skipped if --out is being used)');
@@ -251,16 +251,21 @@ class GenMigrationScriptCommand extends ContainerAwareCommand
             $buildDir     = $baseBuildDir.'/'.date('Y/m', $this->buildTime);
             $filePath     = $buildDir.'/'.$className.'.php';
             $manifestPath = $baseBuildDir.'/build-manifest.php';
+            $timePath     = $DP_ENV->getAppDir().'/sys/config/build-time.txt';
 
             if (!is_dir($buildDir)) {
                 mkdir($buildDir, 0744, true);
             }
 
-            echo "Writing $filePath\n";
+            echo "Generating buildscript:    $filePath\n";
             file_put_contents($filePath, $buffer);
             echo " .. done\n";
 
-            echo "Generating manifest to $manifestPath\n";
+            echo "Setting buildtime:         $timePath\n";
+            file_put_contents($timePath, $this->buildTime);
+            echo " .. done\n";
+
+            echo "Generating manifest:       $manifestPath\n";
             $gen = new GenBuildManifest($baseBuildDir);
             file_put_contents($manifestPath, $gen->getContents());
             echo " .. done\n";
@@ -303,11 +308,9 @@ class GenMigrationScriptCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param bool $skipPostBuild
-     *
      * @return string
      */
-    private function getClassStart($skipPostBuild = false)
+    private function getClassStart()
     {
         $time = $this->buildTime;
 
@@ -316,7 +319,6 @@ namespace Application\InstallBundle\Upgrade\Build;
 __PRE_CLASS_LINES__
 class Build$time extends AbstractBuild implements __INTERFACE_TYPE__
 {
-
 CONTENT;
 
         return $content;

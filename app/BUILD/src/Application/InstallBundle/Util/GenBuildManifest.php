@@ -28,6 +28,7 @@
 
 namespace Application\InstallBundle\Util;
 
+use Application\InstallBundle\Upgrade\Build\BlockingBuildInterface;
 use Application\InstallBundle\Upgrade\Build\OnlineBuildInterface;
 use Application\InstallBundle\Upgrade\Build\SkipPostBuildInterface;
 use Orb\Util\Strings;
@@ -97,6 +98,10 @@ class GenBuildManifest
             $refl                       = new \ReflectionClass($classname);
             $classInfo['isOnlineBuild'] = $refl->implementsInterface(OnlineBuildInterface::class);
             $classInfo['skipPostBuild'] = $refl->implementsInterface(SkipPostBuildInterface::class);
+
+            if ($refl->implementsInterface(OnlineBuildInterface::class) && $refl->implementsInterface(BlockingBuildInterface::class)) {
+                throw new \InvalidArgumentException("{$classname} implements both OnlineBuildInterface and BlockingBuildInterface interfaces. You must choose one!");
+            }
 
             $builds[$buildId] = $classInfo;
         }

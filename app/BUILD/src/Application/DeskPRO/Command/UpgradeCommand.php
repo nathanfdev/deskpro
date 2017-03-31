@@ -42,6 +42,7 @@ use Application\InstallBundle\Upgrade\BuildFactory;
 use Application\InstallBundle\Upgrade\BuildRunner;
 use Application\InstallBundle\Upgrade\ManifestReader;
 use DeskPRO\Bundle\AppBundle\Util\BinariesPathValidator;
+use DeskPRO\Component\Util\TypeUtils;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -96,8 +97,10 @@ class UpgradeCommand extends ContainerAwareCommand
             ->addOption('reset', null, InputOption::VALUE_NONE, '(Legacy; ignored)')
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Does not halt the upgrade loop when an error happens')
             ->addOption('run-online', null, InputOption::VALUE_NONE, 'Run the upgrade in online mode (if possible)')
+            ->addOption('partial-online', null, InputOption::VALUE_NONE, 'Like --run-online but will just do as many as is possible (i.e. all leading online builds, stopping at first blocking build)')
             ->addOption('fast', null, InputOption::VALUE_NONE, 'Avoid running slow post build scripts if possible')
             ->addOption('force', null, InputOption::VALUE_NONE, 'Force running even if the system thinks its a bad idea')
+            ->addOption('preview', null, InputOption::VALUE_NONE, 'List upgrade tasks instead of actually running them')
             ->setHelp('This command executes the upgrader to bring your database to the same version the filesystem is');
     }
 
@@ -334,8 +337,8 @@ class UpgradeCommand extends ContainerAwareCommand
      */
     private function markBuildHasRun($buildId)
     {
-        $this->getContainer()->get('database_connection')->delete('install_data', [$buildId, 'has_run']);
-        $this->getContainer()->get('database_connection')->insert('install_data', [$buildId, 'has_run', 1]);
+        $this->getContainer()->get('database_connection')->delete('install_data', ['build' => $buildId, 'name' => 'has_run']);
+        $this->getContainer()->get('database_connection')->insert('install_data', ['build' => $buildId, 'name' => 'has_run', 'data' => 1]);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -444,33 +447,60 @@ class UpgradeCommand extends ContainerAwareCommand
 
     private function runUpgrade()
     {
-        $currentBuildId = $this->getCurrentBuildId();
-        $db             = $this->getContainer()->get('database_connection');
-        $runOnline      = $this->input->getOption('run-online');
-        $ignoreErrors   = $this->input->getOption('ignore-errors');
-        $force          = $this->input->getOption('force');
+        $currentBuildId  = $this->getCurrentBuildId();
+        $db              = $this->getContainer()->get('database_connection');
+        $runOnline       = $this->input->getOption('run-online') || $this->input->getOption('partial-online');
+        $isPartialOnline = $this->input->getOption('partial-online');
+        $ignoreErrors    = $this->input->getOption('ignore-errors');
+        $force           = $this->input->getOption('force');
+        $isPreview       = $this->input->getOption('preview');
+
+        if ($isPreview) {
+            $this->logger->debug('PREVIEW MODE');
+        }
 
         if (!$this->manifestReader->getNextBuildId($currentBuildId)) {
             $this->logger->info('All up to date');
         }
 
         if ($runOnline) {
+            $this->logger->debug('Validating --online-run mode');
+
             $waitingBuilds = $this->manifestReader->getWaitingBuildIds($currentBuildId);
             $fail          = false;
+            $anyOnline     = false;
+
             foreach ($waitingBuilds as $buildId) {
                 $buildInfo = $this->manifestReader->findBuild($buildId);
-                if (!$buildInfo['canRunOnline']) {
-                    $this->output->writeln("<warn><{$buildInfo['classname']}> Build cannot be run online</warn>");
+                $baseName  = TypeUtils::getBaseTypeName($buildInfo['classname']);
+                if ($buildInfo['isOnlineBuild']) {
+                    $this->logger->info("<$baseName> Build safe to run online");
+                    $anyOnline = true;
+                } else {
+                    $this->logger->warn("<$baseName> Build CANNOT be run online");
                     $fail = true;
                 }
             }
-            if ($fail) {
-                if ($force) {
-                    $this->output->writeln('<warn>Continuing with online run because of --force</warn>');
-                } else {
-                    $this->output->writeln('<error>Aborting: The --run-online option only works if every build between current and latest can run online</error>');
+            if ($isPartialOnline) {
+                if (!$anyOnline) {
+                    $this->logger->warn('There are no online builds to run.');
 
                     return 1;
+                }
+            } else {
+                if ($fail) {
+                    if ($force) {
+                        $this->logger->warn('Continuing with online run because of --force');
+                    } else {
+                        $this->logger->error('Aborting: The --run-online option only works if every build between current and latest can run online.');
+                        $this->logger->info('If you think you know better, use --force');
+
+                        if ($anyOnline) {
+                            $this->logger->info('To run only up to the first blocking build, use --partial-online');
+                        }
+
+                        return 1;
+                    }
                 }
             }
         }
@@ -495,7 +525,14 @@ class UpgradeCommand extends ContainerAwareCommand
             if ($runOnline && !$buildInfo['isOnlineBuild']) {
                 $this->logger->notice('--> Skipped: Running only online builds, this build is not an online build');
                 $currentBuildId = $nextBuildId;
-                continue;
+
+                if ($isPartialOnline) {
+                    // exit loop on first non-online build
+                    $this->logger->notice('--> Stopping now, all online builds have been executed');
+                    break;
+                } else {
+                    continue;
+                }
             }
 
             if (!$buildInfo['skipPostBuild']) {
@@ -506,6 +543,10 @@ class UpgradeCommand extends ContainerAwareCommand
             $cmd      = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand(implode(' ', $cmdParts));
             $this->logger->debug("Command: $cmd");
             $ret = null;
+            if ($isPreview) {
+                $currentBuildId = $nextBuildId;
+                continue;
+            }
             passthru($cmd, $ret);
 
             if ($ret) {
@@ -538,30 +579,38 @@ class UpgradeCommand extends ContainerAwareCommand
 
         $this->logger->info('Running post scripts');
         $cmdParts = ['dp:upgrade', '--runsync'];
-        if ($canSkipPost && $this->input->getOption('fast')) {
-            $cmdParts[] = '--fast';
+        if ($this->input->getOption('fast')) {
+            if (!$canSkipPost) {
+                $this->logger->notice('Cannot skip post build');
+            } else {
+                $cmdParts[] = '--fast';
+            }
         }
         $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand(implode(' ', $cmdParts));
         $this->logger->debug("Command: $cmd");
         $ret = null;
-        passthru($cmd, $ret);
+        if (!$isPreview) {
+            passthru($cmd, $ret);
 
-        if ($ret) {
-            $this->logger->notice("--> Error status: $ret");
+            if ($ret) {
+                $this->logger->notice("--> Error status: $ret");
 
-            return $ret;
+                return $ret;
+            }
         }
 
         if (defined('DP_BUILD_TIME')) {
             $this->logger->info('Setting deskpro_build = '.DP_BUILD_TIME);
-            if (DP_BUILD_TIME == '1323444089') {
-                // dev mode, the timestamp is the magic time
-                $db->update('settings', ['value' => time()], ['name' => 'core.deskpro_build']);
-            } else {
-                $db->update('settings', ['value' => DP_BUILD_TIME], ['name' => 'core.deskpro_build']);
-            }
+            if (!$isPreview) {
+                if (DP_BUILD_TIME == '1323444089') {
+                    // dev mode, the timestamp is the magic time
+                    $db->update('settings', ['value' => time()], ['name' => 'core.deskpro_build']);
+                } else {
+                    $db->update('settings', ['value' => DP_BUILD_TIME], ['name' => 'core.deskpro_build']);
+                }
 
-            $db->update('settings', ['value' => DP_BUILD_NUM], ['name' => 'core.deskpro_build_num']);
+                $db->update('settings', ['value' => DP_BUILD_NUM], ['name' => 'core.deskpro_build_num']);
+            }
         }
 
         $this->logger->info('Upgrade complete');

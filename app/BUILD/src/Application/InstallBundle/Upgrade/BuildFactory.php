@@ -100,8 +100,8 @@ class BuildFactory
         if (!class_exists($class, false)) {
             $buildInfo = $this->manifestReader->findBuild($buildId);
             if ($buildInfo) {
-                $file  = DP_ROOT.$manifest[$buildId]['file'];
-                $class = $manifest[$buildId]['classname'];
+                $file  = DP_ROOT.$buildInfo['file'];
+                $class = $buildInfo['classname'];
             } else {
                 throw new \Exception("Unknown build. $buildId is not in the manifest.");
             }
