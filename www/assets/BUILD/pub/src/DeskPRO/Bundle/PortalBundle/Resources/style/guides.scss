@@ -391,6 +391,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     position: relative;
     display: inline-block;
     vertical-align: top;
+    margin-left: -3px;
     img {
       max-width: 600px;
     }
@@ -412,6 +413,9 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     .topic-content {
       padding-right: 24px;
     }
+  }
+  [data-reactroot] div.topic {
+    margin-left: 0;
   }
   .topic-list.fixed + div.topic {
     margin-left: 215px;
@@ -505,6 +509,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       border-left: none;
       display: block;
       padding: 0;
+      margin: 0;
       page-break-before: auto;
       page-break-after: auto;
       page-break-inside: avoid;
