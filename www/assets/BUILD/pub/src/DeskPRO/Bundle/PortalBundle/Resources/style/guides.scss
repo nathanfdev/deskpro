@@ -514,6 +514,28 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     tr {
       page-break-inside: avoid;
     }
+    .tabular.menu {
+      display: none;
+    }
+    .tab {
+      page-break-before: auto;
+      page-break-after: auto;
+      page-break-inside: avoid;
+      margin-bottom: 1rem;
+      background-color: #f8f8f8;
+      border: 1px solid #e7e7e7;
+      border-radius: 2px;
+      display: block;
+      padding: 24px;
+      .pdf_title {
+        display: block !important;
+        font-weight: bold;
+      }
+      pre code {
+        background-color: #FFF;
+        margin-top: 0;
+      }
+    }
     footer {
       border-top: solid 1px black;
       padding-top: 10px;
