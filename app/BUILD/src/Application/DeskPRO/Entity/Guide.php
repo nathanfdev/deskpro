@@ -274,6 +274,19 @@ class Guide extends DomainObject
     }
 
     /**
+     * @JMS\VirtualProperty()
+     */
+    public function getGuidePdf()
+    {
+        $folder = '/pub/static/Guides/pdf/'.$this->getSlug().'.pdf';
+        if (file_exists(DP_WEB_ROOT.$folder)) {
+            return '/assets/'.DP_ACTIVE_BUILD.$folder;
+        }
+
+        return '';
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function __toString()

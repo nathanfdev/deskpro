@@ -32,11 +32,20 @@ class GuideSelector extends React.Component {
     const activeGuide = this.state.guides.filter(g => g.slug === this.props.guideSlug)[0];
 
     return (
-      <PortalSimpleSelectBox
-        options={this.state.guides}
-        value={activeGuide}
-        onChange={this.onClickGuide}
-      />
+      <div className="current-guide">
+        <PortalSimpleSelectBox
+          options={this.state.guides}
+          value={activeGuide}
+          onChange={this.onClickGuide}
+        />
+        { activeGuide.guide_pdf ?
+          <a className="guide-pdf" href={activeGuide.guide_pdf} target="_blank" rel="noopener noreferrer">
+            <span>Download PDF</span>
+            <i className="fa fa-file-pdf-o" />
+          </a> :
+          ''
+        }
+      </div>
     );
   }
 }
