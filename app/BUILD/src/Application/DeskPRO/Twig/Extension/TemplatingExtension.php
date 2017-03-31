@@ -237,6 +237,7 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFilter('transchoice', [$this, 'dummy']),
             new \Twig_SimpleFilter('plain_template_filter', [$this, 'plain_template_filter']),
             new \Twig_SimpleFilter('content', [$this, 'replaceContent']),
+            new \Twig_SimpleFilter('content_pdf', [$this, 'replaceContentPdf']),
 
             // Override for custom UTF-8 handling
             new \Twig_SimpleFilter('upper', [$this, 'strUpper']),
@@ -1840,26 +1841,31 @@ class TemplatingExtension extends \Twig_Extension
         return $ret;
     }
 
-    public function replaceContent($content)
+    public function replaceContentPdf($content)
+    {
+        return $this->replaceContent($content, true);
+    }
+
+    public function replaceContent($content, $pdf = false)
     {
         return preg_replace_callback_array(
             [
                 '|{{\s*img\(([^/]+)/([^)]+)\)\s*}}|' => function ($match) {
                     return $this->getBlobImage(trim($match[1]), trim($match[2]));
                 },
-                '|<a href="{{\s*content\(([^,]+),([^),]+)\)\s*}}">([^<]*)</a>|' => function ($match) {
+                '|<a href="{{\s*content\(([^,]+),([^),]+)\)\s*}}">([^<]*)</a>|' => function ($match) use ($pdf) {
                     $type = trim($match[1]);
                     $id = trim($match[2]);
                     $title = empty($match[3]) ? '' : trim($match[3]);
 
-                    return $this->getManualInternalLink($type, $id, $title);
+                    return $this->getManualInternalLink($type, $id, $title, '', $pdf);
                 },
-                '|{{\s*content_link\(([^,]+),([^),]+)(,[^)]+)?\)\s*}}|' => function ($match) {
+                '|{{\s*content_link\(([^,]+),([^),]+)(,[^)]+)?\)\s*}}|' => function ($match) use ($pdf) {
                     $type = trim($match[1]);
                     $id = trim($match[2]);
-                    $title = empty($match[3]) ? '' : trim($match[3]);
+                    $anchor = empty($match[3]) ? '' : trim($match[3], ", \t\n\r\0\x0B");
 
-                    return $this->getManualInternalLink($type, $id, $title);
+                    return $this->getManualInternalLink($type, $id, '', $anchor, $pdf);
                 },
             ],
             $content
@@ -1868,10 +1874,10 @@ class TemplatingExtension extends \Twig_Extension
 
     public function getBlobImage($authId, $filename)
     {
-        return App::get('router')->generate('serve_blob', ['blob_auth_id' => $authId, 'filename' => $filename], false);
+        return App::get('router')->generate('serve_blob', ['blob_auth_id' => $authId, 'filename' => $filename], UrlGeneratorInterface::ABSOLUTE_PATH);
     }
 
-    public function getManualInternalLink($type, $id, $title = '')
+    public function getManualInternalLink($type, $id, $title = '', $anchor = '', $pdf = false)
     {
         $em = $this->getContainer()->getEm();
         switch ($type) {
@@ -1900,10 +1906,22 @@ class TemplatingExtension extends \Twig_Extension
             return '-- Broken link - '.$type.':'.$id.' --';
         }
         $url = $this->getContainer()->get('object_router')->getPortalUrl($object);
+        if ($anchor) {
+            $url .= '#'.$anchor;
+        }
         if (!$title) {
             $title = $object->getTitle();
         }
 
-        return '<a class="internal_link '.$type.'" href="'.$url.'">'.$title.'</a>';
+        if ($pdf && $type == 'topic') {
+            $target = $object->getSlug();
+            if ($anchor) {
+                $target .= '_'.$anchor;
+            }
+
+            return '<a class="internal_link topic" href="#'.$target.'">'.$title.'</a>';
+        } else {
+            return '<a class="internal_link '.$type.'" href="'.$url.'">'.$title.'</a>';
+        }
     }
 }

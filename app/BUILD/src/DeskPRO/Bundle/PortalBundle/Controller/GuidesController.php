@@ -124,17 +124,19 @@ class GuidesController extends AbstractController
         }
 
         if (!$topic->getParent()) {
-            /** @var Topic $newTopic */
-            $newTopic = $topic->getChildren()->first();
+            /** @var Topic $childTopic */
+            $childTopic = $topic->getChildren()->first();
 
-            return $this->redirectToRoute(
-                'portal_guides_topic_view',
-                [
-                    'slug'         => $newTopic->getSlug(),
-                    'parents_slug' => $newTopic->getParentsSlug(),
-                    'guide_slug'   => $newTopic->getGuideSlug(),
-                ]
-            );
+            if ($childTopic) {
+                return $this->redirectToRoute(
+                    'portal_guides_topic_view',
+                    [
+                        'slug'         => $childTopic->getSlug(),
+                        'parents_slug' => $childTopic->getParentsSlug(),
+                        'guide_slug'   => $childTopic->getGuideSlug(),
+                    ]
+                );
+            }
         }
 
         $serializer = $this->get('serializer');
@@ -168,7 +170,7 @@ class GuidesController extends AbstractController
     }
 
     /**
-     * @Route("/guide_full/{slug}", name="user_guides")
+     * @Route("/guide_pdf/{slug}", name="user_guides")
      * @ParamConverter(name="guide", converter="deskpro_slug")
      * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_GUIDE', guide)")
      * @PageHttpCache()

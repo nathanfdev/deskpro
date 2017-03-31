@@ -97,13 +97,13 @@ class GuidesDataService extends AbstractDataService
      * TODO: this is using the doctrine proxy as a method of finding children of the category. Might be able to improve that.
      *
      * @param int|null|Guide $guide
-     * @param Person         $person
+     * @param Person|null    $person
      *
      * @throws \InvalidArgumentException
      *
      * @return Topic[]
      */
-    public function getGuideChildren($guide, Person $person)
+    public function getGuideChildren($guide, $person)
     {
         return $this->generateAndCache(
             [

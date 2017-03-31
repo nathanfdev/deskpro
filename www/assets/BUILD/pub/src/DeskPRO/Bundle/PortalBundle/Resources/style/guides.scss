@@ -9,11 +9,15 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     font-size: 22px;
     font-weight: bold;
     margin-bottom: 15px;
+    padding-top: 10px;
+    &:first-child {
+      padding-top: 0;
+    }
     &.anchor::before {
-      content:"";
-      display:block;
-      height:50px; /* fixed header height*/
-      margin:-50px 0 0; /* negative fixed header height */
+      content: "";
+      display: block;
+      height: 50px; /* fixed header height*/
+      margin: -50px 0 0; /* negative fixed header height */
     }
     &.anchor a {
       margin-left: 5px;
@@ -108,7 +112,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
   div.block {
     padding: 10px 15px;
     width: 100%;
-    margin: 5px 0;
+    margin: 10px 0;
     border-radius: 2px;
     box-sizing: border-box;
     &::before {
@@ -258,6 +262,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
   }
   .topic-list {
     width: 216px;
+    min-height: 300px;
     border-right: 1px solid #efefef;
     border-collapse: collapse;
     margin-right: -1px;
@@ -266,9 +271,6 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     overflow-y: scroll;
     &.fixed {
       position: fixed;
-    }
-    .multiselect {
-      margin-right: 10px;
     }
     & > .guide {
       font-size: 13px;
@@ -343,7 +345,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     display: inline-block;
     vertical-align: top;
     img {
-      max-width: 640px;
+      max-width: 600px;
     }
     .loading {
       display: none;
@@ -373,7 +375,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     vertical-align: top;
     .topic-summary {
       border-left: 1px solid #efefef;
-      padding-left: 24px;
+      padding-left: 18px;
       top: 20px;
       width: 126px;
       &.fixed {
@@ -397,6 +399,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
             text-overflow: ellipsis;
             display: inline-block;
             width: 100%;
+            font-size: 12px;
             &.active {
               border-left: 2px solid #709fd6;
               margin-left: -25px;
@@ -416,15 +419,28 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     }
   }
   &.pdf {
+    font-family: Arial;
     max-width: 1000px;
     h1 {
+      border-width: 2px 0;
+      border-style: solid;
+      border-color: black;
+      padding: 10px 0;
+      text-align: right;
       font-weight: bold;
+      &::before {
+        content: 'Chapter';
+        display: block;
+        font-size: smaller;
+        height: 36px;
+        margin: 0;
+      }
     }
     h2 {
-      font-weight: bold;
+      color: #1d3b52;
     }
     h3 {
-      font-weight: bold;
+      color: #1d3b52;
     }
     h4 {
       font-weight: bold;
@@ -441,13 +457,23 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     div.topic {
       width: 100%;
       border-left: none;
+      display: block;
+      padding: 0;
+      page-break-before: auto;
+      page-break-after: auto;
+      page-break-inside: avoid;
     }
-    div.topic {
+    & > div.topic {
       position: relative;
+      page-break-before: always;
+      page-break-after: auto;
+      page-break-inside: avoid;
     }
     div.block {
-      position: relative;
+      page-break-before: auto;
+      page-break-after: auto;
       page-break-inside: avoid;
+      position: relative;
       width: 60%;
       &::before {
         margin: 10px 10px 0 0;
@@ -458,8 +484,21 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     }
     pre code.hljs {
       position: relative;
-      page-break-inside: avoid;
       width: 80%;
+    }
+    thead {
+      display: table-header-group;
+    }
+    tr {
+      page-break-inside: avoid;
+    }
+    footer {
+      border-top: solid 1px black;
+      padding-top: 10px;
+      margin-top: 15px;
+      .page-number {
+        float: right;
+      }
     }
   }
 }

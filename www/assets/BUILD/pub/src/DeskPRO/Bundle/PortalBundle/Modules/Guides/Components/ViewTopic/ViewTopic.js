@@ -27,18 +27,26 @@ class ViewTopic extends React.Component {
       topics
     };
     this.contentChanged = false;
-    document.addEventListener('DOMContentLoaded', () => {
-      this.defineSizes();
-    });
+    this.ticking = false;
+    window.onload = this.defineSizes;
   }
 
   componentDidMount() {
     this.changeInternalLinks();
     this.addAnchorLinks();
     this.tabs();
-    window.addEventListener('scroll', this.handleScroll);
+    window.addEventListener('scroll', () => {
+      if (!this.ticking) {
+        window.requestAnimationFrame(() => {
+          this.handleScroll();
+          this.ticking = false;
+        });
+      }
+      this.ticking = true;
+    });
     window.addEventListener('resize', this.defineSizes);
     this.offsetTop = this.topicList.offsetTop;
+    this.defineSizes();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -57,8 +65,6 @@ class ViewTopic extends React.Component {
   componentDidUpdate() {
     if (this.contentChanged) {
       this.contentChanged = false;
-      this.changeInternalLinks();
-      this.addAnchorLinks();
       this.defineSizes();
     }
   }
@@ -70,11 +76,12 @@ class ViewTopic extends React.Component {
 
   getGuideSlug = splat => splat.split('/')[0];
 
-  handleScroll = (event) => {
+  handleScroll = () => {
     if (this.sizes) {
       const topOffset = this.offsetTop - 20 - this.sizes.agentBarHeight;
       let maxHeight;
-      if (event.srcElement.body.scrollTop > topOffset) {
+      const top = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
+      if (top > topOffset) {
         if (!this.state.fixed) {
           this.setState({
             fixed: true,
@@ -90,16 +97,19 @@ class ViewTopic extends React.Component {
           });
         }
         if (this.topic.scrollHeight > this.sizes.topicListHeight) {
-          maxHeight = event.srcElement.body.scrollTop + this.sizes.topicListHeight;
+          maxHeight = top + this.sizes.topicListHeight;
         }
       }
-      const bottomScroll = event.srcElement.body.scrollHeight - event.srcElement.body.scrollTop - window.innerHeight;
+      if (!maxHeight) {
+        maxHeight =  this.sizes.topicListHeight;
+      }
+      const bottomScroll = window.document.body.scrollHeight - top - window.innerHeight;
       if (bottomScroll < this.sizes.pageBottomSection) {
         maxHeight += bottomScroll;
       } else {
         maxHeight += this.sizes.pageBottomSection;
       }
-      window.document.getElementsByClassName('topic-list')[0].style = `max-height: ${maxHeight}px; top: ${this.sizes.agentBarHeight + 20}px`;
+      window.document.getElementsByClassName('topic-list')[0].setAttribute('style', `max-height: ${maxHeight}px; top: ${this.sizes.agentBarHeight + 20}px`);
     }
   };
 
@@ -151,6 +161,12 @@ class ViewTopic extends React.Component {
         this.sizes.pageBottomSection = pageBottomSection.scrollHeight;
       }
     }
+    if (!this.sizes.pageBottomSection) {
+      const pageBottomSection = window.document.getElementsByClassName('page-bottom-section')[0];
+      if (pageBottomSection) {
+        this.sizes.pageBottomSection = pageBottomSection.scrollHeight;
+      }
+    }
     this.sizes.topOffset = this.sizes.agentBarHeight
       + (this.sizes.dpPageBodyPadding / 2)
       + (this.sizes.worldPadding / 2)
@@ -168,8 +184,21 @@ class ViewTopic extends React.Component {
       - this.sizes.searchSection
       - this.sizes.welcomeNews
       - this.sizes.pageBottomSection;
-    window.document.getElementsByClassName('topic-list')[0].style = `max-height: ${this.sizes.topicListHeight}px; top: ${this.sizes.agentBarHeight + 20}px`;
-    window.document.getElementsByClassName('topic-summary')[0].style = `top: ${this.sizes.agentBarHeight + 20}px`;
+    const bottomScroll = this.topic.scrollHeight
+      + this.sizes.topOffset
+      + this.sizes.bottomOffset
+      - window.document.body.scrollTop
+      - window.innerHeight;
+    let maxHeight = this.sizes.topicListHeight;
+    if (bottomScroll < this.sizes.pageBottomSection) {
+      if (bottomScroll > 0) {
+        maxHeight += bottomScroll;
+      }
+    } else {
+      maxHeight += this.sizes.pageBottomSection;
+    }
+    window.document.getElementsByClassName('topic-list')[0].setAttribute('style', `max-height: ${maxHeight}px; top: ${this.sizes.agentBarHeight + 20}px`);
+    window.document.getElementsByClassName('topic-summary')[0].setAttribute('style', `top: ${this.sizes.agentBarHeight + 20}px`);
     return true;
   };
 
@@ -202,18 +231,28 @@ class ViewTopic extends React.Component {
   };
 
   changeInternalLinks = () => {
-    document.querySelectorAll('a.internal_link.topic').forEach((internalLink) => {
+    const links = document.querySelectorAll('a.internal_link.topic');
+    Array.prototype.forEach.call(links, (internalLink) => {
       const newLink = document.createElement('a');
       newLink.className = 'internal_link topic';
-      newLink.onclick = e => this.internalLink(e, internalLink.pathname);
+      let target = internalLink.pathname;
+      if (internalLink.pathname === window.location.pathname) {
+        newLink.href = internalLink.hash;
+      } else {
+        newLink.onclick = e => this.internalLink(e, target);
+        newLink.href = '#';
+        if (internalLink.hash) {
+          target += internalLink.hash;
+        }
+      }
       newLink.innerText = internalLink.text;
-      newLink.href = '#';
       internalLink.parentNode.replaceChild(newLink, internalLink);
     });
   };
 
   addAnchorLinks = () => {
-    document.querySelectorAll('h1.anchor').forEach((h1) => {
+    const anchors = document.querySelectorAll('h1.anchor');
+    Array.prototype.forEach.call(anchors, (h1) => {
       this.addAnchorLink(h1);
     });
   };
@@ -244,6 +283,19 @@ class ViewTopic extends React.Component {
 
   internalLink = (e, path) => {
     e.preventDefault();
+    const guideSlug = path.replace(/^(\/[^/]+)?\/guides\//, '').replace(/\/.*/, '');
+    if (guideSlug !== this.state.guideSlug) {
+      portalHttp.sendGet(`DP_URL/portal/api/guides/topics/${guideSlug}`).then((response) => {
+        if (response.isError()) {
+          return;
+        }
+
+        const topics = response.data.data;
+        this.setState({
+          topics,
+        });
+      });
+    }
     browserHistory.push(path);
     return false;
   };
@@ -264,9 +316,28 @@ class ViewTopic extends React.Component {
         doSpin: false,
         topic,
       });
+      this.changeInternalLinks();
+      this.addAnchorLinks();
       this.tabs();
+      window.scrollTo(0, 0);
+      setTimeout(this.defineSizes, 100);
+      setTimeout(this.hashLinkScroll, 100);
     });
   }
+
+  hashLinkScroll = () => {
+    const { hash } = window.location;
+    if (hash !== '') {
+      // Push onto callback queue so it runs after the DOM is updated,
+      // this is required when navigating from a different page so that
+      // the element is rendered on the page before trying to getElementById.
+      setTimeout(() => {
+        const id = hash.replace('#', '');
+        const element = document.getElementById(id);
+        if (element) element.scrollIntoView();
+      }, 0);
+    }
+  };
 
   selectGuide = (guide) => {
     portalHttp.sendGet(`DP_URL/portal/api/guides/topics/${guide.slug}`).then((response) => {
@@ -278,8 +349,13 @@ class ViewTopic extends React.Component {
       this.setState({
         topics,
       });
-      const topic = Object.values(topics).pop();
-      browserHistory.push(`/${this.props.params.locale}/guides/${guide.slug}/${topic.slug}`);
+      const topic = Object.values(topics).sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)).shift();
+      if (Object.values(topic.children).length) {
+        const child = Object.values(topic.children).sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)).shift();
+        browserHistory.push(`/${this.props.params.locale}/guides/${guide.slug}/${topic.slug}/${child.slug}`);
+      } else {
+        browserHistory.push(`/${this.props.params.locale}/guides/${guide.slug}/${topic.slug}`);
+      }
     });
   };
 
