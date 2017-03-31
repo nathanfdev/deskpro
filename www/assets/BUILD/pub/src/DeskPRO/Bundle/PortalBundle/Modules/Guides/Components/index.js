@@ -4,6 +4,7 @@ import TopicList from './ViewTopic/TopicList';
 import TopicSummary from './ViewTopic/TopicSummary';
 import GuideSelector from './ViewTopic/GuideSelector';
 import Anchor from './ViewTopic/Anchor';
+import CodeBlock from './ViewTopic/CodeBlock';
 
 export {
   ViewTopic,
@@ -11,5 +12,6 @@ export {
   TopicList,
   TopicSummary,
   GuideSelector,
-  Anchor
+  Anchor,
+  CodeBlock
 };

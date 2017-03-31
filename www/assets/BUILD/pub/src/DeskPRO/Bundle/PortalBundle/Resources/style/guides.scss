@@ -154,6 +154,30 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     border: solid 1px #e6e7e6;
     border-radius: 2px;
     background-color: #f8f8f8;
+    position: relative;
+    .code-block {
+      .code-copy {
+        opacity: 0;
+        cursor: pointer;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: $dp-sonic-primary;
+        border: 2px solid #4696dc;
+        border-radius: 20px;
+        padding: 0 8px;
+        &.copied {
+          color: $dp-greyscale-250;
+          border-color: $dp-greyscale-250;
+        }
+      }
+    }
+    &:hover .code-copy,
+    .code-copy.copied {
+      opacity: 1;
+      transition: opacity .1s ease-in-out;
+      transition-delay: 0.5s;
+    }
   }
   blockquote {
     padding: 0 1em;
