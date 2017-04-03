@@ -125,12 +125,4 @@ class PeopleController extends AbstractApiController
 
         return new View($this->wrap($people));
     }
-
-    /**
-     * @return \Application\DeskPRO\EntityRepository\Person
-     */
-    protected function getPersonRepository()
-    {
-        return $this->getDoctrine()->getRepository(Person::class);
-    }
 }

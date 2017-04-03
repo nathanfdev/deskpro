@@ -194,6 +194,8 @@ export class Http {
     promise.success = (fn) => {
       promise.then((res) => {
         fn(res.getData(), res);
+      }, (e) => {
+        console.warn(e);
       });
       return promise;
     };
