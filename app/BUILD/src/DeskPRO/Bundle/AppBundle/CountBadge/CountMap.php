@@ -31,17 +31,17 @@ namespace DeskPRO\Bundle\AppBundle\CountBadge;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class Count.
+ * Class CountMap.
  */
-class Count extends AbstractCount
+class CountMap extends AbstractCount
 {
     /**
      * Nested counts.
      *
-     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\CountBadge\Count>")
+     * @JMS\Type("map<DeskPRO\Bundle\AppBundle\CountBadge\CountMap>")
      * @JMS\MaxDepth(0)
      *
-     * @var Count[]
+     * @var CountMap[]
      */
     protected $nested = [];
 
@@ -62,7 +62,7 @@ class Count extends AbstractCount
         $count->setType($type);
         $count->setTitle($title);
 
-        $this->nested[] = $count;
+        $this->nested[$id] = $count;
 
         if ($sumToValue) {
             $this->add($value);
@@ -76,7 +76,7 @@ class Count extends AbstractCount
      */
     public function addNestedInstance(AbstractCount $instance, $sumToValue = false)
     {
-        $this->nested[] = $instance;
+        $this->nested[$instance->getId()] = $instance;
         if ($sumToValue) {
             $this->add($instance->getCount());
         }
@@ -86,7 +86,7 @@ class Count extends AbstractCount
     }
 
     /**
-     * @return Count[]
+     * @return CountMap[]
      */
     public function getNested()
     {

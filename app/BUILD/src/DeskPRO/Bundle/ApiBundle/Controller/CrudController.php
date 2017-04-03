@@ -26,15 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
+use DeskPRO\Bundle\AppBundle\CountBadge\AbstractCount;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\CountBadge\CountMap;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -161,9 +159,13 @@ abstract class CrudController extends BaseController
 
             $result = $qb->getQuery()->getArrayResult();
 
-            $count = Count::fromGroupedBy($groupBy);
+            if ($request->query->getBoolean('index_group_by', false)) {
+                $count = CountMap::fromGroupedBy($groupBy);
+            } else {
+                $count = Count::fromGroupedBy($groupBy);
+            }
 
-            $this->addGroupByNestedCounts($count, $result, $request->query->getBoolean('index_group_by', false));
+            $this->addGroupByNestedCounts($count, $result);
             $count->setCount($totalCount);
         }
 
@@ -444,11 +446,10 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * @param Count $count
-     * @param array $result
-     * @param bool  $indexByGroupName
+     * @param AbstractCount $count
+     * @param array         $result
      */
-    protected function addGroupByNestedCounts(Count $count, array $result, $indexByGroupName = false)
+    protected function addGroupByNestedCounts(AbstractCount $count, array $result)
     {
         foreach ($result as $group) {
             if (isset($group['date_title'])) {
@@ -460,8 +461,7 @@ abstract class CrudController extends BaseController
                 $group['group_name'],
                 $count->getGroupedBy(),
                 $group['title'],
-                true,
-                $indexByGroupName
+                true
             );
         }
     }
