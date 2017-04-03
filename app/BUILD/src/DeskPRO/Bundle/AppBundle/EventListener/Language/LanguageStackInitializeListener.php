@@ -37,6 +37,7 @@ use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Routing\UrlMatcher;
 use Doctrine\ORM\EntityManager;
 use Negotiation\LanguageNegotiator;
+use Orb\Util\Web;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -90,7 +91,7 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::REQUEST => ['onRequest', 512], // very high priority
+            KernelEvents::REQUEST => ['onRequest', 100], // init after session listeners
         ];
     }
 
@@ -205,28 +206,41 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         $sessionId = $request->cookies->get('dpsid-portal', null);
         if ($sessionId && is_scalar($sessionId)) {
             $query = $this->em->getConnection()->executeQuery(
-                'SELECT person_id FROM sess_data WHERE sess_id = :sess_id',
+                'SELECT person_id, sess_data FROM sess_data WHERE sess_id = :sess_id',
                 ['sess_id' => $sessionId],
                 ['sess_id' => \PDO::PARAM_STR]
             );
 
-            if (!$sess_row = $query->fetch()) {
+            if (!$row = $query->fetch()) {
                 return;
             }
 
-            if (!isset($sess_row['person_id'])) {
+            if (!isset($row['person_id'])) {
                 return;
             }
 
-            if (!$person_id = $sess_row['person_id']) {
+            if (!$personId = $row['person_id']) {
                 return;
             }
 
-            if (!$person = $this->em->getRepository('DeskPRO:Person')->find($person_id)) {
+            if (isset($row['sess_data'])) {
+                try {
+                    $data = base64_decode($row['sess_data']);
+                    $data = Web::unserializeSesisonData($data);
+                } catch (\Exception $e) {
+                    return;
+                }
+
+                if (isset($data['_sf2_attributes']['is_impersonating'])
+                    && isset($data['_sf2_attributes']['auth_person_id'])) {
+                    $personId = $data['_sf2_attributes']['auth_person_id'];
+                }
+            }
+
+            if (!$person = $this->em->getRepository(Person::class)->find($personId)) {
                 return;
             }
 
-            /* @var Person $person */
             return $person->getLanguage();
         }
     }

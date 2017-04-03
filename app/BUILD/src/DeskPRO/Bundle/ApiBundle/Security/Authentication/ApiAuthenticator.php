@@ -305,9 +305,16 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
     {
 
         // due to the way sessions are stored in PHP, this looks rather ugly...
+        // we dont use sessions in the API so this should always be ok
 
         $data = $session->getData();
-        session_start(); // we dont use sessions in the API so this should always be ok
+
+        // ensure that session is not started yet
+        // otherwise start it to decode data
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         session_decode($data); // this populates $_SESSION
         $data = null;
         if (isset($_SESSION) && isset($_SESSION['_sf2_attributes'])) {
