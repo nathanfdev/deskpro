@@ -204,6 +204,8 @@ export class AgentOnboarding extends React.Component {
   };
 
   addSteps = (steps) => {
+    const joyride = this.joyride;
+
     let stepsArray = steps;
     if (!Array.isArray(stepsArray)) {
       stepsArray = [steps];
@@ -222,7 +224,7 @@ export class AgentOnboarding extends React.Component {
 
     this.setState((currentState) => {
       const result = {};
-      result.steps = currentState.steps.concat(stepsArray);
+      result.steps = currentState.steps.concat(joyride.parseSteps(stepsArray));
       return result;
     });
     return true;
