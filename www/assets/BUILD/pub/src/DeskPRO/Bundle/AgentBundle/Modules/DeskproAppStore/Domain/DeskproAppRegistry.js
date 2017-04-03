@@ -54,7 +54,7 @@ class DeskproAppRegistry
       url,
       scrolling: false,
       autoResize: true,
-      dimensions: { width: '100%', height: 500 },
+      dimensions: { width: '100%', height: 1000 },
       timeout: 3000, // millis
       // The properties they can (or must) pass down to my component
       props: {
