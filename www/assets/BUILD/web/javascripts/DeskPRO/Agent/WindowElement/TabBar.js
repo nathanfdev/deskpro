@@ -664,7 +664,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			}
 		}
 
-		this.tabBarOverflow.debouncedUpdate();
+		this.$timeout(function() {
+			self.tabBarOverflow.update();
+		});
 
     window.setTimeout(function() {
       if (typeof data.callback_remove_content !== 'undefined') {
