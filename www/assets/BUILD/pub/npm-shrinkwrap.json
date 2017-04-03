@@ -4808,7 +4808,7 @@
       "resolved": "https://registry.npmjs.org/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz"
     },
     "json2csv": {
-      "version": "3.7.3",
+      "version": "3.7.4",
       "from": "json2csv@>=3.4.2 <4.0.0",
       "resolved": "https://registry.npmjs.org/json2csv/-/json2csv-3.7.3.tgz"
     },
@@ -5864,8 +5864,8 @@
     },
     "notifyjs": {
       "version": "3.0.0",
-      "from": "git+https://github.com/alexgibson/notify.js.git#rollup",
-      "resolved": "git+https://github.com/alexgibson/notify.js.git#0545bf19d357ae6a6eab6c740dffd5cabfa4a4bf"
+      "from": "notifyjs@3.0.0",
+      "resolved": "https://registry.npmjs.org/notifyjs/-/notifyjs-3.0.0.tgz"
     },
     "npmlog": {
       "version": "4.0.2",
