@@ -76,11 +76,11 @@ class LegacyTicketFilter
     /**
      * An array of terms for filter.
      *
-     * @JMS\Type("array")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketFilterTerm>")
      *
      * @var array
      */
-    private $term;
+    private $term = [];
 
     /**
      * The id of ticket filter set - the owner of ticket filter.
@@ -139,7 +139,10 @@ class LegacyTicketFilter
         $this->displayOrder    = $ticketFilter->getDisplayOrder();
         $this->title           = $ticketFilter->getRawTitle();
         $this->sysName         = $ticketFilter->getSysName();
-        $this->term            = $ticketFilter->getTerms();
         $this->ticketFilterSet = $filterSet->getId();
+
+        foreach ($ticketFilter->getTerms() as $term) {
+            $this->term[] = new TicketFilterTerm($term);
+        }
     }
 }
