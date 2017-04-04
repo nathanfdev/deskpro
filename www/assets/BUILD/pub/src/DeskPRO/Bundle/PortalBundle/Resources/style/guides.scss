@@ -574,4 +574,12 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       }
     }
   }
+  .titled-header h1 {
+    font-size: inherit;
+    font-weight: normal;
+    margin-bottom: 0;
+  }
+  .flashes .flash {
+    white-space: normal;
+  }
 }

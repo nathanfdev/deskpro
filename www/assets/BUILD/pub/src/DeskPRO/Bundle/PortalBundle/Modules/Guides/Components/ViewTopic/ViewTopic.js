@@ -4,7 +4,8 @@ import classNames from 'classnames';
 import moment from 'moment';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import browserHistory from 'react-router/lib/browserHistory';
-import { TopicList, TopicSummary, GuideSelector, Anchor, CodeBlock } from '../index';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { TopicList, TopicSummary, GuideSelector, Anchor, CodeBlock, CommentsBlock } from '../index';
 
 class ViewTopic extends React.Component {
   static propTypes = {
@@ -22,6 +23,7 @@ class ViewTopic extends React.Component {
     this.state = {
       fixed:     false,
       doSpin:    false,
+      flashes:   [],
       topic,
       guideSlug: this.getGuideSlug(this.props.params.splat),
       topics
@@ -29,6 +31,7 @@ class ViewTopic extends React.Component {
     this.contentChanged = false;
     this.ticking = false;
     window.onload = this.defineSizes;
+    moment.locale('en');
   }
 
   componentDidMount() {
@@ -330,8 +333,9 @@ class ViewTopic extends React.Component {
       const topic = response.data.data;
       topic.content = this.addIdToh1(topic.content);
       this.setState({
-        doSpin: false,
+        doSpin:  false,
         topic,
+        flashes: [],
       });
       this.changeInternalLinks();
       this.addAnchorLinks();
@@ -357,6 +361,33 @@ class ViewTopic extends React.Component {
     }
   };
 
+  postComment = comment => new Promise(
+    (resolve, reject) => portalHttp.sendPost(
+      `DP_URL/portal/api/guides/topic/${this.state.topic.slug}/comment`,
+      comment
+    ).then((response) => {
+      if (response.data) {
+        if (response.data.data.comment) {
+          this.state.topic.calc_num_comments = this.state.topic.calc_num_comments + 1;
+          this.state.topic.comments.push(response.data.data.comment);
+          this.setState({
+            topic: this.state.topic
+          });
+        }
+        if (response.data.data.flashes) {
+          this.setState({
+            flashes: response.data.data.flashes
+          });
+        }
+        if (response.data.data.errors) {
+          return reject(response);
+        }
+        return resolve(response);
+      }
+      return reject(response);
+    })
+  );
+
   selectGuide = (guide) => {
     portalHttp.sendGet(`DP_URL/portal/api/guides/topics/${guide.slug}`).then((response) => {
       if (response.isError()) {
@@ -367,9 +398,13 @@ class ViewTopic extends React.Component {
       this.setState({
         topics,
       });
-      const topic = Object.values(topics).sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)).shift();
+      const topic = Object.values(topics).sort(
+        (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
+      ).shift();
       if (Object.values(topic.children).length) {
-        const child = Object.values(topic.children).sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)).shift();
+        const child = Object.values(topic.children).sort(
+          (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
+        ).shift();
         browserHistory.push(`/${this.props.params.locale}/guides/${guide.slug}/${topic.slug}/${child.slug}`);
       } else {
         browserHistory.push(`/${this.props.params.locale}/guides/${guide.slug}/${topic.slug}`);
@@ -383,6 +418,7 @@ class ViewTopic extends React.Component {
     const guideSlug = this.getGuideSlug(splat);
     const { fixed } = this.state;
     const agentBarHeight = this.sizes ? this.agentBarHeight : 0;
+
     return (
       <div>
         <div className={classNames('topic-list', { fixed })} ref={(c) => { this.topicList = c; }} >
@@ -395,11 +431,11 @@ class ViewTopic extends React.Component {
           <header className="section-header">
             <h1>{this.state.topic.title}</h1>
             <span id="publication-date" className="publication_date">
-              <label htmlFor="publication-date">Published: </label>
+              <label htmlFor="publication-date">{portalPhrases.get('portal.general.published')}: </label>
               {moment(this.state.topic.date_published).format('DD/MM/YYYY')}
             </span>
             <span id="last-update-date" className="last_update_date">
-              <label htmlFor="last-update-date">Updated: </label>
+              <label htmlFor="last-update-date">{portalPhrases.get('portal.general.updated')}: </label>
               {moment(this.state.topic.date_updated).format('DD/MM/YYYY')}
             </span>
             <hr />
@@ -407,6 +443,12 @@ class ViewTopic extends React.Component {
           <div className="topic-content">
             <div dangerouslySetInnerHTML={{ __html: this.state.topic.content }} />
           </div>
+          <CommentsBlock
+            count={this.state.topic.calc_num_comments}
+            flashes={this.state.flashes}
+            postComment={this.postComment}
+            comments={this.state.topic.comments}
+          />
         </div>
         <div className="content-summary">
           <TopicSummary content={this.state.topic.content} fixed={fixed} agentBarHeight={agentBarHeight} />

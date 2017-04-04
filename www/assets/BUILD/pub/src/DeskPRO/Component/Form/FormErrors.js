@@ -59,6 +59,27 @@ export function getErrorsByPropertyPath(formErrors, propertyPath, subPath = fals
   return iterator(formErrors, getErrorPath(propertyPath, subPath));
 }
 
+/**
+ * Returns form errors by error path.
+ *
+ * @param {Object}  formErrors
+ * @param {string}  propertyPath
+ */
+export function getErrorsByErrorPath(formErrors, errorPath) {
+  const iterator = (childErrors, childErrorPath) => {
+    if (childErrorPath.length > 0) {
+      const errorField = childErrorPath.splice(0, 1)[0];
+      if (childErrors && typeof childErrors === 'object' && {}.hasOwnProperty.call(childErrors, errorField)) {
+        return childErrorPath.length ? iterator(childErrors[errorField], childErrorPath) : childErrors[errorField];
+      }
+    }
+
+    return [];
+  };
+
+  return iterator(formErrors, errorPath);
+}
+
 export function getFormDataErrors(formData) {
   return formData._errorList.errors; // eslint-disable-line no-underscore-dangle
 }

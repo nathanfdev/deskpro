@@ -233,6 +233,24 @@ class GuidesDataService extends AbstractDataService
         );
     }
 
+    public function getTopicComments($topic, Person $person = null)
+    {
+        $that = $this;
+
+        return $this->generateAndCache(
+            [
+                'getArticleComments',
+                $topic,
+                $person,
+            ],
+            function () use ($that, $topic, $person) {
+                $topic = $that->getTopic($topic);
+
+                return $that->getTopicCommentRepo()->getDisplayComments($topic, $person);
+            }
+        );
+    }
+
     /**
      * @return \Application\DeskPRO\EntityRepository\Topic
      */

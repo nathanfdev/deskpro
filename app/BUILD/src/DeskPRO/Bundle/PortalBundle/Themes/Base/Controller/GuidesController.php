@@ -92,4 +92,36 @@ class GuidesController extends AbstractController
             ]
         );
     }
+
+    /**
+     * @Tag(name="topic_comments")
+     *
+     * @TagOptions(
+     *      defaults={
+     *          "topic": null
+     *      },
+     *      allowed_types={
+     *          "topic":{"Application\DeskPRO\Entity\Topic","int","string"}
+     *      },
+     *      attribute_expressions={
+     *          "topic": "service('data.guides').getTopic(options['topic'])"
+     *      }
+     * )
+     *
+     * @Security("is_granted('USE_GUIDES')")
+     *
+     * @param TagRequest $tagRequest
+     * @param array      $options
+     * @param Topic      $topic
+     *
+     * @return Response
+     */
+    public function commentsAction(TagRequest $tagRequest, array $options, Topic $topic)
+    {
+        $comments = $this->getGuidesDataService()->getTopicComments($topic, $this->getUser());
+
+        return $this->renderThemeView('Theme:Common:comments.html.twig', [
+            'comments' => $comments,
+        ]);
+    }
 }
