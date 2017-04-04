@@ -1,6 +1,6 @@
 @new
 Feature: /articles endpoint
-  To CRUD DeskPRO tickets
+  To CRUD DeskPRO articles
   As an API user
   I want an API endpoint
 

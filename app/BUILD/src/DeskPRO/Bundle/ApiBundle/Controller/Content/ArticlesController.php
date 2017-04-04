@@ -69,6 +69,15 @@ use Symfony\Component\HttpFoundation\Request;
  *          {"name"="group_by", "dataType"="string", "pattern"="author|category|period_created|period_updated", "description"="how to group counters"}
  *     }
  * )
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Content\ArticleType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Article"
+ *      }
+ *     }
+ * )
  */
 class ArticlesController extends AbstractContentController
 {

@@ -66,6 +66,15 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *          {"name"="group_by", "dataType"="string", "pattern"="author|category|period_created|period_updated", "description"="how to group counters"}
  *     }
  * )
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Content\DownloadsType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Downloads"
+ *      }
+ *     }
+ * )
  */
 class DownloadsController extends AbstractSingleCategoryContentController
 {

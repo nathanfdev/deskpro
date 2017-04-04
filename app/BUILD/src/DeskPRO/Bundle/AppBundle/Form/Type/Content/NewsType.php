@@ -28,9 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Content;
 
-use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -40,7 +40,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ArticleType extends AbstractType
+class NewsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -116,7 +116,7 @@ class ArticleType extends AbstractType
         $resolver
             ->setDefaults(
                 [
-                    'data_class' => Article::class,
+                    'data_class' => News::class,
                 ]
             );
     }
