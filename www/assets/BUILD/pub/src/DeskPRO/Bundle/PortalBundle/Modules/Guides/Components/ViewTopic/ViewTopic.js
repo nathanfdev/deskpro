@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import moment from 'moment';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import browserHistory from 'react-router/lib/browserHistory';
-import { TopicList, TopicSummary, GuideSelector, Anchor } from '../index';
+import { TopicList, TopicSummary, GuideSelector, Anchor, CodeBlock } from '../index';
 
 class ViewTopic extends React.Component {
   static propTypes = {
@@ -34,6 +34,7 @@ class ViewTopic extends React.Component {
   componentDidMount() {
     this.changeInternalLinks();
     this.addAnchorLinks();
+    this.addCodeBlocksCopy();
     this.tabs();
     window.addEventListener('scroll', () => {
       if (!this.ticking) {
@@ -266,6 +267,22 @@ class ViewTopic extends React.Component {
     }
   };
 
+  addCodeBlocksCopy = () => {
+    const blocks = document.querySelectorAll('pre code');
+    Array.prototype.forEach.call(blocks, (block) => {
+      this.addCodeBlockCopy(block);
+    });
+  };
+
+  addCodeBlockCopy = (block) => {
+    if (block.innerText) {
+      const anchor = <CodeBlock text={block.innerText} html={block.innerHTML} />;
+      ReactDOM.render(anchor, block);
+    } else {
+      setTimeout(() => { this.addCodeBlockCopy(block); }, 500);
+    }
+  };
+
   addIdToh1 = (html) => {
     const container = document.createElement('div');
     container.innerHTML = html;
@@ -318,6 +335,7 @@ class ViewTopic extends React.Component {
       });
       this.changeInternalLinks();
       this.addAnchorLinks();
+      this.addCodeBlocksCopy();
       this.tabs();
       window.scrollTo(0, 0);
       setTimeout(this.defineSizes, 100);

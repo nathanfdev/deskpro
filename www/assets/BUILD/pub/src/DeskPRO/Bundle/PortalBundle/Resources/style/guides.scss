@@ -154,6 +154,30 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     border: solid 1px #e6e7e6;
     border-radius: 2px;
     background-color: #f8f8f8;
+    position: relative;
+    .code-block {
+      .code-copy {
+        opacity: 0;
+        cursor: pointer;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: $dp-sonic-primary;
+        border: 2px solid #4696dc;
+        border-radius: 20px;
+        padding: 0 8px;
+        &.copied {
+          color: $dp-greyscale-250;
+          border-color: $dp-greyscale-250;
+        }
+      }
+    }
+    &:hover .code-copy,
+    .code-copy.copied {
+      opacity: 1;
+      transition: opacity .1s ease-in-out;
+      transition-delay: 0.5s;
+    }
   }
   blockquote {
     padding: 0 1em;
@@ -336,6 +360,29 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     ul.hidden {
       display: none;
     }
+    .current-guide {
+      padding-right: 10px;
+      .guide-pdf {
+        display: inline-block;
+        padding: 0 0.5em;
+        border: 1px solid #e6e6e6;
+        border-radius: 2px;
+        background: #fafafa;
+        color: #333;
+        text-decoration: none;
+        line-height: 2.28571;
+        white-space: nowrap;
+        i {
+          position: relative;
+          top: -1px;
+          margin-right: 2px;
+          margin-left: 6px;
+          color: #7d7d7d;
+          vertical-align: middle;
+          font-size: 13px;
+        }
+      }
+    }
   }
   div.topic {
     width: 664px;
@@ -344,6 +391,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     position: relative;
     display: inline-block;
     vertical-align: top;
+    margin-left: -3px;
     img {
       max-width: 600px;
     }
@@ -365,6 +413,9 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     .topic-content {
       padding-right: 24px;
     }
+  }
+  [data-reactroot] div.topic {
+    margin-left: 0;
   }
   .topic-list.fixed + div.topic {
     margin-left: 215px;
@@ -422,9 +473,8 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     font-family: Arial;
     max-width: 1000px;
     h1 {
-      border-width: 2px 0;
-      border-style: solid;
-      border-color: black;
+      border-top: 2px solid black;
+      border-bottom: 2px solid black;
       padding: 10px 0;
       text-align: right;
       font-weight: bold;
@@ -459,6 +509,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       border-left: none;
       display: block;
       padding: 0;
+      margin: 0;
       page-break-before: auto;
       page-break-after: auto;
       page-break-inside: avoid;
@@ -491,6 +542,28 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     }
     tr {
       page-break-inside: avoid;
+    }
+    .tabular.menu {
+      display: none;
+    }
+    .tab {
+      page-break-before: auto;
+      page-break-after: auto;
+      page-break-inside: avoid;
+      margin-bottom: 1rem;
+      background-color: #f8f8f8;
+      border: 1px solid #e7e7e7;
+      border-radius: 2px;
+      display: block;
+      padding: 24px;
+      .pdf_title {
+        display: block !important;
+        font-weight: bold;
+      }
+      pre code {
+        background-color: #FFF;
+        margin-top: 0;
+      }
     }
     footer {
       border-top: solid 1px black;

@@ -45,7 +45,8 @@ function tabsPlugin(md, options) {
       active = 'active';
     }
     return tokens[idx].nesting === 1
-      ? `${buffer}<div class="tab ${active}" data-tab="tab_${this.tabGroup}_${idx}">\n`
+      ? `${buffer}<div class="tab ${active}" data-tab="tab_${this.tabGroup}_${idx}">
+            <div class="pdf_title" style="display: none">${tokens[idx].info.replace(/^\s*tab:/, '')}</div> \n`
       : '</div>\n';
   }
 
