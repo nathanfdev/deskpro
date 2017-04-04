@@ -380,6 +380,17 @@ class ViewTopic extends React.Component {
           });
         }
         if (response.data.data.errors) {
+          if (response.data.data.errors.form.errors) {
+            Array.prototype.forEach.call(response.data.data.errors.form.errors, (error) => {
+              this.state.flashes.push({
+                type:    'error',
+                message: error
+              });
+            });
+            this.setState({
+              flashes: this.state.flashes
+            });
+          }
           return reject(response);
         }
         return resolve(response);
@@ -427,7 +438,6 @@ class ViewTopic extends React.Component {
           <TopicList topics={topics} locale={locale} guideSlug={guideSlug} />
         </div>
         <div className="topic" ref={(c) => { this.topic = c; }}>
-          <div className={classNames('loading', { active: this.state.doSpin || !this.state.topic.slug })} />
           <header className="section-header">
             <h1>{this.state.topic.title}</h1>
             <span id="publication-date" className="publication_date">
@@ -449,6 +459,7 @@ class ViewTopic extends React.Component {
             postComment={this.postComment}
             comments={this.state.topic.comments}
           />
+          <div className={classNames('loading', { active: this.state.doSpin || !this.state.topic.slug })} />
         </div>
         <div className="content-summary">
           <TopicSummary content={this.state.topic.content} fixed={fixed} agentBarHeight={agentBarHeight} />

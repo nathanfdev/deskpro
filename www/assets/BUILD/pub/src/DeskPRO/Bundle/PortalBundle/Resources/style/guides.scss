@@ -406,6 +406,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       background-image: url("#{$portal-img-path}/search-spinner.gif");
       background-repeat: no-repeat;
       background-position: center center;
+      z-index: 200;
     }
     .loading.active {
       display: block;

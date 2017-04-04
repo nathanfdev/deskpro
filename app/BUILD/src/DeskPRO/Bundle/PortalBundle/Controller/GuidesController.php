@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\TopicComment;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Orb\Util\Strings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -150,6 +151,7 @@ class GuidesController extends AbstractController
 
         // COMMENT FORM
         $newCommentForm = null;
+        $captcha        = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_ARTICLE, $topic)) {
             $formHandler = $this->get('form_handler.comment');
             $comment     = new TopicComment();
@@ -159,6 +161,23 @@ class GuidesController extends AbstractController
             $formResult     = $formHandler->handle($newCommentForm, $request, $topic, $comment);
             if ($formResult instanceof Response) {
                 return $formResult;
+            }
+            if ($newCommentForm->has('captcha')) {
+                $captcha     = $newCommentForm->get('captcha');
+                $captchaView = $newCommentForm->get('captcha')->createView();
+                $reCaptcha   = $this->getBrandSetting('core.use_recaptcha2')
+                    || ReCaptchaType::isCloudRecapchaEnabled();
+                if ($reCaptcha) {
+                    $siteKey = $this->getBrandSetting('core.recaptcha2_site_key');
+                    $captcha = [
+                        'type' => 'recaptcha',
+                        'key'  => $siteKey,
+                    ];
+                } else {
+                    $captcha = [
+                        'type' => 'gregwar',
+                    ];
+                }
             }
         }
 
@@ -175,6 +194,7 @@ class GuidesController extends AbstractController
             [
                 'topic'            => $topic,
                 'topic_json'       => $topicJson,
+                'captcha'          => $captcha,
                 'guide'            => $topic->getGuide(),
                 'guides_json'      => Strings::escapeForJson($serializer->serialize($guides, 'json', new SideloadSerializationContext())),
                 'new_comment_form' => $newCommentForm ? $newCommentForm->createView() : null,

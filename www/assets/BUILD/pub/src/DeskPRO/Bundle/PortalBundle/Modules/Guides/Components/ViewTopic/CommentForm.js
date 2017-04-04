@@ -30,14 +30,18 @@ class CommentForm extends React.Component {
         loading: true,
         errors:  {}
       });
-      this.props.onSubmit({
+      const params = {
         comment: {
           content_real:   this.state.comment,
           name:           this.state.name,
           email:          this.state.email,
           _dp_csrf_token: window.dp_get_csrf_token()
         }
-      }).then(() => {
+      };
+      if (this.recaptcha) {
+        params['g-recaptcha-response'] = window.document.getElementById('g-recaptcha-response').value;
+      }
+      this.props.onSubmit(params).then(() => {
         this.setState({
           comment: '',
           name:    '',
@@ -92,6 +96,23 @@ class CommentForm extends React.Component {
               />
               {this.getError('email')}
             </div>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  getCaptchaField = () => {
+    const captcha = JSON.parse(window.commentsCaptcha);
+    if (!captcha) {
+      return null;
+    }
+    if (captcha.type === 'recaptcha') {
+      return (
+        <div className="column-full">
+          <div className={classNames('bucket', { error: this.hasError('captcha') })}>
+            <div className="g-recaptcha" data-sitekey={captcha.key} ref={(c) => { this.recaptcha = c; }} />
           </div>
         </div>
       );
@@ -162,6 +183,7 @@ class CommentForm extends React.Component {
                   </div>
                 </div>
                 {this.getPersonFields()}
+                {this.getCaptchaField()}
                 <div className="bucket form-widget">
                   <button type="submit" onClick={this.onSubmit} disabled={this.state.loading}>
                     {portalPhrases.get('portal.general.comment_btn_save')}&nbsp;
