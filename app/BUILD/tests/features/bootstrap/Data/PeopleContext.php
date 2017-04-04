@@ -292,6 +292,32 @@ class PeopleContext extends BaseContext
     }
 
     /**
+     * @Given :agent is member of the all permissions group
+     *
+     * @param string $who
+     */
+    public function addAllPermGroup($who)
+    {
+        /** @var Person $person */
+        $person = DataContext::getReference($who);
+        $person->addUsergroup($this->agentAllPermGroupExists());
+        $this->persistAndFlush($person);
+    }
+
+    /**
+     * @Given :agent is removed from the all permissions group
+     *
+     * @param string $who
+     */
+    public function removeAllPermGroup($who)
+    {
+        /** @var Person $person */
+        $person = DataContext::getReference($who);
+        $person->removeUsergroup($this->agentAllPermGroupExists());
+        $this->persistAndFlush($person);
+    }
+
+    /**
      * @param string $who
      * @param string $label
      *
@@ -310,6 +336,7 @@ class PeopleContext extends BaseContext
 
     /**
      * @param string $label
+     * @param Person $person
      *
      * @return LabelPerson
      */
@@ -334,6 +361,7 @@ class PeopleContext extends BaseContext
      */
     private function createUsergroup($name, $isAgent)
     {
+        /** @var Usergroup $group */
         $group = $this->repository(Usergroup::class)->findOneBy(['sys_name' => $name]);
         if (!$group) {
             $group = SimpleFactory::create(Usergroup::class, [

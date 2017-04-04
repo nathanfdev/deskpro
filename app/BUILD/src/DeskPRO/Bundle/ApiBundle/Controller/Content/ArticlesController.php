@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Type\Content\ArticleType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
@@ -73,6 +74,7 @@ class ArticlesController extends AbstractContentController
 {
     public static $entity   = Article::class;
     public static $category = ArticleCategory::class;
+    public static $type     = ArticleType::class;
 
     /**
      * {@inheritdoc}
