@@ -123,7 +123,7 @@ class HttpKernelBootTask implements BootTaskInterface
             return 'user';
         }
 
-        if ($this->isUrlSegmentPrefix($path, '/agent')) {
+        if ($this->isUrlSegmentPrefix($path, '/agent') || $this->isUrlSegmentPrefix($path, '/scripts/agent')) {
             return 'agent';
         }
         if ($this->isUrlSegmentPrefix($path, '/new-agent')) {
