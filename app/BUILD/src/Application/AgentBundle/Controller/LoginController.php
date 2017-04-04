@@ -69,7 +69,12 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             }
         }
 
-        $has_logged_out = $this->in->checkIsset('o');
+        $has_logged_out = $request->cookies->has('dp-recent-logout');
+        if ($has_logged_out) {
+            // remove recent logout cookie on redirect login
+            $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-recent-logout');
+            $cookie->send();
+        }
 
         // SSO Automatic Redirecting
 
