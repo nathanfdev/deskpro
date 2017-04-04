@@ -64,7 +64,7 @@ class DeepSelectBox extends React.Component {
     return (
       <div>
         <PortalSimpleSelectBoxWrapper
-          value={subChoice}
+          value={subChoice && subChoice.get('id')}
           level={deep}
           onChange={onChange}
           choices={choices}
