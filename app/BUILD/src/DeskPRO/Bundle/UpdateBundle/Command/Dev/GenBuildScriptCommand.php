@@ -30,9 +30,8 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\DevBundle\Command\Gen;
+namespace DeskPRO\Bundle\UpdateBundle\Command\Dev;
 
-use Application\InstallBundle\Util\GenBuildManifest;
 use DeskPRO\Component\Doctrine\ORM\Tools\SchemaTool;
 use DeskPRO\Component\Util\EnvUtils;
 use DeskPRO\Component\Util\ListUtils;
@@ -42,7 +41,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GenMigrationScriptCommand extends ContainerAwareCommand
+class GenBuildScriptCommand extends ContainerAwareCommand
 {
     /**
      * @var array
@@ -59,28 +58,24 @@ class GenMigrationScriptCommand extends ContainerAwareCommand
      */
     private $buildTime;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure()
     {
-        $this->setName('dpdev:gen:migration-script')->setAliases(['dpdev:gen-build-class']);
-        $this->addOption('out', null, InputOption::VALUE_NONE, 'Output to stdout instead of writing it');
-        $this->addOption('blocking', null, InputOption::VALUE_NONE, 'Force use of BlockingBuildInterface');
-        $this->addOption('skip-manifest', null, InputOption::VALUE_NONE, 'Do not update manifest (always skipped if --out is being used)');
+        $this
+            ->setName('dp:update:dev:gen-build-script')->setAliases(['dpdev:gen-build-class'])
+            ->addOption('output', null, InputOption::VALUE_NONE, 'Output to stdout instead of writing it')
+            ->addOption('blocking', null, InputOption::VALUE_NONE, 'Force use of BlockingBuildInterface')
+            ->addOption('skip-manifest', null, InputOption::VALUE_NONE, 'Do not update manifest (always skipped if --out is being used)')
+        ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$input->getOption('out')) {
+        if (!$input->getOption('output')) {
             echo "Generating new migration script\n";
         }
 
         $this->buildTime = time();
-        $this->toStdout  = $input->getOption('out');
+        $this->toStdout  = $input->getOption('output');
 
         $this->appendBuffer($this->getFileHeader());
         $skipPostBuild = false;
@@ -243,7 +238,7 @@ class GenMigrationScriptCommand extends ContainerAwareCommand
         $buffer = str_replace('__INTERFACE_TYPE__', implode(', ', $interfaces), $buffer);
         $buffer = str_replace('__PRE_CLASS_LINES__', implode("\n", $prelines), $buffer);
 
-        if (!$input->getOption('out')) {
+        if (!$this->toStdout) {
             echo "  .. done\n";
 
             $className    = 'Build'.$this->buildTime;
@@ -266,8 +261,14 @@ class GenMigrationScriptCommand extends ContainerAwareCommand
             echo " .. done\n";
 
             echo "Generating manifest:       $manifestPath\n";
-            $gen = new GenBuildManifest($baseBuildDir);
-            file_put_contents($manifestPath, $gen->getContents());
+
+            $reader       = $this->getContainer()->get('dp.build_tasks.manifest_reader');
+            $gen          = $this->getContainer()->get('dp.build_tasks.manifest_gen');
+            $manifestPath = $reader->getManifestPath();
+
+            $file = $gen->getContents();
+            file_put_contents($manifestPath, $file);
+
             echo " .. done\n";
         } else {
             echo $buffer;

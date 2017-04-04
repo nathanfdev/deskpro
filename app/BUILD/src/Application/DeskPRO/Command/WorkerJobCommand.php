@@ -281,6 +281,8 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 return 0;
             }
 
+            $db->delete('settings', ['name' => 'core.croncheck.updater']);
+
             // If we got here, there is nothing to do, so return
             if ($onlyUpdater) {
                 if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {

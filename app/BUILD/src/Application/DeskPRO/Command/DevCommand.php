@@ -217,27 +217,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
      */
     private function regenBuildManifestAction(InputInterface $input, OutputInterface $output)
     {
-        $manifest_path = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
-        $builds_path   = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build';
-
-        $gen  = new GenBuildManifest($builds_path);
-        $file = $gen->getContents();
-
-        if ($input->getOption('preview')) {
-            echo $file;
-
-            return 0;
-        } else {
-            if (file_put_contents($manifest_path, $file)) {
-                echo "Wrote manifest file: $manifest_path\n";
-
-                return 0;
-            } else {
-                echo "Failed to write manifest file: $manifest_path\n";
-
-                return 1;
-            }
-        }
+        $output->writeln('Use dpdev:update:gen-build-manifest command instead');
     }
 
     /**
@@ -402,71 +382,6 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
      */
     private function moveBuildScriptsAction(InputInterface $input, OutputInterface $output)
     {
-        $builds_root   = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build';
-        $build_ids_raw = explode(',', trim($input->getOption('move-build-scripts', ''), ','));
-        $build_ids     = [];
-
-        $get_file_path = function ($v) use ($builds_root) {
-            $y = @date('Y', $v);
-            $m = @date('m', $v);
-
-            return $builds_root."/$y/$m/Build$v.php";
-        };
-
-        foreach ($build_ids_raw as $bid) {
-            $b    = preg_replace('/[^0-9]/', '', $bid);
-            $file = $get_file_path($b);
-            if (!$b || !$file) {
-                $output->writeln("<error>Invalid build script: $bid</error>");
-
-                return 1;
-            }
-            if (!is_file($file)) {
-                $output->writeln("<error>Invalid build script: $bid -- No file: $file</error>");
-
-                return 1;
-            }
-
-            $build_ids[] = $b;
-        }
-
-        if (!$build_ids) {
-            $output->writeln('<error>No builds specified</error>');
-
-            return 1;
-        }
-
-        sort($build_ids, SORT_NUMERIC);
-
-        $start = time();
-        foreach ($build_ids as $bid) {
-            ++$start;
-            $new_bid = $start;
-
-            $file     = $get_file_path($bid);
-            $new_file = $get_file_path($new_bid);
-
-            $output->writeln("<info>$bid -> $new_bid</info>");
-
-            if (!is_dir(dirname($new_file))) {
-                mkdir(dirname($new_file));
-            }
-
-            rename($file, $new_file);
-            $output->writeln("\tOld Path: $file");
-            $output->writeln("\tNew Path: $new_file");
-            $output->writeln('');
-
-            $f = file_get_contents($new_file);
-            $f = str_replace('Build'.$bid, 'Build'.$new_bid, $f);
-            file_put_contents($new_file, $f);
-        }
-
-        $output->writeln('Done');
-        $output->writeln('You will now want to regen the build-time and build-manifest:');
-        $output->writeln("\tbin/console dpdev --touch-build-time");
-        $output->writeln("\tbin/console dpdev --regen-build-manifest");
-
-        return 0;
+        $output->writeln('Use dpdev:update:move-builds instead');
     }
 }

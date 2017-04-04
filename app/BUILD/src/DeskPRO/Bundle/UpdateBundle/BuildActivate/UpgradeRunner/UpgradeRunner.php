@@ -67,7 +67,7 @@ class UpgradeRunner implements UpgradeRunnerInterface, LoggerAwareInterface
         $builder = new ProcessBuilder([
             $this->phpPath,
             $build->getAppPath().DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'console',
-            'dp:upgrade',
+            'dp:update-db',
         ]);
         $builder->setTimeout(null);
 

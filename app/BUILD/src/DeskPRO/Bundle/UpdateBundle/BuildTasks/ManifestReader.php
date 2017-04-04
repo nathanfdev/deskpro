@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\InstallBundle\Upgrade;
+namespace DeskPRO\Bundle\UpdateBundle\BuildTasks;
 
 use DeskPRO\Component\Util\ListUtils;
 
@@ -55,6 +55,14 @@ class ManifestReader
     public function __construct($manifestPath)
     {
         $this->manifestPath = $manifestPath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getManifestPath()
+    {
+        return $this->manifestPath;
     }
 
     /**

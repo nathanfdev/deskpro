@@ -40,6 +40,15 @@ class UpdateBundle extends Bundle
 {
     public function registerCommands(Application $application)
     {
+        $application->add(new UpdateCommand\Dev\GenBuildManifestCommand());
+        $application->add(new UpdateCommand\Dev\GenBuildScriptCommand());
+        $application->add(new UpdateCommand\Dev\MoveBuildScriptsCommand());
+
+        $application->add(new UpdateCommand\Tasks\RunBuildCommand());
+        $application->add(new UpdateCommand\Tasks\RunCommand());
+        $application->add(new UpdateCommand\Tasks\RunSyncCommand());
+        $application->add(new UpdateCommand\Tasks\StatusCommand());
+
         $application->add(new UpdateCommand\ActivateBuildCommand());
         $application->add(new UpdateCommand\UpdateCommand());
         $application->add(new UpdateCommand\UpdateStatusCommand());

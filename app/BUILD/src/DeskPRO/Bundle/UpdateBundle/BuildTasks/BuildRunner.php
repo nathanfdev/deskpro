@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\InstallBundle\Upgrade;
+namespace DeskPRO\Bundle\UpdateBundle\BuildTasks;
 
 use Application\InstallBundle\Upgrade\Build\AbstractBuild;
 use Application\InstallBundle\Upgrade\Build\BlockingBuildInterface;

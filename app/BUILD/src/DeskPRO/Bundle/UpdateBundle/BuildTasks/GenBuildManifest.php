@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\InstallBundle\Util;
+namespace DeskPRO\Bundle\UpdateBundle\BuildTasks;
 
 use Application\InstallBundle\Upgrade\Build\BlockingBuildInterface;
 use Application\InstallBundle\Upgrade\Build\OnlineBuildInterface;
@@ -44,6 +44,14 @@ class GenBuildManifest
     public function __construct($buildsPath)
     {
         $this->buildsPath = $buildsPath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBuildsPath()
+    {
+        return $this->buildsPath;
     }
 
     /**
