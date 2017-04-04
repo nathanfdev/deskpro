@@ -25,25 +25,25 @@ Feature: /ticket_filters_counts endpoint
     And the JSON node "data.grouped_by" should be equal to "filter"
     And the JSON node "data.nested" should have 16 elements
 
-    And the JSON node "data.nested[0].title" should be equal to "All"
+    And the JSON node "data.nested[0].title" should be equal to "My Tickets"
     And the JSON node "data.nested[0].type" should be equal to "filter"
     And the JSON node "data.nested[0].count" should be equal to 3
     And the JSON node "data.nested[0].grouped_by" should be equal to 0
     And the JSON node "data.nested[0].nested" should have 0 elements
 
-    And the JSON node "data.nested[1].title" should be equal to "All (Hold)"
+    And the JSON node "data.nested[1].title" should be equal to "My Team's Tickets"
     And the JSON node "data.nested[1].type" should be equal to "filter"
     And the JSON node "data.nested[1].count" should be equal to 0
     And the JSON node "data.nested[1].grouped_by" should be equal to 0
     And the JSON node "data.nested[1].nested" should have 0 elements
 
-    And the JSON node "data.nested[2].title" should be equal to "Archived"
+    And the JSON node "data.nested[2].title" should be equal to "Tickets I Follow"
     And the JSON node "data.nested[2].type" should be equal to "filter"
     And the JSON node "data.nested[2].count" should be equal to 0
     And the JSON node "data.nested[2].grouped_by" should be equal to 0
     And the JSON node "data.nested[2].nested" should have 0 elements
 
-    And the JSON node "data.nested[3].title" should be equal to "Awaiting User"
+    And the JSON node "data.nested[3].title" should be equal to "Unassigned"
     And the JSON node "data.nested[3].type" should be equal to "filter"
     And the JSON node "data.nested[3].count" should be equal to 0
     And the JSON node "data.nested[3].grouped_by" should be equal to 0
@@ -66,22 +66,22 @@ Feature: /ticket_filters_counts endpoint
     Then the response status code should be 200
     And the response should be in JSON
 
-    And the JSON node "data.nested[0].title" should be equal to "All"
-    And the JSON node "data.nested[0].type" should be equal to "filter"
-    And the JSON node "data.nested[0].count" should be equal to 4
-    And the JSON node "data.nested[0].grouped_by" should be equal to "person"
-    And the JSON node "data.nested[0].nested" should have 2 elements
+    And the JSON node "data.nested[4].title" should be equal to "All"
+    And the JSON node "data.nested[4].type" should be equal to "filter"
+    And the JSON node "data.nested[4].count" should be equal to 4
+    And the JSON node "data.nested[4].grouped_by" should be equal to "person"
+    And the JSON node "data.nested[4].nested" should have 2 elements
 
-    And the JSON node "data.nested[0].nested[0].type" should be equal to "person"
-    And the JSON node "data.nested[0].nested[0].title" should be equal to "User 1"
-    And the JSON node "data.nested[0].nested[0].count" should be equal to 2
-    And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
-    And the JSON node "data.nested[0].nested[1].type" should be equal to "person"
-    And the JSON node "data.nested[0].nested[1].title" should be equal to "User 2"
-    And the JSON node "data.nested[0].nested[1].count" should be equal to 1
-    And the JSON node "data.nested[0].nested[1].nested" should have 0 elements
+    And the JSON node "data.nested[4].nested[0].type" should be equal to "person"
+    And the JSON node "data.nested[4].nested[0].title" should be equal to "User 1"
+    And the JSON node "data.nested[4].nested[0].count" should be equal to 2
+    And the JSON node "data.nested[4].nested[0].nested" should have 0 elements
+    And the JSON node "data.nested[4].nested[1].type" should be equal to "person"
+    And the JSON node "data.nested[4].nested[1].title" should be equal to "User 2"
+    And the JSON node "data.nested[4].nested[1].count" should be equal to 1
+    And the JSON node "data.nested[4].nested[1].nested" should have 0 elements
 
-    And the JSON node "data.nested[1].title" should be equal to "All (Hold)"
+    And the JSON node "data.nested[1].title" should be equal to "My Team's Tickets"
     And the JSON node "data.nested[1].type" should be equal to "filter"
     And the JSON node "data.nested[1].count" should be equal to 0
     And the JSON node "data.nested[1].grouped_by" should be equal to 0
@@ -103,18 +103,18 @@ Feature: /ticket_filters_counts endpoint
     When I send a GET request to "/api/v2/ticket_filters_counts?group_by[5]=<group_by>"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON node "data.nested[0].count" should be equal to 3
-    And the JSON node "data.nested[0].grouped_by" should be equal to "<group_by>"
-    And the JSON node "data.nested[0].nested" should have 2 elements
+    And the JSON node "data.nested[4].count" should be equal to 3
+    And the JSON node "data.nested[4].grouped_by" should be equal to "<group_by>"
+    And the JSON node "data.nested[4].nested" should have 2 elements
 
-    And the JSON node "data.nested[0].nested[0].type" should be equal to "<group_by>"
-    And the JSON node "data.nested[0].nested[0].title" should be equal to "<unassigned_label>"
-    And the JSON node "data.nested[0].nested[0].count" should be equal to 1
-    And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
-    And the JSON node "data.nested[0].nested[1].type" should be equal to "<group_by>"
-    And the JSON node "data.nested[0].nested[1].title" should be equal to "<entity_type> 1"
-    And the JSON node "data.nested[0].nested[1].count" should be equal to 2
-    And the JSON node "data.nested[0].nested[1].nested" should have 0 elements
+    And the JSON node "data.nested[4].nested[0].type" should be equal to "<group_by>"
+    And the JSON node "data.nested[4].nested[0].title" should be equal to "<unassigned_label>"
+    And the JSON node "data.nested[4].nested[0].count" should be equal to 1
+    And the JSON node "data.nested[4].nested[0].nested" should have 0 elements
+    And the JSON node "data.nested[4].nested[1].type" should be equal to "<group_by>"
+    And the JSON node "data.nested[4].nested[1].title" should be equal to "<entity_type> 1"
+    And the JSON node "data.nested[4].nested[1].count" should be equal to 2
+    And the JSON node "data.nested[4].nested[1].nested" should have 0 elements
 
     Examples:
       | entity_type  | group_by     | unassigned_label | title_prop |
@@ -137,22 +137,22 @@ Feature: /ticket_filters_counts endpoint
     Then the response status code should be 200
     And the response should be in JSON
 
-    And the JSON node "data.nested[0].count" should be equal to 4
-    And the JSON node "data.nested[0].grouped_by" should be equal to "urgency"
-    And the JSON node "data.nested[0].nested" should have 3 elements
+    And the JSON node "data.nested[4].count" should be equal to 4
+    And the JSON node "data.nested[4].grouped_by" should be equal to "urgency"
+    And the JSON node "data.nested[4].nested" should have 3 elements
 
-    And the JSON node "data.nested[0].nested[0].type" should be equal to "urgency"
-    And the JSON node "data.nested[0].nested[0].title" should be equal to 1
-    And the JSON node "data.nested[0].nested[0].count" should be equal to 1
-    And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
-    And the JSON node "data.nested[0].nested[1].type" should be equal to "urgency"
-    And the JSON node "data.nested[0].nested[1].title" should be equal to 2
-    And the JSON node "data.nested[0].nested[1].count" should be equal to 2
-    And the JSON node "data.nested[0].nested[1].nested" should have 0 elements
-    And the JSON node "data.nested[0].nested[2].type" should be equal to "urgency"
-    And the JSON node "data.nested[0].nested[2].title" should be equal to 4
-    And the JSON node "data.nested[0].nested[2].count" should be equal to 1
-    And the JSON node "data.nested[0].nested[2].nested" should have 0 elements
+    And the JSON node "data.nested[4].nested[0].type" should be equal to "urgency"
+    And the JSON node "data.nested[4].nested[0].title" should be equal to 1
+    And the JSON node "data.nested[4].nested[0].count" should be equal to 1
+    And the JSON node "data.nested[4].nested[0].nested" should have 0 elements
+    And the JSON node "data.nested[4].nested[1].type" should be equal to "urgency"
+    And the JSON node "data.nested[4].nested[1].title" should be equal to 2
+    And the JSON node "data.nested[4].nested[1].count" should be equal to 2
+    And the JSON node "data.nested[4].nested[1].nested" should have 0 elements
+    And the JSON node "data.nested[4].nested[2].type" should be equal to "urgency"
+    And the JSON node "data.nested[4].nested[2].title" should be equal to 4
+    And the JSON node "data.nested[4].nested[2].count" should be equal to 1
+    And the JSON node "data.nested[4].nested[2].nested" should have 0 elements
 
   Scenario Outline: I group by time
     Given I have a Ticket record referenced as ticket_1
@@ -165,10 +165,10 @@ Feature: /ticket_filters_counts endpoint
     Then the response status code should be 200
     And the response should be in JSON
 
-    And the JSON node "data.nested[0].count" should be equal to 4
-    And the JSON node "data.nested[0].grouped_by" should be equal to "<group_by>"
-    And the JSON node "data.nested[0].nested[0].type" should be equal to "<group_by>"
-    And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
+    And the JSON node "data.nested[4].count" should be equal to 4
+    And the JSON node "data.nested[4].grouped_by" should be equal to "<group_by>"
+    And the JSON node "data.nested[4].nested[0].type" should be equal to "<group_by>"
+    And the JSON node "data.nested[4].nested[0].nested" should have 0 elements
 
     Examples:
       | group_by         |
@@ -198,21 +198,21 @@ Feature: /ticket_filters_counts endpoint
     Then the response status code should be 200
     And the response should be in JSON
 
-    And the JSON node "data.nested[0].title" should be equal to "All"
-    And the JSON node "data.nested[0].type" should be equal to "filter"
-    And the JSON node "data.nested[0].count" should be equal to 5
-    And the JSON node "data.nested[0].grouped_by" should be equal to "ticket_field.{single_choice_field}"
-    And the JSON node "data.nested[0].nested" should have 4 elements
+    And the JSON node "data.nested[4].title" should be equal to "All"
+    And the JSON node "data.nested[4].type" should be equal to "filter"
+    And the JSON node "data.nested[4].count" should be equal to 5
+    And the JSON node "data.nested[4].grouped_by" should be equal to "ticket_field.{single_choice_field}"
+    And the JSON node "data.nested[4].nested" should have 4 elements
 
-    And the JSON node "data.nested[0].nested[0].count" should be equal to 1
-    And the JSON node "data.nested[0].nested[0].type" should be equal to "ticket_field.{single_choice_field}"
-    And the JSON node "data.nested[0].nested[0].title" should be equal to "None"
-    And the JSON node "data.nested[0].nested[1].count" should be equal to 1
-    And the JSON node "data.nested[0].nested[1].type" should be equal to "ticket_field.{single_choice_field}"
-    And the JSON node "data.nested[0].nested[1].title" should be equal to "Single Choice v1"
-    And the JSON node "data.nested[0].nested[2].count" should be equal to 2
-    And the JSON node "data.nested[0].nested[2].type" should be equal to "ticket_field.{single_choice_field}"
-    And the JSON node "data.nested[0].nested[2].title" should be equal to "Single Choice v2"
-    And the JSON node "data.nested[0].nested[3].count" should be equal to 1
-    And the JSON node "data.nested[0].nested[3].type" should be equal to "ticket_field.{single_choice_field}"
-    And the JSON node "data.nested[0].nested[3].title" should be equal to "Single Choice v3"
+    And the JSON node "data.nested[4].nested[0].count" should be equal to 1
+    And the JSON node "data.nested[4].nested[0].type" should be equal to "ticket_field.{single_choice_field}"
+    And the JSON node "data.nested[4].nested[0].title" should be equal to "None"
+    And the JSON node "data.nested[4].nested[1].count" should be equal to 1
+    And the JSON node "data.nested[4].nested[1].type" should be equal to "ticket_field.{single_choice_field}"
+    And the JSON node "data.nested[4].nested[1].title" should be equal to "Single Choice v1"
+    And the JSON node "data.nested[4].nested[2].count" should be equal to 2
+    And the JSON node "data.nested[4].nested[2].type" should be equal to "ticket_field.{single_choice_field}"
+    And the JSON node "data.nested[4].nested[2].title" should be equal to "Single Choice v2"
+    And the JSON node "data.nested[4].nested[3].count" should be equal to 1
+    And the JSON node "data.nested[4].nested[3].type" should be equal to "ticket_field.{single_choice_field}"
+    And the JSON node "data.nested[4].nested[3].title" should be equal to "Single Choice v3"
