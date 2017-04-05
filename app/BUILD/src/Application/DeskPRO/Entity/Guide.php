@@ -28,6 +28,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\EntityRepository\Guide as ManualRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -278,9 +279,11 @@ class Guide extends DomainObject
      */
     public function getGuidePdf()
     {
-        $folder = '/pub/static/Guides/pdf/'.$this->getSlug().'.pdf';
-        if (file_exists(DP_WEB_ROOT.$folder)) {
-            return '/assets/'.DP_ACTIVE_BUILD.$folder;
+        $filename = DP_DIR.'/attachments/guides/pdf/'.$this->getSlug().'.pdf';
+        if (file_exists($filename)) {
+            return App::get('router')->generate(
+                'guides_pdf',
+                ['slug' => $this->getSlug()]);
         }
 
         return '';
