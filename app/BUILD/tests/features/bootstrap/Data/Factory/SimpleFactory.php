@@ -65,7 +65,7 @@ class SimpleFactory
         $class = get_class($object);
 
         foreach ($data as $prop => $value) {
-            if (empty($value)) {
+            if (empty($value) && $value !== 0) {
                 continue;
             }
 

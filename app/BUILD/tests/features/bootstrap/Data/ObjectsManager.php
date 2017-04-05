@@ -257,6 +257,8 @@ class ObjectsManager
                 $value = $date;
             } elseif (is_array($array = json_decode($value, true))) {
                 $value = $array;
+            } elseif (is_numeric($value)) {
+                $value = (int) $value;
             }
         }
 
@@ -323,6 +325,7 @@ class ObjectsManager
             'Usergroup'                => [Factory\SimpleFactory::class, 'create', Usergroup::class],
             'Language'                 => [Factory\SimpleFactory::class, 'create', Language::class],
             'TicketMessage'            => [Factory\SimpleFactory::class, 'create', TicketMessage::class],
+            'Guest'                    => [Factory\CommonFactories::class, 'person', 'guest'],
             'User'                     => [Factory\CommonFactories::class, 'person', 'user'],
             'Agent'                    => [Factory\CommonFactories::class, 'person', 'agent'],
             'Admin'                    => [Factory\CommonFactories::class, 'person', 'admin'],
@@ -361,6 +364,7 @@ class ObjectsManager
             'AgentTeam'                => [$this, 'find', AgentTeam::class],
             'Person'                   => [$this, 'find', Person::class],
             'PersonEmail'              => [$this, 'find', PersonEmail::class],
+            'Guest'                    => [$this, 'find', Person::class, ['is_user' => false]],
             'User'                     => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => false]],
             'Agent'                    => [$this, 'find', Person::class, ['is_agent' => true, 'can_admin' => false]],
             'Admin'                    => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => true]],

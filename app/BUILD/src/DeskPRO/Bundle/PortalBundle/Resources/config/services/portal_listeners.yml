@@ -96,6 +96,15 @@ services:
     tags:
       - { name: kernel.event_subscriber}
 
+  no_ticket_access_redirect.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\NoTicketAccessRedirectListener
+    arguments:
+      - "@security.token_storage"
+      - "@doctrine.orm.default_entity_manager"
+      - "@router"
+    tags:
+      - { name: kernel.event_subscriber}
+
   controller_name_converter:
       class: DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser
       tags: [{name: monolog.logger, channel: request}]
