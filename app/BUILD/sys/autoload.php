@@ -121,6 +121,8 @@ foreach ([
     'DpTestSrc\\' => DP_APP_DIR.'/tests/src/',
     'DpSys\\' => DP_APP_DIR.'/sys/',
     'DpRun\\' => DP_DIR.'/app/run/lib/DpRun',
+    'DpScripts\\Agent\\' => DP_DIR.'/app/scripts/agent',
+    'DpScripts\\User\\' => DP_DIR.'/app/scripts/user',
     'DeskPRO\\Services\\' => DP_APP_DIR.'/bin/tools/services/src',
 ] as $prefix => $path) {
     $loader->addPsr4($prefix, $path);
