@@ -64,10 +64,16 @@ class UpgradeRunner implements UpgradeRunnerInterface, LoggerAwareInterface
      */
     public function runUpgrade(BuildInstance $build)
     {
+        $cmdName = 'dp:update-db';
+        if ($build->getBuildId() <= 24133) {
+            // the old name was dp:upgrade
+            $cmdName = 'dp:upgrade';
+        }
+
         $builder = new ProcessBuilder([
             $this->phpPath,
             $build->getAppPath().DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'console',
-            'dp:update-db',
+            $cmdName,
         ]);
         $builder->setTimeout(null);
 
