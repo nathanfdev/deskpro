@@ -91,7 +91,13 @@ class GuidesController extends AbstractController
      */
     public function browseAction(Guide $guide)
     {
-        return $this->redirectToRoute('portal_guides_topic_permalink', ['slug' => $guide->getTopics()[0]->getId(), 'guide_slug' => $guide->getSlug()]);
+        $topic = $guide->getTopics()->first();
+
+        if (!$topic) {
+            return $this->redirectToRoute('portal_home');
+        }
+
+        return $this->redirectToRoute('portal_guides_topic_permalink', ['slug' => $topic->getId(), 'guide_slug' => $guide->getSlug()]);
     }
 
     /**
@@ -170,7 +176,7 @@ class GuidesController extends AbstractController
     }
 
     /**
-     * @Route("/guide_pdf/{slug}", name="user_guides")
+     * @Route("/guide_pdf/{slug}", name="guides_pdf")
      * @ParamConverter(name="guide", converter="deskpro_slug")
      * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_GUIDE', guide)")
      * @PageHttpCache()
