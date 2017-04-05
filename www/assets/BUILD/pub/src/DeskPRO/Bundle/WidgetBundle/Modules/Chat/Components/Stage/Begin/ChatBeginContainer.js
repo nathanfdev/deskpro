@@ -200,8 +200,8 @@ export class ChatBeginContainer extends React.Component {
     const { customFields, defaultValues, children } = props;
     const { chatDepartments, chatSelectDepartmentType, chatDefaultDepartment } = props;
     const formData = {
-      name:   '',
-      email:  '',
+      name:   defaultValues && defaultValues.get('name') || '',
+      email:  defaultValues && defaultValues.get('email') || '',
       fields: {}
     };
 
@@ -217,6 +217,10 @@ export class ChatBeginContainer extends React.Component {
       formData.chat_department = '';
     } else if (chatDepartments.size === 1) {
       formData.chat_department = chatDepartments.first().get('id');
+    }
+
+    if (defaultValues && defaultValues.get('department') && chatDepartments.has(defaultValues.get('department'))) {
+      formData.chat_department = defaultValues.get('department');
     }
 
     customFields.forEach((customField) => {

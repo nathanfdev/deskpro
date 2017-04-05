@@ -6,7 +6,7 @@ export default class PortalSimpleSelectBoxWrapper extends React.Component {
   static propTypes = {
     level:         PropTypes.number,
     multiple:      PropTypes.bool,
-    value:         PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    value:         PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
     choices:       PropTypes.object,
     onChange:      PropTypes.func,
     widgetOptions: PropTypes.object
