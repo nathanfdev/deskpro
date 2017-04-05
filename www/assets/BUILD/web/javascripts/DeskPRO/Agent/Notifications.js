@@ -14,7 +14,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			for(var i=0; i<this.dismissedIds.length; i++) { this.dismissedIds[i] = parseInt(this.dismissedIds[i], 10); }
 		}
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.tickets', function(info) { this.addRow(info.row, info.alert_id || null); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.tickets', function(info) { this.addRow(info.row, info.alert_id || null, info.icon || null); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.tasks', function(info) { this.addRow(info.row); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.new_comment', function(info) { this.addRow(info.row); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.new_feedback', function(info) { this.addRow(info.row); }, this);
@@ -185,7 +185,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		return 'main';
 	},
 
-	addRow: function(html_or_el, alert_id) {
+	addRow: function(html_or_el, alert_id, avatar) {
 
 		if (alert_id && this.isDismissedAlready(alert_id)) {
 			this.dismissAlertId(alert_id);
@@ -232,6 +232,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			if (icon) {
 				icon = ASSETS_BASE_URL + '/' + icon;
 			}
+			icon = icon || avatar;
 
 			var title = $.trim(row.find('big').first().text().replace(/[\n]/g, ' ').replace(/\s+/g, ' ')).replace(/^#\d+\s*/, '');
 			var body = $.trim(row.find('small').first().text().replace(/[\n]/g, ' ').replace(/\s+/g, ' '));

@@ -31,6 +31,8 @@ namespace Application\DeskPRO\AgentAlert;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AgentAlert;
 use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -49,25 +51,35 @@ class AlertSender
      */
     protected $db;
 
+    /**
+     * @var OptionsResolver
+     */
     protected $resolver;
+
+    /**
+     * @var AvatarResolver
+     */
+    protected $avatarResolver;
 
     /**
      * Constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager  $em
+     * @param AvatarResolver $avatarResolver
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, AvatarResolver $avatarResolver)
     {
-        $this->em       = $em;
-        $this->db       = $em->getConnection();
-        $this->resolver = new OptionsResolver();
+        $this->em             = $em;
+        $this->db             = $em->getConnection();
+        $this->resolver       = new OptionsResolver();
+        $this->avatarResolver = $avatarResolver;
         $this->configureOptions();
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Person $agent
-     * @param string                             $type
-     * @param array                              $data
+     * @param Person $agent
+     * @param string $type
+     * @param array  $data
      *
      * @return AgentAlert
      */
@@ -75,13 +87,13 @@ class AlertSender
     {
         $data = $this->resolver->resolve($data);
 
-        $tpl_line = null;
-        $alert    = $this->createAlert($agent, $type, $data);
+        $tplLine = null;
+        $alert   = $this->createAlert($agent, $type, $data);
         $this->em->persist($alert);
         $this->em->flush($alert);
 
         if (isset($data['browser_rendered'])) {
-            $tpl_line = $data['browser_rendered'];
+            $tplLine = $data['browser_rendered'];
 
             $cm = new ClientMessage();
             $cm->fromArray(
@@ -90,7 +102,8 @@ class AlertSender
                     'data'    => [
                         'type'     => $type,
                         'alert_id' => $alert->getId(),
-                        'row'      => $tpl_line,
+                        'row'      => $tplLine,
+                        'icon'     => $this->avatarResolver->getAvatar($agent, 48),
                     ],
                     'for_person'        => $agent,
                     'created_by_client' => 'sys',
@@ -134,10 +147,10 @@ class AlertSender
         $data = $alert->getData($target);
 
         if (isset($data['@fetch_types'])) {
-            $fetch_types = $data['@fetch_types'];
+            $fetchTypes = $data['@fetch_types'];
             unset($data['@fetch_types']);
 
-            foreach ($fetch_types as $k => $type) {
+            foreach ($fetchTypes as $k => $type) {
                 if (!isset($data[$k]) || !$data[$k]) {
                     $data[$k] = null;
                     continue;

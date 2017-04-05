@@ -70,16 +70,16 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 
     /**
      * @param Ticket                   $ticket
-     * @param array                    $agent_ids
+     * @param array                    $agentIds
      * @param ExecutorContextInterface $context
      *
      * @return array
      */
-    private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
+    private function resolveAgents(Ticket $ticket, array $agentIds, ExecutorContextInterface $context)
     {
         $agents = [];
 
-        foreach ($agent_ids as $aid) {
+        foreach ($agentIds as $aid) {
             // -1 = current user
             if ($aid == -1) {
                 if ($context->getPersonContext() && $context->getPersonContext()->isAgent()) {
@@ -102,8 +102,8 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 
             // followers
             } elseif ($aid == 'followers') {
-                if ($agent_followers = $ticket->getAgentParticipants()) {
-                    foreach ($agent_followers as $agent) {
+                if ($agentFollowers = $ticket->getAgentParticipants()) {
+                    foreach ($agentFollowers as $agent) {
                         $agents[] = $agent;
                     }
                 }
@@ -114,22 +114,22 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
                 $subscriptionRepo = $this->getContainer()->getEm()->getRepository(TicketFilterSubscription::class);
                 $forAgentIds      = $subscriptionRepo->getSubscribedActiveAgentIds();
 
-                $change_detect = $this->getContainer()->getTicketFilterChangeDetector();
-                $change_set    = $change_detect->getFilterChangeSet($ticket, $context, $forAgentIds);
-                $list_builder  = new AgentNotifyListBuilder($ticket, $change_set, $subscriptionRepo);
+                $changeDetect = $this->getContainer()->getTicketFilterChangeDetector();
+                $changeSet    = $changeDetect->getFilterChangeSet($ticket, $context, $forAgentIds);
+                $listBuilder  = new AgentNotifyListBuilder($ticket, $changeSet, $subscriptionRepo);
 
-                $list_builder->setLogger($context->getLogger());
+                $listBuilder->setLogger($context->getLogger());
 
-                $notify = $list_builder->genNotifyList();
+                $notify = $listBuilder->genNotifyList();
 
-                $person_context = $context->getPersonContext();
+                $personContext = $context->getPersonContext();
                 foreach ($notify as $n) {
                     // dont send to self
-                    if ($person_context && $person_context === $n['agent']) {
+                    if ($personContext && $personContext === $n['agent']) {
                         $override = false;
-                        if ($person_context->getPref('agent_notify_override.all.alert')) {
+                        if ($personContext->getPref('agent_notify_override.all.alert')) {
                             $override = true;
-                        } elseif ($person_context->getPref('agent_notify_override.forward.alert') && $context->getEventType() == 'newticket' && $context->getEventMethod() == 'email') {
+                        } elseif ($personContext->getPref('agent_notify_override.forward.alert') && $context->getEventType() == 'newticket' && $context->getEventMethod() == 'email') {
                             $override = true;
                         }
 
@@ -168,7 +168,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         $context->getLogger()->debug('[SendAgentAlert] Begin :: agent_ids = '.implode(', ', $this->getActionOption('agent_ids')));
-        $start_time = microtime(true);
+        $startTime = microtime(true);
 
         $agents = $this->resolveAgents($ticket, $this->getActionOption('agent_ids'), $context);
 
@@ -188,7 +188,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
             'log_items'          => $this->getActionOption('ticket_logs'),
         ];
 
-        $log_ids = array_map(function ($l) {
+        $logIds = array_map(function ($l) {
             return $l->getId();
         }, $vars['log_items']);
         $alertData = [
@@ -199,7 +199,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
             'is_new_agent_reply' => $vars['is_new_agent_reply'],
             'is_new_agent_note'  => $vars['is_new_agent_note'],
             'is_new_user_reply'  => $vars['is_new_user_reply'],
-            'log_items'          => $log_ids,
+            'log_items'          => $logIds,
         ];
 
         $em  = $this->getContainer()->getEm();
@@ -283,6 +283,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
                         'type'     => 'tickets',
                         'alert_id' => $alertRecord['alert_id'],
                         'row'      => $alertRecord['browser_rendered'],
+                        'icon'     => $this->getContainer()->get('avatar_resolver')->getAvatar($context->getPersonContext(), 48),
                     ]),
                 ];
             }
@@ -291,6 +292,6 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
         }
 
         $connection->commit();
-        $context->getLogger()->info(sprintf('[SendAgentAlert] Sent %d alerts in %.3fs', count($alertsMap), microtime(true) - $start_time));
+        $context->getLogger()->info(sprintf('[SendAgentAlert] Sent %d alerts in %.3fs', count($alertsMap), microtime(true) - $startTime));
     }
 }
