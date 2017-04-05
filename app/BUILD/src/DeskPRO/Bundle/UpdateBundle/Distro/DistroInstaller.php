@@ -232,14 +232,45 @@ class DistroInstaller implements LoggerAwareInterface
                         }
                         $backupTo = $scratchDir.DIRECTORY_SEPARATOR.md5($to);
                         $this->logger->info(sprintf('Moving existing %s to backup dir %s', $to, $backupTo));
-                        $fs->rename($to, $backupTo);
+                        $this->doRename($fs, $to, $backupTo);
                         break;
                 }
             }
 
             if ($doRename) {
-                $fs->rename($from, $to);
+                $this->doRename($fs, $from, $to);
             }
         }
+    }
+
+    /**
+     * Tries a rename 3 times with sleeps between them. This is to possibly fix issues on Windows
+     * where the filesystem isnt ready to move yet and causes failures.
+     *
+     * @param Filesystem $fs
+     * @param string     $from
+     * @param string     $to
+     *
+     * @throws \Exception
+     */
+    private function doRename(Filesystem $fs, $from, $to)
+    {
+        $hasMoved = false;
+        $attempt  = 0;
+
+        do {
+            try {
+                $fs->rename($from, $to);
+                $hasMoved = true;
+            } catch (\Exception $e) {
+                $this->logger->error(sprintf('[Attempt %d] Failed to move %s --> %s: %s %s', $attempt, $from, $to, $e->getCode(), $e->getMessage()));
+                if ($attempt === 3) {
+                    throw $e;
+                }
+            }
+            if ($attempt) {
+                sleep($attempt);
+            }
+        } while (!$hasMoved && ++$attempt <= 3);
     }
 }

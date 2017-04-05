@@ -68,7 +68,7 @@ class InstallData implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var string
-     * @ORM\Column(type="dpblob", length=-3)
+     * @ORM\Column(type="dpblob")
      */
     protected $data;
 

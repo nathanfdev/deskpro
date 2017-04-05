@@ -39,7 +39,6 @@ class SettingsProcessor extends Base
     protected $skip = [
         'core.site_url',
         'core.deskpro_build',
-        'core.deskpro_build_num',
         'core.deskpro_version',
         'core.last_cron_run',
         'core.last_cron_start',

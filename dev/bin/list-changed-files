@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
+cd $DIR_ROOT
+
+if [ -n "$1" ]; then
+    COMMIT="$1"
+else
+    COMMIT="master"
+fi
+
+git --no-pager whatchanged --name-only --pretty="" $COMMIT..HEAD
+git --no-pager diff --name-only

@@ -184,7 +184,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
         $response->headers->set('X-DeskPRO-Premature-Termintation', 'upgrade_pending');
 
         if (in_array('application/json', $request->getAcceptableContentTypes())) {
-            $message = 'An upgrade is pending. An administrator must run the dp:upgrade command.';
+            $message = 'An upgrade is pending. An administrator must run the dp:update-db command.';
             $response->setContent(json_encode([
                 'type'         => 'upgrade_pending',
                 'message_html' => $message,

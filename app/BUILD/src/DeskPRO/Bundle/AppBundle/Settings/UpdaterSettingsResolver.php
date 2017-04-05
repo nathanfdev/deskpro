@@ -71,7 +71,7 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getUpdaterSettings()
     {
         $updaterSettings = new UpdaterSettings();
-        $updaterSettings->setIsEnabled((bool)$this->getSetting(self::AUTO_UPDATER_ENABLED));
+        $updaterSettings->setIsEnabled((bool) $this->getSetting(self::AUTO_UPDATER_ENABLED));
 
         if ($updaterSettings->isEnabled() && !$this->getNextCheckDate()) {
             $updaterSettings->setIsEnabled(false);
@@ -85,7 +85,7 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
         }
         $updaterSettings->setTimezone($tz);
 
-        $days = max(1, (int)$this->getSetting(self::AUTO_UPDATER_INTERVAL));
+        $days = max(1, (int) $this->getSetting(self::AUTO_UPDATER_INTERVAL));
         $updaterSettings->setIntervalDays($days);
         $updaterSettings->setTimeOfDay($this->getSetting(self::AUTO_UPDATER_TIME_OF_DAY));
 
@@ -108,17 +108,17 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
         }
         // If a path contains php-win.exe, rewrite it to php.exe.
         $phpPath = str_replace('php-win.exe', 'php.exe', $phpPath);
-        // Also if the path contains special characters like spaces or parenthesis, we need to quote it. E.g. "C:\....\php.exe" dp:upgrade
+        // Also if the path contains special characters like spaces or parenthesis, we need to quote it. E.g. "C:\....\php.exe" dp:update-db
         if (preg_match('/[^a-zA-Z0-9\\\:\/\.\-_]/', $phpPath)) {
-            $phpPath = '"' . $phpPath . '"';
+            $phpPath = '"'.$phpPath.'"';
         }
 
         $status->setCliCommand(
             $phpPath
-            . ' '
-            . $this->appEnv->getDpRoot() . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'console'
-            . ' '
-            . 'dp:update'
+            .' '
+            .$this->appEnv->getDpRoot().DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'console'
+            .' '
+            .'dp:update'
         );
 
         /* @var \DpRun\DpEnv $DP_ENV */
@@ -131,11 +131,11 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
         }
         $status->setLogUrl(
             $this->router->generate('serve_root', [], RouterInterface::ABSOLUTE_URL)
-            . "__serverinfo/logs/updater?auth=$auth"
+            ."__serverinfo/logs/updater?auth=$auth"
         );
         $status->setWatcherUrl(
-            $this->router->generate('serve_root', [], RouterInterface::ABSOLUTE_URL) . 'admin/updater-status/'
-            . sha1($auth . 'update_watcher')
+            $this->router->generate('serve_root', [], RouterInterface::ABSOLUTE_URL).'admin/updater-status/'
+            .sha1($auth.'update_watcher')
         );
 
         $status->setBackupPath($DP_ENV->getUserBackupsDir());

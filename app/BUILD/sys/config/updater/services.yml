@@ -112,3 +112,22 @@ services:
     class: DeskPRO\Bundle\UpdateBundle\Session\UpdateSessionManagerFactory
     arguments:
       - "@=service('deskpro.app_env').getUserTmpDir()"
+
+  ######################################################################################################################
+  # Build Tasks
+  ######################################################################################################################
+
+  dp.build_tasks.build_status:
+    class: DeskPRO\Bundle\UpdateBundle\BuildTasks\BuildStatus
+    arguments:
+      - "@database_connection"
+
+  dp.build_tasks.manifest_gen:
+    class: DeskPRO\Bundle\UpdateBundle\BuildTasks\GenBuildManifest
+    arguments:
+      - "@=service('deskpro.app_env').getAppDir() ~ '/src/Application/InstallBundle/Upgrade/Build'"
+
+  dp.build_tasks.manifest_reader:
+    class: DeskPRO\Bundle\UpdateBundle\BuildTasks\ManifestReader
+    arguments:
+      - "@=service('deskpro.app_env').getAppDir() ~ '/src/DeskPRO/Bundle/UpdateBundle/BuildTasks/build-manifest.php'"

@@ -78,7 +78,6 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\DevGenDpqlDocsCommand',
             'Application\\DeskPRO\\Command\\DevTestApiCommand',
             'Application\\DeskPRO\\Command\\FixBlobPathsCommand',
-            'Application\\DeskPRO\\Command\\GenBuildClassCommand',
             'Application\\DeskPRO\\Command\\GenerateSchemaFileCommand',
             'Application\\DeskPRO\\Command\\GenRandomEmailCommand',
             'Application\\DeskPRO\\Command\\IndexElasticsearchCommand',
@@ -97,7 +96,6 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\TestCommand',
             'Application\\DeskPRO\\Command\\TestEmailDecodeCommand',
             'Application\\DeskPRO\\Command\\TestFilterCommand',
-            'Application\\DeskPRO\\Command\\UpgradeCommand',
             'Application\\DeskPRO\\Command\\VerifyBlobsCommand',
             'Application\\DeskPRO\\Command\\WorkerJobCommand',
         ];

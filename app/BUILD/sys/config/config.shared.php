@@ -213,7 +213,6 @@ $definition = new Definition();
 $definition->setClass('Orb\\Doctrine\\Common\\Cache\\ArrayFileCache');
 $definition->setFactory('Application\\DeskPRO\\DependencyInjection\\SystemServices\\ArrayFileCacheFactory::create');
 $definition->setArguments(['dql']);
-$definition->addMethodCall('registerShutdownCommit');
 $container->setDefinition('doctrine.orm.default_query_cache', $definition);
 
 // entity listeners
