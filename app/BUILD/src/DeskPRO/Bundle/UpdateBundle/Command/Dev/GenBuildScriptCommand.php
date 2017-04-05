@@ -133,6 +133,8 @@ class GenBuildScriptCommand extends ContainerAwareCommand
 
         foreach ([
             'default' => $this->getContainer()->get('doctrine.orm.default_entity_manager'),
+            'sys' => $this->getContainer()->get('doctrine.orm.system_entity_manager'),
+            'audit' => $this->getContainer()->get('doctrine.orm.audit_entity_manager'),
         ] as $dbId => $em) {
             $metadata = $em->getMetadataFactory()->getAllMetadata();
             $tool     = new SchemaTool($em);
@@ -145,12 +147,12 @@ class GenBuildScriptCommand extends ContainerAwareCommand
                 foreach ($diff->newTables as $t) {
                     $sqls = $platform->getCreateTableSQL($t, AbstractPlatform::CREATE_INDEXES);
                     foreach ($sqls as $sql) {
-                        $newTableQueries[] = $sql;
+                        $newTableQueries[] = [$dbId, $sql];
                     }
 
                     foreach ($t->getForeignKeys() as $fk) {
                         $sql           = $platform->getCreateForeignKeySQL($fk, $t);
-                        $newFksLines[] = $sql;
+                        $newFksLines[] = [$dbId, $sql];
                     }
                 }
 
@@ -162,6 +164,9 @@ class GenBuildScriptCommand extends ContainerAwareCommand
             if (!empty($diff->changedTables)) {
                 foreach ($diff->changedTables as $tableDiff) {
                     $parts = $platform->getAlterTableSQL($tableDiff);
+                    $parts = array_map(function ($p) use ($dbId) {
+                        return [$dbId, $p];
+                    }, $parts);
                     if ($tool->isTableDiffBackwardsCompatible($tableDiff)) {
                         $bcAlterQueries = array_merge($bcAlterQueries, $parts);
                     } else {
@@ -174,7 +179,7 @@ class GenBuildScriptCommand extends ContainerAwareCommand
         if ($newTableQueries) {
             $this->appendBuffer("\n");
             $this->appendBuffer($this->getMethodLines('addNewTables', ListUtils::map($newTableQueries, function ($sql) {
-                return '$this->execDbQuery("'.addslashes($sql).'");';
+                return '$this->execDbQuery(\''.$sql[0].'\', "'.addslashes($sql[1]).'");';
             })));
         } else {
             $this->appendBuffer($this->getMethodLines('addNewTables', []));
@@ -183,7 +188,7 @@ class GenBuildScriptCommand extends ContainerAwareCommand
         if ($alterQueries) {
             // for some reason this always comes up as wrong
             $alterQueries = array_filter($alterQueries, function ($q) {
-                if ($q === 'ALTER TABLE email_uids CHANGE id id VARCHAR(100) NOT NULL') {
+                if ($q[1] === 'ALTER TABLE email_uids CHANGE id id VARCHAR(100) NOT NULL') {
                     return false;
                 }
 
@@ -194,7 +199,7 @@ class GenBuildScriptCommand extends ContainerAwareCommand
         if ($bcAlterQueries || $alterQueries) {
             $this->appendBuffer("\n");
             $this->appendBuffer($this->getMethodLines('runAlters', ListUtils::map(array_merge($bcAlterQueries, $alterQueries), function ($sql) {
-                return '$this->execDbQuery("'.addslashes($sql).'");';
+                return '$this->execDbQuery(\''.$sql[0].'\', "'.addslashes($sql[1]).'");';
             })));
 
             if ($alterQueries) {
