@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Comment;
 
 use Application\DeskPRO\Entity\TopicComment as CommentEntity;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use JMS\Serializer\Annotation as JMS;
 
 class TopicComment extends CommentAbstract
@@ -46,16 +47,17 @@ class TopicComment extends CommentAbstract
     /**
      * Constructor.
      *
-     * @param CommentEntity $entity
+     * @param CommentEntity  $entity
+     * @param AvatarResolver $avatarResolver
      */
-    public function __construct($entity)
+    public function __construct($entity, $avatarResolver)
     {
         parent::__construct($entity);
         if ($this->person) {
             if (!$this->name) {
                 $this->name = $this->person->getName();
             }
-            $this->avatar = $this->person->getGravatarUrl();
+            $this->avatar = $avatarResolver->getAvatar($this->person, 50);
         }
     }
 }

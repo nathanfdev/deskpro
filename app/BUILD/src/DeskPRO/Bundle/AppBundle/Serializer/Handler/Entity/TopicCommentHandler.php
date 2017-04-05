@@ -29,11 +29,22 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\TopicComment;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\TopicComment as TopicCommentModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 class TopicCommentHandler extends AbstractEntityHandler
 {
+    /**
+     * @var AvatarResolver
+     */
+    protected $avatarResolver;
+
+    public function __construct(AvatarResolver $avatarResolver)
+    {
+        $this->avatarResolver = $avatarResolver;
+    }
+
     /**
      * {@inheritdoc}
      *
@@ -41,7 +52,7 @@ class TopicCommentHandler extends AbstractEntityHandler
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
-        return new TopicCommentModel($entity);
+        return new TopicCommentModel($entity, $this->avatarResolver);
     }
 
     /**

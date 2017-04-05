@@ -74,14 +74,16 @@ class CommentsBlock extends React.Component {
       </div>
     ) : null;
 
-    return (<div className="comment-box" id="comments">
-      <div className="titled-header">
-        <h1>{portalPhrases.get('portal.general.comments-title', { '{count}': this.props.count }) }</h1>
+    return (
+      <div className="comment-box" id="comments">
+        <div className="titled-header">
+          <h1>{portalPhrases.get('portal.general.comments-title', { '{count}': this.props.count }) }</h1>
+        </div>
+        {comments}
+        {flashMessage}
+        <CommentForm onSubmit={this.props.postComment} />
       </div>
-      {comments}
-      {flashMessage}
-      <CommentForm onSubmit={this.props.postComment} />
-    </div>);
+    );
   }
 }
 export default CommentsBlock;

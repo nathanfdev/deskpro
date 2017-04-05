@@ -116,31 +116,31 @@ class GuidesController extends AbstractApiController
      */
     public function postNewComment(Request $request, Topic $topic, $visitor_id)
     {
-        if ($this->isGranted(ContentCommentVoter::COMMENT_ARTICLE, $topic)) {
-            $formHandler = $this->get('form_handler.comment');
-            $comment     = new TopicComment();
-            $comment->setVisitorId($visitor_id);
-            $comment->setIpAddress($request->getClientIp());
-            $newCommentForm = $formHandler->createForm($comment, $request);
-            $formResult     = $formHandler->handle($newCommentForm, $request, $topic, $comment);
-            $flashes        = [];
-            foreach ($request->getSession()->getFlashBag()->all() as $type => $flash) {
-                $flashes[] = [
-                    'type'    => $type,
-                    'message' => $flash[0],
-                ];
-            }
-            $response = ['flashes' => $flashes];
-            if ($comment->getId() && $comment->getStatus() === CommentAbstract::STATUS_VISIBLE) {
-                $response['comment'] = $comment;
-            }
-            if (!$formResult && $errors = $newCommentForm->getErrors(true)) {
-                $response['errors'] = $errors;
-            }
-
-            return new View($this->wrap($response), Response::HTTP_OK);
+        if (!$this->isGranted(ContentCommentVoter::COMMENT_ARTICLE, $topic)) {
+            return $this->createAccessDeniedException();
         }
 
-        return $this->createAccessDeniedException();
+        $formHandler = $this->get('form_handler.comment');
+        $comment     = new TopicComment();
+        $comment->setVisitorId($visitor_id);
+        $comment->setIpAddress($request->getClientIp());
+        $newCommentForm = $formHandler->createForm($comment, $request);
+        $formResult     = $formHandler->handle($newCommentForm, $request, $topic, $comment);
+        $flashes        = [];
+        foreach ($request->getSession()->getFlashBag()->all() as $type => $flash) {
+            $flashes[] = [
+                'type'    => $type,
+                'message' => $flash[0],
+            ];
+        }
+        $response = ['flashes' => $flashes];
+        if ($comment->getId() && $comment->getStatus() === CommentAbstract::STATUS_VISIBLE) {
+            $response['comment'] = $comment;
+        }
+        if (!$formResult && $errors = $newCommentForm->getErrors(true)) {
+            $response['errors'] = $errors;
+        }
+
+        return new View($this->wrap($response), Response::HTTP_OK);
     }
 }

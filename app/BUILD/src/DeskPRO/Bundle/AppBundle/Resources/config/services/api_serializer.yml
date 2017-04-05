@@ -104,6 +104,8 @@ services:
 
   api_serializer.handler.topic_comment:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TopicCommentHandler
+    arguments:
+          - "@avatar_resolver"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
