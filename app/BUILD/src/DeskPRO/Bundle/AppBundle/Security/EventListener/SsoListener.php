@@ -133,6 +133,8 @@ class SsoListener implements EventSubscriberInterface
             $url = $authInterfaceSettings->getLogoutRedirectUrl();
             if ($url) {
                 return new RedirectResponse($url);
+            } else {
+                return;
             }
         }
 
