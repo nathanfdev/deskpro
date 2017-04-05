@@ -768,6 +768,7 @@ return [
     'portal.tickets.view_you_created'                       => 'You created this ticket {{ ago }}.',
     'portal.tickets.new_ticket_button'                      => 'Create a new ticket',
     'portal.topics.none'                                    => 'No topics yet',
+    'portal.topics.search-title'                            => 'Guides',
     'portal.widget.help_button'                             => 'Help',
     'portal.widget.popup_title'                             => 'Customer Support',
     'portal.widget.popup_message'                           => 'Need help? Just reply to start a live chat with one of our team.',

@@ -9,6 +9,8 @@
         {{ _self.feedback_search_result(result['object']) }}
     {% elseif result['type'] == 'download' %}
         {{ _self.dl_search_result(result['object']) }}
+    {% elseif result['type'] == 'topic' %}
+        {{ _self.topic_search_result(result['object']) }}
     {% endif %}
 {% endmacro %}
 
@@ -71,4 +73,17 @@
           <p>{{ news.realContent|html_content_preview(350) }}</p>
         </a>
   </li>
+{% endmacro %}
+
+
+{% macro topic_search_result(topic) %}
+    <li>
+        {{ content_icon(topic) }}
+        <a href="{{ portal_path(topic) }}">
+          <span class="item-title">
+            {{ topic.title }}
+          </span>
+          <p>{{ topic.realContent|html_content_preview(350) }}</p>
+        </a>
+    </li>
 {% endmacro %}
