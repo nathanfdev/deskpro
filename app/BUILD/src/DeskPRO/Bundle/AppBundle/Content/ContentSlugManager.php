@@ -85,7 +85,7 @@ class ContentSlugManager
      *
      * @throws \Exception
      *
-     * @return null|void
+     * @return null|object
      */
     public function ensureValidSlug(ContentAbstract $content)
     {
@@ -97,7 +97,7 @@ class ContentSlugManager
         }
 
         if ($existingSlug === $expectedSlug) {
-            return; // already valid and set, no need to do more here
+            return null; // already valid and set, no need to do more here
         }
 
         // check if the expected slug is a valid one, in both content repo and in slug history repo
@@ -140,12 +140,15 @@ class ContentSlugManager
             return $content;
         }
 
-        $historyRepo = $this->getEm()->getRepository(sprintf('%sSlugHistory', $content_class_name));
-        if ($content_history = $historyRepo->findOneBy(['slug' => $slug])) {
-            return $content_history->getContent();
+        $historyClass = sprintf('%sSlugHistory', $content_class_name);
+        if (class_exists($historyClass)) {
+            $historyRepo = $this->getEm()->getRepository($historyClass);
+            if ($contentHistory = $historyRepo->findOneBy(['slug' => $slug])) {
+                return $contentHistory->getContent();
+            }
         }
 
-        return;
+        return null;
     }
 
     /**

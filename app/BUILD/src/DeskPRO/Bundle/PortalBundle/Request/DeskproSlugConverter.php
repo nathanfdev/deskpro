@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\PortalBundle\Request;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\AppBundle\Content\ContentSlugManager;
@@ -166,6 +167,7 @@ class DeskproSlugConverter implements ParamConverterInterface
             case News::class:
             case Download::class:
             case Topic::class:
+            case Guide::class:
                 return true;
             default:
                 return false;

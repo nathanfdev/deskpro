@@ -18,6 +18,8 @@
         {% set feedback_results = results.feedback is defined ? results.feedback.results : null %}
         {% set download_info = results.download is defined ? results.download.pageinfo : null %}
         {% set download_results = results.download is defined ? results.download.results: null %}
+        {% set guide_info = results.topic is defined ? results.topic.pageinfo : null %}
+        {% set guide_results = results.topic is defined ? results.topic.results : null %}
 
         {% if not is_search %}
             {{ phrase('portal.general.no-search-query') }}
@@ -114,6 +116,24 @@
                       </li>
                     </ul>
                   </div>
+                </div>
+            {% endif %}
+
+            {% if app.hasFeature('guides') and can_use_guides() and guide_results %}
+                <div class="search-result-category-wrapper" id="guide_results">
+                    <div class="deskpro-search-results">
+                        <div class="search-result-category"><hr><i class="fa fa-book"></i><span class="title">{{ phrase('portal.topics.search-title') }} <span class="count">({{ guide_info['total_results'] }})</span></span></div>
+                        <ul class="dpx-dynamic-search-results" data-type="topic" data-next="{{ guide_info.next ? 1 : 0 }}">
+                            {% for result_set in guide_results %}
+                                {{ search_macros.search_result(result_set) }}
+                            {% endfor %}
+                            <li class="dpx-show-more">
+                                <div class="button-wrapper">
+                                    <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fa fa-angle-double-down"></i></a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             {% endif %}
         {% endif %}
