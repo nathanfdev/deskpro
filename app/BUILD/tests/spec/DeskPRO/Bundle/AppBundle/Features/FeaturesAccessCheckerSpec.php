@@ -28,8 +28,8 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Features;
 
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 use DeskPRO\Bundle\AppBundle\Features\FeatureInterface;
-use DpRun\DpEnv;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -37,57 +37,57 @@ use PhpSpec\ObjectBehavior;
  */
 class FeaturesAccessCheckerSpec extends ObjectBehavior
 {
-    public function it_checks_features_availability_in_dev_mode(DpEnv $dpEnv)
+    public function it_checks_features_availability_in_dev_mode(AppEnv $appEnv)
     {
-        $dpEnv->isDebug()->willReturn(true);
+        $appEnv->isDebug()->willReturn(true);
 
-        $this->beConstructedWith($dpEnv);
+        $this->beConstructedWith($appEnv);
         $this->isAvailable([FeatureInterface::AVAILABLE_EVERYWHERE])->shouldReturn(true);
         $this->isAvailable([FeatureInterface::AVAILABLE_AT_ONPREM])->shouldReturn(true);
         $this->isAvailable([FeatureInterface::AVAILABLE_AT_CLOUD])->shouldReturn(true);
         $this->isAvailable([FeatureInterface::AVAILABLE_AT_QA])->shouldReturn(true);
     }
 
-    public function it_checks_everywhere_features_availability(DpEnv $dpEnv)
+    public function it_checks_everywhere_features_availability(AppEnv $appEnv)
     {
-        $dpEnv->isCloud()->willReturn(false);
-        $dpEnv->isDebug()->willReturn(false);
-        $dpEnv->isQa()->willReturn(false);
+        $appEnv->isCloud()->willReturn(false);
+        $appEnv->isDebug()->willReturn(false);
+        $appEnv->isQa()->willReturn(false);
 
-        $this->beConstructedWith($dpEnv);
+        $this->beConstructedWith($appEnv);
         $this->isAvailable([FeatureInterface::AVAILABLE_EVERYWHERE])->shouldReturn(true);
         $this->isAvailable([FeatureInterface::AVAILABLE_AT_QA])->shouldReturn(false);
         $this->isAvailable([FeatureInterface::AVAILABLE_AT_CLOUD])->shouldReturn(false);
     }
 
-    public function it_checks_qa_features_availability(DpEnv $dpEnv)
+    public function it_checks_qa_features_availability(AppEnv $appEnv)
     {
-        $dpEnv->isCloud()->willReturn(false);
-        $dpEnv->isDebug()->willReturn(false);
-        $dpEnv->isQa()->willReturn(true);
+        $appEnv->isCloud()->willReturn(false);
+        $appEnv->isDebug()->willReturn(false);
+        $appEnv->isQa()->willReturn(true);
 
-        $this->beConstructedWith($dpEnv);
+        $this->beConstructedWith($appEnv);
         $this->isAvailable([FeatureInterface::AVAILABLE_AT_QA])->shouldReturn(true);
     }
 
-    public function it_checks_cloud_features_availability(DpEnv $dpEnv)
+    public function it_checks_cloud_features_availability(AppEnv $appEnv)
     {
-        $dpEnv->isCloud()->willReturn(true);
-        $dpEnv->isDebug()->willReturn(false);
-        $dpEnv->isQa()->willReturn(false);
+        $appEnv->isCloud()->willReturn(true);
+        $appEnv->isDebug()->willReturn(false);
+        $appEnv->isQa()->willReturn(false);
 
-        $this->beConstructedWith($dpEnv);
+        $this->beConstructedWith($appEnv);
         $this->isAvailable([FeatureInterface::AVAILABLE_AT_CLOUD])->shouldReturn(true);
         $this->isAvailable([FeatureInterface::AVAILABLE_AT_ONPREM])->shouldReturn(false);
     }
 
-    public function it_checks_onprem_features_availability(DpEnv $dpEnv)
+    public function it_checks_onprem_features_availability(AppEnv $appEnv)
     {
-        $dpEnv->isCloud()->willReturn(false);
-        $dpEnv->isDebug()->willReturn(false);
-        $dpEnv->isQa()->willReturn(false);
+        $appEnv->isCloud()->willReturn(false);
+        $appEnv->isDebug()->willReturn(false);
+        $appEnv->isQa()->willReturn(false);
 
-        $this->beConstructedWith($dpEnv);
+        $this->beConstructedWith($appEnv);
         $this->isAvailable([FeatureInterface::AVAILABLE_AT_CLOUD])->shouldReturn(false);
         $this->isAvailable([FeatureInterface::AVAILABLE_AT_ONPREM])->shouldReturn(true);
     }

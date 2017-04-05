@@ -29,6 +29,7 @@
 namespace DpSys;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvFactory;
 use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
@@ -84,8 +85,8 @@ final class Features
      */
     private function hasExperimental($id)
     {
-        return $this->getDpEnv()->getConfig('settings.enable_experimental.all')
-            || $this->getDpEnv()->getConfig('settings.enable_experimental.'.$id);
+        return $this->getAppEnv()->getConfig('settings.enable_experimental.all')
+            || $this->getAppEnv()->getConfig('settings.enable_experimental.'.$id);
     }
 
     /**
@@ -108,7 +109,7 @@ final class Features
             case self::VOICE:
                 return $this->hasVoice();
             case self::DEV:
-                return $this->getDpEnv()->isQa() || $this->getDpEnv()->isDebug();
+                return $this->getAppEnv()->isQa() || $this->getAppEnv()->isDebug();
             default:
                 // assume it's an arbitrary experimental flag
                 return $this->hasExperimental($id);
@@ -154,13 +155,10 @@ final class Features
     }
 
     /**
-     * @return \DpRun\DpEnv
+     * @return \DeskPRO\Bundle\AppBundle\AppEnv\AppEnv
      */
-    private function getDpEnv()
+    private function getAppEnv()
     {
-        /* @var \DpRun\DpEnv $DP_ENV */
-        global $DP_ENV;
-
-        return $DP_ENV;
+        return AppEnvFactory::create();
     }
 }

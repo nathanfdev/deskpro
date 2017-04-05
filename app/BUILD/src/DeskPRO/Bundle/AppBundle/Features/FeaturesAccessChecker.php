@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Features;
 
-use DpRun\DpEnv;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 
 /**
  * Class FeaturesAccessChecker.
@@ -36,18 +36,18 @@ use DpRun\DpEnv;
 class FeaturesAccessChecker
 {
     /**
-     * @var DpEnv
+     * @var AppEnv
      */
-    private $dpEnv;
+    private $appEnv;
 
     /**
      * Constructor.
      *
-     * @param DpEnv $dpEnv
+     * @param AppEnv $appEnv
      */
-    public function __construct(DpEnv $dpEnv)
+    public function __construct(AppEnv $appEnv)
     {
-        $this->dpEnv = $dpEnv;
+        $this->appEnv = $appEnv;
     }
 
     /**
@@ -58,7 +58,7 @@ class FeaturesAccessChecker
     public function isAvailable(array $availability)
     {
         foreach ($availability as $availableAt) {
-            if ($this->dpEnv->isDebug()
+            if ($this->appEnv->isDebug()
                 || $this->availableEverywhere($availableAt)
                 || $this->availableAtCloud($availableAt)
                 || $this->availableAtOnprem($availableAt)
@@ -87,7 +87,7 @@ class FeaturesAccessChecker
      */
     private function availableAtCloud($availableAt)
     {
-        return $availableAt === FeatureInterface::AVAILABLE_AT_CLOUD && $this->dpEnv->isCloud();
+        return $availableAt === FeatureInterface::AVAILABLE_AT_CLOUD && $this->appEnv->isCloud();
     }
 
     /**
@@ -97,7 +97,7 @@ class FeaturesAccessChecker
      */
     private function availableAtOnprem($availableAt)
     {
-        return $availableAt === FeatureInterface::AVAILABLE_AT_ONPREM && !$this->dpEnv->isCloud();
+        return $availableAt === FeatureInterface::AVAILABLE_AT_ONPREM && !$this->appEnv->isCloud();
     }
 
     /**
@@ -107,6 +107,6 @@ class FeaturesAccessChecker
      */
     private function availableAtQa($availableAt)
     {
-        return $availableAt === FeatureInterface::AVAILABLE_AT_QA && $this->dpEnv->isQa();
+        return $availableAt === FeatureInterface::AVAILABLE_AT_QA && $this->appEnv->isQa();
     }
 }

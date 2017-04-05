@@ -210,6 +210,22 @@ class AppEnv implements AppEnvInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isCloud()
+    {
+        return defined('DPC_IS_CLOUD');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isQa()
+    {
+        return $this->getConfig('env.server_id') === 'builder.deskprodemo.com';
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getConfig($id, $default = null)
