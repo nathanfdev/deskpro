@@ -3,7 +3,7 @@ services:
   deskpro.features_access_checker:
     class: DeskPRO\Bundle\AppBundle\Features\FeaturesAccessChecker
     arguments:
-      - "@deskpro.low_dp_env"
+      - "@deskpro.app_env"
 
   deskpro.features_collection:
     class: DeskPRO\Bundle\AppBundle\Features\FeaturesCollection
