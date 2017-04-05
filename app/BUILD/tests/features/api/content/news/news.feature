@@ -13,25 +13,33 @@ Feature: /news endpoint
       | #  | locale | sys_name |
       | l1 | so_ME  | some     |
       | l2 | fk     | fake     |
+    And I have only default brand
     And the following NewsCategory records exist:
-      | #   | parent | title                | slug                 |
-      | ac1 |        | First News Category  | first_news_category  |
-      | ac2 | {ac1}  | Second News Category | second_news_category |
-      | ac3 | {ac1}  | Third News Category  | third_news_category  |
-      | ac4 |        | Fourth News Category | fourth_news_category |
+      | #   | Parent | Title                | Slug                 | Brand          |
+      | nc1 |        | First News Category  | first_news_category  | {defaultBrand} |
+      | nc2 | {nc1}  | Second News Category | second_news_category | {defaultBrand} |
+      | nc3 | {nc1}  | Third News Category  | third_news_category  | {defaultBrand} |
+      | nc4 |        | Fourth News Category | fourth_news_category | {defaultBrand} |
+    And I add "nc1" category usergroup relation "agent_all_safe_perms"
+    And I add "nc2" category usergroup relation "agent_all_safe_perms"
+    And I add "nc3" category usergroup relation "agent_all_safe_perms"
     When I send a POST request to "/api/v2/news" with body:
     """
 {
-  "title": "Test News",
-  "content": "<p>Some fake news content</p>",
-  "person":  ~agent~,
-  "language": ~l1~,
-  "status": "hidden",
-  "hidden_status": "draft",
-  "content_input_type": "rte"
+  "main" : {
+    "title": "Test News",
+    "content": "<p>Some fake news content</p>",
+    "person":  ~agent~,
+    "language": ~l1~,
+    "status": "hidden",
+    "hidden_status": "draft",
+    "content_input_type": "rte"
+  },
+  "category": ~nc2~
 }
     """
     Then the response status code should be 201
+    And print last JSON response
     And the header "Location" should be equal to "/api/v2/news/{lastCreatedId}"
     And the JSON node "data.title" should be equal to "Test News"
     And the JSON node "data.content" should be equal to "<p>Some fake news content</p>"
@@ -39,6 +47,7 @@ Feature: /news endpoint
     And the JSON node "data.person" should be equal to "{agent}"
     And the JSON node "data.status" should be equal to "hidden"
     And the JSON node "data.hidden_status" should be equal to "draft"
+    And the JSON node "data.category" should be equal to "{nc2}"
 
   Scenario: I view the created news as agent
     Given I'm authenticated as agent
@@ -55,10 +64,12 @@ Feature: /news endpoint
   Scenario: I edit title of the created article and publish it as agent
     Given I'm authenticated as agent
     When I send a PUT request to "/api/v2/news/{lastCreatedId}" with body:
-        """
+    """
 {
-  "title": "Test Edited News",
-  "status": "published"
+  "main": {
+    "title": "Test Edited News",
+    "status": "published"
+  }
 }
     """
     Then the response status code should be 204
@@ -72,24 +83,38 @@ Feature: /news endpoint
     And the JSON node "data.status" should be equal to "published"
     And the JSON node "data.hidden_status" should be null
 
-  Scenario: I try to delete created news as agent without delete permissions
+  Scenario: I change news category
     Given I'm authenticated as agent
-    When I send a DELETE request to "/api/v2/news/{lastCreatedId}"
-    Then the response status code should be 403
+    When I send a PUT request to "/api/v2/news/{lastCreatedId}" with body:
+    """
+{
+  "category": ~nc3~
+}
+    """
+    Then the response status code should be 204
+    And I send a GET request to "/api/v2/news/{lastCreatedId}"
+    And the response status code should be 200
+    And the JSON node "data.category" should be equal to "{nc3}"
 
-  Scenario: I delete created news as agent with all permissions
-    Given I'm authenticated as agent
-    And agent is member of the all permissions group
-    When I send a DELETE request to "/api/v2/news/{lastCreatedId}"
-    Then the response status code should be 200
-    When I send a GET request to "/api/v2/news/{lastCreatedId}"
-    And the response status code should be 404
-    And agent is removed from the all permissions group
-
-  Scenario: I try to create an article as user
+  Scenario: I try to create a news as user
     Given I'm authenticated as user
     When I send a POST request to "/api/v2/news" with body:
     """
 {}
     """
     And the response status code should be 403
+
+  Scenario: I try to delete created news as agent without delete permissions
+    Given I'm authenticated as agent
+    And I remove "agent" usergroup relation "agent_all_safe_perms"
+    And I remove "agent" usergroup relation "agent_all_perms"
+    When I send a DELETE request to "/api/v2/news/{lastCreatedId}"
+    Then the response status code should be 403
+
+  Scenario: I delete created news as agent with all permissions
+    Given I'm authenticated as agent
+    And I add "agent" usergroup relation "agent_all_perms"
+    When I send a DELETE request to "/api/v2/news/{lastCreatedId}"
+    Then the response status code should be 200
+    And I send a GET request to "/api/v2/news/{lastCreatedId}"
+    And the response status code should be 404

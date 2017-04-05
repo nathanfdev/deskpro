@@ -292,32 +292,6 @@ class PeopleContext extends BaseContext
     }
 
     /**
-     * @Given :agent is member of the all permissions group
-     *
-     * @param string $who
-     */
-    public function addAllPermGroup($who)
-    {
-        /** @var Person $person */
-        $person = DataContext::getReference($who);
-        $person->addUsergroup($this->agentAllPermGroupExists());
-        $this->persistAndFlush($person);
-    }
-
-    /**
-     * @Given :agent is removed from the all permissions group
-     *
-     * @param string $who
-     */
-    public function removeAllPermGroup($who)
-    {
-        /** @var Person $person */
-        $person = DataContext::getReference($who);
-        $person->removeUsergroup($this->agentAllPermGroupExists());
-        $this->persistAndFlush($person);
-    }
-
-    /**
      * @param string $who
      * @param string $label
      *

@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Type\Content\DownloadType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
@@ -69,9 +70,9 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Content\DownloadsType",
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Content\DownloadType",
  *      "options"={
- *          "data"="Application\DeskPRO\Entity\Downloads"
+ *          "data"="Application\DeskPRO\Entity\Download"
  *      }
  *     }
  * )
@@ -80,4 +81,5 @@ class DownloadsController extends AbstractSingleCategoryContentController
 {
     public static $entity   = Download::class;
     public static $category = DownloadCategory::class;
+    public static $type     = DownloadType::class;
 }

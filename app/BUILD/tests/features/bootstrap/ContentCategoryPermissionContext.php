@@ -26,37 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Content;
+namespace DpBehat;
 
-use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Entity\NewsCategory;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Application\DeskPRO\Entity\Usergroup;
+use DpBehat\Data\DataContext;
 
-class NewsType extends AbstractType
+class ContentCategoryPermissionContext extends BaseContext
 {
     /**
-     * {@inheritdoc}
+     * @Given I add :category category usergroup relation :sysName
+     *
+     * @param string $category
+     * @param string $sysName
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function iAddUserGroup($category, $sysName)
     {
-        $builder
-            ->add('main', ContentAbstractType::class)
-            ->add('category', EntityType::class, ['class' => NewsCategory::class, 'choice_label' => 'title']);
-    }
+        $category  = DataContext::getReference($category);
+        $usergroup = $this->repository(Usergroup::class)->findOneBy(['sys_name' => $sysName]);
+        $category->addUserGroup($usergroup);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver
-            ->setDefaults(
-                [
-                    'data_class' => News::class,
-                ]
-            );
+        $this->em()->persist($category);
+        $this->em()->flush();
     }
 }

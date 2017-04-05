@@ -29,14 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Content;
 
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ContentAbstract;
-use Application\DeskPRO\Entity\Language;
-use Application\DeskPRO\Entity\Person;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -48,64 +41,7 @@ class ArticleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class)
-            ->add('content', TextareaType::class)
-            ->add(
-                'language',
-                EntityType::class,
-                [
-                    'class'        => Language::class,
-                    'choice_label' => 'title',
-                ]
-            )
-            ->add(
-                'person',
-                EntityType::class,
-                [
-                    'class'        => Person::class,
-                    'choice_label' => 'name',
-                ]
-            )
-            ->add(
-                'content_input_type',
-                ChoiceType::class,
-                [
-                    'multiple' => false,
-                    'expanded' => false,
-                    'choices'  => [
-                        ContentAbstract::CONTENT_TYPE_MARKDOWN => 'Markdown',
-                        ContentAbstract::CONTENT_TYPE_RTE      => 'RTE',
-                    ],
-                ]
-            )
-            ->add(
-                'status',
-                ChoiceType::class,
-                [
-                    'multiple' => false,
-                    'expanded' => false,
-                    'choices'  => [
-                        ContentAbstract::STATUS_ARCHIVED  => ContentAbstract::STATUS_ARCHIVED,
-                        ContentAbstract::STATUS_HIDDEN    => ContentAbstract::STATUS_HIDDEN,
-                        ContentAbstract::STATUS_PUBLISHED => ContentAbstract::STATUS_PUBLISHED,
-                    ],
-                ]
-            )
-            ->add(
-                'hidden_status',
-                ChoiceType::class,
-                [
-                    'multiple' => false,
-                    'expanded' => false,
-                    'choices'  => [
-                        ContentAbstract::HIDDEN_STATUS_DELETED     => ContentAbstract::HIDDEN_STATUS_DELETED,
-                        ContentAbstract::HIDDEN_STATUS_DRAFT       => ContentAbstract::HIDDEN_STATUS_DRAFT,
-                        ContentAbstract::HIDDEN_STATUS_PENDING     => ContentAbstract::HIDDEN_STATUS_PENDING,
-                        ContentAbstract::HIDDEN_STATUS_SPAM        => ContentAbstract::HIDDEN_STATUS_SPAM,
-                        ContentAbstract::HIDDEN_STATUS_UNPUBLISHED => ContentAbstract::HIDDEN_STATUS_UNPUBLISHED,
-                    ],
-                ]
-            );
+            ->add('main', ContentAbstractType::class);
     }
 
     /**

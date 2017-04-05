@@ -28,14 +28,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Content;
 
-use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\DownloadCategory;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class NewsType extends AbstractType
+class DownloadType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -44,7 +44,7 @@ class NewsType extends AbstractType
     {
         $builder
             ->add('main', ContentAbstractType::class)
-            ->add('category', EntityType::class, ['class' => NewsCategory::class, 'choice_label' => 'title']);
+            ->add('category', EntityType::class, ['class' => DownloadCategory::class, 'choice_label' => 'title']);
     }
 
     /**
@@ -55,7 +55,7 @@ class NewsType extends AbstractType
         $resolver
             ->setDefaults(
                 [
-                    'data_class' => News::class,
+                    'data_class' => Download::class,
                 ]
             );
     }

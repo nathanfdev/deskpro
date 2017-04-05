@@ -23,13 +23,16 @@ Feature: /articles endpoint
     When I send a POST request to "/api/v2/articles" with body:
     """
 {
-  "title": "Test Article",
-  "content": "<p>Some fake article content</p>",
-  "person":  ~agent~,
-  "language": ~l1~,
-  "status": "hidden",
-  "hidden_status": "draft",
-  "content_input_type": "rte"
+  "main":
+  {
+    "title": "Test Article",
+    "content": "<p>Some fake article content</p>",
+    "person":  ~agent~,
+    "language": ~l1~,
+    "status": "hidden",
+    "hidden_status": "draft",
+    "content_input_type": "rte"
+  }
 }
     """
     Then the response status code should be 201
@@ -58,8 +61,10 @@ Feature: /articles endpoint
     When I send a PUT request to "/api/v2/articles/{lastCreatedId}" with body:
         """
 {
-  "title": "Test Edited Article",
-  "status": "published"
+  "main" : {
+    "title": "Test Edited Article",
+    "status": "published"
+  }
 }
     """
     Then the response status code should be 204
@@ -73,20 +78,6 @@ Feature: /articles endpoint
     And the JSON node "data.status" should be equal to "published"
     And the JSON node "data.hidden_status" should be null
 
-  Scenario: I try to delete created article as agent without delete permissions
-    Given I'm authenticated as agent
-    When I send a DELETE request to "/api/v2/articles/{lastCreatedId}"
-    Then the response status code should be 403
-
-  Scenario: I delete created article as agent with all permissions
-    Given I'm authenticated as agent
-    And agent is member of the all permissions group
-    When I send a DELETE request to "/api/v2/articles/{lastCreatedId}"
-    Then the response status code should be 200
-    When I send a GET request to "/api/v2/articles/{lastCreatedId}"
-    And the response status code should be 404
-    And agent is removed from the all permissions group
-
   Scenario: I try to create an article as user
     Given I'm authenticated as user
     When I send a POST request to "/api/v2/articles" with body:
@@ -94,3 +85,18 @@ Feature: /articles endpoint
 {}
     """
     And the response status code should be 403
+
+  Scenario: I try to delete created article as agent without delete permissions
+    Given I'm authenticated as agent
+    And I remove "agent" usergroup relation "agent_all_safe_perms"
+    And I remove "agent" usergroup relation "agent_all_perms"
+    When I send a DELETE request to "/api/v2/articles/{lastCreatedId}"
+    Then the response status code should be 403
+
+  Scenario: I delete created article as agent with all permissions
+    Given I'm authenticated as agent
+    And I add "agent" usergroup relation "agent_all_perms"
+    When I send a DELETE request to "/api/v2/articles/{lastCreatedId}"
+    Then the response status code should be 200
+    And I send a GET request to "/api/v2/articles/{lastCreatedId}"
+    And the response status code should be 404

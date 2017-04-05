@@ -50,8 +50,6 @@ class PermissionContext extends BaseContext
      */
     public function iRemoveUserGroup($who, $sysName)
     {
-        DataContext::scheduleCleanup();
-
         $person = DataContext::hasReference($who) ? DataContext::getReference($who) : $this->getPerson($who);
 
         foreach ($person->getUsergroups() as $usergroup) {
