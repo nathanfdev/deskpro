@@ -230,6 +230,12 @@
                     {{ nav.list_item_group_end() }}
                 {% endif %}
 
+                {% if app.hasFeature('dev') %}
+                    {{ nav.list_item_group('Dev', 'fa-code', '', 'dev') }}
+                        {{ nav.list_subitem('Agent Notifications', ng_href('dev.notifications'), 'dev.notifications', 'fa-cog') }}
+                    {{ nav.list_item_group_end() }}
+                {% endif %}
+
                 {% if app.user.can_billing %}
                     <div class="show-in-bare-page">
                         {{ nav.list_item('Licensing and Billing', ng_href('license'), 'license', 'fa-dollar') }}
@@ -310,6 +316,7 @@
         window.DP_IS_CLOUD          = {% if app.isCloud() %}true{% else %}false{% endif %};
         window.DP_IS_DEV_ENV        = {% if app.isDevEnv() %}true{% else %}false{% endif %};
         window.DP_HAS_VOICE         = {% if app.hasVoice() %}true{% else %}false{% endif %};
+        window.DP_HAS_DEV           = {% if app.hasFeature('dev') %}true{% else %}false{% endif %};
         window.DP_SECURE_LIC_SERVER = '{{ license_server }}';
         {% if app.isCloud() %}
         window.DPC_SITE_DOMAIN = '{{ constant('DPC_SITE_DOMAIN') }}';

@@ -1,0 +1,55 @@
+import React, { PropTypes } from 'react';
+import { createValue } from 'react-forms';
+
+class BaseForm extends React.Component {
+
+  static propTypes = {
+    onSubmit: PropTypes.func
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      formData: createValue({
+        value:     this.getDefaultState ? this.getDefaultState() : {},
+        errorList: {},
+        onChange:  this.onChange
+      }),
+      saving: false
+    };
+  }
+
+  onChange = (formData) => {
+    this.setState({ formData });
+  };
+
+  onSubmit = (event) => {
+    event.preventDefault();
+
+    const { onSubmit } = this.props;
+    const { formData } = this.state;
+
+    this.setState({
+      saving: true
+    });
+
+    const promise = onSubmit(formData.value);
+    promise.success(() => {
+      this.setState({
+        saving: false
+      });
+    });
+    promise.error((result) => {
+      this.setState({
+        formData: createValue({
+          value:     this.state.formData.value,
+          errorList: result.errors,
+          onChange:  this.onChange
+        }),
+        saving: false
+      });
+    });
+  };
+}
+
+export default BaseForm;

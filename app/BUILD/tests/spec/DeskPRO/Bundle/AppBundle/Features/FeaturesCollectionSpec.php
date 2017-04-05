@@ -26,16 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace spec\DeskPRO\Bundle\AppBundle\Features;
 
 use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
+use DeskPRO\Bundle\AppBundle\Features\FeatureInterface;
+use DeskPRO\Bundle\AppBundle\Features\FeaturesAccessChecker;
 use PhpSpec\ObjectBehavior;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\Features\FeaturesCollection
@@ -47,117 +43,63 @@ class FeaturesCollectionSpec extends ObjectBehavior
         BetaFeatureInterface $allFeature,
         BetaFeatureInterface $qaFeature,
         BetaFeatureInterface $cloudFeature,
-        BetaFeatureInterface $onPremFeature,
-        RequestStack $requestStack,
-        Request $request
+        BetaFeatureInterface $onPremFeature
     ) {
         $feature->getId()->willReturn('test.feature');
 
         $allFeature->getId()->willReturn('all.feature');
-        $allFeature->getAvailability()->willReturn([BetaFeatureInterface::AVAILABLE_EVERYWHERE]);
+        $allFeature->getAvailability()->willReturn([FeatureInterface::AVAILABLE_EVERYWHERE]);
 
         $qaFeature->getId()->willReturn('qa.feature');
-        $qaFeature->getAvailability()->willReturn([BetaFeatureInterface::AVAILABLE_AT_QA]);
+        $qaFeature->getAvailability()->willReturn([FeatureInterface::AVAILABLE_AT_QA]);
 
         $cloudFeature->getId()->willReturn('cloud.feature');
-        $cloudFeature->getAvailability()->willReturn([BetaFeatureInterface::AVAILABLE_AT_CLOUD]);
+        $cloudFeature->getAvailability()->willReturn([FeatureInterface::AVAILABLE_AT_CLOUD]);
 
         $onPremFeature->getId()->willReturn('onprem.feature');
-        $onPremFeature->getAvailability()->willReturn([BetaFeatureInterface::AVAILABLE_AT_ONPREM]);
-
-        $requestStack->getMasterRequest()->willReturn($request);
-        $request->getHost()->willReturn('siteXXXXX.deskprodemo.com');
+        $onPremFeature->getAvailability()->willReturn([FeatureInterface::AVAILABLE_AT_ONPREM]);
     }
 
-    public function it_adds_features_and_skip_dupes(BetaFeatureInterface $feature)
-    {
-        $this->beConstructedWith(true);
+    public function it_adds_features_and_skip_dupes(
+        FeaturesAccessChecker $accessChecker,
+        BetaFeatureInterface $feature
+    ) {
+        $this->beConstructedWith($accessChecker);
         $this->addFeature($feature);
         $this->addFeature($feature);
         $this->count()->shouldBeEqualTo(1);
     }
 
-    public function it_returns_feature_by_id(BetaFeatureInterface $feature)
-    {
-        $this->beConstructedWith(true);
+    public function it_returns_feature_by_id(
+        FeaturesAccessChecker $accessChecker,
+        BetaFeatureInterface $feature
+    ) {
+        $this->beConstructedWith($accessChecker);
         $this->addFeature($feature);
         $gotFeature = $this->getFeature('test.feature');
         $gotFeature->getId()->shouldBeEqualTo('test.feature');
     }
 
-    public function it_returns_null_if_feature_is_not_found()
-    {
-        $this->beConstructedWith(true);
+    public function it_returns_null_if_feature_is_not_found(
+        FeaturesAccessChecker $accessChecker
+    ) {
+        $this->beConstructedWith($accessChecker);
         $gotFeature = $this->getFeature('unknown.feature');
         $gotFeature->shouldBeEqualTo(null);
     }
 
-    public function it_filters_features_by_qa_availability_dev_mode(
+    public function it_filters_features_availability(
+        FeaturesAccessChecker $accessChecker,
         BetaFeatureInterface $qaFeature,
         BetaFeatureInterface $cloudFeature
     ) {
-        $this->beConstructedWith(true);
+        $accessChecker->isAvailable([FeatureInterface::AVAILABLE_AT_QA])->willReturn(true);
+        $accessChecker->isAvailable([FeatureInterface::AVAILABLE_AT_CLOUD])->willReturn(false);
+
+        $this->beConstructedWith($accessChecker);
         $this->addFeature($qaFeature);
         $this->addFeature($cloudFeature);
         $this->getAvailableFeatures()->shouldContain($qaFeature);
-        $this->getAvailableFeatures()->shouldNotContain($cloudFeature);
-    }
-
-    public function it_filters_features_by_qa_availability_by_host(
-        BetaFeatureInterface $qaFeature,
-        BetaFeatureInterface $cloudFeature,
-        RequestStack $requestStack
-
-    ) {
-        $this->beConstructedWith(false, $requestStack);
-        $this->addFeature($qaFeature);
-        $this->addFeature($cloudFeature);
-        $this->getAvailableFeatures()->shouldContain($qaFeature);
-        $this->getAvailableFeatures()->shouldNotContain($cloudFeature);
-    }
-
-    public function it_checks_all_availability(
-        BetaFeatureInterface $allFeature,
-        BetaFeatureInterface $qaFeature,
-        BetaFeatureInterface $cloudFeature,
-        BetaFeatureInterface $onPremFeature
-    ) {
-        $this->beConstructedWith(false, null, true);
-        $this
-            ->addFeature($allFeature)
-            ->addFeature($qaFeature)
-            ->addFeature($cloudFeature)
-            ->addFeature($onPremFeature);
-
-        $this->getAvailableFeatures()->shouldContain($allFeature);
-        $this->getAvailableFeatures()->shouldContain($cloudFeature);
-        $this->getAvailableFeatures()->shouldNotContain($qaFeature);
-        $this->getAvailableFeatures()->shouldNotContain($onPremFeature);
-    }
-
-    public function it_checks_cloud_availability(
-        BetaFeatureInterface $cloudFeature,
-        BetaFeatureInterface $onPremFeature
-    ) {
-        $this->beConstructedWith(false, null, true);
-        $this
-            ->addFeature($cloudFeature)
-            ->addFeature($onPremFeature);
-
-        $this->getAvailableFeatures()->shouldContain($cloudFeature);
-        $this->getAvailableFeatures()->shouldNotContain($onPremFeature);
-    }
-
-    public function it_checks_onprem_availability(
-        BetaFeatureInterface $cloudFeature,
-        BetaFeatureInterface $onPremFeature
-    ) {
-        $this->beConstructedWith(false, null, false);
-        $this
-            ->addFeature($cloudFeature)
-            ->addFeature($onPremFeature);
-
-        $this->getAvailableFeatures()->shouldContain($onPremFeature);
         $this->getAvailableFeatures()->shouldNotContain($cloudFeature);
     }
 }

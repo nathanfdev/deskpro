@@ -21,9 +21,14 @@ class Form extends React.Component {
 
   render() {
     const { children, formValue } = this.props;
+    const fromProps = { ...this.props };
+
+    if (fromProps.formValue) {
+      delete fromProps.formValue;
+    }
 
     return (
-      <form className="ui form" {...this.props}>
+      <form className="ui form" {...fromProps}>
         {Array.isArray(children) ? children.map((child, i) => this.renderChild(child, i)) : this.renderChild(children)}
         {getFormDataErrors(formValue) &&
           <div className="ui negative message">

@@ -26,43 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Features;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Dev;
 
-use DeskPRO\Component\Util\AbstractCollection;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class FeaturesCollectionFactory.
+ * Class GenNotificationType.
  */
-class FeaturesCollectionFactory extends AbstractCollection
+class GenNotificationType extends AbstractType
 {
     /**
-     * @var bool
+     * {@inheritdoc}
      */
-    private $debug;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * FeaturesCollection constructor.
-     *
-     * @param bool         $debug
-     * @param RequestStack $requestStack
-     */
-    public function __construct($debug, RequestStack $requestStack = null)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->debug        = $debug;
-        $this->requestStack = $requestStack;
-    }
-
-    /**
-     * @return $this
-     */
-    public function create()
-    {
-        return new FeaturesCollection($this->debug, $this->requestStack, defined('DPC_IS_CLOUD'));
+        $builder->add('agent', EntityType::class, [
+            'class'       => Person::class,
+            'constraints' => [
+                new Assert\NotNull(),
+                new AppAssert\Person\PersonType([
+                    'type' => 'agent',
+                ]),
+            ],
+        ]);
     }
 }

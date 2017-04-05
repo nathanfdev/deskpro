@@ -673,8 +673,19 @@ class DpEnv
         return $this->runtime_vars[$name];
     }
 
+    /**
+     * @return bool
+     */
     public function isCloud()
     {
         return $this->isCloud;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isQa()
+    {
+        return $this->getConfig('env.server_id') === 'builder.deskprodemo.com';
     }
 }

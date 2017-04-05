@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\AppBundle\Features;
 
 use DeskPRO\Component\Util\AbstractCollection;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class FeaturesCollection.
@@ -37,32 +36,18 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class FeaturesCollection extends AbstractCollection
 {
     /**
-     * @var bool
+     * @var FeaturesAccessChecker
      */
-    private $debug;
+    private $accessChecker;
 
     /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var bool
-     */
-    private $isCloud;
-
-    /**
-     * FeaturesCollection constructor.
+     * Constructor.
      *
-     * @param bool         $debug
-     * @param RequestStack $requestStack
-     * @param bool         $isCloud
+     * @param FeaturesAccessChecker $accessChecker
      */
-    public function __construct($debug, RequestStack $requestStack = null, $isCloud = false)
+    public function __construct(FeaturesAccessChecker $accessChecker)
     {
-        $this->debug        = $debug;
-        $this->isCloud      = $isCloud;
-        $this->requestStack = $requestStack;
+        $this->accessChecker = $accessChecker;
     }
 
     /**
@@ -132,61 +117,6 @@ class FeaturesCollection extends AbstractCollection
      */
     private function filterAvailable(BetaFeatureInterface $feature)
     {
-        foreach ($feature->getAvailability() as $availableAt) {
-            if ($this->availableEverywhere($availableAt)
-                || $this->availableAtCloud($availableAt)
-                || $this->availableAtOnprem($availableAt)
-                || $this->availableAtQa($availableAt)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param $availableAt
-     *
-     * @return bool
-     */
-    private function availableEverywhere($availableAt)
-    {
-        return $availableAt === BetaFeatureInterface::AVAILABLE_EVERYWHERE;
-    }
-
-    /**
-     * @param $availableAt
-     *
-     * @return bool
-     */
-    private function availableAtCloud($availableAt)
-    {
-        return $availableAt === BetaFeatureInterface::AVAILABLE_AT_CLOUD && $this->isCloud;
-    }
-
-    /**
-     * @param $availableAt
-     *
-     * @return bool
-     */
-    private function availableAtOnprem($availableAt)
-    {
-        return $availableAt === BetaFeatureInterface::AVAILABLE_AT_ONPREM && !$this->isCloud;
-    }
-
-    /**
-     * @param $availableAt
-     *
-     * @return bool
-     */
-    private function availableAtQa($availableAt)
-    {
-        return
-            $availableAt === BetaFeatureInterface::AVAILABLE_AT_QA
-            && ($this->debug
-                 || ($this->requestStack && $this->requestStack->getMasterRequest()
-                      && strpos($this->requestStack->getMasterRequest()->getHost(), 'deskprodemo.com') !== false
-                    )
-                );
+        return $this->accessChecker->isAvailable($feature->getAvailability());
     }
 }

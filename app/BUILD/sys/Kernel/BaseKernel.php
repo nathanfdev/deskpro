@@ -385,30 +385,6 @@ CODE;
      */
     private function cleanupContainer(Container $container)
     {
-        // Remove all container references from all loaded services
-
-        $containerReflection        = new \ReflectionObject($container);
-        $servicesPropertyReflection = $containerReflection->getProperty('services');
-        $servicesPropertyReflection->setAccessible(true);
-        $services = $servicesPropertyReflection->getValue($container) ?: [];
-        foreach ($services as $id => $service) {
-            if ('kernel' === $id || 'http_kernel' === $id) {
-                continue;
-            }
-            $serviceReflection       = new \ReflectionObject($service);
-            $propertiesReflections   = $serviceReflection->getProperties();
-            $propertiesDefaultValues = $serviceReflection->getDefaultProperties();
-            foreach ($propertiesReflections as $servicePropertyReflection) {
-                $defaultPropertyValue = null;
-                if (isset($propertiesDefaultValues[$servicePropertyReflection->getName()])) {
-                    $defaultPropertyValue = $propertiesDefaultValues[$servicePropertyReflection->getName()];
-                }
-                $servicePropertyReflection->setAccessible(true);
-                $servicePropertyReflection->setValue($service, $defaultPropertyValue);
-            }
-        }
-        $servicesPropertyReflection->setValue($container, []);
-
         // Close mysql connections
 
         if ($container->has('doctrine.orm.default_entity_manager')) {
@@ -420,5 +396,31 @@ CODE;
         if ($container->has('doctrine.orm.audit_entity_manager')) {
             $container->get('doctrine.orm.audit_entity_manager')->getConnection()->close();
         }
+
+        // Remove all container references from all loaded services
+
+        $containerReflection        = new \ReflectionObject($container);
+        $servicesPropertyReflection = $containerReflection->getProperty('services');
+        $servicesPropertyReflection->setAccessible(true);
+        $services = $servicesPropertyReflection->getValue($container) ?: [];
+        foreach ($services as $id => $service) {
+            if (in_array($id, ['kernel', 'http_kernel', 'deskpro.low_dp_env'])) {
+                continue;
+            }
+
+            $serviceReflection       = new \ReflectionObject($service);
+            $propertiesReflections   = $serviceReflection->getProperties();
+            $propertiesDefaultValues = $serviceReflection->getDefaultProperties();
+
+            foreach ($propertiesReflections as $servicePropertyReflection) {
+                $defaultPropertyValue = null;
+                if (isset($propertiesDefaultValues[$servicePropertyReflection->getName()])) {
+                    $defaultPropertyValue = $propertiesDefaultValues[$servicePropertyReflection->getName()];
+                }
+                $servicePropertyReflection->setAccessible(true);
+                $servicePropertyReflection->setValue($service, $defaultPropertyValue);
+            }
+        }
+        $servicesPropertyReflection->setValue($container, []);
     }
 }

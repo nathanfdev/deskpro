@@ -78,7 +78,7 @@ class VoiceFeature extends AbstractFeature
      */
     public function getAvailability()
     {
-        return [BetaFeatureInterface::AVAILABLE_AT_QA];
+        return [self::AVAILABLE_AT_QA];
     }
 
     /**
