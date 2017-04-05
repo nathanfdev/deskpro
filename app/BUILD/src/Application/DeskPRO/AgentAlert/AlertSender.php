@@ -31,6 +31,7 @@ namespace Application\DeskPRO\AgentAlert;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AgentAlert;
 use Application\DeskPRO\Entity\ClientMessage;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -52,15 +53,21 @@ class AlertSender
     protected $resolver;
 
     /**
+     * @var AvatarResolver
+     */
+    protected $avatarResolver;
+
+    /**
      * Constructor.
      *
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, AvatarResolver $avatarResolver)
     {
-        $this->em       = $em;
-        $this->db       = $em->getConnection();
-        $this->resolver = new OptionsResolver();
+        $this->em             = $em;
+        $this->db             = $em->getConnection();
+        $this->resolver       = new OptionsResolver();
+        $this->avatarResolver = $avatarResolver;
         $this->configureOptions();
     }
 
@@ -91,6 +98,7 @@ class AlertSender
                         'type'     => $type,
                         'alert_id' => $alert->getId(),
                         'row'      => $tpl_line,
+                        'icon'     => $this->avatarResolver->getAvatar($agent, 48),
                     ],
                     'for_person'        => $agent,
                     'created_by_client' => 'sys',

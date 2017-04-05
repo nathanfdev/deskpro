@@ -280,9 +280,11 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
                     'created_by_client' => 'sys',
                     'auth'              => ClientMessage::generateAuthCode(),
                     'data'              => serialize([
-                        'type'     => 'tickets',
-                        'alert_id' => $alertRecord['alert_id'],
-                        'row'      => $alertRecord['browser_rendered'],
+                        'type'       => 'tickets',
+                        'alert_id'   => $alertRecord['alert_id'],
+                        'row'        => $alertRecord['browser_rendered'],
+                        'via_person' => $context->getPersonContext()->getId(),
+                        'icon'       => $this->getContainer()->get('avatar_resolver')->getAvatar($context->getPersonContext(), 48),
                     ]),
                 ];
             }

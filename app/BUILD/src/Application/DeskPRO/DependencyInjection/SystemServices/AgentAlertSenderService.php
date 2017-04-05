@@ -41,7 +41,7 @@ class AgentAlertSenderService
 {
     public static function create(DeskproContainer $container, array $options = [])
     {
-        $alerter = new AlertSender($container->getEm());
+        $alerter = new AlertSender($container->getEm(), $container->get('avatar_resolver'));
 
         return $alerter;
     }
