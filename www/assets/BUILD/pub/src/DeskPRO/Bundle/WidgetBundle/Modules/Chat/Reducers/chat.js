@@ -55,13 +55,12 @@ export default createReducer(initialState, {
     setValue('messages', []),
     setValue('feedbackStage', 'dialog')
   ),
-  [actions.unsetChatId]: state => setValue('chat', {
-    id:        null,
-    loaded:    false,
-    canReopen: state.getIn(['chat', 'canReopen']),
-    info:      {},
-    lastAgent: null
-  }),
+  [actions.unsetChatId]: composeHandlers(
+    setValue('chat.id', null),
+    setValue('chat.loaded', false),
+    setValue('chat.info', {}),
+    setValue('chat.lastAgent', null)
+  ),
   [actions.setLoaded]:      setValue('chat.loaded', true),
   [actions.unsetLoaded]:    setValue('chat.loaded', false),
   [actions.updateChatInfo]: setFullPayload('chat.info'),

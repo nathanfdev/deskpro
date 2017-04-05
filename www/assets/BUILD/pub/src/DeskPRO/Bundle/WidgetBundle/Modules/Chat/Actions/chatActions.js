@@ -32,6 +32,7 @@ export const unsetChatId = createAction(
       localStorage.removeItem('dpWidget.chat.partial');
       localStorage.removeItem('dpWidget.chat.lastAgentId');
     }
+
     history.replace('/');
   }
 );
