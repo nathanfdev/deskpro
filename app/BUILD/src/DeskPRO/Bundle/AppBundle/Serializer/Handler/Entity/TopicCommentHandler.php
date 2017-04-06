@@ -52,7 +52,9 @@ class TopicCommentHandler extends AbstractEntityHandler
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
-        return new TopicCommentModel($entity, $this->avatarResolver);
+        $avatar = $this->avatarResolver->getAvatar($entity->getPerson(), 50);
+
+        return new TopicCommentModel($entity, $avatar);
     }
 
     /**
