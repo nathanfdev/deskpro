@@ -588,7 +588,7 @@ return [
     'portal.general.nav-feedback'                           => 'Feedback',
     'portal.general.nav-feedback-desc'                      => 'Custom suggestions',
     'portal.general.nav-guides'                             => 'Guides',
-    'portal.general.nav-guides-desc'                        => '',
+    'portal.general.nav-guides-desc'                        => 'Product documentation',
     'portal.general.nav-kb'                                 => 'Knowledgebase',
     'portal.general.nav-kb-desc'                            => 'Read help articles',
     'portal.general.nav-login'                              => 'Login',
