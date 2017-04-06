@@ -588,12 +588,14 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
       var textArea = $('textarea.edit-content-field', this.getEl('content_ed'));
       var $rElement = $('<div></div>').insertAfter(textArea);
       textArea.hide();
-      window.AgentLegacyBundle.renderContentEditor(
-        $rElement.get(0),
-        $('textarea.content_input', this.wrapper).val(),
-        $('input.content_input_type', this.wrapper).val(),
-        this.saveContent.bind(this)
-      );
+      if ($rElement.get(0)) {
+			  window.AgentLegacyBundle.renderContentEditor(
+				  $rElement.get(0),
+				  $('textarea.content_input', this.wrapper).val(),
+				  $('input.content_input_type', this.wrapper).val(),
+				  this.saveContent.bind(this)
+			  );
+			}
     }
 
 		this.getEl('edit_btn').hide();

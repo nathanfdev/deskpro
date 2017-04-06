@@ -113,6 +113,13 @@ export class GuideTree extends React.Component {
     this.props.handleChange(treeData);
   };
 
+  onMoveNode = (topic) => {
+    if (topic.path.length === 1) {
+      console.log('Topic at root');
+      alert('Topic at root have no content, the topic will keep its content but you won\'t be able to edit it');
+    }
+  };
+
   generateNodeProps = (rowInfo) => {
     let id = rowInfo.node.id;
     if (typeof id === 'string') {
@@ -132,6 +139,7 @@ export class GuideTree extends React.Component {
           scaffoldBlockPxWidth={30}
           treeData={this.state.treeData}
           onChange={this.handleChange}
+          onMoveNode={this.onMoveNode}
           nodeContentRenderer={Renderer}
           generateNodeProps={this.generateNodeProps}
         />

@@ -57,101 +57,23 @@ pageMeta.baseId = '{{ baseId }}';
 	<br class="clear" />
 </header>
 
-
+{% if (topic.no_content or topic.parent is null) %}
 <div class="profile-box-container-outer">
 	<div class="profile-box-container">
 		<header>
 			<h4>{{ phrase('agent.general.properties') }}</h4>
 		</header>
-		<section class="description-area">
-			<dl class="info-list">
-				<dt>{{ phrase('agent.publish.slug') }}</dt>
-				<dd>
-					<span id="{{ baseId }}_slug">{{ topic.slug }}</span>
-					<button class="clean-white" id="{{ baseId }}_editslug" data-prompt="{{ phrase('agent.publish.slug_edit_prompt') }}">
-						{{ phrase('agent.publish.slug_edit') }}
-					</button>
-				</dd>
-
-				<dt>{{ phrase('agent.general.rating') }}</dt>
-				<dd>
-                    {% set phrase_part %}
-                    <span class="link-look who-voted-trigger">{{ phrase('agent.general.count_votecount_votes', {'count': topic.num_ratings}) }}</span>
-                    {% endset %}
-                    {{ phrase('agent.general.percent_helpful_subphrase', {'percent':topic.rating_percent,'subphrase':phrase_part}, true) }}<br />
-                    <small>{{ phrase('agent.general.found_article_helpful_or_not', {'up_votes':topic.up_votes,'down_votes':topic.down_votes}) }}</small>
-				</dd>
-
-				<dt></dt>
-				<dd>
-					{{ phrase('agent.general.created_timeago_by_x_on_y', {
-						'timeago': '<time class="timeago" datetime="' ~ topic.date_created|date('c', 'UTC') ~'"></time>',
-						'name': topic.person.display_name|escape,
-						'date': '<time>' ~ topic.date_created|date('fulltime') ~ '</time>'
-					}, true) }}
-				</dd>
-
-
-				<dd id="{{baseId}}_auto_unpub" {% if not (topic.status == 'published') %}style="display: none"{% endif %}>
-					<span class="auto-unpublish" {% if not topic.date_end %}style="display: none"{% endif %}>
-						{% set phrase_part1 %}<span class="end-action opt" data-val="{{topic.end_action|default('unpublish')}}">{{topic.end_action|default(phrase('agent.general.unpublish'))}}</span>{% endset %}
-						{% set phrase_part2 %}
-							<div style="display: inline-block; position: relative;">
-								<span class="end-date opt" {% if topic.date_end %}data-val="{{ topic.date_end|date('j M, y') }}"{% endif %}> {% if topic.date_end %}{{ topic.date_end|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
-							</div>
-						{% endset %}
-						{{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
-						<input type="text" class="end-date-input" value="{{ topic.date_end|date('j M, y') }}" style="display: none; height: 10px;" />
-						(<span class="remove-auto-unpublish options-text">{{ phrase('agent.general.remove') }}</span>)
-					</span>
-					<span class="options-text auto-unpublish-set" {% if topic.date_end %}style="display: none"{% endif %}>
-						{{ phrase('agent.publish.set_auto_unpublish_date') }}
-					</span>
-					<br />
-
-					<ul class="end-action-menu" style="display: none">
-						<li data-action="unpublish">{{ phrase('agent.general.unpublish') }}</li>
-						<li data-action="archive">{{ phrase('agent.general.archive') }}</li>
-					</ul>
-				</dd>
-
-				<dd id="{{baseId}}_auto_pub" {% if not (topic.hidden_status == 'unpublished') %}style="display: none"{% endif %}>
-					<span class="auto-publish" {% if not topic.date_published %}style="display: none"{% endif %}>
-						{% set phrase_part1 %}{{ phrase('agent.general.publish') }}{% endset %}
-						{% set phrase_part2 %}
-							<div style="display: inline-block; position: relative;">
-								<span class="pub-date opt" {% if topic.date_published %}data-val="{{ topic.date_published|date('U') }}"{% endif %}> {% if topic.date_published %}{{ topic.date_published|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
-							</div>
-						{% endset %}
-						{{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
-						<input type="text" class="pub-date-input" value="{{ topic.date_published|date('j M, y') }}000" style="display: none; height: 10px;" />
-						(<span class="remove-auto-publish options-text">{{ phrase('agent.general.remove') }}</span>)
-					</span>
-					<span class="options-text auto-publish-set" {% if topic.date_published %}style="display: none"{% endif %}>
-						{{ phrase('agent.publish.set_auto_publish_date') }}
-					</span>
-				</dd>
-
-			</dl>
-
-			<div class="controls" id="{{baseId}}_action_buttons">
-				<button class="clean-white delete nodelete-hide" {% if topic.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.delete') }}</button>
-				<button class="clean-white permalink" data-prompt="{{ phrase('agent.publish.permalink_copy_prompt') }}">
-					{{ phrase('agent.general.copy_permalink') }}
-				</button>
-				<button class="clean-white view-user-interface">{{ phrase('agent.general.view_in_user_interface') }}</button>
-				<br class="clear" />
-			</div>
-		</section>
+        {% include 'AgentBundle:Guide:view-properties-tab.html.twig' %}
 	</div>
 </div>
 
-{% if (topic.no_content == false) %}
+{% else %}
 <div class="profile-box-container reply-box-wrap">
 	<header>
 		<nav  id="{{baseId}}_bodytabs">
 			<ul>
 				<li class="on" data-tab-for="#{{baseId}}_tab_contents .topic-content"><span>{{ phrase('agent.general.page') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .topic-props"><span>{{ phrase('agent.general.properties') }}</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.general.comments') }} (<span id="{{baseId}}_count_comments">{{comments|length|default(0)}}</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.general.label_revisions') }} (<span id="{{baseId}}_count_revs">{{topic.revisions|length|default(0)}}</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.general.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>
@@ -176,6 +98,12 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 				{# /Content #}
 			</div>
+
+			{# Tab: Properties #}
+			<div class="deskpro-tab-item content-tab-item topic-props">
+                {% include 'AgentBundle:Guide:view-properties-tab.html.twig' %}
+			</div>
+
 
 			{# Tab: Comments #}
 			<div class="deskpro-tab-item content-tab-item comments-tab">
