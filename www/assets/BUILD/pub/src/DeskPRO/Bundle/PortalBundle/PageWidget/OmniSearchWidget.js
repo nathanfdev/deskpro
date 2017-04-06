@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import { OmniSearch } from '../React/OmniSearch/OmniSearch';
 import $ from 'jquery';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import { getUrlParameter } from 'DeskPRO/Component/Util/Url';
+import { OmniSearch } from '../React/OmniSearch/OmniSearch';
 
 export class OmniSearchWidget extends PageWidget {
 
@@ -19,7 +20,7 @@ export class OmniSearchWidget extends PageWidget {
     const $button = this.$element.find('button.search-btn');
     const $x = this.$element.find('.search-clear');
 
-    $button.on('click', function () {
+    $button.on('click', () => {
       if (!$input.val()) {
         $input.focus();
         return false;
@@ -28,7 +29,7 @@ export class OmniSearchWidget extends PageWidget {
     });
 
     $('.dpx-omnisearch-link').each((i, link) => {
-      $(link).click(event => {
+      $(link).click((event) => {
         event.preventDefault();
         const term = $(link).text();
 
@@ -45,5 +46,10 @@ export class OmniSearchWidget extends PageWidget {
         $x.hide();
       }
     }, 250);
+
+    const query = getUrlParameter('q');
+    if (query) {
+      $input.val(query);
+    }
   }
 }
