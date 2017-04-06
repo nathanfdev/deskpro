@@ -133,7 +133,7 @@ class GuidesController extends AbstractController
             );
         }
 
-        if (!$topic->getParent()) {
+        if (!$topic->getParent() || $topic->isNoContent()) {
             /** @var Topic $childTopic */
             $childTopic = $topic->getChildren()->first();
 

@@ -49,7 +49,14 @@ class Topic extends React.Component {
         {Object.values(topic.children)
           .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
           .map(child => (
-            <Topic key={child.slug} topic={child} locale={locale} guideSlug={guideSlug} path={this.props.path} />
+            <Topic
+              key={child.slug}
+              topic={child}
+              locale={locale}
+              guideSlug={guideSlug}
+              clickable={parseInt(child.no_content, 10) === 0}
+              path={this.props.path}
+            />
           )
         )}
       </ul>
