@@ -5,6 +5,8 @@ import TopicSummary from './ViewTopic/TopicSummary';
 import GuideSelector from './ViewTopic/GuideSelector';
 import Anchor from './ViewTopic/Anchor';
 import CodeBlock from './ViewTopic/CodeBlock';
+import CommentsBlock from './ViewTopic/CommentsBlock';
+import CommentForm from './ViewTopic/CommentForm';
 
 export {
   ViewTopic,
@@ -13,5 +15,7 @@ export {
   TopicSummary,
   GuideSelector,
   Anchor,
-  CodeBlock
+  CodeBlock,
+  CommentsBlock,
+  CommentForm
 };

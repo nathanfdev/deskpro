@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
@@ -334,6 +335,8 @@ class CommentFormHandler
             return 'news';
         } elseif ($content instanceof Feedback) {
             return 'feedback';
+        } elseif ($content instanceof Topic) {
+            return 'topic';
         }
 
         throw new InvalidArgumentException('content type not supported');

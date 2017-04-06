@@ -102,6 +102,13 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.topic_comment:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TopicCommentHandler
+    arguments:
+          - "@avatar_resolver"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.chat:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ChatConversationHandler
     tags:

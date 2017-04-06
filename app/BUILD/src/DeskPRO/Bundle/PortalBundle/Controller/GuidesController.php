@@ -30,8 +30,11 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\Topic;
+use Application\DeskPRO\Entity\TopicComment;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Orb\Util\Strings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -111,11 +114,12 @@ class GuidesController extends AbstractController
      * @param Request $request
      * @param Topic   $topic
      * @param string  $guide_slug
-     * @param string  $parents_slug
+     * @param $visitor_id
+     * @param string $parents_slug
      *
      * @return Response
      */
-    public function viewAction(Request $request, Topic $topic, $guide_slug, $parents_slug = '')
+    public function viewAction(Request $request, Topic $topic, $guide_slug, $visitor_id, $parents_slug = '')
     {
         $topicParentsSlug = $topic->getParentsSlug();
         if ($parents_slug !== $topicParentsSlug || $guide_slug !== $topic->getGuideSlug()) {
@@ -145,19 +149,55 @@ class GuidesController extends AbstractController
             }
         }
 
+        // COMMENT FORM
+        $newCommentForm = null;
+        $captcha        = null;
+        if ($this->isGranted(ContentCommentVoter::COMMENT_ARTICLE, $topic)) {
+            $formHandler = $this->get('form_handler.comment');
+            $comment     = new TopicComment();
+            $comment->setVisitorId($visitor_id);
+            $comment->setIpAddress($request->getClientIp());
+            $newCommentForm = $formHandler->createForm($comment, $request);
+            $formResult     = $formHandler->handle($newCommentForm, $request, $topic, $comment);
+            if ($formResult instanceof Response) {
+                return $formResult;
+            }
+            if ($newCommentForm->has('captcha')) {
+                $captcha     = $newCommentForm->get('captcha');
+                $captchaView = $newCommentForm->get('captcha')->createView();
+                $reCaptcha   = $this->getBrandSetting('core.use_recaptcha2')
+                    || ReCaptchaType::isCloudRecapchaEnabled();
+                if ($reCaptcha) {
+                    $siteKey = $this->getBrandSetting('core.recaptcha2_site_key');
+                    $captcha = [
+                        'type' => 'recaptcha',
+                        'key'  => $siteKey,
+                    ];
+                } else {
+                    $captcha = [
+                        'type' => 'gregwar',
+                    ];
+                }
+            }
+        }
+
         $serializer = $this->get('serializer');
 
         $person = $this->getCurrentPerson();
 
         $guides = $this->getGuidesDataService()->getGuides($person);
 
+        $topicJson = Strings::escapeForJson($serializer->serialize($topic, 'json', new SideloadSerializationContext()));
+
         return $this->renderThemeView(
             'Theme:Guides:view.html.twig',
             [
-                'topic'       => $topic,
-                'topic_json'  => Strings::escapeForJson($serializer->serialize($topic, 'json', new SideloadSerializationContext())),
-                'guide'       => $topic->getGuide(),
-                'guides_json' => Strings::escapeForJson($serializer->serialize($guides, 'json', new SideloadSerializationContext())),
+                'topic'            => $topic,
+                'topic_json'       => $topicJson,
+                'captcha'          => $captcha,
+                'guide'            => $topic->getGuide(),
+                'guides_json'      => Strings::escapeForJson($serializer->serialize($guides, 'json', new SideloadSerializationContext())),
+                'new_comment_form' => $newCommentForm ? $newCommentForm->createView() : null,
             ]
         );
     }

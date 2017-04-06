@@ -3,7 +3,13 @@
 {% block inner_content %}
     <div class="guides topic-view"  id="react_portal_bundle">
         <div class="topic-list">
-            <div class="guide">{{ guide.title }}</div>
+            <div class="current-guide">
+                <div class="guide">{{ guide.title }}</div>
+                <a class="guide-pdf" href="{{ guide.guide_pdf }}" target="_blank" rel="noopener noreferrer">
+                    <span>Download PDF</span>
+                    <i class="fa fa-file-pdf-o"></i>
+                </a>
+            </div>
             <hr>
             {% show topic_list with {guide: guide, topic: topic} %}
         </div>
@@ -23,6 +29,15 @@
             <div class="topic-content">
                 {{ topic.content|content|raw }}
             </div>
+            {% if topic.calc_num_comments or new_comment_form %}
+                <div class="comment-box" id="comments">
+                    <div class="titled-header">
+                        <h1>{{ phrase('portal.general.comments-title', {count: topic.calc_num_comments}) }}</h1>
+                    </div>
+                    {% show topic_comments %}
+                    {% show comment_form %}
+                </div>
+            {% endif %}
         </div>
         <div class="comment-column"></div>
         <div class="content-summary">
@@ -32,6 +47,9 @@
     <script>
       var topic = '{{ topic_json|raw }}';
       var guides = '{{ guides_json|raw }}';
+      var commentsCaptcha = '{{ captcha|json_encode|raw }}';
+      var topicCommentForm = {{ new_comment_form ? 'true' : 'false' }};
+      var loggedIn = {{ app.user ? 'true' : 'false' }};
       var routePath = window.location.hash.replace(/#\//, '');
       if (routePath[0] != '/')
         routePath = '/' + routePath;

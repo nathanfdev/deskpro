@@ -31,6 +31,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository\TopicComment as TopicCommentRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 class TopicComment extends CommentAbstract
 {

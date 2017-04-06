@@ -26,6 +26,15 @@ class PortalPhrases {
     }
 
     let text = this.phrases[phraseId];
+
+    if (vars && typeof vars['{count}'] !== 'undefined' && text.indexOf('|') !== -1) {
+      const texts = text.split('|');
+      if (parseInt(vars['{count}'], 10) === 1) {
+        text = texts[0];
+      } else {
+        text = texts[1];
+      }
+    }
     if (vars) {
       Object.keys(vars).forEach((k) => {
         text = text.replace(`{${k}}`, vars[k]);
