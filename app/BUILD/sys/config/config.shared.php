@@ -379,6 +379,10 @@ $definition = new Definition(
 );
 $container->setDefinition('deskpro.person_activity_logger', $definition);
 
+$definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\EventListener', [new Reference('service_container')]);
+$definition->addTag('doctrine.event_subscriber');
+$container->setDefinition('deskpro.orm.event_listener.activity_stream', $definition);
+
 $definition = new Definition(
     'Application\DeskPRO\Log\Handler\LogEventHandler',
     [new Reference('doctrine.orm.entity_manager')]
