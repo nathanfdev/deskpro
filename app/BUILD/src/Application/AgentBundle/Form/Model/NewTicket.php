@@ -98,6 +98,8 @@ class NewTicket
     public $attach = [];
     /** @var array */
     public $ticket_fields = [];
+    /** @var int */
+    public $organization_id;
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -246,6 +248,7 @@ class NewTicket
 
         if ($org) {
             $this->custom_org_fields = App::$container->getOrgFieldManager()->createFormArrayForObject($org);
+            $this->organization_id   = $org->getId();
         }
     }
 

@@ -34,6 +34,7 @@ namespace Application\AgentBundle\Validator;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
+use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\TicketLayout\LayoutField;
@@ -253,8 +254,14 @@ class NewTicketValidator extends AbstractValidator
                 break;
 
             case 'org_field':
+                // make sure the user belongs to an org
+                if (!$this->newticket->organization_id) {
+                    return;
+                }
+
+                /** @var CustomDefOrganization $field */
                 $field = App::getSystemService('OrgFieldsManager')->getFieldFromId($item->getFieldId());
-                if ($field && $field->is_enabled) {
+                if ($field && $field->isEnabled()) {
                     if ($field->getOption('agent_validation_resolve') && !$this->is_resolved) {
                         // no validation, its only on resolve
                     } else {
