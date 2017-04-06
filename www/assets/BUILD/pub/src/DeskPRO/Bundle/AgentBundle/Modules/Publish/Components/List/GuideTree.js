@@ -106,18 +106,17 @@ export class GuideTree extends React.Component {
     this.props.onClick(node);
   };
 
+  onMoveNode = (topic) => {
+    if (topic.path.length === 1) {
+      alert('Topic at root have no content, the topic will keep its content but you won\'t be able to edit it');
+    }
+  };
+
   handleChange = (treeData) => {
     this.setState({
       treeData
     });
     this.props.handleChange(treeData);
-  };
-
-  onMoveNode = (topic) => {
-    if (topic.path.length === 1) {
-      console.log('Topic at root');
-      alert('Topic at root have no content, the topic will keep its content but you won\'t be able to edit it');
-    }
   };
 
   generateNodeProps = (rowInfo) => {

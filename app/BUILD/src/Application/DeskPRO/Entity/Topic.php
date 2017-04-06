@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @PortalLinkRoute("portal_guides_topic_view", route_param_map={"slug":"slug", "guide_slug":"guide_slug", "parents_slug":"parents_slug"})
- * @PortalLinkRoute("portal_guides_topic_view", route_param_map={"slug": "id", "guide_slug":"guide_slug"}, type="permalink")
+ * @PortalLinkRoute("portal_guides_topic_permalink", route_param_map={"slug": "id"}, type="permalink")
  */
 class Topic extends ContentAbstract implements HighlightableModelInterface
 {
