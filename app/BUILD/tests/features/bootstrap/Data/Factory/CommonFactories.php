@@ -61,13 +61,20 @@ class CommonFactories
      */
     public static function person($role, array $data = [])
     {
-        $data['password'] = 'password';
-        if ($role === 'agent') {
-            $data['is_agent'] = 1;
-        } elseif ($role === 'admin') {
-            $data['is_agent']  = 1;
-            $data['can_admin'] = 1;
+        if ($role === 'guest') {
+            $data['is_user']  = false;
+            $data['password'] = '';
+        } else {
+            $data['password'] = 'password';
+
+            if ($role === 'agent') {
+                $data['is_agent'] = 1;
+            } elseif ($role === 'admin') {
+                $data['is_agent']  = 1;
+                $data['can_admin'] = 1;
+            }
         }
+
         if (!isset($data['email'])) {
             $data['email'] = uniqid().'@deskpro.com';
         }

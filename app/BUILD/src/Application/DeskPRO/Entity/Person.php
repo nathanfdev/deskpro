@@ -896,6 +896,18 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @param bool $isUser
+     *
+     * @return $this
+     */
+    public function setIsUser($isUser)
+    {
+        $this->setModelField('is_user', $isUser);
+
+        return $this;
+    }
+
+    /**
      * True if the Person has every confirmed themselves. A user is confirmed by
      * clicking a link in their email at least once.
      *
