@@ -277,6 +277,11 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 return $this->getSuccessTestResponse($token->getUser(), $writer);
             }
 
+            // allow to JWT or SAML to control redirect to specific page after login
+            if ($request->get('return')) {
+                $session->set('_security.'.$this->providerKey.'.target_path', $request->get('return'));
+            }
+
             return $token;
         }
 
