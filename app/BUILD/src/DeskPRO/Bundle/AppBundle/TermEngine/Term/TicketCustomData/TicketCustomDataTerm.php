@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomData;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -38,37 +34,43 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExists;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class TicketCustomDataTerm.
+ */
 class TicketCustomDataTerm extends AbstractTerm
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'field_id' => null,
-                'input'    => null,
-                'values'   => [],
-            ]
-        );
+        $resolver->setDefaults([
+            'field_id' => null,
+            'input'    => null,
+            'values'   => [],
+        ]);
 
-        $resolver->setConstraints(
-            [
-                'field_id' => [
-                    new Assert\NotBlank(),
-                    new PrimaryKeyExists(
-                        [
-                            'table' => 'custom_def_ticket',
-                        ]
-                    ),
-                ],
-            ]
-        );
+        $resolver->setConstraints([
+            'field_id' => [
+                new Assert\NotBlank(),
+                new PrimaryKeyExists([
+                    'table' => 'custom_def_ticket',
+                ]),
+            ],
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSupportedOps()
     {
         return [TermInterface::OP_IS, TermInterface::OP_NOT];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultOp()
     {
         return TermInterface::OP_IS;

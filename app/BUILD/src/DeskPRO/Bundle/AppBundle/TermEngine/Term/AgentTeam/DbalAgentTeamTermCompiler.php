@@ -26,18 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeam;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalAgentTeamTermCompiler.
+ */
 class DbalAgentTeamTermCompiler extends AbstractDbalTermCompiler
 {
+    /**
+     * {@inheritdoc}
+     */
     public function doCompile(TermInterface $term)
     {
         $ids = [];

@@ -26,17 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumAgentReplies;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalTicketNumAgentRepliesTermCompiler.
+ */
 class DbalTicketNumAgentRepliesTermCompiler extends AbstractDbalTermCompiler
 {
+    /**
+     * {@inheritdoc}
+     */
     public function doCompile(TermInterface $term)
     {
         $urgency = $term->getOption('num');

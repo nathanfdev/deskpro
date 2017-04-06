@@ -26,24 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomData;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class PhpTicketCustomDataTermCompiler.
+ */
 class PhpTicketCustomDataTermCompiler extends AbstractPhpTermCompiler
 {
     /**
-     * Take a term and return a PhpCheck representing the term's query conditions.
-     *
-     * @param TermInterface $term
-     *
-     * @return \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck
+     * {@inheritdoc}
      */
     protected function doCompile(TermInterface $term)
     {

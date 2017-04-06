@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumUserReplies;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -37,38 +33,38 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class TicketNumUserRepliesTerm.
+ */
 class TicketNumUserRepliesTerm extends AbstractTerm
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'num' => null,
-            ]
-        );
-
-        $resolver->setConstraints(
-            [
-                'num' => [ // an array of numerics
-                    new Assert\Type('array'),
-                    new Assert\All(
-                        [
-                            'constraints' => [
-                                new Assert\Type('numeric'),
-                                new Assert\Range(
-                                    [
-                                        'min' => 1,
-                                        'max' => 10,
-                                    ]
-                                ),
-                            ],
-                        ]
-                    ),
-                ],
-            ]
-        );
+        $resolver->setDefaults([
+            'num' => null,
+        ]);
+        $resolver->setConstraints([
+            'num' => [ // an array of numerics
+                new Assert\Type('array'),
+                new Assert\All([
+                    'constraints' => [
+                        new Assert\Type('numeric'),
+                        new Assert\Range([
+                            'min' => 1,
+                            'max' => 10,
+                        ]),
+                    ],
+                ]),
+            ],
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSupportedOps()
     {
         return [
@@ -83,6 +79,9 @@ class TicketNumUserRepliesTerm extends AbstractTerm
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultOp()
     {
         return TermInterface::OP_IS;

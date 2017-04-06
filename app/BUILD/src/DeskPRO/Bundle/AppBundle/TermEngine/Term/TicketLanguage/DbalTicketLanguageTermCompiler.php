@@ -26,18 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalTicketLanguageTermCompiler.
+ */
 class DbalTicketLanguageTermCompiler extends AbstractDbalTermCompiler
 {
+    /**
+     * {@inheritdoc}
+     */
     public function doCompile(TermInterface $term)
     {
         $query_part = new DbalQueryPart();
