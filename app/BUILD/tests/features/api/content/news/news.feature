@@ -106,14 +106,14 @@ Feature: /news endpoint
 
   Scenario: I try to delete created news as agent without delete permissions
     Given I'm authenticated as agent
-    And I remove "agent" usergroup relation "agent_all_safe_perms"
-    And I remove "agent" usergroup relation "agent_all_perms"
+    And I remove agent usergroup relation agent_all_safe_perms
+    And I remove agent usergroup relation agent_all_perms
     When I send a DELETE request to "/api/v2/news/{lastCreatedId}"
     Then the response status code should be 403
 
   Scenario: I delete created news as agent with all permissions
     Given I'm authenticated as agent
-    And I add "agent" usergroup relation "agent_all_perms"
+    And I add agent usergroup relation agent_all_perms
     When I send a DELETE request to "/api/v2/news/{lastCreatedId}"
     Then the response status code should be 200
     And I send a GET request to "/api/v2/news/{lastCreatedId}"

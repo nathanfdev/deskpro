@@ -130,6 +130,11 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
+  security.voter.permission_groups.article_category:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\ArticleCategoryVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
   security.voter.permission_groups.article_comments:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\ArticleCommentsVoter
     tags:

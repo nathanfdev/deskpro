@@ -78,10 +78,12 @@ class PermissionContext extends BaseContext
         if (!$person) {
             throw new \RuntimeException('Unable to get usergroup '.$sysName);
         }
-        $person->getUsergroups()->add($usergroup);
 
-        $this->em()->persist($person);
-        $this->em()->flush();
+        if (!$person->getUsergroups()->contains($usergroup)) {
+            $person->getUsergroups()->add($usergroup);
+            $this->em()->persist($person);
+            $this->em()->flush();
+        }
     }
 
     /**

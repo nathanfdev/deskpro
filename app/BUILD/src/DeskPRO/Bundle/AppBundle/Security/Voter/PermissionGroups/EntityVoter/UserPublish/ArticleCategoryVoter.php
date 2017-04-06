@@ -26,26 +26,36 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Categories;
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish;
 
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
-use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
-use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\HttpFoundation\Request;
+use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 
-/**
- * Class AbstractCategoriesController.
- */
-abstract class AbstractCategoriesController extends CrudController
+class ArticleCategoryVoter extends AbstractUserPublishVoter
 {
-    public static $exposeOnly = ['get', 'list', 'count', 'delete', 'post', 'put'];
+    /**
+     * {@inheritdoc}
+     */
+    public static function getEntityClass()
+    {
+        return ArticleCategory::class;
+    }
 
     /**
      * {@inheritdoc}
      */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        ListHelper::applyInListFilter(new RequestQueryContext($qb, $alias, $request), 'brand', 'brands');
+        return $user->hasPerm('articles.use');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function voteOnAttributeForUser($attribute, PermissionGroupContext $context, Person $user)
+    {
+        // no access for now
+        return false;
     }
 }
