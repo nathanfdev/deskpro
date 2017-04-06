@@ -33,7 +33,6 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\AbstractDepartmentsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType;
-use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
@@ -42,9 +41,6 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiModes("all")
  * @Rest\Route("/ticket_departments")
  * @ApiDoc(target="all", section="Departments", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Department")
- * @SerializerView(mapping={
- *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson"
- * })
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={

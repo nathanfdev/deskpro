@@ -7,6 +7,7 @@ import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actio
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 import { setImMe, loadDrafts } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 import { hideChat } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/chatsActions';
+import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { setVoiceTokens, setVoiceActivities } from '../../Voice/Actions/clientActions';
 
@@ -37,7 +38,7 @@ export const loadAgentPhraseTranslations = createAction(
 export const donePreloading = createAction('APP_BOOTSTRAP_DONE_PRELOADING');
 export const preloadData    = createAction(
   'BOOTSTRAP_PRELOAD_DATA',
-  () => dispatch => new Promise(
+  () => (dispatch, getState) => new Promise(
     (resolve) => {
       const batchComponents = {
         agents:                { endpoint: 'agents' },
@@ -83,11 +84,16 @@ export const preloadData    = createAction(
             dispatch(setCollection('Onboarding', 'pending', [data.onboardings]));
           }
 
+          // group agents by departments
+          const agents = agentsSelector(getState());
+
           ['chat_departments', 'ticket_departments'].forEach((depType) => {
             const linked = getLinkedData(responses, depType, 'agents');
             for (const dep of data[depType]) {
-              if (linked[dep.id]) {
-                dispatch(setCollection('Person', `department_${dep.id}`, linked[dep.id]));
+              const agentIds = linked[dep.id];
+              if (agentIds) {
+                const depAgents = agentIds.map(id => agents.get(id));
+                dispatch(setCollection('Person', `department_${dep.id}`, depAgents));
               }
             }
           });
