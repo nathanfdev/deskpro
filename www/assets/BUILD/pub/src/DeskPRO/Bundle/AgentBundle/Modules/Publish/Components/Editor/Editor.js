@@ -53,7 +53,14 @@ export class EditorContainer extends React.Component {
   };
 
   loadRemoteImages = (data, callback) => {
-    this.props.dispatch(actions.loadRemoteImages(data, callback));
+    this.setState({
+      saving: true
+    });
+    this.props.dispatch(actions.loadRemoteImages(data, callback)).then(() => {
+      this.setState({
+        saving: false
+      });
+    });
   };
 
   render() {

@@ -28,7 +28,7 @@ class MarkdownEditor extends React.Component {
   static defaultProps = {
     onChange() {},
     onAddFile() {},
-    loadRemoteImages() {}
+    loadRemoteImages() {},
   };
 
   static renderIcon(icon) {
