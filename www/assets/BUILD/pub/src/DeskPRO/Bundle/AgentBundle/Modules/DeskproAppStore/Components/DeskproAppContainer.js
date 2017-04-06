@@ -114,6 +114,8 @@ class DeskproAppContainer extends React.Component {
       Messages.EVENT_STATE_SAVE,
       Messages.EVENT_STATE_FIND,
       Messages.EVENT_STATE_DELETE,
+      Messages.EVENT_STATE_CREATE,
+      Messages.EVENT_STATE_UPDATE
     ];
     widgetMessageBroker(widget.config, widgetWindow, widgetId, subscribeTo);
   };

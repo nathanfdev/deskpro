@@ -135,3 +135,17 @@ export const saveAppState = createAction(
     .then(httpResponse => httpResponse.data)
     .then(response => { callback(appId, state); return state; } )
 );
+
+export const updateAppState = createAction(
+  DESKPRO_APPSTORE_LOAD_APPS,
+  (appId, stateName, state, callback, api) =>  api.sendPut(`DP_API/apps/${appId}/state/${stateName}`, state)
+    .then(httpResponse => httpResponse.data)
+    .then(response => { callback(appId, state); return state; } )
+);
+
+export const createAppState = createAction(
+  DESKPRO_APPSTORE_LOAD_APPS,
+  (appId, state, callback, api) =>  api.sendPost(`DP_API/apps/${appId}/state`, state)
+    .then(httpResponse => httpResponse.data)
+    .then(response => { callback(appId, state); return state; } )
+);

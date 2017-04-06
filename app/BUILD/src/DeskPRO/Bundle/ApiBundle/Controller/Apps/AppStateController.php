@@ -139,7 +139,7 @@ class AppStateController extends BaseController
      * @DeskproAnnotations\ApiUserContext("agent")
      *
      * @ParamConverter("state", class="AppBundle:Entity\AppStore\AppState", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter")
-     * @ParamConverter("representation", class="DeskPRO\Bundle\AppStoreBundle:API\AppStateRepresentation", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\SerializedParamConverter")
+     * @ParamConverter("representation", class="DeskPRO\Bundle\AppStoreBundle\API\AppStateRepresentation", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\SerializedParamConverter")
      * @param Entity\AppStore\AppState $state
      * @param AppStateRepresentation $representation
      * @return AppStateRepresentation

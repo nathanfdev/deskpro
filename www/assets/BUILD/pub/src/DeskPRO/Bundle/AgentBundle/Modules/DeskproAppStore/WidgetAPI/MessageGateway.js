@@ -105,6 +105,14 @@ class MessageGateway
       return this.saveAppState(widget);
     }
 
+    if (eventName === Messages.EVENT_STATE_CREATE) {
+      return this.createAppState(widget);
+    }
+
+    if (eventName === Messages.EVENT_STATE_UPDATE) {
+      return this.updateAppState(widget);
+    }
+
     if (eventName === Messages.EVENT_STATE_DELETE) {
       return this.deleteAppState(widget);
     }
@@ -184,7 +192,47 @@ class MessageGateway
 
     const { appstoreDispatcher } = this;
     const defaultHandler = (widget, state, reply) => {
-      appstoreDispatcher.dispatchSaveState(widget.appConfig.id, state, (app, state) => reply(state))
+      appstoreDispatcher.dispatchSaveAppState(widget.appConfig.id, state, (app, state) => reply(state))
+    };
+
+    return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
+  };
+
+  /**
+   * @param {WidgetConfiguration} widget
+   * @return {MessageChannel}
+   */
+  createAppState = (widget) => {
+    const messageType = Messages.EVENT_STATE_CREATE;
+
+    const replyHandler = (widget, widgetWindow, state) => {
+      const value = state ? JSON.parse(state.value) : null;
+      postRobot.send(widgetWindow, messageType, value);
+    };
+
+    const { appstoreDispatcher } = this;
+    const defaultHandler = (widget, state, reply) => {
+      appstoreDispatcher.dispatchCreateAppState(widget.appConfig.id, state, (app, state) => reply(state))
+    };
+
+    return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
+  };
+
+  /**
+   * @param {WidgetConfiguration} widget
+   * @return {MessageChannel}
+   */
+  updateAppState = (widget) => {
+    const messageType = Messages.EVENT_STATE_UPDATE;
+
+    const replyHandler = (widget, widgetWindow, state) => {
+      const value = state ? JSON.parse(state.value) : null;
+      postRobot.send(widgetWindow, messageType, value);
+    };
+
+    const { appstoreDispatcher } = this;
+    const defaultHandler = (widget, state, reply) => {
+      appstoreDispatcher.dispatchUpdateAppState(widget.appConfig.id, state, (app, state) => reply(state))
     };
 
     return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
@@ -205,7 +253,7 @@ class MessageGateway
     const { appstoreDispatcher } = this;
     const defaultHandler = (widget, state, reply) => {
       const { name } = state;
-      appstoreDispatcher.dispatchDeleteState(widget.appConfig.id, name, (app, state) => reply(state))
+      appstoreDispatcher.dispatchDeleteAppState(widget.appConfig.id, name, (app, state) => reply(state))
     };
 
     return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
