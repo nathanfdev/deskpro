@@ -238,6 +238,40 @@ class OrganizationHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('http://urlupdated', $entity->getContactData()->first()->getField1());
     }
 
+    public function test_add_email_domain()
+    {
+        // base create
+        $model = $this->createBaseModel();
+        $model->setEmailDomains(['domain.com']);
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertCount(1, $entity->getEmailDomains());
+        $this->assertEquals('domain.com', $entity->getEmailDomains()->first()->getDomain());
+
+        // append
+        $model->setEmailDomains(['domain2.com']);
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertCount(2, $entity->getEmailDomains());
+        $this->assertEquals('domain.com', $entity->getEmailDomains()->first()->getDomain());
+        $this->assertEquals('domain2.com', $entity->getEmailDomains()->last()->getDomain());
+
+        // duplicate check
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertCount(2, $entity->getEmailDomains());
+        $this->assertEquals('domain.com', $entity->getEmailDomains()->first()->getDomain());
+        $this->assertEquals('domain2.com', $entity->getEmailDomains()->last()->getDomain());
+    }
+
     /**
      * @return Model\Organization
      */

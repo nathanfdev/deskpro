@@ -55,6 +55,7 @@ class OrganizationTest extends AbstractModelTest
         $this->assertEquals($this->transformData($params), array_merge($params, [
             'labels'        => [],
             'custom_fields' => [],
+            'email_domains' => [],
         ]));
     }
 
@@ -80,7 +81,8 @@ class OrganizationTest extends AbstractModelTest
                     'value' => 'val 2',
                 ],
             ],
-            'contact_data' => [
+            'email_domains' => ['domain1.com', 'domain2.com'],
+            'contact_data'  => [
                 'address' => [
                     [
                         'address' => 'address',

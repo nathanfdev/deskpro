@@ -68,6 +68,17 @@ class OrganizationHandler extends AbstractEntityHandler
             $entity->setPicture(null);
         }
 
+        foreach ($model->getEmailDomains() as $emailDomain) {
+            if ($entity->hasEmailDomain($emailDomain)) {
+                continue;
+            }
+
+            $domainEntity = new Entity\OrganizationEmailDomain();
+            $domainEntity->setDomain($emailDomain);
+
+            $entity->addEmailDomain($domainEntity);
+        }
+
         $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getOrganizationCustomDefMapper(), $model, $entity);
         $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelOrganization::class);
 
