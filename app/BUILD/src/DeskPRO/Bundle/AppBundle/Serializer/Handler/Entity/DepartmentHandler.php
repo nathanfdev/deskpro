@@ -95,7 +95,7 @@ class DepartmentHandler extends AbstractEntityHandler
 
         $sideloads = $context->getSideloadStore();
         $sideloads->addCustomSideload(
-            'agents',
+            'department_agent_ids',
             $entity->getId(),
             new CallbackDeferredProperty([$this, 'getAgents'], [$entity]),
             $model
