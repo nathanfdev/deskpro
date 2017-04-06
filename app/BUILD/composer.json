@@ -42,7 +42,6 @@
     "ocramius/proxy-manager": "~1.0",
     "vaites/php-apache-tika": "^0.3.5",
     "friendsofsymfony/rest-bundle": "~1.5",
-    "jms/serializer-bundle": "~1.0",
     "nelmio/api-doc-bundle": "~2.10",
     "leafo/scssphp": "0.6.3",
     "beberlei/DoctrineExtensions": "^1.0",
@@ -107,7 +106,8 @@
     "friendsofphp/php-cs-fixer": "^1.11",
     "behat/mink-goutte-driver": "^1.2",
     "onesky/api-library-php5": "^1.0",
-    "sensio/generator-bundle": "^3.0"
+    "sensio/generator-bundle": "^3.0",
+    "jms/serializer-bundle": "~1.3.1"
   },
   "preferred-install": "dist"
 }
