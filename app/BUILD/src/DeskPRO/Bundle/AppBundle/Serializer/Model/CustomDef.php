@@ -72,8 +72,6 @@ class CustomDef
 
     /**
      * Options for the field.
-     *
-     * @JMS\Type("array")
      */
     private $options;
 
@@ -150,7 +148,6 @@ class CustomDef
         $this->parent        = $def->getParent();
         $this->title         = $def->getRawTitle();
         $this->description   = $def->getRawDescription();
-        $this->options       = $def->getOptions();
         $this->isUserEnabled = $def->isUserEnabled();
         $this->isEnabled     = $def->isEnabled();
         $this->displayOrder  = $def->getDisplayOrder();
@@ -158,6 +155,14 @@ class CustomDef
         $this->defaultValue  = $def->getDefaultValue();
         $this->widgetType    = $def->getWidgetType();
         $this->choices       = $def->getChoices();
+
+        $this->options = $def->getOptions();
+        if (isset($this->options['choices'])) {
+            unset($this->options['choices']);
+        }
+        if (!$this->options) {
+            $this->options = new \ArrayObject();
+        }
     }
 
     /**
