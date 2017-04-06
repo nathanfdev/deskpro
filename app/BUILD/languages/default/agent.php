@@ -1647,6 +1647,7 @@ return [
     'agent.publish.news_comments'                              => 'News Comments',
     'agent.publish.news_list_title'                            => '1 Post|{{count}} Posts',
     'agent.publish.no_changes'                                 => 'No changes detected between these two revisions',
+    'agent.publish.no_content'                                 => 'No content',
     'agent.publish.no_downlod_cats_error'                      => 'There are no categories defined. Before you can add files to the downloads section, you need to define a category.',
     'agent.publish.no_kb_cats_error'                           => 'There are no categories defined. Before you can add articles to the knowledgebase section, you need to define a category.',
     'agent.publish.no_news_cats_error'                         => 'There are no categories defined. Before you can add posts to the news section, you need to define a category.',

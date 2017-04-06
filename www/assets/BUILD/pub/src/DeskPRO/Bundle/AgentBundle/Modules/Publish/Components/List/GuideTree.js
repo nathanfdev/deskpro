@@ -110,6 +110,8 @@ export class GuideTree extends React.Component {
     if (topic.path.length === 1) {
       alert('Topic at root have no content, the topic will keep its content but you won\'t be able to edit it');
     }
+    const params = { detail: { root: topic.path.length === 1 } };
+    window.document.dispatchEvent(new CustomEvent(`dpMoveTopic${topic.node.id}`, params));
   };
 
   handleChange = (treeData) => {
