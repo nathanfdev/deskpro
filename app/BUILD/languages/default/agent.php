@@ -1734,6 +1734,7 @@ return [
     'agent.search.type_person'                                 => 'People',
     'agent.search.type_ticket'                                 => 'Tickets',
     'agent.search.type_ticket_deleted'                         => 'Deleted Tickets',
+    'agent.search.type_topic'                                  => 'Topic',
     'agent.search.view_all_results'                            => 'View all results',
     'agent.settings.add_additional_emails'                     => 'Add Additional Emails',
     'agent.settings.add_another_email'                         => 'Add another email',

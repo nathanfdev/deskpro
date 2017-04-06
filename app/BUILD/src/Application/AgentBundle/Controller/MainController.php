@@ -49,6 +49,7 @@ use Application\DeskPRO\EntityRepository\Organization as OrganizationRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\EntityRepository\TextSnippetCategory as TextSnippetCategoryRepository;
 use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
+use Application\DeskPRO\NewSearch\Manager\Doctrine;
 use Application\DeskPRO\NewSearch\Manager\Elasticsearch;
 use Application\DeskPRO\People\PrefNoticeSet;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
@@ -380,6 +381,7 @@ class MainController extends AbstractController
             'organization'         => [],
             'organization_related' => [],
             'chat'                 => [],
+            'topic'                => [],
         ];
 
         $resultMeta = [];
@@ -476,6 +478,7 @@ class MainController extends AbstractController
      */
     private function searchInDB($q)
     {
+        /** @var Doctrine $doctrine */
         $doctrine = $this->container->get('deskpro.search_manager.doctrine');
         $doctrine->setPersonContext($this->person);
 
@@ -685,6 +688,7 @@ class MainController extends AbstractController
             case 'news':
             case 'feedback':
             case 'download':
+            case 'topic':
                 foreach ($results as $r) {
                     $rows[] = [
                         'id'    => $r->id,

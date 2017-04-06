@@ -71,6 +71,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
             'person'            => 'DeskPRO:Person',
             'organization'      => 'DeskPRO:Organization',
             'chat_conversation' => 'DeskPRO:ChatConversation',
+            'topic'             => 'DeskPRO:Topic',
         ];
 
         $results = [
@@ -82,6 +83,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
             'person'            => [],
             'organization'      => [],
             'chat_conversation' => [],
+            'topic'             => [],
         ];
 
         if (!$this->person->hasPerm('agent_people.use')) {
@@ -198,6 +200,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                          'download' => 'downloads',
                          'feedback' => 'feedback',
                          'news'     => 'news',
+                         'topic'    => 'topics',
                      ] as $type => $table) {
                 $ids = $this->container->getDbRead()->fetchAllCol("
                     SELECT id
