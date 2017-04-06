@@ -48,9 +48,9 @@ export const preloadData    = createAction(
         me:                    { endpoint: 'me' },
         agent_teams:           { endpoint: 'agent_teams' },
         my_agent_teams:        { endpoint: 'agent_teams', query: 'my=true' },
-        ticket_departments:    { endpoint: 'ticket_departments', query: 'include=agents' },
-        my_ticket_departments: { endpoint: 'ticket_departments', query: 'my=true&include=agents' },
-        chat_departments:      { endpoint: 'chat_departments', query: 'include=agents' },
+        ticket_departments:    { endpoint: 'ticket_departments', query: 'include=department_agent_ids' },
+        my_ticket_departments: { endpoint: 'ticket_departments', query: 'my=true&include=department_agent_ids' },
+        chat_departments:      { endpoint: 'chat_departments', query: 'include=department_agent_ids' },
         onboardings:           { endpoint: 'people/onboarding/pending' }
       };
 
@@ -88,7 +88,7 @@ export const preloadData    = createAction(
           const agents = agentsSelector(getState());
 
           ['chat_departments', 'ticket_departments'].forEach((depType) => {
-            const linked = getLinkedData(responses, depType, 'agents');
+            const linked = getLinkedData(responses, depType, 'department_agent_ids');
             for (const dep of data[depType]) {
               const agentIds = linked[dep.id];
               if (agentIds) {
