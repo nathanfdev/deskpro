@@ -58,7 +58,7 @@ class ContentCategoryAbstractType extends AbstractType
                 EntityType::class,
                 [
                     'class'        => Usergroup::class,
-                    'choice_label' => 'name',
+                    'choice_label' => 'title',
                     'multiple'     => true,
                     'expanded'     => true,
                 ]

@@ -77,6 +77,11 @@ class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchic
     protected $title;
 
     /**
+     * Category`s slug.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $slug;

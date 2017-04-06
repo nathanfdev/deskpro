@@ -70,8 +70,6 @@ class PermissionContext extends BaseContext
      */
     public function iAddUserGroup($who, $sysName)
     {
-        DataContext::scheduleCleanup();
-
         $person = DataContext::hasReference($who) ? DataContext::getReference($who) : $this->getPerson($who);
 
         $usergroup = $this->repository(Usergroup::class)->findOneBy(['sys_name' => $sysName]);

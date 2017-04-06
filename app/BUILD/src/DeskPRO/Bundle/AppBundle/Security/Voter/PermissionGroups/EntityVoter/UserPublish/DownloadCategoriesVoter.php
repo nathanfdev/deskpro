@@ -26,20 +26,27 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Created by PhpStorm.
+ * User: yakut
+ * Date: 06.04.17
+ * Time: 14:24.
+ */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish;
 
-use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 
-class ArticleCategoryVoter extends AbstractUserPublishVoter
+class DownloadCategoriesVoter extends AbstractUserPublishVoter
 {
     /**
      * {@inheritdoc}
      */
     public static function getEntityClass()
     {
-        return ArticleCategory::class;
+        return DownloadCategory::class;
     }
 
     /**
@@ -47,7 +54,7 @@ class ArticleCategoryVoter extends AbstractUserPublishVoter
      */
     public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        return $user->hasPerm('articles.use');
+        return $user->hasPerm('downloads.use');
     }
 
     /**
