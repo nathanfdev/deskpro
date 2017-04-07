@@ -46,7 +46,7 @@ class MoveBuildScriptsCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $buildIdsRaw = explode(',', trim($input->getOption('move-build-scripts', ''), ','));
+        $buildIdsRaw = $input->getArgument('ids');
         $buildIds    = [];
 
         foreach ($buildIdsRaw as $bid) {

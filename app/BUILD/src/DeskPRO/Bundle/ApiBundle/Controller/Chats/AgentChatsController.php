@@ -346,4 +346,42 @@ class AgentChatsController extends CrudController
         $em->persist($pref);
         $em->flush();
     }
+
+    /**
+     * @Rest\Put("/{id}/hide")
+     *
+     * @param int $id
+     *
+     * @return View
+     */
+    public function hideChatAction($id)
+    {
+        $this->setChatPinned($id, false);
+    }
+
+    /**
+     * @Rest\Put("/{id}/reveal")
+     *
+     * @param int $id
+     *
+     * @return View
+     */
+    public function revealChatAction($id)
+    {
+        $this->setChatPinned($id, true);
+    }
+
+    /**
+     * @param int  $id
+     * @param bool $pinned
+     */
+    private function setChatPinned($id, $pinned = false)
+    {
+        /** @var AgentChat $chat */
+        $chat = $this->findOr404(static::$entity, $id);
+        $em   = $this->get('doctrine.orm.default_entity_manager');
+        $chat->setPinned($pinned);
+        $em->persist($chat);
+        $em->flush();
+    }
 }

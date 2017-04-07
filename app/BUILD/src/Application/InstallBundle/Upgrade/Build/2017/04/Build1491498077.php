@@ -28,14 +28,21 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1491314589 extends AbstractBuild
+class Build1491498077 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
+    public function addNewTables()
+    {
+
+    }
+
+    public function runAlters()
+    {
+        $this->out('Add is_pinned column to agent_chat table');
+        $this->execDbQuery('default', "ALTER TABLE agent_chat ADD is_pinned TINYINT(1) DEFAULT '0' NOT NULL");
+    }
+
     public function run()
     {
-        $this->out('Create Topic subscriptions table');
-        $this->execDbQuery('default', 'CREATE TABLE topic_subscriptions (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, topic_id INT DEFAULT NULL, root_category TINYINT(1) DEFAULT NULL, INDEX IDX_F34BD8DB217BBB47 (person_id), INDEX IDX_F34BD8DB1F55203D (topic_id), INDEX root_category_idx (root_category), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
-        $this->execDbQuery('default', 'ALTER TABLE topic_subscriptions ADD CONSTRAINT FK_F34BD8DB217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
-        $this->execDbQuery('default', 'ALTER TABLE topic_subscriptions ADD CONSTRAINT FK_F34BD8DB1F55203D FOREIGN KEY (topic_id) REFERENCES topics (id) ON DELETE CASCADE');
-        $this->execDbQuery('default', 'DELETE FROM settings WHERE name = \'user.portal_tabs_order\'');
+
     }
 }

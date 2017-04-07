@@ -93,6 +93,16 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     protected $is_archived = false;
 
     /**
+     * Indicate is chat pinned or not.
+     *
+     * @var bool
+     * @ORM\Column(type="boolean", options={"default" = 0}, nullable=false)
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     */
+    protected $is_pinned = false;
+
+    /**
      * DateTime when chat was first time created.
      *
      * @var \DateTime
@@ -212,6 +222,26 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     public function setArchived($archived = true)
     {
         $this->setModelField('archived', (bool) $archived);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPinned()
+    {
+        return $this->is_pinned;
+    }
+
+    /**
+     * @param bool $pinned
+     *
+     * @return $this
+     */
+    public function setPinned($pinned = true)
+    {
+        $this->setModelField('is_pinned', (bool) $pinned);
 
         return $this;
     }

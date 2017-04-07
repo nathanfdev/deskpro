@@ -39,7 +39,6 @@ export default class TopBarRecentImList extends RecentList {
     agentsLoaded:      PropTypes.bool.isRequired,
     counts:            PropTypes.object,
     onHideChat:        PropTypes.func,
-    hiddenChats:       PropTypes.object,
     startedByMeChats:  PropTypes.object
   };
 
@@ -49,9 +48,6 @@ export default class TopBarRecentImList extends RecentList {
     },
     counts: {
       nested: {}
-    },
-    hiddenChats: {
-
     }
   };
 
@@ -65,11 +61,6 @@ export default class TopBarRecentImList extends RecentList {
     this.updateOrder = false;
     const order = chats.size > 0 ? chats.sort((a, b) => b.get('order') - a.get('order')).first().get('order') : 0;
     return order + 1;
-  }
-
-  static filterByHidden(chat, hiddenChats) {
-    const date = chat.get('date_last_message') || chat.get('date_created');
-    return !hiddenChats[chat.get('id')] || hiddenChats[chat.get('id')] < (Date.parse(date));
   }
 
   constructor(props) {
@@ -109,26 +100,28 @@ export default class TopBarRecentImList extends RecentList {
 
   componentWillReceiveProps(props) {
     const { chats } = this.state;
-    const { hiddenChats, me, startedByMeChats } = props;
+    const { me, startedByMeChats } = props;
     let filtered = chats;
 
-    if (hiddenChats || startedByMeChats) {
-      filtered = filtered.filter((chat) => {
-        if (!chat.get('date_last_message') && !((startedByMeChats && startedByMeChats.get(chat.get('id'))) || me.get('id') === chat.get('admin'))) {
-          return false;
-        }
 
-        return TopBarRecentImList.filterByHidden(chat, hiddenChats);
-      });
-    }
+    filtered = filtered.filter((chat) => {
+      if (!chat.get('date_last_message') && !((startedByMeChats && startedByMeChats.get(chat.get('id'))) || me.get('id') === chat.get('admin'))) {
+        return false;
+      }
 
-    if (props.chats) {
-      props.chats.filter(chat => TopBarRecentImList.filterByHidden(chat, hiddenChats)).forEach((chat) => {
+      return chat.get('is_pinned');
+    });
+
+    let propsChats = props.chats;
+
+    if (propsChats) {
+      propsChats = propsChats.filter(chat => chat.get('is_pinned'));
+      propsChats.forEach((chat) => {
         const order = filtered.getIn([chat.get('id'), 'order']) || props.imSettings.getIn(['chats_order', `${chat.get('id')}`]) || this.getNextOrder(filtered);
         filtered = filtered.set(chat.get('id'), chat.set('order', order));
       });
     }
-    filtered = filtered.filter(chat => props.chats.has(chat.get('id')));
+    filtered = filtered.filter(chat => propsChats.has(chat.get('id')));
 
     const sorted = filtered.sort((a, b) => a.get('order') - b.get('order'));
 
@@ -333,6 +326,10 @@ export default class TopBarRecentImList extends RecentList {
 
   renderRemainedChats() {
     let size = this.state.chats.size - this.state.slice;
+    const chats = this.calculateChats(true);
+    if (size === 1) {
+      return this.getItem(chats.first(), true);
+    }
     size = size > 0 ? size : 0;
     size = size > 99 ? 99 : size;
     size = size > 9 ? size : `+${size}`;
@@ -344,7 +341,7 @@ export default class TopBarRecentImList extends RecentList {
       containerWidth = 52;
     }
 
-    const chats = this.calculateChats(true);
+
     const overallCount = chats.reduce((carry, chat) => carry + this.getNotificationCount(chat), 0);
 
     return (size > 0 ?
@@ -373,7 +370,7 @@ export default class TopBarRecentImList extends RecentList {
                   contentClassName="dpscrollarea overflow-content"
                   vertical
                 >
-                  {chats.map(chat => this.getItem(chat))}
+                  {chats.map(chat => this.getItem(chat, false))}
                 </ScrollArea>
               </div>
             </ClickOut>
