@@ -42,6 +42,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class GuidesController.
@@ -101,6 +103,38 @@ class GuidesController extends AbstractController
         }
 
         return $this->redirectToRoute('portal_guides_topic_permalink', ['slug' => $topic->getId(), 'guide_slug' => $guide->getSlug()]);
+    }
+
+    /**
+     * @Route("/guides/{slug}/pdf", name="guides_pdf")
+     * @ParamConverter(name="guide", converter="deskpro_slug")
+     * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_GUIDE', guide)")
+     * @PageHttpCache()
+     *
+     * @param Guide $guide
+     *
+     * @return StreamedResponse|NotFoundHttpException
+     */
+    public function guidePdfAction(Guide $guide)
+    {
+        $filename = DP_DIR.'/attachments/guides/pdf/'.$guide->getSlug().'.pdf';
+        if (!file_exists($filename)) {
+            return $this->createNotFoundException();
+        }
+        $response = new StreamedResponse();
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Length', filesize($filename));
+        $response->setCallback(
+            function () use ($filename) {
+                $fp = fopen($filename, 'r');
+                while (!feof($fp)) {
+                    echo fread($fp, 1024);
+                }
+                fclose($fp);
+            }
+        );
+
+        return $response;
     }
 
     /**
@@ -216,7 +250,7 @@ class GuidesController extends AbstractController
     }
 
     /**
-     * @Route("/guide_pdf/{slug}", name="guides_pdf")
+     * @Route("/guide_pdf/{slug}", name="guides_pdf_extract")
      * @ParamConverter(name="guide", converter="deskpro_slug")
      * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_GUIDE', guide)")
      * @PageHttpCache()
