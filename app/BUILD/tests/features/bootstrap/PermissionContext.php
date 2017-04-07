@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpBehat;
 
 use Application\DeskPRO\Entity\Permission;
@@ -50,6 +46,8 @@ class PermissionContext extends BaseContext
      */
     public function iRemoveUserGroup($who, $sysName)
     {
+        DataContext::scheduleCleanup();
+
         $person = DataContext::hasReference($who) ? DataContext::getReference($who) : $this->getPerson($who);
 
         foreach ($person->getUsergroups() as $usergroup) {
@@ -70,6 +68,8 @@ class PermissionContext extends BaseContext
      */
     public function iAddUserGroup($who, $sysName)
     {
+        DataContext::scheduleCleanup();
+
         $person = DataContext::hasReference($who) ? DataContext::getReference($who) : $this->getPerson($who);
 
         $usergroup = $this->repository(Usergroup::class)->findOneBy(['sys_name' => $sysName]);

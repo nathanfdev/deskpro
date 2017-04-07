@@ -39,6 +39,7 @@ api:
                 - DpBehat\Data\CustomDataContext
                 - DpBehat\Data\TicketLayoutContext
                 - DpBehat\Data\OrganizationContext
+                - DpBehat\ArticleContext
                 - DpBehat\Data\BlobContext
                 - DpBehat\Data\LabelContext
                 - DpBehat\BrandSettingContext

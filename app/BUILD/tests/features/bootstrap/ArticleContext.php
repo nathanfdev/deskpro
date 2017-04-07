@@ -26,41 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Content;
+namespace DpBehat;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DpBehat\Data\DataContext;
 
-class ArticleType extends AbstractType
+class ArticleContext extends BaseContext
 {
     /**
-     * {@inheritdoc}
+     * @Given I add  article :article to category :category
+     *
+     * @param string $category
+     * @param string $article
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function iAddUserGroup($category, $article)
     {
-        $builder
-            ->add(
-                'categories',
-                EntityType::class,
-                ['class' => ArticleCategory::class, 'choice_label' => 'title', 'multiple' => true, 'expanded' => true]
-            )
-            ->add('main', ContentAbstractType::class);
-    }
+        DataContext::scheduleCleanup();
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver
-            ->setDefaults(
-                [
-                    'data_class' => Article::class,
-                ]
-            );
+        /** @var Article $article */
+        $article = DataContext::getReference($article);
+        /** @var ArticleCategory $category */
+        $category = DataContext::getReference($category);
+        $article->addToCategory($category);
+        $this->em()->persist($article);
+        $this->em()->flush();
     }
 }
