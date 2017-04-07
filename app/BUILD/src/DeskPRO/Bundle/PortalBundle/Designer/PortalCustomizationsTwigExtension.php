@@ -195,7 +195,7 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
      */
     private function getAssetsExtension()
     {
-        return $this->container->get('templating.email.twig.extension.assets');
+        return $this->container->get('twig')->getExtension('asset');
     }
 
     /**

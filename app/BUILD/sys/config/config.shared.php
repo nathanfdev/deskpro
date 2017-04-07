@@ -196,6 +196,7 @@ $container->setDefinition('category_slug_manager', $definition);
 $definition = new Definition();
 $definition->setClass('DeskPRO\\Bundle\\AppBundle\\Assets\\PackagesFactory');
 $definition->setArguments([
+    new Reference('deskpro.app_env'),
     new Reference('settings_resolver'),
     new Reference('request_stack'),
     new Expression("service('deskpro.app_env').getConfig('paths.asset_paths')"),
