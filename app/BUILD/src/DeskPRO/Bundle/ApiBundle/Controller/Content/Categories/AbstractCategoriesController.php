@@ -47,5 +47,6 @@ abstract class AbstractCategoriesController extends CrudController
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         ListHelper::applyInListFilter(new RequestQueryContext($qb, $alias, $request), 'brand', 'brands');
+        ListHelper::applyInListFilter(new RequestQueryContext($qb, $alias, $request), 'parent');
     }
 }

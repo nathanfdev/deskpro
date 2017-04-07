@@ -26,7 +26,7 @@ Feature: /article_categories endpoint
     Then the response status code should be 201
     And the header "Location" should be equal to "/api/v2/article_categories/{lastCreatedId}"
 
-  Scenario: I view the existing article category as agent
+  Scenario: I view the existing article category
     Given I have only default brand
     And the following ArticleCategory records exist:
       | #   | parent | is_agent | title                  | slug                   | root | brand          |
@@ -37,6 +37,62 @@ Feature: /article_categories endpoint
     And the JSON node "data.slug" should contain "test-article-category"
     And the JSON node "data.brand" should be equal to "{defaultBrand}"
     And the JSON node "data.parent" should be null
+
+  Scenario: I view the full list of existing article categories
+    Given I have only default brand
+    And only the following ArticleCategory records exist:
+      | #   | parent | is_agent | title            | root | brand          |
+      | ac1 |        | 1        | Test-1 category  | ac1  | {defaultBrand} |
+      | ac2 | {ac1}  | 1        | Test-2 category  | ac1  | {defaultBrand} |
+      | ac3 |        | 0        | Test-3 category  | ac3  | {defaultBrand} |
+      | ac4 | {ac3}  | 0        | Test-4 category  | ac3  | {defaultBrand} |
+      | ac5 |        | 1        | Test-5 category  | ac4  | {defaultBrand} |
+    When I send a GET request to "/api/v2/article_categories"
+    Then the response status code should be 200
+    And the JSON node "data" should have 5 elements
+    And the JSON node "meta.pagination.total_pages" should be equal to 1
+
+  Scenario: I view the full list of existing article categories filtered by brand
+    Given I have only default brand
+    And only the following ArticleCategory records exist:
+      | #   | parent | is_agent | title            | root | brand          |
+      | ac1 |        | 1        | Test-1 category  | ac1  | {defaultBrand} |
+      | ac2 | {ac1}  | 1        | Test-2 category  | ac1  | {defaultBrand} |
+      | ac3 |        | 0        | Test-3 category  | ac3  | {defaultBrand} |
+      | ac4 | {ac3}  | 0        | Test-4 category  | ac3  | {defaultBrand} |
+      | ac5 |        | 1        | Test-5 category  | ac4  |                |
+    When I send a GET request to "/api/v2/article_categories?brands={defaultBrand}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 4 elements
+    And the JSON node "meta.pagination.total_pages" should be equal to 1
+
+  Scenario: I view the list of children article categories filtered by parent
+    Given I have only default brand
+    And only the following ArticleCategory records exist:
+      | #   | parent | is_agent | title            | root | brand          |
+      | ac1 |        | 1        | Test-1 category  | ac1  | {defaultBrand} |
+      | ac2 | {ac1}  | 1        | Test-2 category  | ac1  | {defaultBrand} |
+      | ac3 |        | 0        | Test-3 category  | ac3  | {defaultBrand} |
+      | ac4 | {ac3}  | 0        | Test-4 category  | ac3  | {defaultBrand} |
+      | ac5 |        | 1        | Test-5 category  | ac4  |                |
+    When I send a GET request to "/api/v2/article_categories?parent={ac1}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "meta.pagination.total_pages" should be equal to 1
+
+  Scenario: I view the list of existing article categories paginated by 3 per page
+    Given I have only default brand
+    And only the following ArticleCategory records exist:
+      | #   | parent | is_agent | title            | root | brand          |
+      | ac1 |        | 1        | Test-1 category  | ac1  | {defaultBrand} |
+      | ac2 | {ac1}  | 1        | Test-2 category  | ac1  | {defaultBrand} |
+      | ac3 |        | 0        | Test-3 category  | ac3  | {defaultBrand} |
+      | ac4 | {ac3}  | 0        | Test-4 category  | ac3  | {defaultBrand} |
+      | ac5 |        | 1        | Test-5 category  | ac4  | {defaultBrand} |
+    When I send a GET request to "/api/v2/article_categories?count=3"
+    Then the response status code should be 200
+    And the JSON node "data" should have 3 elements
+    And the JSON node "meta.pagination.total_pages" should be equal to 2
 
   Scenario: I create a children article category
     Given I have only default brand
