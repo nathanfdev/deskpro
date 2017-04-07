@@ -206,7 +206,8 @@ class ProjectFileSet
             'storybook',
         ];
 
-        static $ignorePaths = [
+        // making this static causes a syntax error in PHP5.5 on the last element of the array for some reason (wtf?)
+        $ignorePaths = [
             '%DP_APP_DIR%/vendor/autoload.php',
             '%DP_APP_DIR%/vendor/behat/',
             '%DP_APP_DIR%/vendor/behatch/',
