@@ -6677,8 +6677,8 @@
     },
     "notifyjs": {
       "version": "3.0.0",
-      "from": "git+https://github.com/alexgibson/notify.js.git#rollup",
-      "resolved": "git+https://github.com/alexgibson/notify.js.git#0545bf19d357ae6a6eab6c740dffd5cabfa4a4bf"
+      "from": "notifyjs@3.0.0",
+      "resolved": "https://registry.npmjs.org/notifyjs/-/notifyjs-3.0.0.tgz"
     },
     "npmlog": {
       "version": "4.0.2",
