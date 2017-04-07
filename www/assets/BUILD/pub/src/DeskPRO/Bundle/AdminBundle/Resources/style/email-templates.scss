@@ -1,6 +1,8 @@
 //######################################################################################################################
 //# Email templates
 //######################################################################################################################
+@import "../../../../../../node_modules/codemirror/lib/codemirror.css";
+@import "../../../../../../node_modules/codemirror/theme/monokai.css";
 
 .dp-email-templates {
   font-family: Open Sans, Helvetica, Arial, sans-serif;
@@ -103,8 +105,17 @@
         box-shadow: none;
         outline:0 !important;
       }
-      textarea.email-body {
+      .subject {
+        height: 90px;
+        .CodeMirror {
+          height: 60px;
+        }
+      }
+      .body {
         height: calc(100% - 115px);
+        .CodeMirror {
+          height: 100%;
+        }
       }
       .email-body {
         min-height: 200px;

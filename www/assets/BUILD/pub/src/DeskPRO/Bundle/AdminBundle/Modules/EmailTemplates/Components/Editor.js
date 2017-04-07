@@ -1,5 +1,8 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import 'codemirror/mode/twig/twig';
+
+import CodeMirror from './CodeMirror';
 
 class Editor extends React.Component {
   static propTypes = {
@@ -18,26 +21,24 @@ class Editor extends React.Component {
   render() {
     const { disabled, subject, body } = this.props;
     return (
-      <div className="dp-code-editor">
+      <div className={classNames('dp-code-editor', { disabled })}>
         <div className={classNames('ui dimmer inverted', { active: disabled })}>
           <div className="ui big loader text">Please select a template to edit</div>
         </div>
-        Email subject:
-        <textarea
-          className={classNames('email-subject', { disabled })}
-          rows="2"
-          value={subject}
-          disabled={disabled}
-          onChange={this.props.changeTemplateSubject}
-        />
-        Email:
-        <textarea
-          className={classNames('email-body', { disabled })}
-          rows="20"
-          value={body}
-          disabled={disabled}
-          onChange={e => this.props.changeTemplateBody(e.target.value)}
-        />
+        <div className="subject">
+          Email subject:
+          <CodeMirror
+            value={subject}
+            onChange={this.props.changeTemplateSubject}
+          />
+        </div>
+        <div className="body">
+          Email:
+          <CodeMirror
+            value={body}
+            onChange={this.props.changeTemplateBody}
+          />
+        </div>
       </div>
     );
   }
