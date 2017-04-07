@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -38,35 +34,36 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class TicketStatusTerm.
+ */
 class TicketStatusTerm extends AbstractTerm
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(TermOptionsResolver $resolver)
     {
         $resolver->setDefaults(['status' => null]);
-
-        $resolver->setConstraints(
-            [
-                'status' => [
-                    new Assert\NotBlank(),
-                    new Assert\Type('array'),
-                    new Assert\Choice(
-                        [
-                            'multiple' => true,
-                            'choices'  => [
-                                Ticket::STATUS_ARCHIVED,
-                                Ticket::STATUS_AWAITING_AGENT,
-                                Ticket::STATUS_AWAITING_USER,
-                                Ticket::STATUS_RESOLVED,
-                                Ticket::HIDDEN_STATUS_DELETED,
-                                Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_DELETED,
-                                Ticket::HIDDEN_STATUS_SPAM,
-                                Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_SPAM,
-                            ],
-                        ]
-                    ),
-                ],
-            ]
-        );
+        $resolver->setConstraints([
+            'status' => [
+                new Assert\NotBlank(),
+                new Assert\Type('array'),
+                new Assert\Choice([
+                    'multiple' => true,
+                    'choices'  => [
+                        Ticket::STATUS_ARCHIVED,
+                        Ticket::STATUS_AWAITING_AGENT,
+                        Ticket::STATUS_AWAITING_USER,
+                        Ticket::STATUS_RESOLVED,
+                        Ticket::HIDDEN_STATUS_DELETED,
+                        Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_DELETED,
+                        Ticket::HIDDEN_STATUS_SPAM,
+                        Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_SPAM,
+                    ],
+                ]),
+            ],
+        ]);
 
         $resolver->setNormalizer(
             'status',
@@ -92,11 +89,17 @@ class TicketStatusTerm extends AbstractTerm
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSupportedOps()
     {
         return [TermInterface::OP_IS, TermInterface::OP_NOT];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultOp()
     {
         return TermInterface::OP_IS;

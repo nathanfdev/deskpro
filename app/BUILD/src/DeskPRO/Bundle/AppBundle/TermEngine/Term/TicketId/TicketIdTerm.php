@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketId;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -37,35 +33,38 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class TicketIdTerm.
+ */
 class TicketIdTerm extends AbstractTerm
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'num'  => null,
-                'num2' => null,
-            ]
-        );
+        $resolver->setDefaults([
+            'num'  => null,
+            'num2' => null,
+        ]);
 
-        $resolver->setConstraints(
-            [
-                'num' => [ // an array of numerics
-                    new Assert\NotNull(),
-                    new Assert\Type('array'),
-                    new Assert\All(
-                        [
-                            'constraints' => new Assert\Type('numeric'),
-                        ]
-                    ),
-                ],
-                'num2' => [ // a numeric or null
-                    new Assert\Type('numeric'),
-                ],
-            ]
-        );
+        $resolver->setConstraints([
+            'num' => [ // an array of numerics
+                new Assert\NotNull(),
+                new Assert\Type('array'),
+                new Assert\All([
+                    'constraints' => new Assert\Type('numeric'),
+                ]),
+            ],
+            'num2' => [ // a numeric or null
+                new Assert\Type('numeric'),
+            ],
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSupportedOps()
     {
         return [
@@ -80,6 +79,9 @@ class TicketIdTerm extends AbstractTerm
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultOp()
     {
         return TermInterface::OP_IS;

@@ -26,24 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateResolved;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class PhpTicketDateResolvedTermCompiler.
+ */
 class PhpTicketDateResolvedTermCompiler extends AbstractPhpTermCompiler
 {
     /**
-     * Take a term and return a PhpCheck representing the term's query conditions.
-     *
-     * @param TermInterface $term
-     *
-     * @return PhpCheck
+     * {@inheritdoc}
      */
     protected function doCompile(TermInterface $term)
     {
