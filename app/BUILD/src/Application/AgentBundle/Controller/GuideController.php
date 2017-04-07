@@ -259,6 +259,10 @@ class GuideController extends PublishController
             case 'remove-auto-pub':
                 $topic->setDatePublished(null);
                 break;
+
+            case 'no_content':
+                $topic->setNoContent($this->in->getBoolInt('no_content'));
+                break;
         }
 
         $this->em->persist($topic);

@@ -162,6 +162,21 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
 				BASE_URL + 'agent/guides/topic/' + this.meta.topic_id + '/ajax-save'
 			);
 		}
+
+		this.getEl('no_content').on('change', function(e) {
+      self.toggleContent(e.target.checked);
+      self.saveNoContent(e.target.checked);
+    });
+
+		window.document.addEventListener('dpMoveTopic' + this.meta.topic_id, (e) => {
+      var checkbox = this.getEl('no_content');
+      if (!checkbox.prop('checked') || checkbox.prop('disabled')) {
+        checkbox.prop('checked', e.detail.root);
+        self.saveNoContent(e.detail.root);
+        this.toggleContent(e.detail.root);
+      }
+      checkbox.prop('disabled', e.detail.root);
+    });
 	},
 
 
@@ -588,17 +603,43 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
       var textArea = $('textarea.edit-content-field', this.getEl('content_ed'));
       var $rElement = $('<div></div>').insertAfter(textArea);
       textArea.hide();
-      window.AgentLegacyBundle.renderContentEditor(
-        $rElement.get(0),
-        $('textarea.content_input', this.wrapper).val(),
-        $('input.content_input_type', this.wrapper).val(),
-        this.saveContent.bind(this)
-      );
+      if ($rElement.get(0)) {
+			  window.AgentLegacyBundle.renderContentEditor(
+				  $rElement.get(0),
+				  $('textarea.content_input', this.wrapper).val(),
+				  $('input.content_input_type', this.wrapper).val(),
+				  this.saveContent.bind(this)
+			  );
+			}
     }
 
 		this.getEl('edit_btn').hide();
 		this.updateUi();
 	},
+
+  //#################################################################
+  //# Editor
+  //#################################################################
+
+  saveNoContent: function (value) {
+    $.ajax({
+      url: BASE_URL + 'agent/guides/topic/' + this.getMetaData('topic_id') + '/ajax-save',
+      type: 'POST',
+      data: { no_content: value ? 1 : 0, action: 'no_content' },
+      context: this,
+      dataType: 'json'
+    });
+  },
+
+	toggleContent: function (value) {
+    if (value) {
+      this.getEl('no_content_block').show();
+      this.getEl('with_content_block').hide()
+    } else {
+      this.getEl('no_content_block').hide();
+      this.getEl('with_content_block').show();
+    }
+  },
 
 	_initMediaBrowser: function() {
 		if (this.mediabrowser_has_init) return;

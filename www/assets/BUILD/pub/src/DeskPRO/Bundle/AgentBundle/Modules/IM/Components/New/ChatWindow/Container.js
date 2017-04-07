@@ -87,6 +87,8 @@ class Container extends React.Component {
         return 'thumbs outline up';
       case 'userchat':
         return 'comment outline';
+      case 'topics':
+        return 'book outline';
       default:
         return '';
     }

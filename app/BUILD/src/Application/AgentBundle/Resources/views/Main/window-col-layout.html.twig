@@ -86,7 +86,8 @@
 							'fa fa-download':  tab.tabType == 'download',
 							'fa fa-list-alt':  tab.tabType == 'news',
 							'fa fa-th-list':   tab.tabType == 'feedback',
-							'fa fa-comment':   tab.tabType == 'userchat'
+							'fa fa-comment':   tab.tabType == 'userchat',
+							'fa fa-book':      tab.tabType == 'topics'
 						}"></i>{{ ng_var('tab.title') }}
 					</a>
 					<span class="bound-fade"></span>
@@ -108,7 +109,8 @@
 							'fa fa-download':  item.type == 'download',
 							'fa fa-list-alt':  item.type == 'news',
 							'fa fa-th-list':   item.type == 'feedback',
-							'fa fa-comment':   item.type == 'userchat'
+							'fa fa-comment':   item.type == 'userchat',
+							'fa fa-book':      item.type == 'topics'
 						}"></i>
 						<span class="title">{{ ng_var('item.title') }}</span>
 					</a>

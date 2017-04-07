@@ -43,7 +43,14 @@ export class EditorContainer extends React.Component {
   };
 
   onAddFile = (data, callback) => {
-    this.props.dispatch(actions.uploadFile(data, callback));
+    this.setState({
+      saving: true
+    });
+    this.props.dispatch(actions.uploadFile(data, callback)).then(() => {
+      this.setState({
+        saving: false
+      });
+    });
   };
 
   onCancel = () => {
@@ -53,7 +60,14 @@ export class EditorContainer extends React.Component {
   };
 
   loadRemoteImages = (data, callback) => {
-    this.props.dispatch(actions.loadRemoteImages(data, callback));
+    this.setState({
+      saving: true
+    });
+    this.props.dispatch(actions.loadRemoteImages(data, callback)).then(() => {
+      this.setState({
+        saving: false
+      });
+    });
   };
 
   render() {
@@ -121,6 +135,9 @@ export class Editor extends React.Component {
   };
 
   onSave = () => {
+    if (this.props.saving) {
+      return false;
+    }
     let input;
     let html;
     if (this.state.inputType === 'rte') {
@@ -131,6 +148,7 @@ export class Editor extends React.Component {
       input = this.state.markdown;
     }
     this.props.onSave(html, input, this.state.inputType);
+    return true;
   };
 
   onChange = (value, html) => {

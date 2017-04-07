@@ -106,6 +106,14 @@ export class GuideTree extends React.Component {
     this.props.onClick(node);
   };
 
+  onMoveNode = (topic) => {
+    if (topic.path.length === 1) {
+      alert('Topic at root have no content, the topic will keep its content but you won\'t be able to edit it');
+    }
+    const params = { detail: { root: topic.path.length === 1 } };
+    window.document.dispatchEvent(new CustomEvent(`dpMoveTopic${topic.node.id}`, params));
+  };
+
   handleChange = (treeData) => {
     this.setState({
       treeData
@@ -132,6 +140,7 @@ export class GuideTree extends React.Component {
           scaffoldBlockPxWidth={30}
           treeData={this.state.treeData}
           onChange={this.handleChange}
+          onMoveNode={this.onMoveNode}
           nodeContentRenderer={Renderer}
           generateNodeProps={this.generateNodeProps}
         />
