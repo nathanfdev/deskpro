@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@kadira/storybook';
-import { PopUp } from 'Semantic/PopUp';
-import { MenuItem } from 'Semantic/Menu';
+import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
+import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import { css } from 'Visual/decorators';
 
 const PopupContent = 'Test Very long content to figure out how the popup is behaving';
@@ -25,7 +25,6 @@ storiesOf('Semantic: pop up', module)
       <PopUp
         positionMy="left top"
         positionAt="left bottom"
-        id={1}
         zIndex={99999}
         content={PopupContent}
       ><button className="ui button">Toggle</button></PopUp>
@@ -37,7 +36,6 @@ storiesOf('Semantic: pop up', module)
       <PopUp
         positionMy="left top-2"
         positionAt="left bottom"
-        id={2}
         zIndex={99999}
         content={PopupMenuContent}
       ><button className="ui button">Menu</button></PopUp>
@@ -49,7 +47,6 @@ storiesOf('Semantic: pop up', module)
       <PopUp
         positionMy="left top-2"
         positionAt="left bottom"
-        id={3}
         zIndex={99999}
         content={PopupMenuContent}
         autoClose={false}

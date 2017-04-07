@@ -320,7 +320,6 @@ class MarkdownEditor extends React.Component {
         <PopUp
           positionMy="right top"
           positionAt="right bottom"
-          id={1}
           elementId="markdown-add-link"
           zIndex={99999}
           content={<LinkMenu insertLink={this.insertLink} />}

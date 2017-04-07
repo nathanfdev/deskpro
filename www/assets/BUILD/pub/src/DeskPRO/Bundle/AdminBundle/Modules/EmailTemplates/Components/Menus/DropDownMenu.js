@@ -9,12 +9,17 @@ class DropDownMenu extends React.Component {
     onClick:   PropTypes.func,
     className: PropTypes.string,
     children:  PropTypes.node,
-    disabled:  PropTypes.bool
+    disabled:  PropTypes.bool,
   };
   static defaultProps = {
     onClick() {},
     disabled: false,
   };
+
+  constructor(props) {
+    super(props);
+    this.id = '';
+  }
 
   openMenu = () => {
     if (this.props.disabled === false) {

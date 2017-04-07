@@ -153,6 +153,7 @@ class EmailTemplatesEditorContainer extends React.Component {
     />);
   }
 }
+
 class EmailTemplatesEditor extends React.Component {
   static propTypes = {
     emailTemplates:         PropTypes.object,

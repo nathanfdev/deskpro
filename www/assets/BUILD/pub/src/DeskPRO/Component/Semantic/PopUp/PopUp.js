@@ -23,17 +23,14 @@ class PopUp extends React.Component {
     manual:               PropTypes.bool,
     className:            PropTypes.string,
     innerClassName:       PropTypes.string,
-    id:                   PropTypes.number.isRequired,         // eslint-disable-line react/no-unused-prop-types
-    classes:              PropTypes.arrayOf(PropTypes.string), // eslint-disable-line react/no-unused-prop-types
-    innerClasses:         PropTypes.arrayOf(PropTypes.string)  // eslint-disable-line react/no-unused-prop-types
+
   };
 
   static defaultProps = {
     onOpen() {},
-    className:            '',
-    innerClassName:       '',
-    innerClasses:         [],
-    classes:              [],
+    className:      '',
+    innerClassName: '',
+
     autoClose:            false,
     autoOpen:             false,
     allowCloseOnClickOut: true,
