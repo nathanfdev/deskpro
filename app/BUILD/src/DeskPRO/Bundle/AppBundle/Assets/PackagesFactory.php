@@ -29,16 +29,24 @@
 namespace DeskPRO\Bundle\AppBundle\Assets;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 use DeskPRO\Component\Util\MapUtils;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Asset\PathPackage;
 use Symfony\Component\Asset\UrlPackage;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
-use Symfony\Component\Asset\VersionStrategy\StaticVersionStrategy;
 use Symfony\Component\HttpFoundation\RequestStack;
 
+/**
+ * Class PackagesFactory.
+ */
 class PackagesFactory
 {
+    /**
+     * @var AppEnv
+     */
+    private $appEnv;
+
     /**
      * @var SettingsResolver
      */
@@ -64,13 +72,20 @@ class PackagesFactory
     private $asset_path_replacements;
 
     /**
+     * @param AppEnv           $appEnv
      * @param SettingsResolver $settings
      * @param RequestStack     $request_stack
      * @param array            $asset_paths
      * @param array            $asset_path_vars
      */
-    public function __construct(SettingsResolver $settings, RequestStack $request_stack, $asset_paths = [], $asset_path_vars = [])
-    {
+    public function __construct(
+        AppEnv           $appEnv,
+        SettingsResolver $settings,
+        RequestStack     $request_stack,
+        $asset_paths = [],
+        $asset_path_vars = []
+    ) {
+        $this->appEnv        = $appEnv;
         $this->settings      = $settings;
         $this->request_stack = $request_stack;
 
@@ -95,22 +110,31 @@ class PackagesFactory
         }
 
         if (empty($this->asset_paths['legacy_web'])) {
-            $this->asset_paths['legacy_web'] = PathMapInfo::create()->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/web');
+            $this->asset_paths['legacy_web'] = PathMapInfo::create()
+                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/web')
+                ->setVersion(PathMapInfo::BUILD_VERSION)
+            ;
         }
 
         if (empty($this->asset_paths['vendor_assets'])) {
             $this->asset_paths['vendor_assets'] = PathMapInfo::create()
-                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/node_modules');
+                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/node_modules')
+                ->setVersion(PathMapInfo::BUILD_VERSION)
+            ;
         }
 
         if (empty($this->asset_paths['app_assets'])) {
             $this->asset_paths['app_assets'] = PathMapInfo::create()
-                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/build');
+                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/build')
+                ->setVersion(PathMapInfo::BUILD_VERSION)
+            ;
         }
 
         if (empty($this->asset_paths['appsrc_assets'])) {
             $this->asset_paths['appsrc_assets'] = PathMapInfo::create()
-                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/src');
+                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/src')
+                ->setVersion(PathMapInfo::BUILD_VERSION)
+            ;
         }
     }
 
@@ -153,15 +177,17 @@ class PackagesFactory
         $req = $this->request_stack->getCurrentRequest();
 
         //------------------------------
-        // Create verison strat
+        // Create version strategy
         //------------------------------
 
         switch ($p->getVersion()) {
             case PathMapInfo::BUILD_VERSION:
-                if (defined(DP_BUILD_TIME)) {
-                    $version = new StaticVersionStrategy(DP_BUILD_TIME);
+                if ($this->appEnv->getConfig('paths.asset_version')) {
+                    $version = new DpStaticVersionStrategy($this->appEnv->getConfig('paths.asset_version'));
+                } elseif (defined(DP_BUILD_TIME)) {
+                    $version = new DpStaticVersionStrategy(DP_BUILD_TIME);
                 } else {
-                    $version = new StaticVersionStrategy(time());
+                    $version = new DpStaticVersionStrategy(time());
                 }
                 break;
 
@@ -170,7 +196,7 @@ class PackagesFactory
                 break;
 
             default:
-                $version = new StaticVersionStrategy($p->getVersion());
+                $version = new DpStaticVersionStrategy($p->getVersion());
         }
 
         //------------------------------
