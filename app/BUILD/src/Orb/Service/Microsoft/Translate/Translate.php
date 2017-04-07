@@ -37,9 +37,9 @@ use GuzzleHttp\RequestOptions;
 
 class Translate
 {
-    const OAUTH_AUTH      = 'https://datamarket.accesscontrol.windows.net/v2/OAuth2-13/';
+    const OAUTH_AUTH      = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken';
     const OAUTH_SCOPE_URL = 'http://api.microsofttranslator.com';
-    const API_URL         = 'http://api.microsofttranslator.com/V2/Http.svc/';
+    const API_URL         = 'http://api.microsofttranslator.com/v2/http.svc/';
 
     const FORMAT_WAV = 'audio/wav';
     const FORMAT_MP3 = 'audio/mp3';
@@ -113,17 +113,10 @@ class Translate
         }
 
         $response = $this->getOauthHttpClient()->post('', [
-            RequestOptions::FORM_PARAMS => [
-                'grant_type'    => 'client_credentials',
-                'scope'         => self::OAUTH_SCOPE_URL,
-                'client_id'     => $this->client_id,
-                'client_secret' => $this->client_secret,
-            ],
+            RequestOptions::HEADERS => ['Ocp-Apim-Subscription-Key' => $this->client_secret],
         ]);
 
-        $data = @\json_decode((string) $response->getBody(), 1);
-
-        $this->access_token = $data['access_token'];
+        $this->access_token = $response->getBody()->getContents();
 
         return $this->access_token;
     }
