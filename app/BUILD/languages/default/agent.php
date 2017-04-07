@@ -1619,7 +1619,7 @@ return [
     'agent.publish.pending_approval_list_title'                => '1 article pending approval|{{count}} articles pending approval',
     'agent.publish.drop_file_to_add'                           => 'Drop your file here to add it to this post',
     'agent.publish.edit_category_btn'                          => 'Edit Category',
-    'agent.publish.edit_manual_btn'                            => 'Edit Manual',
+    'agent.publish.edit_guide_btn'                             => 'Edit Guide',
     'agent.publish.edit_new_glossary'                          => 'Edit glossary word',
     'agent.publish.error_kb_cats_same'                         => 'Categories are the same.',
     'agent.publish.error_kb_missing'                           => '{{count}} article not found.|{{count}} articles not found.',

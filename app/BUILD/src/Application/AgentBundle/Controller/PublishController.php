@@ -843,9 +843,10 @@ class PublishController extends AbstractController
 
         if ($saveCategory['id'] && $cat = $this->em->getRepository($entityName)->find($saveCategory['id'])) {
             if ($saveCategory['title']) {
-                $cat->title = $saveCategory['title'];
+                $cat->setTitle($saveCategory['title']);
                 $this->db->update($table, [
-                    'title' => $cat->title,
+                    'title' => $cat->getTitle(),
+                    'slug'  => $cat->getSlug(),
                 ], ['id' => $cat->id]);
             }
 
