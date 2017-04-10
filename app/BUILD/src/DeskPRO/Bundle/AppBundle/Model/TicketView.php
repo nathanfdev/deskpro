@@ -109,11 +109,21 @@ class TicketView
         }
     }
 
-    public function addProperty($id, $label, $value, $is_always_visible = false)
+    /**
+     * @param int    $id
+     * @param string $label
+     * @param string $value
+     * @param bool   $isAlwaysVisible
+     * @param bool   $linkify
+     */
+    public function addProperty($id, $label, $value, $isAlwaysVisible = false, $linkify = false)
     {
-        $this->appendProperty(new TicketViewProperty($id, $label, $value, $is_always_visible));
+        $this->appendProperty(new TicketViewProperty($id, $label, $value, $isAlwaysVisible, $linkify));
     }
 
+    /**
+     * @param TicketViewProperty $property
+     */
     public function appendProperty(TicketViewProperty $property)
     {
         if ($this->hasProperty($property->getId())) {
@@ -124,6 +134,7 @@ class TicketView
                 )
             );
         }
+
         $this->properties[$property->getId()] = $property;
     }
 
