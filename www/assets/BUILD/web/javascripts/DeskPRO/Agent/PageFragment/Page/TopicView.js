@@ -168,8 +168,8 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
       self.saveNoContent(e.target.checked);
     });
 
-		window.document.addEventListener('dpMoveTopic' + this.meta.topic_id, (e) => {
-      var checkbox = this.getEl('no_content');
+		window.document.addEventListener('dpMoveTopic' + this.meta.topic_id, function(e) {
+      var checkbox = self.getEl('no_content');
       if (!checkbox.prop('checked') || checkbox.prop('disabled')) {
         checkbox.prop('checked', e.detail.root);
         self.saveNoContent(e.detail.root);
