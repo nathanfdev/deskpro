@@ -111,16 +111,12 @@ class Csv extends AbstractRenderer
             return $this->_renderMatrixTable($rows);
         }
 
-        $groupXColumns = $this->_handler->getGroupXColumns();
         $groupYColumns = $this->_handler->getGroupYColumns();
         $selectColumns = $this->_handler->getSelectColumns();
 
         $output = [];
 
         $columns = [];
-        foreach ($groupXColumns as $column) {
-            $columns[] = $this->wrapCell($column['title']);
-        }
         foreach ($groupYColumns as $column) {
             $columns[] = $this->wrapCell($column['title']);
         }
@@ -132,9 +128,7 @@ class Csv extends AbstractRenderer
 
         foreach ($rows as $row) {
             $columns = [];
-            foreach ($groupXColumns as $column) {
-                $columns[] = $this->wrapCell($this->_renderCellValue($row, $column));
-            }
+
             foreach ($groupYColumns as $column) {
                 $columns[] = $this->wrapCell($this->_renderCellValue($row, $column));
             }
