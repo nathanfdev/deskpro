@@ -99,7 +99,11 @@ class ChatController extends AbstractApiController
         // $clearMissing = false to check only submitted data
         // if chat in 'simple' mode so we can skip custom fields validation
 
-        $form = $this->createForm(ChatCreateType::class, $conversation, ['person' => $session->getPerson()]);
+        $form = $this->createForm(ChatCreateType::class, $conversation, [
+            'person'     => $session->getPerson(),
+            'visitor_id' => $session->getVisitorId(),
+        ]);
+
         $form->submit($request->request->all(), false);
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
