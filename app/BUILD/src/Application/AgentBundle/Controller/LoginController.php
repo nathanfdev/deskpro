@@ -70,7 +70,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         }
 
         $hasLoggedOut = $request->cookies->has('dp-recent-logout');
-        if ($has_logged_out) {
+        if ($hasLoggedOut) {
             // remove recent logout cookie on redirect login
             $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-recent-logout');
             $cookie->send();

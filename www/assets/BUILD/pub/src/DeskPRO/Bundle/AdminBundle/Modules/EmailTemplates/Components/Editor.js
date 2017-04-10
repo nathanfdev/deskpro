@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import 'codemirror/mode/twig/twig';
 
 import CodeMirror from './CodeMirror';
 

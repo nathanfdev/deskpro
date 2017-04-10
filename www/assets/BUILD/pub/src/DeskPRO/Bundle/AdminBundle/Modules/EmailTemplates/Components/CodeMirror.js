@@ -1,17 +1,16 @@
 import React, { PropTypes } from 'react';
 import CM from 'codemirror';
 import 'codemirror/mode/twig/twig';
+import 'codemirror/mode/htmlmixed/htmlmixed';
 
 class CodeMirror extends React.Component {
   static propTypes = {
     value:    PropTypes.string,
-    disabled: PropTypes.bool,
     onChange: PropTypes.func,
     options:  PropTypes.object,
   };
   static defaultProps = {
     onChange() {},
-    disabled: false,
   };
 
   constructor(props) {
@@ -27,6 +26,7 @@ class CodeMirror extends React.Component {
     this.codeMirror.on('focus', this.focusChanged.bind(this, true));
     this.codeMirror.on('blur', this.focusChanged.bind(this, false));
     this.currentCodemirrorValue = this.props.value;
+
 
     const that = this;
     setTimeout(() => {
@@ -60,7 +60,6 @@ class CodeMirror extends React.Component {
       lineWrapping:   true,
       indentWithTabs: true,
       tabSize:        '2',
-      readOnly:       !this.props.disabled,
     }, this.props.options);
   }
 
@@ -83,6 +82,7 @@ class CodeMirror extends React.Component {
       <textarea
         ref={(c) => { this.codeMirrorNode = c; }}
         defaultValue={this.props.value}
+        autoComplete="off"
       />
     );
   }

@@ -141,6 +141,7 @@ class EmailTemplatesEditorContainer extends React.Component {
       emailTemplates={this.props.emailTemplates}
       selectTemplateGroup={this.selectTemplateGroup}
       changeTemplateBody={this.changeTemplateBody}
+      changeTemplateSubject={this.changeTemplateSubject}
       saveTemplate={this.saveTemplate}
       resetTemplate={this.resetTemplate}
       undoChanges={this.undoChanges}
