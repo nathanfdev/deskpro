@@ -59,6 +59,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
             s3_bucket: data.s3_bucket,
             s3_key:    data.s3_key,
             s3_secret: data.s3_secret
+            s3_region: data.s3_region
           }
 
           $scope.bucketNameTrans = ->
@@ -119,6 +120,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
         @$scope.data.s3_bucket = options.s3_bucket
         @$scope.data.s3_key    = options.s3_key
         @$scope.data.s3_secret = options.s3_secret
+        @$scope.data.s3_region = options.s3_region
 
         @Growl.success('Transfering of files started')
         @$scope.fileTransferStarted = true

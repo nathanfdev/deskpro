@@ -385,9 +385,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function switchFileStorageAction()
     {
-        /*
-         * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads
-         */
+        /** @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads */
         $serverFileUploads = $this->container->getSystemService('server_file_uploads');
         $serverFileUploads->switchStorage($this->in->getArrayValue('options'));
 

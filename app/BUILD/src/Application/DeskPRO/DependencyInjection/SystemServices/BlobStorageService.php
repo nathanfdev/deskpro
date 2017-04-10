@@ -89,19 +89,26 @@ class BlobStorageService
                 define(CURLOPT_TIMEOUT, 13);
             }
 
-            $connectTimeout = $container->getSetting('core.filestorage_s3_connect_timeout', 1);
-            $timeout        = $container->getSetting('core.filestorage_s3_timeout', 3);
+            $settingsBag       = $container->get('settings_resolver')->getGlobalSettings();
+            $connectTimeout    = $settingsBag->get('filestorage.s3.web.connect_timeout', 2);
+            $timeout           = $settingsBag->get('filestorage.s3.web.upload_timeout', 4);
+            $cumulativeTimeout = $settingsBag->get('filestorage.s3.web.cumulative_timeout', 10);
 
             if (php_sapi_name() === 'cli') {
                 // allow extra time for CLI upload
                 // e.g. a bigger upload that was first saved to db on a web request that is now being moved
-                $connectTimeout = $container->getSetting('core.filestorage_s3_connect_timeout_cli', 2);
-                $timeout        = $container->getSetting('core.filestorage_s3_timeout_cli', 10);
+                $connectTimeout    = $settingsBag->get('filestorage.s3.cli.connect_timeout', 4);
+                $timeout           = $settingsBag->get('filestorage.s3.cli.upload_timeout', 10);
+                $cumulativeTimeout = $settingsBag->get('filestorage.s3.cli.cumulative_timeout', null);
             }
 
             $client = S3Client::factory([
-                'key'             => $container->getSetting('core.filestorage_s3_key'),
-                'secret'          => $container->getSetting('core.filestorage_s3_secret'),
+                'credentials' => [
+                    'key'    => $container->getSetting('core.filestorage_s3_key'),
+                    'secret' => $container->getSetting('core.filestorage_s3_secret'),
+                ],
+                'region'          => $settingsBag->get('core.filestorage_s3_region', null),
+                'version'         => 'latest',
                 'request.options' => [
                     'connect_timeout' => $connectTimeout,
                     'timeout'         => $timeout,
@@ -117,6 +124,7 @@ class BlobStorageService
                 'file_url_domain'        => $container->getSetting('core.filestorage_s3_file_url_domain'),
                 'base_path'              => $container->getSetting('core.filestorage_s3_basepath'),
                 'fail_limit_per_request' => 1,
+                'cumulative_timeout'     => $cumulativeTimeout,
             ]);
             $s3_adapter->setLogger($logger);
         }
