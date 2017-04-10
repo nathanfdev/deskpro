@@ -107,6 +107,26 @@ export const loadAll = createAction(
   }
 );
 
+export const loadWithParams = createAction(
+  'RECORDS_STORE_LOAD',
+  (recordName, params, collectionName) => ({
+    recordName,
+    collectionName: 'all',
+    ids:            [],
+    promise:        repository(recordName).search(params).then((response) => {
+      const records = response.getData().data;
+      const ids = records.map(record => record.id);
+
+      return {
+        recordName,
+        ids,
+        records,
+        collectionName
+      };
+    })
+  })
+);
+
 export const loadFromApi = createAction(
   'RECORDS_STORE_LOAD',
   (recordName, url, collectionName) => (dispatch, getState) => {

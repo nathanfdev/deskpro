@@ -29,8 +29,11 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\PortalBundle\Annotation\Dpsid;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class ChatController.
@@ -42,11 +45,34 @@ class ChatDepartmentsController extends AbstractApiController
     /**
      * @Rest\Get("")
      * @Dpsid()
+     *
+     * @param Request $request
+     *
+     * @return ApiWrapper
      */
-    public function getChatDepartmentsAction()
+    public function getChatDepartmentsAction(Request $request)
     {
         $permissionBag        = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
         $allowedDepartmentIds = $permissionBag->getAllowedChatDepartmentIds();
+        $agentDepartmentIds   = [];
+
+        // exclude offline departments
+        if ($request->query->get('online')) {
+            // get all available departments ids of all active agents
+            $agentIds = $this->getPersonRepository()->getActiveAgentIdsForUserChat();
+            $agents   = $this->getPersonRepository()->findBy(['id' => $agentIds]);
+
+            /** @var Person $agent */
+            foreach ($agents as $agent) {
+                $agent->loadHelper('AgentPermissions');
+                $agentDepartmentIds = array_merge(
+                    $agentDepartmentIds,
+                    $agent->getHelper('AgentPermissions')->getAllowedDepartments('chat')
+                );
+            }
+
+            $allowedDepartmentIds = array_intersect($allowedDepartmentIds, $agentDepartmentIds);
+        }
 
         $qb = $this->getManager()->createQueryBuilder();
         $qb

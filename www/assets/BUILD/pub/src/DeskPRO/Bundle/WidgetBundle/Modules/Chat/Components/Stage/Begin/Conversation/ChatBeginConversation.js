@@ -67,7 +67,7 @@ export class ChatBeginConversation extends React.Component {
   }
 
   prepareFormFields(props) {
-    const { customFields, chatDepartments, widgetLanguage, errors, submit, loggedIn } = props;
+    const { customFields, widgetLanguage, errors, submit, loggedIn } = props;
     const { chatRequiredName, chatRequiredEmail } = props;
 
     const hiddenFields = customFields.valueSeq().filter(this.isHiddenField).map(customField =>
@@ -116,7 +116,7 @@ export class ChatBeginConversation extends React.Component {
       }
     }
 
-    if (props.allowDepartmentSelection && chatDepartments.size > 1) {
+    if (props.allowDepartmentSelection) {
       const departmentField = this.getChatDepartmentField(props);
       fields.push(departmentField);
 

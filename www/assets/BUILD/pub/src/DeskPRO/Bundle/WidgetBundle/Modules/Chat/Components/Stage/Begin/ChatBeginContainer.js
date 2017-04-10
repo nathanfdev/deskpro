@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Fieldset, createValue } from 'react-forms';
 import $ from 'jquery';
 import Immutable from 'immutable';
-import { loadAll, isLoadedCollectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { loadAll, loadWithParams, isLoadedCollectionSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import PortalFormWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
 import { createChat } from '../../../Actions/chatActions';
 import {
@@ -27,8 +27,10 @@ import { ChatBeginSimple } from './ChatBeginSimple';
   requireLogin:             requireChatLoginSelector(state),
   customFieldsLoaded:       isLoadedCollectionSelectorFactory('CustomDefChat', 'all')(state),
   customFields:             customChatFieldsOrderedSelector(state),
-  chatDepartments:          allSelectorFactory('ChatDepartment')(state),
-  chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state),
+  allChatDepartments:       collectionSelectorFactory('ChatDepartment', 'all')(state),
+  chatDepartments:          collectionSelectorFactory('ChatDepartment', 'online')(state),
+  chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'online')(state),
+  allChatDepartmentsLoaded: isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state),
   chatSelectDepartmentType: chatSelectDepartmentTypeSelector(state),
   chatDefaultDepartment:    chatDefaultDepartmentSelector(state),
   chatRequiredName:         chatRequiredNameSelector(state),
@@ -47,10 +49,12 @@ export class ChatBeginContainer extends React.Component {
     liveDemo:                 PropTypes.bool,
     customFieldsLoaded:       PropTypes.bool,
     chatDepartmentsLoaded:    PropTypes.bool,
+    allChatDepartmentsLoaded: PropTypes.bool,
     chatSelectDepartmentType: PropTypes.string,
     chatDefaultDepartment:    PropTypes.number,
     loggedIn:                 PropTypes.bool,
     chatDepartments:          PropTypes.object,
+    allChatDepartments:       PropTypes.object,
     customFields:             PropTypes.object
   };
 
@@ -116,6 +120,7 @@ export class ChatBeginContainer extends React.Component {
 
     dispatch(loadAll('CustomDefChat'));
     dispatch(loadAll('ChatDepartment'));
+    dispatch(loadWithParams('ChatDepartment', { online: true }, 'online'));
 
     this.mounted = true;
   }
@@ -243,10 +248,10 @@ export class ChatBeginContainer extends React.Component {
   render() {
     const { loggedIn } = this.props;
     const { customFields, customFieldsLoaded } = this.props;
-    const { chatDepartments, chatDepartmentsLoaded, chatSelectDepartmentType } = this.props;
-    const allowDepartmentSelection = chatSelectDepartmentType !== 'default' && chatDepartments.size > 1;
+    const { allChatDepartments, chatDepartmentsLoaded, allChatDepartmentsLoaded, chatSelectDepartmentType } = this.props;
+    const allowDepartmentSelection = chatSelectDepartmentType !== 'default' && allChatDepartments.size > 1;
 
-    if (!customFieldsLoaded || !chatDepartmentsLoaded) {
+    if (!customFieldsLoaded || !chatDepartmentsLoaded || !allChatDepartmentsLoaded) {
       return <ChatBeginLoadingSpinner />;
     }
 
