@@ -94,7 +94,7 @@ class Organization
     /**
      * Labels associated with this organization.
      *
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelOrganization>>")
+     * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelOrganization>>")
      *
      * @var \Application\DeskPRO\Entity\Labels\Label[]
      */

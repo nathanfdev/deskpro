@@ -282,7 +282,7 @@ class Ticket
     /**
      * String array of labels.
      *
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelTicket>>")
+     * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelTicket>>")
      *
      * @var bool
      */

@@ -134,10 +134,8 @@ class LabelsController extends BaseController
 
         $term = $request->get('term');
         if (null !== $term) {
-            $qb
-                ->andWhere('l.label LIKE :term')
-                ->setParameter('term', $term.'%')
-            ;
+            $qb->andWhere('l.label LIKE :term');
+            $qb->setParameter('term', '%'.$term.'%');
         }
 
         return View::create($this->wrap($qb->getQuery()->getResult()));
