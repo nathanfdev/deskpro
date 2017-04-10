@@ -26,12 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Dpql\Renderer;
 
+use Application\DeskPRO\Dpql\Renderer\Values\Text;
 use Application\DeskPRO\Dpql\ResultHandler;
 
 /**
@@ -46,7 +43,7 @@ class Csv extends AbstractRenderer
      */
     protected function _getDefaultValueRenderer()
     {
-        return new \Application\DeskPRO\Dpql\Renderer\Values\Text();
+        return new Text();
     }
 
     /**
@@ -163,7 +160,7 @@ class Csv extends AbstractRenderer
                     if (!isset($columnTotals[$id])) {
                         $columnTotals[$id] = 0;
                     }
-                    $columnTotals[$id] += $this->getColumnValue($row, $id);
+                    $columnTotals[$id] += (int) $this->getColumnValue($row, $id);
                 }
             }
 
