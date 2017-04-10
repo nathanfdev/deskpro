@@ -18291,7 +18291,7 @@ a.ui.basic.label:hover {
          Site Overrides
 *******************************/
 .ui.knuckles.label {
-  background: #d4145a;
+  background: #ed4954;
   color: #ffffff;
 }
 /*!
@@ -27389,7 +27389,7 @@ ol.ui.horizontal.list li:before,
 .ui.form .field.error input[type="time"],
 .ui.form .field.error input[type="text"],
 .ui.form .field.error input[type="url"] {
-  border-left: 4px solid #d4145a;
+  border-left: 4px solid #ed4954;
 }
 .ui.form .field:last-child,
 .ui.form .fields:last-child,
