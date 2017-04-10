@@ -321,12 +321,11 @@ Feature: /organizations endpoint
     }
     """
 
-    When I send a GET request to "/api/v2/organizations/{yahoo}"
-    Then the JSON node "data.members" should have 3 elements
-    And the JSON node "data.members[0]" should be equal to "{user1@deskpro.dev}"
-    And the JSON node "data.members[1]" should be equal to "{user2@deskpro.dev}"
-    And the JSON node "data.members[2]" should be equal to "{user3@deskpro.dev}"
-
+    When I send a GET request to "/api/v2/organizations/{yahoo}/members?order_by=id&order_dir=asc"
+    Then the JSON node "data" should have 3 elements
+    And the JSON node "data[0].id" should be equal to "{user1@deskpro.dev}"
+    And the JSON node "data[1].id" should be equal to "{user2@deskpro.dev}"
+    And the JSON node "data[2].id" should be equal to "{user3@deskpro.dev}"
 
   Scenario: I update org members
     Given only the following Organization records exist:
@@ -345,10 +344,10 @@ Feature: /organizations endpoint
     }
     """
 
-    When I send a GET request to "/api/v2/organizations/{o1}"
-    Then the JSON node "data.members" should have 2 elements
-    And the JSON node "data.members[0]" should be equal to "{u2}"
-    And the JSON node "data.members[1]" should be equal to "{u4}"
+    When I send a GET request to "/api/v2/organizations/{o1}/members?order_by=id&order_dir=asc"
+    Then the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to "{u2}"
+    And the JSON node "data[1].id" should be equal to "{u4}"
 
   Scenario: I set phone number country code w/o plus char
     When I send a POST request to "/api/v2/organizations" with body:
