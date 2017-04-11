@@ -155,15 +155,6 @@ class Organization
     protected $ticketsCount;
 
     /**
-     * Organization members.
-     *
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Person>>")
-     *
-     * @var \Application\DeskPRO\Entity\Person[]
-     */
-    protected $members;
-
-    /**
      * Constructor.
      *
      * @param OrganizationEntity $organization
@@ -184,6 +175,5 @@ class Organization
         $this->parent       = $organization->getParent();
         $this->chatsCount   = $chatsCount;
         $this->ticketsCount = $organization->getTicketsCount();
-        $this->members      = $organization->getMembers();
     }
 }
