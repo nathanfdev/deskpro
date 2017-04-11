@@ -47,6 +47,14 @@ class Download extends ContentAbstract
     protected $category;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     *
+     * @var \Application\DeskPRO\Entity\Blob
+     */
+    protected $blob;
+
+    /**
      * Constructor.
      *
      * @param DownloadEntity $entity
@@ -55,5 +63,6 @@ class Download extends ContentAbstract
     {
         parent::__construct($entity);
         $this->category = $entity->getCategory();
+        $this->blob     = $entity->getBlob();
     }
 }

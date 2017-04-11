@@ -18,6 +18,7 @@ Feature: /downloads endpoint
       | #   | parent | title                    | Brand          |
       | dc1 |        | First Downloads Category | {defaultBrand} |
     And I add "dc1" category usergroup relation "registered"
+    And I create blob with auth code "AAA"
     When I send a POST request to "/api/v2/downloads" with body:
 """
 {
@@ -28,9 +29,11 @@ Feature: /downloads endpoint
   "status": "hidden",
   "hidden_status": "draft",
   "content_input_type": "rte",
-  "category": ~dc1~
+  "category": ~dc1~,
+  "blob": ~blob_AAA~
 }
 """
+    And print last response
     Then the response status code should be 201
     And the header "Location" should be equal to "/api/v2/downloads/{lastCreatedId}"
     And the JSON node "data.title" should be equal to "Test Download"
