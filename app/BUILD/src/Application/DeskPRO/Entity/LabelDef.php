@@ -102,6 +102,11 @@ class LabelDef extends DomainObject
      */
     protected $total = 0;
 
+    /**
+     * Constructor.
+     *
+     * @param array $data
+     */
     public function __construct(array $data = [])
     {
         foreach ($data as $k => $v) {
@@ -109,6 +114,14 @@ class LabelDef extends DomainObject
                 $this[$k] = trim($v);
             }
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getLabelType()
+    {
+        return $this->label_type;
     }
 
     /**

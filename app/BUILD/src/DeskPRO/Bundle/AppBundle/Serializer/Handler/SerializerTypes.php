@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
 
 /**
@@ -45,4 +41,5 @@ final class SerializerTypes
     const TYPE_COLLECTION      = 'collection';
     const TYPE_MAP             = 'map';
     const TYPE_DEFERRED        = 'deferred';
+    const TYPE_LABEL           = 'label';
 }

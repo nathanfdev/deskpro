@@ -60,7 +60,7 @@ class Feedback extends ContentAbstract
      * String array of labels associated with this news.
      *
      * @JMS\Groups({"labels"})
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelFeedback>>")
+     * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelFeedback>>")
      *
      * @var \Application\DeskPRO\Entity\LabelFeedback
      */

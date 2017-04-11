@@ -286,7 +286,7 @@ class Person extends BasePerson
     /**
      * Labels associated with this user.
      *
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelPerson>>")
+     * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelPerson>>")
      *
      * @var \Application\DeskPRO\Entity\Labels\Label[]
      */
