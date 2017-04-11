@@ -8,7 +8,7 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
     <container>
-        {{ phrase('portal.emails.greeting') }}
+        {{ phrase('portal.emails.greeting', {to_name: recipient.name}) }}
 
         <br /><br />
 

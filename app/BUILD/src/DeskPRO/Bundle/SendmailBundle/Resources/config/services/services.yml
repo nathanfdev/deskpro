@@ -14,4 +14,8 @@ services:
 
   email.email_sender:
     class: DeskPRO\Bundle\SendmailBundle\Sender\EmailSender
-    arguments: ["@email.email_renderer", "@mailer", "@doctrine.orm.entity_manager"]
+    arguments: ["@email.email_renderer", "@mailer", "@doctrine.orm.entity_manager", "@service_container"]
+
+  email.preview_fake_data_factory:
+    class: DeskPRO\Bundle\SendmailBundle\Factory\PreviewFakeDataFactory
+    arguments: ["@router", "@doctrine.orm.entity_manager"]

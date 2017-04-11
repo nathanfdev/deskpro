@@ -35,6 +35,7 @@ use Application\EmailBundle\SwiftMailer\Message\Message;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class EmailSender
 {
@@ -54,17 +55,28 @@ class EmailSender
     private $entityManager;
 
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
      * EmailSender constructor.
      *
-     * @param EmailRenderer $emailRenderer
-     * @param Mailer        $mailer
-     * @param EntityManager $entityManager
+     * @param EmailRenderer      $emailRenderer
+     * @param Mailer             $mailer
+     * @param EntityManager      $entityManager
+     * @param ContainerInterface $container
      */
-    public function __construct(EmailRenderer $emailRenderer, Mailer $mailer, EntityManager $entityManager)
-    {
+    public function __construct(
+        EmailRenderer $emailRenderer,
+        Mailer $mailer,
+        EntityManager $entityManager,
+        ContainerInterface $container
+    ) {
         $this->renderer      = $emailRenderer;
         $this->mailer        = $mailer;
         $this->entityManager = $entityManager;
+        $this->container     = $container;
     }
 
     /**
@@ -89,6 +101,11 @@ class EmailSender
     public function getEntityManager()
     {
         return $this->entityManager;
+    }
+
+    public function getContainer()
+    {
+        return $this->container;
     }
 
     /**

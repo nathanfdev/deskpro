@@ -68,7 +68,7 @@ abstract class CommentEmailType extends EmailBaseType
      * @param ObjectRouter    $router
      * @param CommentAbstract $comment
      */
-    public function __construct(ObjectRouter $router, $comment)
+    public function __construct(ObjectRouter $router, CommentAbstract $comment)
     {
         $this->comment = $comment;
         $this->content = $comment->getObject();

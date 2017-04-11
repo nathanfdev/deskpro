@@ -12,7 +12,7 @@
 
         <br /><br />
 
-        {{ phrase('portal.emails.ticket_cc-added') }}
+        {{ phrase('portal.emails.ticket_cc-added', {author_name: author.name, author_email: author.email_address}) }}
 
         {% if app.isPortalEnabled() %}
             <br /><br />

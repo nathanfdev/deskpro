@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use DateTime;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AccountDisabled;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentChangedPassword;
@@ -128,7 +129,7 @@ class UserViewModelFactory
      *
      * @return ChatTranscript
      */
-    public function createChatTranscriptModel($chat, $convoMessages)
+    public function createChatTranscriptModel(ChatConversation $chat, array $convoMessages)
     {
         return new ChatTranscript($chat, $convoMessages);
     }
@@ -138,7 +139,7 @@ class UserViewModelFactory
      *
      * @return CommentApproved
      */
-    public function createCommentApprovedModel($comment)
+    public function createCommentApprovedModel(CommentAbstract $comment)
     {
         return new CommentApproved($this->objectRouter, $comment);
     }
@@ -148,7 +149,7 @@ class UserViewModelFactory
      *
      * @return CommentDeleted
      */
-    public function createCommentDeletedModel($comment)
+    public function createCommentDeletedModel(CommentAbstract $comment)
     {
         return new CommentDeleted($this->objectRouter, $comment);
     }
@@ -158,7 +159,7 @@ class UserViewModelFactory
      *
      * @return CommentNew
      */
-    public function createCommentNewModel($comment)
+    public function createCommentNewModel(CommentAbstract $comment)
     {
         return new CommentNew($this->objectRouter, $comment);
     }
@@ -169,7 +170,7 @@ class UserViewModelFactory
      *
      * @return DownloadSubscription
      */
-    public function createDownloadSubscriptionModel($newDownloads, $updatedDownloads)
+    public function createDownloadSubscriptionModel(array $newDownloads, array $updatedDownloads)
     {
         return new DownloadSubscription($this->router, $newDownloads, $updatedDownloads);
     }
@@ -190,7 +191,7 @@ class UserViewModelFactory
      *
      * @return FeedbackApproved
      */
-    public function createFeedbackApprovedModel($feedback, $agent)
+    public function createFeedbackApprovedModel(Feedback $feedback, Person $agent)
     {
         return new FeedbackApproved($this->router, $feedback, $agent);
     }
@@ -202,7 +203,7 @@ class UserViewModelFactory
      *
      * @return FeedbackDisapproved
      */
-    public function createFeedbackDisapprovedModel($feedback, $agent, $reason)
+    public function createFeedbackDisapprovedModel(Feedback $feedback, Person $agent, $reason)
     {
         return new FeedbackDisapproved($feedback, $agent, $reason);
     }
@@ -212,7 +213,7 @@ class UserViewModelFactory
      *
      * @return FeedbackNew
      */
-    public function createFeedbackNewModel($feedback)
+    public function createFeedbackNewModel(Feedback $feedback)
     {
         return new FeedbackNew($feedback);
     }
@@ -222,19 +223,19 @@ class UserViewModelFactory
      *
      * @return FeedbackNewComment
      */
-    public function createFeedbackNewCommentModel($feedback)
+    public function createFeedbackNewCommentModel(Feedback $feedback)
     {
-        return new FeedbackNewComment($feedback);
+        return new FeedbackNewComment($this->router, $feedback);
     }
 
     /**
-     * @param Feedback[] $updatedItems
+     * @param Feedback[] $updatedFeedbacks
      *
      * @return FeedbackSubscription
      */
-    public function createFeedbackSubscriptionModel($updatedItems)
+    public function createFeedbackSubscriptionModel(array $updatedFeedbacks)
     {
-        return new FeedbackSubscription($this->router, $updatedItems);
+        return new FeedbackSubscription($this->router, $updatedFeedbacks);
     }
 
     /**
@@ -243,19 +244,19 @@ class UserViewModelFactory
      *
      * @return KbSubscription
      */
-    public function createKbSubscriptionModel($newArticles, $updatedArticles)
+    public function createKbSubscriptionModel(array $newArticles, array $updatedArticles)
     {
         return new KbSubscription($this->router, $newArticles, $updatedArticles);
     }
 
     /**
-     * @param \DateTime $firstSeen
-     * @param bool      $success
-     * @param Request   $request
+     * @param Request  $request
+     * @param DateTime $firstSeen
+     * @param bool     $success
      *
      * @return LoginAlert
      */
-    public function createLoginAlertModel(Request $request, $firstSeen, $success)
+    public function createLoginAlertModel(Request $request, DateTime $firstSeen, $success)
     {
         return new LoginAlert($request, $firstSeen, $success);
     }
@@ -286,7 +287,7 @@ class UserViewModelFactory
      * @return NewReplyRejectResolved
      */
     public function createNewReplyRejectResolvedModel(
-        $ticket
+        Ticket $ticket
     ) {
         return new NewReplyRejectResolved($this->objectRouter, $ticket);
     }
@@ -297,7 +298,7 @@ class UserViewModelFactory
      *
      * @return NewsSubscription
      */
-    public function createNewsSubscriptionModel($newNews, $updatedNews)
+    public function createNewsSubscriptionModel(array $newNews, array $updatedNews)
     {
         return new NewsSubscription($this->router, $newNews, $updatedNews);
     }
@@ -308,7 +309,7 @@ class UserViewModelFactory
      * @return NewTicketGuest
      */
     public function createNewTicketGuestModel(
-        $ticket
+        Ticket $ticket
     ) {
         return new NewTicketGuest($this->objectRouter, $ticket);
     }
@@ -327,7 +328,7 @@ class UserViewModelFactory
      * @return NewTicketValidate
      */
     public function createNewTicketValidateModel(
-        $ticket
+        Ticket $ticket
     ) {
         return new NewTicketValidate($this->objectRouter, $ticket);
     }
@@ -338,7 +339,7 @@ class UserViewModelFactory
      * @return NewTicketValidateEmail
      */
     public function createNewTicketValidateEmailModel(
-        $ticket
+        Ticket $ticket
     ) {
         return new NewTicketValidateEmail($this->objectRouter, $ticket);
     }
@@ -384,23 +385,33 @@ class UserViewModelFactory
     /**
      * @param Article $article
      * @param Person  $author
+     * @param string  $message
+     * @param string  $email
+     * @param string  $name
      *
      * @return ShareArticle
      */
-    public function createShareArticleModel(Article $article, Person $author)
-    {
-        return new ShareArticle($this->objectRouter, $article, $author);
+    public function createShareArticleModel(
+        Article $article,
+        Person $author,
+        $message,
+        $email,
+        $name
+    ) {
+        return new ShareArticle($this->objectRouter, $article, $author, $message, $email, $name);
     }
 
     /**
      * @param Ticket $ticket
+     * @param Person $author
      *
      * @return TicketAddCc
      */
     public function createTicketAddCcModel(
-        $ticket
+        Ticket $ticket,
+        Person $author
     ) {
-        return new TicketAddCc($this->objectRouter, $ticket);
+        return new TicketAddCc($this->objectRouter, $ticket, $author);
     }
 
     /**
@@ -409,7 +420,7 @@ class UserViewModelFactory
      * @return TicketAutocloseWarn
      */
     public function createTicketAutocloseWarnModel(
-        $ticket
+        Ticket $ticket
     ) {
         return new TicketAutocloseWarn($this->objectRouter, $ticket);
     }
@@ -420,7 +431,7 @@ class UserViewModelFactory
      * @return TicketAwaitingWarn
      */
     public function createTicketAwaitingWarnModel(
-        $ticket
+        Ticket $ticket
     ) {
         return new TicketAwaitingWarn($this->objectRouter, $ticket);
     }
@@ -431,7 +442,7 @@ class UserViewModelFactory
      * @return TicketAwaitingWarnFinal
      */
     public function createTicketAwaitingWarnFinalModel(
-        $ticket
+        Ticket $ticket
     ) {
         return new TicketAwaitingWarnFinal($this->objectRouter, $ticket);
     }
@@ -442,7 +453,7 @@ class UserViewModelFactory
      * @return TicketNewAutoreply
      */
     public function createTicketNewAutoreplyModel(
-        $ticket
+        Ticket $ticket
     ) {
         return new TicketNewAutoreply($this->objectRouter, $ticket);
     }
@@ -453,7 +464,7 @@ class UserViewModelFactory
      * @return TicketNewByAgent
      */
     public function createTicketNewByAgentModel(
-        $ticket
+        Ticket $ticket
     ) {
         return new TicketNewByAgent($this->objectRouter, $ticket);
     }
@@ -464,7 +475,7 @@ class UserViewModelFactory
      * @return TicketParticipant
      */
     public function createTicketParticipantModel(
-        $ticket
+        Ticket $ticket
     ) {
         return new TicketParticipant($this->objectRouter, $ticket);
     }
@@ -475,7 +486,7 @@ class UserViewModelFactory
      * @return TicketRate
      */
     public function createTicketRateModel(
-        $ticket
+        Ticket $ticket
     ) {
         return new TicketRate($this->objectRouter, $ticket);
     }
@@ -487,10 +498,10 @@ class UserViewModelFactory
      * @return TicketReplyByAgent
      */
     public function createTicketReplyByAgentModel(
-        $ticket,
-        $message
+        Ticket $ticket,
+        TicketMessage $message
     ) {
-        return new TicketReplyByAgent($this->objectRouter, $ticket, $message);
+        return new TicketReplyByAgent($this->objectRouter,  $ticket, $message);
     }
 
     /**
@@ -499,7 +510,7 @@ class UserViewModelFactory
      * @return TicketReplyAutoreply
      */
     public function createTicketReplyAutoreplyModel(
-        $ticket
+        Ticket $ticket
     ) {
         return new TicketReplyAutoreply($this->objectRouter, $ticket);
     }

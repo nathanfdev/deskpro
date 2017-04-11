@@ -504,6 +504,14 @@ return [
         'newTemplate' => 'SendmailBundle:emails_user:news_subscription.html.twig',
         'viewModel'   => 'NewsSubscription',
     ],
+    [
+        'typeId'      => 'user',
+        'groupId'     => 'publish',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_user:share-article.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:share_article.html.twig',
+        'viewModel'   => 'ShareArticle',
+    ],
 
     //--------------------
     // Feedback

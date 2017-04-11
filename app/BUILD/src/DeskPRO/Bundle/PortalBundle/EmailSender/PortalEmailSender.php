@@ -268,15 +268,24 @@ class PortalEmailSender
     {
         $author = $ticket->getPerson();
 
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:ticket-add-cc.html.twig',
-            [
-                'author_email' => $author->getEmailAddress(),
-                'author_name'  => $author->getName(),
-                'ticket'       => $ticket,
-            ]
-        );
+        if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createTicketAddCcModel(
+                    $ticket
+                );
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:ticket-add-cc.html.twig',
+                [
+                    'author_email' => $author->getEmailAddress(),
+                    'author_name'  => $author->getName(),
+                    'ticket'       => $ticket,
+                ]
+            );
+        }
     }
 
     public function sendTo(EmailTo $emailTo, $template, $vars)
@@ -305,7 +314,13 @@ class PortalEmailSender
                     $to = $email['address'];
                 }
                 $viewModel = $this->container->get('email.user_viewmodel_factory')
-                    ->createShareArticleModel($article, $author);
+                    ->createShareArticleModel(
+                        $article,
+                        $author,
+                        $formData['message'],
+                        $formData['email'],
+                        $formData['name']
+                    );
                 $this->container->get('email.email_sender')
                     ->send($viewModel, ['to' => $to]);
             } else {

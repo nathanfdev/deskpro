@@ -29,11 +29,9 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\EmailTemplates;
 
 use Application\DeskPRO\Dpql\Exception;
-use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PortalPageDisplay;
-use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
@@ -42,6 +40,8 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\EmailTemplateType;
+use DeskPRO\Bundle\SendmailBundle\Factory\AgentViewModelFactory;
+use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
 use DeskPRO\Bundle\SendmailBundle\Templating\Templates\TemplateSet;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
@@ -252,7 +252,12 @@ class TemplateController extends BaseController
         $tplName = uniqid('string_template_', true);
         $twig    = clone $this->get('templating.new_email.twig');
         $twig->setCache(false);
-        $twig->setLoader(new \Twig_Loader_Array([$tplName => $code]));
+        $twig->setLoader(new \Twig_Loader_Array([
+            $tplName                                    => $code,
+            'SendmailBundle:blocks:resources.html.twig' => '',
+            'SendmailBundle:blocks:header.html.twig'    => '',
+            'SendmailBundle:blocks:footer.html.twig'    => '',
+        ]));
 
         /** @var EmailRenderer $renderer */
         $renderer = $this->get('email.email_renderer');
@@ -260,13 +265,17 @@ class TemplateController extends BaseController
 
         $viewModel = $request->request->get('template');
         $group     = $request->request->get('group');
-        $factory   = $this->get('email.'.$group.'_viewmodel_factory');
-        $ticket    = $this->getRepository(Task::class)->findOneBy([]);
-//        $ticket = $this->getRepository(Download::class)->findBy([]);
-        $action = 'create'.$viewModel.'Model';
+        /** @var AgentViewModelFactory|UserViewModelFactory $factory */
+        $factory = $this->get('email.'.$group.'_viewmodel_factory');
+        $action  = 'create'.$viewModel.'Model';
+
         if (!is_callable([$factory, $action])) {
             throw $this->createNotFoundException('Missing method '.$action.' in factory');
         }
+
+        $dataFactory = $this->get('email.preview_fake_data_factory');
+        $arguments   = $dataFactory->getArguments($factory, $action, $request);
+
         $recipient = new Person();
         $recipient->setFirstName('FirstName');
         $recipient->setLastName('LastName');
@@ -275,12 +284,12 @@ class TemplateController extends BaseController
         $recipient->setPrimaryEmail($email);
         $recipient->setPassword('Password1234');
         /** @var EmailBaseType $model */
-        $model = $factory->$action(
-            $ticket,
-            $recipient
-        );
+        $model = call_user_func_array([$factory, $action], $arguments);
 
         $model->setRecipient($recipient);
+        $model->setSiteUrl($this->container->getBrandSetting('core.site_url'));
+        $model->setSiteName($this->container->getBrandSetting('core.site_name'));
+        $model->setDeskproUrl($this->container->getBrandSetting('core.deskpro_url'));
 
         return new View($renderer->render($tplName, $model));
     }

@@ -62,12 +62,42 @@ class ShareArticle extends EmailBaseType
      */
     protected $articleLink;
 
+    /**
+     * Form message.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $message;
+
+    /**
+     * Form email address.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $email;
+
+    /**
+     * Form name.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $name;
+
     protected $templateFile = 'emails_user:share_article.html.twig';
 
-    public function __construct(ObjectRouter $router, Article $article, Person $author)
+    public function __construct(ObjectRouter $router, Article $article, Person $author, $message, $email, $name)
     {
         $this->article     = $article;
         $this->author      = $author;
         $this->articleLink = $router->getPortalUrl($article);
+        $this->message     = $message;
+        $this->email       = $email;
+        $this->name        = $name;
     }
 }

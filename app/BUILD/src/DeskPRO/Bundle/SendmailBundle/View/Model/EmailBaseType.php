@@ -46,6 +46,33 @@ abstract class EmailBaseType
 
     protected $templateFile = '';
 
+    /**
+     * Site Url.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $siteUrl;
+
+    /**
+     * Site Name.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $siteName;
+
+    /**
+     * DeskPro Url.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $deskproUrl;
+
     public function getTemplate()
     {
         $reflect   = new ReflectionClass($this);
@@ -71,5 +98,29 @@ abstract class EmailBaseType
     public function setRecipient(Person $recipient)
     {
         $this->recipient = $recipient;
+    }
+
+    /**
+     * @param $siteUrl
+     */
+    public function setSiteUrl($siteUrl)
+    {
+        $this->siteUrl = $siteUrl;
+    }
+
+    /**
+     * @param $siteName
+     */
+    public function setSiteName($siteName)
+    {
+        $this->siteName = $siteName;
+    }
+
+    /**
+     * @param string $deskproUrl
+     */
+    public function setDeskproUrl($deskproUrl)
+    {
+        $this->deskproUrl = $deskproUrl;
     }
 }

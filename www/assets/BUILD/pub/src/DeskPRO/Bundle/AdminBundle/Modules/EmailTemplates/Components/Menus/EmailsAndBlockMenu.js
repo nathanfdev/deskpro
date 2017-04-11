@@ -25,7 +25,7 @@ export class EmailsAndBlockMenuContainer extends React.Component {
     } else {
       this.props.dispatch(actions.removeVariables());
     }
-    this.props.closeMenu();
+    setTimeout(() => this.props.closeMenu(), 100);
   };
 
   render() {

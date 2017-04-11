@@ -382,6 +382,8 @@ return [
     'adm.email_templates.emails_user_reset-password_title'                                 => 'Reset Password',
     'adm.email_templates.emails_user_set-password_desc'                                    => 'Email sent to a user to ask them to set a password.',
     'adm.email_templates.emails_user_set-password_title'                                   => 'Set Password',
+    'adm.email_templates.emails_user_share-article_desc'                                   => 'Email sent to a contact to share an article on the portal',
+    'adm.email_templates.emails_user_share-article_title'                                  => 'Share Article',
     'adm.email_templates.emails_user_ticket-add-cc_desc'                                   => 'Email sent to a person inform them that they have been added as a participant on a ticket.',
     'adm.email_templates.emails_user_ticket-add-cc_title'                                  => 'Ticket CC Notice',
     'adm.email_templates.emails_user_ticket-autoclose-warn_desc'                           => 'Email sent to a user to warn them that their ticket will be auto-closed soon.',

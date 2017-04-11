@@ -28,7 +28,26 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use Application\DeskPRO\Entity\Person;
+use JMS\Serializer\Annotation as JMS;
+
 class TicketAddCc extends TicketEmailType
 {
+    /**
+     * The ticket author.
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\Person")
+     *
+     * @var Person
+     */
+    protected $author;
+
     protected $templateFile = 'emails_user:ticket_add_cc.html.twig';
+
+    public function __construct($router, $ticket)
+    {
+        parent::__construct($router, $ticket);
+
+        $this->author = $ticket->getPerson();
+    }
 }
