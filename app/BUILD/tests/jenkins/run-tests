@@ -27,7 +27,7 @@ jenkins/tag-features --tag=parallel --num=$PORTAL_THREADS_NUM --path=../features
 jenkins/tag-features --tag=new-parallel --num=$API_NEW_THREADS_NUM --path=../features/api
 
 #################################################
-# RUNNING SINGLE THREADS TO WARM UP ALL CACHES
+# WARM UP ALL CACHES
 #################################################
 
 SECONDS=0
@@ -38,6 +38,13 @@ echo "---"
 # Hack: see https://trello.com/c/xv8IRWTo/382-test-is-failing-when-running-for-the-first-time
 bin/phpunit phpunit/DpTest/Application/EmailBundle/Templating/EngineTest.php > /dev/null
 # ---
+
+././../../bin/console cache:warmup --kernel api --env=test
+././../../bin/console cache:warmup --kernel portal --env=test
+
+#################################################
+# RUN SYSTEM API TESTS
+#################################################
 
 echo "Running a single system-api behat thread to generate caches w/o concurrency"
 (export DP_PARALLEL_TESTING_PROCESS_NUM=1 && bin/behat --profile=system-api --tags="~@skip-ci" --verbose &> "$LOGS_DIR/behat-system-api.txt") &
