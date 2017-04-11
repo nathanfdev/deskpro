@@ -19,21 +19,18 @@ Feature: /downloads endpoint
       | dc1 |        | First Downloads Category | {defaultBrand} |
     And I add "dc1" category usergroup relation "registered"
     When I send a POST request to "/api/v2/downloads" with body:
-    """
+"""
 {
-  "main":
-  {
-    "title": "Test Download",
-    "content": "<p>Some fake download description</p>",
-    "person":  ~agent~,
-    "language": ~l1~,
-    "status": "hidden",
-    "hidden_status": "draft",
-    "content_input_type": "rte"
-  },
+  "title": "Test Download",
+  "content": "<p>Some fake download description</p>",
+  "person":  ~agent~,
+  "language": ~l1~,
+  "status": "hidden",
+  "hidden_status": "draft",
+  "content_input_type": "rte",
   "category": ~dc1~
 }
-    """
+"""
     Then the response status code should be 201
     And the header "Location" should be equal to "/api/v2/downloads/{lastCreatedId}"
     And the JSON node "data.title" should be equal to "Test Download"
@@ -64,10 +61,8 @@ Feature: /downloads endpoint
     When I send a PUT request to "/api/v2/downloads/{d1}" with body:
 """
 {
-  "main" : {
-    "title": "Test Edited Download",
-    "status": "published"
-  }
+  "title": "Test Edited Download",
+  "status": "published"
 }
 """
     Then the response status code should be 204

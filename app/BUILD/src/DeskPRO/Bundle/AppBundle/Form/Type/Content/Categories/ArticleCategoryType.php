@@ -42,7 +42,6 @@ class ArticleCategoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('main', ContentCategoryAbstractType::class)
             ->add(
                 'parent',
                 EntityType::class,
@@ -55,11 +54,14 @@ class ArticleCategoryType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setDefaults(
-                [
-                    'data_class' => ArticleCategory::class,
-                ]
-            );
+        $resolver->setDefaults(['data_class' => ArticleCategory::class]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return ContentCategoryAbstractType::class;
     }
 }

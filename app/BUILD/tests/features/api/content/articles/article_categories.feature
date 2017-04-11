@@ -15,12 +15,9 @@ Feature: /article_categories endpoint
     When I send a POST request to "/api/v2/article_categories" with body:
 """
 {
-  "main":
-  {
-    "brand": ~defaultBrand~,
-    "title": "Test article category",
-    "usergroups": [~fake_group~]
-  }
+  "brand": ~defaultBrand~,
+  "title": "Test article category",
+  "usergroups": [~fake_group~]
 }
 """
     Then the response status code should be 201
@@ -103,12 +100,9 @@ Feature: /article_categories endpoint
     When I send a POST request to "/api/v2/article_categories" with body:
 """
 {
-  "main":
-  {
-    "brand": ~defaultBrand~,
-    "title": "Test children category",
-    "usergroups": [~fake_group~]
-  },
+  "brand": ~defaultBrand~,
+  "title": "Test children category",
+  "usergroups": [~fake_group~],
   "parent": ~ac1~
 }
 """
@@ -125,9 +119,7 @@ Feature: /article_categories endpoint
     When I send a PUT request to "/api/v2/article_categories/{ac1}" with body:
 """
 {
-  "main" : {
-    "title": "Edited Article Category"
-  }
+  "title": "Edited Article Category"
 }
 """
     Then the response status code should be 204

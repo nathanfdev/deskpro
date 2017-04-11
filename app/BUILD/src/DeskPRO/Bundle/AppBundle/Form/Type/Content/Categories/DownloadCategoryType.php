@@ -41,9 +41,7 @@ class DownloadCategoryType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('main', ContentCategoryAbstractType::class)
-            ->add('parent', EntityType::class, ['class' => DownloadCategory::class, 'choice_label' => 'title']);
+        $builder->add('parent', EntityType::class, ['class' => DownloadCategory::class, 'choice_label' => 'title']);
     }
 
     /**
@@ -51,11 +49,14 @@ class DownloadCategoryType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setDefaults(
-                [
-                    'data_class' => DownloadCategory::class,
-                ]
-            );
+        $resolver->setDefaults(['data_class' => DownloadCategory::class]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return ContentCategoryAbstractType::class;
     }
 }

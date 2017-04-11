@@ -21,15 +21,13 @@ Feature: /news endpoint
     When I send a POST request to "/api/v2/news" with body:
 """
 {
-  "main" : {
-    "title": "Test News",
-    "content": "<p>Some fake news content</p>",
-    "person":  ~agent~,
-    "language": ~l1~,
-    "status": "hidden",
-    "hidden_status": "draft",
-    "content_input_type": "rte"
-  },
+  "title": "Test News",
+  "content": "<p>Some fake news content</p>",
+  "person":  ~agent~,
+  "language": ~l1~,
+  "status": "hidden",
+  "hidden_status": "draft",
+  "content_input_type": "rte",
   "category": ~nc1~
 }
 """
@@ -65,10 +63,8 @@ Feature: /news endpoint
     When I send a PUT request to "/api/v2/news/{n1}" with body:
 """
 {
-  "main": {
-    "title": "Test Edited News",
-    "status": "published"
-  }
+  "title": "Test Edited News",
+  "status": "published"
 }
 """
     Then the response status code should be 204
@@ -92,11 +88,11 @@ Feature: /news endpoint
       | #  | category |
       | n1 | {nc1}    |
     When I send a PUT request to "/api/v2/news/{n1}" with body:
-    """
+"""
 {
   "category": ~nc2~
 }
-    """
+"""
     Then the response status code should be 204
     And I send a GET request to "/api/v2/news/{n1}"
     And the response status code should be 200

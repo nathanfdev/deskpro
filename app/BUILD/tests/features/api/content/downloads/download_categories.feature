@@ -15,12 +15,9 @@ Feature: /download_categories endpoint
     When I send a POST request to "/api/v2/download_categories" with body:
 """
 {
-  "main":
-  {
-    "brand": ~defaultBrand~,
-    "title": "Test download category",
-    "usergroups": [~fake_group~]
-  }
+  "brand": ~defaultBrand~,
+  "title": "Test download category",
+  "usergroups": [~fake_group~]
 }
 """
     Then the response status code should be 201
@@ -105,12 +102,9 @@ Feature: /download_categories endpoint
     When I send a POST request to "/api/v2/download_categories" with body:
 """
 {
-  "main":
-  {
-    "brand": ~defaultBrand~,
-    "title": "Test children category",
-    "usergroups": [~fake_group~]
-  },
+  "brand": ~defaultBrand~,
+  "title": "Test children category",
+  "usergroups": [~fake_group~],
   "parent": ~dc1~
 }
 """
@@ -127,9 +121,7 @@ Feature: /download_categories endpoint
     When I send a PUT request to "/api/v2/download_categories/{dc1}" with body:
 """
 {
-  "main" : {
-    "title": "Test Edited Children Download Category"
-  }
+  "title": "Test Edited Children Download Category"
 }
 """
     Then the response status code should be 204

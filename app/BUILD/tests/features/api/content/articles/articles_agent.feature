@@ -19,16 +19,13 @@ Feature: /articles endpoint
     When I send a POST request to "/api/v2/articles" with body:
 """
 {
-  "main":
-  {
-    "title": "Test Article",
-    "content": "<p>Some fake article content</p>",
-    "person":  ~agent~,
-    "language": ~l1~,
-    "status": "hidden",
-    "hidden_status": "draft",
-    "content_input_type": "rte"
-  },
+  "title": "Test Article",
+  "content": "<p>Some fake article content</p>",
+  "person":  ~agent~,
+  "language": ~l1~,
+  "status": "hidden",
+  "hidden_status": "draft",
+  "content_input_type": "rte",
   "categories": [~ac1~]
 }
 """
@@ -60,10 +57,8 @@ Feature: /articles endpoint
     When I send a PUT request to "/api/v2/articles/{ar1}" with body:
 """
 {
-  "main" : {
-    "title": "Test Edited Article",
-    "status": "published"
-  }
+  "title": "Test Edited Article",
+  "status": "published"
 }
 """
     Then the response status code should be 204

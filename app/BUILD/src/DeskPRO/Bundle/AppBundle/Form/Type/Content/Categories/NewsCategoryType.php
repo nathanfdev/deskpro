@@ -41,9 +41,7 @@ class NewsCategoryType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('main', ContentCategoryAbstractType::class)
-            ->add('parent', EntityType::class, ['class' => NewsCategory::class, 'choice_label' => 'title']);
+        $builder->add('parent', EntityType::class, ['class' => NewsCategory::class, 'choice_label' => 'title']);
     }
 
     /**
@@ -51,11 +49,14 @@ class NewsCategoryType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setDefaults(
-                [
-                    'data_class' => NewsCategory::class,
-                ]
-            );
+        $resolver->setDefaults(['data_class' => NewsCategory::class]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return ContentCategoryAbstractType::class;
     }
 }

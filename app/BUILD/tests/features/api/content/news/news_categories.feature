@@ -15,12 +15,9 @@ Feature: /news_categories endpoint
     When I send a POST request to "/api/v2/news_categories" with body:
 """
 {
-  "main":
-  {
-    "brand": ~defaultBrand~,
-    "title": "Test news category",
-    "usergroups": [~fake_group~]
-  }
+  "brand": ~defaultBrand~,
+  "title": "Test news category",
+  "usergroups": [~fake_group~]
 }
 """
     Then the response status code should be 201
@@ -104,12 +101,9 @@ Feature: /news_categories endpoint
     When I send a POST request to "/api/v2/news_categories" with body:
 """
 {
-  "main":
-  {
-    "brand": ~defaultBrand~,
-    "title": "Test children category",
-    "usergroups": [~fake_group~]
-  },
+  "brand": ~defaultBrand~,
+  "title": "Test children category",
+  "usergroups": [~fake_group~],
   "parent": ~nc1~
 }
 """
@@ -126,9 +120,7 @@ Feature: /news_categories endpoint
     When I send a PUT request to "/api/v2/news_categories/{nc1}" with body:
 """
 {
-  "main" : {
-    "title": "Test Edited News Category"
-  }
+  "title": "Test Edited News Category"
 }
 """
     Then the response status code should be 204
@@ -148,4 +140,3 @@ Feature: /news_categories endpoint
     Then the response status code should be 200
     When I send a GET request to "{lastRequestUrl}"
     And the response status code should be 404
-
