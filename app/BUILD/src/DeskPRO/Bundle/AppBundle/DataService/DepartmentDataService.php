@@ -239,6 +239,6 @@ class DepartmentDataService extends AbstractDataService
             }
         }
 
-        return array_unique(array_merge($this->mightyUsers, $personIds), SORT_NUMERIC);
+        return array_values(array_unique(array_merge($this->mightyUsers, $personIds), SORT_NUMERIC));
     }
 }
