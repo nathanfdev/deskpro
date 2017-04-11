@@ -395,7 +395,7 @@ $voice-green-border-color: #47BF61;
 
             i {
               margin-right: 10px;
-              color: #D4145A;
+              color: $dp-knuckles-primary;
               font-size: 20px;
             }
           }
@@ -580,7 +580,7 @@ $voice-green-border-color: #47BF61;
       margin: 0 20px;
 
       i {
-        color: #D4145A;
+        color: $dp-knuckles-primary;
         margin-right: 5px;
       }
     }
@@ -602,7 +602,7 @@ $voice-green-border-color: #47BF61;
     }
 
     &.hold {
-      border-color: #D4145A;
+      border-color: $dp-knuckles-primary;
     }
 
     &.hold, &.ended {
@@ -819,7 +819,7 @@ $voice-green-border-color: #47BF61;
       }
 
       .remove {
-        color: #D4145A;
+        color: $dp-knuckles-primary;
       }
     }
   }
