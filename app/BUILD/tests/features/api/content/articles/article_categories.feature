@@ -140,7 +140,13 @@ Feature: /article_categories endpoint
     Given the following ArticleCategory records exist:
       | #   | parent | is_agent | is_book | title           | slug            | depth | root |
       | ac1 |        | 1        | 0       | First Category  | first-category  | 0     | ac1  |
+    And the following Article records exist:
+      | #   | title                 | content             | status | hidden_status |
+      | ar1 | Some article for view | <p>Some content</p> | hidden | draft         |
+    And I add  article ar1 to category ac1
     When I send a DELETE request to "/api/v2/article_categories/{ac1}"
     Then the response status code should be 200
     When I send a GET request to "{lastRequestUrl}"
-    And the response status code should be 404
+    Then the response status code should be 404
+    When I send a GET request to "/api/v2/articles/{ar1}"
+    Then the response status code should be 200

@@ -148,3 +148,4 @@ Feature: /news_categories endpoint
     Then the response status code should be 200
     When I send a GET request to "{lastRequestUrl}"
     And the response status code should be 404
+

@@ -149,3 +149,5 @@ Feature: /download_categories endpoint
     Then the response status code should be 200
     When I send a GET request to "{lastRequestUrl}"
     And the response status code should be 404
+    When I send a GET request to "/api/v2/downloads/{d1}"
+    And the response status code should be 200
