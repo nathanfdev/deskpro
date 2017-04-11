@@ -91,7 +91,7 @@ export const preloadData    = createAction(
             for (const dep of data[depType]) {
               const agentIds = linked[dep.id];
               if (agentIds) {
-                const depAgents = agentIds.map(id => agents.get(id));
+                const depAgents = agentIds.map(id => agents.get(id)).filter(agent => !!agent);
                 dispatch(setCollection('Person', `department_${dep.id}`, depAgents));
               }
             }
