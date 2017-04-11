@@ -41,11 +41,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Class AuditLogController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/audit_logs")
  */
 class AuditLogController extends BaseController
 {
     /**
-     * @Rest\Get("/audit_logs")
+     * @Rest\Get("")
      * @Rest\View(serializerGroups={"list"})
      *
      * @param Request $request
@@ -68,7 +69,7 @@ class AuditLogController extends BaseController
     }
 
     /**
-     * @Rest\Get("/audit_logs/{id}")
+     * @Rest\Get("/{id}")
      * @Rest\View(serializerGroups={"list", "details"})
      *
      * @param int $id
@@ -86,7 +87,7 @@ class AuditLogController extends BaseController
     }
 
     /**
-     * @Rest\Post("/audit_logs/purge")
+     * @Rest\Post("/purge")
      *
      * @param Request $request
      *
@@ -124,6 +125,10 @@ class AuditLogController extends BaseController
         $service->delete($period);
     }
 
+    /**
+     * @param Request $request
+     * @param $qb
+     */
     private function applyFilters(Request $request, $qb)
     {
         $storage = $this->get('audit_log.storage');

@@ -45,11 +45,34 @@ abstract class AbstractCount
     protected $count = 0;
 
     /**
+     * Legacy identity.
+     *
+     * @JMS\SerializedName("id")
+     * @JMS\Until("20170401")
+     *
+     * @var mixed
+     */
+    protected $oldId;
+
+    /**
      * Entity identity.
+     *
+     * @JMS\Type("integer")
+     * @JMS\Since("20170401")
      *
      * @var string
      */
     protected $id;
+
+    /**
+     * Entity value.
+     *
+     * @JMS\Type("string")
+     * @JMS\Since("20170401")
+     *
+     * @var string
+     */
+    protected $value;
 
     /**
      * Count type.
@@ -177,10 +200,20 @@ abstract class AbstractCount
      */
     public function setId($id)
     {
+        // legacy id representation
         if ($id === null) {
-            $this->id = 0;
+            $this->oldId = 0;
         } else {
-            $this->id = $id;
+            $this->oldId = $id;
+        }
+
+        // new id representation
+        if (is_numeric($id)) {
+            $this->id    = $id;
+            $this->value = null;
+        } else {
+            $this->id    = null;
+            $this->value = $id;
         }
     }
 

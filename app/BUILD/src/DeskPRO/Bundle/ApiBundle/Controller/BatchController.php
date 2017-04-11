@@ -37,7 +37,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Routing\RequestContext;
 
 /**
  * Class BatchController.
@@ -141,7 +140,7 @@ class BatchController extends BaseController
             $json_serialized
         );
 
-        if (!$this->matchRouteUrl($subRequest)) {
+        if (!$this->get('request_matcher')->requestRouteExist($subRequest)) {
             throw $this->createBadRequestException("Route path for '{$info['url']}' not found");
         }
 
@@ -164,28 +163,5 @@ class BatchController extends BaseController
         $response = $this->getKernel()->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 
         return $this->get('serializer')->deserialize($response->getContent(), 'array', 'json');
-    }
-
-    /**
-     * @param Request $subRequest
-     *
-     * @return array|false
-     */
-    protected function matchRouteUrl(Request $subRequest)
-    {
-        $router = $this->get('router');
-
-        $originalContext   = $router->getContext();
-        $subRequestContext = new RequestContext($subRequest->getUri(), $subRequest->getMethod());
-
-        try {
-            $router->setContext($subRequestContext);
-
-            return $this->get('router')->matchRequest($subRequest);
-        } catch (\Exception $e) {
-            return false;
-        } finally {
-            $router->setContext($originalContext);
-        }
     }
 }

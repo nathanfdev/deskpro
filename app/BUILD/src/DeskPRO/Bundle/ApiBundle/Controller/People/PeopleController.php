@@ -160,15 +160,6 @@ class PeopleController extends CrudController
         return TicketsController::subRequestSearch($this->getKernel(), $request, $options);
     }
 
-    // This exists temporarily until we have some real versioned actions ###############################################
-
-    public function getTickets20151231Action()
-    {
-        die('v 20151231');
-    }
-
-    // #################################################################################################################
-
     /**
      * @ApiDoc(
      *     section="People",

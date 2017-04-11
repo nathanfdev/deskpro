@@ -26,61 +26,61 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Annotation;
+namespace DeskPRO\Bundle\AppBundle\Routing;
 
-use FOS\RestBundle\Controller\Annotations\View;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RequestContext;
 
 /**
- * We extend FOSRest View annotation to define serializer additional configuration params.
- *
- * @Annotation
- * @Target({"METHOD","CLASS"})
+ * Class RequestMatcher.
  */
-class SerializerView extends View
+class RequestMatcher
 {
     /**
-     * @var array
+     * @var RouterWithDynamicContext
      */
-    protected $mapping = [];
+    private $router;
 
     /**
-     * @var bool
+     * Constructor.
+     *
+     * @param RouterWithDynamicContext $router
      */
-    protected $serializeNull = true;
+    public function __construct(RouterWithDynamicContext $router)
+    {
+        $this->router = $router;
+    }
 
     /**
+     * @param string $url
+     * @param string $method
+     *
      * @return bool
      */
-    public function isSerializeNull()
+    public function routeExists($url, $method)
     {
-        return $this->serializeNull;
+        return $this->requestRouteExist(Request::create($url, $method));
     }
 
     /**
-     * @param bool $serializeNull
+     * @param Request $checkRequest
      *
-     * @return $this
+     * @return bool
      */
-    public function setSerializeNull($serializeNull)
+    public function requestRouteExist(Request $checkRequest)
     {
-        $this->serializeNull = $serializeNull;
+        $originalContext = $this->router->getContext();
+        $checkContext    = new RequestContext($checkRequest->getUri(), $checkRequest->getMethod());
 
-        return $this;
-    }
+        try {
+            $this->router->setContext($checkContext);
+            $this->router->matchRequest($checkRequest);
 
-    /**
-     * @return array
-     */
-    public function getMapping()
-    {
-        return $this->mapping;
-    }
-
-    /**
-     * @param array $mapping
-     */
-    public function setMapping(array $mapping)
-    {
-        $this->mapping = $mapping;
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        } finally {
+            $this->router->setContext($originalContext);
+        }
     }
 }

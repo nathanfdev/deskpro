@@ -45,6 +45,7 @@ use Symfony\Component\HttpFoundation\Response;
  * API access to person settings.
  *
  * @ApiModes("all")
+ * @Rest\Route("/settings/departments")
  */
 class DepartmentSettingsController extends BaseController
 {
@@ -58,7 +59,7 @@ class DepartmentSettingsController extends BaseController
      *      output="array<DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings>"
      * )
      * @ApiUnstable()
-     * @Rest\Get("/settings/departments/default")
+     * @Rest\Get("/default")
      *
      * @return View
      */
@@ -79,7 +80,7 @@ class DepartmentSettingsController extends BaseController
      *     }
      * )
      * @ApiUnstable()
-     * @Rest\Put("/settings/departments/default")
+     * @Rest\Put("/default")
      *
      * @return View
      */

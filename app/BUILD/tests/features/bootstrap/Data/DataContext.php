@@ -388,7 +388,7 @@ class DataContext extends BaseContext
 
             // Resolve references to other objects
             foreach ($data as &$value) {
-                if (self::isArray($value)) {
+                if (self::isArray($value) && !json_decode($value)) {
                     $arrayValue = [];
                     foreach (self::transformToArray($value) as $item) {
                         if (self::isReference($item)) {

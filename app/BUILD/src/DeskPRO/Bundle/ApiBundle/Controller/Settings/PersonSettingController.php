@@ -41,6 +41,7 @@ use Symfony\Component\HttpFoundation\Response;
  * API access to person settings.
  *
  * @ApiModes("all")
+ * @Rest\Route("/person_setting")
  */
 class PersonSettingController extends BaseController
 {
@@ -58,7 +59,7 @@ class PersonSettingController extends BaseController
      *          { "name" = "value", "dataType" = "string", "format" = "string", "required" = true, "description" = "setting value" },
      *      }
      * )
-     * @Rest\Post("/person_setting")
+     * @Rest\Post("")
      *
      * @param Request $request
      *
@@ -96,7 +97,7 @@ class PersonSettingController extends BaseController
      *          { "name" = "value", "dataType" = "string", "format" = "string", "required" = true, "description" = "setting value" },
      *      }
      * )
-     * @Rest\Put("/person_setting")
+     * @Rest\Put("")
      *
      * @param Request $request
      *
@@ -130,7 +131,7 @@ class PersonSettingController extends BaseController
      *      },
      *      output="array<DeskPRO\Bundle\AppBundle\Entity\PersonSetting>"
      * )
-     * @Rest\Get("/person_setting")
+     * @Rest\Get("")
      *
      * @return View
      */
@@ -161,7 +162,7 @@ class PersonSettingController extends BaseController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
      * )
-     * @Rest\Get("/person_setting/{name}", name="api_person_setting_get")
+     * @Rest\Get("/{name}", name="api_person_setting_get")
      *
      * @param string $name
      *

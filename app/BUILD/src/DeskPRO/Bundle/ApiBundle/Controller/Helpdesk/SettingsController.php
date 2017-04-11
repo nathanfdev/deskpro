@@ -39,6 +39,7 @@ use FOS\RestBundle\View\View;
  * Class SettingsController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/helpdesk/agent-client/settings")
  */
 class SettingsController extends BaseController
 {
@@ -55,7 +56,7 @@ class SettingsController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\Settings\Model\AgentSettings"
      * )
      * @ApiUnstable()
-     * @Rest\Get("/helpdesk/agent-client/settings")
+     * @Rest\Get("")
      */
     public function agentClientInfoAction()
     {

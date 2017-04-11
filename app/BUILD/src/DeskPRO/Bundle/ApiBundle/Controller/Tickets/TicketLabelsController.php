@@ -39,6 +39,7 @@ use Symfony\Component\HttpFoundation\Request;
  * API access to ticket labels.
  *
  * @ApiModes("all")
+ * @Rest\Route("/ticket_labels")
  */
 class TicketLabelsController extends BaseController
 {
@@ -60,7 +61,7 @@ class TicketLabelsController extends BaseController
      *
      * @return View
      *
-     * @Rest\Get("/ticket_labels/{label}/tickets")
+     * @Rest\Get("/{label}/tickets")
      */
     public function getTicketsAction(Request $request, $label)
     {

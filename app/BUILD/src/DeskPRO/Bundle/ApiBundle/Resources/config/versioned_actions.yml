@@ -1,4 +1,0 @@
-versioned_actions:
-  People\PeopleController\getTickets:
-    - 20151231: Some brief description of this version and reason why it exists
-    - 20160218: (replaced) This is an example of removed in favour of the main version

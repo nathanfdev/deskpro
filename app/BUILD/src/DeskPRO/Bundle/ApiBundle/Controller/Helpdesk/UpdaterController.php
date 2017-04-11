@@ -47,6 +47,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiModes("all")
  * @ApiUserContext("admin")
  * @ApiDoc(target="all", section="Helpdesk")
+ * @Rest\Route("/helpdesk/updater")
  */
 class UpdaterController extends BaseController
 {
@@ -59,7 +60,7 @@ class UpdaterController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\Settings\Model\UpdaterSettings"
      * )
      * @ApiUnstable()
-     * @Rest\Get("/helpdesk/updater/settings")
+     * @Rest\Get("/settings")
      */
     public function updaterSettingsAction()
     {
@@ -77,7 +78,7 @@ class UpdaterController extends BaseController
      *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\UpdaterSettingsType"
      *     }
      * )
-     * @Rest\Put("/helpdesk/updater/settings")
+     * @Rest\Put("/settings")
      * @ApiUnstable()
      *
      * @param Request $request
@@ -135,7 +136,7 @@ class UpdaterController extends BaseController
      *     },
      *     noOutput=true
      * )
-     * @Rest\Post("/helpdesk/updater/manual-schedule")
+     * @Rest\Post("/manual-schedule")
      * @ApiUnstable()
      *
      * @param Request $request
@@ -175,7 +176,7 @@ class UpdaterController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\Settings\Model\UpdaterStatus"
      * )
      * @ApiUnstable()
-     * @Rest\Get("/helpdesk/updater/status")
+     * @Rest\Get("/status")
      */
     public function updaterStatusAction()
     {

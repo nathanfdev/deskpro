@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -44,6 +40,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class SearchController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/search")
  */
 class SearchController extends BaseController
 {
@@ -79,7 +76,7 @@ class SearchController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchResponse"
      * )
      *
-     * @Rest\Get("/search")
+     * @Rest\Get("")
      *
      * @param Request $request
      *
@@ -130,7 +127,7 @@ class SearchController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchResponse"
      * )
      *
-     * @Rest\Get("/search/people_and_orgs")
+     * @Rest\Get("/people_and_orgs")
      *
      * @param Request $request
      *
@@ -170,7 +167,9 @@ class SearchController extends BaseController
      *     },
      *     output="array"
      * )
-     * @Rest\Get("/search/{type}", requirements={"type"="(article|download|feedback|news|ticket|person|agent|organization|chat_conversation|topic)"})
+     * @Rest\Get("/{type}", requirements={
+     *     "type"="(article|download|feedback|news|ticket|person|agent|organization|chat_conversation|topic)"
+     * })
      *
      * @param string  $type
      * @param Request $request
