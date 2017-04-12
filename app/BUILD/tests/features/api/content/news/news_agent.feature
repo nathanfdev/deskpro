@@ -10,29 +10,29 @@ Feature: /news endpoint
     And I have permissions to use News
 
   Scenario: I create a news
+    Given the following Usergroup records exist:
+      | #   | sys_name | Title   |
+      | ug1 | group_1  | Group 1 |
     And the following Language records exist:
       | #  |
       | l1 |
     And I have only default brand
     And the following NewsCategory records exist:
-      | #   | Parent | Title               | Slug                | Brand          |
-      | nc1 |        | First News Category | first_news_category | {defaultBrand} |
-    And I add "nc1" category usergroup relation "registered"
+      | #   | Parent | Title               | Slug                | Brand          | usergroups |
+      | nc1 |        | First News Category | first_news_category | {defaultBrand} | [{ug1}]    |
     When I send a POST request to "/api/v2/news" with body:
-"""
+    """
 {
   "title": "Test News",
   "content": "<p>Some fake news content</p>",
   "person":  ~agent~,
   "language": ~l1~,
-  "status": "hidden",
-  "hidden_status": "draft",
+  "status": "hidden.draft",
   "content_input_type": "rte",
   "category": ~nc1~
 }
-"""
+    """
     Then the response status code should be 201
-    And print last JSON response
     And the header "Location" should be equal to "/api/v2/news/{lastCreatedId}"
     And the JSON node "data.title" should be equal to "Test News"
     And the JSON node "data.content" should be equal to "<p>Some fake news content</p>"
@@ -61,12 +61,12 @@ Feature: /news endpoint
       | #  | title     | content             | status | hidden_status |
       | n1 | Test News | <p>News content</p> | hidden | draft         |
     When I send a PUT request to "/api/v2/news/{n1}" with body:
-"""
+    """
 {
   "title": "Test Edited News",
   "status": "published"
 }
-"""
+    """
     Then the response status code should be 204
     When I send a GET request to "/api/v2/news/{n1}"
     And the response status code should be 200
@@ -78,21 +78,23 @@ Feature: /news endpoint
 
   Scenario: I change news category
     Given I have only default brand
+    And the following Usergroup records exist:
+      | #   | sys_name   | Title      |
+      | ug1 | registered | Registered |
     And the following NewsCategory records exist:
-      | #   | Parent | Title                | Brand          |
-      | nc1 |        | First News Category  | {defaultBrand} |
-      | nc2 |        | Second News Category | {defaultBrand} |
-    And I add "nc1" category usergroup relation "registered"
-    And I add "nc2" category usergroup relation "registered"
+      | #   | Parent | Title                | Brand          | Usergroups |
+      | nc1 |        | First News Category  | {defaultBrand} | [{ug1}]    |
+      | nc2 |        | Second News Category | {defaultBrand} | [{ug1}]    |
     And the following News records exist:
       | #  | category |
       | n1 | {nc1}    |
+    And I add agent usergroup relation "agent_all_perms"
     When I send a PUT request to "/api/v2/news/{n1}" with body:
-"""
+    """
 {
   "category": ~nc2~
 }
-"""
+    """
     Then the response status code should be 204
     And I send a GET request to "/api/v2/news/{n1}"
     And the response status code should be 200
@@ -100,14 +102,16 @@ Feature: /news endpoint
 
   Scenario: I delete created news as agent with all permissions
     Given I have only default brand
+    And the following Usergroup records exist:
+      | #   | sys_name   | Title      |
+      | ug1 | registered | Registered |
     And the following NewsCategory records exist:
-      | #   | Parent | Title                | Brand          |
-      | nc1 |        | First News Category  | {defaultBrand} |
+      | #   | Parent | Title                | Brand          | Usergroups |
+      | nc1 |        | First News Category  | {defaultBrand} | [{ug1}]    |
     And the following News records exist:
       | #  | category |
       | n1 | {nc1}    |
     And I add agent usergroup relation "agent_all_perms"
-    And I add "nc1" category usergroup relation "registered"
     When I send a DELETE request to "/api/v2/news/{n1}"
     Then the response status code should be 200
     And I send a GET request to "{lastRequestUrl}"

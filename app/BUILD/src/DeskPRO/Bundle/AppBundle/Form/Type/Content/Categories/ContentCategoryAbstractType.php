@@ -44,23 +44,14 @@ class ContentCategoryAbstractType extends AbstractType
     {
         $builder
             ->add('title', TextType::class)
-            ->add(
-                'brand',
-                EntityType::class,
-                [
-                    'class'        => Brand::class,
-                    'choice_label' => 'name',
-                ]
-            )
-            ->add(
-                'usergroups',
-                EntityType::class,
-                [
-                    'class'        => Usergroup::class,
-                    'choice_label' => 'title',
-                    'multiple'     => true,
-                    'expanded'     => true,
-                ]
-            );
+            ->add('brand', EntityType::class, [
+                'class' => Brand::class,
+            ])
+            ->add('usergroups', EntityType::class, [
+                'class'    => Usergroup::class,
+                'multiple' => true,
+                'expanded' => true,
+            ])
+        ;
     }
 }

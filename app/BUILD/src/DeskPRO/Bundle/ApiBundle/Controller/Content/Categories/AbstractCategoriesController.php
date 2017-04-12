@@ -39,8 +39,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractCategoriesController extends CrudController
 {
-    public static $exposeOnly = ['get', 'list', 'count', 'delete', 'post', 'put'];
-
     /**
      * {@inheritdoc}
      */

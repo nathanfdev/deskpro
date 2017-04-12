@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Content;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
+use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -44,8 +45,13 @@ class DownloadType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('category', EntityType::class, ['class' => DownloadCategory::class, 'choice_label' => 'title'])
-            ->add('blob', EntityType::class, ['class' => Blob::class]);
+            ->add('blob', BlobAuthType::class, [
+                'property_path' => 'blob',
+            ])
+            ->add('category', EntityType::class, [
+                'class' => DownloadCategory::class,
+            ])
+        ;
     }
 
     /**
@@ -53,7 +59,9 @@ class DownloadType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['data_class' => Download::class]);
+        $resolver->setDefaults([
+            'data_class' => Download::class,
+        ]);
     }
 
     /**

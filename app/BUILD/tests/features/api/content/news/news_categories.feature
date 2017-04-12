@@ -13,13 +13,13 @@ Feature: /news_categories endpoint
   Scenario: I create a news category
     Given fake agent group exits
     When I send a POST request to "/api/v2/news_categories" with body:
-"""
+    """
 {
   "brand": ~defaultBrand~,
   "title": "Test news category",
   "usergroups": [~fake_group~]
 }
-"""
+    """
     Then the response status code should be 201
     And the header "Location" should be equal to "/api/v2/news_categories/{lastCreatedId}"
     And the JSON node "data.title" should be equal to "Test news category"
@@ -99,14 +99,14 @@ Feature: /news_categories endpoint
       | #   | parent | title              | slug               | brand          |
       | nc1 |        | Test news category | test-news-category | {defaultBrand} |
     When I send a POST request to "/api/v2/news_categories" with body:
-"""
+    """
 {
   "brand": ~defaultBrand~,
   "title": "Test children category",
   "usergroups": [~fake_group~],
   "parent": ~nc1~
 }
-"""
+    """
     Then the response status code should be 201
     And the header "Location" should be equal to "/api/v2/news_categories/{lastCreatedId}"
     And the JSON node "data.title" should be equal to "Test children category"
@@ -118,11 +118,11 @@ Feature: /news_categories endpoint
       | #   | title              | brand          |
       | nc1 | Test news category | {defaultBrand} |
     When I send a PUT request to "/api/v2/news_categories/{nc1}" with body:
-"""
+    """
 {
   "title": "Test Edited News Category"
 }
-"""
+    """
     Then the response status code should be 204
     When I send a GET request to "/api/v2/news_categories/{nc1}"
     And the response status code should be 200

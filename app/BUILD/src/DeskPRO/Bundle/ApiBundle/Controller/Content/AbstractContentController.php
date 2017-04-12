@@ -46,7 +46,6 @@ use Symfony\Component\HttpFoundation\Request;
 abstract class AbstractContentController extends CrudController
 {
     public static $category;
-    public static $exposeOnly  = ['get', 'list', 'count', 'delete', 'post', 'put'];
     public static $sortOptions = [
         'id'           => 'id',
         'date_created' => 'date_created',

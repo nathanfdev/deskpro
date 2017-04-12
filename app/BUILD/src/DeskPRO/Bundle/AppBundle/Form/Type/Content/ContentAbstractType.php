@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Content;
 
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Language;
-use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -48,61 +48,33 @@ class ContentAbstractType extends AbstractType
         $builder
             ->add('title', TextType::class)
             ->add('content', TextareaType::class)
-            ->add(
-                'language',
-                EntityType::class,
-                [
-                    'class'        => Language::class,
-                    'choice_label' => 'title',
-                ]
-            )
-            ->add(
-                'person',
-                EntityType::class,
-                [
-                    'class'        => Person::class,
-                    'choice_label' => 'name',
-                ]
-            )
-            ->add(
-                'content_input_type',
-                ChoiceType::class,
-                [
-                    'multiple' => false,
-                    'expanded' => false,
-                    'choices'  => [
-                        ContentAbstract::CONTENT_TYPE_MARKDOWN => 'Markdown',
-                        ContentAbstract::CONTENT_TYPE_RTE      => 'RTE',
-                    ],
-                ]
-            )
-            ->add(
-                'status',
-                ChoiceType::class,
-                [
-                    'multiple' => false,
-                    'expanded' => false,
-                    'choices'  => [
-                        ContentAbstract::STATUS_ARCHIVED  => ContentAbstract::STATUS_ARCHIVED,
-                        ContentAbstract::STATUS_HIDDEN    => ContentAbstract::STATUS_HIDDEN,
-                        ContentAbstract::STATUS_PUBLISHED => ContentAbstract::STATUS_PUBLISHED,
-                    ],
-                ]
-            )
-            ->add(
-                'hidden_status',
-                ChoiceType::class,
-                [
-                    'multiple' => false,
-                    'expanded' => false,
-                    'choices'  => [
-                        ContentAbstract::HIDDEN_STATUS_DELETED     => ContentAbstract::HIDDEN_STATUS_DELETED,
-                        ContentAbstract::HIDDEN_STATUS_DRAFT       => ContentAbstract::HIDDEN_STATUS_DRAFT,
-                        ContentAbstract::HIDDEN_STATUS_PENDING     => ContentAbstract::HIDDEN_STATUS_PENDING,
-                        ContentAbstract::HIDDEN_STATUS_SPAM        => ContentAbstract::HIDDEN_STATUS_SPAM,
-                        ContentAbstract::HIDDEN_STATUS_UNPUBLISHED => ContentAbstract::HIDDEN_STATUS_UNPUBLISHED,
-                    ],
-                ]
-            );
+            ->add('person', PersonAssignType::class)
+            ->add('language', EntityType::class, [
+                'class' => Language::class,
+            ])
+            ->add('content_input_type', ChoiceType::class, [
+                'multiple'          => false,
+                'expanded'          => false,
+                'choices_as_values' => true,
+                'choices'           => [
+                    ContentAbstract::CONTENT_TYPE_MARKDOWN,
+                    ContentAbstract::CONTENT_TYPE_RTE,
+                ],
+            ])
+            ->add('status', ChoiceType::class, [
+                'multiple'          => false,
+                'expanded'          => false,
+                'choices_as_values' => true,
+                'choices'           => [
+                    ContentAbstract::STATUS_ARCHIVED,
+                    ContentAbstract::STATUS_PUBLISHED,
+                    ContentAbstract::STATUS_HIDDEN.'.'.ContentAbstract::HIDDEN_STATUS_DELETED,
+                    ContentAbstract::STATUS_HIDDEN.'.'.ContentAbstract::HIDDEN_STATUS_DRAFT,
+                    ContentAbstract::STATUS_HIDDEN.'.'.ContentAbstract::HIDDEN_STATUS_PENDING,
+                    ContentAbstract::STATUS_HIDDEN.'.'.ContentAbstract::HIDDEN_STATUS_SPAM,
+                    ContentAbstract::STATUS_HIDDEN.'.'.ContentAbstract::HIDDEN_STATUS_UNPUBLISHED,
+                ],
+            ])
+        ;
     }
 }

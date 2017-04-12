@@ -43,11 +43,11 @@ class ArticleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add(
-                'categories',
-                EntityType::class,
-                ['class' => ArticleCategory::class, 'choice_label' => 'title', 'multiple' => true, 'expanded' => true]
-            );
+            ->add('categories', EntityType::class, [
+                'class'    => ArticleCategory::class,
+                'multiple' => true,
+                'expanded' => true,
+            ]);
     }
 
     /**
@@ -55,7 +55,9 @@ class ArticleType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['data_class' => Article::class]);
+        $resolver->setDefaults([
+            'data_class' => Article::class,
+        ]);
     }
 
     /**

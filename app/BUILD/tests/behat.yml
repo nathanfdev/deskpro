@@ -26,7 +26,6 @@ api:
                 - DpBehat\Api\PeopleContext
                 - DpBehat\Api\AgentsContext
                 - DpBehat\PermissionContext
-                - DpBehat\ContentCategoryPermissionContext
                 - DpBehat\Api\ModesAndTagsContext
                 - DpBehat\Api\ApiLogContext
                 - DpBehat\Api\ApiLimitsContext
@@ -39,7 +38,6 @@ api:
                 - DpBehat\Data\CustomDataContext
                 - DpBehat\Data\TicketLayoutContext
                 - DpBehat\Data\OrganizationContext
-                - DpBehat\ArticleContext
                 - DpBehat\Data\BlobContext
                 - DpBehat\Data\LabelContext
                 - DpBehat\BrandSettingContext

@@ -9,8 +9,5 @@ Feature: /articles endpoint
     Given I'm authenticated as user
 
   Scenario: I try to create an article as user
-    When I send a POST request to "/api/v2/articles" with body:
-"""
-{}
-"""
+    When I send a POST request to "/api/v2/articles"
     And the response status code should be 403

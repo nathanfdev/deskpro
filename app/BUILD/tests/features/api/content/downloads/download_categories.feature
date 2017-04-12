@@ -13,13 +13,13 @@ Feature: /download_categories endpoint
   Scenario: I create a download category
     And fake agent group exits
     When I send a POST request to "/api/v2/download_categories" with body:
-"""
+    """
 {
   "brand": ~defaultBrand~,
   "title": "Test download category",
   "usergroups": [~fake_group~]
 }
-"""
+    """
     Then the response status code should be 201
     And the header "Location" should be equal to "/api/v2/download_categories/{lastCreatedId}"
     And the JSON node "data.title" should be equal to "Test download category"
@@ -100,14 +100,14 @@ Feature: /download_categories endpoint
       | #   | title                     | Brand          |
       | dc1 | First Downloads Category  | {defaultBrand} |
     When I send a POST request to "/api/v2/download_categories" with body:
-"""
+    """
 {
   "brand": ~defaultBrand~,
   "title": "Test children category",
   "usergroups": [~fake_group~],
   "parent": ~dc1~
 }
-"""
+    """
     Then the response status code should be 201
     And the header "Location" should be equal to "/api/v2/download_categories/{lastCreatedId}"
     And the JSON node "data.title" should be equal to "Test children category"
@@ -119,11 +119,11 @@ Feature: /download_categories endpoint
       | #   | title                     | Brand          |
       | dc1 | First Downloads Category  | {defaultBrand} |
     When I send a PUT request to "/api/v2/download_categories/{dc1}" with body:
-"""
+    """
 {
   "title": "Test Edited Children Download Category"
 }
-"""
+    """
     Then the response status code should be 204
     When I send a GET request to "/api/v2/download_categories/{dc1}"
     And the response status code should be 200

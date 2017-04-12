@@ -13,15 +13,13 @@ Feature: /articles endpoint
       | #   | parent | is_agent | title                  | slug                   | root | brand          |
       | ac1 |        | 1        | Test article category  | test-article-category  | ac1  | {defaultBrand} |
     And only the following Article records exist:
-      | #   | title     | content             | status    | hidden_status | person  |
-      | ar1 | Article-1 | <p>Some content</p> | hidden    | unpublished   | {user}  |
-      | ar2 | Article-2 | <p>Some content</p> | hidden    | draft         | {user}  |
-      | ar3 | Article-3 | <p>Some content</p> | published |               | {user}  |
-      | ar4 | Article-4 | <p>Some content</p> | archived  |               | {agent} |
-      | ar5 | Article-5 | <p>Some content</p> | hidden    | spam          | {agent} |
-      | ar5 | Article-6 | <p>Some content</p> | hidden    | deleted       | {user} |
-  And I add  article ar1 to category ac1
-  And I add  article ar2 to category ac1
+      | #   | title     | content             | status    | hidden_status | person  | to category |
+      | ar1 | Article-1 | <p>Some content</p> | hidden    | unpublished   | {user}  | {ac1}       |
+      | ar2 | Article-2 | <p>Some content</p> | hidden    | draft         | {user}  | {ac1}       |
+      | ar3 | Article-3 | <p>Some content</p> | published |               | {user}  |             |
+      | ar4 | Article-4 | <p>Some content</p> | archived  |               | {agent} |             |
+      | ar5 | Article-5 | <p>Some content</p> | hidden    | spam          | {agent} |             |
+      | ar5 | Article-6 | <p>Some content</p> | hidden    | deleted       | {user}  |             |
 
   Scenario: I view the full list of existing articles
     Given I send a GET request to "/api/v2/articles"

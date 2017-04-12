@@ -13,27 +13,27 @@ Feature: /downloads endpoint
     Given the following Language records exist:
       | #  | locale | sys_name |
       | l1 | so_ME  | some     |
+    And the following Usergroup records exist:
+      | #   | sys_name   | Title      |
+      | ug1 | registered | Registered |
     And I have only default brand
     And the following DownloadCategory records exist:
-      | #   | parent | title                    | Brand          |
-      | dc1 |        | First Downloads Category | {defaultBrand} |
-    And I add "dc1" category usergroup relation "registered"
+      | #   | parent | title                    | Brand          | Usergroups |
+      | dc1 |        | First Downloads Category | {defaultBrand} | [{ug1}]    |
     And I create blob with auth code "AAA"
     When I send a POST request to "/api/v2/downloads" with body:
-"""
+    """
 {
   "title": "Test Download",
   "content": "<p>Some fake download description</p>",
   "person":  ~agent~,
   "language": ~l1~,
-  "status": "hidden",
-  "hidden_status": "draft",
+  "status": "hidden.draft",
   "content_input_type": "rte",
   "category": ~dc1~,
-  "blob": ~blob_AAA~
+  "blob": "AAA"
 }
-"""
-    And print last response
+    """
     Then the response status code should be 201
     And the header "Location" should be equal to "/api/v2/downloads/{lastCreatedId}"
     And the JSON node "data.title" should be equal to "Test Download"
@@ -62,12 +62,12 @@ Feature: /downloads endpoint
       | #  | title         | status | hidden_status |
       | d1 | Test Download | hidden | draft         |
     When I send a PUT request to "/api/v2/downloads/{d1}" with body:
-"""
+    """
 {
   "title": "Test Edited Download",
   "status": "published"
 }
-"""
+    """
     Then the response status code should be 204
     When I send a GET request to "/api/v2/downloads/{d1}"
     Then the response status code should be 200
@@ -76,22 +76,23 @@ Feature: /downloads endpoint
     And the JSON node "data.hidden_status" should be null
 
   Scenario: I change download category
+    Given the following Usergroup records exist:
+      | #   | sys_name   | Title      |
+      | ug1 | registered | Registered |
     And I have only default brand
     And the following DownloadCategory records exist:
-      | #   | title                     | Brand          |
-      | dc1 | First Downloads Category  | {defaultBrand} |
-      | dc2 | Second Downloads Category | {defaultBrand} |
-    And I add "dc1" category usergroup relation "registered"
-    And I add "dc2" category usergroup relation "registered"
+      | #   | title                     | Brand          | Usergroups |
+      | dc1 | First Downloads Category  | {defaultBrand} | [{ug1}]    |
+      | dc2 | Second Downloads Category | {defaultBrand} | [{ug1}]    |
     And the following Download records exist:
       | #  | category |
       | d1 | {dc1}    |
     When I send a PUT request to "/api/v2/downloads/{d1}" with body:
-"""
+    """
 {
   "category": ~dc2~
 }
-"""
+    """
     Then the response status code should be 204
     And I send a GET request to "/api/v2/downloads/{d1}"
     And the response status code should be 200
@@ -99,14 +100,16 @@ Feature: /downloads endpoint
 
   Scenario: I delete existing download
     Given I have only default brand
+    And the following Usergroup records exist:
+      | #   | sys_name   | Title      |
+      | ug1 | registered | Registered |
     And the following DownloadCategory records exist:
-      | #   | parent | title                    | Brand          |
-      | dc1 |        | First Downloads Category | {defaultBrand} |
+      | #   | parent | title                    | Brand          | Usergroups |
+      | dc1 |        | First Downloads Category | {defaultBrand} | [{ug1}]    |
     And the following Download records exist:
       | #  | category |
       | d1 | {dc1}    |
     And I add agent usergroup relation "agent_all_perms"
-    And I add "dc1" category usergroup relation "registered"
     When I send a DELETE request to "/api/v2/downloads/{d1}"
     Then the response status code should be 200
     And I send a GET request to "{lastRequestUrl}"

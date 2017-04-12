@@ -26,13 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * Created by PhpStorm.
- * User: yakut
- * Date: 06.04.17
- * Time: 14:24.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish;
 
 use Application\DeskPRO\Entity\DownloadCategory;

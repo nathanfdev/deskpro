@@ -13,13 +13,13 @@ Feature: /article_categories endpoint
     Given I have only default brand
     And fake agent group exits
     When I send a POST request to "/api/v2/article_categories" with body:
-"""
+    """
 {
   "brand": ~defaultBrand~,
   "title": "Test article category",
   "usergroups": [~fake_group~]
 }
-"""
+    """
     Then the response status code should be 201
     And the header "Location" should be equal to "/api/v2/article_categories/{lastCreatedId}"
 
@@ -98,14 +98,14 @@ Feature: /article_categories endpoint
       | #   | parent | is_agent | is_book | title           | slug            | depth | root |
       | ac1 |        | 1        | 0       | First Category  | first-category  | 0     | ac1  |
     When I send a POST request to "/api/v2/article_categories" with body:
-"""
+    """
 {
   "brand": ~defaultBrand~,
   "title": "Test children category",
   "usergroups": [~fake_group~],
   "parent": ~ac1~
 }
-"""
+    """
     Then the response status code should be 201
     And the header "Location" should be equal to "/api/v2/article_categories/{lastCreatedId}"
     And the JSON node "data.title" should be equal to "Test children category"
@@ -117,11 +117,11 @@ Feature: /article_categories endpoint
       | #   | parent | is_agent | is_book | title           | slug            | depth | root |
       | ac1 |        | 1        | 0       | First Category  | first-category  | 0     | ac1  |
     When I send a PUT request to "/api/v2/article_categories/{ac1}" with body:
-"""
+    """
 {
   "title": "Edited Article Category"
 }
-"""
+    """
     Then the response status code should be 204
     When I send a GET request to "/api/v2/article_categories/{ac1}"
     And the response status code should be 200
@@ -133,9 +133,8 @@ Feature: /article_categories endpoint
       | #   | parent | is_agent | is_book | title           | slug            | depth | root |
       | ac1 |        | 1        | 0       | First Category  | first-category  | 0     | ac1  |
     And the following Article records exist:
-      | #   | title                 | content             | status | hidden_status |
-      | ar1 | Some article for view | <p>Some content</p> | hidden | draft         |
-    And I add  article ar1 to category ac1
+      | #   | title                 | content             | status | hidden_status | to category |
+      | ar1 | Some article for view | <p>Some content</p> | hidden | draft         | {ac1}       |
     When I send a DELETE request to "/api/v2/article_categories/{ac1}"
     Then the response status code should be 200
     When I send a GET request to "{lastRequestUrl}"
