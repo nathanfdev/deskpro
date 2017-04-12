@@ -147,7 +147,7 @@ class BlobStorageService
         // Create the storage
         //------------------------------
 
-        $bs = new DeskproBlobStorage($container->getEm(), [
+        $bs = new DeskproBlobStorage($container->getEm(), $env->getUserTmpDir(), [
             'disable_physical_delete' => $container->getSetting('core.filestorage_disable_physical_delete'),
         ]);
         $bs->setLogger($logger);

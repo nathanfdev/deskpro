@@ -501,6 +501,83 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return $this->content_type;
     }
 
+    /**
+     * @param $contentType
+     *
+     * @return $this
+     */
+    public function setContentType($contentType)
+    {
+        $this->setModelField('content_type', $contentType);
+
+        return $this;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getOriginalBlob()
+    {
+        return $this->original_blob;
+    }
+
+    /**
+     * @param Blob $originalBlob
+     *
+     * @return $this
+     */
+    public function setOriginalBlob($originalBlob)
+    {
+        $this->setModelField('original_blob', $originalBlob);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDimW()
+    {
+        return $this->dim_w;
+    }
+
+    /**
+     * @param int $dimW
+     *
+     * @return $this
+     */
+    public function setDimW($dimW)
+    {
+        $this->setModelField('dim_w', $dimW);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDimH()
+    {
+        return $this->dim_h;
+    }
+
+    /**
+     * @param int $dimH
+     *
+     * @return $this
+     */
+    public function setDimH($dimH)
+    {
+        $this->setModelField('dim_h', $dimH);
+
+        return $this;
+    }
+
+    public function setDimensions($dimensions)
+    {
+        return $this->setDimW($dimensions[0])->setDimH($dimensions[1]);
+    }
+
     public function addLabel(LabelBlob $label)
     {
         $label['blob'] = $this;

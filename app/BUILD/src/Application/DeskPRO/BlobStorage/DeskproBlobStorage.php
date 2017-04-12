@@ -99,19 +99,33 @@ class DeskproBlobStorage implements Loggable
     protected $enable_physical_delete = true;
 
     /**
+     * @var string
+     */
+    protected $tmpDir = '';
+
+    /**
+     * @var array
+     */
+    protected $cachedFiles = [];
+
+    /**
      * @param EntityManager $em
+     * @param string        $tmpDir
      * @param array         $options
      */
-    public function __construct(EntityManager $em, array $options = [])
+    public function __construct(EntityManager $em, $tmpDir, array $options = [])
     {
         $this->adapters = [];
         $this->em       = $em;
         $this->db       = $em->getConnection();
         $this->logger   = new Logger();
+        $this->tmpDir   = $tmpDir;
 
         if (isset($options['disable_physical_delete']) && $options['disable_physical_delete']) {
             $this->enable_physical_delete = false;
         }
+
+        register_shutdown_function([$this, 'clearCache']);
     }
 
     /**
@@ -202,7 +216,7 @@ class DeskproBlobStorage implements Loggable
     /**
      * @param string $id
      *
-     * @throws \InvalidArgumentException
+     * @throws BlobStorageException
      *
      * @return AbstractStorageAdapter
      */
@@ -253,7 +267,7 @@ class DeskproBlobStorage implements Loggable
     /**
      * @param string $id
      *
-     * @throws \InvalidArgumentException
+     * @throws BlobStorageException
      */
     public function setPreferredAdapterId($id)
     {
@@ -280,25 +294,24 @@ class DeskproBlobStorage implements Loggable
      * @param string $content_type
      * @param array  $props
      *
-     * @return \Application\DeskPRO\Entity\Blob
+     * @return BlobEntity
      */
     private function _createBlobEntity($filename, $content_type, array $props = null)
     {
         $this->logger->logDebug("[DeskproBlobStorage] (_createBlobEntity) Filename: $filename   ContentType: $content_type");
 
-        $blob_entity               = new BlobEntity();
-        $blob_entity->filename     = $filename;
-        $blob_entity->content_type = $content_type;
+        $blob_entity = new BlobEntity();
+        $blob_entity->setFilename($filename)->setContentType($content_type);
 
         if ($props) {
             if (isset($props['original_blob'])) {
-                $blob_entity->original_blob = $props['original_blob'];
+                $blob_entity->setOriginalBlob($props['original_blob']);
             }
             if (isset($props['is_temp']) && $props['is_temp']) {
-                $blob_entity->is_temp = true;
+                $blob_entity->setIsTemp(true);
             }
             if (isset($props['sys_name']) && $props['sys_name']) {
-                $blob_entity->sys_name = $props['sys_name'];
+                $blob_entity->setSysName($props['sys_name']);
             }
         }
 
@@ -336,7 +349,8 @@ class DeskproBlobStorage implements Loggable
      * @param string $content_type
      * @param array  $props
      *
-     * @throws \RuntimeException
+     * @throws BlobStorageException
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      *
      * @return int The blob ID that was created
      */
@@ -344,16 +358,11 @@ class DeskproBlobStorage implements Loggable
     {
         $this->logger->logDebug("[DeskproBlobStorage] BEGIN (saveBlobRecordFromFile) From path: $source_path");
 
-        $blob_entity_tmp            = $this->_createBlobEntity($filename, $content_type, $props);
-        $blob_entity_tmp->filesize  = filesize($source_path);
-        $blob_entity_tmp->blob_hash = md5_file($source_path);
+        $blob_entity_tmp = $this->_createBlobEntity($filename, $content_type, $props);
+        $blob_entity_tmp->setFilesize(filesize($source_path))->setBlobHash(md5_file($source_path));
 
-        if (ContentTypes::isImageContentType($content_type)) {
-            $imageinfo = @getimagesize($source_path);
-            if ($imageinfo) {
-                $blob_entity_tmp->dim_w = $imageinfo[0];
-                $blob_entity_tmp->dim_h = $imageinfo[1];
-            }
+        if (ContentTypes::isImageContentType($content_type) && $imageinfo = @getimagesize($source_path)) {
+            $blob_entity_tmp->setDimensions($imageinfo);
         }
 
         if ($props && !isset($props['storage_loc_specific']) && isset($props['tag'])) {
@@ -376,10 +385,10 @@ class DeskproBlobStorage implements Loggable
 
         // Now call the blob storages
         $blob = new Blob(
-            $blob_entity_tmp->filename,
-            $blob_entity_tmp->content_type,
+            $blob_entity_tmp->getFilename(),
+            $blob_entity_tmp->getContentType(),
             [
-                'blob_id' => $blob_entity_tmp->id,
+                'blob_id' => $blob_entity_tmp->getId(),
             ]
         );
 
@@ -414,6 +423,10 @@ class DeskproBlobStorage implements Loggable
 
                 $blob_entity_tmp->save_path   = $path;
                 $blob_entity_tmp->storage_loc = $adapter_id;
+
+                if ($adapter->requiresTempCache()) {
+                    $this->createCache($blob_entity_tmp, file_get_contents($source_path));
+                }
 
                 // Success, dont try others
                 break;
@@ -495,9 +508,10 @@ class DeskproBlobStorage implements Loggable
      * @param string $content_type
      * @param array  $props
      *
-     * @throws \RuntimeException
+     * @throws BlobStorageException
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      *
-     * @return array
+     * @return mixed
      */
     public function createBlobRowFromString($source_data, $filename, $content_type, array $props = null)
     {
@@ -577,6 +591,10 @@ class DeskproBlobStorage implements Loggable
 
                 $blob_entity_tmp->setSavePath($path);
                 $blob_entity_tmp->setStorageLoc($adapter_id);
+
+                if ($adapter->requiresTempCache()) {
+                    $this->createCache($blob_entity_tmp, $source_data);
+                }
 
                 // Success, dont try others
                 break;
@@ -666,7 +684,9 @@ class DeskproBlobStorage implements Loggable
         $adapter = $this->getAdapter($adapter_id);
 
         try {
-            $data = $adapter->readBlobString($blob);
+            if (!$data = $this->pickFromCache($blob)) {
+                $data = $adapter->readBlobString($blob);
+            }
         } catch (\Exception $e) {
             $this->logger->logDebug("[DeskproBlobStorage] (getBlobString) Read failed: {$e->getCode()} {$e->getMessage()}");
             throw $e;
@@ -695,7 +715,11 @@ class DeskproBlobStorage implements Loggable
         $adapter = $this->getAdapter($adapter_id);
 
         try {
-            $data = $adapter->readBlobToFile($blob, $target_path);
+            if ($data = $this->pickFromCache($blob)) {
+                $data = file_put_contents($target_path, $data);
+            } else {
+                $data = $adapter->readBlobToFile($blob, $target_path);
+            }
         } catch (\Exception $e) {
             $this->logger->logDebug("[DeskproBlobStorage] (saveBlobToFile) Save failed: {$e->getCode()} {$e->getMessage()}");
             throw $e;
@@ -715,10 +739,10 @@ class DeskproBlobStorage implements Loggable
     {
         $this->logger->logDebug("[DeskproBlobStorage] (readBlobStringFromRecord) Read blob record {$blob_entity->id} from {$blob_entity->storage_loc}");
 
-        $data = null;
+        $data = $this->pickFromCache($blob_entity);
 
         // Can just use the public URL
-        if ($blob_entity->file_url) {
+        if (!$data && $blob_entity->file_url) {
             $this->logger->logDebug("[DeskproBlobStorage] (readBlobStringFromRecord) Attempting to fetch via URL: {$blob_entity->file_url}");
             $data = @file_get_contents($blob_entity->file_url);
             if (!$data || strlen($data) != $blob_entity->filesize) {
@@ -746,10 +770,10 @@ class DeskproBlobStorage implements Loggable
     {
         $this->logger->logDebug("[DeskproBlobStorage] (copyBlobRowToString) Read blob row {$blob_row['id']} from {$blob_row['storage_loc']}");
 
-        $data = null;
+        $data = $this->pickFromCache($blob_row);
 
         // Can just use the public URL
-        if ($blob_row['file_url']) {
+        if (!$data && $blob_row['file_url']) {
             $this->logger->logDebug("[DeskproBlobStorage] (readcopyBlobRowToString) Attempting to fetch via URL: {$blob_row['file_url']}");
             $data = @file_get_contents($blob_row['file_url']);
             if (!$data || strlen($data) != $blob_row['filesize']) {
@@ -770,6 +794,8 @@ class DeskproBlobStorage implements Loggable
 
     /**
      * @param int $blob_row_id
+     *
+     * @throws BlobStorageException
      *
      * @return null|string
      */
@@ -949,15 +975,15 @@ class DeskproBlobStorage implements Loggable
     public function getBlobFromBlobRecord(BlobEntity $blob_entity)
     {
         $blob = new Blob(
-            $blob_entity->filename,
-            $blob_entity->content_type,
+            $blob_entity->getFilename(),
+            $blob_entity->getContentType(),
             [
-                'blob_id' => $blob_entity->id,
+                'blob_id' => $blob_entity->getId(),
             ]
         );
-        $blob->setPath($blob_entity->save_path);
-        if ($blob_entity->file_url) {
-            $blob->setMeta('file_url', $blob_entity->file_url);
+        $blob->setPath($blob_entity->getSavePath());
+        if ($blob_entity->getFileUrl()) {
+            $blob->setMeta('file_url', $blob_entity->getFileUrl());
         }
 
         return $blob;
@@ -1007,9 +1033,9 @@ class DeskproBlobStorage implements Loggable
         }
 
         $blobauth_moved = [
-            'old_authcode' => $blob_entity->authcode,
+            'old_authcode' => $blob_entity->getAuthcode(),
             'new_authcode' => $authcode,
-            'filename'     => $blob_entity->filename,
+            'filename'     => $blob_entity->getFilename(),
         ];
 
         $blob->setMeta('authcode', $authcode);
@@ -1032,9 +1058,94 @@ class DeskproBlobStorage implements Loggable
         $this->em->persist($blob_entity);
         $this->em->flush();
 
+        if ($adapter->requiresTempCache()) {
+            $this->createCache($blob_entity, $file_data);
+        }
+
         $this->db->insert('blobs_auth_moved', $blobauth_moved);
 
         // Delete the old one
         $this->deleteBlob($old_blob, $old_adapter_id);
+    }
+
+    /**
+     * @param BlobEntity $blob
+     * @param            $fileData
+     */
+    public function createCache(BlobEntity $blob, $fileData)
+    {
+        $cache               = $this->getCachePath($blob);
+        $this->cachedFiles[] = $cache;
+        $result              = @file_put_contents($cache, $fileData);
+        if (!$result) {
+            $this->logger->logWarn(sprintf(
+                '[DeskproBlobStorage] (createCache) Failed to create cache Filename: %s Adapter: %s',
+                $cache, $this->getPreferredAdapterId()
+            ));
+        } else {
+            $this->logger->logDebug(sprintf(
+                '[DeskproBlobStorage] (createCache) Cache created Filename: %s Adapter: %s',
+                $cache, $this->getPreferredAdapterId()
+            ));
+        }
+    }
+
+    /**
+     * @param BlobEntity|Blob|array $blob
+     *
+     * @return string|null
+     */
+    public function pickFromCache($blob)
+    {
+        $data = null;
+        if (isset($this->cachedFiles[$this->getCachePath($blob)])) {
+            $filename = $this->cachedFiles[$this->getCachePath($blob)];
+            $data     = is_file($filename) ? @file_get_contents($filename) : null;
+
+            if ($data) {
+                $this->logger->logDebug(sprintf(
+                    '[DeskproBlobStorage] (pickFromCache) Filename: %s Adapter: %s',
+                    $filename, $this->getPreferredAdapterId()
+                ));
+            } else {
+                $this->logger->logWarn(sprintf(
+                    '[DeskproBlobStorage] (pickFromCache) Failed to pick file from cache! Filename: %s Adapter: %s',
+                    $filename, $this->getPreferredAdapterId()
+                ));
+            }
+        }
+
+        return $data ?: null;
+    }
+
+    /**
+     * registered as shutdown function.
+     */
+    public function clearCache()
+    {
+        foreach ($this->cachedFiles as $file) {
+            if (is_file($file)) {
+                if (!$result = unlink($file)) {
+                    $this->logger->logWarn(sprintf(
+                        '[DeskproBlobStorage] (clearCache) Failed to unlink file! Filename: %s Adapter: %s',
+                        $file, $this->getPreferredAdapterId()
+                    ));
+                }
+            }
+        }
+    }
+
+    /**
+     * @param BlobEntity|Blob|array $blob
+     *
+     * @return string
+     */
+    protected function getCachePath($blob)
+    {
+        $filenameSafe = $blob instanceof BlobEntity || $blob instanceof Blob
+            ? $blob->getFilenameSafe()
+            : Strings::getFilenameSafe($blob['filename']);
+
+        return $this->tmpDir.DIRECTORY_SEPARATOR.$filenameSafe;
     }
 }

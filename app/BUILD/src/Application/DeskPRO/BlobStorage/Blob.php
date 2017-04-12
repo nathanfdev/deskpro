@@ -115,14 +115,9 @@ class Blob
      */
     public function getFilenameSafe()
     {
-        if ($this->filename_safe !== null) {
-            return $this->filename_safe;
+        if (!$this->filename_safe === null) {
+            $this->filename_safe = Strings::getFilenameSafe($this->filename);
         }
-
-        $this->filename_safe = $this->filename;
-        $this->filename_safe = Strings::utf8_accents_to_ascii($this->filename_safe);
-        $this->filename_safe = preg_replace('#[^a-zA-Z0-9\.\-_]#', '-', $this->filename_safe);
-        $this->filename_safe = preg_replace('#\-{2,}#', '-', $this->filename_safe);
 
         return $this->filename_safe;
     }
@@ -143,6 +138,8 @@ class Blob
     /**
      * @param $id
      * @param null $default
+     *
+     * @return mixed
      */
     public function getMeta($id, $default = null)
     {
