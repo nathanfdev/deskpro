@@ -195,19 +195,23 @@ class AgentViewModelFactory
     }
 
     /**
+     * @param string $agentPassword
+     *
      * @return AgentWelcome
      */
-    public function createAgentWelcomeModel()
+    public function createAgentWelcomeModel($agentPassword)
     {
-        return new AgentWelcome($this->router);
+        return new AgentWelcome($this->router, $agentPassword);
     }
 
     /**
+     * @param string $agentPassword
+     *
      * @return AgentWelcomeUsersource
      */
-    public function createAgentWelcomeUsersourceModel()
+    public function createAgentWelcomeUsersourceModel($agentPassword)
     {
-        return new AgentWelcomeUsersource($this->router);
+        return new AgentWelcomeUsersource($this->router, $agentPassword);
     }
 
     /**

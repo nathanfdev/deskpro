@@ -50,7 +50,7 @@ class TicketParticipantHandler extends AbstractEntityHandler
      *
      * @param TicketParticipant $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         return $entity->getPerson();
     }

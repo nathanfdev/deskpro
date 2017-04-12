@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\EmailBundle\SwiftMailer\Mailer;
 use Application\EmailBundle\SwiftMailer\Message\Message;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use Doctrine\ORM\EntityManager;
@@ -129,7 +130,11 @@ class EmailSender
             throw new \Exception('Missing required "to" argument');
         }
         if ($recipient) {
-            $model->setRecipient($recipient);
+            $serializationContext = new SideloadSerializationContext();
+            $serializationContext->setInlineSideloads(true);
+            $person = $this->container->get('api_serializer.handler.person')
+                ->createModel($recipient, $serializationContext);
+            $model->setRecipient($person);
             $message->setToPerson($recipient);
         } else {
             $message->setTo($args['to']);

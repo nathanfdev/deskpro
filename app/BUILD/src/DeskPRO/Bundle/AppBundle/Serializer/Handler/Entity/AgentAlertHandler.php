@@ -73,7 +73,7 @@ class AgentAlertHandler extends AbstractEntityHandler
      *
      * @param AgentAlertEntity $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $type = 'notifications.'.$entity->getTypename();
         $data = $entity->getData();

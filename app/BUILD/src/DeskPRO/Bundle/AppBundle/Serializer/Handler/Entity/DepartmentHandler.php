@@ -88,7 +88,7 @@ class DepartmentHandler extends AbstractEntityHandler
      *
      * @param Department $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $avatar = $this->resolver->getAvatarModel($entity);
         $model  = new DepartmentModel($entity, $avatar);

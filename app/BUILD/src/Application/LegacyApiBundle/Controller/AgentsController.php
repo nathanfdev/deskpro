@@ -823,8 +823,9 @@ class AgentsController extends AbstractController implements ProtectedController
         );
         $attach->setFilename('Getting Started with DeskPRO.pdf');
         if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
-            $viewModel = $this->get('email.agent_viewmodel_factory')
-                ->createAgentWelcomeModel();
+            $agentPassword = $agent->getPlaintextPassword();
+            $viewModel     = $this->get('email.agent_viewmodel_factory')
+                ->createAgentWelcomeModel($agentPassword);
             $this->get('email.email_sender')
                 ->send($viewModel,
                     [

@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use DateTime;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AccountDisabled;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentChangedPassword;
 use DeskPRO\Bundle\SendmailBundle\View\Model\ChatTranscript;
@@ -78,6 +79,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\TicketParticipant;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketRate;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyAutoreply;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyByAgent;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -94,15 +96,22 @@ class UserViewModelFactory
     private $objectRouter;
 
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
      * Constructor.
      *
-     * @param RouterInterface $router
-     * @param ObjectRouter    $objectRouter
+     * @param RouterInterface    $router
+     * @param ObjectRouter       $objectRouter
+     * @param ContainerInterface $container
      */
-    public function __construct(RouterInterface $router, ObjectRouter $objectRouter)
+    public function __construct(RouterInterface $router, ObjectRouter $objectRouter, ContainerInterface $container)
     {
         $this->router       = $router;
         $this->objectRouter = $objectRouter;
+        $this->container    = $container;
     }
 
     /**
@@ -131,7 +140,7 @@ class UserViewModelFactory
      */
     public function createChatTranscriptModel(ChatConversation $chat, array $convoMessages)
     {
-        return new ChatTranscript($chat, $convoMessages);
+        return new ChatTranscript($this->convertParameter($chat), $convoMessages);
     }
 
     /**
@@ -141,7 +150,7 @@ class UserViewModelFactory
      */
     public function createCommentApprovedModel(CommentAbstract $comment)
     {
-        return new CommentApproved($this->objectRouter, $comment);
+        return new CommentApproved($this->objectRouter, $this->convertParameter($comment));
     }
 
     /**
@@ -151,7 +160,7 @@ class UserViewModelFactory
      */
     public function createCommentDeletedModel(CommentAbstract $comment)
     {
-        return new CommentDeleted($this->objectRouter, $comment);
+        return new CommentDeleted($this->objectRouter, $this->convertParameter($comment));
     }
 
     /**
@@ -161,7 +170,7 @@ class UserViewModelFactory
      */
     public function createCommentNewModel(CommentAbstract $comment)
     {
-        return new CommentNew($this->objectRouter, $comment);
+        return new CommentNew($this->objectRouter, $this->convertParameter($comment));
     }
 
     /**
@@ -193,7 +202,7 @@ class UserViewModelFactory
      */
     public function createFeedbackApprovedModel(Feedback $feedback, Person $agent)
     {
-        return new FeedbackApproved($this->router, $feedback, $agent);
+        return new FeedbackApproved($this->router, $this->convertParameter($feedback), $this->convertParameter($agent));
     }
 
     /**
@@ -205,7 +214,7 @@ class UserViewModelFactory
      */
     public function createFeedbackDisapprovedModel(Feedback $feedback, Person $agent, $reason)
     {
-        return new FeedbackDisapproved($feedback, $agent, $reason);
+        return new FeedbackDisapproved($this->convertParameter($feedback), $this->convertParameter($agent), $reason);
     }
 
     /**
@@ -215,7 +224,7 @@ class UserViewModelFactory
      */
     public function createFeedbackNewModel(Feedback $feedback)
     {
-        return new FeedbackNew($feedback);
+        return new FeedbackNew($this->convertParameter($feedback));
     }
 
     /**
@@ -225,7 +234,7 @@ class UserViewModelFactory
      */
     public function createFeedbackNewCommentModel(Feedback $feedback)
     {
-        return new FeedbackNewComment($this->router, $feedback);
+        return new FeedbackNewComment($this->router, $this->convertParameter($feedback));
     }
 
     /**
@@ -289,7 +298,9 @@ class UserViewModelFactory
     public function createNewReplyRejectResolvedModel(
         Ticket $ticket
     ) {
-        return new NewReplyRejectResolved($this->objectRouter, $ticket);
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return new NewReplyRejectResolved($this->convertParameter($ticket), $ticketLink);
     }
 
     /**
@@ -311,7 +322,9 @@ class UserViewModelFactory
     public function createNewTicketGuestModel(
         Ticket $ticket
     ) {
-        return new NewTicketGuest($this->objectRouter, $ticket);
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return new NewTicketGuest($this->convertParameter($ticket), $ticketLink);
     }
 
     /**
@@ -324,24 +337,32 @@ class UserViewModelFactory
 
     /**
      * @param Ticket $ticket
+     * @param string $accessCode
      *
      * @return NewTicketValidate
      */
     public function createNewTicketValidateModel(
-        Ticket $ticket
+        Ticket $ticket,
+        $accessCode
     ) {
-        return new NewTicketValidate($this->objectRouter, $ticket);
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return new NewTicketValidate($this->convertParameter($ticket), $ticketLink, $accessCode);
     }
 
     /**
      * @param Ticket $ticket
+     * @param string $accessCode
      *
      * @return NewTicketValidateEmail
      */
     public function createNewTicketValidateEmailModel(
-        Ticket $ticket
+        Ticket $ticket,
+        $accessCode
     ) {
-        return new NewTicketValidateEmail($this->objectRouter, $ticket);
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return new NewTicketValidateEmail($this->convertParameter($ticket), $ticketLink, $accessCode);
     }
 
     /**
@@ -398,7 +419,7 @@ class UserViewModelFactory
         $email,
         $name
     ) {
-        return new ShareArticle($this->objectRouter, $article, $author, $message, $email, $name);
+        return new ShareArticle($this->objectRouter, $this->convertParameter($article), $this->convertParameter($author), $message, $email, $name);
     }
 
     /**
@@ -411,7 +432,7 @@ class UserViewModelFactory
         Ticket $ticket,
         Person $author
     ) {
-        return new TicketAddCc($this->objectRouter, $ticket, $author);
+        return new TicketAddCc($this->convertParameter($ticket), $this->convertParameter($author));
     }
 
     /**
@@ -422,7 +443,9 @@ class UserViewModelFactory
     public function createTicketAutocloseWarnModel(
         Ticket $ticket
     ) {
-        return new TicketAutocloseWarn($this->objectRouter, $ticket);
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return new TicketAutocloseWarn($this->convertParameter($ticket), $ticketLink);
     }
 
     /**
@@ -433,7 +456,9 @@ class UserViewModelFactory
     public function createTicketAwaitingWarnModel(
         Ticket $ticket
     ) {
-        return new TicketAwaitingWarn($this->objectRouter, $ticket);
+        $ticketResolveLink = $this->objectRouter->getPortalUrl($ticket, 'resolve');
+
+        return new TicketAwaitingWarn($this->objectRouter, $this->convertParameter($ticket), $ticketResolveLink);
     }
 
     /**
@@ -444,7 +469,7 @@ class UserViewModelFactory
     public function createTicketAwaitingWarnFinalModel(
         Ticket $ticket
     ) {
-        return new TicketAwaitingWarnFinal($this->objectRouter, $ticket);
+        return new TicketAwaitingWarnFinal($this->convertParameter($ticket));
     }
 
     /**
@@ -455,7 +480,9 @@ class UserViewModelFactory
     public function createTicketNewAutoreplyModel(
         Ticket $ticket
     ) {
-        return new TicketNewAutoreply($this->objectRouter, $ticket);
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return new TicketNewAutoreply($this->convertParameter($ticket), $ticketLink);
     }
 
     /**
@@ -466,7 +493,9 @@ class UserViewModelFactory
     public function createTicketNewByAgentModel(
         Ticket $ticket
     ) {
-        return new TicketNewByAgent($this->objectRouter, $ticket);
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return new TicketNewByAgent($this->convertParameter($ticket), $ticketLink);
     }
 
     /**
@@ -477,7 +506,9 @@ class UserViewModelFactory
     public function createTicketParticipantModel(
         Ticket $ticket
     ) {
-        return new TicketParticipant($this->objectRouter, $ticket);
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return new TicketParticipant($this->convertParameter($ticket), $ticketLink);
     }
 
     /**
@@ -488,7 +519,9 @@ class UserViewModelFactory
     public function createTicketRateModel(
         Ticket $ticket
     ) {
-        return new TicketRate($this->objectRouter, $ticket);
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return new TicketRate($this->convertParameter($ticket), $ticketLink);
     }
 
     /**
@@ -501,7 +534,9 @@ class UserViewModelFactory
         Ticket $ticket,
         TicketMessage $message
     ) {
-        return new TicketReplyByAgent($this->objectRouter,  $ticket, $message);
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return new TicketReplyByAgent($this->convertParameter($ticket), $ticketLink, $this->convertParameter($message));
     }
 
     /**
@@ -512,6 +547,30 @@ class UserViewModelFactory
     public function createTicketReplyAutoreplyModel(
         Ticket $ticket
     ) {
-        return new TicketReplyAutoreply($this->objectRouter, $ticket);
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return new TicketReplyAutoreply($this->convertParameter($ticket), $ticketLink);
+    }
+
+    protected function convertParameter($entity)
+    {
+        $serializationContext = new SideloadSerializationContext();
+        $serializationContext->setInlineSideloads(true);
+        switch (get_class($entity)) {
+            case Person::class:
+                $handler = $this->container->get('api_serializer.handler.person');
+                break;
+            case Ticket::class:
+                $handler = $this->container->get('api_serializer.handler.ticket');
+                break;
+            case TicketMessage::class:
+                $handler = $this->container->get('api_serializer.handler.ticket_message');
+                break;
+            default:
+                throw new \Exception('Unset handler for class '.get_class($entity));
+                break;
+        }
+
+        return $handler->createModel($entity, $serializationContext);
     }
 }

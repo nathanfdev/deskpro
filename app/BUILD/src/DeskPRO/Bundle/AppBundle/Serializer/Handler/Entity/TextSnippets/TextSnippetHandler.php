@@ -80,7 +80,7 @@ class TextSnippetHandler extends AbstractEntityHandler
      *
      * @param TextSnippetEntity $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         /** @var Person $user */
         $user  = $context->getUser();

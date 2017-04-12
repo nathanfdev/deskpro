@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\EmailTemplateType;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\SendmailBundle\Factory\AgentViewModelFactory;
 use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
@@ -286,6 +287,9 @@ class TemplateController extends BaseController
         /** @var EmailBaseType $model */
         $model = call_user_func_array([$factory, $action], $arguments);
 
+        $serializationContext = new SideloadSerializationContext();
+        $serializationContext->setInlineSideloads(true);
+        $recipient = $this->get('api_serializer.handler.person')->createModel($recipient, $serializationContext);
         $model->setRecipient($recipient);
         $model->setSiteUrl($this->container->getBrandSetting('core.site_url'));
         $model->setSiteName($this->container->getBrandSetting('core.site_name'));

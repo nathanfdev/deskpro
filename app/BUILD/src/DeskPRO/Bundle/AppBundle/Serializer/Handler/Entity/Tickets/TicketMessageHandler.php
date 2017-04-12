@@ -26,35 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
 
-use Application\DeskPRO\Entity\TextSnippetCategory as TextSnippetCategoryEntity;
+use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets\TextSnippetCategory as TextSnippetCategoryModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketMessage as TicketMessageModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
-/**
- * Class TextSnippetCategoryHandler.
- */
-class TextSnippetCategoryHandler extends AbstractEntityHandler
+class TicketMessageHandler extends AbstractEntityHandler
 {
+    /**
+     * {@inheritdoc}
+     *
+     * @param TicketMessage $entity
+     *
+     * @return TicketMessageModel
+     */
+    public function createModel($entity, SideloadSerializationContext $context)
+    {
+        return new TicketMessageModel($entity);
+    }
+
     /**
      * {@inheritdoc}
      */
     public static function getClassNames()
     {
-        return TextSnippetCategoryEntity::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param TextSnippetCategoryEntity $entity
-     */
-    public function createModel($entity, SideloadSerializationContext $context)
-    {
-        $title = $entity->getObjectPropLanguageTranslationValue('title', $context->getUser()->getLanguage());
-
-        return new TextSnippetCategoryModel($entity, $title);
+        return TicketMessage::class;
     }
 }

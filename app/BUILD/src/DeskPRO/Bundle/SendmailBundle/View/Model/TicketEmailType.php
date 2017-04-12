@@ -28,8 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket;
 use JMS\Serializer\Annotation as JMS;
 
 abstract class TicketEmailType extends EmailBaseType
@@ -37,7 +36,7 @@ abstract class TicketEmailType extends EmailBaseType
     /**
      * The ticket.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Ticket")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket")
      *
      * @var Ticket
      */
@@ -55,13 +54,13 @@ abstract class TicketEmailType extends EmailBaseType
     /**
      * TicketEmailType constructor.
      *
-     * @param ObjectRouter $router
-     * @param Ticket       $ticket
+     * @param Ticket $ticket
+     * @param string $ticketLink
      */
-    public function __construct(ObjectRouter $router, Ticket $ticket)
+    public function __construct(Ticket $ticket, $ticketLink)
     {
         $this->ticket = $ticket;
 
-        $this->ticketLink = $router->getPortalUrl($ticket);
+        $this->ticketLink = $ticketLink;
     }
 }

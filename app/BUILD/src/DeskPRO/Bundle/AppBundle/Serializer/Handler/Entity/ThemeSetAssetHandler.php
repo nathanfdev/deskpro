@@ -67,7 +67,7 @@ class ThemeSetAssetHandler extends AbstractEntityHandler
      *
      * @param ThemeSetAssetEntity $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $url        = null;
         $blobAuthId = null;

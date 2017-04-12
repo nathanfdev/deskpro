@@ -227,6 +227,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.ticket_message:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketMessageHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.agent_alert:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AgentAlertHandler
     tags:

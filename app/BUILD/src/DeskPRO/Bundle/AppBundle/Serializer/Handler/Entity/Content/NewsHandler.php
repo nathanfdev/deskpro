@@ -44,7 +44,7 @@ class NewsHandler extends AbstractEntityHandler
      *
      * @param News $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         if ($context->getMappedClass(get_class($entity)) === ContentCsv::class) {
             return new ContentCsv($entity);

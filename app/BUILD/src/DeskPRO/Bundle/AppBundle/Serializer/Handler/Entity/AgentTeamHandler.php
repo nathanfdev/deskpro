@@ -66,7 +66,7 @@ class AgentTeamHandler extends AbstractEntityHandler
      *
      * @param AgentTeam $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $agent_team = new SerializedAgentTeam($entity);
         $agent_team->setAvatar($this->avatarResolver->getAvatarModel($entity));

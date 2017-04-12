@@ -48,7 +48,7 @@ class ChatMessageHandler extends AbstractEntityHandler
      *
      * @param ChatConversation $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         return new ChatMessage($entity);
     }

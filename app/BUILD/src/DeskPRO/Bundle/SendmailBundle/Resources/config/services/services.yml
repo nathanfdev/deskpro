@@ -6,7 +6,7 @@ services:
 
   email.user_viewmodel_factory:
     class: DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory
-    arguments: ["@router", "@object_router"]
+    arguments: ["@router", "@object_router", "@service_container"]
 
   email.email_renderer:
     class: DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer

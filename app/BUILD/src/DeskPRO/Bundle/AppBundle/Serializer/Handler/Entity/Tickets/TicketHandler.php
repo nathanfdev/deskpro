@@ -243,7 +243,7 @@ class TicketHandler extends AbstractEntityHandler
      *
      * @param TicketEntity $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $this->ticketIds[] = $entity->getId();
 

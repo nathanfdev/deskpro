@@ -42,7 +42,7 @@ class ArticleCategoryHandler extends AbstractCategoryHandler
      *
      * @param \Application\DeskPRO\Entity\ArticleCategory $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $model = new ArticleCategoryModel($entity);
         $model->setTitleTranslations($this->getTitleTranslations($entity));

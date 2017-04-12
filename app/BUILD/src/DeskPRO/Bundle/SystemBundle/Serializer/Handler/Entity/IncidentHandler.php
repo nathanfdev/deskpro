@@ -81,7 +81,7 @@ class IncidentHandler extends AbstractEntityHandler
      *
      * @param AbstractIncident $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $instructionsHtml = $this->instructionsGenerator->generate($entity);
 

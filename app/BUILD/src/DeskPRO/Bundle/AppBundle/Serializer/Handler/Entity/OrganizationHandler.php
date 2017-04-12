@@ -105,7 +105,7 @@ class OrganizationHandler extends AbstractEntityHandler
      *
      * @param OrganizationEntity $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $this->organizationIds[] = $entity->getId();
 

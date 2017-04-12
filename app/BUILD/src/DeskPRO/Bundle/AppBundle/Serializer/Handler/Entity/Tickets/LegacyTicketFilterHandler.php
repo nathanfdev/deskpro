@@ -69,7 +69,7 @@ class LegacyTicketFilterHandler extends AbstractEntityHandler
      *
      * @param LegacyTicketFilterEntity $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $set      = $this->getSet($entity);
         $deferred = new CallbackDeferredProperty([$this, 'getSet'], [$entity]);

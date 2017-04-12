@@ -28,9 +28,8 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
-use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketMessage;
 use JMS\Serializer\Annotation as JMS;
 
 class TicketReplyByAgent extends TicketEmailType
@@ -38,7 +37,7 @@ class TicketReplyByAgent extends TicketEmailType
     /**
      * Reply written by the agent.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\TicketMessage")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketMessage")
      *
      * @var TicketMessage
      */
@@ -49,13 +48,13 @@ class TicketReplyByAgent extends TicketEmailType
     /**
      * TicketReplyByAgent constructor.
      *
-     * @param ObjectRouter  $router
      * @param Ticket        $ticket
+     * @param string        $ticketLink
      * @param TicketMessage $reply
      */
-    public function __construct(ObjectRouter $router, Ticket $ticket, TicketMessage $reply)
+    public function __construct(Ticket $ticket, $ticketLink, TicketMessage $reply)
     {
+        parent::__construct($ticket, $ticketLink);
         $this->reply = $reply;
-        parent::__construct($router, $ticket);
     }
 }

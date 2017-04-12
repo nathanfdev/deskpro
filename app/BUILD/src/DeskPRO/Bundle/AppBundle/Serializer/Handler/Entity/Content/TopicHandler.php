@@ -59,7 +59,7 @@ class TopicHandler extends AbstractEntityHandler
      *
      * @param Topic $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         return new TopicModel($entity, $this->templatingExtension);
     }
