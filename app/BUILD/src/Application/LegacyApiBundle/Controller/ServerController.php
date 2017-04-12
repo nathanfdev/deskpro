@@ -353,6 +353,8 @@ class ServerController extends AbstractController implements ProtectedController
             's3_bucket'                 => $this->container->getSetting('core.filestorage_s3_bucket'),
             's3_key'                    => $this->container->getSetting('core.filestorage_s3_key'),
             's3_secret'                 => $this->container->getSetting('core.filestorage_s3_secret'),
+            's3_region'                 => $this->container->getSetting('core.filestorage_s3_region'),
+            's3_endpoint'               => $this->container->getSetting('core.filestorage_s3_endpoint'),
             'moving_files'              => $serverFileUploads->getMovingFiles(),
         ];
 

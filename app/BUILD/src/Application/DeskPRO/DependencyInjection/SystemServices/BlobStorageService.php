@@ -99,15 +99,15 @@ class BlobStorageService
                 // e.g. a bigger upload that was first saved to db on a web request that is now being moved
                 $connectTimeout    = $settingsBag->get('filestorage.s3.cli.connect_timeout', 4);
                 $timeout           = $settingsBag->get('filestorage.s3.cli.upload_timeout', 10);
-                $cumulativeTimeout = $settingsBag->get('filestorage.s3.cli.cumulative_timeout', null);
+                $cumulativeTimeout = $settingsBag->get('filestorage.s3.cli.cumulative_timeout');
             }
 
-            $client = S3Client::factory([
+            $s3Config = [
                 'credentials' => [
                     'key'    => $container->getSetting('core.filestorage_s3_key'),
                     'secret' => $container->getSetting('core.filestorage_s3_secret'),
                 ],
-                'region'          => $settingsBag->get('core.filestorage_s3_region', null),
+                'region'          => $settingsBag->get('core.filestorage_s3_region'),
                 'version'         => 'latest',
                 'request.options' => [
                     'connect_timeout' => $connectTimeout,
@@ -117,11 +117,17 @@ class BlobStorageService
                     CURLOPT_CONNECTTIMEOUT => $connectTimeout,
                     CURLOPT_TIMEOUT        => $timeout,
                 ],
-            ]);
+            ];
+
+            if ($endpoint = $container->getSetting('core.filestorage_s3_endpoint')) {
+                $s3Config['endpoint'] = $endpoint;
+            }
+
+            $client     = S3Client::factory($s3Config);
             $s3_adapter = new AmazonS3Storage([
                 's3_client'              => $client,
                 'bucket'                 => $container->getSetting('core.filestorage_s3_bucket'),
-                'file_url_domain'        => $container->getSetting('core.filestorage_s3_file_url_domain'),
+                'file_url_domain'        => $container->getSetting('core.filestorage_s3_endpoint'),
                 'base_path'              => $container->getSetting('core.filestorage_s3_basepath'),
                 'fail_limit_per_request' => 1,
                 'cumulative_timeout'     => $cumulativeTimeout,

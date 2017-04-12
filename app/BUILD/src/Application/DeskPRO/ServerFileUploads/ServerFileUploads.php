@@ -249,6 +249,7 @@ class ServerFileUploads
                 $settings->setSetting('core.filestorage_s3_secret', $options->get('s3_secret', null));
                 $settings->setSetting('core.filestorage_s3_bucket', $options->get('s3_bucket', null));
                 $settings->setSetting('core.filestorage_s3_region', $options->get('s3_region', null));
+                $settings->setSetting('core.filestorage_s3_endpoint', $options->get('s3_endpoint', null));
 
                 break;
         }
@@ -258,6 +259,7 @@ class ServerFileUploads
             $settings->setSetting('core.filestorage_s3_secret', null);
             $settings->setSetting('core.filestorage_s3_bucket', null);
             $settings->setSetting('core.filestorage_s3_region', null);
+            $settings->setSetting('core.filestorage_s3_endpoint', null);
         }
 
         $settings->setSetting('core.filesystem_move_from_id', '-1');
