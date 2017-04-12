@@ -251,18 +251,6 @@ class TemplateController extends BaseController
     {
         $code    = $request->request->get('code');
         $tplName = uniqid('string_template_', true);
-        $twig    = clone $this->get('templating.new_email.twig');
-        $twig->setCache(false);
-        $twig->setLoader(new \Twig_Loader_Array([
-            $tplName                                    => $code,
-            'SendmailBundle:blocks:resources.html.twig' => '',
-            'SendmailBundle:blocks:header.html.twig'    => '',
-            'SendmailBundle:blocks:footer.html.twig'    => '',
-        ]));
-
-        /** @var EmailRenderer $renderer */
-        $renderer = $this->get('email.email_renderer');
-        $renderer->setTemplateEngine($twig);
 
         $viewModel = $request->request->get('template');
         $group     = $request->request->get('group');
@@ -294,6 +282,19 @@ class TemplateController extends BaseController
         $model->setSiteUrl($this->container->getBrandSetting('core.site_url'));
         $model->setSiteName($this->container->getBrandSetting('core.site_name'));
         $model->setDeskproUrl($this->container->getBrandSetting('core.deskpro_url'));
+
+        $twig = clone $this->get('templating.new_email.twig');
+        $twig->setCache(false);
+        $twig->setLoader(new \Twig_Loader_Array([
+            $tplName                                    => $code,
+            'SendmailBundle:blocks:resources.html.twig' => '',
+            'SendmailBundle:blocks:header.html.twig'    => '',
+            'SendmailBundle:blocks:footer.html.twig'    => '',
+        ]));
+
+        /** @var EmailRenderer $renderer */
+        $renderer = $this->get('email.email_renderer');
+        $renderer->setTemplateEngine($twig);
 
         return new View($renderer->render($tplName, $model));
     }

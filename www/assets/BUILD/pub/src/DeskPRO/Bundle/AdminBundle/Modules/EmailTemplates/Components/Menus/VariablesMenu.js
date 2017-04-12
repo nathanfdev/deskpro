@@ -21,7 +21,7 @@ class VariablesMenuProperty extends React.Component {
     const { property, attribute } = this.props;
     let variableName = attribute ? `${attribute}.` : '';
     variableName += property.get('attribute');
-    return (<MenuItem onClick={() => this.selectVariable(property)}>
+    return (<MenuItem onClick={() => this.selectVariable(variableName)}>
       <span className="description">{property.get('description')}</span>
       <br />
       <span className="variable-name">
@@ -40,7 +40,11 @@ export class VariablesMenuContainer extends React.Component {
   static propTypes = {
     dispatch:       PropTypes.func,
     emailTemplates: PropTypes.object.isRequired,
-    closeMenu:      PropTypes.func
+    closeMenu:      PropTypes.func,
+    insertVariable: PropTypes.func,
+  };
+  static defaultProps = {
+    insertVariable() {},
   };
 
   constructor(props) {
@@ -71,8 +75,9 @@ export class VariablesMenuContainer extends React.Component {
     );
   };
 
-  selectVariable = () => {
-    this.props.closeMenu();
+  selectVariable = (variable) => {
+    this.props.insertVariable(`{{ ${variable} }}`);
+    setTimeout(() => this.props.closeMenu(), 100);
   };
 
   render() {

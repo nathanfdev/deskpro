@@ -133,8 +133,8 @@ export class MediaMenu extends React.Component {
         icon={MimeIcon.getIcon(file.get('mime_type'))}
         onClick={() => this.props.insertAttachment(file)}
       >
-        <i onClick={e => this.props.downloadFile(e, file)} className="download icon" title="Download" />
         <i onClick={e => this.props.deleteFile(e, file, 'attachment')} className="remove icon" title="Remove" />
+        <i onClick={e => this.props.downloadFile(e, file)} className="download icon" title="Download" />
         <i onClick={e => this.props.insertAttachmentAsLink(e, file)} className="linkify icon" title="Insert Link" />
       </MenuItem>
     );

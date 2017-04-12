@@ -35,6 +35,7 @@ class Editor extends React.Component {
           Email:
           <CodeMirror
             value={body}
+            ref={(c) => { this.bodyEditor = c; }}
             onChange={this.props.changeTemplateBody}
           />
         </div>

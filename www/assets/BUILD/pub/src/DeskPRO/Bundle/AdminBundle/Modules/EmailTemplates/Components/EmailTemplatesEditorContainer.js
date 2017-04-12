@@ -118,22 +118,27 @@ class EmailTemplatesEditorContainer extends React.Component {
   };
 
   insertInlineImage = (file) => {
-    const tag = `<img src="{{ path('serve_blob', {'blob_auth_id': '${file.get('blob_id')}', 'filename': '${file.get('name')}'}) }}" alt="" />`;
-    const body = this.props.emailTemplates.get('template').get('template_code').get('body') + tag;
-    this.changeTemplateBody(body);
+    const tag = `<img src="{{ url('serve_blob', {'blob_auth_id': '${file.get('blob_id')}', 'filename': '${file.get('name')}'}) }}" alt="" />`;
+    this.editor.editor.bodyEditor.codeMirror.replaceSelection(tag);
   };
 
   insertAttachment = (file) => {
     const tag = `<attachment id="${file.get('blob_id')}" filename="${file.get('name')}" />`;
-    const body = this.props.emailTemplates.get('template').get('template_code').get('body') + tag;
-    this.changeTemplateBody(body);
+    this.editor.editor.bodyEditor.codeMirror.replaceSelection(tag);
   };
 
   insertAttachmentAsLink = (e, file) => {
     e.stopPropagation();
-    const tag = `<a href="{{ path('serve_blob', {'blob_auth_id': '${file.get('blob_id')}', 'filename': '${file.get('name')}'}) }}" alt="">${file.get('name')}</a>`;
-    const body = this.props.emailTemplates.get('template').get('template_code').get('body') + tag;
-    this.changeTemplateBody(body);
+    const tag = `<a href="{{ url('serve_blob', {'blob_auth_id': '${file.get('blob_id')}', 'filename': '${file.get('name')}'}) }}" alt="">${file.get('name')}</a>`;
+    this.editor.editor.bodyEditor.codeMirror.replaceSelection(tag);
+  };
+
+  insertPhrase = (phrase) => {
+    this.editor.editor.bodyEditor.codeMirror.replaceSelection(phrase);
+  };
+
+  insertVariable = (variable) => {
+    this.editor.editor.bodyEditor.codeMirror.replaceSelection(variable);
   };
 
   render() {
@@ -148,9 +153,12 @@ class EmailTemplatesEditorContainer extends React.Component {
       insertInlineImage={this.insertInlineImage}
       insertAttachment={this.insertAttachment}
       insertAttachmentAsLink={this.insertAttachmentAsLink}
+      insertPhrase={this.insertPhrase}
+      insertVariable={this.insertVariable}
       resetSubmit={this.state.resetSubmit}
       saveSubmit={this.state.saveSubmit}
       undoSubmit={this.state.undoSubmit}
+      ref={(c) => { this.editor = c; }}
     />);
   }
 }
@@ -167,6 +175,8 @@ class EmailTemplatesEditor extends React.Component {
     insertAttachment:       PropTypes.func,
     insertAttachmentAsLink: PropTypes.func,
     insertInlineImage:      PropTypes.func,
+    insertPhrase:           PropTypes.func,
+    insertVariable:         PropTypes.func,
     resetSubmit:            PropTypes.bool,
     saveSubmit:             PropTypes.bool,
     undoSubmit:             PropTypes.bool,
@@ -271,6 +281,7 @@ class EmailTemplatesEditor extends React.Component {
                   <PhrasesMenuContainer
                     closeMenu={this.closePhrasesMenu}
                     languages={window.DP_ENABLED_LANGS}
+                    insertPhrase={this.props.insertPhrase}
                   />
                 </DropDownMenu>
               </div>
@@ -284,6 +295,7 @@ class EmailTemplatesEditor extends React.Component {
                 >
                   <VariablesMenuContainer
                     closeMenu={this.closeVariablesMenu}
+                    insertVariable={this.props.insertVariable}
                   />
                 </DropDownMenu>
               </div>
@@ -295,6 +307,7 @@ class EmailTemplatesEditor extends React.Component {
             subject={templateSubject}
             changeTemplateSubject={this.props.changeTemplateSubject}
             changeTemplateBody={this.props.changeTemplateBody}
+            ref={(c) => { this.editor = c; }}
           />
           <div className="footer">
             <Button

@@ -13,11 +13,17 @@ export class PhrasesMenuContainer extends React.Component {
   static propTypes = {
     emailTemplates: PropTypes.object.isRequired,
     closeMenu:      PropTypes.func,
-    languages:      PropTypes.array
+    languages:      PropTypes.array,
+    insertPhrase:   PropTypes.func,
+  };
+  static defaultProps = {
+    insertPhrase() {},
   };
 
-  selectPhrase = () => {
-    this.props.closeMenu();
+  selectPhrase = (phrase) => {
+    const key = phrase.get('key');
+    this.props.insertPhrase(`{{ phrase('${key}') }}`);
+    setTimeout(() => this.props.closeMenu(), 100);
   };
 
   render() {
