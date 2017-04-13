@@ -109,7 +109,7 @@
 		window.DeskPRO_Window = new DeskPRO.Agent.Window({
 			messageChanneler: {
 				ajaxMessagesUrl: BASE_PATH + 'get_messages.php',
-				lastMessageId: {{last_message_id}}
+				lastMessageId: {% if last_message_id %}{{last_message_id}}{% else %}0{% endif %}
 			},
 			faviconCount: {% if app.user.getPref('agent.ui.favicon_count') %}'{{ app.user.getPref('agent.ui.favicon_count') }}'{% else %}false{% endif %},
 			desktopNotifications: {% if app.user.getPref('agent.ui.desktop_notifications') %}'{{ app.user.getPref('agent.ui.desktop_notifications') }}'{% else %}false{% endif %}
