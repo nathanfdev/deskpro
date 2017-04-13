@@ -59,9 +59,15 @@ export class PhrasesMenu extends React.Component {
     };
   }
 
+  componentWillMount() {
+    const button = window.document.getElementsByClassName('phrases-button')[0];
+    this.coverWidth = button.offsetWidth;
+    this.selectFirstMenu();
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.phrases !== this.props.phrases) {
-      this.selectselectFirstMenu();
+      this.selectFirstMenu();
     }
   }
 
@@ -141,9 +147,11 @@ export class PhrasesMenu extends React.Component {
   </footer>);
 
   selectFirstMenu = () => {
-    this.setState({
-      selectedLeft: this.props.phrases.first()
-    });
+    if (this.props.phrases) {
+      this.setState({
+        selectedLeft: this.props.phrases.first()
+      });
+    }
   };
 
   selectPhrase = (phrase) => {
@@ -161,6 +169,7 @@ export class PhrasesMenu extends React.Component {
   render() {
     return (
       <div className="phrases two-panels-menu">
+        <div className="menu-button-cover" style={{ width: this.coverWidth + 20 }} />
         <MenuWrapper>
           <SearchBox
             onUserInput={this.updateFilter}

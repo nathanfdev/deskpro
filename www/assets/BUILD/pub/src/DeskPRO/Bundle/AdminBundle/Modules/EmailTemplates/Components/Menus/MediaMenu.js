@@ -106,6 +106,11 @@ export class MediaMenu extends React.Component {
     uploading:              PropTypes.bool
   };
 
+  componentWillMount() {
+    const button = window.document.getElementsByClassName('media-button')[0];
+    this.coverWidth = button.offsetWidth;
+  }
+
   getInlineFiles = () => {
     if (!this.props.inlineFiles) {
       return null;
@@ -143,6 +148,7 @@ export class MediaMenu extends React.Component {
   render() {
     return (
       <div className="media-drop-down">
+        <div className="menu-button-cover" style={{ width: this.coverWidth + 20 }} />
         <div className={classNames('ui dimmer', { active: this.props.uploading })}>
           <div className="ui text loader">Uploading file</div>
         </div>

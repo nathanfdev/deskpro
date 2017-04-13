@@ -213,11 +213,18 @@
   }
 }
 .email-dropdown-menu {
-  &.ui.bottom.left.popup:before {
+    .ui.bottom.left.popup:before {
+      display: none;
+    }
+    .ui.bottom.left.popup .menu-button-cover {
     left: 1px;
     width: 50px;
     transform: rotate(0deg);
-    display: none;
+    position: absolute;
+    background: #FFFFFF;
+    z-index: 2;
+    top: 0;
+    height: 1px;
   }
   user-select: none;
   &.active {
@@ -254,6 +261,9 @@
       color: $dp-sonic-primary !important;
     }
   }
+  .ui.vertical.menu {
+    border: 0;
+  }
   .ui.vertical.menu a.item.template:hover {
     background-color: $dp-morning-sky;
     color: $dp-sonic-primary;
@@ -286,6 +296,7 @@
   width: 780px;
   height: 550px;
   .ui.vertical.menu {
+    width: auto;
     footer {
       padding: 20px;
       font-size: 14px;
@@ -320,6 +331,7 @@
   width: 780px;
   height: 550px;
   .ui.vertical.menu {
+    border-width: 0 1px 0 0;
     > .item {
       max-height: 550px;
       overflow-y: auto;

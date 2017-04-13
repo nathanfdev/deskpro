@@ -27,7 +27,6 @@ class PopUp extends React.Component {
   };
 
   static defaultProps = {
-    onOpen() {},
     className:      '',
     innerClassName: '',
 
@@ -40,7 +39,7 @@ class PopUp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: !!this.props.opened
+      isOpen: this.props.opened
     };
 
     if (this.props.autoClose) {

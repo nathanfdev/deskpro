@@ -119,6 +119,12 @@ export class VariablesMenu extends React.Component {
     };
   }
 
+  componentWillMount() {
+    const button = window.document.getElementsByClassName('variables-button')[0];
+    this.coverWidth = button.offsetWidth;
+    this.selectFirstMenu();
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.viewModel !== this.props.viewModel) {
       this.setState({
@@ -249,6 +255,14 @@ export class VariablesMenu extends React.Component {
     this.ticketIdField.focus();
   };
 
+  selectFirstMenu = () => {
+    if (this.props.viewModel) {
+      this.setState({
+        selectedLeft: this.props.viewModel.first()
+      });
+    }
+  };
+
   updateFilter = (value) => {
     this.setState({
       filter: value
@@ -260,6 +274,7 @@ export class VariablesMenu extends React.Component {
   render() {
     return (
       <div className="variables two-panels-menu">
+        <div className="menu-button-cover" style={{ width: this.coverWidth + 20 }} />
         <MenuWrapper>
           <SearchBox
             onUserInput={this.updateFilter}

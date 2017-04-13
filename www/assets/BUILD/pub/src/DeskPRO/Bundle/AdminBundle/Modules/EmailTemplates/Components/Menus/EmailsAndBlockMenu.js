@@ -68,6 +68,8 @@ export class EmailsAndBlockMenu extends React.Component {
         selectedLeft: this.props.emails.first()
       });
     }
+    const button = window.document.getElementsByClassName('emails-block-button')[0];
+    this.coverWidth = button.offsetWidth;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -203,6 +205,7 @@ export class EmailsAndBlockMenu extends React.Component {
   render() {
     return (
       <div className="email-and-block two-panels-menu">
+        <div className="menu-button-cover" style={{ width: this.coverWidth + 20 }} />
         <MenuWrapper>
           <SearchBox
             onUserInput={this.updateFilter}
