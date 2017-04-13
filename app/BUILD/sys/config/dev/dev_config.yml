@@ -1,3 +1,6 @@
+imports:
+  - { resource: ../api/api_versions.yml }
+
 services:
   dpdev.onesky:
     class: DeskPRO\Bundle\DevBundle\Language\OneSky
