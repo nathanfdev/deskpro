@@ -182,7 +182,9 @@ export class VariablesMenu extends React.Component {
         console.log('No properties');
         return null;
       }
-      properties = this.state.selectedLeft.get('properties').valueSeq().map(
+      properties = this.state.selectedLeft.get('properties').valueSeq().sort(
+        (a, b) => a.get('attribute').localeCompare(b.get('attribute'))
+      ).map(
         (property, key) => {
           if (
             this.state.filter

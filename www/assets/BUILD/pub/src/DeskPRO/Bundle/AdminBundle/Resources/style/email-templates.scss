@@ -334,16 +334,13 @@
   .ui.vertical.menu {
     border-width: 0 1px 0 0;
     > .item {
-      max-height: 550px;
       overflow-y: auto;
-      .phrase-key {
-        color: #00a99d;
-      }
-    }
-    &:first-child > .item {
       max-height: 443px;
       margin-bottom: 60px;
       width: 260px;
+      .phrase-key {
+        color: #00a99d;
+      }
     }
     footer {
       padding: 20px;
@@ -370,6 +367,8 @@
       padding-top: 0;
       overflow-y: auto;
       max-height: 550px;
+      width: auto;
+      margin-bottom: 0;
     }
     .menu {
       margin: 0;

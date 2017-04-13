@@ -153,17 +153,20 @@ class EmailRenderer
         return $this->simplifyStructure($parser->parse(['class' => $class, 'groups' => []]));
     }
 
-    private function simplifyStructure($parsedModel)
+    private function simplifyStructure($parsedModel, $level = 0)
     {
         $structure = [];
         foreach ($parsedModel as $key => $attribute) {
+            if ($attribute['subType'] && $level) {
+                continue;
+            }
             $structure[$key] = [
                 'description' => $attribute['description'],
                 'type'        => $attribute['dataType'],
                 'attribute'   => $key,
             ];
             if (!empty($attribute['children'])) {
-                $structure[$key]['properties'] = $this->simplifyStructure($attribute['children']);
+                $structure[$key]['properties'] = $this->simplifyStructure($attribute['children'], $level + 1);
             }
         }
 

@@ -105,7 +105,9 @@ export class PhrasesMenu extends React.Component {
     if (!this.state.selectedLeft.get('phrases')) {
       return null;
     }
-    const properties = this.state.selectedLeft.get('phrases').valueSeq().map(
+    const properties = this.state.selectedLeft.get('phrases').valueSeq().sort(
+      (a, b) => a.get('key').localeCompare(b.get('key'))
+    ).map(
       (phrase, key) => {
         if (
           this.state.filter
