@@ -47,19 +47,31 @@ class VersionListenerSpec extends ObjectBehavior
         $this->beConstructedWith($versionInfo, $requestMatcher);
     }
 
-    public function it_verifies_unknown_api(
+    public function it_gets_closes_version(
         Request          $request,
         GetResponseEvent $event,
-        ApiVersionInfo   $versionInfo
+        ApiVersionInfo   $versionInfo,
+        ParameterBag     $attributes,
+        RequestMatcher   $requestMatcher
     ) {
         $event->getRequest()->willReturn($request);
         $request->getPathInfo()->willReturn('/api/v2/1234/people');
-        $versionInfo->hasVersion('1234')->willReturn(false);
+        $request->getMethod()->willReturn('GET');
 
-        $this
-            ->shouldThrow('\Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
-            ->during('onRequest', [$event])
-        ;
+        $versionInfo->getClosestVersion('1234')->willReturn('20160101');
+        $versionInfo->getDefaultVersion()->shouldBeCalled();
+        $versionInfo->getDefaultVersion()->willReturn('20170401');
+        $versionInfo->getLowerVersions('20160101')->willReturn([
+            '20160101',
+        ]);
+
+        $attributes->set('version', '20160101')->shouldBeCalled();
+        $request->attributes = $attributes;
+
+        $requestMatcher->routeExists('/api/v2/20160101/people', 'GET')->shouldBeCalled();
+        $requestMatcher->routeExists('/api/v2/20160101/people', 'GET')->willReturn(true);
+
+        $this->onRequest($event);
     }
 
     public function it_uses_default_version(
@@ -102,7 +114,7 @@ class VersionListenerSpec extends ObjectBehavior
         $request->getMethod()->willReturn('GET');
 
         $versionInfo->getDefaultVersion()->willReturn('20170401');
-        $versionInfo->hasVersion('20170401')->willReturn(true);
+        $versionInfo->getClosestVersion('20170401')->willReturn('20170401');
         $versionInfo->getLowerVersions('20170401')->willReturn([
             '20170401',
             '20160101',
@@ -129,7 +141,7 @@ class VersionListenerSpec extends ObjectBehavior
         $request->getMethod()->willReturn('GET');
 
         $versionInfo->getDefaultVersion()->willReturn('20170401');
-        $versionInfo->hasVersion('20160101')->willReturn(true);
+        $versionInfo->getClosestVersion('20160101')->willReturn('20160101');
         $versionInfo->getLowerVersions('20160101')->willReturn([
             '20160101',
         ]);

@@ -33,7 +33,6 @@ use DeskPRO\Bundle\AppBundle\Routing\RequestMatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -83,10 +82,7 @@ class VersionListener implements EventSubscriberInterface
 
         // get version number from the request
         if (preg_match('#^/api/v2/(\d+)#', $request->getPathInfo(), $matches)) {
-            $currentVersion = $matches[1];
-            if (!$this->versionInfo->hasVersion($currentVersion)) {
-                throw new NotFoundHttpException('Unknown api version');
-            }
+            $currentVersion = $this->versionInfo->getClosestVersion($matches[1]);
         } else {
             $currentVersion = $this->versionInfo->getDefaultVersion();
         }
@@ -99,7 +95,7 @@ class VersionListener implements EventSubscriberInterface
 
         $pathInfo = $request->getPathInfo();
         $pathInfo = preg_replace('#^/api/v2#', '', $pathInfo);
-        $pathInfo = preg_replace('#^/\d{8}#', '', $pathInfo);
+        $pathInfo = preg_replace('#^/\d+#', '', $pathInfo);
         $pathInfo = ltrim($pathInfo, '/');
 
         $matchedVersion = null;
