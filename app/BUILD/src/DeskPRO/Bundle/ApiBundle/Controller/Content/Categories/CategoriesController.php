@@ -42,6 +42,7 @@ use FOS\RestBundle\View\View;
  * Class CategoriesController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/content_categories")
  */
 class CategoriesController extends BaseController
 {
@@ -56,7 +57,7 @@ class CategoriesController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Content\CategoriesList",
      * )
      * @Rest\View(serializerGroups={"list"})
-     * @Rest\Get("/content_categories")
+     * @Rest\Get("")
      */
     public function getCategoriesGroupedByContentTypeAction()
     {

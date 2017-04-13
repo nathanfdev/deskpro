@@ -11,6 +11,14 @@ services:
   api_view_representation_factory:
     class: DeskPRO\Bundle\ApiBundle\View\ApiViewRepresentationFactory
 
+  version_listener:
+    class: DeskPRO\Bundle\ApiBundle\EventListener\VersionListener
+    arguments:
+      - "@api.version_info"
+      - "@request_matcher"
+    tags:
+      - { name: kernel.event_subscriber }
+
   content_type_listener:
     class: DeskPRO\Bundle\ApiBundle\EventListener\ContentTypeListener
     tags:

@@ -129,3 +129,7 @@ services:
   url_corrector_factory:
     class: DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory
     arguments: ["@brand_aware_settings_resolver"]
+
+  request_matcher:
+    class: DeskPRO\Bundle\AppBundle\Routing\RequestMatcher
+    arguments: ["@dp.dynamic_context_router"]

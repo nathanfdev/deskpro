@@ -62,6 +62,7 @@ use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\LabelTask;
 use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Organization;
@@ -101,6 +102,7 @@ use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use DeskPRO\Bundle\AppBundle\Entity\TaskList;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use DeskPRO\Bundle\AppBundle\Entity\TaskSubtask;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceRecordAsset;
@@ -352,6 +354,8 @@ class ObjectsManager
             'VoiceAutoAttendantTarget' => [Factory\SimpleFactory::class, 'create', VoiceAutoAttendantTarget::class],
             'ClientDevice'             => [Factory\SimpleFactory::class, 'create', ClientDevice::class],
             'LabelPerson'              => [Factory\SimpleFactory::class, 'create', LabelPerson::class],
+            'LegacyTicketFilter'       => [Factory\SimpleFactory::class, 'create', LegacyTicketFilter::class],
+            'TicketFilter'             => [Factory\SimpleFactory::class, 'create', TicketFilter::class],
         ];
     }
 
@@ -451,6 +455,8 @@ class ObjectsManager
             'VoiceAgentTarget'         => [$this, 'find', VoiceAgentTarget::class],
             'VoiceAutoAttendantTarget' => [$this, 'find', VoiceAutoAttendantTarget::class],
             'LabelPerson'              => [$this, 'find', LabelPerson::class],
+            'LegacyTicketFilter'       => [$this, 'find', LegacyTicketFilter::class],
+            'TicketFilter'             => [$this, 'find', TicketFilter::class],
         ];
     }
 }

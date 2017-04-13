@@ -1,11 +1,11 @@
 imports:
     - { resource: ../config.shared.php }
     - { resource: ../../../src/DeskPRO/Bundle/AppBundle/Resources/config/notification.yml }
+    - { resource: ./api_versions.yml }
 
 # Keeping all parameter changes here rather than in various bundles
 parameters:
   doctrine.orm.proxy_dir: "%kernel.cache_dir%/doctrine-proxies"
-  fos_rest.routing.loader.reader.controller.class: DeskPRO\Bundle\ApiBundle\Routing\ApiRestControllerReader
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
   nelmio_api_doc.extractor.api_doc_extractor.class: DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\ApiDocExtractor
@@ -67,7 +67,7 @@ fos_rest:
         inflector: api_url_inflector
     format_listener:
         rules:
-            - { path: '^/api/v2', priorities: ['json', 'jsonp'], fallback_format: json, exception_fallback_format: json, prefer_extension: false }
+            - { path: '^/api/v2', priorities: ['json', 'jsonp'], fallback_format: json, prefer_extension: false }
     exception:
         enabled: true
         exception_controller: 'DeskPRO\Bundle\ApiBundle\Controller\ExceptionController::showAction'

@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class UserChatMessagesController.
  *
  * @ApiModes("all")
- * @Rest\Route("user_chats/{conversationId}/messages")
+ * @Rest\Route("/user_chats/{conversationId}/messages")
  * @ApiDoc(target="all", section="Chats", output="Application\DeskPRO\Entity\ChatMessage")
  * @ApiDoc(
  *     target="listAction,countAction",

@@ -39,6 +39,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TagsController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/api_tags")
  */
 class TagsController extends BaseController
 {
@@ -62,7 +63,7 @@ class TagsController extends BaseController
      *     },
      *     output="array<DeskPRO\Bundle\AppBundle\ApiTag\Model\Tag>"
      * )
-     * @Rest\Get("/api_tags/{id}")
+     * @Rest\Get("/{id}")
      *
      * @param int $id
      *
@@ -97,7 +98,7 @@ class TagsController extends BaseController
      *     },
      *     output="array<string>"
      * )
-     * @Rest\Get("/api_tags/{id}/flatten")
+     * @Rest\Get("/{id}/flatten")
      *
      * @param int $id
      *
@@ -140,7 +141,7 @@ class TagsController extends BaseController
      *     },
      *     noInput=true
      * )
-     * @Rest\Put("/api_tags/{id}", name="api_tags_put", requirements={"id": "\d+"})
+     * @Rest\Put("/{id}", name="api_tags_put", requirements={"id": "\d+"})
      *
      * @param Request $request
      * @param int     $id

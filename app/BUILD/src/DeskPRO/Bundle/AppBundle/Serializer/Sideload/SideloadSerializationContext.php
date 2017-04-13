@@ -279,7 +279,7 @@ class SideloadSerializationContext extends SerializationContext
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isInlineSideloads()
     {
@@ -287,7 +287,7 @@ class SideloadSerializationContext extends SerializationContext
     }
 
     /**
-     * @param boolean $inlineSideloads
+     * @param bool $inlineSideloads
      */
     public function setInlineSideloads($inlineSideloads)
     {

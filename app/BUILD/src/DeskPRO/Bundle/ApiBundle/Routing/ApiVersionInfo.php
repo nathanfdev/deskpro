@@ -26,61 +26,70 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Annotation;
-
-use FOS\RestBundle\Controller\Annotations\View;
+namespace DeskPRO\Bundle\ApiBundle\Routing;
 
 /**
- * We extend FOSRest View annotation to define serializer additional configuration params.
- *
- * @Annotation
- * @Target({"METHOD","CLASS"})
+ * Class ApiVersionInfo.
  */
-class SerializerView extends View
+class ApiVersionInfo
 {
+    /**
+     * @var string
+     */
+    private $defaultVersion = 'latest';
+
     /**
      * @var array
      */
-    protected $mapping = [];
+    private $versions = [];
 
     /**
-     * @var bool
+     * Constructor.
+     *
+     * @param string $defaultVersion
+     * @param array  $versions
      */
-    protected $serializeNull = true;
-
-    /**
-     * @return bool
-     */
-    public function isSerializeNull()
+    public function __construct($defaultVersion, array $versions)
     {
-        return $this->serializeNull;
+        $this->defaultVersion = $defaultVersion;
+        $this->versions       = $versions;
     }
 
     /**
-     * @param bool $serializeNull
-     *
-     * @return $this
+     * @return string
      */
-    public function setSerializeNull($serializeNull)
+    public function getDefaultVersion()
     {
-        $this->serializeNull = $serializeNull;
-
-        return $this;
+        return $this->defaultVersion === 'latest' ? max($this->versions) : $this->defaultVersion;
     }
 
     /**
      * @return array
      */
-    public function getMapping()
+    public function getVersions()
     {
-        return $this->mapping;
+        return $this->versions;
     }
 
     /**
-     * @param array $mapping
+     * @param string $version
+     *
+     * @return bool
      */
-    public function setMapping(array $mapping)
+    public function hasVersion($version)
     {
-        $this->mapping = $mapping;
+        return in_array($version, $this->versions);
+    }
+
+    /**
+     * @param $checkVersion
+     *
+     * @return array
+     */
+    public function getLowerVersions($checkVersion)
+    {
+        return array_filter($this->versions, function ($version) use ($checkVersion) {
+            return (int) $checkVersion >= (int) $version;
+        });
     }
 }

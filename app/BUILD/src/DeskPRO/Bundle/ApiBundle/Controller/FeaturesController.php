@@ -44,6 +44,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  * Class FeaturesController.
  *
  * @ApiModes({"session", "key"})
+ * @Rest\Route("/features")
  * @ApiUserContext("admin")
  */
 class FeaturesController extends BaseController
@@ -61,7 +62,7 @@ class FeaturesController extends BaseController
      * )
      *
      * @return View
-     * @Rest\Get("/features")
+     * @Rest\Get("")
      */
     public function getFeaturesAction()
     {
@@ -111,7 +112,7 @@ class FeaturesController extends BaseController
      * @param string $id
      *
      * @return View
-     * @Rest\Get("/features/{id}")
+     * @Rest\Get("/{id}")
      */
     public function getFeatureAction($id)
     {
@@ -157,7 +158,7 @@ class FeaturesController extends BaseController
      * @param string $id
      *
      * @return View
-     * @Rest\Put("/features/{id}/enable")
+     * @Rest\Put("/{id}/enable")
      */
     public function enableFeatureAction($id)
     {
@@ -206,7 +207,7 @@ class FeaturesController extends BaseController
      * @param string $id
      *
      * @return View
-     * @Rest\Put("/features/{id}/disable")
+     * @Rest\Put("/{id}/disable")
      */
     public function disableFeatureAction($id)
     {

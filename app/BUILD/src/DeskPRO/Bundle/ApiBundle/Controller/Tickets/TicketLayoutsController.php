@@ -43,6 +43,7 @@ use FOS\RestBundle\View\View;
  * Class TicketLayoutsController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/ticket_layouts/{context}")
  */
 class TicketLayoutsController extends BaseController
 {
@@ -63,7 +64,7 @@ class TicketLayoutsController extends BaseController
      *     },
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayout>"
      * )
-     * @Rest\Get("/ticket_layouts/{context}",
+     * @Rest\Get("",
      *      name="api_ticket_layouts",
      *      requirements={"context"="(agent|user)"}
      * )
@@ -101,7 +102,7 @@ class TicketLayoutsController extends BaseController
      *     },
      *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayout"
      * )
-     * @Rest\Get("/ticket_layouts/{context}/{departmentId}",
+     * @Rest\Get("/{departmentId}",
      *      name="api_ticket_layout",
      *      requirements={"context"="(agent|user)", "departmentId"="(\d+|default)"}
      * )

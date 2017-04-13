@@ -36,12 +36,14 @@ Feature: /user_chats/counts endpoint
     And the JSON node "data.count" should be equal to 5
     And the JSON node "data.nested" should have 2 elements
 
-    And the JSON node "data.nested[0].id" should be equal to "2000-01-02"
+    And the JSON node "data.nested[0].id" should be null
+    And the JSON node "data.nested[0].value" should be equal to "2000-01-02"
     And the JSON node "data.nested[0].type" should be equal to "date_created"
     And the JSON node "data.nested[0].title" should be equal to "2000-01-02"
     And the JSON node "data.nested[0].count" should be equal to 3
 
-    And the JSON node "data.nested[1].id" should be equal to "2000-01-03"
+    And the JSON node "data.nested[1].id" should be null
+    And the JSON node "data.nested[1].value" should be equal to "2000-01-03"
     And the JSON node "data.nested[1].type" should be equal to "date_created"
     And the JSON node "data.nested[1].title" should be equal to "2000-01-03"
     And the JSON node "data.nested[1].count" should be equal to 2
@@ -53,7 +55,8 @@ Feature: /user_chats/counts endpoint
     And the JSON node "data.count" should be equal to 3
     And the JSON node "data.nested" should have 1 element
 
-    And the JSON node "data.nested[0].id" should be equal to "2000-01-02"
+    And the JSON node "data.nested[0].id" should be null
+    And the JSON node "data.nested[0].value" should be equal to "2000-01-02"
     And the JSON node "data.nested[0].count" should be equal to 3
 
   Scenario: I group by date period
@@ -63,7 +66,8 @@ Feature: /user_chats/counts endpoint
     And the JSON node "data.count" should be equal to 5
     And the JSON node "data.nested" should have 1 element
 
-    And the JSON node "data.nested[0].id" should be equal to "ever"
+    And the JSON node "data.nested[0].id" should be null
+    And the JSON node "data.nested[0].value" should be equal to "ever"
     And the JSON node "data.nested[0].type" should be equal to "date_period"
     And the JSON node "data.nested[0].title" should be equal to "Ever"
     And the JSON node "data.nested[0].count" should be equal to 5

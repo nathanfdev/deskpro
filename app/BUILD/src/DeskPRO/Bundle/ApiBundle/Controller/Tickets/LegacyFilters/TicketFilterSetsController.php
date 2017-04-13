@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -41,6 +37,7 @@ use FOS\RestBundle\View\View;
  * Class TicketFilterSetsController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/ticket_filter_sets")
  * @ApiDoc(target="all", section="Ticket filters (legacy)")
  */
 class TicketFilterSetsController extends AbstractLegacyFiltersController
@@ -56,7 +53,7 @@ class TicketFilterSetsController extends AbstractLegacyFiltersController
      *     output="array<DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet\LegacyTicketFilterSet>"
      * )
      *
-     * @Rest\Get("/ticket_filter_sets")
+     * @Rest\Get("")
      */
     public function listAction()
     {
@@ -84,7 +81,7 @@ class TicketFilterSetsController extends AbstractLegacyFiltersController
      *     output="DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet\LegacyTicketFilterSet"
      * )
      *
-     * @Rest\Get("/ticket_filter_sets/{id}")
+     * @Rest\Get("/{id}")
      *
      * @param int $id
      *
@@ -116,7 +113,7 @@ class TicketFilterSetsController extends AbstractLegacyFiltersController
      *     },
      *     output="array<Application\DeskPRO\Entity\TicketFilter>"
      * )
-     * @Rest\Get("/ticket_filter_sets/{id}/filters")
+     * @Rest\Get("/{id}/filters")
      *
      * @param int $id
      *

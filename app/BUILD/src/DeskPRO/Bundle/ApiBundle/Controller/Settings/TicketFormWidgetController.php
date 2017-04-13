@@ -41,6 +41,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * Class TicketFormWidgetController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/ticket-form-widget/code")
  */
 class TicketFormWidgetController extends BaseController
 {
@@ -53,7 +54,7 @@ class TicketFormWidgetController extends BaseController
      *     },
      *     noOutput=true
      * )
-     * @Rest\Get("/ticket-form-widget/code")
+     * @Rest\Get("")
      *
      * @param Request $request
      *

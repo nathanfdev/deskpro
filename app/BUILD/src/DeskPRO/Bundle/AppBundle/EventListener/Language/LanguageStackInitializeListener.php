@@ -304,18 +304,19 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         $negotiator = new LanguageNegotiator();
 
         // get the language codes of all portal langs enabled
-        $langs      = $this->language_manager->getEnabledLanguages();
-        $lang_codes = array_map(function (Language $lang) {
+        $langs     = $this->language_manager->getEnabledLanguages();
+        $langCodes = array_map(function (Language $lang) {
             return $lang->getUrlCode();
         }, $langs);
 
-        // negotiate between our list of supported langs vs. the Accept-Language header
-        $header_lang = $negotiator->getBest(
-            $request->headers->get('Accept-Language'),
-            $lang_codes
-        );
+        $header = $request->headers->get('Accept-Language');
+        if (!$header) {
+            return;
+        }
 
-        if (!$header_lang) {
+        // negotiate between our list of supported langs vs. the Accept-Language header
+        $headerLang = $negotiator->getBest($header, $langCodes);
+        if (!$headerLang) {
             return;
         }
 
@@ -324,10 +325,10 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         // (e.g. if the request header had all langs that we do not support).
         // it's better to move on and eventually use portal-defined default lang than
         // to use a lang they didn't request.
-        $header_lang = $header_lang->getValue();
-        if (in_array($header_lang, $request->getLanguages())) {
+        $headerLang = $headerLang->getValue();
+        if (in_array($headerLang, $request->getLanguages())) {
             try {
-                return $this->language_manager->getLanguage($header_lang);
+                return $this->language_manager->getLanguage($headerLang);
             } catch (\Exception $e) {
             }
         }

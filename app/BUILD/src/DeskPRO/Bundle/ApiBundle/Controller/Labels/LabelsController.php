@@ -41,6 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class LabelsController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/{type}_labels")
  */
 class LabelsController extends BaseController
 {
@@ -76,7 +77,7 @@ class LabelsController extends BaseController
      * )
      * @ApiUnstable()
      * @Rest\Get(
-     *     "/{type}_labels",
+     *     "",
      *     name="api_person_labels_list",
      *     requirements={
      *         "type"="task|ticket|person|organization|feedback|news|chat|article|download"

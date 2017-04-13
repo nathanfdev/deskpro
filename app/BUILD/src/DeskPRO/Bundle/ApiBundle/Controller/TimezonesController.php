@@ -38,6 +38,7 @@ use FOS\RestBundle\View\View;
  * Class TimezonesController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/timezones")
  * @ApiDoc(target="all", section="Timezones")
  */
 class TimezonesController extends BaseController
@@ -54,7 +55,7 @@ class TimezonesController extends BaseController
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Timezone>"
      * )
      *
-     * @Rest\Get("/timezones")
+     * @Rest\Get("")
      */
     public function listAction()
     {

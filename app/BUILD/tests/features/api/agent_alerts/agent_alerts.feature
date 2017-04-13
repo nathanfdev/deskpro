@@ -108,11 +108,11 @@ Feature: /me/notifications endpoint
     And the response should be in JSON
 
     And the JSON node "data.count" should be equal to 4
-    And the JSON node "data.nested[0].id" should be equal to "dismissed"
+    And the JSON node "data.nested[0].value" should be equal to "dismissed"
     And the JSON node "data.nested[0].type" should be equal to "is_dismissed"
     And the JSON node "data.nested[0].title" should be equal to "Dismissed"
     And the JSON node "data.nested[0].count" should be equal to 3
-    And the JSON node "data.nested[1].id" should be equal to "non_dismissed"
+    And the JSON node "data.nested[1].value" should be equal to "non_dismissed"
     And the JSON node "data.nested[1].type" should be equal to "is_dismissed"
     And the JSON node "data.nested[1].title" should be equal to "Non dismissed"
     And the JSON node "data.nested[1].count" should be equal to 1
