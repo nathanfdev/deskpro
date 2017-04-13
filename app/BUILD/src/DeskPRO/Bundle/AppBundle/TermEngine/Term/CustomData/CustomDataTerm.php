@@ -43,7 +43,10 @@ class CustomDataTerm extends AbstractTerm
      */
     public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setDefaults(['field_id' => null, 'custom_data_value' => null]);
+        $resolver->setDefaults([
+            'field_id'          => null,
+            'custom_data_value' => null,
+        ]);
         $resolver->setConstraints([
             new Assert\NotBlank(),
         ]);

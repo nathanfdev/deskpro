@@ -43,12 +43,11 @@ class DbalTicketParticipantTermCompiler extends AbstractDbalTermCompiler
      */
     public function doCompile(TermInterface $term)
     {
-        $query_part = new DbalQueryPart();
-
         $op    = $term->getOp();
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
-        $query_part->addUniqueJoin(
+        $qp = new DbalQueryPart();
+        $qp->addUniqueJoin(
             'participants',
             'tickets_participants',
             '{participants}.ticket_id = ticket.id'
@@ -63,12 +62,11 @@ class DbalTicketParticipantTermCompiler extends AbstractDbalTermCompiler
             }
         }
 
-        $query_part->setParameter('person_ids', $person_ids);
+        $qp->setParameter('person_ids', $person_ids);
+        $qp->setWhereString(sprintf('{participants}.person_id %s (:person_ids)', $isser));
 
-        $query_part->setWhereString(sprintf('{participants}.person_id %s (:person_ids)', $isser));
+        $this->logQueryPart($qp);
 
-        $this->logQueryPart($query_part);
-
-        return $query_part;
+        return $qp;
     }
 }

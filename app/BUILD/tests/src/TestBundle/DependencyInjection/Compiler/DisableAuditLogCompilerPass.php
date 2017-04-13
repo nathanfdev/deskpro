@@ -26,33 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomData;
+namespace DpTestSrc\TestBundle\DependencyInjection\Compiler;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * Class PhpTicketCustomDataTermCompiler.
+ * Class DisableAuditLogCompilerPass.
  */
-class PhpTicketCustomDataTermCompiler extends AbstractPhpTermCompiler
+class DisableAuditLogCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
-    protected function doCompile(TermInterface $term)
+    public function process(ContainerBuilder $container)
     {
-        $op       = $term->getOp();
-        $field_id = $term->getOption('field_id');
-        $values   = $term->getOption('values');
-        $input    = $term->getOption('input');
-
-        $check = new PhpCheck('custom_field_check(ticket, :field_id, :op, :values, :input)');
-        $check->setVariable('field_id', $term->getOption('field_id'));
-        $check->setVariable('op', $term->getOp());
-        $check->setVariable('values', $term->getOption('values'));
-        $check->setVariable('input', $term->getOption('input'));
-
-        return $check;
+        // disable audit listener on test
+        if ($container->hasDefinition('audit_log.doctrine_listener')) {
+            $container->getDefinition('audit_log.doctrine_listener')->addMethodCall('disableListener');
+        }
     }
 }

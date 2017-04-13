@@ -26,15 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalNumericHelper.
+ */
 class DbalNumericHelper extends AbstractDbalHelper
 {
     /**
@@ -48,21 +47,25 @@ class DbalNumericHelper extends AbstractDbalHelper
     }
 
     /**
-     * @param $field_name
-     * @param $op
-     * @param array $num
-     * @param null  $num2
+     * @param string    $fieldName
+     * @param string    $op
+     * @param int|int[] $num
+     * @param null      $num2
      *
      * @return DbalQueryPart
      */
-    public function buildQueryPart($field_name, $op, array $num, $num2 = null)
+    public function buildQueryPart($fieldName, $op, $num, $num2 = null)
     {
         $part = new DbalQueryPart();
+
+        if (!is_array($num)) {
+            $num = [$num];
+        }
 
         $num = array_unique(array_map('intval', $num));
         $num = $num ?: [0];
 
-        $where = $field_name.' ';
+        $where = $fieldName.' ';
 
         switch ($op) {
             case TermInterface::OP_NOT:

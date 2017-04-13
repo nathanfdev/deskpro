@@ -43,23 +43,22 @@ class DbalAgentTeamTermCompiler extends AbstractDbalTermCompiler
     public function doCompile(TermInterface $term)
     {
         $ids = [];
-
-        foreach ($term->getOption('agent_team_ids') as $agent_team_id) {
-            if ($agent_team_id === AgentTeamTerm::TEAM_ID_ME) {
+        foreach ($term->getOption('agent_team_ids') as $teamId) {
+            if ($teamId === AgentTeamTerm::TEAM_ID_ME) {
                 $ids[] = new TermEngineExpression('agent.getTeamIds()');
             } else {
-                $ids[] = $agent_team_id;
+                $ids[] = $teamId;
             }
         }
 
-        $query_part = $this->getEntityHelper()->buildQueryPart(
+        $qp = $this->getEntityHelper()->buildQueryPart(
             'ticket.agent_team_id',
             $term->getOp(),
             $ids
         );
 
-        $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-        return $query_part;
+        return $qp;
     }
 }

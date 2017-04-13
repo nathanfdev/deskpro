@@ -26,13 +26,8 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets;
 
-use Application\DeskPRO\Entity\TicketFlagged;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
@@ -100,16 +95,16 @@ class TicketsSelectCriteria
 
             switch ($param) {
                 case 'agent':
-                    $composite->addTerm(new AgentTerm(['agent_ids' => [$value]]));
+                    $composite->addTerm(new AgentTerm(['agent_ids' => $value]));
                     break;
                 case 'agent_team':
-                    $composite->addTerm(new AgentTeamTerm(['agent_team_ids' => [$value]]));
+                    $composite->addTerm(new AgentTeamTerm(['agent_team_ids' => $value]));
                     break;
                 case 'department':
-                    $composite->addTerm(new DepartmentTerm(['department_ids' => [$value]]));
+                    $composite->addTerm(new DepartmentTerm(['department_ids' => $value]));
                     break;
                 case 'email':
-                    $composite->addTerm(new PersonEmailTerm(['email' => [$value]]));
+                    $composite->addTerm(new PersonEmailTerm(['email' => $value]));
                     break;
                 case 'filter':
                     /** @var TicketFilter $filter */
@@ -128,34 +123,34 @@ class TicketsSelectCriteria
                     $composite->addTerm(new TicketLabelTerm(['label' => $value, TermInterface::OP_IS]));
                     break;
                 case 'language':
-                    $composite->addTerm(new TicketLanguageTerm(['language' => $value[0], TermInterface::OP_IS]));
+                    $composite->addTerm(new TicketLanguageTerm(['language' => $value, TermInterface::OP_IS]));
                     break;
                 case 'organization':
                     $composite->addTerm(new OrganizationTerm(['organization' => $value]));
                     break;
                 case 'person':
-                    $composite->addTerm(new PersonTerm(['person_ids' => [$value]]));
+                    $composite->addTerm(new PersonTerm(['person_ids' => $value]));
                     break;
                 case 'problem':
                     $composite->addTerm(new ProblemTerm(['problem' => $value]));
                     break;
                 case 'star':
-                    $composite->addTerm(new TicketFlaggedTerm(['flag' => TicketFlagged::$colorMap[$value]]));
+                    $composite->addTerm(new TicketFlaggedTerm(['flag' => $value]));
                     break;
                 case 'status':
                     $composite->addTerm(new TicketStatusTerm(['status' => $value]));
                     break;
-                case 'not-status':
+                case 'not_status':
                     $composite->addTerm(new TicketStatusTerm(['status' => $value], TermInterface::OP_NOT));
                     break;
                 case 'urgency':
-                    $composite->addTerm(new TicketUrgencyTerm(['num' => [$value]]));
+                    $composite->addTerm(new TicketUrgencyTerm(['num' => $value]));
                     break;
                 case 'sla':
-                    $composite->addTerm(new TicketSlaTerm(['sla' => [$value]], TermInterface::OP_HAS));
+                    $composite->addTerm(new TicketSlaTerm(['sla' => $value], TermInterface::OP_HAS));
                     break;
                 case 'sla_status':
-                    $composite->addTerm(new TicketSlaTerm(['status' => [$value]], TermInterface::OP_HAS));
+                    $composite->addTerm(new TicketSlaTerm(['status' => $value], TermInterface::OP_HAS));
                     break;
                 default:
                     throw new \Exception("Unknown ticket filtering option '$param'");

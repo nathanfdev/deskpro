@@ -6,6 +6,30 @@ Feature: /new/ticket_filters_counts endpoint
   Background:
     Given I install the api data set
     And my request is authenticated
+    And agent and user exist
+    And only the following Language records exist:
+      | # | Sys Name |
+      | l1 | lang_1  |
+      | l2 | lang_2  |
+    And only the following Organization records exist:
+      | #  | Name  |
+      | o1 | Org 1 |
+      | o2 | Org 2 |
+      | o3 | Org 3 |
+    And only the following AgentTeam records exist:
+      | #   | Name   |
+      | at1 | Team 1 |
+      | at2 | Team 2 |
+      | at3 | Team 3 |
+    And only the following Department records exist:
+      | #  | Title |
+      | d1 | Dep 1 |
+      | d2 | Dep 2 |
+    And only the following Ticket records exist:
+      | #  | Subject  | Person | Agent   | Language | Organization | Agent Team | Department |
+      | t1 | Ticket 1 | {user} | {admin} | {l1}     | {o1}         | {at1}      | {d1}       |
+      | t2 | Ticket 2 | {user} | {admin} | {l1}     | {o2}         | {at2}      | {d2}       |
+      | t3 | Ticket 3 | {user} | {agent} | NULL     | NULL         | NULL       | {d2}       |
 
   Scenario: I retrieve list of ticket filters counts
     When I send a GET request to "/api/v2/new/ticket_filters_counts"
@@ -57,14 +81,14 @@ Feature: /new/ticket_filters_counts endpoint
     And the JSON node "data.nested[0].count" should be equal to 3
     And the JSON node "data.nested[0].grouped_by" should be equal to "department"
     And the JSON node "data.nested[0].nested" should have 2 elements
-    And the JSON node "data.nested[0].nested[0].id" should be equal to 1
+    And the JSON node "data.nested[0].nested[0].id" should be equal to "{d2}"
     And the JSON node "data.nested[0].nested[0].type" should be equal to "department"
-    And the JSON node "data.nested[0].nested[0].title" should be equal to "sales"
+    And the JSON node "data.nested[0].nested[0].title" should be equal to "Dep 2"
     And the JSON node "data.nested[0].nested[0].count" should be equal to 2
     And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
-    And the JSON node "data.nested[0].nested[1].id" should be equal to 2
+    And the JSON node "data.nested[0].nested[1].id" should be equal to "{d1}"
     And the JSON node "data.nested[0].nested[1].type" should be equal to "department"
-    And the JSON node "data.nested[0].nested[1].title" should be equal to "support"
+    And the JSON node "data.nested[0].nested[1].title" should be equal to "Dep 1"
     And the JSON node "data.nested[0].nested[1].count" should be equal to 1
     And the JSON node "data.nested[0].nested[1].nested" should have 0 elements
 
@@ -112,12 +136,12 @@ Feature: /new/ticket_filters_counts endpoint
     And the JSON node "data.nested[0].grouped_by" should be equal to "agent"
     And the JSON node "data.nested[0].nested" should have 2 elements
 
-    And the JSON node "data.nested[0].nested[0].id" should be equal to 1
+    And the JSON node "data.nested[0].nested[0].id" should be equal to "{admin}"
     And the JSON node "data.nested[0].nested[0].type" should be equal to "agent"
     And the JSON node "data.nested[0].nested[0].count" should be equal to 2
     And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
 
-    And the JSON node "data.nested[0].nested[1].id" should be equal to 2
+    And the JSON node "data.nested[0].nested[1].id" should be equal to "{agent}"
     And the JSON node "data.nested[0].nested[1].type" should be equal to "agent"
     And the JSON node "data.nested[0].nested[1].count" should be equal to 1
     And the JSON node "data.nested[0].nested[1].nested" should have 0 elements
@@ -174,7 +198,7 @@ Feature: /new/ticket_filters_counts endpoint
     And the JSON node "data.nested[0].grouped_by" should be equal to "language"
     And the JSON node "data.nested[0].nested" should have 2 elements
 
-    And the JSON node "data.nested[0].nested[0].id" should be equal to 1
+    And the JSON node "data.nested[0].nested[0].id" should be equal to "{l1}"
     And the JSON node "data.nested[0].nested[0].type" should be equal to "language"
     And the JSON node "data.nested[0].nested[0].title" should be equal to 0
     And the JSON node "data.nested[0].nested[0].count" should be equal to 2
@@ -182,7 +206,7 @@ Feature: /new/ticket_filters_counts endpoint
 
     And the JSON node "data.nested[0].nested[1].id" should be equal to 0
     And the JSON node "data.nested[0].nested[1].type" should be equal to "language"
-    And the JSON node "data.nested[0].nested[1].title" should be equal to ""
+    And the JSON node "data.nested[0].nested[1].title" should be equal to 0
     And the JSON node "data.nested[0].nested[1].count" should be equal to 1
     And the JSON node "data.nested[0].nested[1].nested" should have 0 elements
 

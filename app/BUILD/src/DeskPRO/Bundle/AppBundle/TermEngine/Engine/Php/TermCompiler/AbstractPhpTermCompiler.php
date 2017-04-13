@@ -26,17 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\AbstractTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\MethodCheckHelper;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\PhpAgentHelper;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\PhpDateHelper;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\PhpStringHelper;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class AbstractPhpTermCompiler.
+ */
 abstract class AbstractPhpTermCompiler extends AbstractTermCompiler
 {
     /**
@@ -96,10 +98,5 @@ abstract class AbstractPhpTermCompiler extends AbstractTermCompiler
     public function getAgentHelper()
     {
         return $this->helperPool->getHelper('agent');
-    }
-
-    public function turnArrayIntoPhpArrayString(array $values = [])
-    {
-        return 'array('.implode(',', $values).')';
     }
 }

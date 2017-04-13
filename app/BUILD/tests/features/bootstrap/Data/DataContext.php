@@ -401,6 +401,8 @@ class DataContext extends BaseContext
                     $value = new ArrayCollection($arrayValue);
                 } elseif (self::isReference($value)) {
                     $value = self::resolveReference($value);
+                } elseif (is_string($value)) {
+                    $value = self::replace($value, true);
                 }
             }
 
@@ -526,7 +528,7 @@ class DataContext extends BaseContext
     private static function replacePlaceholders($content, $isJson)
     {
         foreach (self::$placeholders as $name => $value) {
-            if (!$isJson) {
+            if (!$isJson && !json_decode($content)) {
                 $content = str_replace('{'.$name.'}', $value, $content);
             }
 
@@ -580,7 +582,7 @@ class DataContext extends BaseContext
             return $reflectionProperty->getValue($object);
         };
 
-        if (!$isJson) {
+        if (!$isJson && !json_decode($content)) {
             $content = preg_replace_callback('/\{(.+)\}.*/U', $callback, $content);
         }
 

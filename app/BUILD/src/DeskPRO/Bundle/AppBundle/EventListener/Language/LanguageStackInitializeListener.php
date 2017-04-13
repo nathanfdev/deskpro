@@ -309,6 +309,10 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
             return $lang->getUrlCode();
         }, $langs);
 
+        if (!$langCodes) {
+            return;
+        }
+
         $header = $request->headers->get('Accept-Language');
         if (!$header) {
             return;

@@ -53,15 +53,15 @@ class DbalTicketSlaTermCompiler extends AbstractDbalTermCompiler
             $fields['{ticket_slas}.sla_status'] = $statuses;
         }
 
-        $queryPart = $this->getJoinedHelper()->buildQueryPart(
+        $qp = $this->getJoinedHelper()->buildQueryPart(
             $fields,
             'ticket_slas',
             'ticket.id = {ticket_slas}.ticket_id',
             $term->getOp()
         );
 
-        $this->logQueryPart($queryPart);
+        $this->logQueryPart($qp);
 
-        return $queryPart;
+        return $qp;
     }
 }

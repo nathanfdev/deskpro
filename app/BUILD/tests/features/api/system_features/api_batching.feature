@@ -1,11 +1,24 @@
+@new
 Feature: API batch requests
   In order to improve app performance
   As an API user
   I need ability to perform batch API requests
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given no Person records exist
+    And I'm authenticated as admin
+    And I have only default brand
+    And only the following Department records exist:
+      | #  | Title               | Brands           | Is Tickets Enabled | Is Chat Enabled |
+      | d1 | Ticket Department 1 | [{defaultBrand}] | 1                  | 0               |
+      | d2 | Ticket Department 2 | [{defaultBrand}] | 1                  | 0               |
+    And only the following Ticket records exist:
+      | #  | Subject  | Person  | Department |
+      | t1 | Ticket 1 | {admin} | {d1}       |
+    And only the following Organization records exist:
+      | #  | Name  |
+      | o1 | Org 1 |
+      | o2 | Org 2 |
 
   Scenario: Invalid input because I do not include the "requests" node
     When I send a POST request to "/api/v2/batch" with body:
@@ -61,15 +74,13 @@ Feature: API batch requests
   "requests": {
     "new_stuff": {
       "method": "POST",
-      "url": "/api/v2/tickets",
+      "url": "/api/v2/people",
       "headers": {
         "authorize": "key se3LaKeY5"
       },
       "data": {
-        "subject": "My ticket",
-        "fields": {
-          "6": "some custom text"
-        }
+        "name": "New User",
+        "primary_email": "new@deskpro.dev"
       }
     },
     "an_identifier": "/api/v2/user_groups"
@@ -114,4 +125,4 @@ Feature: API batch requests
   Scenario: I perform batch requests with sideloading
     When I send a GET request to "/api/v2/batch?get[tickets]=/tickets?include=person"
     Then the response status code should be 200
-    And the JSON node "responses.tickets.linked.person.1.id" should be equal to 1
+    And the JSON node "responses.tickets.linked.person.{admin}.id" should be equal to "{admin}"

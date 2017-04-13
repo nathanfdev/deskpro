@@ -26,20 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage;
 
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\TicketLanguageTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractPhpTermCompilerTest;
 
+/**
+ * Class PhpTicketLanguageTermCompilerTest.
+ */
 class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\PhpTicketStatusTermCompiler
+     * @var \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\PhpTicketLanguageTermCompiler
      */
     protected $term_compiler;
 
@@ -50,21 +50,20 @@ class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
 
     public function testCompileIs()
     {
-        $term = new TicketLanguageTerm(['language' => 1]);
+        $term     = new TicketLanguageTerm(['language' => 1]);
+        $phpCheck = $this->term_compiler->compile($term);
+        $ticket   = $this->createTicketProphecy();
 
-        $php_check = $this->term_compiler->compile($term);
-
-        $ticket = $this->createTicketProphecy();
-
-        $ticket->getLanguage()->willReturn((object) ['id' => 1]);
+        $ticket->getLanguage()->willReturn((object) ['id' => 1, 'lang_code' => 'eng']);
         $this->assertTicketCheck(
-            $php_check,
+            $phpCheck,
             true,
             $ticket
         );
-        $ticket->getLanguage()->willReturn((object) ['id' => 2]);
+
+        $ticket->getLanguage()->willReturn((object) ['id' => 2, 'lang_code' => 'eng']);
         $this->assertTicketCheck(
-            $php_check,
+            $phpCheck,
             false,
             $ticket
         );
@@ -78,13 +77,13 @@ class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
 
         $ticket = $this->createTicketProphecy();
 
-        $ticket->getLanguage()->willReturn((object) ['id' => 1]);
+        $ticket->getLanguage()->willReturn((object) ['id' => 1, 'lang_code' => 'eng']);
         $this->assertTicketCheck(
             $php_check,
             false,
             $ticket
         );
-        $ticket->getLanguage()->willReturn((object) ['id' => 2]);
+        $ticket->getLanguage()->willReturn((object) ['id' => 2, 'lang_code' => 'eng']);
         $this->assertTicketCheck(
             $php_check,
             true,
@@ -100,13 +99,13 @@ class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
 
         $ticket = $this->createTicketProphecy();
 
-        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'eng']);
+        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'eng', 'id' => 1]);
         $this->assertTicketCheck(
             $php_check,
             true,
             $ticket
         );
-        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'ger']);
+        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'ger', 'id' => 1]);
         $this->assertTicketCheck(
             $php_check,
             false,
@@ -122,13 +121,13 @@ class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
 
         $ticket = $this->createTicketProphecy();
 
-        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'ger']);
+        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'ger', 'id' => 1]);
         $this->assertTicketCheck(
             $php_check,
             false,
             $ticket
         );
-        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'eng']);
+        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'eng', 'id' => 1]);
         $this->assertTicketCheck(
             $php_check,
             true,
@@ -138,7 +137,7 @@ class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
 
     protected function createTicketProphecy()
     {
-        $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
+        $ticket = $this->prophesize(Ticket::class);
         $ticket->getId()->willReturn(4);
 
         return $ticket;

@@ -41,7 +41,7 @@ class DbalTicketDateResolvedTermCompiler extends AbstractDbalTermCompiler
      */
     public function doCompile(TermInterface $term)
     {
-        $query_part = $this->getDateHelper()->buildQueryPart(
+        $qp = $this->getDateHelper()->buildQueryPart(
             'ticket.date_resolved',
             $term->getOp(),
             $term->getOption('date'),
@@ -49,8 +49,8 @@ class DbalTicketDateResolvedTermCompiler extends AbstractDbalTermCompiler
             $term->getOption('ignore_time')
         );
 
-        $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-        return $query_part;
+        return $qp;
     }
 }

@@ -42,9 +42,8 @@ class DbalPersonEmailTermCompiler extends AbstractDbalTermCompiler
      */
     public function doCompile(TermInterface $term)
     {
-        $isNot = $this->isOp($term->getOp(), TermInterface::OP_NOT);
-
-        $subQuery  = 'SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email';
+        $subQuery  = 'SELECT pe.person_id FROM people_emails pe WHERE pe.email IN(:email)';
+        $isNot     = $this->isOp($term->getOp(), TermInterface::OP_NOT);
         $notPrefix = $isNot ? 'NOT' : '';
         $composite = $isNot ? 'AND' : 'OR';
 

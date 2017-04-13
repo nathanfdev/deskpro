@@ -41,16 +41,14 @@ class DbalTicketUrgencyTermCompiler extends AbstractDbalTermCompiler
      */
     public function doCompile(TermInterface $term)
     {
-        $urgency = $term->getOption('num');
-
-        $query_part = $this->getNumericHelper()->buildQueryPart(
+        $qp = $this->getNumericHelper()->buildQueryPart(
             'ticket.urgency',
             $term->getOp(),
-            $urgency
+            $term->getOption('num')
         );
 
-        $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-        return $query_part;
+        return $qp;
     }
 }

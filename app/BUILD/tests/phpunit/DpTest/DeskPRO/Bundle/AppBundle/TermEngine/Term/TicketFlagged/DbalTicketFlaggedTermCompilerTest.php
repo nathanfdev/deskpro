@@ -26,18 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\DbalTicketFlaggedTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\TicketFlaggedTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractDbalTicketFilterTermCompilerTest;
 
+/**
+ * Class DbalTicketFlaggedTermCompilerTest.
+ */
 class DbalTicketFlaggedTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
     /**
@@ -56,18 +56,18 @@ class DbalTicketFlaggedTermCompilerTest extends AbstractDbalTicketFilterTermComp
             ['flag' => 'blue']
         );
 
-        $query_part = $this->term_compiler->compile($term);
+        $qp = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, 'tickets_flagged.color = :color');
+        $this->assertWhere($qp, 'tickets_flagged.color IN(:color)');
         $this->assertParameters(
-            $query_part,
+            $qp,
             [
-                'color'    => 'blue',
+                'color'    => ['blue'],
                 'agent_id' => new TermEngineExpression('agent.getId()'),
             ]
         );
         $this->assertJoins(
-            $query_part,
+            $qp,
             [
                 'tickets_flagged' => [
                     'table' => 'tickets_flagged',
@@ -85,18 +85,18 @@ class DbalTicketFlaggedTermCompilerTest extends AbstractDbalTicketFilterTermComp
             TermInterface::OP_NOT
         );
 
-        $query_part = $this->term_compiler->compile($term);
+        $qp = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, 'tickets_flagged.color != :color');
+        $this->assertWhere($qp, 'tickets_flagged.color NOT IN(:color) OR tickets_flagged.color IS NULL');
         $this->assertParameters(
-            $query_part,
+            $qp,
             [
-                'color'    => 'blue',
+                'color'    => ['blue'],
                 'agent_id' => new TermEngineExpression('agent.getId()'),
             ]
         );
         $this->assertJoins(
-            $query_part,
+            $qp,
             [
                 'tickets_flagged' => [
                     'table' => 'tickets_flagged',

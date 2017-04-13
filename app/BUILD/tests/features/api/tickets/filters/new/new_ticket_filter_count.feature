@@ -6,6 +6,12 @@ Feature: /new/ticket_filters/{filter}/count endpoint
   Background:
     Given I install the api data set
     And my request is authenticated
+    And agent and user exist
+    And only the following Ticket records exist:
+      | #  | Subject  | Person |
+      | t1 | Ticket 1 | {user} |
+      | t2 | Ticket 2 | {user} |
+      | t3 | Ticket 3 | {user} |
 
   Scenario: I retrieve list of ticket filter count
     When I send a GET request to "/api/v2/new/ticket_filters/1/count"

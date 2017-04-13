@@ -45,7 +45,7 @@ class DbalTicketDateArchivedTermCompiler extends AbstractDbalTermCompiler
         $date2  = $term->getOption('date2');
         $ignore = $term->getOption('ignore_time');
 
-        $query_part = $this->getDateHelper()->buildQueryPart(
+        $qp = $this->getDateHelper()->buildQueryPart(
             'ticket.date_archived',
             $term->getOp(),
             $date,
@@ -53,8 +53,8 @@ class DbalTicketDateArchivedTermCompiler extends AbstractDbalTermCompiler
             $ignore
         );
 
-        $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-        return $query_part;
+        return $qp;
     }
 }

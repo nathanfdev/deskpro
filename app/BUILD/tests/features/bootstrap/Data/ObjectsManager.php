@@ -65,24 +65,31 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
+use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\Sla;
+use Application\DeskPRO\Entity\TextSnippet;
+use Application\DeskPRO\Entity\TextSnippetCategory;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketFlagged;
 use Application\DeskPRO\Entity\TicketLayout;
+use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketPriority;
+use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Entity\TicketWorkflow;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\Entity\Usersource;
@@ -322,11 +329,13 @@ class ObjectsManager
             'TicketParticipant'        => [Factory\SimpleFactory::class, 'create', TicketParticipant::class],
             'TicketAttachment'         => [Factory\SimpleFactory::class, 'create', TicketAttachment::class],
             'TicketFlagged'            => [Factory\SimpleFactory::class, 'create', TicketFlagged::class],
+            'TicketMacro'              => [Factory\SimpleFactory::class, 'create', TicketMacro::class],
+            'TicketMessage'            => [Factory\SimpleFactory::class, 'create', TicketMessage::class],
+            'TicketSla'                => [Factory\SimpleFactory::class, 'create', TicketSla::class],
             'Sla'                      => [Factory\CommonFactories::class, 'sla'],
             'SLA'                      => [Factory\CommonFactories::class, 'sla'],
             'Usergroup'                => [Factory\SimpleFactory::class, 'create', Usergroup::class],
             'Language'                 => [Factory\SimpleFactory::class, 'create', Language::class],
-            'TicketMessage'            => [Factory\SimpleFactory::class, 'create', TicketMessage::class],
             'Guest'                    => [Factory\CommonFactories::class, 'person', 'guest'],
             'User'                     => [Factory\CommonFactories::class, 'person', 'user'],
             'Agent'                    => [Factory\CommonFactories::class, 'person', 'agent'],
@@ -334,6 +343,7 @@ class ObjectsManager
             'PersonEmail'              => [Factory\SimpleFactory::class, 'create', PersonEmail::class],
             'AgentData'                => [Factory\SimpleFactory::class, 'create', AgentData::class],
             'LabelTicket'              => [Factory\SimpleFactory::class, 'create', LabelTicket::class],
+            'LabelPerson'              => [Factory\SimpleFactory::class, 'create', LabelPerson::class],
             'LabelDef'                 => [Factory\SimpleFactory::class, 'create', LabelDef::class],
             'LabelFeedback'            => [Factory\SimpleFactory::class, 'create', LabelFeedback::class],
             'LabelTask'                => [Factory\SimpleFactory::class, 'create', LabelTask::class],
@@ -353,9 +363,14 @@ class ObjectsManager
             'VoiceAgentTarget'         => [Factory\SimpleFactory::class, 'create', VoiceAgentTarget::class],
             'VoiceAutoAttendantTarget' => [Factory\SimpleFactory::class, 'create', VoiceAutoAttendantTarget::class],
             'ClientDevice'             => [Factory\SimpleFactory::class, 'create', ClientDevice::class],
-            'LabelPerson'              => [Factory\SimpleFactory::class, 'create', LabelPerson::class],
             'LegacyTicketFilter'       => [Factory\SimpleFactory::class, 'create', LegacyTicketFilter::class],
             'TicketFilter'             => [Factory\SimpleFactory::class, 'create', TicketFilter::class],
+            'Problem'                  => [Factory\SimpleFactory::class, 'create', Problem::class],
+            'PersonPref'               => [Factory\SimpleFactory::class, 'create', PersonPref::class],
+            'Blob'                     => [Factory\SimpleFactory::class, 'create', Blob::class],
+            'TextSnippet'              => [Factory\SimpleFactory::class, 'create', TextSnippet::class],
+            'TextSnippetCategory'      => [Factory\SimpleFactory::class, 'create', TextSnippetCategory::class],
+            'ObjectLang'               => [Factory\SimpleFactory::class, 'create', ObjectLang::class],
         ];
     }
 
@@ -382,6 +397,9 @@ class ObjectsManager
             'TicketParticipant'        => [$this, 'find', TicketParticipant::class],
             'TicketAttachment'         => [$this, 'find', TicketAttachment::class],
             'TicketFlagged'            => [$this, 'find', TicketFlagged::class],
+            'TicketMacro'              => [$this, 'find', TicketMacro::class],
+            'TicketFilter'             => [$this, 'find', TicketFilter::class],
+            'TicketSla'                => [$this, 'find', TicketSla::class],
             'SLA'                      => [$this, 'find', Sla::class],
             'Organization'             => [$this, 'find', Organization::class],
             'OrganizationNote'         => [$this, 'find', OrganizationNote::class],
@@ -434,6 +452,7 @@ class ObjectsManager
             'LabelFeedback'            => [$this, 'find', LabelFeedback::class],
             'LabelTicket'              => [$this, 'find', LabelTicket::class],
             'LabelTask'                => [$this, 'find', LabelTask::class],
+            'LabelPerson'              => [$this, 'find', LabelPerson::class],
             'Brand'                    => [$this, 'find', Brand::class],
             'BrandSetting'             => [$this, 'find', BrandSetting::class],
             'Usergroup'                => [$this, 'find', Usergroup::class],
@@ -454,9 +473,13 @@ class ObjectsManager
             'VoiceQueueTarget'         => [$this, 'find', VoiceQueueTarget::class],
             'VoiceAgentTarget'         => [$this, 'find', VoiceAgentTarget::class],
             'VoiceAutoAttendantTarget' => [$this, 'find', VoiceAutoAttendantTarget::class],
-            'LabelPerson'              => [$this, 'find', LabelPerson::class],
             'LegacyTicketFilter'       => [$this, 'find', LegacyTicketFilter::class],
-            'TicketFilter'             => [$this, 'find', TicketFilter::class],
+            'Problem'                  => [$this, 'find', Problem::class],
+            'PersonPref'               => [$this, 'find', PersonPref::class],
+            'Sla'                      => [$this, 'find', Sla::class],
+            'TextSnippet'              => [$this, 'find', TextSnippet::class],
+            'TextSnippetCategory'      => [$this, 'find', TextSnippetCategory::class],
+            'ObjectLang'               => [$this, 'find', ObjectLang::class],
         ];
     }
 }

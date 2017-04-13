@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -37,8 +33,14 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Orb\Util\Arrays;
 
+/**
+ * Class MethodCheckHelper.
+ */
 class MethodCheckHelper implements TermCompilerHelperInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getId()
     {
         return 'method_check';
@@ -47,12 +49,12 @@ class MethodCheckHelper implements TermCompilerHelperInterface
     /**
      * Pass in as many arguments past $op as you want, all of them are flattened into a single array.
      *
-     * @param $real_val
+     * @param $realVal
      * @param $op
      *
      * @return bool
      */
-    public function checkContains($real_val, $op)
+    public function checkContains($realVal, $op)
     {
         // get any args, since we allow arbitrary args
         $args     = func_get_args();
@@ -66,19 +68,25 @@ class MethodCheckHelper implements TermCompilerHelperInterface
 
         // now all args are in an array, flatten it
         $contains = Arrays::flatten($contains);
-
-        if (strtolower($op) !== strtolower(TermInterface::OP_NOT)) {
-            return in_array($real_val, $contains);
+        if (!is_array($realVal)) {
+            $realVal = [$realVal];
         }
 
-        return !in_array($real_val, $contains);
+        if (strtolower($op) !== strtolower(TermInterface::OP_NOT)) {
+            return array_intersect($realVal, $contains);
+        }
+
+        return !array_intersect($realVal, $contains);
     }
 
-    protected function canTraverse($thing)
-    {
-        return is_array($thing) || (is_object($thing) && $thing instanceof \Traversable);
-    }
-
+    /**
+     * @param $val
+     * @param $property_name
+     * @param $op
+     * @param $target
+     *
+     * @return bool
+     */
     public function checkTraverse($val, $property_name, $op, $target)
     {
         if ($this->canTraverse($val)) {
@@ -103,6 +111,15 @@ class MethodCheckHelper implements TermCompilerHelperInterface
         return;
     }
 
+    /**
+     * @param Ticket $ticket
+     * @param $field_id
+     * @param $op
+     * @param $values
+     * @param $input
+     *
+     * @return bool
+     */
     public function checkCustomField(Ticket $ticket, $field_id, $op, $values, $input)
     {
         $is = strtolower($op) === strtolower(TermInterface::OP_IS);
@@ -128,5 +145,15 @@ class MethodCheckHelper implements TermCompilerHelperInterface
         } else {
             return !$is;
         }
+    }
+
+    /**
+     * @param $thing
+     *
+     * @return bool
+     */
+    protected function canTraverse($thing)
+    {
+        return is_array($thing) || (is_object($thing) && $thing instanceof \Traversable);
     }
 }

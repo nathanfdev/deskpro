@@ -49,15 +49,7 @@ class DbalPersonTermCompiler extends AbstractDbalTermCompiler
 
         $qp = new DbalQueryPart();
         $qp
-            ->setParameter(
-                'ids',
-                array_map(
-                    function ($id) {
-                        return (int) $id;
-                    },
-                    $term->getOption('person_ids')
-                )
-            )
+            ->setParameter('ids', $term->getOption('person_ids'))
             ->setWhereString(
                 "
                 ticket.person_id $notPrefix IN(:ids) 

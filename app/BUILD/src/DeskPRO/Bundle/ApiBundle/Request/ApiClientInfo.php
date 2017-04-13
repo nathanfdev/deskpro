@@ -31,6 +31,9 @@ namespace DeskPRO\Bundle\ApiBundle\Request;
 use DeskPRO\Component\Util\RegexUtils;
 use Symfony\Component\HttpFoundation\RequestStack;
 
+/**
+ * Class ApiClientInfo.
+ */
 class ApiClientInfo
 {
     /**

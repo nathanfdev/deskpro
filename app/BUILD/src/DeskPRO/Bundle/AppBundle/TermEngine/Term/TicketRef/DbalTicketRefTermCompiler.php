@@ -41,14 +41,14 @@ class DbalTicketRefTermCompiler extends AbstractDbalTermCompiler
      */
     public function doCompile(TermInterface $term)
     {
-        $query_part = $this->getStringHelper()->buildQueryPart(
+        $qp = $this->getStringHelper()->buildQueryPart(
             'ticket.ref',
             $term->getOp(),
             $term->getOption('ref')
         );
 
-        $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-        return $query_part;
+        return $qp;
     }
 }

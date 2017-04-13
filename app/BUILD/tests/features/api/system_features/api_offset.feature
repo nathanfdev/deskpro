@@ -28,6 +28,9 @@ Feature: CRUD offset
       | t8  | Ticket 8  | awaiting_agent | {agent} |
       | t9  | Ticket 9  | awaiting_agent | {agent} |
       | t10 | Ticket 10 | awaiting_agent | {agent} |
+    And only the following LegacyTicketFilter records exist:
+      | #  | Title    | Is Enabled | Is Global | Sys Name | Display Order | Terms                                                                                                                                                                        |
+      | f1 | Filter 1 | 1          | 1         | agent    | 1             | [{"type":"agent","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}] |
     And I re-fill ticket search table
 
   Scenario Outline: I get crud list w/o offset
@@ -35,10 +38,10 @@ Feature: CRUD offset
     Then the JSON node "data" should have 10 elements
 
     Examples:
-      | endpoint                  |
-      | people?is_agent=0         |
-      | tickets?                  |
-      | ticket_filters/5/tickets? |
+      | endpoint                     |
+      | people?is_agent=0            |
+      | tickets?                     |
+      | ticket_filters/{f1}/tickets? |
 
   Scenario Outline: I get crud list w/ offset and default count
     When I send a GET request to "/api/v2/<endpoint>&order_dir=asc&offset=5"
@@ -49,10 +52,10 @@ Feature: CRUD offset
     And the JSON node "meta.pagination.offset" should be equal to 5
 
     Examples:
-      | endpoint                  | id_pref |
-      | people?is_agent=0         | u       |
-      | tickets?                  | t       |
-      | ticket_filters/5/tickets? | t       |
+      | endpoint                     | id_pref |
+      | people?is_agent=0            | u       |
+      | tickets?                     | t       |
+      | ticket_filters/{f1}/tickets? | t       |
 
   Scenario Outline: I get crud list w/ offset and count
     When I send a GET request to "/api/v2/<endpoint>&order_dir=asc&offset=5&count=2"
@@ -64,7 +67,7 @@ Feature: CRUD offset
     And the JSON node "meta.pagination.offset" should be equal to 5
 
     Examples:
-      | endpoint                  | id_pref |
-      | people?is_agent=0         | u       |
-      | tickets?                  | t       |
-      | ticket_filters/5/tickets? | t       |
+      | endpoint                     | id_pref |
+      | people?is_agent=0            | u       |
+      | tickets?                     | t       |
+      | ticket_filters/{f1}/tickets? | t       |

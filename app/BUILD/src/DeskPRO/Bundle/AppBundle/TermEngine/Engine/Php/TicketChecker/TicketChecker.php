@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -40,6 +36,9 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
 use DeskPRO\Bundle\AppBundle\Util\SimpleTimer;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class TicketChecker.
+ */
 class TicketChecker implements PhpTicketCheckerInterface
 {
     /**
@@ -67,12 +66,21 @@ class TicketChecker implements PhpTicketCheckerInterface
      */
     private $logger;
 
+    /**
+     * Constructor.
+     *
+     * @param PhpCheck                     $php_check
+     * @param TermEngineContext            $context
+     * @param TermEngineExpressionLanguage $expression_language
+     * @param TermCompilerHelperPool       $helper_pool
+     * @param LoggerInterface              $logger
+     */
     public function __construct(
-        PhpCheck $php_check,
-        TermEngineContext $context,
+        PhpCheck                     $php_check,
+        TermEngineContext            $context,
         TermEngineExpressionLanguage $expression_language,
-        TermCompilerHelperPool $helper_pool,
-        LoggerInterface $logger
+        TermCompilerHelperPool       $helper_pool,
+        LoggerInterface              $logger
     ) {
         $this->php_check           = clone $php_check; // use a clone
         $this->context             = $context;

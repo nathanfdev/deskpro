@@ -41,18 +41,15 @@ class DbalTicketIdTermCompiler extends AbstractDbalTermCompiler
      */
     public function doCompile(TermInterface $term)
     {
-        $num  = $term->getOption('num');
-        $num2 = $term->getOption('num2');
-
-        $query_part = $this->getNumericHelper()->buildQueryPart(
+        $qp = $this->getNumericHelper()->buildQueryPart(
             'ticket.id',
             $term->getOp(),
-            $num,
-            $num2
+            $term->getOption('num'),
+            $term->getOption('num2')
         );
 
-        $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-        return $query_part;
+        return $qp;
     }
 }
