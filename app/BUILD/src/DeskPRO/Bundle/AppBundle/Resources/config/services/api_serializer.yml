@@ -121,6 +121,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.article_comment:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ArticleCommentHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.topic:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\TopicHandler
     arguments:

@@ -28,18 +28,16 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\CommentAbstract;
-use Application\DeskPRO\Entity\ContentAbstract;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\CommentAbstract;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class AgentNewComment extends EmailBaseType
 {
     /**
      * The new comment.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\CommentAbstract")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\CommentAbstract")
      *
      * @var CommentAbstract
      */
@@ -48,7 +46,7 @@ class AgentNewComment extends EmailBaseType
     /**
      * The commented content.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\ContentAbstract")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract")
      *
      * @var ContentAbstract
      */
@@ -77,14 +75,16 @@ class AgentNewComment extends EmailBaseType
     /**
      * AgentNewComment constructor.
      *
-     * @param RouterInterface $router
      * @param CommentAbstract $comment
+     * @param ContentAbstract $object
+     * @param string          $objectType
+     * @param string          $loginLink
      */
-    public function __construct(RouterInterface $router, CommentAbstract $comment)
+    public function __construct(CommentAbstract $comment, ContentAbstract $object, $objectType, $loginLink)
     {
         $this->comment    = $comment;
-        $this->object     = $comment->getObject();
-        $this->objectType = $comment->getObjectType();
-        $this->loginLink  = $router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $this->object     = $object;
+        $this->objectType = $objectType;
+        $this->loginLink  = $loginLink;
     }
 }

@@ -124,9 +124,10 @@ export class EmailsAndBlockMenu extends React.Component {
     const subGroups = this.state.selectedLeft.get('subGroups');
     const primary = subGroups.get('primary').get('templates').valueSeq().map((template, key) => {
       if (
-        this.state.filter
+        (this.state.filter
         && template.get('title').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-        && template.get('desc').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+        && template.get('desc').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1)
+        || !template.get('newTemplate')
       ) {
         return null;
       }

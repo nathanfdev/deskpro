@@ -26,37 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\SendmailBundle\View\Model;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\ChatMessage;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
-use JMS\Serializer\Annotation as JMS;
+use Application\DeskPRO\Entity\ArticleComment;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\ArticleComment as ArticleCommentModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
-class AgentNewChatMessage extends EmailBaseType
+class ArticleCommentHandler extends AbstractEntityHandler
 {
     /**
-     * The chat message.
+     * {@inheritdoc}
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\ChatMessage")
-     *
-     * @var ChatMessage
+     * @param ArticleComment $entity
      */
-    protected $chatMessage;
+    public function createModel($entity, SideloadSerializationContext $context)
+    {
+        return new ArticleCommentModel($entity);
+    }
 
     /**
-     * The author of the message.
-     *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
-     *
-     * @var Person
+     * @return string|string[]
      */
-    protected $author;
-
-    protected $templateFile = 'emails_agent:new_agent_chat_message.html.twig';
-
-    public function __construct(ChatMessage $chatMessage, $author)
+    public static function getClassNames()
     {
-        $this->chatMessage = $chatMessage;
-        $this->author      = $author;
+        return ArticleComment::class;
     }
 }

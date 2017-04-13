@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import debounce from 'lodash/function/debounce';
 import { Select } from 'DeskPRO/Component/Semantic/Form';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { EmailsAndBlockMenuContainer } from './Menus/EmailsAndBlockMenu';
@@ -68,9 +69,13 @@ class EmailTemplatesEditorContainer extends React.Component {
     }
     const viewModel = this.props.emailTemplates.get('currentTemplate').get('viewModel');
     const group = this.props.emailTemplates.get('currentTemplateGroup');
-    this.props.dispatch(actions.previewTemplate(viewModel, group, value, variables));
+    this.previewTemplate(viewModel, group, value, variables);
     this.props.dispatch(actions.updateTemplateBody(value));
   };
+
+  previewTemplate = debounce(function (viewModel, group, value, variables) {
+    this.props.dispatch(actions.previewTemplate(viewModel, group, value, variables));
+  }, 400);
 
   saveTemplate = () => {
     this.setState({

@@ -185,6 +185,15 @@ class Person extends BasePerson
     protected $overrideDisplayName;
 
     /**
+     * Person name and email address.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $displayContact;
+
+    /**
      * The summary field as filled in by agents.
      *
      * @JMS\Type("string")
@@ -389,6 +398,7 @@ class Person extends BasePerson
         $this->isDisabled              = $person->isDisabled();
         $this->creationSystem          = $person->getCreationSystem();
         $this->overrideDisplayName     = $person->getOverrideDisplayName();
+        $this->displayContact          = $person->getDisplayContact();
         $this->summary                 = $person->getSummary();
         $this->language                = $person->getLanguage();
         $this->organization            = $person->getOrganization();

@@ -154,7 +154,7 @@ class Ticket
     private $person;
 
     /**
-     * Person`s email.
+     * Person's email.
      *
      * @JMS\Type("to_string<Application\DeskPRO\Entity\PersonEmail>")
      *
@@ -311,7 +311,7 @@ class Ticket
     private $urgency;
 
     /**
-     * It`s rating based on feedback votes.
+     * It's rating based on feedback votes.
      *
      * @JMS\Type("integer")
      *

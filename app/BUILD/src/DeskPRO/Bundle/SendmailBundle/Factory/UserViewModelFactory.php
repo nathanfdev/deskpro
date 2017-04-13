@@ -39,8 +39,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use DateTime;
-use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AccountDisabled;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentChangedPassword;
 use DeskPRO\Bundle\SendmailBundle\View\Model\ChatTranscript;
@@ -79,41 +77,10 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\TicketParticipant;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketRate;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyAutoreply;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyByAgent;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\RouterInterface;
 
-class UserViewModelFactory
+class UserViewModelFactory extends AbstractViewModelFactory
 {
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var ObjectRouter
-     */
-    private $objectRouter;
-
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * Constructor.
-     *
-     * @param RouterInterface    $router
-     * @param ObjectRouter       $objectRouter
-     * @param ContainerInterface $container
-     */
-    public function __construct(RouterInterface $router, ObjectRouter $objectRouter, ContainerInterface $container)
-    {
-        $this->router       = $router;
-        $this->objectRouter = $objectRouter;
-        $this->container    = $container;
-    }
-
     /**
      * @return AccountDisabled
      */
@@ -550,27 +517,5 @@ class UserViewModelFactory
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
         return new TicketReplyAutoreply($this->convertParameter($ticket), $ticketLink);
-    }
-
-    protected function convertParameter($entity)
-    {
-        $serializationContext = new SideloadSerializationContext();
-        $serializationContext->setInlineSideloads(true);
-        switch (get_class($entity)) {
-            case Person::class:
-                $handler = $this->container->get('api_serializer.handler.person');
-                break;
-            case Ticket::class:
-                $handler = $this->container->get('api_serializer.handler.ticket');
-                break;
-            case TicketMessage::class:
-                $handler = $this->container->get('api_serializer.handler.ticket_message');
-                break;
-            default:
-                throw new \Exception('Unset handler for class '.get_class($entity));
-                break;
-        }
-
-        return $handler->createModel($entity, $serializationContext);
     }
 }

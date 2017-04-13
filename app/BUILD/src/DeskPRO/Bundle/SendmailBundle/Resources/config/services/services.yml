@@ -2,7 +2,7 @@ services:
 
   email.agent_viewmodel_factory:
     class: DeskPRO\Bundle\SendmailBundle\Factory\AgentViewModelFactory
-    arguments: ["@router", "@object_router"]
+    arguments: ["@router", "@object_router", "@service_container"]
 
   email.user_viewmodel_factory:
     class: DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory

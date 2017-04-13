@@ -11,7 +11,7 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
 	<container>
-		{{ phrase('agent.publish.new_comment_submitted_by', {name: comment.getUserDisplayContact() }) }}
+		{{ phrase('agent.publish.new_comment_submitted_by', {name: comment.user_display_contact }) }}
 
 		<br />
 		<br />
@@ -46,7 +46,7 @@
 				<td class="dp-td-heading">{{ phrase('agent.general.category') }}:</td>
 				<td>
 					{% if object_type == 'Article' %}
-						{{ object.getCategoryNames() }}
+						{{ object.category_names }}
 					{% else %}
 						{{ object.category.full_title }}
 					{% endif %}

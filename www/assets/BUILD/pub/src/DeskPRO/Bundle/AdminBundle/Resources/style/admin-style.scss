@@ -40,6 +40,11 @@ $fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.7.0/fonts" !default;
         color: $dp-greyscale-850;
         opacity: 1;
       }
+      i.remove {
+        right: 1px;
+        left: auto;
+        cursor: pointer;
+      }
     }
     > .item {
       padding: 15px 10px 4px;

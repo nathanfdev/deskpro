@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
+use Application\DeskPRO\Entity\Ticket;
 use DateTime;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AdminNoResetPassword;
@@ -48,36 +49,17 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewRegistration;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentPasswordResetAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskAssigned;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskDueReminder;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketNew;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketReply;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketUpdate;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcome;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcomeUsersource;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWhitelistIp;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class AgentViewModelFactory
+class AgentViewModelFactory extends AbstractViewModelFactory
 {
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var ObjectRouter
-     */
-    private $objectRouter;
-
-    /**
-     * Constructor.
-     *
-     * @param RouterInterface $router
-     * @param ObjectRouter    $objectRouter
-     */
-    public function __construct(RouterInterface $router, ObjectRouter $objectRouter)
-    {
-        $this->router       = $router;
-        $this->objectRouter = $objectRouter;
-    }
-
     /**
      * @return AdminNoResetPassword
      */
@@ -128,7 +110,13 @@ class AgentViewModelFactory
      */
     public function createAgentNewChatMessageModel(ChatMessage $chatMessage)
     {
-        return new AgentNewChatMessage($chatMessage);
+        if ($chatMessage->getAuthor()) {
+            $author = $this->convertParameter($chatMessage->getAuthor());
+        } else {
+            $author = null;
+        }
+
+        return new AgentNewChatMessage($this->convertParameter($chatMessage), $author);
     }
 
     /**
@@ -138,7 +126,11 @@ class AgentViewModelFactory
      */
     public function createAgentNewCommentModel(CommentAbstract $comment)
     {
-        return new AgentNewComment($this->router, $comment);
+        $object     = $this->convertParameter($comment->getObject());
+        $objectType = $comment->getObjectType();
+        $loginLink  = $this->router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return new AgentNewComment($this->convertParameter($comment), $object, $objectType, $loginLink);
     }
 
     /**
@@ -234,5 +226,41 @@ class AgentViewModelFactory
     public function createLoginAlertModel(Request $request, $firstSeen, $success)
     {
         return new AgentLoginAlert($request, $firstSeen, $success);
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return AgentTicketNew
+     */
+    public function createAgentTicketNewModel(Ticket $ticket)
+    {
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return new AgentTicketNew($this->convertParameter($ticket), $ticketLink);
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return AgentTicketUpdate
+     */
+    public function createAgentTicketUpdateModel(Ticket $ticket)
+    {
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return new AgentTicketUpdate($this->convertParameter($ticket), $ticketLink);
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return AgentTicketReply
+     */
+    public function createAgentTicketReplyModel(Ticket $ticket)
+    {
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return new AgentTicketReply($this->convertParameter($ticket), $ticketLink);
     }
 }
