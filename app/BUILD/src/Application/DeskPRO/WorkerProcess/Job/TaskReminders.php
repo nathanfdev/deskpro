@@ -153,7 +153,7 @@ class TaskReminders extends AbstractJob
                 $fromEmail     = $out->getUseEmailAddress();
 
                 if ($fromEmail && $agent->getPref('agent_notif.task_due.email')) {
-                    if (App::$container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                    if (App::$container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                         $viewModel = App::$container->get('email.agent_viewmodel_factory')
                             ->createAgentTaskDueReminderModel($task);
                         App::$container->get('email.email_sender')

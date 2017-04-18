@@ -320,7 +320,7 @@ class DownloadsSubscriptions extends AbstractJob
                 }
             }
 
-            if ($this->getContainer()->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            if ($this->getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 $viewModel = $this->getContainer()->get('email.user_viewmodel_factory')
                     ->createDownloadSubscriptionModel($newDownloads, $updatedDownloads);
                 $this->getContainer()->get('email.email_sender')

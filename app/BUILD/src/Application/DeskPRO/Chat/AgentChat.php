@@ -120,7 +120,7 @@ class AgentChat
                 $session = App::getOrm()->getRepository(Session::class)->getSessionForPerson($part, 30);
 
                 if (!$session && $part->getPref('agent_notif.chat_message.email')) {
-                    if (App::$container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                    if (App::$container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                         $viewModel = App::$container->get('email.agent_viewmodel_factory')
                             ->createAgentNewChatMessageModel($chatMessage);
                         App::$container->get('email.email_sender')

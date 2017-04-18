@@ -93,7 +93,7 @@ class CheckWhitelistedIP
             'url'       => $url,
         ];
 
-        if ($container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+        if ($container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = $container->get('email.agent_viewmodel_factory')
                 ->createAgentWhitelistIpModel($url);
             $container->get('email.email_sender')

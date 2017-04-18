@@ -481,7 +481,7 @@ class PublishController extends AbstractController
     protected function _sendCommentApprovedNotification(CommentAbstract $comment)
     {
         if ($comment->getUserEmail()) {
-            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 if ($comment->getPerson()) {
                     $to = $comment->getPerson();
                 } else {
@@ -515,7 +515,7 @@ class PublishController extends AbstractController
     public function _sendCommentDeletedNotification(CommentAbstract $comment)
     {
         if ($comment->getUserEmail()) {
-            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 if ($comment->getPerson()) {
                     $to = $comment->getPerson();
                 } else {

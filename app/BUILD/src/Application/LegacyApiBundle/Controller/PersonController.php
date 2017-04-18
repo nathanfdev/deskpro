@@ -285,7 +285,7 @@ class PersonController extends AbstractController implements ProtectedController
         }
 
         if ($this->in->getBool('send_email')) {
-            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 if ($this->in->getBool('via_agent')) {
                     $viewModel = $this->get('email.user_viewmodel_factory')
                         ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());

@@ -96,7 +96,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentChangedPasswordModel($newPassword)
     {
-        return new AgentChangedPassword($this->router, $newPassword);
+        return $this->convertParameters(AgentChangedPassword::class, [$this->router, $newPassword]);
     }
 
     /**
@@ -107,7 +107,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createChatTranscriptModel(ChatConversation $chat, array $convoMessages)
     {
-        return new ChatTranscript($this->convertParameter($chat), $convoMessages);
+        return $this->convertParameters(ChatTranscript::class, [$chat, $convoMessages]);
     }
 
     /**
@@ -117,7 +117,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createCommentApprovedModel(CommentAbstract $comment)
     {
-        return new CommentApproved($this->objectRouter, $this->convertParameter($comment));
+        return $this->convertParameters(CommentApproved::class, [$this->objectRouter, $comment]);
     }
 
     /**
@@ -127,7 +127,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createCommentDeletedModel(CommentAbstract $comment)
     {
-        return new CommentDeleted($this->objectRouter, $this->convertParameter($comment));
+        return $this->convertParameters(CommentDeleted::class, [$this->objectRouter, $comment]);
     }
 
     /**
@@ -137,7 +137,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createCommentNewModel(CommentAbstract $comment)
     {
-        return new CommentNew($this->objectRouter, $this->convertParameter($comment));
+        return $this->convertParameters(CommentNew::class, [$this->objectRouter, $comment]);
     }
 
     /**
@@ -148,7 +148,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createDownloadSubscriptionModel(array $newDownloads, array $updatedDownloads)
     {
-        return new DownloadSubscription($this->router, $newDownloads, $updatedDownloads);
+        return $this->convertParameters(DownloadSubscription::class, [$this->router, $newDownloads, $updatedDownloads]);
     }
 
     /**
@@ -158,7 +158,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createEmailValidationModel($verifyUrl)
     {
-        return new EmailValidation($verifyUrl);
+        return $this->convertParameters(EmailValidation::class, [$verifyUrl]);
     }
 
     /**
@@ -169,7 +169,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createFeedbackApprovedModel(Feedback $feedback, Person $agent)
     {
-        return new FeedbackApproved($this->router, $this->convertParameter($feedback), $this->convertParameter($agent));
+        return $this->convertParameters(FeedbackApproved::class, [$this->router, $feedback, $agent]);
     }
 
     /**
@@ -181,7 +181,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createFeedbackDisapprovedModel(Feedback $feedback, Person $agent, $reason)
     {
-        return new FeedbackDisapproved($this->convertParameter($feedback), $this->convertParameter($agent), $reason);
+        return $this->convertParameters(FeedbackDisapproved::class, [$feedback, $agent, $reason]);
     }
 
     /**
@@ -191,7 +191,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createFeedbackNewModel(Feedback $feedback)
     {
-        return new FeedbackNew($this->convertParameter($feedback));
+        return $this->convertParameters(FeedbackNew::class, [$feedback]);
     }
 
     /**
@@ -201,7 +201,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createFeedbackNewCommentModel(Feedback $feedback)
     {
-        return new FeedbackNewComment($this->router, $this->convertParameter($feedback));
+        return $this->convertParameters(FeedbackNewComment::class, [$this->router, $feedback]);
     }
 
     /**
@@ -211,7 +211,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createFeedbackSubscriptionModel(array $updatedFeedbacks)
     {
-        return new FeedbackSubscription($this->router, $updatedFeedbacks);
+        return $this->convertParameters(FeedbackSubscription::class, [$this->router, $updatedFeedbacks]);
     }
 
     /**
@@ -222,7 +222,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createKbSubscriptionModel(array $newArticles, array $updatedArticles)
     {
-        return new KbSubscription($this->router, $newArticles, $updatedArticles);
+        return $this->convertParameters(KbSubscription::class, [$this->router, $newArticles, $updatedArticles]);
     }
 
     /**
@@ -234,7 +234,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createLoginAlertModel(Request $request, DateTime $firstSeen, $success)
     {
-        return new LoginAlert($request, $firstSeen, $success);
+        return $this->convertParameters(LoginAlert::class, [$request, $firstSeen, $success]);
     }
 
     /**
@@ -244,7 +244,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createNewEmailValidateModel($verifyUrl)
     {
-        return new NewEmailValidate($verifyUrl);
+        return $this->convertParameters(NewEmailValidate::class, [$verifyUrl]);
     }
 
     /**
@@ -254,7 +254,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createNewEmailValidatePrimaryModel($verifyUrl)
     {
-        return new NewEmailValidatePrimary($verifyUrl);
+        return $this->convertParameters(NewEmailValidatePrimary::class, [$verifyUrl]);
     }
 
     /**
@@ -267,7 +267,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     ) {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        return new NewReplyRejectResolved($this->convertParameter($ticket), $ticketLink);
+        return $this->convertParameters(NewReplyRejectResolved::class, [$ticket, $ticketLink]);
     }
 
     /**
@@ -278,7 +278,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createNewsSubscriptionModel(array $newNews, array $updatedNews)
     {
-        return new NewsSubscription($this->router, $newNews, $updatedNews);
+        return $this->convertParameters(NewsSubscription::class, [$this->router, $newNews, $updatedNews]);
     }
 
     /**
@@ -291,7 +291,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     ) {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        return new NewTicketGuest($this->convertParameter($ticket), $ticketLink);
+        return $this->convertParameters(NewTicketGuest::class, [$ticket, $ticketLink]);
     }
 
     /**
@@ -314,7 +314,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     ) {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        return new NewTicketValidate($this->convertParameter($ticket), $ticketLink, $accessCode);
+        return $this->convertParameters(NewTicketValidate::class, [$ticket, $ticketLink, $accessCode]);
     }
 
     /**
@@ -329,7 +329,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     ) {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        return new NewTicketValidateEmail($this->convertParameter($ticket), $ticketLink, $accessCode);
+        return $this->convertParameters(NewTicketValidateEmail::class, [$ticket, $ticketLink, $accessCode]);
     }
 
     /**
@@ -337,7 +337,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createRegisterWelcomeModel()
     {
-        return new RegisterWelcome($this->router);
+        return $this->convertParameters(RegisterWelcome::class, [$this->router]);
     }
 
     /**
@@ -347,7 +347,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createRegisterWelcomeByAgentModel($newPassword)
     {
-        return new RegisterWelcomeByAgent($this->router, $newPassword);
+        return $this->convertParameters(RegisterWelcomeByAgent::class, [$this->router, $newPassword]);
     }
 
     /**
@@ -357,7 +357,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createResetPasswordModel($resetUrl)
     {
-        return new ResetPassword($resetUrl);
+        return $this->convertParameters(ResetPassword::class, [$resetUrl]);
     }
 
     /**
@@ -367,7 +367,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createSetPasswordModel($resetUrl)
     {
-        return new SetPassword($resetUrl);
+        return $this->convertParameters(SetPassword::class, [$resetUrl]);
     }
 
     /**
@@ -386,7 +386,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
         $email,
         $name
     ) {
-        return new ShareArticle($this->objectRouter, $this->convertParameter($article), $this->convertParameter($author), $message, $email, $name);
+        return $this->convertParameters(ShareArticle::class, [$this->objectRouter, $article, $author, $message, $email, $name]);
     }
 
     /**
@@ -399,7 +399,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
         Ticket $ticket,
         Person $author
     ) {
-        return new TicketAddCc($this->convertParameter($ticket), $this->convertParameter($author));
+        return $this->convertParameters(TicketAddCc::class, [$ticket, $author]);
     }
 
     /**
@@ -412,7 +412,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     ) {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        return new TicketAutocloseWarn($this->convertParameter($ticket), $ticketLink);
+        return $this->convertParameters(TicketAutocloseWarn::class, [$ticket, $ticketLink]);
     }
 
     /**
@@ -425,7 +425,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     ) {
         $ticketResolveLink = $this->objectRouter->getPortalUrl($ticket, 'resolve');
 
-        return new TicketAwaitingWarn($this->objectRouter, $this->convertParameter($ticket), $ticketResolveLink);
+        return $this->convertParameters(TicketAwaitingWarn::class, [$this->objectRouter, $ticket, $ticketResolveLink]);
     }
 
     /**
@@ -436,7 +436,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createTicketAwaitingWarnFinalModel(
         Ticket $ticket
     ) {
-        return new TicketAwaitingWarnFinal($this->convertParameter($ticket));
+        return $this->convertParameters(TicketAwaitingWarnFinal::class, [$ticket]);
     }
 
     /**
@@ -449,7 +449,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     ) {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        return new TicketNewAutoreply($this->convertParameter($ticket), $ticketLink);
+        return $this->convertParameters(TicketNewAutoreply::class, [$ticket, $ticketLink]);
     }
 
     /**
@@ -462,7 +462,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     ) {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        return new TicketNewByAgent($this->convertParameter($ticket), $ticketLink);
+        return $this->convertParameters(TicketNewByAgent::class, [$ticket, $ticketLink]);
     }
 
     /**
@@ -475,7 +475,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     ) {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        return new TicketParticipant($this->convertParameter($ticket), $ticketLink);
+        return $this->convertParameters(TicketParticipant::class, [$ticket, $ticketLink]);
     }
 
     /**
@@ -488,7 +488,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     ) {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        return new TicketRate($this->convertParameter($ticket), $ticketLink);
+        return $this->convertParameters(TicketRate::class, [$ticket, $ticketLink]);
     }
 
     /**
@@ -503,7 +503,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     ) {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        return new TicketReplyByAgent($this->convertParameter($ticket), $ticketLink, $this->convertParameter($message));
+        return $this->convertParameters(TicketReplyByAgent::class, [$ticket, $ticketLink, $message]);
     }
 
     /**
@@ -516,6 +516,6 @@ class UserViewModelFactory extends AbstractViewModelFactory
     ) {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        return new TicketReplyAutoreply($this->convertParameter($ticket), $ticketLink);
+        return $this->convertParameters(TicketReplyAutoreply::class, [$ticket, $ticketLink]);
     }
 }

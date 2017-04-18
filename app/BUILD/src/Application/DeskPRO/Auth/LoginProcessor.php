@@ -294,7 +294,7 @@ class LoginProcessor
                     'application/pdf'
                 );
                 $attach->setFilename('Getting Started with DeskPRO.pdf');
-                if (App::$container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                if (App::$container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                     $agentPassword = $this->person->getPlaintextPassword();
                     $viewModel     = App::$container->get('email.agent_viewmodel_factory')
                         ->createAgentWelcomeUsersourceModel($agentPassword);

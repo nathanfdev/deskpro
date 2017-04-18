@@ -90,7 +90,7 @@ class TaskAssignNotification extends AbstractAgentNotification
             'performer'   => App::getCurrentPerson(),
             'notify_data' => ['notify_type' => 'tasks'],
         ]);
-        if (App::$container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+        if (App::$container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = App::$container->get('email.agent_viewmodel_factory')
                 ->createAgentTaskAssignedModel($this->task, App::getCurrentPerson());
             $this->sendNewEmailNotifications($viewModel);

@@ -75,7 +75,7 @@ class NewFeedbackNotification extends AbstractAgentNotification
     public function send()
     {
         $this->sendBrowserNotifications('AgentBundle:Feedback:alert-new-feedback.html.twig', ['feedback' => $this->feedback, 'notify_data' => ['notify_type' => 'new_feedback']]);
-        if (App::$container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+        if (App::$container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = App::$container->get('email.agent_viewmodel_factory')
                 ->createNewFeedbackModel($this->feedback);
             $this->sendNewEmailNotifications($viewModel);

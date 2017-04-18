@@ -85,7 +85,7 @@ class CloudCallController extends AbstractController
             $this->em->persist($codeData);
             $this->em->flush();
 
-            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 $resetCode = $codeData->getCode();
                 if ($person->isAgent()) {
                     if ($interface == 'billing') {

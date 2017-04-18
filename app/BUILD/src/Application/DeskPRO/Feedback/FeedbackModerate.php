@@ -161,7 +161,7 @@ class FeedbackModerate implements PersonContextInterface
                         'agent'    => $agent,
                     ];
 
-                    if ($featureFlags->hasFeature('new_email_templates')) {
+                    if ($featureFlags->hasBeta('email_templates')) {
                         $viewModel = $viewModelFactory->createFeedbackApprovedModel($feedback, $agent);
                         $sender->send($viewModel, ['to' => $feedback->getPerson()]);
                     } else {
@@ -214,7 +214,7 @@ class FeedbackModerate implements PersonContextInterface
                     'reason'   => $reason,
                 ];
 
-                if ($featureFlags->hasFeature('new_email_templates')) {
+                if ($featureFlags->hasBeta('email_templates')) {
                     $viewModel = $viewModelFactory->createFeedbackDisapprovedModel($feedback, $agent);
                     $sender->send($viewModel, ['to' => $feedback->getPerson()]);
                 } else {

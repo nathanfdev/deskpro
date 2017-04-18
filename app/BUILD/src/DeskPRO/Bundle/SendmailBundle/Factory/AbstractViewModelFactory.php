@@ -71,6 +71,9 @@ abstract class AbstractViewModelFactory
 
     protected function convertParameter($entity)
     {
+        if (!is_object($entity)) {
+            return $entity;
+        }
         $serializationContext = new SideloadSerializationContext();
         $serializationContext->setInlineSideloads(true);
         $className = str_replace('Proxies\__CG__\\', '', get_class($entity));
@@ -117,5 +120,14 @@ abstract class AbstractViewModelFactory
         }
 
         return $handler->createModel($entity, $serializationContext);
+    }
+
+    protected function convertParameters($class, $arguments)
+    {
+        foreach ($arguments as &$argument) {
+            $argument = $this->convertParameter($argument);
+        }
+
+        return new $class(...$arguments);
     }
 }

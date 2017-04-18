@@ -59,8 +59,8 @@ use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
-use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\PortalBundle\Twig\Environment;
 use Doctrine\DBAL\ConnectionException;
@@ -521,7 +521,7 @@ class LoginController extends AbstractController
     {
         $prefName = sprintf('agent_notif.login_attempt%s.email', $success ? '' : '_fail');
         if ($person->getPref($prefName) && !$person->isDeleted()) {
-            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 $viewModel = $this->get('email.agent_viewmodel_factory')
                     ->createLoginAlertModel(
                         $request,
@@ -1060,7 +1060,7 @@ class LoginController extends AbstractController
                 ];
 
                 $this->container->getTranslator()->setDefaultPersonContext($person);
-                if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                     $viewModel = $this->get('email.agent_viewmodel_factory')
                         ->createAdminNoResetPasswordModel();
                     $this->get('email.email_sender')
@@ -1097,7 +1097,7 @@ class LoginController extends AbstractController
         );
 
         $this->container->getTranslator()->setDefaultPersonContext($person);
-        if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = $this->get('email.user_viewmodel_factory')
                 ->createResetPasswordModel($resetUrl);
             $emailSender = $this->get('email.email_sender');

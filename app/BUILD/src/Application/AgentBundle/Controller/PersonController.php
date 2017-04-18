@@ -660,7 +660,7 @@ class PersonController extends AbstractController
 
                     if ($email) {
                         $message = $this->container->getMailer()->createMessage();
-                        if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                             $viewModel = $this->get('email.user_viewmodel_factory')
                                 ->createAgentChangedPasswordModel($person->getPlaintextPassword());
                             $this->get('email.email_sender')
@@ -1528,7 +1528,7 @@ class PersonController extends AbstractController
             $this->em->flush();
 
             if ($this->in->getString('newperson.send_welcome_email')) {
-                if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                     $viewModel = $this->get('email.user_viewmodel_factory')
                         ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
                     $this->get('email.email_sender')
@@ -1627,7 +1627,7 @@ class PersonController extends AbstractController
                 $trans = $this->container->getTranslator();
                 $trans->setPersonContext($newperson->getPerson());
 
-                if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                     $viewModel = $this->get('email.user_viewmodel_factory')
                         ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
                     $this->get('email.email_sender')

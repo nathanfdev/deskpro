@@ -112,7 +112,7 @@ class SettingsController extends AbstractController
                     'new_email'    => $edit_profile->email,
                 ];
 
-                if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                     $viewModel = $this->get('email.agent_viewmodel_factory')
                         ->createAgentChangeEmailMergeUserModel($this->person->getEmailAddress(), $edit_profile->email);
                     $this->get('email.email_sender')

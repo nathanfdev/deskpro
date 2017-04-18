@@ -198,7 +198,7 @@ class MiscController extends AbstractController
             // Send alert
             $attemptPerson = $this->em->getRepository(Person::class)->findOneByEmail($this->in->getString('email'));
             if ($attemptPerson && $attemptPerson->getPref('agent_notif.login_attempt_fail.email')) {
-                if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                     $viewModel = $this->get('email.agent_viewmodel_factory')
                         ->createLoginAlertModel(
                             $request,
@@ -250,7 +250,7 @@ class MiscController extends AbstractController
         App::setCurrentPerson($person);
 
         if ($person->getPref('agent_notif.login_attempt.email')) {
-            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 $viewModel = $this->get('email.agent_viewmodel_factory')
                     ->createLoginAlertModel(
                         $request,

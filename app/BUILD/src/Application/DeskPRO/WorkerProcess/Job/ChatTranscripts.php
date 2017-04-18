@@ -102,7 +102,7 @@ class ChatTranscripts extends AbstractJob
 
                 if (!$noAgentAnswer) {
                     $container = App::getContainer();
-                    if ($container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+                    if ($container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                         $viewModel = $container->get('email.user_viewmodel_factory')
                             ->createChatTranscriptModel($chat, $chatMessages);
                         $container->get('email.email_sender')

@@ -64,7 +64,7 @@ class PortalEmailSender
             UrlGeneratorInterface::ABSOLUTE_URL
         );
 
-        if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = $this->container->get('email.user_viewmodel_factory')
                 ->createResetPasswordModel($resetUrl);
             $this->container->get('email.email_sender')
@@ -89,7 +89,7 @@ class PortalEmailSender
             UrlGeneratorInterface::ABSOLUTE_URL
         );
 
-        if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = $this->container->get('email.user_viewmodel_factory')
                 ->createSetPasswordModel($resetUrl);
             $this->container->get('email.email_sender')
@@ -110,7 +110,7 @@ class PortalEmailSender
     {
         $email = $person->getPrimaryEmail();
 
-        if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = $this->container->get('email.user_viewmodel_factory')
                 ->createRegisterWelcomeModel();
             $this->container->get('email.email_sender')
@@ -172,7 +172,7 @@ class PortalEmailSender
     {
         $person = $feedback->getPerson();
 
-        if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = $this->container->get('email.user_viewmodel_factory')
                 ->createFeedbackNewModel($feedback);
             $this->container->get('email.email_sender')
@@ -214,7 +214,7 @@ class PortalEmailSender
     {
         $person = $comment->getPerson();
 
-        if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = $this->container->get('email.user_viewmodel_factory')
                 ->createCommentNewModel($comment);
             $this->container->get('email.email_sender')
@@ -242,7 +242,7 @@ class PortalEmailSender
     public function sendLoginAlert(Person $person, Request $request, $success)
     {
         $created = new \DateTime('@'.$request->getSession()->getMetadataBag()->getCreated());
-        if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = $this->container->get('email.user_viewmodel_factory')
                 ->createLoginAlertModel(
                     $request,
@@ -268,7 +268,7 @@ class PortalEmailSender
     {
         $author = $ticket->getPerson();
 
-        if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = $this->container->get('email.user_viewmodel_factory')
                 ->createTicketAddCcModel(
                     $ticket
@@ -307,7 +307,7 @@ class PortalEmailSender
     public function sendShareArticle(Article $article, Person $author, $emails, $formData)
     {
         foreach ($emails as $email) {
-            if ($this->container->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 if ($email instanceof Person) {
                     $to = $email;
                 } else {

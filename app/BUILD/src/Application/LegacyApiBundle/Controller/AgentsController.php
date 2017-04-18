@@ -822,7 +822,7 @@ class AgentsController extends AbstractController implements ProtectedController
             'application/pdf'
         );
         $attach->setFilename('Getting Started with DeskPRO.pdf');
-        if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $agentPassword = $agent->getPlaintextPassword();
             $viewModel     = $this->get('email.agent_viewmodel_factory')
                 ->createAgentWelcomeModel($agentPassword);
@@ -1074,7 +1074,7 @@ class AgentsController extends AbstractController implements ProtectedController
         $didEmail = false;
         if (!$this->in->getBool('skip_email')) {
             $didEmail = $agent->getPrimaryEmailAddress();
-            if ($this->get('deskpro.feature_flags')->hasFeature('new_email_templates')) {
+            if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 $viewModel = $this->get('email.agent_viewmodel_factory')
                     ->createAgentPasswordResetAlertModel($this->person, $password);
                 $this->get('email.email_sender')->send($viewModel, ['to' => $agent]);

@@ -54,7 +54,7 @@ use Symfony\Component\HttpFoundation\Request;
  * API access to person settings.
  *
  * @ApiModes("all")
- * @Feature("new_email_templates")
+ * @Feature("email_templates")
  * @Rest\Route("/email_templates")
  */
 class TemplateController extends BaseController

@@ -283,7 +283,7 @@ class CsvImporter
         $person = reset($people);
 
         if ($sendWelcomeEmail && $isNew && $person) {
-            if ($this->featureFlags->hasFeature('new_email_templates')) {
+            if ($this->featureFlags->hasBeta('email_templates')) {
                 $viewModel = $this->viewModelFactory
                     ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
                 $this->emailSender->send($viewModel, ['to' => $person]);
