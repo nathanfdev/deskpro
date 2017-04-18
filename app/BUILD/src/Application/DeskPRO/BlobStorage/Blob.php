@@ -79,6 +79,14 @@ class Blob
     }
 
     /**
+     * @return int
+     */
+    public function getId()
+    {
+        return isset($this->meta['blob_id']) ? $this->meta['blob_id'] : null;
+    }
+
+    /**
      * @param $path
      */
     public function setPath($path)
@@ -115,7 +123,7 @@ class Blob
      */
     public function getFilenameSafe()
     {
-        if (!$this->filename_safe === null) {
+        if ($this->filename_safe === null) {
             $this->filename_safe = Strings::getFilenameSafe($this->filename);
         }
 

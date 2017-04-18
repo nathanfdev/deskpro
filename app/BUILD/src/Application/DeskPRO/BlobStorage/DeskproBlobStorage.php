@@ -1143,9 +1143,9 @@ class DeskproBlobStorage implements Loggable
     protected function getCachePath($blob)
     {
         $filenameSafe = $blob instanceof BlobEntity || $blob instanceof Blob
-            ? $blob->getFilenameSafe()
-            : Strings::getFilenameSafe($blob['filename']);
+            ? $blob->getId()
+            : $blob['id'];
 
-        return $this->tmpDir.DIRECTORY_SEPARATOR.$filenameSafe;
+        return $this->tmpDir.DIRECTORY_SEPARATOR.$filenameSafe.'.blob';
     }
 }
