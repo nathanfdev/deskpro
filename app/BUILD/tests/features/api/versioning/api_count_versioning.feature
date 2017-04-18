@@ -2,7 +2,8 @@
 Feature: I check count versioning
 
   Background:
-    Given I'm authenticated as agent
+    Given no Person records exist
+    And I'm authenticated as agent
     And "user@deskpro.dev" user exists
     And the following "Department" records exist:
       | #  | title           | is_chat_enabled |
