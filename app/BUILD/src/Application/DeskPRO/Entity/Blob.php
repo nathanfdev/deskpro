@@ -229,7 +229,8 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         $this->labels       = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    static public function hasZipArchiveClass(){
+    public static function hasZipArchiveClass()
+    {
         return class_exists('ZipArchive');
     }
 
@@ -402,6 +403,10 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             return $this->file_url;
         }
 
+        if (!$this->getAuthId()) {
+            return;
+        }
+
         $url = App::get('router')->generate('serve_blob', ['blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()], $absolute);
 
         // We are specifically requestinga local url,
@@ -427,19 +432,29 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      *
      * @param int        $size
      * @param int|string $absolute
+     * @param bool       $sizeFit
      *
      * @return string
      */
-    public function getThumbnailUrl($size = 50, $absolute = UrlGeneratorInterface::ABSOLUTE_PATH)
+    public function getThumbnailUrl($size = 50, $absolute = UrlGeneratorInterface::ABSOLUTE_PATH, $sizeFit = false)
     {
         if (!$this->isImage()) {
             return;
         }
+        if (!$this->getAuthId()) {
+            return;
+        }
 
-        $params = ['blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()];
+        $params = [
+            'blob_auth_id' => $this->getAuthId(),
+            'filename'     => $this->getFilenameSafe(),
+        ];
 
         if ($size) {
             $params['s'] = $size;
+        }
+        if ($sizeFit) {
+            $params['size-fit'] = 1;
         }
 
         return App::get('router')->generate('serve_blob', $params, $absolute);

@@ -31,7 +31,11 @@
 						<table>
 							<tr>
 								{% if attach.blob.isImage() %}
-									<td width="10" style="vertical-align: middle; padding-right: 5px;"><a href="{{ attach.blob.download_url }}" data-deskpro-url="{{ attach.blob.getDownloadUrl(false, false) }}" target="_blank" style="padding:0;margin: 0;"><img src="{{ path('serve_blob', {'blob_auth_id': attach.blob.auth_id, 'filename': attach.blob.filename_safe, 's': 50, 'size-fit': '0'}) }}" alt="" class="preview" style="padding:0; margin: 0;" /></a></td>
+									<td width="10" style="vertical-align: middle; padding-right: 5px;">
+										<a href="{{ attach.blob.download_url }}" data-deskpro-url="{{ attach.blob.getDownloadUrl(false, false) }}" target="_blank" style="padding:0;margin: 0;">
+											<img src="{{ attach.blob.getThumbnailUrl(50, 1) }}" alt="" class="preview" style="padding:0; margin: 0;" />
+										</a>
+									</td>
 								{% else %}
 									<td width="10" style="vertical-align: middle; padding-right: 5px;"><i class="dp-icon-filetype dp-icon-filetype-{{attach.blob.extension|default('none')}}"></i></td>
 								{% endif %}
