@@ -26,25 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Categories;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Content\Categories;
 
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
-use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
-use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\HttpFoundation\Request;
+use Application\DeskPRO\Entity\ArticleCategory;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class AbstractCategoriesController.
- */
-abstract class AbstractCategoriesController extends CrudController
+class ArticleCategoryType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        ListHelper::applyInListFilter(new RequestQueryContext($qb, $alias, $request), 'brand', 'brands');
-        ListHelper::applyInListFilter(new RequestQueryContext($qb, $alias, $request), 'parent');
+        $builder
+            ->add('parent', EntityType::class, [
+                'class'    => ArticleCategory::class,
+                'required' => false,
+            ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => ArticleCategory::class,
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return ContentCategoryAbstractType::class;
     }
 }

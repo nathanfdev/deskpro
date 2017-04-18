@@ -26,25 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Categories;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Content\Categories;
 
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
-use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
-use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\HttpFoundation\Request;
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Usergroup;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 
-/**
- * Class AbstractCategoriesController.
- */
-abstract class AbstractCategoriesController extends CrudController
+class ContentCategoryAbstractType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        ListHelper::applyInListFilter(new RequestQueryContext($qb, $alias, $request), 'brand', 'brands');
-        ListHelper::applyInListFilter(new RequestQueryContext($qb, $alias, $request), 'parent');
+        $builder
+            ->add('title', TextType::class)
+            ->add('brand', EntityType::class, [
+                'class' => Brand::class,
+            ])
+            ->add('usergroups', EntityType::class, [
+                'class'    => Usergroup::class,
+                'multiple' => true,
+                'expanded' => true,
+            ])
+        ;
     }
 }
