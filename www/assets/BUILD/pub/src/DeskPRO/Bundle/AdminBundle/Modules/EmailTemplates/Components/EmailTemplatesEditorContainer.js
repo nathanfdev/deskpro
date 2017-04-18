@@ -187,6 +187,60 @@ class EmailTemplatesEditor extends React.Component {
     undoSubmit:             PropTypes.bool,
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentTemplate:  'Select a template',
+      templateSubject:  '',
+      templateBody:     '',
+      templatesGroups:  [],
+      textareaDisabled: true,
+    };
+  }
+
+  componentDidMount() {
+    this.compileProps(this.props.emailTemplates);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.compileProps(nextProps.emailTemplates);
+  }
+
+  compileProps = (emailTemplates) => {
+    const templatesGroups = [];
+    if (emailTemplates && emailTemplates.get('info').get('list')) {
+      emailTemplates.get('info').get('list').valueSeq().forEach((group) => {
+        templatesGroups.push({
+          value: group.get('typeId'),
+          label: group.get('title')
+        });
+      });
+    }
+    this.setState({
+      templatesGroups
+    });
+
+    if (emailTemplates.get('currentTemplate')) {
+      this.setState({
+        currentTemplate: emailTemplates.get('currentTemplate').get('title')
+      });
+    }
+
+    if (emailTemplates.get('template') && emailTemplates.get('template').get('template_code')) {
+      this.setState({
+        templateSubject:  emailTemplates.get('template').get('template_code').get('subject'),
+        templateBody:     emailTemplates.get('template').get('template_code').get('body'),
+        textareaDisabled: false
+      });
+    } else {
+      this.setState({
+        templateSubject:  '',
+        templateBody:     '',
+        textareaDisabled: true
+      });
+    }
+  };
+
   closeMediaMenu = () => {
     this.mediaMenu.closeMenu();
   };
@@ -204,28 +258,6 @@ class EmailTemplatesEditor extends React.Component {
   };
 
   render() {
-    const emailTemplates = this.props.emailTemplates;
-    const templatesGroups = [];
-    if (emailTemplates && emailTemplates.get('info').get('list')) {
-      emailTemplates.get('info').get('list').valueSeq().forEach((group) => {
-        templatesGroups.push({
-          value: group.get('typeId'),
-          label: group.get('title')
-        });
-      });
-    }
-    let currentTemplate = 'Select a template';
-    if (emailTemplates.get('currentTemplate')) {
-      currentTemplate = emailTemplates.get('currentTemplate').get('title');
-    }
-    let templateSubject = '';
-    let templateBody = '';
-    let textareaDisabled = true;
-    if (emailTemplates.get('template') && emailTemplates.get('template').get('template_code')) {
-      templateSubject = emailTemplates.get('template').get('template_code').get('subject');
-      templateBody = emailTemplates.get('template').get('template_code').get('body');
-      textareaDisabled = false;
-    }
     return (
       <div className="dp-email-templates">
         <div className="editor">
@@ -234,10 +266,10 @@ class EmailTemplatesEditor extends React.Component {
               <div className="ui form">
                 <div className="ui field">
                   <Select
-                    options={templatesGroups}
+                    options={this.state.templatesGroups}
                     className="group-select basic"
                     onChange={this.props.selectTemplateGroup}
-                    value={emailTemplates.get('currentTemplateGroup')}
+                    value={this.props.emailTemplates.get('currentTemplateGroup')}
                   />
                 </div>
               </div>
@@ -250,7 +282,7 @@ class EmailTemplatesEditor extends React.Component {
               <div className="top-menu">
                 <DropDownMenu
                   icon="mail"
-                  label={currentTemplate}
+                  label={this.state.currentTemplate}
                   className="emails-block-button"
                   ref={(c) => { this.templateMenu = c; }}
                 >
@@ -259,12 +291,12 @@ class EmailTemplatesEditor extends React.Component {
                   />
                 </DropDownMenu>
               </div>
-              <div className={classNames('top-menu right floated', { disabled: textareaDisabled })}>
+              <div className={classNames('top-menu right floated', { disabled: this.state.textareaDisabled })}>
                 <DropDownMenu
                   icon="image"
                   label="Media"
                   className="media-button"
-                  disabled={textareaDisabled}
+                  disabled={this.state.textareaDisabled}
                   ref={(c) => { this.mediaMenu = c; }}
                 >
                   <MediaMenuContainer
@@ -275,12 +307,12 @@ class EmailTemplatesEditor extends React.Component {
                   />
                 </DropDownMenu>
               </div>
-              <div className={classNames('top-menu right floated', { disabled: textareaDisabled })}>
+              <div className={classNames('top-menu right floated', { disabled: this.state.textareaDisabled })}>
                 <DropDownMenu
                   icon="globe"
                   label="Phrases"
                   className="phrases-button"
-                  disabled={textareaDisabled}
+                  disabled={this.state.textareaDisabled}
                   ref={(c) => { this.phrasesMenu = c; }}
                 >
                   <PhrasesMenuContainer
@@ -290,12 +322,12 @@ class EmailTemplatesEditor extends React.Component {
                   />
                 </DropDownMenu>
               </div>
-              <div className={classNames('top-menu right floated', { disabled: !emailTemplates.get('variables') })}>
+              <div className={classNames('top-menu right floated', { disabled: !this.props.emailTemplates.get('variables') })}>
                 <DropDownMenu
                   icon="dollar"
                   label="Variables"
                   className="variables-button"
-                  disabled={!emailTemplates.get('variables')}
+                  disabled={!this.props.emailTemplates.get('variables')}
                   ref={(c) => { this.variablesMenu = c; }}
                 >
                   <VariablesMenuContainer
@@ -307,9 +339,9 @@ class EmailTemplatesEditor extends React.Component {
             </div>
           </div>
           <Editor
-            disabled={textareaDisabled}
-            body={templateBody}
-            subject={templateSubject}
+            disabled={this.state.textareaDisabled}
+            body={this.state.templateBody}
+            subject={this.state.templateSubject}
             changeTemplateSubject={this.props.changeTemplateSubject}
             changeTemplateBody={this.props.changeTemplateBody}
             ref={(c) => { this.editor = c; }}
@@ -317,14 +349,14 @@ class EmailTemplatesEditor extends React.Component {
           <div className="footer">
             <Button
               className={classNames('primary small', { loading: this.props.saveSubmit })}
-              disabled={textareaDisabled}
+              disabled={this.state.textareaDisabled}
               onClick={this.props.saveTemplate}
             >
               Save changes
             </Button>
             <Button
               className={classNames('basic small', { loading: this.props.undoSubmit })}
-              disabled={textareaDisabled}
+              disabled={this.state.textareaDisabled}
               onClick={this.props.undoChanges}
               confirm
             >
@@ -332,7 +364,7 @@ class EmailTemplatesEditor extends React.Component {
             </Button>
             <Button
               className={classNames('right floated basic small', { loading: this.props.resetSubmit })}
-              disabled={textareaDisabled}
+              disabled={this.state.textareaDisabled}
               onClick={this.props.resetTemplate}
               confirm
             >
@@ -366,7 +398,7 @@ class EmailTemplatesEditor extends React.Component {
               </div>
             </form>
           </div>
-          <PreviewEmail preview={emailTemplates.get('preview')} />
+          <PreviewEmail preview={this.props.emailTemplates.get('preview')} />
         </div>
       </div>
     );

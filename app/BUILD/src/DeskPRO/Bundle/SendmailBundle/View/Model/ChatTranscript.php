@@ -28,8 +28,8 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\Chat;
 use JMS\Serializer\Annotation as JMS;
 
 class ChatTranscript extends EmailBaseType
@@ -37,9 +37,9 @@ class ChatTranscript extends EmailBaseType
     /**
      * The chat conversation.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\ChatConversation")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\Chat")
      *
-     * @var ChatConversation
+     * @var Chat
      */
     protected $convo;
 

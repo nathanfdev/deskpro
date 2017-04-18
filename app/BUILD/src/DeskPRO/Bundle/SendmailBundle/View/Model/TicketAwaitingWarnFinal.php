@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket;
 use JMS\Serializer\Annotation as JMS;
 
 class TicketAwaitingWarnFinal extends TicketEmailType
@@ -44,10 +44,10 @@ class TicketAwaitingWarnFinal extends TicketEmailType
 
     protected $templateFile = 'emails_user:ticket_awaiting_warn_final.html.twig';
 
-    public function __construct(Ticket $ticket)
+    public function __construct(Ticket $ticket, $ticketLink, $ticketResolveLink)
     {
-        parent::__construct($ticket);
+        parent::__construct($ticket, $ticketLink);
 
-        $this->ticketResolveLink = $router->getPortalUrl($ticket, 'resolve');
+        $this->ticketResolveLink = $ticketResolveLink;
     }
 }

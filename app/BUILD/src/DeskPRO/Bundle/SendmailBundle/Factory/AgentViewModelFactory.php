@@ -76,7 +76,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentChangeEmailMergeUserModel($oldEmail, $newEmail)
     {
-        return new AgentChangeEmailMergeUser($oldEmail, $newEmail);
+        return $this->convertParameters(AgentChangeEmailMergeUser::class, [$oldEmail, $newEmail]);
     }
 
     /**
@@ -111,12 +111,12 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     public function createAgentNewChatMessageModel(ChatMessage $chatMessage)
     {
         if ($chatMessage->getAuthor()) {
-            $author = $this->convertParameter($chatMessage->getAuthor());
+            $author = $chatMessage->getAuthor();
         } else {
             $author = null;
         }
 
-        return new AgentNewChatMessage($this->convertParameter($chatMessage), $author);
+        return $this->convertParameters(AgentNewChatMessage::class, [$chatMessage, $author]);
     }
 
     /**
@@ -126,11 +126,11 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentNewCommentModel(CommentAbstract $comment)
     {
-        $object     = $this->convertParameter($comment->getObject());
+        $object     = $comment->getObject();
         $objectType = $comment->getObjectType();
         $loginLink  = $this->router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        return new AgentNewComment($this->convertParameter($comment), $object, $objectType, $loginLink);
+        return $this->convertParameters(AgentNewComment::class, [$comment, $object, $objectType, $loginLink]);
     }
 
     /**
@@ -140,7 +140,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentNewFeedbackModel(Feedback $feedback)
     {
-        return new AgentNewFeedback($this->router, $feedback);
+        return $this->convertParameters(AgentNewFeedback::class, [$this->router, $feedback]);
     }
 
     /**
@@ -150,7 +150,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentNewRegistrationModel(Person $person)
     {
-        return new AgentNewRegistration($this->router, $person);
+        return $this->convertParameters(AgentNewRegistration::class, [$this->router, $person]);
     }
 
     /**
@@ -161,7 +161,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentPasswordResetAlertModel(Person $performer, $newPassword)
     {
-        return new AgentPasswordResetAlert($this->router, $performer, $newPassword);
+        return $this->convertParameters(AgentPasswordResetAlert::class, [$this->router, $performer, $newPassword]);
     }
 
     /**
@@ -172,7 +172,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentTaskAssignedModel(Task $task, Person $performer)
     {
-        return new AgentTaskAssigned($this->router, $task, $performer);
+        return $this->convertParameters(AgentTaskAssigned::class, [$this->router, $task, $performer]);
     }
 
     /**
@@ -183,7 +183,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentTaskDueReminderModel(Task $task, Person $performer)
     {
-        return new AgentTaskDueReminder($this->router, $task, $performer);
+        return $this->convertParameters(AgentTaskDueReminder::class, [$this->router, $task, $performer]);
     }
 
     /**
@@ -193,7 +193,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentWelcomeModel($agentPassword)
     {
-        return new AgentWelcome($this->router, $agentPassword);
+        return $this->convertParameters(AgentWelcome::class, [$this->router, $agentPassword]);
     }
 
     /**
@@ -203,7 +203,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentWelcomeUsersourceModel($agentPassword)
     {
-        return new AgentWelcomeUsersource($this->router, $agentPassword);
+        return $this->convertParameters(AgentWelcomeUsersource::class, [$this->router, $agentPassword]);
     }
 
     /**
@@ -213,7 +213,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentWhitelistIpModel($url)
     {
-        return new AgentWhitelistIp($url);
+        return $this->convertParameters(AgentWhitelistIp::class, [$url]);
     }
 
     /**
@@ -225,7 +225,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createLoginAlertModel(Request $request, $firstSeen, $success)
     {
-        return new AgentLoginAlert($request, $firstSeen, $success);
+        return $this->convertParameters(AgentLoginAlert::class, [$request, $firstSeen, $success]);
     }
 
     /**
@@ -237,7 +237,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        return new AgentTicketNew($this->convertParameter($ticket), $ticketLink);
+        return $this->convertParameters(AgentTicketNew::class, [$ticket, $ticketLink]);
     }
 
     /**
@@ -249,7 +249,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        return new AgentTicketUpdate($this->convertParameter($ticket), $ticketLink);
+        return $this->convertParameters(AgentTicketUpdate::class, [$ticket, $ticketLink]);
     }
 
     /**
@@ -261,6 +261,6 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        return new AgentTicketReply($this->convertParameter($ticket), $ticketLink);
+        return $this->convertParameters(AgentTicketReply::class, [$ticket, $ticketLink]);
     }
 }

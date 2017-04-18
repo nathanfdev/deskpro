@@ -113,6 +113,8 @@ class PreviewFakeDataFactory
                             ],
                             UrlGeneratorInterface::ABSOLUTE_URL
                         );
+                    case 'accessCode':
+                        return '123456';
                     case 'convoMessages':
                         return $this->manager->getRepository(ChatMessage::class)->findBy([]);
                     case 'newArticles':

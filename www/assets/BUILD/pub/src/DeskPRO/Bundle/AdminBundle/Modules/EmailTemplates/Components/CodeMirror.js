@@ -36,12 +36,13 @@ class CodeMirror extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.codeMirror && this.currentCodemirrorValue !== nextProps.value) {
+      this.currentCodemirrorValue = nextProps.value;
       this.codeMirror.setValue(nextProps.value);
 
       const that = this;
       setTimeout(() => {
         that.codeMirror.refresh();
-      }, 1);
+      }, 500);
     }
   }
 

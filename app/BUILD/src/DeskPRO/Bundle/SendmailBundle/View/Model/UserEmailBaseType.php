@@ -29,8 +29,6 @@
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class UserEmailBaseType extends EmailBaseType
 {
@@ -46,10 +44,10 @@ class UserEmailBaseType extends EmailBaseType
     /**
      * EmailBaseType constructor.
      *
-     * @param RouterInterface $router
+     * @param string $portalHome
      */
-    public function __construct(RouterInterface $router)
+    public function __construct($portalHome)
     {
-        $this->portalHome = $router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $this->portalHome = $portalHome;
     }
 }

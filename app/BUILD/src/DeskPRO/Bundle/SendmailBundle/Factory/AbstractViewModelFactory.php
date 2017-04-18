@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\SendmailBundle\Factory;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
@@ -84,6 +85,9 @@ abstract class AbstractViewModelFactory
             case ArticleComment::class:
                 $handler = $this->container->get('api_serializer.handler.article_comment');
                 break;
+            case ChatConversation::class:
+                $handler = $this->container->get('api_serializer.handler.chat');
+                break;
             case ChatMessage::class:
                 $handler = $this->container->get('api_serializer.handler.chat_message');
                 break;
@@ -122,7 +126,7 @@ abstract class AbstractViewModelFactory
         return $handler->createModel($entity, $serializationContext);
     }
 
-    protected function convertParameters($class, $arguments)
+    protected function convertParameters($class, $arguments = [])
     {
         foreach ($arguments as &$argument) {
             $argument = $this->convertParameter($argument);

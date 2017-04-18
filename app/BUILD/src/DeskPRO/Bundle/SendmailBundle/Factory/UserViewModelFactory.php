@@ -78,6 +78,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\TicketRate;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyAutoreply;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyByAgent;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class UserViewModelFactory extends AbstractViewModelFactory
 {
@@ -337,7 +338,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createRegisterWelcomeModel()
     {
-        return $this->convertParameters(RegisterWelcome::class, [$this->router]);
+        $portalHome = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->convertParameters(RegisterWelcome::class, [$portalHome]);
     }
 
     /**
@@ -347,7 +350,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createRegisterWelcomeByAgentModel($newPassword)
     {
-        return $this->convertParameters(RegisterWelcomeByAgent::class, [$this->router, $newPassword]);
+        $portalHome = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->convertParameters(RegisterWelcomeByAgent::class, [$portalHome, $newPassword]);
     }
 
     /**
@@ -399,7 +404,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
         Ticket $ticket,
         Person $author
     ) {
-        return $this->convertParameters(TicketAddCc::class, [$ticket, $author]);
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        return $this->convertParameters(TicketAddCc::class, [$ticket, $ticketLink, $author]);
     }
 
     /**
@@ -423,9 +430,10 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createTicketAwaitingWarnModel(
         Ticket $ticket
     ) {
+        $ticketLink        = $this->objectRouter->getPortalUrl($ticket);
         $ticketResolveLink = $this->objectRouter->getPortalUrl($ticket, 'resolve');
 
-        return $this->convertParameters(TicketAwaitingWarn::class, [$this->objectRouter, $ticket, $ticketResolveLink]);
+        return $this->convertParameters(TicketAwaitingWarn::class, [$ticket, $ticketLink, $ticketResolveLink]);
     }
 
     /**
@@ -436,7 +444,10 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createTicketAwaitingWarnFinalModel(
         Ticket $ticket
     ) {
-        return $this->convertParameters(TicketAwaitingWarnFinal::class, [$ticket]);
+        $ticketLink        = $this->objectRouter->getPortalUrl($ticket);
+        $ticketResolveLink = $this->objectRouter->getPortalUrl($ticket, 'resolve');
+
+        return $this->convertParameters(TicketAwaitingWarnFinal::class, [$ticket, $ticketLink, $ticketResolveLink]);
     }
 
     /**
