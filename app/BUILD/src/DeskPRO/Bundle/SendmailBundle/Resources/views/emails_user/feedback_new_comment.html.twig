@@ -8,11 +8,11 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
 	<container>
-		{{ phrase('user.emails.feedback_new-comment', {name: comment.getUserName(true)|default('Anonymous') }) }}
+		{{ phrase('user.emails.feedback_new-comment', {name: comment.user_display_contact|default('Anonymous') }) }}
 
 		<br /><br />
 
-		{{ comment.getContentHtml()|raw }}
+        {{ comment.content_html|raw }}
 
 		<br /><br />
 

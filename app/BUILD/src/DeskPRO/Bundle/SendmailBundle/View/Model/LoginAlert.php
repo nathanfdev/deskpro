@@ -28,9 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use DateTime;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\HttpFoundation\Request;
 
 class LoginAlert extends EmailBaseType
 {
@@ -93,17 +91,20 @@ class LoginAlert extends EmailBaseType
     /**
      * LoginAlert constructor.
      *
-     * @param Request  $request
-     * @param DateTime $firstSeen
-     * @param $success
+     * @param string $clientIp
+     * @param string $clientUserAgent
+     * @param string $clientLandingPage
+     * @param string $clientReferringPage
+     * @param string $firstSeen
+     * @param bool   $success
      */
-    public function __construct(Request $request, DateTime $firstSeen, $success)
+    public function __construct($clientIp, $clientUserAgent, $clientLandingPage, $clientReferringPage, $firstSeen, $success)
     {
-        $this->clientIp            = $request->getClientIp();
-        $this->clientUserAgent     = $request->headers->get('User-Agent');
-        $this->clientLandingPage   = $request->getRequestUri();
-        $this->clientReferringPage = $request->headers->get('Referer');
-        $this->firstSeen           = $firstSeen->format('D, jS M Y g:ia');
+        $this->clientIp            = $clientIp;
+        $this->clientUserAgent     = $clientUserAgent;
+        $this->clientLandingPage   = $clientLandingPage;
+        $this->clientReferringPage = $clientReferringPage;
+        $this->firstSeen           = $firstSeen;
         $this->success             = (string) $success;
     }
 }

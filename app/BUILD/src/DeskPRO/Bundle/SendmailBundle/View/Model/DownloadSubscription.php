@@ -30,8 +30,6 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 use Application\DeskPRO\Entity\Download;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class DownloadSubscription extends UserEmailBaseType
 {
@@ -67,16 +65,17 @@ class DownloadSubscription extends UserEmailBaseType
     /**
      * DownloadSubscription constructor.
      *
-     * @param RouterInterface $router
-     * @param Download[]      $newDownloads
-     * @param Download[]      $updatedDownloads
+     * @param string $portalHome
+     * @param $unsubscribeUrl
+     * @param Download[] $newDownloads
+     * @param Download[] $updatedDownloads
      */
-    public function __construct(RouterInterface $router, $newDownloads, $updatedDownloads)
+    public function __construct($portalHome, $unsubscribeUrl, $newDownloads, $updatedDownloads)
     {
-        parent::__construct($router);
+        parent::__construct($portalHome);
 
         $this->newDownloads     = $newDownloads;
         $this->updatedDownloads = $updatedDownloads;
-        $this->unsubscribeUrl   = $router->generate('portal_downloads_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $this->unsubscribeUrl   = $unsubscribeUrl;
     }
 }

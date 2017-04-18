@@ -30,8 +30,6 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 use Application\DeskPRO\Entity\Article;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class KbSubscription extends UserEmailBaseType
 {
@@ -67,16 +65,17 @@ class KbSubscription extends UserEmailBaseType
     /**
      * KbSubscription constructor.
      *
-     * @param RouterInterface $router
-     * @param Article[]       $newArticles
-     * @param Article[]       $updatedArticles
+     * @param string    $portalHome
+     * @param string    $unsubscribeUrl
+     * @param Article[] $newArticles
+     * @param Article[] $updatedArticles
      */
-    public function __construct(RouterInterface $router, $newArticles, $updatedArticles)
+    public function __construct($portalHome, $unsubscribeUrl, $newArticles, $updatedArticles)
     {
-        parent::__construct($router);
+        parent::__construct($portalHome);
 
         $this->newArticles     = $newArticles;
         $this->updatedArticles = $updatedArticles;
-        $this->unsubscribeUrl  = $router->generate('portal_kb_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $this->unsubscribeUrl  = $unsubscribeUrl;
     }
 }

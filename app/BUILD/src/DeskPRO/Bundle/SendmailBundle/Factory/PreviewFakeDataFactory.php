@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use DateTime;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Numbers;
 use ReflectionClass;
 use ReflectionParameter;
 use Symfony\Component\HttpFoundation\Request;
@@ -138,6 +139,10 @@ class PreviewFakeDataFactory
                         return 'email@example.com';
                     case 'name':
                         return 'First Name Last Name';
+                    case 'subject':
+                        return 'Example Subject';
+                    case 'maxSize':
+                        return Numbers::filesizeDisplay(20971520);
                     default:
                         return '';
                 }

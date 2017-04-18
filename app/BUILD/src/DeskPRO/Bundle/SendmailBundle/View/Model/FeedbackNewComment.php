@@ -28,16 +28,25 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\FeedbackComment;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Routing\RouterInterface;
 
 class FeedbackNewComment extends EmailBaseType
 {
     /**
+     * The new comment.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\FeedbackComment")
+     *
+     * @var FeedbackComment
+     */
+    protected $comment;
+
+    /**
      * The feedback.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Feedback")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback")
      *
      * @var Feedback
      */
@@ -57,12 +66,14 @@ class FeedbackNewComment extends EmailBaseType
     /**
      * FeedbackNewComment constructor.
      *
-     * @param RouterInterface $router
+     * @param FeedbackComment $comment
      * @param Feedback        $feedback
+     * @param $feedbackLink
      */
-    public function __construct(RouterInterface $router, Feedback $feedback)
+    public function __construct(FeedbackComment $comment, Feedback $feedback, $feedbackLink)
     {
+        $this->comment      = $comment;
         $this->feedback     = $feedback;
-        $this->feedbackLink = $router->generate('user_feedback_view', ['slug' => $feedback->getSlug()]);
+        $this->feedbackLink = $feedbackLink;
     }
 }

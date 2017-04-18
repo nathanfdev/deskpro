@@ -843,13 +843,23 @@ BODY;
                     if ($fromEmail and $subject) {
                         $this->logger->log('Sending too-big email response', 'debug');
 
-                        $message = App::getMailer()->createMessage();
-                        $message->setTemplate('DeskPRO:emails_user:email-too-big.html.twig', [
-                            'subject'  => $subject,
-                            'max_size' => Numbers::filesizeDisplay($maxSize),
-                        ]);
-                        $message->setTo($fromEmail);
-                        App::getMailer()->send($message);
+                        if (App::getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                            $viewModel = App::getContainer()->get('email.user_viewmodel_factory')
+                                ->createEmailTooBigModel(
+                                    $subject,
+                                    Numbers::filesizeDisplay($maxSize)
+                                );
+                            $this->container->get('email.email_sender')
+                                ->send($viewModel, ['to' => $fromEmail]);
+                        } else {
+                            $message = App::getMailer()->createMessage();
+                            $message->setTemplate('DeskPRO:emails_user:email-too-big.html.twig', [
+                                'subject'  => $subject,
+                                'max_size' => Numbers::filesizeDisplay($maxSize),
+                            ]);
+                            $message->setTo($fromEmail);
+                            App::getMailer()->send($message);
+                        }
                     }
                 }
 

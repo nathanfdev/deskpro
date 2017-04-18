@@ -28,17 +28,16 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Routing\RouterInterface;
 
 class FeedbackApproved extends EmailBaseType
 {
     /**
      * The feedback that has been approved.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Feedback")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback")
      *
      * @var Feedback
      */
@@ -47,7 +46,7 @@ class FeedbackApproved extends EmailBaseType
     /**
      * The agent that approved the feedback.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Person")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
      *
      * @var Person
      */
@@ -67,14 +66,14 @@ class FeedbackApproved extends EmailBaseType
     /**
      * FeedbackApproved constructor.
      *
-     * @param RouterInterface $router
-     * @param Feedback        $feedback
-     * @param Person          $agent
+     * @param Feedback $feedback
+     * @param Person   $agent
+     * @param string   $feedbackLink
      */
-    public function __construct(RouterInterface $router, Feedback $feedback, Person $agent)
+    public function __construct(Feedback $feedback, Person $agent, $feedbackLink)
     {
         $this->feedback     = $feedback;
         $this->agent        = $agent;
-        $this->feedbackLink = $router->generate('user_feedback_view', ['slug' => $feedback->getSlug()]);
+        $this->feedbackLink = $feedbackLink;
     }
 }

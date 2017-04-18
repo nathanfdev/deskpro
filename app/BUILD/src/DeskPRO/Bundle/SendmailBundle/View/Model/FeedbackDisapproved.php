@@ -28,8 +28,8 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
 use JMS\Serializer\Annotation as JMS;
 
 class FeedbackDisapproved extends EmailBaseType
@@ -37,7 +37,7 @@ class FeedbackDisapproved extends EmailBaseType
     /**
      * The feedback that has been approved.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Feedback")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback")
      *
      * @var Feedback
      */
@@ -46,7 +46,7 @@ class FeedbackDisapproved extends EmailBaseType
     /**
      * The agent that approved the feedback.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Person")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
      *
      * @var Person
      */

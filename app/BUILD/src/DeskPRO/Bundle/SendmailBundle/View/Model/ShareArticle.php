@@ -28,9 +28,8 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Article;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
 use JMS\Serializer\Annotation as JMS;
 
 class ShareArticle extends EmailBaseType
@@ -38,7 +37,7 @@ class ShareArticle extends EmailBaseType
     /**
      * The article.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Article")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Article")
      *
      * @var Article
      */
@@ -47,7 +46,7 @@ class ShareArticle extends EmailBaseType
     /**
      * The author.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Person")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
      *
      * @var Person
      */
@@ -91,11 +90,11 @@ class ShareArticle extends EmailBaseType
 
     protected $templateFile = 'emails_user:share_article.html.twig';
 
-    public function __construct(ObjectRouter $router, Article $article, Person $author, $message, $email, $name)
+    public function __construct(Article $article, $articleLink, Person $author, $message, $email, $name)
     {
         $this->article     = $article;
         $this->author      = $author;
-        $this->articleLink = $router->getPortalUrl($article);
+        $this->articleLink = $articleLink;
         $this->message     = $message;
         $this->email       = $email;
         $this->name        = $name;

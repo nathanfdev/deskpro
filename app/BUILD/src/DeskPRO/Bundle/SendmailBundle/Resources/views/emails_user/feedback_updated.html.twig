@@ -20,8 +20,8 @@
 		<br /><br />
 
 		{{ phrase('user.emails.feedback_votes', {'count': feedback.votes}) }}
-		<a href="{{ url_full('user_feedback_view', {'slug': feedback.url_slug}) }}">
-			{{ url_full('user_feedback_view', {'slug': feedback.url_slug}) }}
+		<a href="{{ feedback_link }}">
+			{{ feedback_link }}
 		</a>
 	</container>
 

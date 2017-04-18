@@ -28,9 +28,8 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\CommentAbstract;
-use Application\DeskPRO\Entity\ContentAbstract;
-use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\CommentAbstract;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract;
 use JMS\Serializer\Annotation as JMS;
 
 abstract class CommentEmailType extends EmailBaseType
@@ -38,7 +37,7 @@ abstract class CommentEmailType extends EmailBaseType
     /**
      * The approved comment.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\CommentAbstract")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\CommentAbstract")
      *
      * @var CommentAbstract
      */
@@ -47,7 +46,7 @@ abstract class CommentEmailType extends EmailBaseType
     /**
      * The commented content.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\ContentAbstract")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract")
      *
      * @var ContentAbstract
      */
@@ -65,14 +64,14 @@ abstract class CommentEmailType extends EmailBaseType
     /**
      * CommentApproved constructor.
      *
-     * @param ObjectRouter    $router
      * @param CommentAbstract $comment
+     * @param ContentAbstract $content
+     * @param string          $contentLink
      */
-    public function __construct(ObjectRouter $router, CommentAbstract $comment)
+    public function __construct(CommentAbstract $comment, ContentAbstract $content, $contentLink)
     {
-        $this->comment = $comment;
-        $this->content = $comment->getObject();
-
-        $this->contentLink = $router->getPortalUrl($this->content);
+        $this->comment     = $comment;
+        $this->content     = $content;
+        $this->contentLink = $contentLink;
     }
 }

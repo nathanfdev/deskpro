@@ -30,8 +30,6 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 use Application\DeskPRO\Entity\News;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class NewsSubscription extends UserEmailBaseType
 {
@@ -68,16 +66,17 @@ class NewsSubscription extends UserEmailBaseType
     /**
      * NewsSubscription constructor.
      *
-     * @param RouterInterface $router
-     * @param News[]          $newNews
-     * @param News[]          $updatedNews
+     * @param string $portalHome
+     * @param string $unsubscribeUrl
+     * @param News[] $newNews
+     * @param News[] $updatedNews
      */
-    public function __construct(RouterInterface $router, $newNews, $updatedNews)
+    public function __construct($portalHome, $unsubscribeUrl, $newNews, $updatedNews)
     {
-        parent::__construct($router);
+        parent::__construct($portalHome);
 
         $this->newNews        = $newNews;
         $this->updatedNews    = $updatedNews;
-        $this->unsubscribeUrl = $router->generate('portal_news_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $this->unsubscribeUrl = $unsubscribeUrl;
     }
 }

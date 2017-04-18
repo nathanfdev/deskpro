@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback;
 use JMS\Serializer\Annotation as JMS;
 
 class FeedbackNew extends EmailBaseType
@@ -36,7 +36,7 @@ class FeedbackNew extends EmailBaseType
     /**
      * The feedback.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Feedback")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback")
      *
      * @var Feedback
      */

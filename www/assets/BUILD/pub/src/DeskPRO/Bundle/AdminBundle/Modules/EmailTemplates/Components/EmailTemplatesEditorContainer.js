@@ -124,26 +124,26 @@ class EmailTemplatesEditorContainer extends React.Component {
 
   insertInlineImage = (file) => {
     const tag = `<img src="{{ url('serve_blob', {'blob_auth_id': '${file.get('blob_id')}', 'filename': '${file.get('name')}'}) }}" alt="" />`;
-    this.editor.editor.bodyEditor.codeMirror.replaceSelection(tag);
+    this.editor.editor.bodyEditor.getCodeMirror().replaceSelection(tag);
   };
 
   insertAttachment = (file) => {
     const tag = `<attachment id="${file.get('blob_id')}" filename="${file.get('name')}" />`;
-    this.editor.editor.bodyEditor.codeMirror.replaceSelection(tag);
+    this.editor.editor.bodyEditor.getCodeMirror().replaceSelection(tag);
   };
 
   insertAttachmentAsLink = (e, file) => {
     e.stopPropagation();
     const tag = `<a href="{{ url('serve_blob', {'blob_auth_id': '${file.get('blob_id')}', 'filename': '${file.get('name')}'}) }}" alt="">${file.get('name')}</a>`;
-    this.editor.editor.bodyEditor.codeMirror.replaceSelection(tag);
+    this.editor.editor.bodyEditor.getCodeMirror().replaceSelection(tag);
   };
 
   insertPhrase = (phrase) => {
-    this.editor.editor.bodyEditor.codeMirror.replaceSelection(phrase);
+    this.editor.editor.bodyEditor.getCodeMirror().replaceSelection(phrase);
   };
 
   insertVariable = (variable) => {
-    this.editor.editor.bodyEditor.codeMirror.replaceSelection(variable);
+    this.editor.editor.bodyEditor.getCodeMirror().replaceSelection(variable);
   };
 
   render() {

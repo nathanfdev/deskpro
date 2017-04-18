@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -46,12 +47,15 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\CommentApproved;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentDeleted;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentNew;
 use DeskPRO\Bundle\SendmailBundle\View\Model\DownloadSubscription;
+use DeskPRO\Bundle\SendmailBundle\View\Model\EmailTooBig;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailValidation;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackApproved;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackDisapproved;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackNew;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackNewComment;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackSubscription;
+use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackUpdated;
+use DeskPRO\Bundle\SendmailBundle\View\Model\GatewayAutoresponseWarn;
 use DeskPRO\Bundle\SendmailBundle\View\Model\KbSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\LoginAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewEmailValidate;
@@ -97,7 +101,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentChangedPasswordModel($newPassword)
     {
-        return $this->convertParameters(AgentChangedPassword::class, [$this->router, $newPassword]);
+        $userLink = $this->router->generate('user', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->convertParameters(AgentChangedPassword::class, [$userLink, $newPassword]);
     }
 
     /**
@@ -118,7 +124,10 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createCommentApprovedModel(CommentAbstract $comment)
     {
-        return $this->convertParameters(CommentApproved::class, [$this->objectRouter, $comment]);
+        $content     = $comment->getObject();
+        $contentLink = $this->objectRouter->getPortalUrl($content);
+
+        return $this->convertParameters(CommentApproved::class, [$comment, $content, $contentLink]);
     }
 
     /**
@@ -128,7 +137,10 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createCommentDeletedModel(CommentAbstract $comment)
     {
-        return $this->convertParameters(CommentDeleted::class, [$this->objectRouter, $comment]);
+        $content     = $comment->getObject();
+        $contentLink = $this->objectRouter->getPortalUrl($content);
+
+        return $this->convertParameters(CommentDeleted::class, [$comment, $content, $contentLink]);
     }
 
     /**
@@ -138,7 +150,10 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createCommentNewModel(CommentAbstract $comment)
     {
-        return $this->convertParameters(CommentNew::class, [$this->objectRouter, $comment]);
+        $content     = $comment->getObject();
+        $contentLink = $this->objectRouter->getPortalUrl($content);
+
+        return $this->convertParameters(CommentNew::class, [$comment, $content, $contentLink]);
     }
 
     /**
@@ -149,7 +164,10 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createDownloadSubscriptionModel(array $newDownloads, array $updatedDownloads)
     {
-        return $this->convertParameters(DownloadSubscription::class, [$this->router, $newDownloads, $updatedDownloads]);
+        $portalHome     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $unsubscribeUrl = $this->router->generate('portal_downloads_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->convertParameters(DownloadSubscription::class, [$portalHome, $unsubscribeUrl, $newDownloads, $updatedDownloads]);
     }
 
     /**
@@ -170,7 +188,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createFeedbackApprovedModel(Feedback $feedback, Person $agent)
     {
-        return $this->convertParameters(FeedbackApproved::class, [$this->router, $feedback, $agent]);
+        $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()]);
+
+        return $this->convertParameters(FeedbackApproved::class, [$feedback, $agent, $feedbackLink]);
     }
 
     /**
@@ -196,13 +216,23 @@ class UserViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
-     * @param Feedback $feedback
+     * @param FeedbackComment $comment
      *
      * @return FeedbackNewComment
      */
-    public function createFeedbackNewCommentModel(Feedback $feedback)
+    public function createFeedbackNewCommentModel(FeedbackComment $comment)
     {
-        return $this->convertParameters(FeedbackNewComment::class, [$this->router, $feedback]);
+        $feedback     = $comment->getFeedback();
+        $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()]);
+
+        return $this->convertParameters(FeedbackNewComment::class, [$comment, $feedback, $feedbackLink]);
+    }
+
+    public function createFeedbackUpdatedModel(Feedback $feedback)
+    {
+        $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()]);
+
+        return $this->convertParameters(FeedbackUpdated::class, [$feedback, $feedbackLink]);
     }
 
     /**
@@ -212,7 +242,10 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createFeedbackSubscriptionModel(array $updatedFeedbacks)
     {
-        return $this->convertParameters(FeedbackSubscription::class, [$this->router, $updatedFeedbacks]);
+        $portalHome     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $unsubscribeUrl = $this->router->generate('portal_feedback_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->convertParameters(FeedbackSubscription::class, [$portalHome, $unsubscribeUrl, $updatedFeedbacks]);
     }
 
     /**
@@ -223,7 +256,10 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createKbSubscriptionModel(array $newArticles, array $updatedArticles)
     {
-        return $this->convertParameters(KbSubscription::class, [$this->router, $newArticles, $updatedArticles]);
+        $portalHome     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $unsubscribeUrl = $this->router->generate('portal_kb_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->convertParameters(KbSubscription::class, [$portalHome, $unsubscribeUrl, $newArticles, $updatedArticles]);
     }
 
     /**
@@ -235,7 +271,22 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createLoginAlertModel(Request $request, DateTime $firstSeen, $success)
     {
-        return $this->convertParameters(LoginAlert::class, [$request, $firstSeen, $success]);
+        $clientIp            = $request->getClientIp();
+        $clientUserAgent     = $request->headers->get('User-Agent');
+        $clientLandingPage   = $request->getRequestUri();
+        $clientReferringPage = $request->headers->get('Referer');
+        $firstSeen           = $firstSeen->format('D, jS M Y g:ia');
+
+        return $this->convertParameters(
+            LoginAlert::class,
+            [
+                $clientIp,
+                $clientUserAgent,
+                $clientLandingPage,
+                $clientReferringPage,
+                $firstSeen,
+                $success,
+            ]);
     }
 
     /**
@@ -279,7 +330,10 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createNewsSubscriptionModel(array $newNews, array $updatedNews)
     {
-        return $this->convertParameters(NewsSubscription::class, [$this->router, $newNews, $updatedNews]);
+        $portalHome     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $unsubscribeUrl = $this->router->generate('portal_news_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->convertParameters(NewsSubscription::class, [$portalHome, $unsubscribeUrl, $newNews, $updatedNews]);
     }
 
     /**
@@ -391,7 +445,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
         $email,
         $name
     ) {
-        return $this->convertParameters(ShareArticle::class, [$this->objectRouter, $article, $author, $message, $email, $name]);
+        $articleLink = $this->objectRouter->getPortalUrl($article);
+
+        return $this->convertParameters(ShareArticle::class, [$article, $articleLink, $author, $message, $email, $name]);
     }
 
     /**
@@ -528,5 +584,24 @@ class UserViewModelFactory extends AbstractViewModelFactory
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
         return $this->convertParameters(TicketReplyAutoreply::class, [$ticket, $ticketLink]);
+    }
+
+    /**
+     * @return GatewayAutoresponseWarn
+     */
+    public function createGatewayAutoresponseWarnModel()
+    {
+        return $this->convertParameters(GatewayAutoresponseWarn::class, []);
+    }
+
+    /**
+     * @param string $subject
+     * @param string $maxSize
+     *
+     * @return EmailTooBig
+     */
+    public function createEmailTooBigModel($subject, $maxSize)
+    {
+        return $this->convertParameters(EmailTooBig::class, [$subject, $maxSize]);
     }
 }
