@@ -253,7 +253,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
     $scope.ticketCount = this.listTicketIds.length;
 
-    if ($scope.ticketCount) {
+    if ($scope.ticketCount && $scope.tickets[0]) {
       displayTicketId = $scope.tickets[0].id;
       startIdx = this.listTicketIds.indexOf(displayTicketId);
 

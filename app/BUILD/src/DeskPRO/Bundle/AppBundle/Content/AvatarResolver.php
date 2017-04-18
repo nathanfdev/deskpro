@@ -250,7 +250,7 @@ class AvatarResolver
         $blob = $person->picture_blob;
         $url  = null;
 
-        if ($blob && $blob->isImage()) {
+        if ($blob && $blob->isImage() && $blob->getAuthId()) {
             $url = $this->router->generate(
                 'serve_blob_sizefit',
                 [
@@ -306,7 +306,7 @@ class AvatarResolver
         $blob = $org->getAvatarBlob();
         $url  = null;
 
-        if ($blob && $blob->isImage()) {
+        if ($blob && $blob->isImage() && $blob->getAuthId()) {
             $url = $this->router->generate(
                 'serve_blob_sizefit',
                 [
