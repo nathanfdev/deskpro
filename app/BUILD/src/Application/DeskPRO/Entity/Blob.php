@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\DpStrings;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -755,12 +756,26 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         ];
     }
 
+    /**
+     * We can't set invalid data to the db so check properties before flush.
+     */
+    public function _onValidateProps()
+    {
+        // force set auth code
+        if (!$this->authcode) {
+            SystemErrorHandler::logException(new \InvalidArgumentException('Attempt to save a blob without authcode'), false, null, true);
+            $this->setModelField('authcode', DpStrings::random(20, Strings::CHARS_KEY_ALPHA));
+        }
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
+        $metadata->addLifecycleCallback('_onValidateProps', 'prePersist');
+        $metadata->addLifecycleCallback('_onValidateProps', 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Blob';
         $metadata->setPrimaryTable([
