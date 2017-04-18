@@ -40,6 +40,7 @@ use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Orb\Log\Logger;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
+use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 
 abstract class ProcessAbstract
 {
@@ -268,9 +269,19 @@ abstract class ProcessAbstract
                 continue;
             }
 
+            $currentFilename = $attach->getFileName();
+            $guesser         = ExtensionGuesser::getInstance();
+            $guessedExt      = $guesser->guess($attach->getMimeType());
+            $parts           = explode('.', $currentFilename, 2);
+            if (!isset($parts[1]) && $guessedExt) {
+                $filename = $currentFilename.'.'.$guessedExt;
+            } else {
+                $filename = $currentFilename;
+            }
+
             $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
                 $attach->getFileContents(),
-                $attach->getFileName(),
+                $filename,
                 $attach->getMimeType()
             );
 
