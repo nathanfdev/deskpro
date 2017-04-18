@@ -40,7 +40,9 @@ bin/phpunit phpunit/DpTest/Application/EmailBundle/Templating/EngineTest.php > /
 # ---
 
 ././../../bin/console cache:warmup --kernel api --env=test
+././../../bin/console cache:warmup --kernel api --env=test --no-debug
 ././../../bin/console cache:warmup --kernel portal --env=test
+././../../bin/console cache:warmup --kernel portal --env=test --no-debug
 
 #################################################
 # RUN SYSTEM API TESTS

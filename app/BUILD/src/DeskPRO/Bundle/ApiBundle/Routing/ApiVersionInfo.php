@@ -72,13 +72,15 @@ class ApiVersionInfo
     }
 
     /**
-     * @param string $version
+     * @param string $checkVersion
      *
-     * @return bool
+     * @return string
      */
-    public function hasVersion($version)
+    public function getClosestVersion($checkVersion)
     {
-        return in_array($version, $this->versions);
+        $filtered = $this->getLowerVersions($checkVersion);
+
+        return count($filtered) ? max($filtered) : min($this->versions);
     }
 
     /**
