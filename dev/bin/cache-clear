@@ -8,7 +8,7 @@ Usage:
 
 OPTIONS:
  -m         Clear mode. One of [all, api_permissions, api_limits, jms_serializer]
- -e         Environment. One if [dev, test]
+ -e         Environment. One of [dev, test]
 
 EXAMPLE:
  cache-clear -m api_permissions -e dev         Clear api_permissions in dev environment

@@ -5,5 +5,5 @@ Feature: Email should contain basic content
 
   Scenario: Content is present in tickets
     When A ticket message is sent
-    Then I should receive an email containing test
+    Then I should receive an email containing the phrase "user.emails.ticket_access_ticket_online"
 

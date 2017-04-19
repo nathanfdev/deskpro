@@ -29,6 +29,7 @@
 namespace DpBehat\Portal;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\EmailBundle\Entity\SendmailSource;
 use Application\EmailBundle\EntityRepository\SendmailSourceRepository;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
@@ -68,9 +69,13 @@ class EmailContext extends BaseContext implements KernelAwareContext
         $emailBody    = $blobStorage->copyBlobRecordToString($blob);
         $emailSubject = $lastEmail->getHeaderSubject();
 
-        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $readerFactory = $this->get('email.ezc_reader_factory');
+        /** @var EzcReader $reader */
+        $reader = $readerFactory->create();
         $reader->setRawSource($emailBody);
-        $emailBody = $reader->getBodyText()->getBodyUtf8();
+        $emailBody = $reader->getBodyHtml()->getBodyUtf8();
+
+        var_dump($emailBody);
 
         return [
             'body'    => $emailBody,
@@ -98,6 +103,14 @@ class EmailContext extends BaseContext implements KernelAwareContext
     public function iShouldReceiveAnEmailContaining($text)
     {
         \PHPUnit_Framework_Assert::assertContains($text, $this->getBodyOfLastEmail());
+    }
+
+    /**
+     * @Then I should receive an email containing the phrase :phrase
+     */
+    public function iShouldReceiveAnEmailContainingPhrase($phrase)
+    {
+        \PHPUnit_Framework_Assert::assertContains($this->get('language_manager')->phrase($phrase), $this->getBodyOfLastEmail());
     }
 
     /**
