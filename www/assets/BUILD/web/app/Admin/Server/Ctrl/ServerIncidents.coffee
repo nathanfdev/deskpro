@@ -18,20 +18,19 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     dismiss: (incident) ->
       if confirm 'If you dismiss "' + incident.title + '" you will no longer receive notifications about this issue. Are you sure?'
         @Api2.sendPutJson('/system/incidents/' + incident.id, {dismissed: true})
-             .success => @incidents.forEach (el) -> if el.id == incident.id then el.dismissed = true
+             .success => @incidents.forEach (el) -> if el.incident.id == incident.id then el.incident.dismissed = true
              .error => @showAlert('Server error. Unable to dismiss the incident.')
 
     revertNotifications: (incident) ->
       @Api2.sendPutJson('/system/incidents/' + incident.id, {dismissed: false})
-           .success => @incidents.forEach (el) -> if el.id == incident.id then el.dismissed = false
+           .success => @incidents.forEach (el) -> if el.incident.id == incident.id then el.incident.dismissed = false
            .error => @showAlert('Server error. Unable to dismiss the incident.')
 
     remove: (incident) ->
       confirmed = if incident.resolved then true else confirm 'Are you sure you want to remove "' + incident.title + '"?'
       if confirmed
         @Api2.sendDelete('/system/incidents/' + incident.id)
-             .success => @incidents = (el for el in @incidents when el.id != incident.id)
+             .success => @incidents = (el for el in @incidents when el.incident.id != incident.id)
              .error => @showAlert('Server error. Unable to dismiss the incident.')
-
 
   Admin_ServerIncidents_Ctrl_ServerIncidents.EXPORT_CTRL()
