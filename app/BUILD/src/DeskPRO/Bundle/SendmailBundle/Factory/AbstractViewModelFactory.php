@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\TopicComment;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -127,6 +128,12 @@ abstract class AbstractViewModelFactory
         return $handler->createModel($entity, $serializationContext);
     }
 
+    /**
+     * @param $class
+     * @param array $arguments
+     *
+     * @return EmailBaseType
+     */
     protected function convertParameters($class, $arguments = [])
     {
         foreach ($arguments as &$argument) {

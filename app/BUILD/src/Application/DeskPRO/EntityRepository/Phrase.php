@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\Entity\Language;
 use Orb\Util\Numbers;
 
 class Phrase extends AbstractEntityRepository
@@ -65,7 +66,7 @@ class Phrase extends AbstractEntityRepository
         if (Numbers::isInteger($language)) {
             $languageId = $language;
         } else {
-            $languageId = $language['id'];
+            $languageId = $language->getId();
         }
 
         $names = $this->getEntityManager()->getConnection()->fetchColumn('
@@ -88,7 +89,7 @@ class Phrase extends AbstractEntityRepository
         if (Numbers::isInteger($language)) {
             $languageId = $language;
         } else {
-            $languageId = $language['id'];
+            $languageId = $language->getId();
         }
 
         $parts = explode('.', $group);
