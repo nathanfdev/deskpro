@@ -80,7 +80,17 @@ class IncidentController extends CrudController
     }
 
     /**
+     * @ApiDoc(
+     *      section="System",
+     *      description="delete all incidents",
+     *      statusCodes={
+     *          200="Returned if success",
+     *      }
+     * )
+     *
      * @Rest\Delete("")
+     *
+     * @return View
      */
     public function removeAllAction()
     {
@@ -90,7 +100,26 @@ class IncidentController extends CrudController
     }
 
     /**
+     * @ApiDoc(
+     *      section="System",
+     *      description="change dismissed status for all incidents",
+     *      requirements={
+     *          {
+     *              "name"="dimissed",
+     *              "requirement"="1|0",
+     *              "description"="An integer representing bool"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Returned if success",
+     *      }
+     * )
+     *
+     * @param Request $request
+     *
      * @Rest\Put("")
+     *
+     * @return View
      */
     public function dismissAllAction(Request $request)
     {
