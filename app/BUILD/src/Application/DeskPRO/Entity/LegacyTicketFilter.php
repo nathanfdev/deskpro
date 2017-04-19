@@ -216,6 +216,14 @@ class LegacyTicketFilter extends DomainObject
         return $this->person;
     }
 
+    /**
+     * @return AgentTeam
+     */
+    public function getAgentTeam()
+    {
+        return $this->agent_team;
+    }
+
     public function getAgentTeamId()
     {
         if (!$this->agent_team) {

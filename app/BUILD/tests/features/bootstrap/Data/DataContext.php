@@ -441,6 +441,17 @@ class DataContext extends BaseContext
         $record = self::resolveReference($ref);
         if (self::isReference($value)) {
             $value = self::resolveReference($value);
+        } elseif (self::isArray($value)) {
+            $arrayValue = [];
+            foreach (self::transformToArray($value) as $item) {
+                if (self::isReference($item)) {
+                    $arrayValue[] = self::resolveReference($item);
+                } else {
+                    $arrayValue[] = $item;
+                }
+            }
+
+            $value = new ArrayCollection($arrayValue);
         } else {
             $value = self::replace($value);
         }

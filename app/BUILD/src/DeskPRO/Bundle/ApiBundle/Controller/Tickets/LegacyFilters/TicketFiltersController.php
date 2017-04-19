@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use Application\DeskPRO\Tickets\GroupingCounter;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -55,8 +56,9 @@ class TicketFiltersController extends CrudController
 {
     use TicketsPagerTrait;
 
-    public static $exposeOnly = ['list', 'get'];
+    public static $exposeOnly = ['list', 'get', 'count'];
     public static $entity     = LegacyTicketFilter::class;
+    public static $listSort   = 'title';
     public static $listOrder  = 'asc';
 
     /**
@@ -149,8 +151,25 @@ class TicketFiltersController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $qb->andWhere('NOT REGEXP(e.sys_name, :regexp) = 1 OR e.sys_name IS NULL');
-        $qb->setParameter('regexp', '^problem_[0-9]+$');
+        /** @var Person $person */
+        $person      = $this->getUser();
+        $personWhere = $qb->expr()->orX(
+            "$alias.is_global = 1",
+            "$alias.person = :person"
+        );
+
+        if ($person->getTeams()->count()) {
+            $personWhere->add("$alias.agent_team IN (:teams)");
+            $qb->setParameter('teams', $person->getTeams());
+        }
+
+        $qb
+            ->andWhere("NOT REGEXP($alias.sys_name, :regexp) = 1 OR $alias.sys_name IS NULL")
+            ->andWhere("$alias.is_enabled = 1")
+            ->andWhere($personWhere)
+            ->setParameter('regexp', '^problem_[0-9]+$')
+            ->setParameter('person', $person)
+        ;
     }
 
     /**
@@ -158,9 +177,19 @@ class TicketFiltersController extends CrudController
      */
     protected function findEntity($id, Request $request)
     {
+        /** @var Person $person */
+        $person = $this->getUser();
         /** @var LegacyTicketFilter $entity */
         $entity = parent::findEntity($id, $request);
-        if ($entity->isProblemFilter()) {
+
+        if (
+            $entity->isProblemFilter()
+            || (
+                !$entity->isGlobal()
+                && $entity->getPerson() !== $person
+                && !($entity->getAgentTeam() && $person->getTeams()->contains($entity->getAgentTeam()))
+            )
+        ) {
             throw $this->createNotFoundException();
         }
 
