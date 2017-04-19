@@ -43,8 +43,13 @@ class Twig_Tests_Node_ColumnTest extends Twig_Test_NodeTestCase
         $tests   = [];
         $body    = new Twig_Node([new Twig_Node_Print(new Twig_Node_Expression_Name('foo', 1), 1)], [], 1);
         $tests[] = [new ColumnNode(['body' => $body], []), <<<'EOF'
+$className = '';
+$className .= 'columns';
+if ($context['zurb_columns']['first']) {
+    $className .= ' first';
+}
+echo "<th class=\"$className\">";
 // line 1
-echo "<th class=\"columns\">";
 echo "<table>";
 echo "<tr>";
 echo "<th>";
@@ -53,6 +58,7 @@ echo "</th>";
 echo "</tr>";
 echo "</table>";
 echo "</th>";
+$context['zurb_columns']['first'] = false;
 EOF
     ,
         ];
