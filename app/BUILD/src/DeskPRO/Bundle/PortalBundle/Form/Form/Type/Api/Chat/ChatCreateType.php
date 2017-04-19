@@ -171,7 +171,7 @@ class ChatCreateType extends AbstractType
         $builder->addEventSubscriber($this->personListener);
         $builder->addEventSubscriber(new AutoSetShouldSentTranscriptListener());
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonEmailFromSession']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonDataFromSession']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckRequireLogin']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceDepartment']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetEmailValidationCode']);
@@ -254,15 +254,15 @@ class ChatCreateType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSetPersonEmailFromSession(FormEvent $event)
+    public function onSetPersonDataFromSession(FormEvent $event)
     {
         $form   = $event->getForm();
         $person = $form->getConfig()->getOption('person');
 
-        /** @var \Application\DeskPRO\Entity\Person $person */
-        if ($person) {
+        if ($person instanceof Person) {
             $event->setData(array_merge($event->getData(), [
                 'email' => $person->getPrimaryEmailAddress(),
+                'name'  => $person->getDisplayName(),
             ]));
         }
     }
