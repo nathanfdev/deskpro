@@ -29,33 +29,33 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="incident in ServerIncidents.incidents">
+					<tr ng-repeat="wrapper in ServerIncidents.incidents">
 						<td class="alt dp-id-col">
-							{{ ng_var('incident.id') }}
+							{{ ng_var('wrapper.incident.id') }}
 						</td>
 						<td>
-							{{ ng_var('ServerIncidents.getStatus(incident)') }}
+							{{ ng_var('ServerIncidents.getStatus(wrapper.incident)') }}
 						</td>
 						<td>
-							{{ ng_var('incident.date_created | date') }}
+							{{ ng_var('wrapper.incident.date_created | date') }}
 						</td>
 						<td>
-							{{ ng_var('incident.title') }}
+							{{ ng_var('wrapper.incident.title') }}
 						</td>
 						<td>
-							<a class="btn btn-primary" ng-href="{{ ng_href('server.incidents.view', '{id: incident.id}') }}">
+							<a class="btn btn-primary" ng-href="{{ ng_href('server.incidents.view', '{id: wrapper.incident.id}') }}">
 								{{ phrase('admin.general.view') }}
 							</a>
-							<a class="btn btn-warning" ng-click="ServerIncidents.dismiss(incident)" ng-if="!incident.resolved && !incident.dismissed">
+							<a class="btn btn-warning" ng-click="ServerIncidents.dismiss(wrapper.incident)" ng-if="!wrapper.incident.resolved && !wrapper.incident.dismissed">
 								{{ phrase('admin.general.dismiss') }}
 							</a>
-							<a class="btn btn-success" ng-click="ServerIncidents.revertNotifications(incident)" ng-if="!incident.resolved && incident.dismissed">
+							<a class="btn btn-success" ng-click="ServerIncidents.revertNotifications(wrapper.incident)" ng-if="!wrapper.incident.resolved && wrapper.incident.dismissed">
 								{{ phrase('admin.general.revert_notifications') }}
 							</a>
-							<a class="btn btn-primary" ng-click="ServerIncidents.remove(incident)" ng-if="incident.resolved">
+							<a class="btn btn-primary" ng-click="ServerIncidents.remove(wrapper.incident)" ng-if="wrapper.incident.resolved">
 								{{ phrase('admin.general.remove') }}
 							</a>
-							<a class="btn btn-danger" ng-click="ServerIncidents.remove(incident)" ng-if="!incident.resolved">
+							<a class="btn btn-danger" ng-click="ServerIncidents.remove(wrapper.incident)" ng-if="!wrapper.incident.resolved">
 								{{ phrase('admin.general.remove') }}
 							</a>
 						</td>
