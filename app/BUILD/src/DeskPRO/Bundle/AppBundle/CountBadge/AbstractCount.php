@@ -48,7 +48,7 @@ abstract class AbstractCount
      * Legacy identity.
      *
      * @JMS\SerializedName("id")
-     * @JMS\Until("20170401")
+     * @JMS\Until("20170400")
      *
      * @var mixed
      */

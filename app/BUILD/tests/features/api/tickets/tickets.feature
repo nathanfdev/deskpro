@@ -83,8 +83,7 @@ Feature: /tickets endpoint
     Given I send a DELETE request to "/api/v2/tickets/{ticket1}"
     When I send a GET request to "/api/v2/tickets/{ticket1}"
     Then the response status code should be 200
-    And the JSON node "data.status" should be equal to "hidden"
-    And the JSON node "data.hidden_status" should be equal to "deleted"
+    And the JSON node "data.status" should be equal to "hidden.deleted"
 
   Scenario: I retrieve a ticket
     When I send a GET request to "/api/v2/tickets/{ticket1}"

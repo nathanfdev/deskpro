@@ -256,15 +256,28 @@ class Ticket
      * Ticket status.
      *
      * @JMS\Type("string")
+     * @JMS\Since("20170401")
      *
      * @var string
      */
     private $status;
 
     /**
-     * Ticket hidden status.
+     * Legacy ticket status.
      *
      * @JMS\Type("string")
+     * @JMS\SerializedName("status")
+     * @JMS\Until("20170400")
+     *
+     * @var string
+     */
+    private $oldStatus;
+
+    /**
+     * Legacy ticket hidden status.
+     *
+     * @JMS\Type("string")
+     * @JMS\Until("20170400")
      *
      * @var string
      */
@@ -650,7 +663,8 @@ class Ticket
         $this->creationSystem       = $ticket->getCreationSystem();
         $this->creationSystemOption = $ticket->getCreationSystemOption();
         $this->ticketHash           = $ticket->getTicketHash();
-        $this->status               = $ticket->getStatus();
+        $this->status               = $ticket->getStatusCode();
+        $this->oldStatus            = $ticket->getStatus();
         $this->hiddenStatus         = $ticket->getHiddenStatus();
         $this->isHold               = $ticket->isHold();
         $this->labels               = $ticket->getLabels();
