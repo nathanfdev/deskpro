@@ -33,4 +33,18 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
              .success => @incidents = (el for el in @incidents when el.incident.id != incident.id)
              .error => @showAlert('Server error. Unable to dismiss the incident.')
 
+    removeAll: ->
+      confirmed = confirm 'Are you sure you want to remove all incidents?'
+      if confirmed
+        @Api2.sendDelete('/system/incidents')
+        .success => @incidents = []
+        .error => @showAlert('Server error. Unable to remove incidents.')
+
+    dismissAll: ->
+      confirmed = confirm 'Are you sure you want to dismiss notifications for all incidents?'
+      if confirmed
+        @Api2.sendPutJson('/system/incidents', {dismissed: true})
+        .success => @incidents.forEach (el) -> console.log(el); el.incident.dismissed = true;
+        .error => @showAlert('Server error. Unable to dismiss incidents.')
+
   Admin_ServerIncidents_Ctrl_ServerIncidents.EXPORT_CTRL()

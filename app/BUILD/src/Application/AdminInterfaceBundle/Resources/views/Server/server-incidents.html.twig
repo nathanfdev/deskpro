@@ -61,6 +61,18 @@
 						</td>
 					</tr>
 				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="5">
+							<a class="btn btn-primary" ng-click="ServerIncidents.removeAll()" ng-if="ServerIncidents.incidents.length">
+								{{ phrase('admin.general.remove_all') }}
+							</a>
+							<a class="btn btn-danger" ng-click="ServerIncidents.dismissAll()" ng-if="ServerIncidents.incidents.length">
+								{{ phrase('admin.general.dismiss_all') }}
+							</a>
+						</td>
+					</tr>
+				</tfoot>
 			</table>
 		</article>
 

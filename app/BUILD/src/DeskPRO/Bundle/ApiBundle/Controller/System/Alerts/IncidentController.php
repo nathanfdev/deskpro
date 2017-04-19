@@ -35,7 +35,9 @@ use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
 use DeskPRO\Bundle\SystemBundle\Form\Type\SystemAlerts\IncidentType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class IncidentController.
@@ -75,5 +77,31 @@ class IncidentController extends CrudController
     protected function getManager()
     {
         return $this->getDoctrine()->getManager('system');
+    }
+
+    /**
+     * @Rest\Delete("")
+     */
+    public function removeAllAction()
+    {
+        $this->getManager()->createQueryBuilder()->delete(AbstractIncident::class)->getQuery()->execute();
+
+        return View::create(null, Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\Put("")
+     */
+    public function dismissAllAction(Request $request)
+    {
+        $this
+            ->getManager()
+            ->createQueryBuilder()
+            ->update(AbstractIncident::class, 'i')
+            ->set('i.dismissed', ':dismissed')
+            ->getQuery()
+            ->execute(['dismissed' => $request->request->get('dismissed')]);
+
+        return View::create(null, Response::HTTP_OK);
     }
 }
