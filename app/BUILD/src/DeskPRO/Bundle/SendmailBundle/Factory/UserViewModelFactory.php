@@ -317,9 +317,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createNewReplyRejectResolvedModel(
         Ticket $ticket
     ) {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(NewReplyRejectResolved::class, [$ticket, $ticketLink]);
+        return $this->convertParameters(NewReplyRejectResolved::class, $arguments);
     }
 
     /**
@@ -344,9 +344,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createNewTicketGuestModel(
         Ticket $ticket
     ) {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(NewTicketGuest::class, [$ticket, $ticketLink]);
+        return $this->convertParameters(NewTicketGuest::class, $arguments);
     }
 
     /**
@@ -367,9 +367,11 @@ class UserViewModelFactory extends AbstractViewModelFactory
         Ticket $ticket,
         $accessCode
     ) {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(NewTicketValidate::class, [$ticket, $ticketLink, $accessCode]);
+        $arguments = array_merge($arguments, [$accessCode]);
+
+        return $this->convertParameters(NewTicketValidate::class, $arguments);
     }
 
     /**
@@ -382,9 +384,11 @@ class UserViewModelFactory extends AbstractViewModelFactory
         Ticket $ticket,
         $accessCode
     ) {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(NewTicketValidateEmail::class, [$ticket, $ticketLink, $accessCode]);
+        $arguments = array_merge($arguments, [$accessCode]);
+
+        return $this->convertParameters(NewTicketValidateEmail::class, $arguments);
     }
 
     /**
@@ -460,9 +464,11 @@ class UserViewModelFactory extends AbstractViewModelFactory
         Ticket $ticket,
         Person $author
     ) {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(TicketAddCc::class, [$ticket, $ticketLink, $author]);
+        $arguments = array_merge($arguments, [$author]);
+
+        return $this->convertParameters(TicketAddCc::class, $arguments);
     }
 
     /**
@@ -473,9 +479,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createTicketAutocloseWarnModel(
         Ticket $ticket
     ) {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(TicketAutocloseWarn::class, [$ticket, $ticketLink]);
+        return $this->convertParameters(TicketAutocloseWarn::class, $arguments);
     }
 
     /**
@@ -486,10 +492,12 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createTicketAwaitingWarnModel(
         Ticket $ticket
     ) {
-        $ticketLink        = $this->objectRouter->getPortalUrl($ticket);
-        $ticketResolveLink = $this->objectRouter->getPortalUrl($ticket, 'resolve');
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(TicketAwaitingWarn::class, [$ticket, $ticketLink, $ticketResolveLink]);
+        $ticketResolveLink = $this->objectRouter->getPortalUrl($ticket, 'resolve');
+        $arguments         = array_merge($arguments, [$ticketResolveLink]);
+
+        return $this->convertParameters(TicketAwaitingWarn::class, $arguments);
     }
 
     /**
@@ -500,10 +508,12 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createTicketAwaitingWarnFinalModel(
         Ticket $ticket
     ) {
-        $ticketLink        = $this->objectRouter->getPortalUrl($ticket);
-        $ticketResolveLink = $this->objectRouter->getPortalUrl($ticket, 'resolve');
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(TicketAwaitingWarnFinal::class, [$ticket, $ticketLink, $ticketResolveLink]);
+        $ticketResolveLink = $this->objectRouter->getPortalUrl($ticket, 'resolve');
+        $arguments         = array_merge($arguments, [$ticketResolveLink]);
+
+        return $this->convertParameters(TicketAwaitingWarnFinal::class, $arguments);
     }
 
     /**
@@ -514,9 +524,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createTicketNewAutoreplyModel(
         Ticket $ticket
     ) {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(TicketNewAutoreply::class, [$ticket, $ticketLink]);
+        return $this->convertParameters(TicketNewAutoreply::class, $arguments);
     }
 
     /**
@@ -527,9 +537,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createTicketNewByAgentModel(
         Ticket $ticket
     ) {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(TicketNewByAgent::class, [$ticket, $ticketLink]);
+        return $this->convertParameters(TicketNewByAgent::class, $arguments);
     }
 
     /**
@@ -540,9 +550,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createTicketParticipantModel(
         Ticket $ticket
     ) {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(TicketParticipant::class, [$ticket, $ticketLink]);
+        return $this->convertParameters(TicketParticipant::class, $arguments);
     }
 
     /**
@@ -553,9 +563,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createTicketRateModel(
         Ticket $ticket
     ) {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(TicketRate::class, [$ticket, $ticketLink]);
+        return $this->convertParameters(TicketRate::class, $arguments);
     }
 
     /**
@@ -568,9 +578,11 @@ class UserViewModelFactory extends AbstractViewModelFactory
         Ticket $ticket,
         TicketMessage $message
     ) {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(TicketReplyByAgent::class, [$ticket, $ticketLink, $message]);
+        $arguments = array_merge($arguments, [$message]);
+
+        return $this->convertParameters(TicketReplyByAgent::class, $arguments);
     }
 
     /**
@@ -581,9 +593,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createTicketReplyAutoreplyModel(
         Ticket $ticket
     ) {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(TicketReplyAutoreply::class, [$ticket, $ticketLink]);
+        return $this->convertParameters(TicketReplyAutoreply::class, $arguments);
     }
 
     /**
@@ -603,5 +615,20 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createEmailTooBigModel($subject, $maxSize)
     {
         return $this->convertParameters(EmailTooBig::class, [$subject, $maxSize]);
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return array
+     */
+    protected function getTicketArguments($ticket)
+    {
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        $ticketPerson = $ticket->getPerson();
+        $ticketAgent  = $ticket->getAgent();
+
+        return [$ticket, $ticketPerson, $ticketAgent, $ticketLink];
     }
 }

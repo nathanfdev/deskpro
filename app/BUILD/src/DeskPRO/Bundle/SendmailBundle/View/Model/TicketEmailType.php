@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket;
 use JMS\Serializer\Annotation as JMS;
 
@@ -43,6 +44,24 @@ abstract class TicketEmailType extends EmailBaseType
     protected $ticket;
 
     /**
+     * The person who opened the ticket.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+     *
+     * @var Person
+     */
+    protected $ticketPerson;
+
+    /**
+     * The agent assigned to the ticket.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+     *
+     * @var Person
+     */
+    protected $ticketAgent;
+
+    /**
      * A link to the ticket.
      *
      * @JMS\Type("string")
@@ -55,9 +74,11 @@ abstract class TicketEmailType extends EmailBaseType
      * TicketEmailType constructor.
      *
      * @param Ticket $ticket
+     * @param Person $ticketPerson
+     * @param Person $ticketAgent
      * @param string $ticketLink
      */
-    public function __construct(Ticket $ticket, $ticketLink)
+    public function __construct(Ticket $ticket, $ticketPerson, $ticketAgent, $ticketLink)
     {
         $this->ticket = $ticket;
 
